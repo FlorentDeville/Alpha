@@ -22,13 +22,15 @@ using namespace Microsoft::WRL;
 // D3D12 extension library.
 #include <d3dx12.h>
 
+#include "CommandQueue.h"
+#include "Helper.h"
+
 const int g_NumFrames = 3;
 ComPtr<ID3D12Device2> g_Device;
-ComPtr<ID3D12CommandQueue> g_CommandQueue;
+
 ComPtr<IDXGISwapChain4> g_SwapChain;
 ComPtr<ID3D12Resource> g_BackBuffers[g_NumFrames];
-ComPtr<ID3D12GraphicsCommandList> g_CommandList;
-ComPtr<ID3D12CommandAllocator> g_CommandAllocators[g_NumFrames];
+
 ComPtr<ID3D12DescriptorHeap> g_RTVDescriptorHeap;
 UINT g_RTVDescriptorSize;
 UINT g_CurrentBackBufferIndex;
@@ -37,13 +39,15 @@ bool g_TearingSupported;
 ComPtr<ID3D12Fence> g_Fence;
 uint64_t g_FenceValue;
 uint64_t g_FrameFenceValues[g_NumFrames];
-HANDLE g_FenceEvent;
+
 bool g_IsInitialized = false;
 uint32_t g_ClientWidth;
 uint32_t g_ClientHeight;
 bool g_Fullscreen = false;
 HWND g_hWnd;
 RECT g_WindowRect;
+
+CommandQueue* g_pCommandQueue = nullptr;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void Update();
@@ -154,14 +158,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-inline void ThrowIfFailed(HRESULT hr)
-{
-	if (FAILED(hr))
-	{
-		throw std::exception();
-	}
-}
-
 void EnableDebugLayer()
 {
 #if defined(_DEBUG)
@@ -239,21 +235,6 @@ ComPtr<ID3D12Device2> CreateDevice(ComPtr<IDXGIAdapter4> adapter)
 #endif
 
 	return d3d12Device2;
-}
-
-ComPtr<ID3D12CommandQueue> CreateCommandQueue(ComPtr<ID3D12Device> device, D3D12_COMMAND_LIST_TYPE type)
-{
-	ComPtr<ID3D12CommandQueue> d3d12CommandQueue;
-
-	D3D12_COMMAND_QUEUE_DESC desc = {};
-	desc.Type = type;
-	desc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-	desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-	desc.NodeMask = 0;
-
-	HRESULT res = device->CreateCommandQueue(&desc, IID_PPV_ARGS(&d3d12CommandQueue));
-	ThrowIfFailed(res);
-	return d3d12CommandQueue;
 }
 
 bool CheckTearingSupport()
@@ -353,66 +334,6 @@ void UpdateRenderTargetViews(ComPtr<ID3D12Device2> device, ComPtr<IDXGISwapChain
 	}
 }
 
-ComPtr<ID3D12CommandAllocator> CreateCommandAllocator(ComPtr<ID3D12Device2> device, D3D12_COMMAND_LIST_TYPE type)
-{
-	ComPtr<ID3D12CommandAllocator> commandAllocator;
-	ThrowIfFailed(device->CreateCommandAllocator(type, IID_PPV_ARGS(&commandAllocator)));
-
-	return commandAllocator;
-}
-
-ComPtr<ID3D12GraphicsCommandList> CreateCommandList(ComPtr<ID3D12Device2> device, ComPtr<ID3D12CommandAllocator> commandAllocator, D3D12_COMMAND_LIST_TYPE type)
-{
-	ComPtr<ID3D12GraphicsCommandList> commandList;
-	ThrowIfFailed(device->CreateCommandList(0, type, commandAllocator.Get(), nullptr, IID_PPV_ARGS(&commandList)));
-
-	ThrowIfFailed(commandList->Close());
-
-	return commandList;
-}
-
-ComPtr<ID3D12Fence> CreateFence(ComPtr<ID3D12Device2> device)
-{
-	ComPtr<ID3D12Fence> fence;
-
-	ThrowIfFailed(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence)));
-
-	return fence;
-}
-
-HANDLE CreateEventHandle()
-{
-	HANDLE fenceEvent;
-
-	fenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
-	assert(fenceEvent && "Failed to create fence event.");
-
-	return fenceEvent;
-}
-
-uint64_t Signal(ComPtr<ID3D12CommandQueue> commandQueue, ComPtr<ID3D12Fence> fence, uint64_t& fenceValue)
-{
-	uint64_t fenceValueForSignal = ++fenceValue;
-	ThrowIfFailed(commandQueue->Signal(fence.Get(), fenceValueForSignal));
-
-	return fenceValueForSignal;
-}
-
-void WaitForFenceValue(ComPtr<ID3D12Fence> fence, uint64_t fenceValue, HANDLE fenceEvent, std::chrono::milliseconds duration = std::chrono::milliseconds::max())
-{
-	if (fence->GetCompletedValue() < fenceValue)
-	{
-		ThrowIfFailed(fence->SetEventOnCompletion(fenceValue, fenceEvent));
-		::WaitForSingleObject(fenceEvent, static_cast<DWORD>(duration.count()));
-	}
-}
-
-void Flush(ComPtr<ID3D12CommandQueue> commandQueue, ComPtr<ID3D12Fence> fence, uint64_t& fenceValue, HANDLE fenceEvent)
-{
-	uint64_t fenceValueForSignal = Signal(commandQueue, fence, fenceValue);
-	WaitForFenceValue(fence, fenceValueForSignal, fenceEvent);
-}
-
 void Update()
 {
 	static uint64_t frameCounter = 0;
@@ -440,43 +361,37 @@ void Update()
 
 void Render()
 {
-	auto commandAllocator = g_CommandAllocators[g_CurrentBackBufferIndex];
 	auto backBuffer = g_BackBuffers[g_CurrentBackBufferIndex];
 
-	commandAllocator->Reset();
-	g_CommandList->Reset(commandAllocator.Get(), nullptr);
+	ComPtr<ID3D12GraphicsCommandList2> pCommandList = g_pCommandQueue->GetCommandList();
 
 	// Clear the render target.
 	{
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(backBuffer.Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		g_CommandList->ResourceBarrier(1, &barrier);
+		pCommandList->ResourceBarrier(1, &barrier);
 
 		FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(g_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), g_CurrentBackBufferIndex, g_RTVDescriptorSize);
 
-		g_CommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
+		pCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
 	}
 
 	// Present
 	{
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(backBuffer.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-		g_CommandList->ResourceBarrier(1, &barrier);
-		ThrowIfFailed(g_CommandList->Close());
+		pCommandList->ResourceBarrier(1, &barrier);
 
-		ID3D12CommandList* const commandLists[] = {
-			g_CommandList.Get()
-		};
-		g_CommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
+		g_pCommandQueue->ExecuteCommandList(pCommandList);
 
 		UINT syncInterval = g_VSync ? 1 : 0;
 		UINT presentFlags = g_TearingSupported && !g_VSync ? DXGI_PRESENT_ALLOW_TEARING : 0;
 		ThrowIfFailed(g_SwapChain->Present(syncInterval, presentFlags));
 
-		g_FrameFenceValues[g_CurrentBackBufferIndex] = Signal(g_CommandQueue, g_Fence, g_FenceValue);
+		uint64_t fenceValue = g_pCommandQueue->Signal();
 		g_CurrentBackBufferIndex = g_SwapChain->GetCurrentBackBufferIndex();
 
-		WaitForFenceValue(g_Fence, g_FrameFenceValues[g_CurrentBackBufferIndex], g_FenceEvent);
+		g_pCommandQueue->WaitForFenceValue(fenceValue);
 	}
 }
 
@@ -490,7 +405,7 @@ void Resize(uint32_t width, uint32_t height)
 
 		// Flush the GPU queue to make sure the swap chain's back buffers
 		// are not being referenced by an in-flight command list.
-		Flush(g_CommandQueue, g_Fence, g_FenceValue, g_FenceEvent);
+		g_pCommandQueue->Flush();
 
 		for (int i = 0; i < g_NumFrames; ++i)
 		{
@@ -582,20 +497,12 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	ComPtr<IDXGIAdapter4> dxgiAdapter4 = GetAdapter(false);
 	g_Device = CreateDevice(dxgiAdapter4);
-	g_CommandQueue = CreateCommandQueue(g_Device, D3D12_COMMAND_LIST_TYPE_DIRECT);
-	g_SwapChain = CreateSwapChain(g_hWnd, g_CommandQueue, width, height, g_NumFrames);
+	g_pCommandQueue = new CommandQueue(g_Device, D3D12_COMMAND_LIST_TYPE_DIRECT);
+	g_SwapChain = CreateSwapChain(g_hWnd, g_pCommandQueue->GetD3D12CommandQueue(), width, height, g_NumFrames);
 	g_CurrentBackBufferIndex = g_SwapChain->GetCurrentBackBufferIndex();
 	g_RTVDescriptorHeap = CreateDescriptorHeap(g_Device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, g_NumFrames);
 	g_RTVDescriptorSize = g_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	UpdateRenderTargetViews(g_Device, g_SwapChain, g_RTVDescriptorHeap);
-
-	for (int i = 0; i < g_NumFrames; ++i)
-	{
-		g_CommandAllocators[i] = CreateCommandAllocator(g_Device, D3D12_COMMAND_LIST_TYPE_DIRECT);
-	}
-	g_CommandList = CreateCommandList(g_Device, g_CommandAllocators[g_CurrentBackBufferIndex], D3D12_COMMAND_LIST_TYPE_DIRECT);
-	g_Fence = CreateFence(g_Device);
-	g_FenceEvent = CreateEventHandle();
 
 	g_IsInitialized = true;
 
@@ -612,9 +519,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	}
 
 	// Make sure the command queue has finished all commands before closing.
-	Flush(g_CommandQueue, g_Fence, g_FenceValue, g_FenceEvent);
+	g_pCommandQueue->Flush();
 
-	::CloseHandle(g_FenceEvent);
+	delete g_pCommandQueue;
 
 	return 0;
 }
