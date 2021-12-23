@@ -1,0 +1,10 @@
+
+*.tlog
+*.ipch
+code/.vs/Alpha/v17/Browse.VC.opendb
+code/.vs/Alpha/v17/Browse.VC.db-wal
+code/.vs/Alpha/v17/Browse.VC.db-shm
+code/.vs/Alpha/v17/Browse.VC.db
+code/.vs/Alpha/project-colors.json
+code/Alpha/x64/Debug/vc143.idb
+code/Alpha/x64/Debug/Alpha.exe.recipe
