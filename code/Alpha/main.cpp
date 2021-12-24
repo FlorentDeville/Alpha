@@ -411,7 +411,7 @@ void Render()
 {
 	auto backBuffer = g_BackBuffers[g_CurrentBackBufferIndex];
 
-	ComPtr<ID3D12GraphicsCommandList2> pCommandList = g_pCommandQueue->GetCommandList();
+	ID3D12GraphicsCommandList2* pCommandList = g_pCommandQueue->GetCommandList();
 
 	// Clear the render target.
 	{
@@ -578,10 +578,10 @@ void ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 bool LoadContent()
 {
-	ComPtr<ID3D12GraphicsCommandList2> pCommandList = g_pCopyCommandQueue->GetCommandList();
+	ID3D12GraphicsCommandList2* pCommandList = g_pCopyCommandQueue->GetCommandList();
 
 	ID3D12Resource* pIntermediateVertexBuffer;
-	UpdateBufferResource(pCommandList.Get(), &g_pVertexBuffer, &pIntermediateVertexBuffer, _countof(g_Vertices), sizeof(VertexPosColor), g_Vertices, D3D12_RESOURCE_FLAG_NONE);
+	UpdateBufferResource(pCommandList, &g_pVertexBuffer, &pIntermediateVertexBuffer, _countof(g_Vertices), sizeof(VertexPosColor), g_Vertices, D3D12_RESOURCE_FLAG_NONE);
 
 	// Create the vertex buffer view.
 	g_vertexBufferView.BufferLocation = g_pVertexBuffer->GetGPUVirtualAddress();
@@ -589,7 +589,7 @@ bool LoadContent()
 	g_vertexBufferView.StrideInBytes = sizeof(VertexPosColor);
 
 	ID3D12Resource* pIntermediateIndexBuffer;
-	UpdateBufferResource(pCommandList.Get(), &g_pIndexBuffer, &pIntermediateIndexBuffer, _countof(g_Indicies), sizeof(WORD), g_Indicies, D3D12_RESOURCE_FLAG_NONE);
+	UpdateBufferResource(pCommandList, &g_pIndexBuffer, &pIntermediateIndexBuffer, _countof(g_Indicies), sizeof(WORD), g_Indicies, D3D12_RESOURCE_FLAG_NONE);
 
 	// Create index buffer view.
 	g_indexBufferView.BufferLocation = g_pIndexBuffer->GetGPUVirtualAddress();
@@ -694,8 +694,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	ComPtr<IDXGIAdapter4> dxgiAdapter4 = GetAdapter(false);
 	g_Device = CreateDevice(dxgiAdapter4);
-	g_pCommandQueue = new CommandQueue(g_Device, D3D12_COMMAND_LIST_TYPE_DIRECT);
-	g_pCopyCommandQueue = new CommandQueue(g_Device, D3D12_COMMAND_LIST_TYPE_COPY);
+	g_pCommandQueue = new CommandQueue(g_Device.Get(), D3D12_COMMAND_LIST_TYPE_DIRECT);
+	g_pCopyCommandQueue = new CommandQueue(g_Device.Get(), D3D12_COMMAND_LIST_TYPE_COPY);
 
 	g_SwapChain = CreateSwapChain(g_pWindow->GetWindowHandle(), g_pCommandQueue->GetD3D12CommandQueue(), width, height, g_NumFrames);
 	g_CurrentBackBufferIndex = g_SwapChain->GetCurrentBackBufferIndex();
