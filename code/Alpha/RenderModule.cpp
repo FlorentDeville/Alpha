@@ -47,10 +47,7 @@ RenderModule::RenderModule()
 {}
 
 RenderModule::~RenderModule()
-{
-	delete m_pRenderCommandQueue;
-	delete m_pCopyCommandQueue;
-}
+{}
 
 void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 {
@@ -85,6 +82,9 @@ void RenderModule::Shutdown()
 {
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
+
+	delete m_pRenderCommandQueue;
+	delete m_pCopyCommandQueue;
 
 #if defined(_DEBUG)
 	m_pDebugInterface->Release();

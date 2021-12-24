@@ -464,10 +464,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		}
 	}
 
-	// Make sure the command queue has finished all commands before closing.
 	g_pRenderModule->Shutdown();
 
 	delete g_pWindow;
+	delete g_pRenderModule;
 
 	return 0;
 }

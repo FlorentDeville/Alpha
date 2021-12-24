@@ -35,6 +35,16 @@ CommandQueue::CommandQueue(ID3D12Device2* pDevice, D3D12_COMMAND_LIST_TYPE type)
 CommandQueue::~CommandQueue()
 {
     ::CloseHandle(m_fenceEvent);
+
+    while(!m_commandListQueue.empty())
+    {
+        ID3D12GraphicsCommandList2* pList = m_commandListQueue.front();
+        pList->Release();
+        m_commandListQueue.pop();
+    }
+
+    m_pCommandQueue->Release();
+    m_pFence->Release();
 }
 
 ID3D12GraphicsCommandList2* CommandQueue::GetCommandList()
