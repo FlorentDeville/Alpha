@@ -86,6 +86,18 @@ void RenderModule::Shutdown()
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
 
+#if defined(_DEBUG)
+	m_pDebugInterface->Release();
+#endif
+
+	for (ID3D12Resource* pBackBuffer : m_pBackBuffers)
+		pBackBuffer->Release();
+
+	m_pDepthBuffer->Release();
+	m_pDSVDescriptorHeap->Release();
+	m_pRTVDescriptorHeap->Release();
+	m_pSwapChain->Release();
+	m_pDevice->Release();
 	ReportLiveObject();
 }
 
@@ -247,6 +259,8 @@ void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)
 	pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
 	pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
 	pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+
+	pInfoQueue->Release();
 #endif
 
 	m_pDevice = pD3d12Device2;
