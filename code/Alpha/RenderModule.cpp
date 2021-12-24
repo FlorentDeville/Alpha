@@ -189,6 +189,10 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 	D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, width, height, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+	
+	if (m_pDepthBuffer)
+		m_pDepthBuffer->Release();
+
 	ThrowIfFailed(m_pDevice->CreateCommittedResource(
 		&heapProperty,
 		D3D12_HEAP_FLAG_NONE,
