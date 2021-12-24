@@ -24,6 +24,7 @@ using namespace Microsoft::WRL;
 
 #include "CommandQueue.h"
 #include "Helper.h"
+#include "Window.h"
 
 const int g_NumFrames = 3;
 ComPtr<ID3D12Device2> g_Device;
@@ -36,73 +37,16 @@ UINT g_RTVDescriptorSize;
 UINT g_CurrentBackBufferIndex;
 bool g_VSync;
 bool g_TearingSupported;
-ComPtr<ID3D12Fence> g_Fence;
-uint64_t g_FenceValue;
-uint64_t g_FrameFenceValues[g_NumFrames];
 
 bool g_IsInitialized = false;
-uint32_t g_ClientWidth;
-uint32_t g_ClientHeight;
-bool g_Fullscreen = false;
-HWND g_hWnd;
-RECT g_WindowRect;
 
 CommandQueue* g_pCommandQueue = nullptr;
+Window* g_pWindow = nullptr;
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void Update();
 void Render();
-void Resize(uint32_t, uint32_t);
-void SetFullscreen(bool);
+void ResizeSwapChain(uint32_t, uint32_t);
 
-void RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName)
-{
-	WNDCLASSEXW windowClass = { 0 };
-	windowClass.cbSize = sizeof(WNDCLASSEX);
-	windowClass.style = CS_HREDRAW | CS_VREDRAW;
-	windowClass.lpfnWndProc = &WndProc;
-	windowClass.cbClsExtra = 0;
-	windowClass.cbWndExtra = 0;
-	windowClass.hInstance = hInst;
-	windowClass.hIcon = ::LoadIcon(hInst, nullptr);
-	windowClass.hCursor = ::LoadCursor(hInst, IDC_ARROW);
-	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	windowClass.lpszMenuName = nullptr;
-	windowClass.lpszClassName = pWindowClassName;
-	windowClass.hIconSm = ::LoadIcon(hInst, nullptr);
-
-	static ATOM atom = ::RegisterClassExW(&windowClass);
-	assert(atom > 0);
-}
-
-HWND CreateCustomWindow(const wchar_t* pWindowClassName, HINSTANCE hInst, const wchar_t* pWindowTitle, uint32_t width, uint32_t height)
-{
-	int screenWidth = ::GetSystemMetrics(SM_CXSCREEN);
-	int screenHeight = ::GetSystemMetrics(SM_CYSCREEN);
-
-	RECT windowRect;
-	windowRect.left = 0;
-	windowRect.top = 0;
-	windowRect.right = static_cast<LONG>(width);
-	windowRect.bottom = static_cast<LONG>(height);
-	::AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
-
-	int windowWidth = windowRect.right - windowRect.left;
-	int windowHeight = windowRect.bottom - windowRect.top;
-
-	int windowX = (screenWidth - windowWidth) / 2;
-	int windowY = (screenHeight - windowHeight) / 2;
-
-	HWND hWnd = ::CreateWindowExW(0, pWindowClassName, pWindowTitle, WS_OVERLAPPEDWINDOW, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInst, nullptr);
-	if (hWnd == 0)
-	{
-		DWORD error = GetLastError();
-		printf("%d", error);
-		assert(hWnd && "Failed to create window");
-	}
-	
-	return hWnd;
-}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -125,7 +69,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 
 			case VK_F11:
-				SetFullscreen(!g_Fullscreen);
+				g_pWindow->ToggleFullscreen();
 				break;
 
 			default:
@@ -141,12 +85,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_SIZE:
 	{
-		RECT clientRect;
-		::GetClientRect(g_hWnd, &clientRect);
+		RECT clientRect = g_pWindow->GetWindowRectangle();
 		int width = clientRect.right - clientRect.left;
 		int height = clientRect.bottom - clientRect.top;
 
-		Resize(width, height);
+		// Don't allow 0 size swap chain back buffers.
+		uint32_t uwidth = std::max(1, width);
+		uint32_t uheight = std::max(1, height);
+
+		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
+		{
+			
+
+			g_pWindow->Resize(uwidth, uheight);
+			ResizeSwapChain(uwidth, uheight);
+		}
 	}
 		break;
 
@@ -395,95 +348,32 @@ void Render()
 	}
 }
 
-void Resize(uint32_t width, uint32_t height)
+void ResizeSwapChain(uint32_t width, uint32_t height)
 {
-	if (g_ClientWidth != width || g_ClientHeight != height)
+	// Flush the GPU queue to make sure the swap chain's back buffers
+	// are not being referenced by an in-flight command list.
+	g_pCommandQueue->Flush();
+
+	for (int i = 0; i < g_NumFrames; ++i)
 	{
-		// Don't allow 0 size swap chain back buffers.
-		g_ClientWidth = std::max(1u, width);
-		g_ClientHeight = std::max(1u, height);
-
-		// Flush the GPU queue to make sure the swap chain's back buffers
-		// are not being referenced by an in-flight command list.
-		g_pCommandQueue->Flush();
-
-		for (int i = 0; i < g_NumFrames; ++i)
-		{
-			// Any references to the back buffers must be released
-			// before the swap chain can be resized.
-			g_BackBuffers[i].Reset();
-			g_FrameFenceValues[i] = g_FrameFenceValues[g_CurrentBackBufferIndex];
-		}
-
-		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-		ThrowIfFailed(g_SwapChain->GetDesc(&swapChainDesc));
-		ThrowIfFailed(g_SwapChain->ResizeBuffers(g_NumFrames, g_ClientWidth, g_ClientHeight,
-			swapChainDesc.BufferDesc.Format, swapChainDesc.Flags));
-
-		g_CurrentBackBufferIndex = g_SwapChain->GetCurrentBackBufferIndex();
-
-		UpdateRenderTargetViews(g_Device, g_SwapChain, g_RTVDescriptorHeap);
+		// Any references to the back buffers must be released
+		// before the swap chain can be resized.
+		g_BackBuffers[i].Reset();
 	}
-}
 
-void SetFullscreen(bool fullscreen)
-{
-	if (g_Fullscreen != fullscreen)
-	{
-		g_Fullscreen = fullscreen;
+	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+	ThrowIfFailed(g_SwapChain->GetDesc(&swapChainDesc));
+	ThrowIfFailed(g_SwapChain->ResizeBuffers(g_NumFrames, width, height, swapChainDesc.BufferDesc.Format, swapChainDesc.Flags));
 
-		if (g_Fullscreen) // Switching to fullscreen.
-		{
-			// Store the current window dimensions so they can be restored 
-			// when switching out of fullscreen state.
-			::GetWindowRect(g_hWnd, &g_WindowRect);
+	g_CurrentBackBufferIndex = g_SwapChain->GetCurrentBackBufferIndex();
 
-			// Set the window style to a borderless window so the client area fills
-			// the entire screen.
-			UINT windowStyle = WS_OVERLAPPEDWINDOW & ~(WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
-
-			::SetWindowLongW(g_hWnd, GWL_STYLE, windowStyle);
-
-			// Query the name of the nearest display device for the window.
-			// This is required to set the fullscreen dimensions of the window
-			// when using a multi-monitor setup.
-			HMONITOR hMonitor = ::MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
-			MONITORINFOEX monitorInfo = {};
-			monitorInfo.cbSize = sizeof(MONITORINFOEX);
-			::GetMonitorInfo(hMonitor, &monitorInfo);
-
-			::SetWindowPos(g_hWnd, HWND_TOP,
-				monitorInfo.rcMonitor.left,
-				monitorInfo.rcMonitor.top,
-				monitorInfo.rcMonitor.right - monitorInfo.rcMonitor.left,
-				monitorInfo.rcMonitor.bottom - monitorInfo.rcMonitor.top,
-				SWP_FRAMECHANGED | SWP_NOACTIVATE);
-
-			::ShowWindow(g_hWnd, SW_MAXIMIZE);
-		}
-		else
-		{
-			// Restore all the window decorators.
-			::SetWindowLong(g_hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-
-			::SetWindowPos(g_hWnd, HWND_NOTOPMOST,
-				g_WindowRect.left,
-				g_WindowRect.top,
-				g_WindowRect.right - g_WindowRect.left,
-				g_WindowRect.bottom - g_WindowRect.top,
-				SWP_FRAMECHANGED | SWP_NOACTIVATE);
-
-			::ShowWindow(g_hWnd, SW_NORMAL);
-		}
-	}
+	UpdateRenderTargetViews(g_Device, g_SwapChain, g_RTVDescriptorHeap);
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
 	int width = 1080;
 	int height = 789;
-	g_ClientWidth = width;
-	g_ClientHeight = height;
 
 	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
@@ -492,13 +382,14 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_TearingSupported = CheckTearingSupport();
 
 	const wchar_t* pWindowClassName = L"DX12WindowClass";
-	RegisterWindowClass(hInstance, pWindowClassName);
-	g_hWnd = CreateCustomWindow(pWindowClassName, hInstance, L"Alpha", width, height);
+	Window::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
+	g_pWindow = new Window();
+	g_pWindow->Create(pWindowClassName, L"Alpha", width, height, hInstance);
 
 	ComPtr<IDXGIAdapter4> dxgiAdapter4 = GetAdapter(false);
 	g_Device = CreateDevice(dxgiAdapter4);
 	g_pCommandQueue = new CommandQueue(g_Device, D3D12_COMMAND_LIST_TYPE_DIRECT);
-	g_SwapChain = CreateSwapChain(g_hWnd, g_pCommandQueue->GetD3D12CommandQueue(), width, height, g_NumFrames);
+	g_SwapChain = CreateSwapChain(g_pWindow->GetWindowHandle(), g_pCommandQueue->GetD3D12CommandQueue(), width, height, g_NumFrames);
 	g_CurrentBackBufferIndex = g_SwapChain->GetCurrentBackBufferIndex();
 	g_RTVDescriptorHeap = CreateDescriptorHeap(g_Device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, g_NumFrames);
 	g_RTVDescriptorSize = g_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -506,7 +397,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_IsInitialized = true;
 
-	::ShowWindow(g_hWnd, SW_SHOW);
+	g_pWindow->Show();
 
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
@@ -522,6 +413,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pCommandQueue->Flush();
 
 	delete g_pCommandQueue;
+	delete g_pWindow;
 
 	return 0;
 }
