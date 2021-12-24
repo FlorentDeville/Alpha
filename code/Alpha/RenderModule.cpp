@@ -15,6 +15,19 @@
 #include <dxgidebug.h>
 #endif
 
+static void ReportLiveObject()
+{
+#if defined(_DEBUG)
+	IDXGIDebug1* pDxgiDebug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&pDxgiDebug))))
+	{
+		pDxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+
+		pDxgiDebug->Release();
+	}
+#endif
+}
+
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
 	, m_pSwapChain(nullptr)
@@ -44,9 +57,12 @@ void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 	EnableDebugLayer();
 
 	CheckTearingSupport();
-
+	
 	IDXGIAdapter4* pAdapter = GetAdapter(false);
 	CreateDevice(pAdapter);
+	pAdapter->Release();
+
+	
 
 	m_pRenderCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
 	m_pCopyCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
@@ -70,13 +86,7 @@ void RenderModule::Shutdown()
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
 
-#if defined(_DEBUG)
-	IDXGIDebug1* pDxgiDebug;
-	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&pDxgiDebug))))
-	{
-		pDxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
-	}
-#endif
+	ReportLiveObject();
 }
 
 void RenderModule::PreRender()
@@ -244,55 +254,69 @@ void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)
 
 IDXGIAdapter4* RenderModule::GetAdapter(bool useWarp)
 {
-	IDXGIFactory4* dxgiFactory;
+	IDXGIFactory4* pDxgiFactory;
 	UINT createFactoryFlag = 0;
 
 #if defined(_DEBUG)
 	createFactoryFlag = DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
-	HRESULT res = CreateDXGIFactory2(createFactoryFlag, IID_PPV_ARGS(&dxgiFactory));
+	HRESULT res = CreateDXGIFactory2(createFactoryFlag, IID_PPV_ARGS(&pDxgiFactory));
 	ThrowIfFailed(res);
 
-	IDXGIAdapter1* dxgiAdapter1;
-	IDXGIAdapter4* dxgiAdapter4 = nullptr;
+	IDXGIAdapter1* pDxgiAdapter1;
+	IDXGIAdapter4* pDxgiAdapter4 = nullptr;
 
 	if (useWarp)
 	{
-		res = dxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&dxgiAdapter1));
+		res = pDxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pDxgiAdapter1));
 		ThrowIfFailed(res);
-		res = dxgiAdapter1->QueryInterface(&dxgiAdapter4);
+		res = pDxgiAdapter1->QueryInterface(&pDxgiAdapter4);
 		ThrowIfFailed(res);
+
+		pDxgiAdapter1->Release();
 	}
 	else
 	{
 		SIZE_T maxDedicatedVideoMemory = 0;
-		for (UINT i = 0; dxgiFactory->EnumAdapters1(i, &dxgiAdapter1) != DXGI_ERROR_NOT_FOUND; ++i)
+		for (UINT i = 0; pDxgiFactory->EnumAdapters1(i, &pDxgiAdapter1) != DXGI_ERROR_NOT_FOUND; ++i)
 		{
 			DXGI_ADAPTER_DESC1 dxgiAdapterDesc1;
-			dxgiAdapter1->GetDesc1(&dxgiAdapterDesc1);
+			pDxgiAdapter1->GetDesc1(&dxgiAdapterDesc1);
 
 			//check if we can create a d3d12 device and pick the adapter with most memory
 
 			if ((dxgiAdapterDesc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0) //no hardware
+			{
+				pDxgiAdapter1->Release();
 				continue;
-
+			}
+				
 			if (dxgiAdapterDesc1.DedicatedVideoMemory <= maxDedicatedVideoMemory) //less memory
+			{
+				pDxgiAdapter1->Release();
 				continue;
+			}
 
-			res = D3D12CreateDevice(dxgiAdapter1, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
+			res = D3D12CreateDevice(pDxgiAdapter1, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
 			if (SUCCEEDED(res))
 			{
+				if (pDxgiAdapter4 != nullptr)
+					pDxgiAdapter4->Release();
+
 				maxDedicatedVideoMemory = dxgiAdapterDesc1.DedicatedVideoMemory;
-				//res = dxgiAdapter1.As(&dxgiAdapter4);
-				//ThrowIfFailed(res);
-				res = dxgiAdapter1->QueryInterface(&dxgiAdapter4);
+				res = pDxgiAdapter1->QueryInterface(&pDxgiAdapter4);
 				ThrowIfFailed(res);
 			}
+			
+			pDxgiAdapter1->Release();
+			
 		}
 	}
 
-	return dxgiAdapter4;
+	pDxgiFactory->Release();
+
+	return pDxgiAdapter4;
 }
 
 void RenderModule::EnableDebugLayer()
@@ -323,7 +347,11 @@ void RenderModule::CheckTearingSupport()
 			{
 				m_allowTearing = false;
 			}
+
+			pFactory5->Release();
 		}
+
+		pFactory4->Release();
 	}
 }
 
@@ -362,6 +390,8 @@ void RenderModule::CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue,
 
 	res = pSwapChain1->QueryInterface(&m_pSwapChain);
 	ThrowIfFailed(res);
+
+	pDxgiFactory4->Release();
 }
 
 void RenderModule::CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescriptors)
