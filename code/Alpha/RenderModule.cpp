@@ -15,19 +15,6 @@
 #include <dxgidebug.h>
 #endif
 
-static void ReportLiveObject()
-{
-#if defined(_DEBUG)
-	IDXGIDebug1* pDxgiDebug;
-	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&pDxgiDebug))))
-	{
-		pDxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
-
-		pDxgiDebug->Release();
-	}
-#endif
-}
-
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
 	, m_pSwapChain(nullptr)
@@ -249,6 +236,19 @@ void RenderModule::SetContentLoaded()
 	m_contentLoaded = true;
 }
 
+void RenderModule::ReportLiveObject()
+{
+#if defined(_DEBUG)
+	IDXGIDebug1* pDxgiDebug;
+	if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&pDxgiDebug))))
+	{
+		pDxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_SUMMARY | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+
+		pDxgiDebug->Release();
+	}
+#endif
+}
+
 void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)
 {
 	ID3D12Device2* pD3d12Device2;
@@ -260,9 +260,9 @@ void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)
 	res = pD3d12Device2->QueryInterface(&pInfoQueue);
 	ThrowIfFailed(res);
 
-	pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-	pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-	pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+	//pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+	//pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+	//pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
 
 	pInfoQueue->Release();
 #endif

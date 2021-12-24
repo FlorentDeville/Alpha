@@ -42,6 +42,9 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSV();
 	ID3D12Device2* GetDevice();
 	void SetContentLoaded();
+
+	static void ReportLiveObject();
+
 private:
 	static const int m_numFrames = 3;
 
