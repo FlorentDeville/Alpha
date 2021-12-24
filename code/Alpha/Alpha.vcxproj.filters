@@ -34,4 +34,12 @@
       <Filter>gfx</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="VertexShader.hlsl">
+      <Filter>gfx</Filter>
+    </FxCompile>
+    <FxCompile Include="PixelShader.hlsl">
+      <Filter>gfx</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>
