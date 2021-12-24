@@ -4,3 +4,4 @@
 code/.vs/*
 code/Alpha/x64/Debug/*
 code/Alpha/x64/Release/*
+*.cso
