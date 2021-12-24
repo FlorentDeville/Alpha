@@ -43,6 +43,13 @@ CommandQueue::~CommandQueue()
         m_commandListQueue.pop();
     }
 
+    while (!m_commandAllocatorQueue.empty())
+    {
+        CommandAllocatorEntry& entry = m_commandAllocatorQueue.front();
+        entry.pCommandAllocator->Release();
+        m_commandAllocatorQueue.pop();
+    }
+
     m_pCommandQueue->Release();
     m_pFence->Release();
 }
