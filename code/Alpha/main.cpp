@@ -2,10 +2,8 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 
-#include <Windows.h>
 #include <assert.h>
 #include <cstdint>
 #include <exception>
