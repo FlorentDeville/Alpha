@@ -405,6 +405,7 @@ void RenderModule::CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue,
 	res = pSwapChain1->QueryInterface(&m_pSwapChain);
 	ThrowIfFailed(res);
 
+	pSwapChain1->Release();
 	pDxgiFactory4->Release();
 }
 
