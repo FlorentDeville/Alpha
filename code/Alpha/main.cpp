@@ -20,9 +20,10 @@ using namespace Microsoft::WRL;
 // D3D12 extension library.
 #include <d3dx12.h>
 
-#include "RenderModule.h"
 #include "CommandQueue.h"
 #include "Helper.h"
+#include "Mesh.h"
+#include "RenderModule.h"
 #include "Window.h"
 
 bool g_VSync;
@@ -31,15 +32,7 @@ bool g_IsInitialized = false;
 
 RenderModule* g_pRenderModule = nullptr;
 Window* g_pWindow = nullptr;
-
-
-//Vertex buffer
-ID3D12Resource* g_pVertexBuffer;
-D3D12_VERTEX_BUFFER_VIEW g_vertexBufferView;
-
-//Index buffer
-ID3D12Resource* g_pIndexBuffer;
-D3D12_INDEX_BUFFER_VIEW g_indexBufferView;
+Mesh* g_pMesh = nullptr;
 
 //Shader signature
 ID3D12RootSignature* g_pRootSignature;
@@ -69,12 +62,6 @@ struct PipelineStateStream
 	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
 } pipelineStateStream;
 
-struct VertexPosColor
-{
-	DirectX::XMFLOAT3 Position;
-	DirectX::XMFLOAT3 Color;
-};
-
 static VertexPosColor g_Vertices[8] = {
 	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
 	{ DirectX::XMFLOAT3(-1.0f,  1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) }, // 1
@@ -86,7 +73,7 @@ static VertexPosColor g_Vertices[8] = {
 	{ DirectX::XMFLOAT3(1.0f, -1.0f,  1.0f),	DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f) }  // 7
 };
 
-static WORD g_Indicies[36] =
+static uint16_t g_Indicies[36] =
 {
 	0, 1, 2, 0, 2, 3,
 	4, 6, 5, 4, 7, 6,
@@ -248,8 +235,8 @@ void Render()
 	pCommandList->SetGraphicsRootSignature(g_pRootSignature);
 
 	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pCommandList->IASetVertexBuffers(0, 1, &g_vertexBufferView);
-	pCommandList->IASetIndexBuffer(&g_indexBufferView);
+	pCommandList->IASetVertexBuffers(0, 1, &g_pMesh->GetVertexBufferView());
+	pCommandList->IASetIndexBuffer(&g_pMesh->GetIndexBufferView());
 
 	pCommandList->RSSetViewports(1, &g_viewport);
 	pCommandList->RSSetScissorRects(1, &g_scissorRect);
@@ -284,73 +271,10 @@ void Render()
 	}
 }
 
-void UpdateBufferResource(ID3D12GraphicsCommandList2* pCommandList, ID3D12Resource** pDestinationResource,
-	ID3D12Resource** pIntermediateResource, size_t numElements, size_t elementSize, const void* bufferData, D3D12_RESOURCE_FLAGS flags)
-{
-	size_t bufferSize = numElements * elementSize;
-
-	// Create a committed resource for the GPU resource in a default heap.
-	D3D12_HEAP_PROPERTIES heapProrperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize, flags);
-	HRESULT res = g_pRenderModule->GetDevice()->CreateCommittedResource(&heapProrperty, D3D12_HEAP_FLAG_NONE, &resourceDesc,
-		D3D12_RESOURCE_STATE_COPY_DEST,
-		nullptr,
-		IID_PPV_ARGS(pDestinationResource));
-
-	ThrowIfFailed(res);
-
-	// Create an committed resource for the upload.
-	if (bufferData)
-	{
-		D3D12_HEAP_PROPERTIES heapPropertyInt = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-		D3D12_RESOURCE_DESC resourceDescInt = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
-
-		res = g_pRenderModule->GetDevice()->CreateCommittedResource(
-			&heapPropertyInt,
-			D3D12_HEAP_FLAG_NONE,
-			&resourceDescInt,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(pIntermediateResource));
-
-		ThrowIfFailed(res);
-
-		D3D12_SUBRESOURCE_DATA subresourceData = {};
-		subresourceData.pData = bufferData;
-		subresourceData.RowPitch = bufferSize;
-		subresourceData.SlicePitch = subresourceData.RowPitch;
-
-		UpdateSubresources(pCommandList, *pDestinationResource, *pIntermediateResource, 0, 0, 1, &subresourceData);
-	}
-}
-
 bool LoadContent()
 {
-	CommandQueue* pCopyCommandQueue = g_pRenderModule->GetCopyCommandQueue();
-	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
-
-	ID3D12Resource* pIntermediateVertexBuffer;
-	UpdateBufferResource(pCommandList, &g_pVertexBuffer, &pIntermediateVertexBuffer, _countof(g_Vertices), sizeof(VertexPosColor), g_Vertices, D3D12_RESOURCE_FLAG_NONE);
-
-	// Create the vertex buffer view.
-	g_vertexBufferView.BufferLocation = g_pVertexBuffer->GetGPUVirtualAddress();
-	g_vertexBufferView.SizeInBytes = sizeof(g_Vertices);
-	g_vertexBufferView.StrideInBytes = sizeof(VertexPosColor);
-
-	ID3D12Resource* pIntermediateIndexBuffer;
-	UpdateBufferResource(pCommandList, &g_pIndexBuffer, &pIntermediateIndexBuffer, _countof(g_Indicies), sizeof(WORD), g_Indicies, D3D12_RESOURCE_FLAG_NONE);
-
-	// Create index buffer view.
-	g_indexBufferView.BufferLocation = g_pIndexBuffer->GetGPUVirtualAddress();
-	g_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-	g_indexBufferView.SizeInBytes = sizeof(g_Indicies);
-
-	//// Create the descriptor heap for the depth-stencil view.
-	//D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
-	//dsvHeapDesc.NumDescriptors = 1;
-	//dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	//dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	//ThrowIfFailed(g_pRenderModule->GetDevice()->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&g_pDSVHeap)));
+	g_pMesh = new Mesh();
+	g_pMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
 
 	// Load the vertex shader.
 	ID3DBlob* pVertexShaderBlob;
@@ -414,13 +338,7 @@ bool LoadContent()
 	};
 	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&g_pPipelineState)));
 
-	uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
-	pCopyCommandQueue->WaitForFenceValue(fenceValue);
-
 	g_contentLoaded = true;
-
-	// Resize/Create the depth buffer.
-	//ResizeDepthBuffer(g_pWindow->GetWidth(), g_pWindow->GetHeight());
 
 	return true;
 }
@@ -466,6 +384,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pRenderModule->Shutdown();
 
+	delete g_pMesh;
 	delete g_pWindow;
 	delete g_pRenderModule;
 

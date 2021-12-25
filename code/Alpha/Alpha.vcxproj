@@ -154,12 +154,14 @@
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="RenderModule.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

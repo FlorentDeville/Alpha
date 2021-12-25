@@ -25,6 +25,9 @@
     <ClCompile Include="RenderModule.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>gfx</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h">
@@ -37,6 +40,9 @@
       <Filter>gfx</Filter>
     </ClInclude>
     <ClInclude Include="RenderModule.h">
+      <Filter>gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
       <Filter>gfx</Filter>
     </ClInclude>
   </ItemGroup>
