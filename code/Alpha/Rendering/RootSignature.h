@@ -18,6 +18,5 @@ public:
 
 private:
 	std::string m_path;
-	ID3DBlob* m_pBlob;
 	ID3D12RootSignature* m_pRootSignature;
 };

@@ -13,12 +13,12 @@ extern RenderModule* g_pRenderModule;
 
 RootSignature::RootSignature(const std::string& path)
 	: m_path(path)
-	, m_pBlob(nullptr)
 	, m_pRootSignature(nullptr)
 {
 	//Load the blob containing the root signature
+	ID3DBlob* pBlob = nullptr;
 	std::wstring widePath = std::wstring(path.cbegin(), path.cend());
-	ThrowIfFailed(D3DReadFileToBlob(widePath.c_str(), &m_pBlob));
+	ThrowIfFailed(D3DReadFileToBlob(widePath.c_str(), &pBlob));
 
 	// Create a root signature.
 	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
@@ -29,14 +29,13 @@ RootSignature::RootSignature(const std::string& path)
 	}
 
 	// Create the root signature.
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreateRootSignature(0, m_pBlob->GetBufferPointer(), m_pBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
+	ThrowIfFailed(g_pRenderModule->GetDevice()->CreateRootSignature(0, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
+
+	pBlob->Release();
 }
 
 RootSignature::~RootSignature()
 {
-	if (m_pBlob)
-		m_pBlob->Release();
-
 	if (m_pRootSignature)
 		m_pRootSignature->Release();
 }
