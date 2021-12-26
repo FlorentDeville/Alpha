@@ -43,6 +43,9 @@
     <ClCompile Include="Widgets\Button.cpp">
       <Filter>Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="Widgets\HLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h">
@@ -69,6 +72,8 @@
     <ClInclude Include="Widgets\Button.h">
       <Filter>Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\WidgetMgr.h" />
+    <ClInclude Include="Widgets\HLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="VertexShader.hlsl">

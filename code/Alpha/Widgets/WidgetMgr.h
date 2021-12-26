@@ -4,13 +4,25 @@
 
 #pragma once
 
-#include "Widget.h"
+#include <vector>
 
-class Button : public Widget
+class Widget;
+
+class WidgetMgr
 {
 public:
-	Button(uint32_t w, uint32_t h, int32_t x, int32_t y);
-	virtual ~Button();
+	WidgetMgr();
+	~WidgetMgr();
 
-	void Draw(int32_t parentX, int32_t parentY, float parentZ) override;
+	void RegisterWidget(Widget* pWidget);
+
+	void SetRoot(Widget* pRoot);
+
+	void Draw();
+
+private:
+
+	std::vector<Widget*> m_widgets;
+
+	Widget* m_pRoot;
 };

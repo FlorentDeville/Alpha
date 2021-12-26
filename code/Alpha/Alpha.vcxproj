@@ -160,6 +160,7 @@
     <ClCompile Include="MeshMgr.cpp" />
     <ClCompile Include="RenderModule.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
+    <ClCompile Include="Widgets\HLayout.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -170,7 +171,9 @@
     <ClInclude Include="MeshMgr.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="Widgets\Button.h" />
+    <ClInclude Include="Widgets\HLayout.h" />
     <ClInclude Include="Widgets\Widget.h" />
+    <ClInclude Include="Widgets\WidgetMgr.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

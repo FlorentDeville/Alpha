@@ -27,6 +27,7 @@ using namespace Microsoft::WRL;
 #include "RenderModule.h"
 #include "Window.h"
 #include "Widgets/Button.h"
+#include "Widgets/HLayout.h"
 
 bool g_VSync;
 
@@ -35,7 +36,7 @@ bool g_IsInitialized = false;
 RenderModule* g_pRenderModule = nullptr;
 Window* g_pWindow = nullptr;
 MeshMgr* g_pMeshMgr = nullptr;
-Button* g_pButton = nullptr;
+HLayout* g_pButton = nullptr;
 
 MeshId g_CubeMeshId;
 MeshId g_QuadMeshId;
@@ -122,11 +123,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 
 			case VK_UP:
-				g_pButton->SetY(g_pButton->GetY() + 1);
+				g_pButton->SetY(g_pButton->GetY() - 1);
 				break;
 
 			case VK_DOWN:
-				g_pButton->SetY(g_pButton->GetY() - 1);
+				g_pButton->SetY(g_pButton->GetY() + 1);
 				break;
 
 			case VK_LEFT:
@@ -249,7 +250,11 @@ void Render()
 	// Render the quad
 	//if(false)
 	{
-		g_pButton->Draw();
+		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
+		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
+		float x = - windowWidth * 0.5f;
+		float y = windowHeight * 0.5f;
+		g_pButton->Draw((int)x, (int)y, 10);
 	}
 
 	g_pRenderModule->PostRender();
@@ -294,8 +299,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_contentLoaded = false;
 	LoadContent();
 
-	g_pButton = new Button(100, 20, 0, 0);
-
+	g_pButton = new HLayout(1000, 200, 0, 0);
+	g_pButton->AddWidget(new Button(100, 50, 0, 0));
+	g_pButton->AddWidget(new Button(300, 100, 0, 0));
+	g_pButton->AddWidget(new Button(400, 150, 0, 0));
+	g_pButton->Resize();
 	g_pWindow->Show();
 
 	{
