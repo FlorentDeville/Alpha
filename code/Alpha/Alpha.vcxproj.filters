@@ -76,11 +76,12 @@
     <ClInclude Include="Widgets\HLayout.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\VertexShader.hlsl">
+    <FxCompile Include="Shaders\base.vs.hlsl">
       <Filter>gfx</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\PixelShader.hlsl">
+    <FxCompile Include="Shaders\base.ps.hlsl">
       <Filter>gfx</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\base.rs.hlsl" />
   </ItemGroup>
 </Project>

@@ -250,6 +250,10 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 void RenderModule::InitRootSignature()
 {
+	// Load the vertex shader.
+	ID3DBlob* pRootSignatureBlob;
+	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso", &pRootSignatureBlob));
+
 	// Create a root signature.
 	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
 	featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
@@ -258,40 +262,19 @@ void RenderModule::InitRootSignature()
 		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 	}
 
-	// Allow input layout and deny unnecessary access to certain pipeline stages.
-	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
-
-	// A single 32-bit constant root parameter that is used by the vertex shader.
-	CD3DX12_ROOT_PARAMETER1 rootParameters[1];
-	rootParameters[0].InitAsConstants(sizeof(DirectX::XMMATRIX) / 4, 0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
-
-	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
-	rootSignatureDescription.Init_1_1(_countof(rootParameters), rootParameters, 0, nullptr, rootSignatureFlags);
-
-	// Serialize the root signature.
-	ID3DBlob* pRootSignatureBlob;
-	ID3DBlob* pErrorBlob;
-	ThrowIfFailed(D3DX12SerializeVersionedRootSignature(&rootSignatureDescription, featureData.HighestVersion, &pRootSignatureBlob, &pErrorBlob));
-
 	// Create the root signature.
 	ThrowIfFailed(m_pDevice->CreateRootSignature(0, pRootSignatureBlob->GetBufferPointer(), pRootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
-
 }
 
 void RenderModule::InitPipelineState()
 {
 	// Load the vertex shader.
 	ID3DBlob* pVertexShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\VertexShader.cso", &pVertexShaderBlob));
+	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso", &pVertexShaderBlob));
 
 	// Load the pixel shader.
 	ID3DBlob* pPixelShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\PixelShader.cso", &pPixelShaderBlob));
+	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso", &pPixelShaderBlob));
 
 	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 	rtvFormats.NumRenderTargets = 1;
