@@ -8,7 +8,7 @@
     <Filter Include="gfx">
       <UniqueIdentifier>{c3956248-221a-429c-9c22-e22edf27dbf7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="gfx\MeshMgr">
+    <Filter Include="gfx\Meshes">
       <UniqueIdentifier>{816fd149-78b7-492e-b6af-3e6aae1a8ca2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -29,10 +29,10 @@
       <Filter>gfx</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
-      <Filter>gfx\MeshMgr</Filter>
+      <Filter>gfx\Meshes</Filter>
     </ClCompile>
     <ClCompile Include="MeshMgr.cpp">
-      <Filter>gfx\MeshMgr</Filter>
+      <Filter>gfx\Meshes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -49,10 +49,10 @@
       <Filter>gfx</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
-      <Filter>gfx\MeshMgr</Filter>
+      <Filter>gfx\Meshes</Filter>
     </ClInclude>
     <ClInclude Include="MeshMgr.h">
-      <Filter>gfx\MeshMgr</Filter>
+      <Filter>gfx\Meshes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

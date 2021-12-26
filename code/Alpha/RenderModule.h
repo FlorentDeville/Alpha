@@ -36,6 +36,8 @@ public:
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
 
 	//Temp functions
+	void InitRootSignature();
+	void InitPipelineState();
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTV();
@@ -71,6 +73,16 @@ private:
 
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
 	ID3D12Resource* m_pDepthBuffer;
+
+public:
+	/************************************************/
+	/*I'm not reall sure how to organize this yet	*/
+	/*so I just dump it here						*/
+	/************************************************/
+	ID3D12RootSignature* m_pRootSignature;
+	ID3D12PipelineState* m_pPipelineState;
+
+private:
 
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 

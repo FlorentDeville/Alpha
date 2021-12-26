@@ -7,6 +7,9 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <d3dx12.h>
+#include <d3dcompiler.h>
+
+#include <DirectXMath.h>
 
 #include "CommandQueue.h"
 #include "Helper.h"
@@ -14,6 +17,17 @@
 #if defined(_DEBUG)
 #include <dxgidebug.h>
 #endif
+
+struct PipelineStateStream
+{
+	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
+	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
+	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
+	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
+	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
+};
 
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
@@ -30,6 +44,8 @@ RenderModule::RenderModule()
 #if defined(_DEBUG)
 	, m_pDebugInterface(nullptr)
 #endif
+	, m_pRootSignature(nullptr)
+	, m_pPipelineState(nullptr)
 {}
 
 RenderModule::~RenderModule()
@@ -201,6 +217,76 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 	swprintf_s(buffer, 500, L"Resized depth buffer %d %d\n", width, height);
 	OutputDebugString(buffer);
 
+}
+
+void RenderModule::InitRootSignature()
+{
+	// Create a root signature.
+	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
+	featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
+	if (FAILED(m_pDevice->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
+	{
+		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
+	}
+
+	// Allow input layout and deny unnecessary access to certain pipeline stages.
+	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+
+	// A single 32-bit constant root parameter that is used by the vertex shader.
+	CD3DX12_ROOT_PARAMETER1 rootParameters[1];
+	rootParameters[0].InitAsConstants(sizeof(DirectX::XMMATRIX) / 4, 0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
+
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
+	rootSignatureDescription.Init_1_1(_countof(rootParameters), rootParameters, 0, nullptr, rootSignatureFlags);
+
+	// Serialize the root signature.
+	ID3DBlob* pRootSignatureBlob;
+	ID3DBlob* pErrorBlob;
+	ThrowIfFailed(D3DX12SerializeVersionedRootSignature(&rootSignatureDescription, featureData.HighestVersion, &pRootSignatureBlob, &pErrorBlob));
+
+	// Create the root signature.
+	ThrowIfFailed(m_pDevice->CreateRootSignature(0, pRootSignatureBlob->GetBufferPointer(), pRootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
+
+}
+
+void RenderModule::InitPipelineState()
+{
+	// Load the vertex shader.
+	ID3DBlob* pVertexShaderBlob;
+	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\VertexShader.cso", &pVertexShaderBlob));
+
+	// Load the pixel shader.
+	ID3DBlob* pPixelShaderBlob;
+	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\PixelShader.cso", &pPixelShaderBlob));
+
+	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+	rtvFormats.NumRenderTargets = 1;
+	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	// Create the vertex input layout
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	};
+
+	PipelineStateStream pipelineStateStream;
+	pipelineStateStream.pRootSignature = m_pRootSignature;
+	pipelineStateStream.InputLayout = { inputLayout, _countof(inputLayout) };
+	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderBlob);
+	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderBlob);
+	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+	pipelineStateStream.RTVFormats = rtvFormats;
+
+	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+		sizeof(PipelineStateStream), &pipelineStateStream
+	};
+	ThrowIfFailed(m_pDevice->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

@@ -38,12 +38,6 @@ MeshMgr* g_pMeshMgr = nullptr;
 MeshId g_CubeMeshId;
 MeshId g_QuadMeshId;
 
-//Shader signature
-ID3D12RootSignature* g_pRootSignature;
-
-//pipeline state
-ID3D12PipelineState* g_pPipelineState;
-
 D3D12_VIEWPORT g_viewport;
 D3D12_RECT g_scissorRect;
 
@@ -59,17 +53,6 @@ bool g_perspectiveRendering = true;
 
 float g_posX = 0;
 float g_posY = 0;
-
-struct PipelineStateStream
-{
-	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
-	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-} pipelineStateStream;
 
 static VertexPosColor g_Vertices[8] = {
 	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
@@ -262,8 +245,8 @@ void Update()
 
 void RenderMesh(ID3D12GraphicsCommandList2* pCommandList, const Mesh* pMesh, const DirectX::XMMATRIX& mvpMatrix, const D3D12_CPU_DESCRIPTOR_HANDLE& rtv, const D3D12_CPU_DESCRIPTOR_HANDLE& dsv)
 {
-	pCommandList->SetPipelineState(g_pPipelineState);
-	pCommandList->SetGraphicsRootSignature(g_pRootSignature);
+	pCommandList->SetPipelineState(g_pRenderModule->m_pPipelineState);
+	pCommandList->SetGraphicsRootSignature(g_pRenderModule->m_pRootSignature);
 
 	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
@@ -332,7 +315,6 @@ void Render()
 
 bool LoadContent()
 {
-	// Load meshes
 	Mesh* pCubeMesh = nullptr;
 	g_pMeshMgr->CreateMesh(&pCubeMesh, g_CubeMeshId);
 	pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
@@ -341,68 +323,9 @@ bool LoadContent()
 	g_pMeshMgr->CreateMesh(&pQuadMesh, g_QuadMeshId);
 	pQuadMesh->LoadVertexAndIndexBuffer(g_Quad, _countof(g_Quad), g_QuadIndices, _countof(g_QuadIndices));
 
-	// Load the vertex shader.
-	ID3DBlob* pVertexShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\VertexShader.cso", &pVertexShaderBlob));
-
-	// Load the pixel shader.
-	ID3DBlob* pPixelShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\PixelShader.cso", &pPixelShaderBlob));
-
-	// Create the vertex input layout
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	};
-
-	// Create a root signature.
-	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
-	featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
-	if (FAILED(g_pRenderModule->GetDevice()->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
-	{
-		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
-	}
-
-	// Allow input layout and deny unnecessary access to certain pipeline stages.
-	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
-
-	// A single 32-bit constant root parameter that is used by the vertex shader.
-	CD3DX12_ROOT_PARAMETER1 rootParameters[1];
-	rootParameters[0].InitAsConstants(sizeof(DirectX::XMMATRIX) / 4, 0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
-
-	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
-	rootSignatureDescription.Init_1_1(_countof(rootParameters), rootParameters, 0, nullptr, rootSignatureFlags);
-
-	// Serialize the root signature.
-	ID3DBlob* pRootSignatureBlob;
-	ID3DBlob* pErrorBlob;
-	ThrowIfFailed(D3DX12SerializeVersionedRootSignature(&rootSignatureDescription, featureData.HighestVersion, &pRootSignatureBlob, &pErrorBlob));
-
-	// Create the root signature.
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreateRootSignature(0, pRootSignatureBlob->GetBufferPointer(), pRootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&g_pRootSignature)));
-
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	pipelineStateStream.pRootSignature = g_pRootSignature;
-	pipelineStateStream.InputLayout = { inputLayout, _countof(inputLayout) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderBlob);
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderBlob);
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
-
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(PipelineStateStream), &pipelineStateStream
-	};
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&g_pPipelineState)));
-
+	g_pRenderModule->InitRootSignature();
+	g_pRenderModule->InitPipelineState();
+	
 	g_contentLoaded = true;
 
 	return true;
