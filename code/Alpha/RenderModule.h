@@ -31,10 +31,10 @@ public:
 	void Init(HWND hWindow, uint32_t width, uint32_t height);
 	void Shutdown();
 
-	void PreRender(ID3D12GraphicsCommandList2* pCommandList);
-	void PostRender(ID3D12GraphicsCommandList2* pCommandList);
+	void PreRender();
+	void PostRender();
 
-	void Render(ID3D12GraphicsCommandList2* pCommandList, MeshId id, const DirectX::XMMATRIX& wvp);
+	void Render(MeshId id, const DirectX::XMMATRIX& wvp);
 
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
@@ -66,7 +66,10 @@ private:
 
 	UINT m_RTVDescriptorSize;
 
+
 	CommandQueue* m_pRenderCommandQueue;
+	ID3D12GraphicsCommandList2* m_pRenderCommandList;
+
 	CommandQueue* m_pCopyCommandQueue;
 
 	bool m_allowTearing;

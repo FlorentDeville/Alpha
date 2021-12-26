@@ -242,13 +242,7 @@ void Update()
 
 void Render()
 {
-	CommandQueue* pCommandQueue = g_pRenderModule->GetRenderCommandQueue();
-	ID3D12GraphicsCommandList2* pCommandList = pCommandQueue->GetCommandList();
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv = g_pRenderModule->GetRTV();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pRenderModule->GetDSV();
-
-	g_pRenderModule->PreRender(pCommandList);
+	g_pRenderModule->PreRender();
 
 	// Render the cube
 	//if(false)
@@ -256,7 +250,7 @@ void Render()
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		g_pRenderModule->Render(pCommandList, g_CubeMeshId, mvpMatrix);
+		g_pRenderModule->Render(g_CubeMeshId, mvpMatrix);
 	}
 	
 
@@ -287,10 +281,10 @@ void Render()
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
 
-		g_pRenderModule->Render(pCommandList, g_QuadMeshId, mvpMatrix);
+		g_pRenderModule->Render(g_QuadMeshId, mvpMatrix);
 	}
 
-	g_pRenderModule->PostRender(pCommandList);
+	g_pRenderModule->PostRender();
 }
 
 bool LoadContent()

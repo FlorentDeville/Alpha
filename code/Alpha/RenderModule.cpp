@@ -48,6 +48,7 @@ RenderModule::RenderModule()
 #endif
 	, m_pRootSignature(nullptr)
 	, m_pPipelineState(nullptr)
+	, m_pRenderCommandList(nullptr)
 {}
 
 RenderModule::~RenderModule()
@@ -105,37 +106,39 @@ void RenderModule::Shutdown()
 	ReportLiveObject();
 }
 
-void RenderModule::PreRender(ID3D12GraphicsCommandList2* pCommandList)
+void RenderModule::PreRender()
 {
+	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
+
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
 
 	// Clear the render target.
 	{
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		pCommandList->ResourceBarrier(1, &barrier);
+		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
 
 	FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, m_RTVDescriptorSize);
 
-	pCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
+	m_pRenderCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
 
 
 	// Clear the depth buffer
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	float depthValue = 1.f;
-	pCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 }
 
-void RenderModule::PostRender(ID3D12GraphicsCommandList2* pCommandList)
+void RenderModule::PostRender()
 {
 	//final command : switch the back buffer to present state
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
 	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	pCommandList->ResourceBarrier(1, &barrier);
+	m_pRenderCommandList->ResourceBarrier(1, &barrier);
 
 	//run the command list
-	m_pRenderCommandQueue->ExecuteCommandList(pCommandList);
+	m_pRenderCommandQueue->ExecuteCommandList(m_pRenderCommandList);
 
 	//present
 	UINT syncInterval = m_vSync ? 1 : 0;
@@ -147,29 +150,30 @@ void RenderModule::PostRender(ID3D12GraphicsCommandList2* pCommandList)
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
 	m_pRenderCommandQueue->WaitForFenceValue(fenceValue);
+	m_pRenderCommandList = nullptr;
 }
 
-void RenderModule::Render(ID3D12GraphicsCommandList2* pCommandList, MeshId id, const DirectX::XMMATRIX& wvp)
+void RenderModule::Render(MeshId id, const DirectX::XMMATRIX& wvp)
 {
-	pCommandList->SetPipelineState(m_pPipelineState);
-	pCommandList->SetGraphicsRootSignature(m_pRootSignature);
+	m_pRenderCommandList->SetPipelineState(m_pPipelineState);
+	m_pRenderCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
-	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	const Mesh* pMesh = g_pMeshMgr->GetMesh(id);
-	pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
-	pCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+	m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
+	m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
 
-	pCommandList->RSSetViewports(1, &m_viewport);
-	pCommandList->RSSetScissorRects(1, &m_scissorRect);
+	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
-	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
 
-	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+	m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
 
-	pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+	m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 }
 
 void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
