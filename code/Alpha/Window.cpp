@@ -32,7 +32,9 @@ bool Window::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle
 	windowRect.top = 0;
 	windowRect.right = static_cast<LONG>(width);
 	windowRect.bottom = static_cast<LONG>(height);
-	::AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, FALSE);
+	
+	int windowStyle = WS_OVERLAPPEDWINDOW;
+	::AdjustWindowRect(&windowRect, windowStyle, FALSE);
 
 	int windowWidth = windowRect.right - windowRect.left;
 	int windowHeight = windowRect.bottom - windowRect.top;
@@ -40,7 +42,8 @@ bool Window::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle
 	int windowX = (screenWidth - windowWidth) / 2;
 	int windowY = (screenHeight - windowHeight) / 2;
 
-	m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, WS_OVERLAPPEDWINDOW, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
+	m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, windowStyle, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
+	//SetWindowLong(m_hWindow, GWL_STYLE, 0);
 	if (m_hWindow == 0)
 	{
 		DWORD error = GetLastError();
