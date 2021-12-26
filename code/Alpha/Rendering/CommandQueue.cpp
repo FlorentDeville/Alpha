@@ -6,7 +6,7 @@
 
 #include "CommandQueue.h"
 
-#include "Helper.h"
+#include "../Helper.h"
 
 #include <assert.h>
 #include <chrono>

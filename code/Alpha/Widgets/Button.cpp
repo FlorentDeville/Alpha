@@ -4,9 +4,9 @@
 
 #include "Button.h"
 
-#include "../Mesh.h"
+#include "Rendering/Mesh.h"
 
-#include "../RenderModule.h"
+#include "Rendering/RenderModule.h"
 
 extern MeshId g_QuadMeshId;
 //extern Window* g_pWindow;

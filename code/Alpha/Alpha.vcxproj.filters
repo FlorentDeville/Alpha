@@ -19,7 +19,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CommandQueue.cpp">
+    <ClCompile Include="Rendering\CommandQueue.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
     <ClCompile Include="Helper.cpp">
@@ -28,13 +28,13 @@
     <ClCompile Include="Window.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
-    <ClCompile Include="RenderModule.cpp">
+    <ClCompile Include="Rendering\RenderModule.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="Rendering\Mesh.cpp">
       <Filter>gfx\Meshes</Filter>
     </ClCompile>
-    <ClCompile Include="MeshMgr.cpp">
+    <ClCompile Include="Rendering\MeshMgr.cpp">
       <Filter>gfx\Meshes</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Widget.cpp">
@@ -48,7 +48,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommandQueue.h">
+    <ClInclude Include="Rendering\CommandQueue.h">
       <Filter>gfx</Filter>
     </ClInclude>
     <ClInclude Include="Helper.h">
@@ -57,13 +57,13 @@
     <ClInclude Include="Window.h">
       <Filter>gfx</Filter>
     </ClInclude>
-    <ClInclude Include="RenderModule.h">
+    <ClInclude Include="Rendering\RenderModule.h">
       <Filter>gfx</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="Rendering\Mesh.h">
       <Filter>gfx\Meshes</Filter>
     </ClInclude>
-    <ClInclude Include="MeshMgr.h">
+    <ClInclude Include="Rendering\MeshMgr.h">
       <Filter>gfx\Meshes</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Widget.h">
@@ -76,10 +76,10 @@
     <ClInclude Include="Widgets\HLayout.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="VertexShader.hlsl">
+    <FxCompile Include="Shaders\VertexShader.hlsl">
       <Filter>gfx</Filter>
     </FxCompile>
-    <FxCompile Include="PixelShader.hlsl">
+    <FxCompile Include="Shaders\PixelShader.hlsl">
       <Filter>gfx</Filter>
     </FxCompile>
   </ItemGroup>

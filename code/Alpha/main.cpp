@@ -20,11 +20,11 @@ using namespace Microsoft::WRL;
 // D3D12 extension library.
 #include <d3dx12.h>
 
-#include "CommandQueue.h"
+#include "Rendering/CommandQueue.h"
 #include "Helper.h"
-#include "Mesh.h"
-#include "MeshMgr.h"
-#include "RenderModule.h"
+#include "Rendering/Mesh.h"
+#include "Rendering/MeshMgr.h"
+#include "Rendering/RenderModule.h"
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"

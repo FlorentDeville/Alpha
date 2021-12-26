@@ -4,7 +4,7 @@
 
 #include "HLayout.h"
 
-#include "../RenderModule.h"
+#include "Rendering/RenderModule.h"
 
 extern RenderModule* g_pRenderModule;
 extern MeshId g_QuadMeshId;
