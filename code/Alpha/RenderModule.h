@@ -70,7 +70,7 @@ private:
 	CommandQueue* m_pCopyCommandQueue;
 
 	bool m_allowTearing;
-	bool m_vSync;
+	bool m_vSync; //True to limit to 60 fps
 
 	UINT m_currentBackBufferIndex;
 
