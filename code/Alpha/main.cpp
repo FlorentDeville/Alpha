@@ -33,6 +33,7 @@ bool g_IsInitialized = false;
 RenderModule* g_pRenderModule = nullptr;
 Window* g_pWindow = nullptr;
 Mesh* g_pMesh = nullptr;
+Mesh* g_pQuad = nullptr;
 
 //Shader signature
 ID3D12RootSignature* g_pRootSignature;
@@ -52,6 +53,9 @@ DirectX::XMMATRIX g_projection;
 bool g_contentLoaded;
 
 bool g_perspectiveRendering = true;
+
+float g_posX = 0;
+float g_posY = 0;
 
 struct PipelineStateStream
 {
@@ -83,6 +87,21 @@ static uint16_t g_Indicies[36] =
 	3, 2, 6, 3, 6, 7,
 	1, 5, 6, 1, 6, 2,
 	4, 0, 3, 4, 3, 7
+};
+
+static float mul = 1;
+static VertexPosColor g_Quad[4] =
+{
+	{ DirectX::XMFLOAT3(-0.5f * mul, 0.5f * mul, 0.f),	DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) }, // top left
+	{ DirectX::XMFLOAT3(0.5f * mul, 0.5f * mul, 0.f),	DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) }, // top right
+	{ DirectX::XMFLOAT3(0.5f * mul, -0.5f * mul, 0.f),	DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) }, // bottom right
+	{ DirectX::XMFLOAT3(-0.5f * mul, -0.5f * mul, 0.f),	DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) }, // bottom left
+};
+
+static uint16_t g_QuadIndices[6]
+{
+	0, 1, 2,
+	2, 3, 0
 };
 
 void Update();
@@ -126,6 +145,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case VK_NUMPAD0:
 				g_perspectiveRendering = !g_perspectiveRendering;
 				break;
+
+			case VK_UP:
+				++g_posY;
+				break;
+
+			case VK_DOWN:
+				--g_posY;
+				break;
+
+			case VK_LEFT:
+				--g_posX;
+				break;
+
+			case VK_RIGHT:
+				++g_posX;
+				break;
+
 			default:
 				return ::DefWindowProcW(hWnd, message, wParam, lParam);
 				break;
@@ -221,6 +257,24 @@ void Update()
 	}
 }
 
+void RenderMesh(ID3D12GraphicsCommandList2* pCommandList, const Mesh* pMesh, const DirectX::XMMATRIX& mvpMatrix, const D3D12_CPU_DESCRIPTOR_HANDLE& rtv, const D3D12_CPU_DESCRIPTOR_HANDLE& dsv)
+{
+	pCommandList->SetPipelineState(g_pPipelineState);
+	pCommandList->SetGraphicsRootSignature(g_pRootSignature);
+
+	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
+	pCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+
+	pCommandList->RSSetViewports(1, &g_viewport);
+	pCommandList->RSSetScissorRects(1, &g_scissorRect);
+	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+
+	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &mvpMatrix, 0);
+
+	pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+}
+
 void Render()
 {
 	CommandQueue* pCommandQueue = g_pRenderModule->GetRenderCommandQueue();
@@ -250,27 +304,43 @@ void Render()
 	//g_pRenderModule->PreRender();
 
 	// Render the cube
-	pCommandList->SetPipelineState(g_pPipelineState);
-	pCommandList->SetGraphicsRootSignature(g_pRootSignature);
+	if(false)
+	{
+		//// Update the MVP matrix
+		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
+		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
+		RenderMesh(pCommandList, g_pMesh, mvpMatrix, rtv, dsv);
+	}
+	
 
-	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pCommandList->IASetVertexBuffers(0, 1, &g_pMesh->GetVertexBufferView());
-	pCommandList->IASetIndexBuffer(&g_pMesh->GetIndexBufferView());
+	// Render the quad
+	//if(false)
+	{
+		//dimension : 100 * 20 pixels
+		float width = 100;
+		float height = 20;
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
 
-	pCommandList->RSSetViewports(1, &g_viewport);
-	pCommandList->RSSetScissorRects(1, &g_scissorRect);
+		//position : top left corner
+		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
+		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
 
-	//D3D12_CPU_DESCRIPTOR_HANDLE rtv = g_pRenderModule->GetRTV();
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pRenderModule->GetDSV();
-	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+		float x = width * 0.5f - windowWidth * 0.5f + g_posX;
+		float y = windowHeight * 0.5f - height * 0.5f + g_posY;
 
-	// Update the MVP matrix
-	DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
-	mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &mvpMatrix, 0);
+		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, 1);
 
-	pCommandList->DrawIndexedInstanced(_countof(g_Indicies), 1, 0, 0, 0);
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
 
+		float projWidth = static_cast<float>(windowWidth);
+		float projHeight = static_cast<float>(windowHeight);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight , 0.1f, 100.f);
+
+		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(scale, position);
+		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, view);
+		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
+		RenderMesh(pCommandList, g_pQuad, mvpMatrix, rtv, dsv);
+	}
 	//g_pRenderModule->Present();
 	// Present
 	{
@@ -294,6 +364,9 @@ bool LoadContent()
 {
 	g_pMesh = new Mesh();
 	g_pMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
+
+	g_pQuad = new Mesh();
+	g_pQuad->LoadVertexAndIndexBuffer(g_Quad, _countof(g_Quad), g_QuadIndices, _countof(g_QuadIndices));
 
 	// Load the vertex shader.
 	ID3DBlob* pVertexShaderBlob;
@@ -403,6 +476,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pRenderModule->Shutdown();
 
+	delete g_pQuad;
 	delete g_pMesh;
 	delete g_pWindow;
 	delete g_pRenderModule;
