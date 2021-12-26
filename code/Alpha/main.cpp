@@ -51,6 +51,8 @@ DirectX::XMMATRIX g_projection;
 
 bool g_contentLoaded;
 
+bool g_perspectiveRendering = true;
+
 struct PipelineStateStream
 {
 	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
@@ -121,6 +123,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				g_pWindow->ToggleFullscreen();
 				break;
 
+			case VK_NUMPAD0:
+				g_perspectiveRendering = !g_perspectiveRendering;
+				break;
 			default:
 				return ::DefWindowProcW(hWnd, message, wParam, lParam);
 				break;
@@ -147,6 +152,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			g_pWindow->Resize(uwidth, uheight);
 			g_pRenderModule->ResizeSwapChain(uwidth, uheight);
 			g_pRenderModule->ResizeDepthBuffer(uwidth, uheight);
+
+			g_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(uwidth), static_cast<float>(uheight));
 		}
 	}
 		break;
@@ -198,8 +205,17 @@ void Update()
 	g_view = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 
 	// Update the projection matrix.
-	float aspectRatio = g_pWindow->GetWidth() / static_cast<float>(g_pWindow->GetHeight());
-	g_projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(g_FoV), aspectRatio, 0.1f, 100.0f);
+	if (g_perspectiveRendering)
+	{
+		float aspectRatio = g_pWindow->GetWidth() / static_cast<float>(g_pWindow->GetHeight());
+		g_projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(g_FoV), aspectRatio, 0.1f, 100.0f);
+	}
+	else
+	{
+		float w = static_cast<float>(g_pWindow->GetWidth());
+		float h = static_cast<float>(g_pWindow->GetHeight());
+		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
+	}
 }
 
 void Render()
