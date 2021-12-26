@@ -12,6 +12,8 @@
 
 #include <d3d12.h>
 
+#include "MeshMgr.h"
+
 struct IDXGIAdapter4;
 struct IDXGISwapChain4;
 struct ID3D12CommandQueue;
@@ -31,6 +33,8 @@ public:
 
 	void PreRender(ID3D12GraphicsCommandList2* pCommandList);
 	void PostRender(ID3D12GraphicsCommandList2* pCommandList);
+
+	void Render(ID3D12GraphicsCommandList2* pCommandList, MeshId id, const DirectX::XMMATRIX& wvp);
 
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
@@ -81,6 +85,8 @@ public:
 	/************************************************/
 	ID3D12RootSignature* m_pRootSignature;
 	ID3D12PipelineState* m_pPipelineState;
+	D3D12_VIEWPORT m_viewport;
+	D3D12_RECT m_scissorRect;
 
 private:
 

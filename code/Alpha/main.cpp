@@ -38,9 +38,6 @@ MeshMgr* g_pMeshMgr = nullptr;
 MeshId g_CubeMeshId;
 MeshId g_QuadMeshId;
 
-D3D12_VIEWPORT g_viewport;
-D3D12_RECT g_scissorRect;
-
 float g_FoV;
 
 DirectX::XMMATRIX g_model;
@@ -175,7 +172,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			g_pRenderModule->ResizeSwapChain(uwidth, uheight);
 			g_pRenderModule->ResizeDepthBuffer(uwidth, uheight);
 
-			g_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(uwidth), static_cast<float>(uheight));
+			g_pRenderModule->m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(uwidth), static_cast<float>(uheight));
 		}
 	}
 		break;
@@ -243,24 +240,6 @@ void Update()
 	}
 }
 
-void RenderMesh(ID3D12GraphicsCommandList2* pCommandList, const Mesh* pMesh, const DirectX::XMMATRIX& mvpMatrix, const D3D12_CPU_DESCRIPTOR_HANDLE& rtv, const D3D12_CPU_DESCRIPTOR_HANDLE& dsv)
-{
-	pCommandList->SetPipelineState(g_pRenderModule->m_pPipelineState);
-	pCommandList->SetGraphicsRootSignature(g_pRenderModule->m_pRootSignature);
-
-	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
-	pCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
-
-	pCommandList->RSSetViewports(1, &g_viewport);
-	pCommandList->RSSetScissorRects(1, &g_scissorRect);
-	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
-
-	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &mvpMatrix, 0);
-
-	pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
-}
-
 void Render()
 {
 	CommandQueue* pCommandQueue = g_pRenderModule->GetRenderCommandQueue();
@@ -277,7 +256,7 @@ void Render()
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		RenderMesh(pCommandList, g_pMeshMgr->GetMesh(g_CubeMeshId), mvpMatrix, rtv, dsv);
+		g_pRenderModule->Render(pCommandList, g_CubeMeshId, mvpMatrix);
 	}
 	
 
@@ -307,7 +286,8 @@ void Render()
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(scale, position);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
-		RenderMesh(pCommandList, g_pMeshMgr->GetMesh(g_QuadMeshId), mvpMatrix, rtv, dsv);
+
+		g_pRenderModule->Render(pCommandList, g_QuadMeshId, mvpMatrix);
 	}
 
 	g_pRenderModule->PostRender(pCommandList);
@@ -355,8 +335,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pWindow->Show();
 
 	{
-		g_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
-		g_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
+		g_pRenderModule->m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
+		g_pRenderModule->m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 		g_FoV = 45.f;
 	}
 

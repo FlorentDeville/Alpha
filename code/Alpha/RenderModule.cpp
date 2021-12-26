@@ -18,6 +18,8 @@
 #include <dxgidebug.h>
 #endif
 
+extern MeshMgr* g_pMeshMgr;
+
 struct PipelineStateStream
 {
 	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
@@ -145,6 +147,29 @@ void RenderModule::PostRender(ID3D12GraphicsCommandList2* pCommandList)
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
 	m_pRenderCommandQueue->WaitForFenceValue(fenceValue);
+}
+
+void RenderModule::Render(ID3D12GraphicsCommandList2* pCommandList, MeshId id, const DirectX::XMMATRIX& wvp)
+{
+	pCommandList->SetPipelineState(m_pPipelineState);
+	pCommandList->SetGraphicsRootSignature(m_pRootSignature);
+
+	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(id);
+	pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
+	pCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+
+	pCommandList->RSSetViewports(1, &m_viewport);
+	pCommandList->RSSetScissorRects(1, &m_scissorRect);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
+	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+
+	pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+
+	pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 }
 
 void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
