@@ -17,6 +17,9 @@
 #include "RootSignature.h"
 #include "RootSignatureMgr.h"
 
+#include "Shader.h"
+#include "ShaderMgr.h"
+
 #if defined(_DEBUG)
 #include <dxgidebug.h>
 #endif
@@ -159,7 +162,7 @@ void RenderModule::Render(MeshId id, const DirectX::XMMATRIX& wvp)
 {
 	m_pRenderCommandList->SetPipelineState(m_pPipelineState);
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRootSignatureId);
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRSId);
 	m_pRenderCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
 
 	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -254,18 +257,13 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 void RenderModule::InitRootSignature()
 {
-	m_baseRootSignatureId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
+	m_baseRSId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
 }
 
 void RenderModule::InitPipelineState()
 {
-	// Load the vertex shader.
-	ID3DBlob* pVertexShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso", &pVertexShaderBlob));
-
-	// Load the pixel shader.
-	ID3DBlob* pPixelShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso", &pPixelShaderBlob));
+	m_baseVSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
+	m_basePSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
 
 	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 	rtvFormats.NumRenderTargets = 1;
@@ -277,14 +275,14 @@ void RenderModule::InitPipelineState()
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRootSignatureId);
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRSId);
 
 	PipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 	pipelineStateStream.InputLayout = { inputLayout, _countof(inputLayout) };
 	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderBlob);
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(pPixelShaderBlob);
+	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(m_baseVSId)->GetBlob());
+	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(m_basePSId)->GetBlob());
 	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 	pipelineStateStream.RTVFormats = rtvFormats;
 

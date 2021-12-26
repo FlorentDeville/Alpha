@@ -14,6 +14,7 @@
 
 #include "MeshMgr.h"
 #include "RootSignatureId.h"
+#include "ShaderId.h"
 
 struct IDXGIAdapter4;
 struct IDXGISwapChain4;
@@ -93,7 +94,9 @@ public:
 	D3D12_RECT m_scissorRect;
 
 private:
-	RootSignatureId m_baseRootSignatureId;
+	RootSignatureId m_baseRSId;
+	ShaderId m_baseVSId;
+	ShaderId m_basePSId;
 
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 

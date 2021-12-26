@@ -52,6 +52,12 @@
     <ClCompile Include="Rendering\RootSignatureMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\ShaderMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
@@ -83,6 +89,9 @@
     <ClInclude Include="Rendering\RootSignature.h" />
     <ClInclude Include="Rendering\RootSignatureMgr.h" />
     <ClInclude Include="Rendering\RootSignatureId.h" />
+    <ClInclude Include="Rendering\ShaderId.h" />
+    <ClInclude Include="Rendering\Shader.h" />
+    <ClInclude Include="Rendering\ShaderMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
