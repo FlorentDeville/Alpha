@@ -11,6 +11,9 @@
     <Filter Include="gfx\Meshes">
       <UniqueIdentifier>{816fd149-78b7-492e-b6af-3e6aae1a8ca2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Widgets">
+      <UniqueIdentifier>{f721eff7-6eea-4146-adce-e06c6b11ddd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -34,6 +37,12 @@
     <ClCompile Include="MeshMgr.cpp">
       <Filter>gfx\Meshes</Filter>
     </ClCompile>
+    <ClCompile Include="Widgets\Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Button.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h">
@@ -53,6 +62,12 @@
     </ClInclude>
     <ClInclude Include="MeshMgr.h">
       <Filter>gfx\Meshes</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\Widget.h">
+      <Filter>Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\Button.h">
+      <Filter>Widgets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

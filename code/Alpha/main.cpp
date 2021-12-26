@@ -26,6 +26,7 @@ using namespace Microsoft::WRL;
 #include "MeshMgr.h"
 #include "RenderModule.h"
 #include "Window.h"
+#include "Widgets/Button.h"
 
 bool g_VSync;
 
@@ -34,6 +35,7 @@ bool g_IsInitialized = false;
 RenderModule* g_pRenderModule = nullptr;
 Window* g_pWindow = nullptr;
 MeshMgr* g_pMeshMgr = nullptr;
+Button* g_pButton = nullptr;
 
 MeshId g_CubeMeshId;
 MeshId g_QuadMeshId;
@@ -50,6 +52,7 @@ bool g_perspectiveRendering = true;
 
 float g_posX = 0;
 float g_posY = 0;
+
 
 static VertexPosColor g_Vertices[8] = {
 	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
@@ -90,17 +93,6 @@ static uint16_t g_QuadIndices[6]
 void Update();
 void Render();
 
-template<typename T> constexpr const T& clamp(const T& val, const T& min, const T& max)
-{
-	return val < min ? min : val > max ? max : val;
-}
-
-void TransitionResource(ID3D12GraphicsCommandList2* pCommandList, ID3D12Resource* pResource, D3D12_RESOURCE_STATES beforeState, D3D12_RESOURCE_STATES afterState)
-{
-	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pResource, beforeState, afterState);
-	pCommandList->ResourceBarrier(1, &barrier);
-}
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (!g_IsInitialized)
@@ -130,19 +122,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 
 			case VK_UP:
-				++g_posY;
+				g_pButton->SetY(g_pButton->GetY() + 1);
 				break;
 
 			case VK_DOWN:
-				--g_posY;
+				g_pButton->SetY(g_pButton->GetY() - 1);
 				break;
 
 			case VK_LEFT:
-				--g_posX;
+				g_pButton->SetX(g_pButton->GetX() - 1);
 				break;
 
 			case VK_RIGHT:
-				++g_posX;
+				g_pButton->SetX(g_pButton->GetX() + 1);
 				break;
 
 			default:
@@ -257,31 +249,7 @@ void Render()
 	// Render the quad
 	//if(false)
 	{
-		//dimension : 100 * 20 pixels
-		float width = 100;
-		float height = 20;
-		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
-
-		//position : top left corner
-		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
-		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
-
-		float x = width * 0.5f - windowWidth * 0.5f + g_posX;
-		float y = windowHeight * 0.5f - height * 0.5f + g_posY;
-
-		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, 1);
-
-		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
-
-		float projWidth = static_cast<float>(windowWidth);
-		float projHeight = static_cast<float>(windowHeight);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight , 0.1f, 100.f);
-
-		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(scale, position);
-		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, view);
-		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
-
-		g_pRenderModule->Render(g_QuadMeshId, mvpMatrix);
+		g_pButton->Draw();
 	}
 
 	g_pRenderModule->PostRender();
@@ -325,6 +293,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
+
+	g_pButton = new Button(100, 20, 0, 0);
 
 	g_pWindow->Show();
 
