@@ -16,6 +16,6 @@ public:
 	ID3DBlob* GetBlob() const;
 
 private:
-	ID3DBlob* m_pBlob;
 	std::string m_path;
+	ID3DBlob* m_pBlob;
 };
