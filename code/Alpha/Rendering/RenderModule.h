@@ -13,6 +13,7 @@
 #include <d3d12.h>
 
 #include "MeshMgr.h"
+#include "RootSignatureId.h"
 
 struct IDXGIAdapter4;
 struct IDXGISwapChain4;
@@ -86,12 +87,13 @@ public:
 	/*I'm not reall sure how to organize this yet	*/
 	/*so I just dump it here						*/
 	/************************************************/
-	ID3D12RootSignature* m_pRootSignature;
+	//ID3D12RootSignature* m_pRootSignature;
 	ID3D12PipelineState* m_pPipelineState;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissorRect;
 
 private:
+	RootSignatureId m_baseRootSignatureId;
 
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 

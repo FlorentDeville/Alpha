@@ -25,6 +25,7 @@ using namespace Microsoft::WRL;
 #include "Rendering/Mesh.h"
 #include "Rendering/MeshMgr.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/RootSignatureMgr.h"
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"
@@ -294,6 +295,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pRenderModule->Init(g_pWindow->GetWindowHandle(), width, height);
 
 	g_pMeshMgr = new MeshMgr();
+	g_pRootSignatureMgr = new RootSignatureMgr();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -324,6 +326,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pRenderModule->Shutdown();
 
+	delete g_pRootSignatureMgr;
 	delete g_pMeshMgr;
 	delete g_pWindow;
 	delete g_pRenderModule;

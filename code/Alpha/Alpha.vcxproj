@@ -159,6 +159,8 @@
     <ClCompile Include="Rendering\Mesh.cpp" />
     <ClCompile Include="Rendering\MeshMgr.cpp" />
     <ClCompile Include="Rendering\RenderModule.cpp" />
+    <ClCompile Include="Rendering\RootSignature.cpp" />
+    <ClCompile Include="Rendering\RootSignatureMgr.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
     <ClCompile Include="Widgets\HLayout.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
@@ -170,6 +172,9 @@
     <ClInclude Include="Rendering\Mesh.h" />
     <ClInclude Include="Rendering\MeshMgr.h" />
     <ClInclude Include="Rendering\RenderModule.h" />
+    <ClInclude Include="Rendering\RootSignature.h" />
+    <ClInclude Include="Rendering\RootSignatureId.h" />
+    <ClInclude Include="Rendering\RootSignatureMgr.h" />
     <ClInclude Include="Widgets\Button.h" />
     <ClInclude Include="Widgets\HLayout.h" />
     <ClInclude Include="Widgets\Widget.h" />

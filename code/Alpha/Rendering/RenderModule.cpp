@@ -14,6 +14,9 @@
 #include "CommandQueue.h"
 #include "Helper.h"
 
+#include "RootSignature.h"
+#include "RootSignatureMgr.h"
+
 #if defined(_DEBUG)
 #include <dxgidebug.h>
 #endif
@@ -46,7 +49,6 @@ RenderModule::RenderModule()
 #if defined(_DEBUG)
 	, m_pDebugInterface(nullptr)
 #endif
-	, m_pRootSignature(nullptr)
 	, m_pPipelineState(nullptr)
 	, m_pRenderCommandList(nullptr)
 {}
@@ -156,7 +158,9 @@ void RenderModule::PostRender()
 void RenderModule::Render(MeshId id, const DirectX::XMMATRIX& wvp)
 {
 	m_pRenderCommandList->SetPipelineState(m_pPipelineState);
-	m_pRenderCommandList->SetGraphicsRootSignature(m_pRootSignature);
+
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRootSignatureId);
+	m_pRenderCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
 
 	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -250,20 +254,7 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 void RenderModule::InitRootSignature()
 {
-	// Load the vertex shader.
-	ID3DBlob* pRootSignatureBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso", &pRootSignatureBlob));
-
-	// Create a root signature.
-	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
-	featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
-	if (FAILED(m_pDevice->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
-	{
-		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
-	}
-
-	// Create the root signature.
-	ThrowIfFailed(m_pDevice->CreateRootSignature(0, pRootSignatureBlob->GetBufferPointer(), pRootSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
+	m_baseRootSignatureId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
 }
 
 void RenderModule::InitPipelineState()
@@ -286,8 +277,10 @@ void RenderModule::InitPipelineState()
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRootSignatureId);
+
 	PipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = m_pRootSignature;
+	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 	pipelineStateStream.InputLayout = { inputLayout, _countof(inputLayout) };
 	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVertexShaderBlob);
