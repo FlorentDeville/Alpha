@@ -23,6 +23,7 @@ using namespace Microsoft::WRL;
 #include "CommandQueue.h"
 #include "Helper.h"
 #include "Mesh.h"
+#include "MeshMgr.h"
 #include "RenderModule.h"
 #include "Window.h"
 
@@ -32,8 +33,10 @@ bool g_IsInitialized = false;
 
 RenderModule* g_pRenderModule = nullptr;
 Window* g_pWindow = nullptr;
-Mesh* g_pMesh = nullptr;
-Mesh* g_pQuad = nullptr;
+MeshMgr* g_pMeshMgr = nullptr;
+
+MeshId g_CubeMeshId;
+MeshId g_QuadMeshId;
 
 //Shader signature
 ID3D12RootSignature* g_pRootSignature;
@@ -304,12 +307,12 @@ void Render()
 	//g_pRenderModule->PreRender();
 
 	// Render the cube
-	if(false)
+	//if(false)
 	{
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		RenderMesh(pCommandList, g_pMesh, mvpMatrix, rtv, dsv);
+		RenderMesh(pCommandList, g_pMeshMgr->GetMesh(g_CubeMeshId), mvpMatrix, rtv, dsv);
 	}
 	
 
@@ -339,7 +342,7 @@ void Render()
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(scale, position);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
-		RenderMesh(pCommandList, g_pQuad, mvpMatrix, rtv, dsv);
+		RenderMesh(pCommandList, g_pMeshMgr->GetMesh(g_QuadMeshId), mvpMatrix, rtv, dsv);
 	}
 	//g_pRenderModule->Present();
 	// Present
@@ -362,11 +365,14 @@ void Render()
 
 bool LoadContent()
 {
-	g_pMesh = new Mesh();
-	g_pMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
+	// Load meshes
+	Mesh* pCubeMesh = nullptr;
+	g_pMeshMgr->CreateMesh(&pCubeMesh, g_CubeMeshId);
+	pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
 
-	g_pQuad = new Mesh();
-	g_pQuad->LoadVertexAndIndexBuffer(g_Quad, _countof(g_Quad), g_QuadIndices, _countof(g_QuadIndices));
+	Mesh* pQuadMesh = nullptr;
+	g_pMeshMgr->CreateMesh(&pQuadMesh, g_QuadMeshId);
+	pQuadMesh->LoadVertexAndIndexBuffer(g_Quad, _countof(g_Quad), g_QuadIndices, _countof(g_QuadIndices));
 
 	// Load the vertex shader.
 	ID3DBlob* pVertexShaderBlob;
@@ -450,6 +456,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pRenderModule = new RenderModule();
 	g_pRenderModule->Init(g_pWindow->GetWindowHandle(), width, height);
 
+	g_pMeshMgr = new MeshMgr();
+
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
@@ -476,8 +484,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pRenderModule->Shutdown();
 
-	delete g_pQuad;
-	delete g_pMesh;
+	delete g_pMeshMgr;
 	delete g_pWindow;
 	delete g_pRenderModule;
 
