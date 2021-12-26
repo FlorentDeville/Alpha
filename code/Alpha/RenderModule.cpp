@@ -26,7 +26,6 @@ RenderModule::RenderModule()
 	, m_pCopyCommandQueue(nullptr)
 	, m_currentBackBufferIndex(0)
 	, m_vSync(true)
-	, m_contentLoaded(false)
 	, m_pDepthBuffer(nullptr)
 #if defined(_DEBUG)
 	, m_pDebugInterface(nullptr)
@@ -88,11 +87,9 @@ void RenderModule::Shutdown()
 	ReportLiveObject();
 }
 
-void RenderModule::PreRender()
+void RenderModule::PreRender(ID3D12GraphicsCommandList2* pCommandList)
 {
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
-
-	ID3D12GraphicsCommandList2* pCommandList = m_pRenderCommandQueue->GetCommandList();
 
 	// Clear the render target.
 	{
@@ -112,20 +109,22 @@ void RenderModule::PreRender()
 	pCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 }
 
-void RenderModule::Present()
+void RenderModule::PostRender(ID3D12GraphicsCommandList2* pCommandList)
 {
+	//final command : switch the back buffer to present state
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
 	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-
-	ID3D12GraphicsCommandList2* pCommandList = m_pRenderCommandQueue->GetCommandList();
 	pCommandList->ResourceBarrier(1, &barrier);
 
+	//run the command list
 	m_pRenderCommandQueue->ExecuteCommandList(pCommandList);
 
+	//present
 	UINT syncInterval = m_vSync ? 1 : 0;
 	UINT presentFlags = m_allowTearing && !m_vSync? DXGI_PRESENT_ALLOW_TEARING : 0;
 	ThrowIfFailed(m_pSwapChain->Present(syncInterval, presentFlags));
 
+	//wait for the commands to be run
 	uint64_t fenceValue = m_pRenderCommandQueue->Signal();
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
@@ -229,11 +228,6 @@ D3D12_CPU_DESCRIPTOR_HANDLE RenderModule::GetDSV()
 ID3D12Device2* RenderModule::GetDevice()
 {
 	return m_pDevice;
-}
-
-void RenderModule::SetContentLoaded()
-{
-	m_contentLoaded = true;
 }
 
 void RenderModule::ReportLiveObject()

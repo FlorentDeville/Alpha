@@ -283,28 +283,10 @@ void Render()
 	CommandQueue* pCommandQueue = g_pRenderModule->GetRenderCommandQueue();
 	ID3D12GraphicsCommandList2* pCommandList = pCommandQueue->GetCommandList();
 
-	ID3D12Resource* pBackBuffer = g_pRenderModule->m_pBackBuffers[g_pRenderModule->m_currentBackBufferIndex];
-
-	//ID3D12GraphicsCommandList2* pCommandList = g_pCommandQueue->GetCommandList();
-
-	// Clear the render target.
-	{
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		pCommandList->ResourceBarrier(1, &barrier);
-	}
-
-	FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
-	//CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(g_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), g_CurrentBackBufferIndex, g_RTVDescriptorSize);
 	D3D12_CPU_DESCRIPTOR_HANDLE rtv = g_pRenderModule->GetRTV();
-	pCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
-	
-
-	// Clear the depth buffer
-	//D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pDSVHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pRenderModule->GetDSV();
-	float depthValue = 1.f;
-	pCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
-	//g_pRenderModule->PreRender();
+
+	g_pRenderModule->PreRender(pCommandList);
 
 	// Render the cube
 	//if(false)
@@ -344,23 +326,8 @@ void Render()
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
 		RenderMesh(pCommandList, g_pMeshMgr->GetMesh(g_QuadMeshId), mvpMatrix, rtv, dsv);
 	}
-	//g_pRenderModule->Present();
-	// Present
-	{
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-		pCommandList->ResourceBarrier(1, &barrier);
 
-		pCommandQueue->ExecuteCommandList(pCommandList);
-
-		UINT syncInterval = g_VSync ? 1 : 0;
-		UINT presentFlags = 0;//g_TearingSupported && !g_VSync ? DXGI_PRESENT_ALLOW_TEARING : 0;
-		ThrowIfFailed(g_pRenderModule->m_pSwapChain->Present(syncInterval, presentFlags));
-
-		uint64_t fenceValue = pCommandQueue->Signal();
-		g_pRenderModule->m_currentBackBufferIndex = g_pRenderModule->m_pSwapChain->GetCurrentBackBufferIndex();
-
-		pCommandQueue->WaitForFenceValue(fenceValue);
-	}
+	g_pRenderModule->PostRender(pCommandList);
 }
 
 bool LoadContent()
@@ -461,8 +428,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
-
-	g_pRenderModule->SetContentLoaded();
 
 	g_pWindow->Show();
 

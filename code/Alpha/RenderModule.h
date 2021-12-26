@@ -29,8 +29,8 @@ public:
 	void Init(HWND hWindow, uint32_t width, uint32_t height);
 	void Shutdown();
 
-	void PreRender();
-	void Present();
+	void PreRender(ID3D12GraphicsCommandList2* pCommandList);
+	void PostRender(ID3D12GraphicsCommandList2* pCommandList);
 
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
@@ -41,7 +41,6 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTV();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSV();
 	ID3D12Device2* GetDevice();
-	void SetContentLoaded();
 
 	static void ReportLiveObject();
 
@@ -54,10 +53,8 @@ private:
 	ID3D12Debug* m_pDebugInterface;
 #endif
 
-public:
 	IDXGISwapChain4* m_pSwapChain;
 	
-private:
 	ID3D12DescriptorHeap* m_pRTVDescriptorHeap;	// render target view descriptor heap
 	ID3D12DescriptorHeap* m_pDSVDescriptorHeap; //depth stencil view descriptor heap
 
@@ -69,16 +66,11 @@ private:
 	bool m_allowTearing;
 	bool m_vSync;
 
-	//TEMP
-public:
 	UINT m_currentBackBufferIndex;
 
 
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
 	ID3D12Resource* m_pDepthBuffer;
-
-private:
-	bool m_contentLoaded;
 
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 
