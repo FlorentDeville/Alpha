@@ -25,6 +25,8 @@ public:
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
 	const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
 
+	int GetIndicesCount() const;
+
 private:
 	//Vertex buffer
 	ID3D12Resource* m_pVertexBuffer;
@@ -33,4 +35,6 @@ private:
 	//Index buffer
 	ID3D12Resource* m_pIndexBuffer;
 	D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
+
+	int m_indicesCount;
 };

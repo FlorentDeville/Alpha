@@ -57,6 +57,7 @@ Mesh::Mesh()
 	, m_vertexBufferView()
 	, m_pIndexBuffer(nullptr)
 	, m_indexBufferView()
+	, m_indicesCount(0)
 {}
 
 Mesh::~Mesh()
@@ -70,6 +71,8 @@ Mesh::~Mesh()
 
 void Mesh::LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 {
+	m_indicesCount = indicesCount;
+
 	CommandQueue* pCopyCommandQueue = g_pRenderModule->GetCopyCommandQueue();
 	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
@@ -102,4 +105,9 @@ const D3D12_VERTEX_BUFFER_VIEW& Mesh::GetVertexBufferView() const
 const D3D12_INDEX_BUFFER_VIEW& Mesh::GetIndexBufferView() const
 {
 	return m_indexBufferView;
+}
+
+int Mesh::GetIndicesCount() const
+{
+	return m_indicesCount;
 }
