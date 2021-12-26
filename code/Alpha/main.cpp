@@ -195,6 +195,7 @@ void Update()
 	double totalTimeElasped = dt.count() * 1e-9;
 	// Update the model matrix.
 	float angle = static_cast<float>(totalTimeElasped * 90.0);
+	//float angle = 0;
 	const DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 1, 0);
 	g_model = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
 
@@ -205,15 +206,17 @@ void Update()
 	g_view = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 
 	// Update the projection matrix.
+	float aspectRatio = g_pWindow->GetWidth() / static_cast<float>(g_pWindow->GetHeight());
 	if (g_perspectiveRendering)
-	{
-		float aspectRatio = g_pWindow->GetWidth() / static_cast<float>(g_pWindow->GetHeight());
-		g_projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(g_FoV), aspectRatio, 0.1f, 100.0f);
+	{				
+		float nearDistance = 0.1f;
+		float fovRad = DirectX::XMConvertToRadians(g_FoV);
+		g_projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, aspectRatio, nearDistance, 100.0f);
 	}
 	else
 	{
-		float w = static_cast<float>(g_pWindow->GetWidth());
-		float h = static_cast<float>(g_pWindow->GetHeight());
+		float w = 20.f;
+		float h = w / aspectRatio;
 		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
 	}
 }
