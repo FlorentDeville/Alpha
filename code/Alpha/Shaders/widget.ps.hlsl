@@ -28,12 +28,30 @@ struct CB_BorderColor
 };
 ConstantBuffer<CB_BorderColor> borderColor : register(b3);
 
+struct CB_Rect
+{
+	float2 Rect;
+};
+ConstantBuffer<CB_Rect> rect : register(b4);
+
+struct CB_BorderWidth
+{
+	int BorderWidth;
+};
+ConstantBuffer<CB_BorderWidth> borderWidth : register(b5);
+
 [RootSignature(RS)]
 float4 main(PixelShaderInput IN) : SV_Target
 {
 	if (showBorder.ShowBorder)
 	{
-		if (IN.Uv.x < 0.1f || IN.Uv.x > 0.9 || IN.Uv.y < 0.1f || IN.Uv.y > 0.9)
+		float2 fPixelCoord = rect.Rect * IN.Uv;
+		int2 pixelCoord = floor(fPixelCoord + 0.49f);
+
+		int min = borderWidth.BorderWidth;
+		int2 max = rect.Rect - borderWidth.BorderWidth;
+
+		if (pixelCoord.x < min || pixelCoord.x >= max.x || pixelCoord.y < min || pixelCoord.y >= max.y)
 			return borderColor.Color;
 	}
 

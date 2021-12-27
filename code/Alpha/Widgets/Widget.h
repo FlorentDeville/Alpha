@@ -66,6 +66,7 @@ protected:
 	DirectX::XMVECTOR m_backgroundColor;
 	DirectX::XMVECTOR m_borderColor;
 	bool m_showBorder;
+	int m_borderWidth;
 	
 	bool m_hover;	//Indicate if the mouse is hovering the widget;
 

@@ -40,6 +40,11 @@ void Button::Draw(int32_t parentX, int32_t parentY, float parentZ)
 	g_pRenderModule->SetConstantBuffer(2, sizeof(value), &value, 0);
 	g_pRenderModule->SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
 
+	float rect[2] = { (float)m_width, (float)m_height };
+	g_pRenderModule->SetConstantBuffer(4, sizeof(rect), &rect, 0);
+
+	g_pRenderModule->SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+
 	g_pRenderModule->PostRenderForRenderable(*pRenderable);
 }
 

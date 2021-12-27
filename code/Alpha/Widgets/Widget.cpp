@@ -23,6 +23,7 @@ Widget::Widget()
 	, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
 	, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
 	, m_showBorder(false)
+	, m_borderWidth(1)
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
