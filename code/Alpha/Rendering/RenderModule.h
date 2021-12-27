@@ -44,7 +44,6 @@ public:
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
 
 	//Temp functions
-	void InitPipelineState();
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTV();
@@ -91,14 +90,8 @@ public:
 	/************************************************/
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissorRect;
-	PipelineStateId m_base_PosColor_pipelineStateId;
-
-private:
-	RootSignatureId m_baseRSId;
-	ShaderId m_baseVSId;
-	ShaderId m_basePSId;
 	
-
+private:
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 
 	IDXGIAdapter4* GetAdapter(bool useWarp);

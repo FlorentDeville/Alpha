@@ -7,6 +7,7 @@
 #include "Rendering/Mesh.h"
 
 #include "Rendering/RenderModule.h"
+#include "Rendering/Renderable/RenderableMgr.h"
 
 extern MeshId g_QuadMeshId;
 //extern Window* g_pWindow;
@@ -23,6 +24,5 @@ void Button::Draw(int32_t parentX, int32_t parentY, float parentZ)
 {
 	DirectX::XMMATRIX mvpMatrix;
 	ComputeWVPMatrix(mvpMatrix, parentX, parentY, parentZ);
-	Renderable renderable(g_QuadMeshId, g_pRenderModule->m_base_PosColor_pipelineStateId);
-	g_pRenderModule->Render(renderable, mvpMatrix);
+	g_pRenderModule->Render(*g_pRenderableMgr->GetQuad(), mvpMatrix);
 }

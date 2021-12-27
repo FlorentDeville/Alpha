@@ -5,6 +5,7 @@
 #include "HLayout.h"
 
 #include "Rendering/RenderModule.h"
+#include "Rendering/Renderable/RenderableMgr.h"
 
 extern RenderModule* g_pRenderModule;
 extern MeshId g_QuadMeshId;
@@ -20,8 +21,7 @@ void HLayout::Draw(int32_t parentX, int32_t parentY, float parentZ)
 {
 	DirectX::XMMATRIX wvp;
 	ComputeWVPMatrix(wvp, parentX, parentY, parentZ);
-	Renderable renderable(g_QuadMeshId, g_pRenderModule->m_base_PosColor_pipelineStateId);
-	g_pRenderModule->Render(renderable, wvp);
+	g_pRenderModule->Render(*g_pRenderableMgr->GetQuad(), wvp);
 
 	int32_t x = 0, y = 0;
 	ComputeWorldPosition(parentX, parentY, x, y);

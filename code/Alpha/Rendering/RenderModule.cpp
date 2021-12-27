@@ -248,15 +248,6 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 }
 
-void RenderModule::InitPipelineState()
-{
-	m_baseRSId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
-	m_baseVSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
-	m_basePSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
-
-	m_base_PosColor_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(m_baseRSId, m_baseVSId, m_basePSId);
-}
-
 CommandQueue* RenderModule::GetRenderCommandQueue()
 {
 	return m_pRenderCommandQueue;

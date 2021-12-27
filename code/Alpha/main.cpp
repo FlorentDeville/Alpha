@@ -25,6 +25,7 @@ using namespace Microsoft::WRL;
 #include "Rendering/Mesh.h"
 #include "Rendering/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
+#include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
@@ -39,8 +40,8 @@ bool g_IsInitialized = false;
 Window* g_pWindow = nullptr;
 HLayout* g_pButton = nullptr;
 
-MeshId g_CubeMeshId;
-MeshId g_QuadMeshId;
+RenderableId g_CubeId;
+RenderableId g_QuadId;
 
 float g_FoV;
 
@@ -244,8 +245,7 @@ void Render()
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		Renderable renderable(g_CubeMeshId, g_pRenderModule->m_base_PosColor_pipelineStateId);
-		g_pRenderModule->Render(renderable, mvpMatrix);
+		g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
 	}
 	
 
@@ -265,14 +265,23 @@ void Render()
 bool LoadContent()
 {
 	Mesh* pCubeMesh = nullptr;
-	g_pMeshMgr->CreateMesh(&pCubeMesh, g_CubeMeshId);
+	MeshId cubeMeshId;
+	g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
 	pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
 
 	Mesh* pQuadMesh = nullptr;
-	g_pMeshMgr->CreateMesh(&pQuadMesh, g_QuadMeshId);
+	MeshId quadMeshId;
+	g_pMeshMgr->CreateMesh(&pQuadMesh, quadMeshId);
 	pQuadMesh->LoadVertexAndIndexBuffer(g_Quad, _countof(g_Quad), g_QuadIndices, _countof(g_QuadIndices));
 
-	g_pRenderModule->InitPipelineState();
+	RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
+	ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
+	ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
+
+	PipelineStateId base_PosColor_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(rsId, vsId, psId);
+
+	g_QuadId = g_pRenderableMgr->CreateQuad(quadMeshId, base_PosColor_pipelineStateId);
+	g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
 	
 	g_contentLoaded = true;
 
@@ -298,6 +307,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
 	g_pPipelineStateMgr = new PipelineStateMgr();
+	g_pRenderableMgr = new RenderableMgr();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -328,6 +338,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pRenderModule->Shutdown();
 
+	delete g_pRenderableMgr;
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;
 	delete g_pPipelineStateMgr;
