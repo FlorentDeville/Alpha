@@ -23,10 +23,11 @@ void HLayout::Draw(int32_t parentX, int32_t parentY, float parentZ)
 	ComputeWVPMatrix(wvp, parentX, parentY, parentZ);
 	g_pRenderModule->Render(*g_pRenderableMgr->GetQuad(), wvp);
 
-	int32_t x = 0, y = 0;
-	ComputeWorldPosition(parentX, parentY, x, y);
+	ComputeWorldPosition(parentX, parentY, m_wx, m_wy);
+	ComputeScreenPosition(m_wx, m_wy, m_screenX, m_screenY);
+
 	for (Widget* pWidget : m_children)
-		pWidget->Draw(x, y, parentZ - 0.1f);
+		pWidget->Draw(m_wx, m_wy, parentZ - 0.1f);
 }
 
 void HLayout::Resize()

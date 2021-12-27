@@ -13,4 +13,6 @@ public:
 	virtual ~Button();
 
 	void Draw(int32_t parentX, int32_t parentY, float parentZ) override;
+
+	bool Handle(const Message& msg) override;
 };

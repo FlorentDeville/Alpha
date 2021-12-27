@@ -6,6 +6,9 @@
 
 #include "../Window.h"
 
+#include "Widgets/WidgetMgr.h"
+struct Message;
+
 extern Window* g_pWindow;
 
 Widget::Widget()
@@ -14,6 +17,9 @@ Widget::Widget()
 	, m_height(0)
 	, m_x(0)
 	, m_y(0)
+	, m_screenX(0)
+	, m_screenY(0)
+	, m_hover(false)
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -22,6 +28,7 @@ Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
 	, m_height(h)
 	, m_x(x)
 	, m_y(y)
+	, m_hover(false)
 {}
 
 Widget::~Widget()
@@ -39,9 +46,15 @@ void Widget::Draw(int32_t /*x*/, int32_t /*y*/, float /*parentZ*/)
 void Widget::Resize()
 {}
 
+bool Widget::Handle(const Message& /*msg*/)
+{
+	return false;
+}
+
 void Widget::AddWidget(Widget* pWidget)
 {
 	m_children.push_back(pWidget);
+	g_pWidgetMgr->RegisterWidget(pWidget);
 }
 
 void Widget::SetX(int32_t x)
@@ -64,6 +77,16 @@ int32_t Widget::GetY() const
 	return m_y;
 }
 
+int32_t Widget::GetScreenX() const
+{
+	return m_screenX;
+}
+
+int32_t Widget::GetScreenY() const
+{
+	return m_screenY;
+}
+
 uint32_t Widget::GetWidth() const
 {
 	return m_width;
@@ -74,19 +97,21 @@ uint32_t Widget::GetHeight() const
 	return m_height;
 }
 
+bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
+{
+	if (screenX > (uint32_t)GetScreenX() && screenX < GetScreenX() + GetWidth() &&
+		screenY > (uint32_t)GetScreenY() && screenY < GetScreenY() + GetHeight())
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void Widget::ComputeWorldPosition(int32_t parentX, int32_t parentY, int32_t& x, int32_t& y) const
 {
-	//float width = static_cast<float>(m_width);
-	//float height = static_cast<float>(m_height);
-
-	//float windowWidth = static_cast<float>(g_pWindow->GetWidth());
-	//float windowHeight = static_cast<float>(g_pWindow->GetHeight());
-
-	//int32_t halfWidth = static_cast<int32_t>(width * 0.5f);
-	//int32_t halfHeight = static_cast<int32_t>(height * 0.5f);
-
-	x = m_x + parentX; //+ halfWidth;
-	y = parentY - m_y; //- halfHeight;
+	x = m_x + parentX;
+	y = parentY - m_y;
 }
 
 void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp, int32_t parentX, int32_t parentY, float parentZ) const
@@ -113,4 +138,13 @@ void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp, int32_t parentX, int32_t p
 	wvp = DirectX::XMMatrixMultiply(scale, position);
 	wvp = DirectX::XMMatrixMultiply(wvp, view);
 	wvp = DirectX::XMMatrixMultiply(wvp, projection);
+}
+
+void Widget::ComputeScreenPosition(int32_t wx, int32_t wy, int32_t& screenX, int32_t& screenY)
+{
+	int32_t halfWindowWidth = static_cast<int32_t>(g_pWindow->GetWidth() * 0.5f);
+	int32_t halfWindowHeight = static_cast<int32_t>(g_pWindow->GetHeight() * 0.5f);
+
+	screenX = wx + halfWindowWidth;
+	screenY = wy - halfWindowHeight;
 }

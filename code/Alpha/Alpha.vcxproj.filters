@@ -114,6 +114,8 @@
     <ClInclude Include="Rendering\Mesh\Mesh.h" />
     <ClInclude Include="Rendering\Mesh\MeshMgr.h" />
     <ClInclude Include="Rendering\Mesh\MeshId.h" />
+    <ClInclude Include="Widgets\Message.h" />
+    <ClInclude Include="Widgets\MessageId.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">

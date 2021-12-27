@@ -196,6 +196,8 @@
     <ClInclude Include="Rendering\ShaderMgr.h" />
     <ClInclude Include="Widgets\Button.h" />
     <ClInclude Include="Widgets\HLayout.h" />
+    <ClInclude Include="Widgets\Message.h" />
+    <ClInclude Include="Widgets\MessageId.h" />
     <ClInclude Include="Widgets\Widget.h" />
     <ClInclude Include="Widgets\WidgetMgr.h" />
     <ClInclude Include="Window.h" />

@@ -8,8 +8,9 @@
 #include <cstdint>
 #include <exception>
 #include <chrono>
-#include <wrl.h>
-using namespace Microsoft::WRL;
+//#include <wrl.h>
+//using namespace Microsoft::WRL;
+#include <windowsx.h>
 
 // DirectX 12 specific headers.
 #include <d3d12.h>
@@ -32,7 +33,9 @@ using namespace Microsoft::WRL;
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"
+#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
+
 
 bool g_VSync;
 
@@ -179,6 +182,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			g_pRenderModule->m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(uwidth), static_cast<float>(uheight));
 		}
+	}
+		break;
+
+	case WM_MOUSEMOVE:
+	{
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseMove;
+		msg.m_low.m_pos[0] = x;
+		msg.m_low.m_pos[1] = y;
+
+		g_pWidgetMgr->HandleMsg(msg);
 	}
 		break;
 
