@@ -171,6 +171,7 @@
     <ClCompile Include="Widgets\Button.cpp" />
     <ClCompile Include="Widgets\HLayout.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
+    <ClCompile Include="Widgets\WidgetMgr.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,7 @@ using namespace Microsoft::WRL;
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"
+#include "Widgets/WidgetMgr.h"
 
 bool g_VSync;
 
@@ -261,11 +262,7 @@ void Render()
 	// Render the quad
 	//if(false)
 	{
-		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
-		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
-		float x = - windowWidth * 0.5f;
-		float y = windowHeight * 0.5f;
-		g_pButton->Draw((int)x, (int)y, 10);
+		g_pWidgetMgr->Draw();
 	}
 
 	// Render simple quad
@@ -362,6 +359,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pShaderMgr = new ShaderMgr();
 	g_pPipelineStateMgr = new PipelineStateMgr();
 	g_pRenderableMgr = new RenderableMgr();
+	g_pWidgetMgr = new WidgetMgr();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -372,6 +370,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pButton->AddWidget(new Button(300, 100, 0, 0));
 	g_pButton->AddWidget(new Button(400, 150, 0, 0));
 	g_pButton->Resize();
+	g_pWidgetMgr->SetRoot(g_pButton);
+
 	g_pWindow->Show();
 
 	{
@@ -392,6 +392,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pRenderModule->Shutdown();
 
+	delete g_pWidgetMgr;
 	delete g_pRenderableMgr;
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;

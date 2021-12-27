@@ -73,6 +73,9 @@
     <ClCompile Include="Rendering\Mesh\MeshMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Widgets\WidgetMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
