@@ -17,8 +17,8 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 
-#include "RootSignature.h"
-#include "RootSignatureMgr.h"
+#include "Rendering/RootSignature/RootSignature.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
 
 #include "Shader.h"
 #include "ShaderMgr.h"

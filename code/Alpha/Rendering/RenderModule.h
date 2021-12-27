@@ -15,7 +15,7 @@
 #include "MeshMgr.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/Renderable/Renderable.h"
-#include "RootSignatureId.h"
+#include "Rendering/RootSignature/RootSignatureId.h"
 #include "ShaderId.h"
 
 struct IDXGIAdapter4;

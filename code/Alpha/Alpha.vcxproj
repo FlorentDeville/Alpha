@@ -164,8 +164,8 @@
     <ClCompile Include="Rendering\Renderable\Renderable.cpp" />
     <ClCompile Include="Rendering\Renderable\RenderableMgr.cpp" />
     <ClCompile Include="Rendering\RenderModule.cpp" />
-    <ClCompile Include="Rendering\RootSignature.cpp" />
-    <ClCompile Include="Rendering\RootSignatureMgr.cpp" />
+    <ClCompile Include="Rendering\RootSignature\RootSignature.cpp" />
+    <ClCompile Include="Rendering\RootSignature\RootSignatureMgr.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\ShaderMgr.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
@@ -186,9 +186,9 @@
     <ClInclude Include="Rendering\Renderable\RenderableId.h" />
     <ClInclude Include="Rendering\Renderable\RenderableMgr.h" />
     <ClInclude Include="Rendering\RenderModule.h" />
-    <ClInclude Include="Rendering\RootSignature.h" />
-    <ClInclude Include="Rendering\RootSignatureId.h" />
-    <ClInclude Include="Rendering\RootSignatureMgr.h" />
+    <ClInclude Include="Rendering\RootSignature\RootSignature.h" />
+    <ClInclude Include="Rendering\RootSignature\RootSignatureId.h" />
+    <ClInclude Include="Rendering\RootSignature\RootSignatureMgr.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShaderId.h" />
     <ClInclude Include="Rendering\ShaderMgr.h" />

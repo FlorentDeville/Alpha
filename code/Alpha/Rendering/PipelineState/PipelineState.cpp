@@ -10,8 +10,8 @@
 #include "Helper.h"
 #include "Rendering/InputLayout/InputLayout.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/RootSignature.h"
-#include "Rendering/RootSignatureMgr.h"
+#include "Rendering/RootSignature/RootSignature.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderMgr.h"
 

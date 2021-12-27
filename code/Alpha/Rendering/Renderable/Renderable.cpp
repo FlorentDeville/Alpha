@@ -7,8 +7,8 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 
-#include "Rendering/RootSignature.h"
-#include "Rendering/RootSignatureMgr.h"
+#include "Rendering/RootSignature/RootSignature.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
 
 #include "Rendering/Mesh.h"
 #include "Rendering/MeshMgr.h"

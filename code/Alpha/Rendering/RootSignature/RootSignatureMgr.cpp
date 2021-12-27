@@ -2,7 +2,7 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "RootSignatureMgr.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
 
 #include "RootSignature.h"
 #include "RootSignatureId.h"

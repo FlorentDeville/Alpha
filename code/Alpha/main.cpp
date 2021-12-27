@@ -27,7 +27,7 @@ using namespace Microsoft::WRL;
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/RootSignatureMgr.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
 #include "Window.h"
 #include "Widgets/Button.h"

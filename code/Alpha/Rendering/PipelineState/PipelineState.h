@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Rendering/RootSignatureId.h"
+#include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/ShaderId.h"
 
 #include <d3d12.h>

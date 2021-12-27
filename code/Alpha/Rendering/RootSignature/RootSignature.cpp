@@ -2,12 +2,12 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "RootSignature.h"
+#include "Rendering/RootSignature/RootSignature.h"
 
 #include <d3dcompiler.h>
 
 #include "Helper.h"
-#include "RenderModule.h"
+#include "Rendering/RenderModule.h"
 
 extern RenderModule* g_pRenderModule;
 
