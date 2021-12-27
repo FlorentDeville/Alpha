@@ -14,11 +14,16 @@
 #include "CommandQueue.h"
 #include "Helper.h"
 
+#include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
+
 #include "RootSignature.h"
 #include "RootSignatureMgr.h"
 
 #include "Shader.h"
 #include "ShaderMgr.h"
+
+#include "InputLayout/InputLayout.h"
 
 #if defined(_DEBUG)
 #include <dxgidebug.h>
@@ -26,16 +31,16 @@
 
 extern MeshMgr* g_pMeshMgr;
 
-struct PipelineStateStream
-{
-	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
-	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-};
+//struct PipelineStateStream
+//{
+//	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+//	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
+//	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
+//	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
+//	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+//	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
+//	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
+//};
 
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
@@ -52,7 +57,6 @@ RenderModule::RenderModule()
 #if defined(_DEBUG)
 	, m_pDebugInterface(nullptr)
 #endif
-	, m_pPipelineState(nullptr)
 	, m_pRenderCommandList(nullptr)
 {}
 
@@ -158,16 +162,18 @@ void RenderModule::PostRender()
 	m_pRenderCommandList = nullptr;
 }
 
-void RenderModule::Render(MeshId id, const DirectX::XMMATRIX& wvp)
+void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp)
 {
-	m_pRenderCommandList->SetPipelineState(m_pPipelineState);
+	PipelineState* pPipelineState = g_pPipelineStateMgr->GetPipelineState(renderable.GetPipeplineStateId());
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRSId);
+	m_pRenderCommandList->SetPipelineState(pPipelineState->GetPipelineState());
+
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
 	m_pRenderCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
 
 	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	const Mesh* pMesh = g_pMeshMgr->GetMesh(id);
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(renderable.GetMeshId());
 	m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
 	m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
 
@@ -255,31 +261,22 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 }
 
-void RenderModule::InitRootSignature()
-{
-	m_baseRSId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
-}
-
 void RenderModule::InitPipelineState()
 {
+	m_baseRSId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
 	m_baseVSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
 	m_basePSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
 
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+	m_base_PosColor_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(m_baseRSId, m_baseVSId, m_basePSId);
+	/*D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	// Create the vertex input layout
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	};
 
 	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRSId);
 
 	PipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { inputLayout, _countof(inputLayout) };
+	pipelineStateStream.InputLayout = { g_inputLayout_pos_color, _countof(g_inputLayout_pos_color) };
 	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(m_baseVSId)->GetBlob());
 	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(m_basePSId)->GetBlob());
@@ -289,7 +286,7 @@ void RenderModule::InitPipelineState()
 	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 		sizeof(PipelineStateStream), &pipelineStateStream
 	};
-	ThrowIfFailed(m_pDevice->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	ThrowIfFailed(m_pDevice->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));*/
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()
@@ -532,3 +529,5 @@ void RenderModule::UpdateRenderTargetViews()
 		rtvHandle.Offset(m_RTVDescriptorSize);
 	}
 }
+
+RenderModule* g_pRenderModule = nullptr;

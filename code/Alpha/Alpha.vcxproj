@@ -156,8 +156,12 @@
     <ClCompile Include="Rendering\CommandQueue.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Rendering\InputLayout\InputLayout.cpp" />
     <ClCompile Include="Rendering\Mesh.cpp" />
     <ClCompile Include="Rendering\MeshMgr.cpp" />
+    <ClCompile Include="Rendering\PipelineState\PipelineState.cpp" />
+    <ClCompile Include="Rendering\PipelineState\PipelineStateMgr.cpp" />
+    <ClCompile Include="Rendering\Renderable\Renderable.cpp" />
     <ClCompile Include="Rendering\RenderModule.cpp" />
     <ClCompile Include="Rendering\RootSignature.cpp" />
     <ClCompile Include="Rendering\RootSignatureMgr.cpp" />
@@ -171,8 +175,13 @@
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Rendering\InputLayout\InputLayout.h" />
     <ClInclude Include="Rendering\Mesh.h" />
     <ClInclude Include="Rendering\MeshMgr.h" />
+    <ClInclude Include="Rendering\PipelineState\PipelineState.h" />
+    <ClInclude Include="Rendering\PipelineState\PipelineStateId.h" />
+    <ClInclude Include="Rendering\PipelineState\PipelineStateMgr.h" />
+    <ClInclude Include="Rendering\Renderable\Renderable.h" />
     <ClInclude Include="Rendering\RenderModule.h" />
     <ClInclude Include="Rendering\RootSignature.h" />
     <ClInclude Include="Rendering\RootSignatureId.h" />

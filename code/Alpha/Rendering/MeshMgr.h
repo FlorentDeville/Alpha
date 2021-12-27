@@ -24,3 +24,5 @@ public:
 private:
 	std::vector<Mesh*> m_meshes;
 };
+
+extern MeshMgr* g_pMeshMgr;

@@ -28,3 +28,5 @@ const Mesh* MeshMgr::GetMesh(MeshId id) const
 	assert(id < m_meshes.size());
 	return m_meshes[id];
 }
+
+MeshMgr* g_pMeshMgr = nullptr;

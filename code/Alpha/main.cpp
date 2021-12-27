@@ -24,6 +24,7 @@ using namespace Microsoft::WRL;
 #include "Helper.h"
 #include "Rendering/Mesh.h"
 #include "Rendering/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
@@ -35,9 +36,7 @@ bool g_VSync;
 
 bool g_IsInitialized = false;
 
-RenderModule* g_pRenderModule = nullptr;
 Window* g_pWindow = nullptr;
-MeshMgr* g_pMeshMgr = nullptr;
 HLayout* g_pButton = nullptr;
 
 MeshId g_CubeMeshId;
@@ -245,7 +244,8 @@ void Render()
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		g_pRenderModule->Render(g_CubeMeshId, mvpMatrix);
+		Renderable renderable(g_CubeMeshId, g_pRenderModule->m_base_PosColor_pipelineStateId);
+		g_pRenderModule->Render(renderable, mvpMatrix);
 	}
 	
 
@@ -272,7 +272,6 @@ bool LoadContent()
 	g_pMeshMgr->CreateMesh(&pQuadMesh, g_QuadMeshId);
 	pQuadMesh->LoadVertexAndIndexBuffer(g_Quad, _countof(g_Quad), g_QuadIndices, _countof(g_QuadIndices));
 
-	g_pRenderModule->InitRootSignature();
 	g_pRenderModule->InitPipelineState();
 	
 	g_contentLoaded = true;
@@ -298,6 +297,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
+	g_pPipelineStateMgr = new PipelineStateMgr();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -330,6 +330,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;
+	delete g_pPipelineStateMgr;
 	delete g_pMeshMgr;
 	delete g_pWindow;
 	delete g_pRenderModule;

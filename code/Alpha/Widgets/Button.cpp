@@ -23,5 +23,6 @@ void Button::Draw(int32_t parentX, int32_t parentY, float parentZ)
 {
 	DirectX::XMMATRIX mvpMatrix;
 	ComputeWVPMatrix(mvpMatrix, parentX, parentY, parentZ);
-	g_pRenderModule->Render(g_QuadMeshId, mvpMatrix);
+	Renderable renderable(g_QuadMeshId, g_pRenderModule->m_base_PosColor_pipelineStateId);
+	g_pRenderModule->Render(renderable, mvpMatrix);
 }

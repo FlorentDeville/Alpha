@@ -20,7 +20,8 @@ void HLayout::Draw(int32_t parentX, int32_t parentY, float parentZ)
 {
 	DirectX::XMMATRIX wvp;
 	ComputeWVPMatrix(wvp, parentX, parentY, parentZ);
-	g_pRenderModule->Render(g_QuadMeshId, wvp);
+	Renderable renderable(g_QuadMeshId, g_pRenderModule->m_base_PosColor_pipelineStateId);
+	g_pRenderModule->Render(renderable, wvp);
 
 	int32_t x = 0, y = 0;
 	ComputeWorldPosition(parentX, parentY, x, y);

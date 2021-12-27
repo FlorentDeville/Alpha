@@ -13,6 +13,8 @@
 #include <d3d12.h>
 
 #include "MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateId.h"
+#include "Rendering/Renderable/Renderable.h"
 #include "RootSignatureId.h"
 #include "ShaderId.h"
 
@@ -36,13 +38,12 @@ public:
 	void PreRender();
 	void PostRender();
 
-	void Render(MeshId id, const DirectX::XMMATRIX& wvp);
+	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp);
 
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
 
 	//Temp functions
-	void InitRootSignature();
 	void InitPipelineState();
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
@@ -88,15 +89,15 @@ public:
 	/*I'm not reall sure how to organize this yet	*/
 	/*so I just dump it here						*/
 	/************************************************/
-	//ID3D12RootSignature* m_pRootSignature;
-	ID3D12PipelineState* m_pPipelineState;
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissorRect;
+	PipelineStateId m_base_PosColor_pipelineStateId;
 
 private:
 	RootSignatureId m_baseRSId;
 	ShaderId m_baseVSId;
 	ShaderId m_basePSId;
+	
 
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 
@@ -109,3 +110,5 @@ private:
 	void CreateDSVDescriptorHeap();
 	void UpdateRenderTargetViews();
 };
+
+extern RenderModule* g_pRenderModule;
