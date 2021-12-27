@@ -92,12 +92,12 @@ static VertexPosColor g_Quad[4] =
 	{ DirectX::XMFLOAT3(-0.5f * mul, -0.5f * mul, 0.f),	DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) }, // bottom left
 };
 
-static VertexPos g_SimpleQuad[4] =
+static VertexPosUv g_SimpleQuad[4] =
 {
-	DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f),	// top left
-	DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	// top right
-	DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	// bottom right
-	DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f)	// bottom left
+	{ DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f), DirectX::XMFLOAT2(0.f, 0.f) },	// top left
+	{ DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	DirectX::XMFLOAT2(1.f, 0.f) },	// top right
+	{ DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	DirectX::XMFLOAT2(1.f, 1.f) },	// bottom right
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f),	DirectX::XMFLOAT2(0.f, 1.f) }	// bottom left
 };
 
 static uint16_t g_QuadIndices[6]
@@ -283,7 +283,7 @@ void Render()
 	}
 
 	// Render simple quad
-	//if(false)
+	if(false)
 	{
 		float width = 100;//static_cast<float>(m_width);
 		float height = 100;//static_cast<float>(m_height);
@@ -346,7 +346,7 @@ bool LoadContent()
 		vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
 		psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
 
-		PipelineStateId widget_Pos_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(rsId, vsId, psId);
+		PipelineStateId widget_Pos_pipelineStateId = g_pPipelineStateMgr->Create_PosUv(rsId, vsId, psId);
 
 		g_SimpleQuadId = g_pRenderableMgr->CreateRenderable(simpleQuadMeshId, widget_Pos_pipelineStateId);
 	}

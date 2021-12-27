@@ -30,6 +30,18 @@ PipelineStateId PipelineStateMgr::Create_Pos(RootSignatureId rsId, ShaderId vsId
 	return id;
 }
 
+PipelineStateId PipelineStateMgr::Create_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+{
+	PipelineStateId id;
+	id.m_id = m_pipelineStates.size();
+
+	PipelineState* pPipelineState = new PipelineState();
+	pPipelineState->Init_PosUv(rsId, vsId, psId);
+	m_pipelineStates.push_back(pPipelineState);
+
+	return id;
+}
+
 PipelineStateId PipelineStateMgr::Create_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
 {
 	PipelineStateId id;

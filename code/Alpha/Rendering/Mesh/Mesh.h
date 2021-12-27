@@ -13,6 +13,12 @@ struct VertexPos
 	DirectX::XMFLOAT3 Position;
 };
 
+struct VertexPosUv
+{
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT2 Uv;
+};
+
 struct VertexPosColor
 {
 	DirectX::XMFLOAT3 Position;
@@ -27,6 +33,7 @@ public:
 
 	void LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 	void LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
+	void LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
 	const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;

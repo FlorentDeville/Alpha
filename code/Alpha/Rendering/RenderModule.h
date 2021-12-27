@@ -41,6 +41,12 @@ public:
 	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp, const DirectX::XMVECTOR& color);
 	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp);
 
+	//Call PreRenderForRenderable, then SetConstantBuffer, then PostRenderForRenderable.
+	void PreRenderForRenderable(const Renderable& renderable);
+	void PostRenderForRenderable(const Renderable& renderable);
+
+	void SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset);
+
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
 

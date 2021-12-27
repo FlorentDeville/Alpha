@@ -26,11 +26,21 @@ void Button::Draw(int32_t parentX, int32_t parentY, float parentZ)
 	ComputeWorldPosition(parentX, parentY, m_wx, m_wy);
 	ComputeScreenPosition(m_wx, m_wy, m_screenX, m_screenY);
 
-	DirectX::XMVECTOR color = DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f);
+	DirectX::XMVECTOR color = m_backgroundColor;
 	if(m_hover)
 		color = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
 
-	g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_SimpleQuadId), mvpMatrix, color);
+	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_SimpleQuadId);
+	g_pRenderModule->PreRenderForRenderable(*pRenderable);
+
+	g_pRenderModule->SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
+	g_pRenderModule->SetConstantBuffer(1, sizeof(color), &color, 0);
+
+	int value = m_showBorder ? 1 : 0;
+	g_pRenderModule->SetConstantBuffer(2, sizeof(value), &value, 0);
+	g_pRenderModule->SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+
+	g_pRenderModule->PostRenderForRenderable(*pRenderable);
 }
 
 bool Button::Handle(const Message& msg)
@@ -40,6 +50,7 @@ bool Button::Handle(const Message& msg)
 	case M_MouseEnter:
 	{
 		m_hover = true;
+		m_showBorder = true;
 		return true;
 	}
 	break;
@@ -47,6 +58,7 @@ bool Button::Handle(const Message& msg)
 	case M_MouseExit:
 	{
 		m_hover = false;
+		m_showBorder = false;
 		return true;
 	}
 	break;

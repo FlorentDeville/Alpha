@@ -19,6 +19,7 @@ public:
 	~PipelineStateMgr();
 
 	PipelineStateId Create_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+	PipelineStateId Create_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 	PipelineStateId Create_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 	PipelineState* GetPipelineState(PipelineStateId id) const;
 

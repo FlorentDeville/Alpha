@@ -206,6 +206,40 @@ void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX&
 	m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 }
 
+void RenderModule::PreRenderForRenderable(const Renderable& renderable)
+{
+	PipelineState* pPipelineState = g_pPipelineStateMgr->GetPipelineState(renderable.GetPipeplineStateId());
+
+	m_pRenderCommandList->SetPipelineState(pPipelineState->GetPipelineState());
+
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
+	m_pRenderCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
+
+	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(renderable.GetMeshId());
+	m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
+	m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+
+	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
+	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+}
+
+void RenderModule::PostRenderForRenderable(const Renderable& renderable)
+{
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(renderable.GetMeshId());
+	m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+}
+
+void RenderModule::SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset)
+{
+	m_pRenderCommandList->SetGraphicsRoot32BitConstants(registerId, sizeInBytes / 4, pData, offset);
+}
+
 void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 {
 	// Flush the GPU queue to make sure the swap chain's back buffers

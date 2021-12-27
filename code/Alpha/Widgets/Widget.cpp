@@ -20,16 +20,19 @@ Widget::Widget()
 	, m_screenX(0)
 	, m_screenY(0)
 	, m_hover(false)
+	, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
+	, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
+	, m_showBorder(false)
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
-	: m_children()
-	, m_width(w)
-	, m_height(h)
-	, m_x(x)
-	, m_y(y)
-	, m_hover(false)
-{}
+	: Widget()
+{
+	m_width = w;
+	m_height = h;
+	m_x = x;
+	m_y = y;
+}
 
 Widget::~Widget()
 {

@@ -63,6 +63,10 @@ protected:
 	int32_t m_screenX; //absolute position in screen space (from the top left corner)
 	int32_t m_screenY; //absolute position in screen space (from the top left corner)
 
+	DirectX::XMVECTOR m_backgroundColor;
+	DirectX::XMVECTOR m_borderColor;
+	bool m_showBorder;
+	
 	bool m_hover;	//Indicate if the mouse is hovering the widget;
 
 	void ComputeWorldPosition(int32_t parentX, int32_t parentY, int32_t& x, int32_t& y) const;
