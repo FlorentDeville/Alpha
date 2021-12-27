@@ -6,4 +6,5 @@
 
 #include <d3d12.h>
 
+extern D3D12_INPUT_ELEMENT_DESC g_inputLayout_pos[1];
 extern D3D12_INPUT_ELEMENT_DESC g_inputLayout_pos_color[2];

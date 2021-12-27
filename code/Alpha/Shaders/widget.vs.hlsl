@@ -2,12 +2,16 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "base.rs.hlsl"
+#include "widget.rs.hlsl"
 
-struct VertexPosColor
+struct VertexPos
 {
 	float3 Position : POSITION;
-	float3 Color : COLOR;
+};
+
+struct VertexShaderOutput
+{
+	float4 Position : SV_Position;
 };
 
 struct ModelViewProjection
@@ -17,17 +21,10 @@ struct ModelViewProjection
 
 ConstantBuffer<ModelViewProjection> ModelViewProjectionCB : register(b0);
 
-struct VertexShaderOutput
-{
-	float4 Color :COLOR;
-	float4 Position : SV_Position;
-};
-
 [RootSignature(RS)]
-VertexShaderOutput main(VertexPosColor IN)
+VertexShaderOutput main(VertexPos IN)
 {
 	VertexShaderOutput OUT;
 	OUT.Position = mul(ModelViewProjectionCB.MVP, float4(IN.Position, 1.f));
-	OUT.Color = float4(IN.Color, 1.f);
 	return OUT;
 }

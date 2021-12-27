@@ -15,6 +15,7 @@ public:
 	PipelineState();
 	~PipelineState();
 
+	void Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 	void Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 
 	ID3D12PipelineState* GetPipelineState() const;

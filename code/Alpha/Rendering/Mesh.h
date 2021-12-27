@@ -8,6 +8,11 @@
 
 #include <d3d12.h>
 
+struct VertexPos
+{
+	DirectX::XMFLOAT3 Position;
+};
+
 struct VertexPosColor
 {
 	DirectX::XMFLOAT3 Position;
@@ -20,6 +25,7 @@ public:
 	Mesh();
 	~Mesh();
 
+	void LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 	void LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;

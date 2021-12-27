@@ -42,6 +42,7 @@ HLayout* g_pButton = nullptr;
 
 RenderableId g_CubeId;
 RenderableId g_QuadId;
+RenderableId g_SimpleQuadId;
 
 float g_FoV;
 
@@ -85,6 +86,14 @@ static VertexPosColor g_Quad[4] =
 	{ DirectX::XMFLOAT3(0.5f * mul, 0.5f * mul, 0.f),	DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) }, // top right
 	{ DirectX::XMFLOAT3(0.5f * mul, -0.5f * mul, 0.f),	DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f) }, // bottom right
 	{ DirectX::XMFLOAT3(-0.5f * mul, -0.5f * mul, 0.f),	DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f) }, // bottom left
+};
+
+static VertexPos g_SimpleQuad[4] =
+{
+	DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f),	// top left
+	DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	// top right
+	DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	// bottom right
+	DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f)	// bottom left
 };
 
 static uint16_t g_QuadIndices[6]
@@ -259,6 +268,36 @@ void Render()
 		g_pButton->Draw((int)x, (int)y, 10);
 	}
 
+	// Render simple quad
+	//if(false)
+	{
+		float width = 100;//static_cast<float>(m_width);
+		float height = 100;//static_cast<float>(m_height);
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
+
+		//position : top left corner
+		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
+		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
+
+		float x = 0  + width * 0.5f;
+		float y = 50 - height * 0.5f;
+		float z = 1;
+		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, z);
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
+
+		float projWidth = static_cast<float>(windowWidth);
+		float projHeight = static_cast<float>(windowHeight);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, 0.1f, 100.f);
+
+		DirectX::XMMATRIX wvp = DirectX::XMMatrixMultiply(scale, position);
+		wvp = DirectX::XMMatrixMultiply(wvp, view);
+		wvp = DirectX::XMMatrixMultiply(wvp, projection);
+
+		DirectX::XMVECTOR color = DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1);
+		g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_SimpleQuadId), wvp, color);
+	}
+
 	g_pRenderModule->PostRender();
 }
 
@@ -283,6 +322,21 @@ bool LoadContent()
 	g_QuadId = g_pRenderableMgr->CreateQuad(quadMeshId, base_PosColor_pipelineStateId);
 	g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
 	
+	{
+		Mesh* pSimpleQuad = nullptr;
+		MeshId simpleQuadMeshId;
+		g_pMeshMgr->CreateMesh(&pSimpleQuad, simpleQuadMeshId);
+		pSimpleQuad->LoadVertexAndIndexBuffer(g_SimpleQuad, _countof(g_SimpleQuad), g_Indicies, _countof(g_Indicies));
+
+		rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
+		vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
+		psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
+
+		PipelineStateId widget_Pos_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(rsId, vsId, psId);
+
+		g_SimpleQuadId = g_pRenderableMgr->CreateRenderable(simpleQuadMeshId, widget_Pos_pipelineStateId);
+	}
+
 	g_contentLoaded = true;
 
 	return true;

@@ -46,12 +46,6 @@
     <ClCompile Include="Widgets\HLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\RootSignature.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\RootSignatureMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Rendering\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -107,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="Widgets\WidgetMgr.h" />
     <ClInclude Include="Widgets\HLayout.h" />
-    <ClInclude Include="Rendering\RootSignature.h" />
-    <ClInclude Include="Rendering\RootSignatureMgr.h" />
-    <ClInclude Include="Rendering\RootSignatureId.h" />
     <ClInclude Include="Rendering\ShaderId.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShaderMgr.h" />
@@ -132,5 +123,8 @@
       <Filter>gfx</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\base.rs.hlsl" />
+    <FxCompile Include="Shaders\widget.rs.hlsl" />
+    <FxCompile Include="Shaders\widget.vs.hlsl" />
+    <FxCompile Include="Shaders\widget.ps.hlsl" />
   </ItemGroup>
 </Project>

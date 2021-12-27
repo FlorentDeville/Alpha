@@ -69,6 +69,34 @@ Mesh::~Mesh()
 		m_pIndexBuffer->Release();
 }
 
+void Mesh::LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
+{
+	m_indicesCount = indicesCount;
+
+	CommandQueue* pCopyCommandQueue = g_pRenderModule->GetCopyCommandQueue();
+	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
+
+	ID3D12Resource* pIntermediateVertexBuffer;
+	UpdateBufferResource(pCommandList, &m_pVertexBuffer, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPos), pVertices, D3D12_RESOURCE_FLAG_NONE);
+
+	// Create the vertex buffer view.
+	m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
+	m_vertexBufferView.SizeInBytes = sizeof(VertexPos) * verticesCount;
+	m_vertexBufferView.StrideInBytes = sizeof(VertexPos);
+
+	ID3D12Resource* pIntermediateIndexBuffer;
+	UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+
+	// Create index buffer view.
+	m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
+	m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+	m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+
+	//Upload everything to the gpu
+	uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
+	pCopyCommandQueue->WaitForFenceValue(fenceValue);
+}
+
 void Mesh::LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 {
 	m_indicesCount = indicesCount;

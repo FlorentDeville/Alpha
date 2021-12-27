@@ -38,6 +38,7 @@ public:
 	void PreRender();
 	void PostRender();
 
+	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp, const DirectX::XMVECTOR& color);
 	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp);
 
 	void ResizeSwapChain(uint32_t width, uint32_t height);
