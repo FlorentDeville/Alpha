@@ -340,7 +340,7 @@ bool LoadContent()
 		Mesh* pSimpleQuad = nullptr;
 		MeshId simpleQuadMeshId;
 		g_pMeshMgr->CreateMesh(&pSimpleQuad, simpleQuadMeshId);
-		pSimpleQuad->LoadVertexAndIndexBuffer(g_SimpleQuad, _countof(g_SimpleQuad), g_Indicies, _countof(g_Indicies));
+		pSimpleQuad->LoadVertexAndIndexBuffer(g_SimpleQuad, _countof(g_SimpleQuad), g_QuadIndices, _countof(g_QuadIndices));
 
 		rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
 		vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
