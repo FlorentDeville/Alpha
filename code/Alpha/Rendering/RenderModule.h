@@ -11,8 +11,8 @@
 #include <cstdint>
 
 #include <d3d12.h>
+#include <DirectXMath.h>
 
-#include "MeshMgr.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/Renderable/Renderable.h"
 #include "Rendering/RootSignature/RootSignatureId.h"

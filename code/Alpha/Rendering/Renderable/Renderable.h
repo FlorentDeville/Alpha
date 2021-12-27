@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Rendering/MeshMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 
 class Renderable

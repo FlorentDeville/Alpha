@@ -2,7 +2,11 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "MeshMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
+
+#include "Rendering/Mesh/Mesh.h"
+
+#include <assert.h>
 
 MeshMgr::MeshMgr()
 	: m_meshes()
@@ -16,7 +20,7 @@ MeshMgr::~MeshMgr()
 
 bool MeshMgr::CreateMesh(Mesh** ppMesh, MeshId& id)
 {
-	id = m_meshes.size();
+	id.m_id = m_meshes.size();
 	m_meshes.push_back(new Mesh());
 	*ppMesh = m_meshes.back();
 
@@ -25,8 +29,8 @@ bool MeshMgr::CreateMesh(Mesh** ppMesh, MeshId& id)
 
 const Mesh* MeshMgr::GetMesh(MeshId id) const
 {
-	assert(id < m_meshes.size());
-	return m_meshes[id];
+	assert(id.m_id < m_meshes.size());
+	return m_meshes[id.m_id];
 }
 
 MeshMgr* g_pMeshMgr = nullptr;

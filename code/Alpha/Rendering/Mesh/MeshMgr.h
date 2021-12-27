@@ -7,10 +7,10 @@
 #include <cstdint>
 #include <vector>
 
-#include "Mesh.h"
+#include "Rendering/Mesh/MeshId.h"
 
-using MeshId = size_t;
-
+class Mesh;
+ 
 class MeshMgr
 {
 public:

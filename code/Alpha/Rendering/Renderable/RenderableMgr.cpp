@@ -6,6 +6,7 @@
 
 #include "Rendering/Renderable/Renderable.h"
 
+#include <assert.h>
 
 RenderableMgr::RenderableMgr()
 	: m_renderables()

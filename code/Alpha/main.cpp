@@ -22,8 +22,8 @@ using namespace Microsoft::WRL;
 
 #include "Rendering/CommandQueue.h"
 #include "Helper.h"
-#include "Rendering/Mesh.h"
-#include "Rendering/MeshMgr.h"
+#include "Rendering/Mesh/Mesh.h"
+#include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"

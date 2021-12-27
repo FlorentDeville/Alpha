@@ -157,8 +157,8 @@
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rendering\InputLayout\InputLayout.cpp" />
-    <ClCompile Include="Rendering\Mesh.cpp" />
-    <ClCompile Include="Rendering\MeshMgr.cpp" />
+    <ClCompile Include="Rendering\Mesh\Mesh.cpp" />
+    <ClCompile Include="Rendering\Mesh\MeshMgr.cpp" />
     <ClCompile Include="Rendering\PipelineState\PipelineState.cpp" />
     <ClCompile Include="Rendering\PipelineState\PipelineStateMgr.cpp" />
     <ClCompile Include="Rendering\Renderable\Renderable.cpp" />
@@ -177,8 +177,9 @@
     <ClInclude Include="Rendering\CommandQueue.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Rendering\InputLayout\InputLayout.h" />
-    <ClInclude Include="Rendering\Mesh.h" />
-    <ClInclude Include="Rendering\MeshMgr.h" />
+    <ClInclude Include="Rendering\Mesh\Mesh.h" />
+    <ClInclude Include="Rendering\Mesh\MeshId.h" />
+    <ClInclude Include="Rendering\Mesh\MeshMgr.h" />
     <ClInclude Include="Rendering\PipelineState\PipelineState.h" />
     <ClInclude Include="Rendering\PipelineState\PipelineStateId.h" />
     <ClInclude Include="Rendering\PipelineState\PipelineStateMgr.h" />

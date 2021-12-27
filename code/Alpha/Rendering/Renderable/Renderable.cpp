@@ -10,8 +10,8 @@
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 
-#include "Rendering/Mesh.h"
-#include "Rendering/MeshMgr.h"
+#include "Rendering/Mesh/Mesh.h"
+#include "Rendering/Mesh/MeshMgr.h"
 
 Renderable::Renderable(MeshId meshId, PipelineStateId pipelineStateId)
 	: m_meshId(meshId)

@@ -31,12 +31,6 @@
     <ClCompile Include="Rendering\RenderModule.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\Mesh.cpp">
-      <Filter>gfx\Meshes</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\MeshMgr.cpp">
-      <Filter>gfx\Meshes</Filter>
-    </ClCompile>
     <ClCompile Include="Widgets\Widget.cpp">
       <Filter>Widgets</Filter>
     </ClCompile>
@@ -73,6 +67,12 @@
     <ClCompile Include="Rendering\RootSignature\RootSignatureMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\Mesh\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Mesh\MeshMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
@@ -86,12 +86,6 @@
     </ClInclude>
     <ClInclude Include="Rendering\RenderModule.h">
       <Filter>gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\Mesh.h">
-      <Filter>gfx\Meshes</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\MeshMgr.h">
-      <Filter>gfx\Meshes</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Widget.h">
       <Filter>Widgets</Filter>
@@ -114,6 +108,9 @@
     <ClInclude Include="Rendering\RootSignature\RootSignature.h" />
     <ClInclude Include="Rendering\RootSignature\RootSignatureId.h" />
     <ClInclude Include="Rendering\RootSignature\RootSignatureMgr.h" />
+    <ClInclude Include="Rendering\Mesh\Mesh.h" />
+    <ClInclude Include="Rendering\Mesh\MeshMgr.h" />
+    <ClInclude Include="Rendering\Mesh\MeshId.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">

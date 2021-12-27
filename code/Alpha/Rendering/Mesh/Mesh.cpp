@@ -6,9 +6,10 @@
 
 #include <d3dx12.h>
 
-#include "CommandQueue.h"
+#include "Rendering/CommandQueue.h"
+#include "Rendering/RenderModule.h"
 #include "Helper.h"
-#include "RenderModule.h"
+
 
 extern RenderModule* g_pRenderModule;
 

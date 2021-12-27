@@ -14,6 +14,8 @@
 #include "CommandQueue.h"
 #include "Helper.h"
 
+#include "Rendering/Mesh/Mesh.h"
+
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 
