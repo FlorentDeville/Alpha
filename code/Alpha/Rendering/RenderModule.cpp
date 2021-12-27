@@ -29,19 +29,6 @@
 #include <dxgidebug.h>
 #endif
 
-extern MeshMgr* g_pMeshMgr;
-
-//struct PipelineStateStream
-//{
-//	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-//	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-//	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-//	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-//	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-//	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
-//	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-//};
-
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
 	, m_pSwapChain(nullptr)
@@ -268,25 +255,6 @@ void RenderModule::InitPipelineState()
 	m_basePSId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
 
 	m_base_PosColor_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(m_baseRSId, m_baseVSId, m_basePSId);
-	/*D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(m_baseRSId);
-
-	PipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_pos_color, _countof(g_inputLayout_pos_color) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(m_baseVSId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(m_basePSId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
-
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(PipelineStateStream), &pipelineStateStream
-	};
-	ThrowIfFailed(m_pDevice->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));*/
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()
