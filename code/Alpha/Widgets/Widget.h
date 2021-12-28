@@ -37,6 +37,8 @@ public:
 	void SetX(int32_t x);
 	void SetY(int32_t y);
 
+	void SetBackgroundColor(const DirectX::XMVECTOR& color);
+
 	int32_t GetX() const; //Get the local x coordinate from the top left corner
 	int32_t GetY() const; //Get the local y coordinate from the top left corner
 

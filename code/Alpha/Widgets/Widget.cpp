@@ -71,6 +71,11 @@ void Widget::SetY(int32_t y)
 	m_y = y;
 }
 
+void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
+{
+	m_backgroundColor = color;
+}
+
 int32_t Widget::GetX() const
 {
 	return m_x;

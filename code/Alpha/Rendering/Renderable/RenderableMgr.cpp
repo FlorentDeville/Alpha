@@ -10,7 +10,6 @@
 
 RenderableMgr::RenderableMgr()
 	: m_renderables()
-	, m_quadId()
 {}
 
 RenderableMgr::~RenderableMgr()
@@ -27,21 +26,10 @@ RenderableId RenderableMgr::CreateRenderable(MeshId meshId, PipelineStateId pipe
 	return id;
 }
 
-RenderableId RenderableMgr::CreateQuad(MeshId meshId, PipelineStateId pipelineStateId)
-{
-	m_quadId = CreateRenderable(meshId, pipelineStateId);
-	return m_quadId;
-}
-
 Renderable* RenderableMgr::GetRenderable(RenderableId renderableId) const
 {
 	assert(renderableId.m_id < m_renderables.size());
 	return m_renderables[renderableId.m_id];
-}
-
-Renderable* RenderableMgr::GetQuad() const
-{
-	return GetRenderable(m_quadId);
 }
 
 RenderableMgr* g_pRenderableMgr = nullptr;

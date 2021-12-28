@@ -4,9 +4,11 @@
 
 #pragma once
 
-#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/Renderable/RenderableId.h"
+
+#include <vector>
 
 class Renderable;
 
@@ -17,16 +19,11 @@ public:
 	~RenderableMgr();
 
 	RenderableId CreateRenderable(MeshId meshId, PipelineStateId pipelineStateId);
-	RenderableId CreateQuad(MeshId meshId, PipelineStateId pipelineStateId);
-	
+
 	Renderable* GetRenderable(RenderableId renderableId) const;
-	Renderable* GetQuad() const;
 
 private:
 	std::vector<Renderable*> m_renderables;
-
-	RenderableId m_quadId;
-
 };
 
 extern RenderableMgr* g_pRenderableMgr;

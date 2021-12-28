@@ -38,7 +38,6 @@ public:
 	void PreRender();
 	void PostRender();
 
-	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp, const DirectX::XMVECTOR& color);
 	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp);
 
 	//Call PreRenderForRenderable, then SetConstantBuffer, then PostRenderForRenderable.
