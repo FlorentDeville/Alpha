@@ -136,7 +136,7 @@ void RenderModule::PostRender()
 	m_pRenderCommandList->ResourceBarrier(1, &barrier);
 
 	//run the command list
-	m_pRenderCommandQueue->ExecuteCommandList(m_pRenderCommandList);
+	uint64_t fenceValue = m_pRenderCommandQueue->ExecuteCommandList(m_pRenderCommandList);
 
 	//present
 	UINT syncInterval = m_vSync ? 1 : 0;
@@ -144,7 +144,6 @@ void RenderModule::PostRender()
 	ThrowIfFailed(m_pSwapChain->Present(syncInterval, presentFlags));
 
 	//wait for the commands to be run
-	uint64_t fenceValue = m_pRenderCommandQueue->Signal();
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
 	m_pRenderCommandQueue->WaitForFenceValue(fenceValue);
