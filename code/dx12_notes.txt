@@ -1,0 +1,20 @@
+Heap : memory, can be on the cpu or gpu
+Resource : buffer in a heap. A pointer inside the heap.
+   - Commited Resource : it's a heap and a resource. The heap is big enough for the resource and the resource is mapped to the entire heap. (CreateCommittedResource)
+   - Placed Resource : a resource you place yourself inside a heap with an offset form the beginning of the heap and a size. (CreatePlacedResource)
+   - Reserved Resource : virtual address range that can be mapped/unmapped at will. (CreateReservedResource)
+Descriptor : description of the resource. Also called view.
+
+Root Signature : List of resources the shaders need.
+	- Root Constant : value passed directly to the shaders. They are constant buffers in shaders.
+	- Root Descriptor : descriptor passed directly to the shaders. Needs 1 indirection to access the actual data.
+		- Constant Buffer View (CBV) b# : can be any structure we like?
+		- Shader Resource View (SRV) t# : description of a texture
+		- Unordered Access View (UAV)
+	- Root Table : pointer to an array of descriptors pointing to a resource. 2 levels of indirections.
+	- Sampler
+
+Descriptor Heap : memory where to allocate the root descriptor.
+
+Sampler : resource to tell the gpu how to read a compute a color from uv coordinates and a texture.
+
