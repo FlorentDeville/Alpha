@@ -293,6 +293,11 @@ CommandQueue* RenderModule::GetCopyCommandQueue()
 	return m_pCopyCommandQueue;
 }
 
+ID3D12GraphicsCommandList2* RenderModule::GetRenderCommandList()
+{
+	return m_pRenderCommandList;
+}
+
 D3D12_CPU_DESCRIPTOR_HANDLE RenderModule::GetRTV()
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, m_RTVDescriptorSize);
