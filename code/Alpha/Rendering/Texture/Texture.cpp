@@ -14,9 +14,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "3rdparty/stb_image-2.27/stb_image.h"
 
-Texture::Texture()
-	: m_pResource(nullptr)
-	, m_path()
+Texture::Texture(const std::string& name)
+	: Resource(name)
+	, m_pResource(nullptr)
 	, m_resourceDesc()
 {}
 
@@ -28,8 +28,6 @@ Texture::~Texture()
 
 void Texture::Init(const std::string& path)
 {
-	m_path = path;
-
 	ID3D12Device* pDevice = g_pRenderModule->GetDevice();
 
 	//Load the texture
@@ -107,3 +105,5 @@ const D3D12_RESOURCE_DESC& Texture::GetResourceDesc() const
 {
 	return m_resourceDesc;
 }
+
+RESOURCE_MGR_PTR(Texture) g_pTextureMgr;
