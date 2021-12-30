@@ -28,6 +28,7 @@
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
@@ -49,6 +50,7 @@ HLayout* g_pButton = nullptr;
 RenderableId g_CubeId;
 RenderableId g_SimpleQuadId;
 RenderableId g_CubeTextureId;
+RenderableId g_FontId;
 
 float g_FoV;
 
@@ -162,6 +164,146 @@ void Render();
 
 ID3D12DescriptorHeap* g_pSrvDescriptorHeap = nullptr;
 Font* g_pFont;
+ID3D12Resource* g_textVertexBuffer[3];
+char* g_textVBGPUAddress[3];
+D3D12_VERTEX_BUFFER_VIEW g_textVertexBufferView[3];
+
+void CreateTextVertexBuffer()
+{
+	// create text vertex buffer committed resources
+	int maxNumTextCharacters = 256;
+
+	for (int i = 0; i < g_pRenderModule->GetNumFrames(); ++i)
+	{
+		// create upload heap. We will fill this with data for our text
+		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxNumTextCharacters * sizeof(VertexText));
+		HRESULT hr = g_pRenderModule->GetDevice()->CreateCommittedResource(
+			&prop, // upload heap
+			D3D12_HEAP_FLAG_NONE, // no flags
+			&desc, // resource description for a buffer
+			D3D12_RESOURCE_STATE_GENERIC_READ, // GPU will read from this buffer and copy its contents to the default heap
+			nullptr,
+			IID_PPV_ARGS(&g_textVertexBuffer[i]));
+
+		ThrowIfFailed(hr);
+		g_textVertexBuffer[i]->SetName(L"Text Vertex Buffer Upload Resource Heap");
+
+		CD3DX12_RANGE readRange(0, 0);    // We do not intend to read from this resource on the CPU. (so end is less than or equal to begin)
+
+		// map the resource heap to get a gpu virtual address to the beginning of the heap
+		hr = g_textVertexBuffer[i]->Map(0, &readRange, reinterpret_cast<void**>(&g_textVBGPUAddress[i]));
+		ThrowIfFailed(hr);
+
+		g_textVertexBufferView[i].BufferLocation = g_textVertexBuffer[i]->GetGPUVirtualAddress();
+		g_textVertexBufferView[i].StrideInBytes = sizeof(VertexText);
+		g_textVertexBufferView[i].SizeInBytes = maxNumTextCharacters * sizeof(VertexText);
+	}
+}
+
+void RenderText()
+{
+	float scale = 15;
+	float scaleX = scale;
+	float scaleY = scale;
+
+	std::string text = "Hello World";
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(0, 0, 0, 1);
+
+	ID3D12GraphicsCommandList2* pCommandList = g_pRenderModule->GetRenderCommandList();
+
+	// set the text pipeline state object
+	PipelineStateId pipelineStateId = g_pRenderableMgr->GetRenderable(g_FontId)->GetPipeplineStateId();
+	PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(pipelineStateId);
+	ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
+	pCommandList->SetPipelineState(pPSO);
+
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
+	pCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
+
+	// this way we only need 4 vertices per quad rather than 6 if we were to use a triangle list topology
+	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	// set the text vertex buffer
+	pCommandList->IASetVertexBuffers(0, 1, &g_textVertexBufferView[g_pRenderModule->m_currentBackBufferIndex]);
+
+	// bind the text srv. We will assume the correct descriptor heap and table are currently bound and set
+	ID3D12DescriptorHeap* pDescriptorHeap[] = { g_pFont->m_pSRVHeap };
+	pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+	pCommandList->SetGraphicsRootDescriptorTable(0, g_pFont->m_pSRVHeap->GetGPUDescriptorHandleForHeapStart());
+	//pCommandList->SetGraphicsRootDescriptorTable(1, g_pFont->m_srvHandle);
+
+	pCommandList->RSSetViewports(1, &g_pRenderModule->m_viewport);
+	pCommandList->RSSetScissorRects(1, &g_pRenderModule->m_scissorRect);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtv = g_pRenderModule->GetRTV();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pRenderModule->GetDSV();
+	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+
+	int numCharacters = 0;
+
+	float topLeftScreenX = 0;//(pos.x * 2.0f) - 1.0f;
+	float topLeftScreenY = 0.1f;//((1.0f - pos.y) * 2.0f) - 1.0f;
+	topLeftScreenY;
+
+	float x = topLeftScreenX;
+	float y = topLeftScreenY;
+	y;
+
+	float horrizontalPadding = (g_pFont->m_leftpadding + g_pFont->m_rightpadding);// *padding.x;
+	float verticalPadding = (g_pFont->m_toppadding + g_pFont->m_bottompadding);// *padding.y;
+	horrizontalPadding;
+	verticalPadding;
+
+	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
+	VertexText* vert = (VertexText*)g_textVBGPUAddress[g_pRenderModule->m_currentBackBufferIndex];
+	vert;
+
+	char lastChar = -1; // no last character to start with
+
+	for (int i = 0; i < text.size(); ++i)
+	{
+		char c = text[i];
+
+		const FontChar* fc = g_pFont->GetChar(c);
+
+		// character not in font char set
+		if (fc == nullptr)
+			continue;
+
+		// end of string
+		if (c == '\0')
+			break;
+
+		// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
+		if (numCharacters >= 255)
+			break;
+
+		float kerning = 0.0f;
+		if (i > 0)
+			kerning = g_pFont->GetKerning(lastChar, c);
+
+		vert[numCharacters].Position.x = x + ((fc->m_xoffset + kerning) * scaleX);
+		vert[numCharacters].Position.y = y - (fc->m_yoffset * scaleY);
+		vert[numCharacters].Position.z = fc->m_width * scaleX;
+		vert[numCharacters].Position.w = fc->m_height * scaleY;
+		vert[numCharacters].Uv.x = fc->m_u;
+		vert[numCharacters].Uv.y = fc->m_v;
+		vert[numCharacters].Uv.z = fc->m_twidth;
+		vert[numCharacters].Uv.w = fc->m_theight;
+		vert[numCharacters].Color = DirectX::XMFLOAT4(1, 0, 1, 1);
+
+		numCharacters++;
+
+		// remove horrizontal padding and advance to next char position
+		x += fc->m_xadvance * scaleX;
+
+		lastChar = c;
+	}
+
+	// we are going to have 4 vertices per character (trianglestrip to make quad), and each instance is one character
+	pCommandList->DrawInstanced(4, numCharacters, 0, 0);
+}
 
 void LoadTexture()
 {
@@ -323,8 +465,12 @@ void Update()
 	// Update the model matrix.
 	float angle = static_cast<float>(totalTimeElasped * 90.0);
 	//float angle = 0;
+	float scale = 2;
+	g_model = DirectX::XMMatrixScaling(scale, scale, scale);
+
 	const DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 1, 0);
-	g_model = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
+	DirectX::XMMATRIX rot = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
+	g_model = DirectX::XMMatrixMultiply(g_model, rot);
 
 	// Update the view matrix.
 	const DirectX::XMVECTOR eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
@@ -362,6 +508,7 @@ void Render()
 	}
 
 	//Render texture cube
+	//if(false)
 	{
 		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
 		g_pRenderModule->PreRenderForRenderable(*renderable);
@@ -381,7 +528,7 @@ void Render()
 	
 
 	// Render the quad
-	//if(false)
+	if(false)
 	{
 		g_pWidgetMgr->Draw();
 	}
@@ -397,7 +544,7 @@ void Render()
 		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
 		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
 
-		float x = 0  + width * 0.5f;
+		float x = 50 + width * 0.5f;
 		float y = 50 - height * 0.5f;
 		float z = 1;
 		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, z);
@@ -421,6 +568,10 @@ void Render()
 		int showBorder = 0;
 		g_pRenderModule->SetConstantBuffer(2, sizeof(showBorder), &showBorder, 0);
 		g_pRenderModule->PostRenderForRenderable(*renderable);
+	}
+
+	{
+		RenderText();
 	}
 
 	g_pRenderModule->PostRender();
@@ -481,6 +632,26 @@ bool LoadContent()
 		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, texture_posuv_pipelineStateId);
 	}
 
+	//Load the font
+	{
+		CreateTextVertexBuffer();
+
+		g_pFont = new Font("default");
+		g_pFont->Init("C:\\workspace\\Alpha\\data\\fonts\\arial.fnt", g_pWindow->GetWidth(), g_pWindow->GetHeight());
+
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.ps.cso");
+
+		PipelineStateId text_pipelineStateId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
+		pPipelineState->Init_Text(rsId, vsId, psId);
+
+		MeshId id;
+		id.m_id = 0;
+		g_FontId = g_pRenderableMgr->CreateRenderable(id, text_pipelineStateId);
+	}
+
 	g_contentLoaded = true;
 
 	return true;
@@ -516,9 +687,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
-
-	g_pFont = new Font("default");
-	g_pFont->Init("C:\\workspace\\Alpha\\data\\fonts\\arial.fnt", g_pWindow->GetWidth(), g_pWindow->GetHeight());
 
 	g_pButton = new HLayout(1000, 200, 0, 0);
 	g_pButton->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
