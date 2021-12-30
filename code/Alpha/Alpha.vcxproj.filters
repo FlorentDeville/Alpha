@@ -76,6 +76,15 @@
     <ClCompile Include="Widgets\WidgetMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\Texture\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Resource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering\Font\Font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
@@ -116,6 +125,10 @@
     <ClInclude Include="Rendering\Mesh\MeshId.h" />
     <ClInclude Include="Widgets\Message.h" />
     <ClInclude Include="Widgets\MessageId.h" />
+    <ClInclude Include="Rendering\Texture\Texture.h" />
+    <ClInclude Include="Resource\Resource.h" />
+    <ClInclude Include="Resource\ResourceMgr.h" />
+    <ClInclude Include="Rendering\Font\Font.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -128,5 +141,11 @@
     <FxCompile Include="Shaders\widget.rs.hlsl" />
     <FxCompile Include="Shaders\widget.vs.hlsl" />
     <FxCompile Include="Shaders\widget.ps.hlsl" />
+    <FxCompile Include="Shaders\texture.vs.hlsl" />
+    <FxCompile Include="Shaders\texture.ps.hlsl" />
+    <FxCompile Include="Shaders\texture.rs.hlsl" />
+    <FxCompile Include="Shaders\text.vs.hlsl" />
+    <FxCompile Include="Shaders\text.ps.hlsl" />
+    <FxCompile Include="Shaders\text.rs.hlsl" />
   </ItemGroup>
 </Project>
