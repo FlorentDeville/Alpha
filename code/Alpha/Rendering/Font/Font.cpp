@@ -4,12 +4,16 @@
 
 #include "Rendering/Font/Font.h"
 
+#include "Rendering/RenderModule.h"
+#include "Helper.h"
+
 #include <fstream>
 
 Font::Font(const std::string& name)
     : Resource(name)
     , m_CharList(nullptr)
     , m_KerningsList(nullptr)
+    , m_pSRVHeap(nullptr)
 {}
 
 Font::~Font()
@@ -23,6 +27,26 @@ void Font::Init(const std::string& fntName, int windowWidth, int windowHeight)
     
     Texture* pTexture = g_pTextureMgr->CreateResource(m_texture, m_fontImage);
     pTexture->Init(textureFilename);
+
+    //Create the SRV heap
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+        srvHeapDesc.NumDescriptors = 1;
+        srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+        srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+        HRESULT res = g_pRenderModule->GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSRVHeap));
+        ThrowIfFailed(res);
+    }
+
+    //Create the srv descriptor
+    {
+        D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = pTexture->GetResourceDesc().Format;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.Texture2D.MipLevels = 1;
+        g_pRenderModule->GetDevice()->CreateShaderResourceView(pTexture->GetResource(), &srvDesc, m_pSRVHeap->GetCPUDescriptorHandleForHeapStart());
+    }
 }
 
 void Font::Release()

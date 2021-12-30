@@ -67,7 +67,8 @@ public:
     FontKerning* m_KerningsList; // list to hold kerning values
     //ID3D12Resource* textureBuffer; // the font texture resource
     TextureId m_texture;
-    D3D12_GPU_DESCRIPTOR_HANDLE m_srvHandle; // the font srv
+    ID3D12DescriptorHeap* m_pSRVHeap;
+    //D3D12_GPU_DESCRIPTOR_HANDLE m_srvHandle; // the font srv
 
     // these are how much the character is padded in the texture. We
     // add padding to give sampling a little space so it does not accidentally
