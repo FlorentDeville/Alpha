@@ -49,8 +49,8 @@ public:
     void Init(const std::string& fntName, int windowWidth, int windowHeight);
     void Release() override;
 
-    float GetKerning(char first, char second);
-    FontChar* GetChar(char c);
+    float GetKerning(char first, char second) const;
+    FontChar* GetChar(char c) const;
 
     void LoadFntFile(const std::string& fntName, int windowWidth, int windowHeight);
 

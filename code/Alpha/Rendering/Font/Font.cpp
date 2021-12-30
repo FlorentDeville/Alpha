@@ -64,7 +64,7 @@ void Font::Release()
     }
 }
 
-float Font::GetKerning(char first, char second)
+float Font::GetKerning(char first, char second) const
 {
     for (int i = 0; i < m_numKernings; ++i)
     {
@@ -74,7 +74,7 @@ float Font::GetKerning(char first, char second)
     return 0.0f;
 }
 
-FontChar* Font::GetChar(char c)
+FontChar* Font::GetChar(char c) const
 {
     for (int i = 0; i < m_numCharacters; ++i)
     {
