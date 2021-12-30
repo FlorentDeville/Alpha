@@ -84,7 +84,7 @@ FontChar* Font::GetChar(char c)
     return nullptr;
 }
 
-void Font::LoadFntFile(const std::string& fntName, int windowWidth, int windowHeight)
+void Font::LoadFntFile(const std::string& fntName, int /*windowWidth*/, int /*windowHeight*/)
 {
     std::ifstream fs;
     fs.open(fntName);
@@ -114,21 +114,21 @@ void Font::LoadFntFile(const std::string& fntName, int windowWidth, int windowHe
 
     // get up padding
     startpos = tmp.find(",") + 1;
-    m_toppadding = std::stoi(tmp.substr(0, startpos)) / (float)windowWidth;
+    m_toppadding = (float)std::stoi(tmp.substr(0, startpos));// / (float)windowWidth;
 
     // get right padding
     tmp = tmp.substr(startpos, tmp.size() - startpos);
     startpos = tmp.find(",") + 1;
-    m_rightpadding = std::stoi(tmp.substr(0, startpos)) / (float)windowWidth;
+    m_rightpadding = (float)std::stoi(tmp.substr(0, startpos));// / (float)windowWidth;
 
     // get down padding
     tmp = tmp.substr(startpos, tmp.size() - startpos);
     startpos = tmp.find(",") + 1;
-    m_bottompadding = std::stoi(tmp.substr(0, startpos)) / (float)windowWidth;
+    m_bottompadding = (float)std::stoi(tmp.substr(0, startpos));// / (float)windowWidth;
 
     // get left padding
     tmp = tmp.substr(startpos, tmp.size() - startpos);
-    m_leftpadding = std::stoi(tmp) / (float)windowWidth;
+    m_leftpadding = (float)std::stoi(tmp);// / (float)windowWidth;
 
     fs >> tmp; // spacing=0,0
 
@@ -137,12 +137,12 @@ void Font::LoadFntFile(const std::string& fntName, int windowWidth, int windowHe
     // get lineheight (how much to move down for each line), and normalize (between 0.0 and 1.0 based on size of font)
     fs >> tmp >> tmp; // common lineHeight=95
     startpos = tmp.find("=") + 1;
-    m_lineHeight = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)windowHeight;
+    m_lineHeight = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowHeight;
 
     // get base height (height of all characters), and normalize (between 0.0 and 1.0 based on size of font)
     fs >> tmp; // base=68
     startpos = tmp.find("=") + 1;
-    m_baseHeight = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)windowHeight;
+    m_baseHeight = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowHeight;
 
     // get texture width
     fs >> tmp; // scaleW=512
@@ -197,30 +197,30 @@ void Font::LoadFntFile(const std::string& fntName, int windowWidth, int windowHe
         fs >> tmp; // width=47
         startpos = tmp.find("=") + 1;
         tmp = tmp.substr(startpos, tmp.size() - startpos);
-        m_CharList[c].m_width = (float)std::stoi(tmp) / (float)windowWidth;
+        m_CharList[c].m_width = (float)std::stoi(tmp);// / (float)windowWidth;
         m_CharList[c].m_twidth = (float)std::stoi(tmp) / (float)m_textureWidth;
 
         // get height
         fs >> tmp; // height=57
         startpos = tmp.find("=") + 1;
         tmp = tmp.substr(startpos, tmp.size() - startpos);
-        m_CharList[c].m_height = (float)std::stoi(tmp) / (float)windowHeight;
+        m_CharList[c].m_height = (float)std::stoi(tmp);// / (float)windowHeight;
         m_CharList[c].m_theight = (float)std::stoi(tmp) / (float)m_textureHeight;
 
         // get xoffset
         fs >> tmp; // xoffset=-6
         startpos = tmp.find("=") + 1;
-        m_CharList[c].m_xoffset = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)windowWidth;
+        m_CharList[c].m_xoffset = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowWidth;
 
         // get yoffset
         fs >> tmp; // yoffset=16
         startpos = tmp.find("=") + 1;
-        m_CharList[c].m_yoffset = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)windowHeight;
+        m_CharList[c].m_yoffset = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowHeight;
 
         // get xadvance
         fs >> tmp; // xadvance=65
         startpos = tmp.find("=") + 1;
-        m_CharList[c].m_xadvance = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)windowWidth;
+        m_CharList[c].m_xadvance = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowWidth;
 
         // get page
         // get channel
@@ -251,6 +251,6 @@ void Font::LoadFntFile(const std::string& fntName, int windowWidth, int windowHe
         fs >> tmp; // amount=-1
         startpos = tmp.find("=") + 1;
         int t = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
-        m_KerningsList[k].m_amount = (float)t / (float)windowWidth;
+        m_KerningsList[k].m_amount = (float)t;// / (float)windowWidth;
     }
 }
