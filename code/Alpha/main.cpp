@@ -201,15 +201,8 @@ void CreateTextVertexBuffer()
 	}
 }
 
-void RenderText()
+void RenderText(int numCharacters)
 {
-	float scale = 15;
-	float scaleX = scale;
-	float scaleY = scale;
-
-	std::string text = "Hello World";
-	DirectX::XMVECTOR pos = DirectX::XMVectorSet(0, 0, 0, 1);
-
 	ID3D12GraphicsCommandList2* pCommandList = g_pRenderModule->GetRenderCommandList();
 
 	// set the text pipeline state object
@@ -231,7 +224,6 @@ void RenderText()
 	ID3D12DescriptorHeap* pDescriptorHeap[] = { g_pFont->m_pSRVHeap };
 	pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 	pCommandList->SetGraphicsRootDescriptorTable(0, g_pFont->m_pSRVHeap->GetGPUDescriptorHandleForHeapStart());
-	//pCommandList->SetGraphicsRootDescriptorTable(1, g_pFont->m_srvHandle);
 
 	pCommandList->RSSetViewports(1, &g_pRenderModule->m_viewport);
 	pCommandList->RSSetScissorRects(1, &g_pRenderModule->m_scissorRect);
@@ -240,20 +232,19 @@ void RenderText()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pRenderModule->GetDSV();
 	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
 
+	// we are going to have 4 vertices per character (trianglestrip to make quad), and each instance is one character
+	pCommandList->DrawInstanced(4, numCharacters, 0, 0);
+}
+
+int PrepareRenderText(const std::string& text, DirectX::XMFLOAT2 screenPos, DirectX::XMFLOAT2 scale, int startCharIndex = 0)
+{
 	int numCharacters = 0;
 
-	float topLeftScreenX = 0;//(pos.x * 2.0f) - 1.0f;
-	float topLeftScreenY = 0.1f;//((1.0f - pos.y) * 2.0f) - 1.0f;
-	topLeftScreenY;
+	float topLeftScreenX = screenPos.x;
+	float topLeftScreenY = screenPos.y;
 
 	float x = topLeftScreenX;
 	float y = topLeftScreenY;
-	y;
-
-	float horrizontalPadding = (g_pFont->m_leftpadding + g_pFont->m_rightpadding);// *padding.x;
-	float verticalPadding = (g_pFont->m_toppadding + g_pFont->m_bottompadding);// *padding.y;
-	horrizontalPadding;
-	verticalPadding;
 
 	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
 	VertexText* vert = (VertexText*)g_textVBGPUAddress[g_pRenderModule->m_currentBackBufferIndex];
@@ -276,33 +267,39 @@ void RenderText()
 			break;
 
 		// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
-		if (numCharacters >= 255)
+		if (startCharIndex >= 255)
 			break;
 
 		float kerning = 0.0f;
 		if (i > 0)
 			kerning = g_pFont->GetKerning(lastChar, c);
 
-		vert[numCharacters].Position.x = x + ((fc->m_xoffset + kerning) * scaleX);
-		vert[numCharacters].Position.y = y - (fc->m_yoffset * scaleY);
-		vert[numCharacters].Position.z = fc->m_width * scaleX;
-		vert[numCharacters].Position.w = fc->m_height * scaleY;
-		vert[numCharacters].Uv.x = fc->m_u;
-		vert[numCharacters].Uv.y = fc->m_v;
-		vert[numCharacters].Uv.z = fc->m_twidth;
-		vert[numCharacters].Uv.w = fc->m_theight;
-		vert[numCharacters].Color = DirectX::XMFLOAT4(1, 0, 1, 1);
+		float xoffset = fc->m_xoffset / g_pWindow->GetWidth();
+		float yoffset = fc->m_yoffset / g_pWindow->GetHeight();
+
+		float char_width = fc->m_width / g_pWindow->GetWidth();
+		float char_height = fc->m_height / g_pWindow->GetHeight();
+
+		vert[startCharIndex].Position.x = x + ((xoffset + kerning) * scale.x);
+		vert[startCharIndex].Position.y = y - (yoffset * scale.y);
+		vert[startCharIndex].Position.z = char_width * scale.x;
+		vert[startCharIndex].Position.w = char_height * scale.y;
+		vert[startCharIndex].Uv.x = fc->m_u;
+		vert[startCharIndex].Uv.y = fc->m_v;
+		vert[startCharIndex].Uv.z = fc->m_twidth;
+		vert[startCharIndex].Uv.w = fc->m_theight;
+		vert[startCharIndex].Color = DirectX::XMFLOAT4(1, 1, 1, 1);
 
 		numCharacters++;
+		startCharIndex++;
 
 		// remove horrizontal padding and advance to next char position
-		x += fc->m_xadvance * scaleX;
+		x += (fc->m_xadvance / g_pWindow->GetWidth()) * scale.x;
 
 		lastChar = c;
 	}
 
-	// we are going to have 4 vertices per character (trianglestrip to make quad), and each instance is one character
-	pCommandList->DrawInstanced(4, numCharacters, 0, 0);
+	return startCharIndex;
 }
 
 void LoadTexture()
@@ -528,7 +525,7 @@ void Render()
 	
 
 	// Render the quad
-	if(false)
+	//if(false)
 	{
 		g_pWidgetMgr->Draw();
 	}
@@ -571,7 +568,9 @@ void Render()
 	}
 
 	{
-		RenderText();
+		int n = PrepareRenderText("Hello World", DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1));
+		n = PrepareRenderText("The Lord Of The Rings", DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3), n);
+		RenderText(n);
 	}
 
 	g_pRenderModule->PostRender();
@@ -636,8 +635,11 @@ bool LoadContent()
 	{
 		CreateTextVertexBuffer();
 
+		//std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\arial.fnt";
+		std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\segoeUI.fnt";
+
 		g_pFont = new Font("default");
-		g_pFont->Init("C:\\workspace\\Alpha\\data\\fonts\\arial.fnt", g_pWindow->GetWidth(), g_pWindow->GetHeight());
+		g_pFont->Init(fontFilename, g_pWindow->GetWidth(), g_pWindow->GetHeight());
 
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.vs.cso");
@@ -667,6 +669,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	int width = 1080;
 	int height = 789;
+
+	//width = GetSystemMetrics(SM_CXFULLSCREEN);
+	//height = GetSystemMetrics(SM_CYFULLSCREEN);
 
 	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
