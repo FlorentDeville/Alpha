@@ -8,8 +8,6 @@
 #include <cstdint>
 #include <exception>
 #include <chrono>
-//#include <wrl.h>
-//using namespace Microsoft::WRL;
 #include <windowsx.h>
 
 // DirectX 12 specific headers.
@@ -23,6 +21,7 @@
 
 #include "Rendering/CommandQueue.h"
 #include "Helper.h"
+#include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -30,12 +29,15 @@
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
+#include "Rendering/Texture/Texture.h"
+
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
+#include "Resource/ResourceMgr.h"
 
 bool g_VSync;
 
@@ -46,6 +48,7 @@ HLayout* g_pButton = nullptr;
 
 RenderableId g_CubeId;
 RenderableId g_SimpleQuadId;
+RenderableId g_CubeTextureId;
 
 float g_FoV;
 
@@ -59,7 +62,6 @@ bool g_perspectiveRendering = true;
 
 float g_posX = 0;
 float g_posY = 0;
-
 
 static VertexPosColor g_Vertices[8] = {
 	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
@@ -96,8 +98,102 @@ static uint16_t g_QuadIndices[6]
 	2, 3, 0
 };
 
+static VertexPosUv g_CubeTexture[] = {
+	// front face
+	{ DirectX::XMFLOAT3(-0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3( 0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3( 0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
+	  
+	//DirectX::XMFLOAT3( right side face   ), DirectX::XMFLOAT2(		   )
+	{ DirectX::XMFLOAT3( 0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3( 0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3( 0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
+	{ DirectX::XMFLOAT3( 0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
+	  
+	//DirectX::XMFLOAT3( left side face	   ), DirectX::XMFLOAT2(		   )
+	{ DirectX::XMFLOAT3(-0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
+	  
+	//DirectX::XMFLOAT3( back face		   ), DirectX::XMFLOAT2(		   )
+	{ DirectX::XMFLOAT3( 0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
+	{ DirectX::XMFLOAT3( 0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
+	  
+	//DirectX::XMFLOAT3( top face		   ), DirectX::XMFLOAT2(		   )
+	{ DirectX::XMFLOAT3(-0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3( 0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
+	{ DirectX::XMFLOAT3( 0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
+	  
+	//DirectX::XMFLOAT3( bottom face	   ), DirectX::XMFLOAT2(		   )
+	{ DirectX::XMFLOAT3( 0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
+	{ DirectX::XMFLOAT3( 0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
+};
+
+static uint16_t g_CubeTextureIndices[] =
+{
+	0, 1, 2,
+	0, 3, 1/*,
+
+	4, 5, 7,
+	4, 6, 5,
+
+	8, 9, 10,
+	10, 11, 9,
+
+	12, 13, 14,
+	14, 15, 12,
+
+	16, 17, 18,
+	18, 19, 16,
+
+	20, 21, 22,
+	22, 23, 20*/
+};
+
 void Update();
 void Render();
+
+ID3D12DescriptorHeap* g_pSrvDescriptorHeap = nullptr;
+Font* g_pFont;
+
+void LoadTexture()
+{
+	//std::string textureName = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
+	std::string textureName = "C:\\workspace\\Alpha\\data\\fonts\\arial_0.tga";
+
+	TextureId id;
+	Texture* pTexture = g_pTextureMgr->CreateResource(id, textureName);
+	pTexture->Init(textureName);
+
+	ID3D12Device* pDevice = g_pRenderModule->GetDevice();
+
+	//Create the SRV heap
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+		srvHeapDesc.NumDescriptors = 1;
+		srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&g_pSrvDescriptorHeap));
+		ThrowIfFailed(res);
+	}
+
+	//Create the srv descriptor
+	{
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = pTexture->GetResourceDesc().Format;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.Texture2D.MipLevels = 1;
+		pDevice->CreateShaderResourceView(pTexture->GetResource(), &srvDesc, g_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	}
+}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -257,12 +353,30 @@ void Render()
 	g_pRenderModule->PreRender();
 
 	// Render the cube
-	//if(false)
+	if(false)
 	{
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
 		g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
+	}
+
+	//Render texture cube
+	{
+		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
+		g_pRenderModule->PreRenderForRenderable(*renderable);
+
+		//DirectX::XMMATRIX wvpMatrix = DirectX::XMMatrixMultiply(DirectX::XMMatrixIdentity(), g_view);
+		DirectX::XMMATRIX wvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
+		wvpMatrix = DirectX::XMMatrixMultiply(wvpMatrix, g_projection);
+
+		g_pRenderModule->SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
+
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { g_pSrvDescriptorHeap };
+		g_pRenderModule->GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		g_pRenderModule->GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, g_pSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+
+		g_pRenderModule->PostRenderForRenderable(*renderable);
 	}
 	
 
@@ -273,7 +387,7 @@ void Render()
 	}
 
 	// Render simple quad
-	//if(false)
+	if(false)
 	{
 		float width = 100;//static_cast<float>(m_width);
 		float height = 100;//static_cast<float>(m_height);
@@ -331,6 +445,7 @@ bool LoadContent()
 		g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
 	}
 
+	//Load the simple quad used by the widgets
 	{
 		Mesh* pSimpleQuad = nullptr;
 		MeshId simpleQuadMeshId;
@@ -348,6 +463,24 @@ bool LoadContent()
 		g_SimpleQuadId = g_pRenderableMgr->CreateRenderable(simpleQuadMeshId, widget_Pos_pipelineStateId);
 	}
 
+	//Load the textured cube
+	{
+		Mesh* pCubeTexture = nullptr;
+		MeshId cubeTextureMeshId;
+		g_pMeshMgr->CreateMesh(&pCubeTexture, cubeTextureMeshId);
+		pCubeTexture->LoadVertexAndIndexBuffer(g_CubeTexture, _countof(g_CubeTexture), g_CubeTextureIndices, _countof(g_CubeTextureIndices));
+
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.ps.cso");
+
+		PipelineStateId texture_posuv_pipelineStateId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(texture_posuv_pipelineStateId, "texture");
+		pPipelineState->Init_PosUv(rsId, vsId, psId);
+
+		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, texture_posuv_pipelineStateId);
+	}
+
 	g_contentLoaded = true;
 
 	return true;
@@ -355,6 +488,12 @@ bool LoadContent()
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
+	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
+	g_pPipelineStateMgr->Init();
+
+	g_pTextureMgr = new RESOURCE_MGR(Texture);
+	g_pTextureMgr->Init();
+
 	int width = 1080;
 	int height = 789;
 
@@ -371,16 +510,15 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
-	
-	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
-	g_pPipelineStateMgr->Init();
-
 	g_pRenderableMgr = new RenderableMgr();
 	g_pWidgetMgr = new WidgetMgr();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
+
+	g_pFont = new Font("default");
+	g_pFont->Init("C:\\workspace\\Alpha\\data\\fonts\\arial.fnt", g_pWindow->GetWidth(), g_pWindow->GetHeight());
 
 	g_pButton = new HLayout(1000, 200, 0, 0);
 	g_pButton->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
@@ -389,6 +527,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pButton->AddWidget(new Button(400, 150, 0, 0));
 	g_pButton->Resize();
 	g_pWidgetMgr->SetRoot(g_pButton);
+
+	LoadTexture();
 
 	g_pWindow->Show();
 
@@ -409,9 +549,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	}
 
 	g_pRenderModule->Shutdown();
-
+	g_pTextureMgr->Release();
 	g_pPipelineStateMgr->Release();
 
+	delete g_pTextureMgr;
 	delete g_pWidgetMgr;
 	delete g_pRenderableMgr;
 	delete g_pShaderMgr;
