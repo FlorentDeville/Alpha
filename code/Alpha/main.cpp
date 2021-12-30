@@ -201,7 +201,7 @@ void CreateTextVertexBuffer()
 	}
 }
 
-void RenderText(int numCharacters)
+void RenderText(const Font& font, int numCharacters)
 {
 	ID3D12GraphicsCommandList2* pCommandList = g_pRenderModule->GetRenderCommandList();
 
@@ -221,7 +221,7 @@ void RenderText(int numCharacters)
 	pCommandList->IASetVertexBuffers(0, 1, &g_textVertexBufferView[g_pRenderModule->m_currentBackBufferIndex]);
 
 	// bind the text srv. We will assume the correct descriptor heap and table are currently bound and set
-	ID3D12DescriptorHeap* pDescriptorHeap[] = { g_pFont->m_pSRVHeap };
+	ID3D12DescriptorHeap* pDescriptorHeap[] = { font.m_pSRVHeap };
 	pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 	pCommandList->SetGraphicsRootDescriptorTable(0, g_pFont->m_pSRVHeap->GetGPUDescriptorHandleForHeapStart());
 
@@ -236,7 +236,7 @@ void RenderText(int numCharacters)
 	pCommandList->DrawInstanced(4, numCharacters, 0, 0);
 }
 
-int PrepareRenderText(const std::string& text, DirectX::XMFLOAT2 screenPos, DirectX::XMFLOAT2 scale, int startCharIndex = 0)
+int PrepareRenderText(const std::string& text, DirectX::XMFLOAT2 screenPos, DirectX::XMFLOAT2 scale, const Font& font, int startCharIndex = 0)
 {
 	int numCharacters = 0;
 
@@ -256,7 +256,7 @@ int PrepareRenderText(const std::string& text, DirectX::XMFLOAT2 screenPos, Dire
 	{
 		char c = text[i];
 
-		const FontChar* fc = g_pFont->GetChar(c);
+		const FontChar* fc = font.GetChar(c);
 
 		// character not in font char set
 		if (fc == nullptr)
@@ -272,7 +272,7 @@ int PrepareRenderText(const std::string& text, DirectX::XMFLOAT2 screenPos, Dire
 
 		float kerning = 0.0f;
 		if (i > 0)
-			kerning = g_pFont->GetKerning(lastChar, c);
+			kerning = font.GetKerning(lastChar, c);
 
 		float xoffset = fc->m_xoffset / g_pWindow->GetWidth();
 		float yoffset = fc->m_yoffset / g_pWindow->GetHeight();
@@ -568,9 +568,9 @@ void Render()
 	}
 
 	{
-		int n = PrepareRenderText("Hello World", DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1));
-		n = PrepareRenderText("The Lord Of The Rings", DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3), n);
-		RenderText(n);
+		int n = PrepareRenderText("Hello World", DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1), *g_pFont);
+		n = PrepareRenderText("The Lord Of The Rings", DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3), *g_pFont, n);
+		RenderText(*g_pFont, n);
 	}
 
 	g_pRenderModule->PostRender();
