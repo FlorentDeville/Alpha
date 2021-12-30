@@ -25,7 +25,7 @@
 #include "Helper.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
+#include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -314,30 +314,36 @@ void Render()
 
 bool LoadContent()
 {
-	Mesh* pCubeMesh = nullptr;
-	MeshId cubeMeshId;
-	g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
-	pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
+	{
+		Mesh* pCubeMesh = nullptr;
+		MeshId cubeMeshId;
+		g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
+		pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
 
-	RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
-	ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
-	ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
 
-	PipelineStateId base_PosColor_pipelineStateId = g_pPipelineStateMgr->Create_PosColor(rsId, vsId, psId);
+		PipelineStateId base_PosColor_pipelineStateId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(base_PosColor_pipelineStateId, "base");
+		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
-	g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
-	
+		g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
+	}
+
 	{
 		Mesh* pSimpleQuad = nullptr;
 		MeshId simpleQuadMeshId;
 		g_pMeshMgr->CreateMesh(&pSimpleQuad, simpleQuadMeshId);
 		pSimpleQuad->LoadVertexAndIndexBuffer(g_SimpleQuad, _countof(g_SimpleQuad), g_QuadIndices, _countof(g_QuadIndices));
 
-		rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
-		vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
-		psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
 
-		PipelineStateId widget_Pos_pipelineStateId = g_pPipelineStateMgr->Create_PosUv(rsId, vsId, psId);
+		PipelineStateId widget_Pos_pipelineStateId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(widget_Pos_pipelineStateId, "widget");
+		pPipelineState->Init_PosUv(rsId, vsId, psId);
 
 		g_SimpleQuadId = g_pRenderableMgr->CreateRenderable(simpleQuadMeshId, widget_Pos_pipelineStateId);
 	}
@@ -365,7 +371,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
-	g_pPipelineStateMgr = new PipelineStateMgr();
+	
+	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
+	g_pPipelineStateMgr->Init();
+
 	g_pRenderableMgr = new RenderableMgr();
 	g_pWidgetMgr = new WidgetMgr();
 
@@ -400,6 +409,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	}
 
 	g_pRenderModule->Shutdown();
+
+	g_pPipelineStateMgr->Release();
 
 	delete g_pWidgetMgr;
 	delete g_pRenderableMgr;

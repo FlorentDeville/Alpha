@@ -74,12 +74,12 @@ template <class T, typename Id> T* ResourceMgr<T, Id>::CreateResource(Id& id, co
 
 template <class T, typename Id> T* ResourceMgr<T, Id>::GetResource(Id id)
 {
-	return m_resources(id);
+	return m_resources[id];
 }
 
 template <class T, typename Id> const T* ResourceMgr<T, Id>::GetResource(Id id) const
 {
-	return m_resources(id);
+	return m_resources[id];
 }
 
 template <class T, typename Id> void ResourceMgr<T, Id>::ReleaseResource(Id id)

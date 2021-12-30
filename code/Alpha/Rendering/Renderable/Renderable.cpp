@@ -5,7 +5,6 @@
 #include "Rendering/Renderable/Renderable.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
 
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"

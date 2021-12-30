@@ -6,13 +6,14 @@
 
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/ShaderId.h"
+#include "Resource/ResourceMgr.h"
 
 #include <d3d12.h>
 
-class PipelineState
+class PipelineState : public Resource
 {
 public:
-	PipelineState();
+	PipelineState(const std::string& name);
 	~PipelineState();
 
 	void Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
@@ -28,3 +29,6 @@ private:
 	ShaderId m_vsId;
 	ShaderId m_psId;
 };
+
+DECLARE_RESOURCE_ID(PipelineState);
+extern RESOURCE_MGR_PTR(PipelineState) g_pPipelineStateMgr;

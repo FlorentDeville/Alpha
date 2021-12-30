@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Rendering/Mesh/MeshId.h"
-#include "Rendering/PipelineState/PipelineStateId.h"
+#include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
 
 #include <vector>

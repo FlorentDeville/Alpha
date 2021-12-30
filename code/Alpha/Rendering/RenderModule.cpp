@@ -17,7 +17,6 @@
 #include "Rendering/Mesh/Mesh.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
 
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -152,7 +151,7 @@ void RenderModule::PostRender()
 
 void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp)
 {
-	PipelineState* pPipelineState = g_pPipelineStateMgr->GetPipelineState(renderable.GetPipeplineStateId());
+	PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(renderable.GetPipeplineStateId());
 
 	m_pRenderCommandList->SetPipelineState(pPipelineState->GetPipelineState());
 
@@ -179,7 +178,7 @@ void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX&
 
 void RenderModule::PreRenderForRenderable(const Renderable& renderable)
 {
-	PipelineState* pPipelineState = g_pPipelineStateMgr->GetPipelineState(renderable.GetPipeplineStateId());
+	PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(renderable.GetPipeplineStateId());
 
 	m_pRenderCommandList->SetPipelineState(pPipelineState->GetPipelineState());
 

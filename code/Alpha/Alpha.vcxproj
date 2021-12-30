@@ -161,7 +161,6 @@
     <ClCompile Include="Rendering\Mesh\Mesh.cpp" />
     <ClCompile Include="Rendering\Mesh\MeshMgr.cpp" />
     <ClCompile Include="Rendering\PipelineState\PipelineState.cpp" />
-    <ClCompile Include="Rendering\PipelineState\PipelineStateMgr.cpp" />
     <ClCompile Include="Rendering\Renderable\Renderable.cpp" />
     <ClCompile Include="Rendering\Renderable\RenderableMgr.cpp" />
     <ClCompile Include="Rendering\RenderModule.cpp" />
@@ -186,8 +185,6 @@
     <ClInclude Include="Rendering\Mesh\MeshId.h" />
     <ClInclude Include="Rendering\Mesh\MeshMgr.h" />
     <ClInclude Include="Rendering\PipelineState\PipelineState.h" />
-    <ClInclude Include="Rendering\PipelineState\PipelineStateId.h" />
-    <ClInclude Include="Rendering\PipelineState\PipelineStateMgr.h" />
     <ClInclude Include="Rendering\Renderable\Renderable.h" />
     <ClInclude Include="Rendering\Renderable\RenderableId.h" />
     <ClInclude Include="Rendering\Renderable\RenderableMgr.h" />

@@ -26,8 +26,9 @@ struct PipelineStateStream
 	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
 };
 
-PipelineState::PipelineState()
-	: m_pPipelineState(nullptr)
+PipelineState::PipelineState(const std::string& name)
+	: Resource(name)
+	, m_pPipelineState(nullptr)
 	, m_psId()
 	, m_rsId()
 	, m_vsId()
@@ -129,3 +130,5 @@ RootSignatureId PipelineState::GetRootSignatureId() const
 {
 	return m_rsId;
 }
+
+RESOURCE_MGR_PTR(PipelineState) g_pPipelineStateMgr = nullptr;
