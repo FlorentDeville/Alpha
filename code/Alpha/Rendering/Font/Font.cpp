@@ -93,9 +93,11 @@ void Font::LoadFntFile(const std::string& fntName, int windowWidth, int windowHe
     size_t startpos;
 
     // extract font name
-    fs >> tmp >> tmp; // info face="Arial"
-    startpos = tmp.find("\"") + 1;
-        m_name = tmp.substr(startpos, tmp.size() - startpos - 1);
+    fs >> tmp; //info
+    
+    //face="Segoe UI"
+    //the first getline stops at the first quote, the second getline stops at the second quote.
+    std::getline(std::getline(fs, tmp, '\"'), m_name, '\"');
 
     // get font size
     fs >> tmp; // size=73
