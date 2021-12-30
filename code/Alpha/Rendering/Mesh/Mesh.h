@@ -25,6 +25,13 @@ struct VertexPosColor
 	DirectX::XMFLOAT3 Color;
 };
 
+struct VertexText
+{
+	DirectX::XMFLOAT4 Position;
+	DirectX::XMFLOAT4 Uv;
+	DirectX::XMFLOAT4 Color;
+};
+
 class Mesh
 {
 public:
