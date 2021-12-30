@@ -9,3 +9,4 @@ code/x64/*
 *.cso
 data/*
 *.vcxproj.user
+code/3rdparty/bmfont-1.14a/bmfont.bmfc
