@@ -282,6 +282,11 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 
 }
 
+int RenderModule::GetNumFrames() const
+{
+	return m_numFrames;
+}
+
 CommandQueue* RenderModule::GetRenderCommandQueue()
 {
 	return m_pRenderCommandQueue;

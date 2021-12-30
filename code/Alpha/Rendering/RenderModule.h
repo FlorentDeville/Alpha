@@ -48,6 +48,8 @@ public:
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height);
 
+	int GetNumFrames() const;
+
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
@@ -83,9 +85,10 @@ private:
 	bool m_allowTearing;
 	bool m_vSync; //True to limit to 60 fps
 
+public:
 	UINT m_currentBackBufferIndex;
 
-
+private:
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
 	ID3D12Resource* m_pDepthBuffer;
 
