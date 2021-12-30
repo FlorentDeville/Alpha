@@ -2,8 +2,8 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#ifndef TEXTURE_RS_HLSL
-#define TEXTURE_RS_HLSL
+#ifndef TEXT_RS_HLSL
+#define TEXT_RS_HLSL
 
 #define RS	"RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |" \
 					"DENY_HULL_SHADER_ROOT_ACCESS |" \

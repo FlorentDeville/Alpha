@@ -9,7 +9,7 @@ SamplerState fontSampler : register(s0);
 
 struct VS_Output
 {
-	float4 pos : VS_POSITION;
+	float4 pos : SV_POSITION;
 	float4 color : COLOR;
 	float2 texCoord : UV;
 };
@@ -17,5 +17,7 @@ struct VS_Output
 [RootSignature(RS)]
 float4 main(VS_Output input) : SV_TARGET
 {
-	return input.color * fontTexture.Sample(fontSampler, input.texCoord);
+	float4 tex = fontTexture.Sample(fontSampler, input.texCoord);
+	float4 res = input.color * tex;
+	return res;
 }

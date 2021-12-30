@@ -13,13 +13,13 @@ struct VS_Input
 
 struct VS_Output
 {
-	float4 pos : VS_POSITION;
+	float4 pos : SV_POSITION;
 	float4 color : COLOR;
 	float2 texCoord : UV;
 };
 
 [RootSignature(RS)]
-VS_Output main(VS_Input input, uint vertexID : SD_VertexId)
+VS_Output main(VS_Input input, uint vertexID : SV_VertexID)
 {
 	VS_Output output;
 
