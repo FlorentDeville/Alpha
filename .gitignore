@@ -8,3 +8,4 @@ code/Alpha/x64/Release/*
 code/x64/*
 *.cso
 data/*
+*.vcxproj.user
