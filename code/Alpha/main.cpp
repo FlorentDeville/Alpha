@@ -246,6 +246,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			g_pRenderModule->ResizeDepthBuffer(uwidth, uheight);
 
 			g_pRenderModule->m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(uwidth), static_cast<float>(uheight));
+
+			g_pWidgetMgr->Resize();
 		}
 	}
 		break;
@@ -464,6 +466,7 @@ void CreateMenuBar()
 
 	int menuBarHeight = 30;
 	HLayout* pLayout = new HLayout(1000, menuBarHeight, 0, 0);
+	pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	//alpha icon
