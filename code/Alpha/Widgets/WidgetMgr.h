@@ -6,16 +6,23 @@
 
 #include <vector>
 
+#include "Rendering/Mesh/MeshId.h"
+#include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/Renderable/RenderableId.h"
+
 struct Message;
 class Widget;
 
 class WidgetMgr
 {
-	friend Widget;
-
+	friend class Button;
+	friend class Widget;
+	friend class HLayout;
 public:
 	WidgetMgr();
 	~WidgetMgr();
+
+	void Init();
 
 	void RegisterWidget(Widget* pWidget);
 
@@ -35,6 +42,12 @@ private:
 	
 	int32_t m_prevMouseX;
 	int32_t m_prevMouseY;
+
+	//Ids of resources used to render widgets
+	MeshId m_quadMeshId;
+
+	PipelineStateId m_widgetPsoId;
+	RenderableId m_widgetRenderableId;
 };
 
 extern WidgetMgr* g_pWidgetMgr;

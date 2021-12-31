@@ -4,6 +4,12 @@
 
 #include "Widgets/WidgetMgr.h"
 
+#include "Rendering/Mesh/Mesh.h"
+#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/Renderable/RenderableMgr.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/ShaderMgr.h"
+
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
 
@@ -21,6 +27,45 @@ WidgetMgr::~WidgetMgr()
 {
 	if (m_pRoot)
 		delete m_pRoot;
+}
+
+void WidgetMgr::Init()
+{
+	//Simple quad used to render widgets
+	{
+		VertexPosUv vertices[4] =
+		{
+			{ DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f), DirectX::XMFLOAT2(0.f, 0.f) },	// top left
+			{ DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	DirectX::XMFLOAT2(1.f, 0.f) },	// top right
+			{ DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	DirectX::XMFLOAT2(1.f, 1.f) },	// bottom right
+			{ DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f),	DirectX::XMFLOAT2(0.f, 1.f) }	// bottom left
+		};
+
+		uint16_t indices[6]
+		{
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		Mesh* pSimpleQuad = nullptr;
+		g_pMeshMgr->CreateMesh(&pSimpleQuad, m_quadMeshId);
+		pSimpleQuad->LoadVertexAndIndexBuffer(vertices, _countof(vertices), indices, _countof(indices));
+	}
+
+	//Root signature for basic widget
+	{
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
+
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(m_widgetPsoId, "widget");
+		pPipelineState->Init_PosUv(rsId, vsId, psId);
+	}
+
+	//Renderable for basic widget
+	{
+		m_widgetRenderableId = g_pRenderableMgr->CreateRenderable(m_quadMeshId, m_widgetPsoId);
+	}
 }
 
 void WidgetMgr::RegisterWidget(Widget* pWidget)

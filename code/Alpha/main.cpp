@@ -46,10 +46,8 @@ bool g_VSync;
 bool g_IsInitialized = false;
 
 Window* g_pWindow = nullptr;
-//HLayout* g_pButton = nullptr;
 
 RenderableId g_CubeId;
-RenderableId g_SimpleQuadId;
 RenderableId g_CubeTextureId;
 
 float g_FoV;
@@ -387,43 +385,6 @@ void Render()
 		g_pWidgetMgr->Draw();
 	}
 
-	// Render simple quad
-	if(false)
-	{
-		float width = 100;//static_cast<float>(m_width);
-		float height = 100;//static_cast<float>(m_height);
-		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
-
-		//position : top left corner
-		float windowWidth = static_cast<float>(g_pWindow->GetWidth());
-		float windowHeight = static_cast<float>(g_pWindow->GetHeight());
-
-		float x = 50 + width * 0.5f;
-		float y = 50 - height * 0.5f;
-		float z = 1;
-		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, z);
-
-		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
-
-		float projWidth = static_cast<float>(windowWidth);
-		float projHeight = static_cast<float>(windowHeight);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, 0.1f, 100.f);
-
-		DirectX::XMMATRIX wvp = DirectX::XMMatrixMultiply(scale, position);
-		wvp = DirectX::XMMatrixMultiply(wvp, view);
-		wvp = DirectX::XMMatrixMultiply(wvp, projection);
-
-		DirectX::XMVECTOR color = DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1);
-
-		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_SimpleQuadId);
-		g_pRenderModule->PreRenderForRenderable(*renderable);
-		g_pRenderModule->SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
-		g_pRenderModule->SetConstantBuffer(1, sizeof(color), &color, 0);
-		int showBorder = 0;
-		g_pRenderModule->SetConstantBuffer(2, sizeof(showBorder), &showBorder, 0);
-		g_pRenderModule->PostRenderForRenderable(*renderable);
-	}
-
 	//render text
 	//if(false)
 	{
@@ -452,24 +413,6 @@ bool LoadContent()
 		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
 		g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
-	}
-
-	//Load the simple quad used by the widgets
-	{
-		Mesh* pSimpleQuad = nullptr;
-		MeshId simpleQuadMeshId;
-		g_pMeshMgr->CreateMesh(&pSimpleQuad, simpleQuadMeshId);
-		pSimpleQuad->LoadVertexAndIndexBuffer(g_SimpleQuad, _countof(g_SimpleQuad), g_QuadIndices, _countof(g_QuadIndices));
-
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
-
-		PipelineStateId widget_Pos_pipelineStateId;
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(widget_Pos_pipelineStateId, "widget");
-		pPipelineState->Init_PosUv(rsId, vsId, psId);
-
-		g_SimpleQuadId = g_pRenderableMgr->CreateRenderable(simpleQuadMeshId, widget_Pos_pipelineStateId);
 	}
 
 	//Load the textured cube
@@ -602,6 +545,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pShaderMgr = new ShaderMgr();
 	g_pRenderableMgr = new RenderableMgr();
 	g_pWidgetMgr = new WidgetMgr();
+	g_pWidgetMgr->Init();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
