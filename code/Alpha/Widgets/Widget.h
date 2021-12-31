@@ -40,6 +40,22 @@ public:
 		VSIZE_STRETCH = 0x1000
 	};
 
+	enum class HPOSITION_STYLE
+	{
+		LEFT,
+		CENTER,
+		RIGHT,
+		NONE		//Use the provided position
+	};
+
+	enum class VPOSITION_STYLE
+	{
+		TOP,
+		MIDDLE,
+		BOTTOM,
+		NONE		//Use the provided position
+	};
+
 	Widget();
 	Widget(uint32_t w, uint32_t h, int32_t x, int32_t y);
 	virtual ~Widget();
@@ -58,6 +74,7 @@ public:
 
 	void SetBackgroundColor(const DirectX::XMVECTOR& color);
 	void SetSizeStyle(int sizeStyle);
+	void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
 
 	int32_t GetX() const; //Get the local x coordinate from the top left corner
 	int32_t GetY() const; //Get the local y coordinate from the top left corner
@@ -85,8 +102,11 @@ protected:
 	std::vector<Widget*> m_children;
 
 	int m_sizeStyle;
+	HPOSITION_STYLE m_hPositionStyle;
+	VPOSITION_STYLE m_vPositionStyle;
 
 	void ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const;
 
 	virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
+	virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 };

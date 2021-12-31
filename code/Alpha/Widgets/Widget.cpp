@@ -22,6 +22,8 @@ Widget::Widget()
 	, m_showBorder(false)
 	, m_borderWidth(1)
 	, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
+	, m_hPositionStyle(HPOSITION_STYLE::NONE)
+	, m_vPositionStyle(VPOSITION_STYLE::NONE)
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -55,13 +57,53 @@ void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
 		m_size.y = parentSize.y - m_locPos.y;
 }
 
+void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+{
+	switch (m_hPositionStyle)
+	{
+	case HPOSITION_STYLE::NONE:
+		m_absPos.x = parentAbsPos.x + m_locPos.x;
+		break;
+
+	case HPOSITION_STYLE::LEFT:
+		m_absPos.x = parentAbsPos.x;
+		break;
+
+	case HPOSITION_STYLE::CENTER:
+		m_absPos.x = parentAbsPos.x + (parentSize.x / 2) - (m_size.x / 2);
+		break;
+
+	case HPOSITION_STYLE::RIGHT:
+		m_absPos.x = parentAbsPos.x + parentSize.x - m_size.x;
+		break;
+	}
+
+	switch (m_vPositionStyle)
+	{
+	case VPOSITION_STYLE::NONE:
+		m_absPos.y = parentAbsPos.y + m_locPos.y;
+		break;
+
+	case VPOSITION_STYLE::TOP:
+		m_absPos.y = parentAbsPos.y;
+		break;
+
+	case VPOSITION_STYLE::MIDDLE:
+		m_absPos.y = parentAbsPos.y + (parentSize.y / 2) - (m_size.y / 2);
+		break;
+
+	case VPOSITION_STYLE::BOTTOM:
+		m_absPos.y = parentAbsPos.y + parentSize.y - m_size.y;
+		break;
+	}
+
+	m_absPos.z = parentAbsPos.z - 1;
+}
+
 void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
-	m_absPos.x = parentAbsPos.x + m_locPos.x;
-	m_absPos.y = parentAbsPos.y + m_locPos.y;
-	m_absPos.z = parentAbsPos.z - 1;
-
 	ReComputeSize(parentSize);
+	ReComputePosition(parentAbsPos, parentSize);
 
 	for (Widget* pChild : m_children)
 		pChild->Resize(m_absPos, m_size);
@@ -96,6 +138,12 @@ void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
 void Widget::SetSizeStyle(int sizeStyle)
 {
 	m_sizeStyle = sizeStyle;
+}
+
+void Widget::SetPositionStyle(Widget::HPOSITION_STYLE hStyle, Widget::VPOSITION_STYLE vStyle)
+{
+	m_hPositionStyle = hStyle;
+	m_vPositionStyle = vStyle;
 }
 
 int32_t Widget::GetX() const
