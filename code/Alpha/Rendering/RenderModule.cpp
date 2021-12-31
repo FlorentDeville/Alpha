@@ -367,11 +367,11 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		if (i > 0)
 			kerning = pFont->GetKerning(lastChar, c);
 
-		float xoffset = fc->m_xoffset / g_pWindow->GetWidth();
-		float yoffset = fc->m_yoffset / g_pWindow->GetHeight();
+		float xoffset = fc->m_xoffset / g_pWindow->GetWidth() * 2;
+		float yoffset = fc->m_yoffset / g_pWindow->GetHeight() * 2;
 
-		float char_width = fc->m_width / g_pWindow->GetWidth();
-		float char_height = fc->m_height / g_pWindow->GetHeight();
+		float char_width = fc->m_width / g_pWindow->GetWidth() * 2;
+		float char_height = fc->m_height / g_pWindow->GetHeight() * 2;
 
 		vert[info.m_characterCount].Position.x = x + ((xoffset + kerning) * scale.x);
 		vert[info.m_characterCount].Position.y = y - (yoffset * scale.y);
@@ -387,7 +387,8 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		info.m_characterCount++;
 
 		// remove horrizontal padding and advance to next char position
-		x += (fc->m_xadvance / g_pWindow->GetWidth()) * scale.x;
+		float advance = fc->m_xadvance / g_pWindow->GetWidth() * 2;
+		x += advance * scale.x;
 
 		lastChar = c;
 	}
