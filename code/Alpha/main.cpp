@@ -160,7 +160,6 @@ static uint16_t g_CubeTextureIndices[] =
 void Update();
 void Render();
 
-FontId g_segoeUIFontId;
 FontId g_comicSansMsFontId;
 
 TextureId g_textureId;
@@ -436,12 +435,6 @@ bool LoadContent()
 	//Load the font
 	{
 		{
-			std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\segoeUI.fnt";
-			Font* pFont = g_pFontMgr->CreateResource(g_segoeUIFontId, fontFilename);
-			pFont->Init(fontFilename);
-		}
-
-		{
 			std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\comicSansMs.fnt";
 			Font* pFont = g_pFontMgr->CreateResource(g_comicSansMsFontId, fontFilename);
 			pFont->Init(fontFilename);
@@ -455,7 +448,6 @@ bool LoadContent()
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
-		g_pRenderModule->InitialiseFont(g_segoeUIFontId, text_pipelineStateId, 1024);
 		g_pRenderModule->InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
 
 	}

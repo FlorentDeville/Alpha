@@ -7,8 +7,10 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/Renderable/RenderableMgr.h"
+#include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
+
 
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
@@ -65,6 +67,23 @@ void WidgetMgr::Init()
 	//Renderable for basic widget
 	{
 		m_widgetRenderableId = g_pRenderableMgr->CreateRenderable(m_quadMeshId, m_widgetPsoId);
+	}
+
+	//Font for label
+	{
+		std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\segoeUI.fnt";
+		Font* pFont = g_pFontMgr->CreateResource(m_segoeUIFontId, fontFilename);
+		pFont->Init(fontFilename);
+
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.ps.cso");
+
+		PipelineStateId text_pipelineStateId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
+		pPipelineState->Init_Text(rsId, vsId, psId);
+
+		g_pRenderModule->InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 1024);
 	}
 }
 

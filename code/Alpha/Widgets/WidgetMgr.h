@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
@@ -16,6 +17,7 @@ class Widget;
 class WidgetMgr
 {
 	friend class Button;
+	friend class Label;
 	friend class Widget;
 	friend class HLayout;
 public:
@@ -45,9 +47,9 @@ private:
 
 	//Ids of resources used to render widgets
 	MeshId m_quadMeshId;
-
 	PipelineStateId m_widgetPsoId;
 	RenderableId m_widgetRenderableId;
+	FontId m_segoeUIFontId;
 };
 
 extern WidgetMgr* g_pWidgetMgr;
