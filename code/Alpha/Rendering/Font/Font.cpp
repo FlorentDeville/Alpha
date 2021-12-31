@@ -189,17 +189,17 @@ void Font::LoadFntFile(const std::string& fntName)
         // get xoffset
         fs >> tmp; // xoffset=-6
         startpos = tmp.find("=") + 1;
-        m_CharList[c].m_xoffset = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowWidth;
+        m_CharList[c].m_xoffset = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // get yoffset
         fs >> tmp; // yoffset=16
         startpos = tmp.find("=") + 1;
-        m_CharList[c].m_yoffset = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowHeight;
+        m_CharList[c].m_yoffset = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // get xadvance
         fs >> tmp; // xadvance=65
         startpos = tmp.find("=") + 1;
-        m_CharList[c].m_xadvance = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowWidth;
+        m_CharList[c].m_xadvance = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // get page
         // get channel

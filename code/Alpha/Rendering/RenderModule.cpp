@@ -351,6 +351,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		if (fc == nullptr)
 		{
 			OutputDebugString(L"WARNING : Character not found in the font");
+			break;
 		}
 
 		// end of string
@@ -367,8 +368,8 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		if (i > 0)
 			kerning = pFont->GetKerning(lastChar, c);
 
-		float xoffset = fc->m_xoffset / g_pWindow->GetWidth() * 2;
-		float yoffset = fc->m_yoffset / g_pWindow->GetHeight() * 2;
+		float xoffset = static_cast<float>(fc->m_xoffset) / g_pWindow->GetWidth() * 2;
+		float yoffset = static_cast<float>(fc->m_yoffset) / g_pWindow->GetHeight() * 2;
 
 		float char_width = static_cast<float>(fc->m_width) / g_pWindow->GetWidth() * 2.f;
 		float char_height = static_cast<float>(fc->m_height) / g_pWindow->GetHeight() * 2.f;
@@ -387,7 +388,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		info.m_characterCount++;
 
 		// remove horrizontal padding and advance to next char position
-		float advance = fc->m_xadvance / g_pWindow->GetWidth() * 2;
+		float advance = static_cast<float>(fc->m_xadvance) / g_pWindow->GetWidth() * 2;
 		x += advance * scale.x;
 
 		lastChar = c;
