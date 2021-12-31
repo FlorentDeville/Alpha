@@ -40,6 +40,16 @@ void WidgetMgr::Draw()
 		m_pRoot->Draw();
 }
 
+void WidgetMgr::Resize()
+{
+	if (!m_pRoot)
+		return;
+
+	DirectX::XMINT3 absPos(0, 0, 100);
+	DirectX::XMUINT2 size(g_pWindow->GetWidth(), g_pWindow->GetHeight());
+	m_pRoot->Resize(absPos, size);
+}
+
 void WidgetMgr::HandleMsg(const Message& msg)
 {
 	switch (msg.m_id)

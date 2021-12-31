@@ -23,6 +23,8 @@ public:
 
 	void Draw();
 
+	void Resize();
+
 	void HandleMsg(const Message& msg);
 
 private:
