@@ -460,48 +460,60 @@ bool LoadContent()
 
 void CreateMenuBar()
 {
+	const Font* pFont = g_pFontMgr->GetResource(g_pWidgetMgr->GetUIFontId());
+
 	int menuBarHeight = 30;
 	HLayout* pLayout = new HLayout(1000, menuBarHeight, 0, 0);
 	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	//alpha icon
-	int iconSize = 30;
+	int iconSize = 20;
 	int iconY = (menuBarHeight - iconSize) / 2;
 	Icon* pIcon = new Icon(DirectX::XMINT2(0, iconY), DirectX::XMUINT2(iconSize, iconSize), "C:\\workspace\\Alpha\\data\\textures\\alpha_64.png");
 	pLayout->AddWidget(pIcon);
 
 	int buttonHeight = 20;
-	int buttonWidth = 100;
+	//int buttonWidth = 50;
 	int buttonY = (menuBarHeight - buttonHeight) / 2;
-	int labelX = 10;
+	//int labelX = 10;
+
+	int labelPadding = 10;
+	int buttonSize = labelPadding * 2;
 
 	//File button
-	Button* pButton1 = new Button(buttonWidth, buttonHeight, 0, buttonY);
+	std::string fileText = "File";
+	DirectX::XMUINT2 textSize;
+	pFont->ComputeRect(fileText, textSize);
+	Button* pButton1 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton1->OnClick([]() -> bool {
 		OutputDebugString(L"Click on File button\n");
 		return true;
 	});
 
 	float labelScale = 1;
-	Label* pLabel1 = new Label(labelX, 0, labelScale, "File");
+	Label* pLabel1 = new Label(labelPadding, 0, labelScale, fileText);
 	pButton1->AddWidget(pLabel1);
 
 	//Edit button
-	Button* pButton2 = new Button(buttonWidth, buttonHeight, 0, buttonY);
+	fileText = "Edit";
+	pFont->ComputeRect(fileText, textSize);
+	Button* pButton2 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton2->OnClick([]() -> bool {
 		OutputDebugString(L"Click on Edit button\n");
 		return true;
 		});
-	Label* pLabel2 = new Label(labelX, 0, labelScale, "Edit");
+	Label* pLabel2 = new Label(labelPadding, 0, labelScale, fileText);
 	pButton2->AddWidget(pLabel2);
 
 	//Window button
-	Button* pButton3 = new Button(buttonWidth, buttonHeight, 0, buttonY);
+	fileText = "Window";
+	pFont->ComputeRect(fileText, textSize);
+	Button* pButton3 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton3->OnClick([]() -> bool {
 		OutputDebugString(L"Click on Window button\n");
 		return true;
 		});
-	Label* pLabel3 = new Label(labelX, 0, labelScale, "Window");
+	Label* pLabel3 = new Label(labelPadding, 0, labelScale, fileText);
 	pButton3->AddWidget(pLabel3);
 
 	pLayout->AddWidget(pButton1);
