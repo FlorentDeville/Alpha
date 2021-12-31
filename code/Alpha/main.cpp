@@ -34,7 +34,7 @@
 
 #include "Window.h"
 #include "Widgets/Button.h"
-#include "Widgets/HLayout.h"
+#include "Widgets/Layout.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Message.h"
@@ -465,7 +465,7 @@ void CreateMenuBar()
 	const Font* pFont = g_pFontMgr->GetResource(g_pWidgetMgr->GetUIFontId());
 
 	int menuBarHeight = 30;
-	HLayout* pLayout = new HLayout(1000, menuBarHeight, 0, 0);
+	Layout* pLayout = new Layout(1000, menuBarHeight, 0, 0);
 	pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
 

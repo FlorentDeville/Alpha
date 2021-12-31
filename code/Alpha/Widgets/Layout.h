@@ -6,11 +6,11 @@
 
 #include "Widget.h"
 
-class HLayout : public Widget
+class Layout : public Widget
 {
 public:
-	HLayout(uint32_t w, uint32_t h, int32_t x, int32_t y);
-	virtual ~HLayout();
+	Layout(uint32_t w, uint32_t h, int32_t x, int32_t y);
+	virtual ~Layout();
 
 	void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 

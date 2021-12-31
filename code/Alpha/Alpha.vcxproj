@@ -171,7 +171,7 @@
     <ClCompile Include="Rendering\Texture\Texture.cpp" />
     <ClCompile Include="Resource\Resource.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
-    <ClCompile Include="Widgets\HLayout.cpp" />
+    <ClCompile Include="Widgets\Layout.cpp" />
     <ClCompile Include="Widgets\Icon.cpp" />
     <ClCompile Include="Widgets\Label.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
@@ -201,7 +201,7 @@
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\ResourceMgr.h" />
     <ClInclude Include="Widgets\Button.h" />
-    <ClInclude Include="Widgets\HLayout.h" />
+    <ClInclude Include="Widgets\Layout.h" />
     <ClInclude Include="Widgets\Icon.h" />
     <ClInclude Include="Widgets\Label.h" />
     <ClInclude Include="Widgets\Message.h" />

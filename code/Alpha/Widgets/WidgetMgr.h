@@ -20,7 +20,7 @@ class WidgetMgr
 	friend class Icon;
 	friend class Label;
 	friend class Widget;
-	friend class HLayout;
+	friend class Layout;
 public:
 	WidgetMgr();
 	~WidgetMgr();

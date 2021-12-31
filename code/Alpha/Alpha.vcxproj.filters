@@ -37,7 +37,7 @@
     <ClCompile Include="Widgets\Button.cpp">
       <Filter>Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\HLayout.cpp">
+    <ClCompile Include="Widgets\Layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Rendering\Shader.cpp">
@@ -109,7 +109,7 @@
       <Filter>Widgets</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\WidgetMgr.h" />
-    <ClInclude Include="Widgets\HLayout.h" />
+    <ClInclude Include="Widgets\Layout.h" />
     <ClInclude Include="Rendering\ShaderId.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Rendering\ShaderMgr.h" />

@@ -2,7 +2,7 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "HLayout.h"
+#include "Layout.h"
 
 #include "Rendering/RenderModule.h"
 #include "Rendering/Renderable/RenderableMgr.h"
@@ -11,14 +11,14 @@
 extern RenderModule* g_pRenderModule;
 extern WidgetMgr* g_pWidgetMgr;
 
-HLayout::HLayout(uint32_t w, uint32_t h, int32_t x, int32_t y)
+Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 	: Widget(w, h, x ,y)
 {}
 
-HLayout::~HLayout()
+Layout::~Layout()
 {}
 
-void HLayout::Draw()
+void Layout::Draw()
 {
 	DirectX::XMMATRIX wvp;
 	ComputeWVPMatrix(wvp);
@@ -43,7 +43,7 @@ void HLayout::Draw()
 		pWidget->Draw();
 }
 
-void HLayout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
 	m_absPos.x = parentAbsPos.x + m_locPos.x;
 	m_absPos.y = parentAbsPos.y + m_locPos.y;
