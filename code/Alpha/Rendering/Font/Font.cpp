@@ -62,6 +62,12 @@ void Font::Release()
         delete m_KerningsList;
         m_KerningsList = nullptr;
     }
+
+    if (m_pSRVHeap)
+    {
+        m_pSRVHeap->Release();
+        m_pSRVHeap = nullptr;
+    }
 }
 
 float Font::GetKerning(char first, char second) const
