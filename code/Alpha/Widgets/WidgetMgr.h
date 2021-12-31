@@ -37,6 +37,8 @@ public:
 
 	void HandleMsg(const Message& msg);
 
+	FontId GetUIFontId() const;
+
 private:
 
 	std::vector<Widget*> m_widgets;

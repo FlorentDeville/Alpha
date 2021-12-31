@@ -187,4 +187,9 @@ void WidgetMgr::HandleMsg(const Message& msg)
 	}
 }
 
+FontId WidgetMgr::GetUIFontId() const
+{
+	return m_segoeUIFontId;
+}
+
 WidgetMgr* g_pWidgetMgr = nullptr;
