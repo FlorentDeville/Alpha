@@ -467,14 +467,24 @@ void CreateMenuBar()
 	int menuBarHeight = 30;
 	Layout* pLayout = new Layout(1000, menuBarHeight, 0, 0);
 	pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+	pLayout->SetDirection(Layout::Horizontal);
 	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	Layout* pMenuBarLayout = new Layout(400, menuBarHeight, 0, 0);
+	pMenuBarLayout->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
+	pMenuBarLayout->SetDirection(Layout::Horizontal);
+	pLayout->AddWidget(pMenuBarLayout);
+
+	Layout* pButtonLayout = new Layout(0, menuBarHeight, 0, 0);
+	pButtonLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+	pButtonLayout->SetDirection(Layout::Horizontal_Reverse);
+	pLayout->AddWidget(pButtonLayout);
 
 	//alpha icon
 	int iconSize = 20;
 	int iconY = (menuBarHeight - iconSize) / 2;
 	Icon* pIcon = new Icon(DirectX::XMINT2(0, iconY), DirectX::XMUINT2(iconSize, iconSize), "C:\\workspace\\Alpha\\data\\textures\\alpha_64.png");
-	pLayout->AddWidget(pIcon);
-
+	
 	int buttonHeight = 20;
 	//int buttonWidth = 50;
 	int buttonY = (menuBarHeight - buttonHeight) / 2;
@@ -519,11 +529,48 @@ void CreateMenuBar()
 	Label* pLabel3 = new Label(labelPadding, 0, labelScale, fileText);
 	pButton3->AddWidget(pLabel3);
 
-	pLayout->AddWidget(pButton1);
-	pLayout->AddWidget(pButton2);
-	pLayout->AddWidget(pButton3);
+	pMenuBarLayout->AddWidget(pIcon);
+	pMenuBarLayout->AddWidget(pButton1);
+	pMenuBarLayout->AddWidget(pButton2);
+	pMenuBarLayout->AddWidget(pButton3);
 
-	
+	//Close button
+	Button* pCloseButton = new Button(20, 0, 0, 0);
+	pCloseButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
+	Icon* pCloseIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), "C:\\workspace\\Alpha\\data\\textures\\icon_close_16.png");
+	pCloseIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	pCloseButton->AddWidget(pCloseIcon);
+	pCloseButton->OnClick([]()-> bool {
+		OutputDebugString(L"Click on close button\n");
+		return true;
+		});
+
+	//Max button
+	Button* pMaxButton = new Button(20, 0, 0, 0);
+	pMaxButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
+	Icon* pMaxIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), "C:\\workspace\\Alpha\\data\\textures\\icon_maximize_16.png");
+	pMaxIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	pMaxButton->AddWidget(pMaxIcon);
+	pMaxButton->OnClick([]()-> bool {
+		OutputDebugString(L"Click on maximize/restore button\n");
+		return true;
+		});
+
+	//Min button
+	Button* pMinButton = new Button(20, 0, 0, 0);
+	pMinButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
+	Icon* pMinIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), "C:\\workspace\\Alpha\\data\\textures\\icon_minimize_16.png");
+	pMinIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	pMinButton->AddWidget(pMinIcon);
+	pMinButton->OnClick([]()-> bool {
+		OutputDebugString(L"Click on minimize button\n");
+		return true;
+		});
+
+	pButtonLayout->AddWidget(pCloseButton);
+	pButtonLayout->AddWidget(pMaxButton);
+	pButtonLayout->AddWidget(pMinButton);
+
 	g_pWidgetMgr->SetRoot(pLayout);
 	g_pWidgetMgr->Resize();
 }
