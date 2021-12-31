@@ -54,7 +54,6 @@ public:
     float GetKerning(char first, char second) const;
     FontChar* GetChar(char c) const;
 
-    //std::string m_name; // name of the font
     std::string m_fontImage;
     int m_size; // size of font, lineheight and baseheight will be based on this as if this is a single unit (1.0)
     float m_lineHeight; // how far to move down to next line, will be normalized
@@ -65,10 +64,8 @@ public:
     FontChar* m_CharList; // list of characters
     int m_numKernings; // the number of kernings
     FontKerning* m_KerningsList; // list to hold kerning values
-    //ID3D12Resource* textureBuffer; // the font texture resource
+    
     TextureId m_texture;
-    ID3D12DescriptorHeap* m_pSRVHeap;
-    //D3D12_GPU_DESCRIPTOR_HANDLE m_srvHandle; // the font srv
 
     // these are how much the character is padded in the texture. We
     // add padding to give sampling a little space so it does not accidentally

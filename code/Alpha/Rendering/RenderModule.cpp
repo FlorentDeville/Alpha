@@ -403,7 +403,6 @@ void RenderModule::RenderAllText()
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
 
 		// set the text pipeline state object
-		//PipelineStateId pipelineStateId = g_pRenderableMgr->GetRenderable(g_FontId)->GetPipeplineStateId();
 		PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(info.m_psoId);
 		ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
 		pCommandList->SetPipelineState(pPSO);
@@ -417,10 +416,11 @@ void RenderModule::RenderAllText()
 		// set the text vertex buffer
 		pCommandList->IASetVertexBuffers(0, 1, &info.m_textVertexBufferView[m_currentBackBufferIndex]);
 
-		// bind the text srv. We will assume the correct descriptor heap and table are currently bound and set
-		ID3D12DescriptorHeap* pDescriptorHeap[] = { pFont->m_pSRVHeap };
+		// bind the text srv.
+		ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(pFont->m_texture)->GetSRV();
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-		pCommandList->SetGraphicsRootDescriptorTable(0, pFont->m_pSRVHeap->GetGPUDescriptorHandleForHeapStart());
+		pCommandList->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
 
 		pCommandList->RSSetViewports(1, &g_pRenderModule->m_viewport);
 		pCommandList->RSSetScissorRects(1, &g_pRenderModule->m_scissorRect);
@@ -435,8 +435,6 @@ void RenderModule::RenderAllText()
 		//reset the character count for next frame
 		info.m_characterCount = 0;
 	}
-
-	
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

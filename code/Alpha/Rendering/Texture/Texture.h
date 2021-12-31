@@ -20,13 +20,13 @@ public:
 
 	void Init(const std::string& path);
 
-	const ID3D12Resource* GetResource() const;
-	ID3D12Resource* GetResource();
-	const D3D12_RESOURCE_DESC& GetResourceDesc() const;
+	const ID3D12DescriptorHeap* GetSRV() const;
+	ID3D12DescriptorHeap* GetSRV();
 
 private:
 	ID3D12Resource* m_pResource;
 	D3D12_RESOURCE_DESC m_resourceDesc;
+	ID3D12DescriptorHeap* m_pSrvDescriptorHeap;
 };
 
 DECLARE_RESOURCE_ID(Texture);

@@ -18,12 +18,16 @@ Texture::Texture(const std::string& name)
 	: Resource(name)
 	, m_pResource(nullptr)
 	, m_resourceDesc()
+	, m_pSrvDescriptorHeap(nullptr)
 {}
 
 Texture::~Texture()
 {
 	if (m_pResource)
 		m_pResource->Release();
+
+	if (m_pSrvDescriptorHeap)
+		m_pSrvDescriptorHeap->Release();
 }
 
 void Texture::Init(const std::string& path)
@@ -89,21 +93,36 @@ void Texture::Init(const std::string& path)
 	}
 
 	stbi_image_free(pData);
+
+	//Create the SRV heap
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+		srvHeapDesc.NumDescriptors = 1;
+		srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+		ThrowIfFailed(res);
+	}
+
+	//Create the srv descriptor
+	{
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = m_resourceDesc.Format;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.Texture2D.MipLevels = 1;
+		pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	}
 }
 
-const ID3D12Resource* Texture::GetResource() const
+const ID3D12DescriptorHeap* Texture::GetSRV() const
 {
-	return m_pResource;
+	return m_pSrvDescriptorHeap;
 }
 
-ID3D12Resource* Texture::GetResource()
+ID3D12DescriptorHeap* Texture::GetSRV()
 {
-	return m_pResource;
-}
-
-const D3D12_RESOURCE_DESC& Texture::GetResourceDesc() const
-{
-	return m_resourceDesc;
+	return m_pSrvDescriptorHeap;
 }
 
 RESOURCE_MGR_PTR(Texture) g_pTextureMgr;

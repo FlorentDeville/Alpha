@@ -162,41 +162,18 @@ static uint16_t g_CubeTextureIndices[] =
 void Update();
 void Render();
 
-ID3D12DescriptorHeap* g_pSrvDescriptorHeap = nullptr;
-
 FontId g_segoeUIFontId;
 FontId g_comicSansMsFontId;
+
+TextureId g_textureId;
 
 void LoadTexture()
 {
 	//std::string textureName = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
 	std::string textureName = "C:\\workspace\\Alpha\\data\\fonts\\arial_0.tga";
 
-	TextureId id;
-	Texture* pTexture = g_pTextureMgr->CreateResource(id, textureName);
+	Texture* pTexture = g_pTextureMgr->CreateResource(g_textureId, textureName);
 	pTexture->Init(textureName);
-
-	ID3D12Device* pDevice = g_pRenderModule->GetDevice();
-
-	//Create the SRV heap
-	{
-		D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-		srvHeapDesc.NumDescriptors = 1;
-		srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&g_pSrvDescriptorHeap));
-		ThrowIfFailed(res);
-	}
-
-	//Create the srv descriptor
-	{
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Format = pTexture->GetResourceDesc().Format;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Texture2D.MipLevels = 1;
-		pDevice->CreateShaderResourceView(pTexture->GetResource(), &srvDesc, g_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	}
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -384,7 +361,7 @@ void Render()
 	}
 
 	//Render texture cube
-	if(false)
+	//if(false)
 	{
 		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
 		g_pRenderModule->PreRenderForRenderable(*renderable);
@@ -395,9 +372,10 @@ void Render()
 
 		g_pRenderModule->SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
 
-		ID3D12DescriptorHeap* pDescriptorHeap[] = { g_pSrvDescriptorHeap };
+		ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(g_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		g_pRenderModule->GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-		g_pRenderModule->GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, g_pSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		g_pRenderModule->GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
 		g_pRenderModule->PostRenderForRenderable(*renderable);
 	}
