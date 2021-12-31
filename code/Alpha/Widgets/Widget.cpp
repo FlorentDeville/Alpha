@@ -41,13 +41,19 @@ void Widget::Update()
 {}
 
 void Widget::Draw(int32_t /*x*/, int32_t /*y*/, float /*parentZ*/)
-{}
+{
+	for (Widget* pChild : m_children)
+		pChild->Draw(0, 0, 1);
+}
 
 void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& /*parentSize*/)
 {
 	m_absPos.x = parentAbsPos.x + m_locPos.x;
 	m_absPos.y = parentAbsPos.y + m_locPos.y;
 	m_absPos.z = parentAbsPos.z - 1;
+
+	for (Widget* pChild : m_children)
+		pChild->Resize(m_absPos, m_size);
 }
 
 bool Widget::Handle(const Message& /*msg*/)

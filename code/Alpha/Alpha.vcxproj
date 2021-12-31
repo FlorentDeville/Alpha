@@ -172,6 +172,7 @@
     <ClCompile Include="Resource\Resource.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
     <ClCompile Include="Widgets\HLayout.cpp" />
+    <ClCompile Include="Widgets\Label.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
     <ClCompile Include="Widgets\WidgetMgr.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Resource\ResourceMgr.h" />
     <ClInclude Include="Widgets\Button.h" />
     <ClInclude Include="Widgets\HLayout.h" />
+    <ClInclude Include="Widgets\Label.h" />
     <ClInclude Include="Widgets\Message.h" />
     <ClInclude Include="Widgets\MessageId.h" />
     <ClInclude Include="Widgets\Widget.h" />

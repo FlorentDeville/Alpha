@@ -35,6 +35,7 @@
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"
+#include "Widgets/Label.h"
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -45,7 +46,7 @@ bool g_VSync;
 bool g_IsInitialized = false;
 
 Window* g_pWindow = nullptr;
-HLayout* g_pButton = nullptr;
+//HLayout* g_pButton = nullptr;
 
 RenderableId g_CubeId;
 RenderableId g_SimpleQuadId;
@@ -227,19 +228,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 
 			case VK_UP:
-				g_pButton->SetY(g_pButton->GetY() - 1);
+				//g_pButton->SetY(g_pButton->GetY() - 1);
 				break;
 
 			case VK_DOWN:
-				g_pButton->SetY(g_pButton->GetY() + 1);
+				//g_pButton->SetY(g_pButton->GetY() + 1);
 				break;
 
 			case VK_LEFT:
-				g_pButton->SetX(g_pButton->GetX() - 1);
+				//g_pButton->SetX(g_pButton->GetX() - 1);
 				break;
 
 			case VK_RIGHT:
-				g_pButton->SetX(g_pButton->GetX() + 1);
+				//g_pButton->SetX(g_pButton->GetX() + 1);
 				break;
 
 			default:
@@ -434,11 +435,11 @@ void Render()
 	//render text
 	//if(false)
 	{
-		g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT3(0, 0, 2), DirectX::XMFLOAT2(1, 1));
+		//g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT3(0, 0, 2), DirectX::XMFLOAT2(1, 1));
 		g_pRenderModule->PrepareRenderText("The Lord Of The Rings", g_comicSansMsFontId, DirectX::XMFLOAT3(540, 420, 2), DirectX::XMFLOAT2(3, 3));
-		g_pRenderModule->RenderAllText();
 	}
 
+	g_pRenderModule->RenderAllText();
 	g_pRenderModule->PostRender();
 }
 
@@ -566,13 +567,16 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_contentLoaded = false;
 	LoadContent();
 
-	g_pButton = new HLayout(1000, 200, 0, 0);
-	g_pButton->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
-	g_pButton->AddWidget(new Button(100, 50, 0, 0));
-	g_pButton->AddWidget(new Button(300, 100, 0, 0));
-	g_pButton->AddWidget(new Button(400, 150, 0, 0));
-	g_pButton->Resize(DirectX::XMINT3(0, 0, 100), DirectX::XMUINT2(width, height));
-	g_pWidgetMgr->SetRoot(g_pButton);
+	HLayout* pLayout = new HLayout(1000, 200, 200, 100);
+	pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	Button* pButton1 = new Button(100, 50, 0, 0);
+	Label* pLabel1 = new Label(20, 10, 2, "File");
+	pLayout->AddWidget(pButton1);
+	pButton1->AddWidget(pLabel1);
+	//pLayout->AddWidget(new Button(300, 100, 0, 0));
+	//pLayout->AddWidget(new Button(400, 150, 0, 0));
+	pLayout->Resize(DirectX::XMINT3(0, 0, 100), DirectX::XMUINT2(width, height));
+	g_pWidgetMgr->SetRoot(pLayout);
 
 	LoadTexture();
 

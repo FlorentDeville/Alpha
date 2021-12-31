@@ -44,6 +44,8 @@ void Button::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
 	g_pRenderModule->SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
 	g_pRenderModule->PostRenderForRenderable(*pRenderable);
+
+	Widget::Draw(0, 0, 1);
 }
 
 bool Button::Handle(const Message& msg)
