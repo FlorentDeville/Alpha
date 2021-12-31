@@ -20,6 +20,7 @@ public:
 	void Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 	void Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 	void Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+	void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 
 	ID3D12PipelineState* GetPipelineState() const;
 	RootSignatureId GetRootSignatureId() const;

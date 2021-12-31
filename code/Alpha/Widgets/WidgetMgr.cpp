@@ -85,6 +85,19 @@ void WidgetMgr::Init()
 
 		g_pRenderModule->InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 1024);
 	}
+
+	//Renderable for icon
+	{
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.ps.cso");
+
+		PipelineStateId texture_posuv_pipelineStateId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(texture_posuv_pipelineStateId, "texture");
+		pPipelineState->Init_Icon(rsId, vsId, psId);
+
+		m_iconRenderableId = g_pRenderableMgr->CreateRenderable(m_quadMeshId, texture_posuv_pipelineStateId);
+	}
 }
 
 void WidgetMgr::RegisterWidget(Widget* pWidget)

@@ -35,6 +35,7 @@
 #include "Window.h"
 #include "Widgets/Button.h"
 #include "Widgets/HLayout.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
@@ -460,8 +461,14 @@ bool LoadContent()
 void CreateMenuBar()
 {
 	int menuBarHeight = 30;
-	HLayout* pLayout = new HLayout(1000, menuBarHeight, 200, 100);
+	HLayout* pLayout = new HLayout(1000, menuBarHeight, 0, 0);
 	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	//alpha icon
+	int iconSize = 30;
+	int iconY = (menuBarHeight - iconSize) / 2;
+	Icon* pIcon = new Icon(DirectX::XMINT2(0, iconY), DirectX::XMUINT2(iconSize, iconSize), "C:\\workspace\\Alpha\\data\\textures\\alpha_64.png");
+	pLayout->AddWidget(pIcon);
 
 	int buttonHeight = 20;
 	int buttonWidth = 100;
@@ -500,7 +507,7 @@ void CreateMenuBar()
 	pLayout->AddWidget(pButton2);
 	pLayout->AddWidget(pButton3);
 
-	//pLayout->Resize(DirectX::XMINT3(0, 0, 100), DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
+	
 	g_pWidgetMgr->SetRoot(pLayout);
 	g_pWidgetMgr->Resize();
 }

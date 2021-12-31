@@ -17,6 +17,7 @@ class Widget;
 class WidgetMgr
 {
 	friend class Button;
+	friend class Icon;
 	friend class Label;
 	friend class Widget;
 	friend class HLayout;
@@ -49,6 +50,7 @@ private:
 	MeshId m_quadMeshId;
 	PipelineStateId m_widgetPsoId;
 	RenderableId m_widgetRenderableId;
+	RenderableId m_iconRenderableId;
 	FontId m_segoeUIFontId;
 };
 
