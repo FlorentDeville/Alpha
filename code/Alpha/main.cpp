@@ -432,10 +432,10 @@ void Render()
 	}
 
 	//render text
-	if(false)
+	//if(false)
 	{
 		g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1));
-		g_pRenderModule->PrepareRenderText("The Lord Of The Rings", g_comicSansMsFontId, DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3));
+		g_pRenderModule->PrepareRenderText("The Lord Of The Rings", g_comicSansMsFontId, DirectX::XMFLOAT2(540, 420), DirectX::XMFLOAT2(3, 3));
 		g_pRenderModule->RenderAllText();
 	}
 

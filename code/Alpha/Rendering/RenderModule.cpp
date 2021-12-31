@@ -325,16 +325,16 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 	}
 }
 
-void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& screenPos, const DirectX::XMFLOAT2& scale)
+void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& uiPos, const DirectX::XMFLOAT2& scale)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	const Font* pFont = g_pFontMgr->GetResource(fontId);
 
-	float topLeftScreenX = screenPos.x;
-	float topLeftScreenY = screenPos.y;
-
-	float x = topLeftScreenX;
-	float y = topLeftScreenY;
+	//convert from ui coordinates to screen coordinate
+	// ui coordinate : from the top left corner in pixels
+	// screen coordinate : from the center, range [-1, 1]
+	float x = (uiPos.x * 2 / g_pWindow->GetWidth()) -1;
+	float y = 2 - (uiPos.y * 2 / g_pWindow->GetHeight()) - 1;
 
 	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
 	VertexText* vert = (VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
@@ -390,7 +390,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 
 void RenderModule::RenderAllText()
 {
-	for (auto fontPair : m_fontVertexBuffers)
+	for (auto& fontPair : m_fontVertexBuffers)
 	{
 		FontRenderInfo& info = fontPair.second;
 		const Font* pFont = g_pFontMgr->GetResource(fontPair.first);

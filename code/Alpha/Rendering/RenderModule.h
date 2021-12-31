@@ -53,7 +53,9 @@ public:
 	int GetNumFrames() const;
 
 	void InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount);
-	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& screenPos, const DirectX::XMFLOAT2& scale);
+
+	//uiPos : origin : top left, range : [0, pixel screen size]
+	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& uiPos, const DirectX::XMFLOAT2& scale);
 	void RenderAllText();
 
 
