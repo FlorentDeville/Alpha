@@ -460,6 +460,8 @@ bool LoadContent()
 	return true;
 }
 
+bool g_isMaximized = false;
+
 void CreateMenuBar()
 {
 	const Font* pFont = g_pFontMgr->GetResource(g_pWidgetMgr->GetUIFontId());
@@ -542,17 +544,34 @@ void CreateMenuBar()
 	pCloseButton->AddWidget(pCloseIcon);
 	pCloseButton->OnClick([]()-> bool {
 		OutputDebugString(L"Click on close button\n");
+		SendMessage(g_pWindow->GetWindowHandle(), WM_DESTROY, 0, 0);
 		return true;
 		});
 
 	//Max button
 	Button* pMaxButton = new Button(20, 0, 0, 0);
 	pMaxButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
-	Icon* pMaxIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), "C:\\workspace\\Alpha\\data\\textures\\icon_maximize_16.png");
+	Icon* pMaxIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), "C:\\workspace\\Alpha\\data\\textures\\icon_maximize_16.png");	
 	pMaxIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	Icon* pRestoreIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), "C:\\workspace\\Alpha\\data\\textures\\icon_restore_16.png");
+	pRestoreIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pMaxButton->AddWidget(pMaxIcon);
-	pMaxButton->OnClick([]()-> bool {
+	pMaxButton->OnClick([pMaxButton, pMaxIcon, pRestoreIcon]()-> bool {
 		OutputDebugString(L"Click on maximize/restore button\n");
+		if(g_isMaximized)
+		{
+			pMaxButton->RemoveWidget(pRestoreIcon);
+			pMaxButton->AddWidget(pMaxIcon);
+
+			ShowWindow(g_pWindow->GetWindowHandle(), SW_SHOWNORMAL);
+		}
+		else
+		{
+			pMaxButton->RemoveWidget(pMaxIcon);
+			pMaxButton->AddWidget(pRestoreIcon);
+			ShowWindow(g_pWindow->GetWindowHandle(), SW_SHOWMAXIMIZED);
+		}
+		g_isMaximized = !g_isMaximized;
 		return true;
 		});
 
@@ -564,6 +583,7 @@ void CreateMenuBar()
 	pMinButton->AddWidget(pMinIcon);
 	pMinButton->OnClick([]()-> bool {
 		OutputDebugString(L"Click on minimize button\n");
+		ShowWindow(g_pWindow->GetWindowHandle(), SW_SHOWMINIMIZED);
 		return true;
 		});
 
