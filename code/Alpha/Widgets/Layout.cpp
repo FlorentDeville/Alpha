@@ -62,8 +62,6 @@ void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 
 	for(Widget* pWidget : m_children)
 	{
-		
-
 		if (m_dir == Horizontal)
 		{
 			pWidget->SetX(x);
@@ -71,7 +69,7 @@ void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 		}
 		else if (m_dir == Horizontal_Reverse)
 		{
-			x = pWidget->GetX() - pWidget->GetWidth();
+			x -= pWidget->GetWidth();
 			pWidget->SetX(x);
 		}
 	}
