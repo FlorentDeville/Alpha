@@ -6,6 +6,8 @@
 
 #include "Widget.h"
 
+#include <functional>
+
 class Button : public Widget
 {
 public:
@@ -15,4 +17,9 @@ public:
 	void Draw() override;
 
 	bool Handle(const Message& msg) override;
+
+	void OnClick(const std::function<bool()>& callback);
+
+private:
+	std::function<bool()> m_onClick;
 };

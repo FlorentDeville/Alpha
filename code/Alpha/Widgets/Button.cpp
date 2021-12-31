@@ -67,7 +67,21 @@ bool Button::Handle(const Message& msg)
 		return true;
 	}
 	break;
+
+	case M_MouseLDown:
+	{
+		if (m_onClick)
+			return m_onClick();
+
+		return false;
+	}
+	break;
 	}
 
 	return false;
+}
+
+void Button::OnClick(const std::function<bool()>& callback)
+{
+	m_onClick = callback;
 }

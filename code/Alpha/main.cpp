@@ -289,6 +289,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 		break;
 
+	case WM_LBUTTONDOWN:
+	{
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseLDown;
+		msg.m_low.m_pos[0] = x;
+		msg.m_low.m_pos[1] = y;
+
+		g_pWidgetMgr->HandleMsg(msg);
+	}
+	break;
+
 	default:
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
 		break;
@@ -316,7 +330,7 @@ void Update()
 		wchar_t buffer[500];
 		auto fps = frameCounter / elapsedSeconds;
 		swprintf_s(buffer, 500, L"FPS: %f\n", fps);
-		OutputDebugString(buffer);
+		//OutputDebugString(buffer);
 
 		frameCounter = 0;
 		elapsedSeconds = 0.0;
@@ -530,6 +544,54 @@ bool LoadContent()
 	return true;
 }
 
+void CreateMenuBar()
+{
+	int menuBarHeight = 30;
+	HLayout* pLayout = new HLayout(1000, menuBarHeight, 200, 100);
+	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	int buttonHeight = 20;
+	int buttonWidth = 100;
+	int buttonY = (menuBarHeight - buttonHeight) / 2;
+	int labelX = 10;
+
+	//File button
+	Button* pButton1 = new Button(buttonWidth, buttonHeight, 0, buttonY);
+	pButton1->OnClick([]() -> bool {
+		OutputDebugString(L"Click on File button\n");
+		return true;
+	});
+
+	Label* pLabel1 = new Label(labelX, 0, 2, "File");
+	pButton1->AddWidget(pLabel1);
+
+	//Edit button
+	Button* pButton2 = new Button(buttonWidth, buttonHeight, 0, buttonY);
+	pButton2->OnClick([]() -> bool {
+		OutputDebugString(L"Click on Edit button\n");
+		return true;
+		});
+	Label* pLabel2 = new Label(labelX, 0, 2, "Edit");
+	pButton2->AddWidget(pLabel2);
+
+	//Window button
+	Button* pButton3 = new Button(buttonWidth, buttonHeight, 0, buttonY);
+	pButton3->OnClick([]() -> bool {
+		OutputDebugString(L"Click on Window button\n");
+		return true;
+		});
+	Label* pLabel3 = new Label(labelX, 0, 2, "Window");
+	pButton3->AddWidget(pLabel3);
+
+	pLayout->AddWidget(pButton1);
+	pLayout->AddWidget(pButton2);
+	pLayout->AddWidget(pButton3);
+
+	//pLayout->Resize(DirectX::XMINT3(0, 0, 100), DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
+	g_pWidgetMgr->SetRoot(pLayout);
+	g_pWidgetMgr->Resize();
+}
+
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
 	g_pFontMgr = new RESOURCE_MGR(Font);
@@ -567,18 +629,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_contentLoaded = false;
 	LoadContent();
 
-	HLayout* pLayout = new HLayout(1000, 200, 200, 100);
-	pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
-	Button* pButton1 = new Button(100, 50, 0, 0);
-	Label* pLabel1 = new Label(20, 10, 2, "File");
-	pLayout->AddWidget(pButton1);
-	pButton1->AddWidget(pLabel1);
-	//pLayout->AddWidget(new Button(300, 100, 0, 0));
-	//pLayout->AddWidget(new Button(400, 150, 0, 0));
-	pLayout->Resize(DirectX::XMINT3(0, 0, 100), DirectX::XMUINT2(width, height));
-	g_pWidgetMgr->SetRoot(pLayout);
-
 	LoadTexture();
+
+	CreateMenuBar();
 
 	g_pWindow->Show();
 

@@ -93,6 +93,20 @@ void WidgetMgr::HandleMsg(const Message& msg)
 		m_prevMouseY = msg.m_low.m_pos[1];
 	}
 		break;
+
+	case M_MouseLDown:
+	{
+		for (Widget* pWidget : m_widgets)
+		{
+			if (!pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
+				continue;
+
+			bool handled = pWidget->Handle(msg);
+			if (handled)
+				break;
+		}
+	}
+		break;
 	}
 }
 
