@@ -23,12 +23,15 @@
 
 #include "Shader.h"
 #include "ShaderMgr.h"
+#include "Window.h"
 
 #include "InputLayout/InputLayout.h"
 
 #if defined(_DEBUG)
 #include <dxgidebug.h>
 #endif
+
+extern Window* g_pWindow;
 
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
@@ -285,6 +288,150 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 int RenderModule::GetNumFrames() const
 {
 	return m_numFrames;
+}
+
+void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount)
+{
+	FontRenderInfo& info = m_fontVertexBuffers[fontId];
+	info.m_bufferSize = maxCharacterCount;
+	info.m_characterCount = 0;
+	info.m_psoId = psoId;
+
+	for (int ii = 0; ii < m_numFrames; ++ii)
+	{
+		// create upload heap. We will fill this with data for our text
+		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxCharacterCount * sizeof(VertexText));
+		HRESULT hr = g_pRenderModule->GetDevice()->CreateCommittedResource(
+			&prop, // upload heap
+			D3D12_HEAP_FLAG_NONE, // no flags
+			&desc, // resource description for a buffer
+			D3D12_RESOURCE_STATE_GENERIC_READ, // GPU will read from this buffer and copy its contents to the default heap
+			nullptr,
+			IID_PPV_ARGS(&info.m_textVertexBuffer[ii]));
+
+		ThrowIfFailed(hr);
+		info.m_textVertexBuffer[ii]->SetName(L"Text Vertex Buffer Upload Resource Heap");
+
+		CD3DX12_RANGE readRange(0, 0);    // We do not intend to read from this resource on the CPU. (so end is less than or equal to begin)
+
+		// map the resource heap to get a gpu virtual address to the beginning of the heap
+		hr = info.m_textVertexBuffer[ii]->Map(0, &readRange, reinterpret_cast<void**>(&info.m_textVBGPUAddress[ii]));
+		ThrowIfFailed(hr);
+
+		info.m_textVertexBufferView[ii].BufferLocation = info.m_textVertexBuffer[ii]->GetGPUVirtualAddress();
+		info.m_textVertexBufferView[ii].StrideInBytes = sizeof(VertexText);
+		info.m_textVertexBufferView[ii].SizeInBytes = maxCharacterCount * sizeof(VertexText);
+	}
+}
+
+void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& screenPos, const DirectX::XMFLOAT2& scale)
+{
+	FontRenderInfo& info = m_fontVertexBuffers[fontId];
+	const Font* pFont = g_pFontMgr->GetResource(fontId);
+
+	float topLeftScreenX = screenPos.x;
+	float topLeftScreenY = screenPos.y;
+
+	float x = topLeftScreenX;
+	float y = topLeftScreenY;
+
+	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
+	VertexText* vert = (VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
+
+	char lastChar = -1; // no last character to start with
+
+	for (int i = 0; i < text.size(); ++i)
+	{
+		char c = text[i];
+
+		const FontChar* fc = pFont->GetChar(c);
+
+		// character not in font char set
+		if (fc == nullptr)
+			continue;
+
+		// end of string
+		if (c == '\0')
+			break;
+
+		// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
+		if (info.m_characterCount >= 255)
+			break;
+
+		float kerning = 0.0f;
+		if (i > 0)
+			kerning = pFont->GetKerning(lastChar, c);
+
+		float xoffset = fc->m_xoffset / g_pWindow->GetWidth();
+		float yoffset = fc->m_yoffset / g_pWindow->GetHeight();
+
+		float char_width = fc->m_width / g_pWindow->GetWidth();
+		float char_height = fc->m_height / g_pWindow->GetHeight();
+
+		vert[info.m_characterCount].Position.x = x + ((xoffset + kerning) * scale.x);
+		vert[info.m_characterCount].Position.y = y - (yoffset * scale.y);
+		vert[info.m_characterCount].Position.z = char_width * scale.x;
+		vert[info.m_characterCount].Position.w = char_height * scale.y;
+		vert[info.m_characterCount].Uv.x = fc->m_u;
+		vert[info.m_characterCount].Uv.y = fc->m_v;
+		vert[info.m_characterCount].Uv.z = fc->m_twidth;
+		vert[info.m_characterCount].Uv.w = fc->m_theight;
+		vert[info.m_characterCount].Color = DirectX::XMFLOAT4(1, 1, 1, 1);
+
+		info.m_characterCount++;
+
+		// remove horrizontal padding and advance to next char position
+		x += (fc->m_xadvance / g_pWindow->GetWidth()) * scale.x;
+
+		lastChar = c;
+	}
+}
+
+void RenderModule::RenderAllText()
+{
+	for (auto fontPair : m_fontVertexBuffers)
+	{
+		FontRenderInfo& info = fontPair.second;
+		const Font* pFont = g_pFontMgr->GetResource(fontPair.first);
+
+		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
+
+		// set the text pipeline state object
+		//PipelineStateId pipelineStateId = g_pRenderableMgr->GetRenderable(g_FontId)->GetPipeplineStateId();
+		PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(info.m_psoId);
+		ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
+		pCommandList->SetPipelineState(pPSO);
+
+		RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
+		pCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
+
+		// this way we only need 4 vertices per quad rather than 6 if we were to use a triangle list topology
+		pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+		// set the text vertex buffer
+		pCommandList->IASetVertexBuffers(0, 1, &info.m_textVertexBufferView[m_currentBackBufferIndex]);
+
+		// bind the text srv. We will assume the correct descriptor heap and table are currently bound and set
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pFont->m_pSRVHeap };
+		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		pCommandList->SetGraphicsRootDescriptorTable(0, pFont->m_pSRVHeap->GetGPUDescriptorHandleForHeapStart());
+
+		pCommandList->RSSetViewports(1, &g_pRenderModule->m_viewport);
+		pCommandList->RSSetScissorRects(1, &g_pRenderModule->m_scissorRect);
+
+		D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
+		D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
+		pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+
+		// we are going to have 4 vertices per character (trianglestrip to make quad), and each instance is one character
+		pCommandList->DrawInstanced(4, info.m_characterCount, 0, 0);
+
+		//reset the character count for next frame
+		info.m_characterCount = 0;
+	}
+
+	
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

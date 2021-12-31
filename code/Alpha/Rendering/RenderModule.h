@@ -9,10 +9,12 @@
 
 #include <Windows.h>
 #include <cstdint>
+#include <map>
 
 #include <d3d12.h>
 #include <DirectXMath.h>
 
+#include "Rendering/Font/Font.h"
 #include "Rendering/Renderable/Renderable.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "ShaderId.h"
@@ -50,6 +52,11 @@ public:
 
 	int GetNumFrames() const;
 
+	void InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount);
+	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& screenPos, const DirectX::XMFLOAT2& scale);
+	void RenderAllText();
+
+
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
@@ -84,6 +91,19 @@ private:
 
 	bool m_allowTearing;
 	bool m_vSync; //True to limit to 60 fps
+
+	struct FontRenderInfo
+	{
+		//One vertex buffer per frame
+		ID3D12Resource* m_textVertexBuffer[m_numFrames];
+		char* m_textVBGPUAddress[m_numFrames];
+		D3D12_VERTEX_BUFFER_VIEW m_textVertexBufferView[m_numFrames];
+
+		int m_bufferSize;		//the size of the vertex buffer
+		int m_characterCount;	//the number of character to render
+		PipelineStateId m_psoId;
+	};
+	std::map<FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 
 public:
 	UINT m_currentBackBufferIndex;
