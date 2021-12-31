@@ -87,4 +87,6 @@ protected:
 	int m_sizeStyle;
 
 	void ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const;
+
+	virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 };

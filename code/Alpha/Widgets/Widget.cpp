@@ -47,16 +47,21 @@ void Widget::Draw()
 		pChild->Draw();
 }
 
+void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
+{
+	if ((m_sizeStyle & HSIZE_STRETCH) != 0)
+		m_size.x = parentSize.x - m_locPos.x;
+	if ((m_sizeStyle & VSIZE_STRETCH) != 0)
+		m_size.y = parentSize.y - m_locPos.y;
+}
+
 void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
 	m_absPos.x = parentAbsPos.x + m_locPos.x;
 	m_absPos.y = parentAbsPos.y + m_locPos.y;
 	m_absPos.z = parentAbsPos.z - 1;
 
-	if ((m_sizeStyle & HSIZE_STRETCH) != 0)
-		m_size.x = parentSize.x - m_locPos.x;
-	if ((m_sizeStyle & VSIZE_STRETCH) != 0)
-		m_size.y = parentSize.y - m_locPos.y;
+	ReComputeSize(parentSize);
 
 	for (Widget* pChild : m_children)
 		pChild->Resize(m_absPos, m_size);

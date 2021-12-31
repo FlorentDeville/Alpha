@@ -9,10 +9,23 @@
 class Layout : public Widget
 {
 public:
+	enum Direction
+	{
+		Horizontal,				//left to right
+		Horizontal_Reverse,		//right to left
+		//Vertical,				//top to bottom
+		//Vertical_Reverse		//bottom to top
+	};
+
 	Layout(uint32_t w, uint32_t h, int32_t x, int32_t y);
 	virtual ~Layout();
 
 	void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 	void Draw() override;
+
+	void SetDirection(Direction dir);
+
+private:
+	Direction m_dir;
 };

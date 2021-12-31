@@ -49,15 +49,37 @@ void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 	m_absPos.y = parentAbsPos.y + m_locPos.y;
 	m_absPos.z = parentAbsPos.z + m_locPos.z - 1;
 	
+	ReComputeSize(parentSize);
+
+	if (m_children.empty())
+		return;
+
 	int32_t x = 0;
-	if (!m_children.empty())
+	if (m_dir == Horizontal)
 		x = m_children.front()->GetX();
+	else if (m_dir == Horizontal_Reverse)
+		x = m_size.x;
 
 	for(Widget* pWidget : m_children)
 	{
-		pWidget->SetX(x);
-		x = pWidget->GetX() + pWidget->GetWidth();
+		
+
+		if (m_dir == Horizontal)
+		{
+			pWidget->SetX(x);
+			x = pWidget->GetX() + pWidget->GetWidth();
+		}
+		else if (m_dir == Horizontal_Reverse)
+		{
+			x = pWidget->GetX() - pWidget->GetWidth();
+			pWidget->SetX(x);
+		}
 	}
 
 	Widget::Resize(parentAbsPos, parentSize);
+}
+
+void Layout::SetDirection(Direction dir)
+{
+	m_dir = dir;
 }
