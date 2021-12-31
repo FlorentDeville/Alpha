@@ -9,6 +9,8 @@
 #include "Rendering/Texture/Texture.h"
 #include "Resource/Resource.h"
 
+#include "Resource/ResourceMgr.h"
+
 class FontChar
 {
 public:
@@ -46,13 +48,11 @@ public:
     Font(const std::string& name);
     ~Font();
 
-    void Init(const std::string& fntName, int windowWidth, int windowHeight);
+    void Init(const std::string& fntName);
     void Release() override;
 
     float GetKerning(char first, char second) const;
     FontChar* GetChar(char c) const;
-
-    void LoadFntFile(const std::string& fntName, int windowWidth, int windowHeight);
 
     //std::string m_name; // name of the font
     std::string m_fontImage;
@@ -78,4 +78,11 @@ public:
     float m_toppadding;
     float m_rightpadding;
     float m_bottompadding;
+
+private:
+    void LoadFntFile(const std::string& fntName);
 };
+
+DECLARE_RESOURCE_ID(Font);
+
+extern RESOURCE_MGR_PTR(Font) g_pFontMgr;

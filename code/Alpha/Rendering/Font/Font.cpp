@@ -19,9 +19,9 @@ Font::Font(const std::string& name)
 Font::~Font()
 {}
 
-void Font::Init(const std::string& fntName, int windowWidth, int windowHeight)
+void Font::Init(const std::string& fntName)
 {
-    LoadFntFile(fntName, windowWidth, windowHeight);
+    LoadFntFile(fntName);
 
     std::string textureFilename = "C:\\workspace\\Alpha\\data\\fonts\\" + m_fontImage;
     
@@ -90,7 +90,7 @@ FontChar* Font::GetChar(char c) const
     return nullptr;
 }
 
-void Font::LoadFntFile(const std::string& fntName, int /*windowWidth*/, int /*windowHeight*/)
+void Font::LoadFntFile(const std::string& fntName)
 {
     std::ifstream fs;
     fs.open(fntName);
@@ -260,3 +260,5 @@ void Font::LoadFntFile(const std::string& fntName, int /*windowWidth*/, int /*wi
         m_KerningsList[k].m_amount = (float)t;// / (float)windowWidth;
     }
 }
+
+RESOURCE_MGR_PTR(Font) g_pFontMgr = nullptr;
