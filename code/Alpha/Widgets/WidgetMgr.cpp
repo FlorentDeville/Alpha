@@ -102,7 +102,7 @@ void WidgetMgr::Init()
 
 void WidgetMgr::RegisterWidget(Widget* pWidget)
 {
-	m_widgets.push_back(pWidget);
+	m_widgets.insert(pWidget);
 }
 
 void WidgetMgr::SetRoot(Widget* pRoot)

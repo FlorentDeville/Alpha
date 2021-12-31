@@ -120,6 +120,15 @@ void Widget::AddWidget(Widget* pWidget)
 	g_pWidgetMgr->RegisterWidget(pWidget);
 }
 
+void Widget::RemoveWidget(const Widget* pWidget)
+{
+	std::vector<Widget*>::const_iterator it = std::find(m_children.cbegin(), m_children.cend(), pWidget);
+	if (it == m_children.cend())
+		return;
+
+	m_children.erase(it);
+}
+
 void Widget::SetX(int32_t x)
 {
 	m_locPos.x = x;

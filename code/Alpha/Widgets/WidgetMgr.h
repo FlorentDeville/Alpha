@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <vector>
+#include <set>
 
 #include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/MeshId.h"
@@ -41,7 +41,7 @@ public:
 
 private:
 
-	std::vector<Widget*> m_widgets;
+	std::set<Widget*> m_widgets;
 
 	Widget* m_pRoot;
 	

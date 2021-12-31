@@ -68,6 +68,7 @@ public:
 	virtual bool Handle(const Message& msg);
 
 	void AddWidget(Widget* pWidget);
+	void RemoveWidget(const Widget* pWidget);
 
 	void SetX(int32_t x);
 	void SetY(int32_t y);
