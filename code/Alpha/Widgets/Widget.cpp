@@ -21,6 +21,7 @@ Widget::Widget()
 	, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
 	, m_showBorder(false)
 	, m_borderWidth(1)
+	, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -46,11 +47,16 @@ void Widget::Draw()
 		pChild->Draw();
 }
 
-void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& /*parentSize*/)
+void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
 	m_absPos.x = parentAbsPos.x + m_locPos.x;
 	m_absPos.y = parentAbsPos.y + m_locPos.y;
 	m_absPos.z = parentAbsPos.z - 1;
+
+	if ((m_sizeStyle & HSIZE_STRETCH) != 0)
+		m_size.x = parentSize.x - m_locPos.x;
+	if ((m_sizeStyle & VSIZE_STRETCH) != 0)
+		m_size.y = parentSize.y - m_locPos.y;
 
 	for (Widget* pChild : m_children)
 		pChild->Resize(m_absPos, m_size);
@@ -80,6 +86,11 @@ void Widget::SetY(int32_t y)
 void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
 {
 	m_backgroundColor = color;
+}
+
+void Widget::SetSizeStyle(int sizeStyle)
+{
+	m_sizeStyle = sizeStyle;
 }
 
 int32_t Widget::GetX() const

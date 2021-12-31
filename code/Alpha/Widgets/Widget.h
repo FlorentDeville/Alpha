@@ -32,6 +32,14 @@ class Widget
 
 public:
 
+	enum SIZE_STYLE
+	{
+		HSIZE_DEFAULT = 0x0001,
+		HSIZE_STRETCH = 0x0010,
+		VSIZE_DEFAULT = 0x0100,
+		VSIZE_STRETCH = 0x1000
+	};
+
 	Widget();
 	Widget(uint32_t w, uint32_t h, int32_t x, int32_t y);
 	virtual ~Widget();
@@ -49,6 +57,7 @@ public:
 	void SetY(int32_t y);
 
 	void SetBackgroundColor(const DirectX::XMVECTOR& color);
+	void SetSizeStyle(int sizeStyle);
 
 	int32_t GetX() const; //Get the local x coordinate from the top left corner
 	int32_t GetY() const; //Get the local y coordinate from the top left corner
@@ -74,6 +83,8 @@ protected:
 	bool m_hover;	//Indicate if the mouse is hovering the widget;
 
 	std::vector<Widget*> m_children;
+
+	int m_sizeStyle;
 
 	void ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const;
 };

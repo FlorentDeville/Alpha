@@ -43,7 +43,7 @@ void HLayout::Draw()
 		pWidget->Draw();
 }
 
-void HLayout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& /*parentSize*/)
+void HLayout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
 	m_absPos.x = parentAbsPos.x + m_locPos.x;
 	m_absPos.y = parentAbsPos.y + m_locPos.y;
@@ -57,7 +57,7 @@ void HLayout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2
 	{
 		pWidget->SetX(x);
 		x = pWidget->GetX() + pWidget->GetWidth();
-
-		pWidget->Resize(m_absPos, m_size);
 	}
+
+	Widget::Resize(parentAbsPos, parentSize);
 }
