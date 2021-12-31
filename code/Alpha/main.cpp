@@ -482,7 +482,8 @@ void CreateMenuBar()
 		return true;
 	});
 
-	Label* pLabel1 = new Label(labelX, 0, 2, "File");
+	float labelScale = 1;
+	Label* pLabel1 = new Label(labelX, 0, labelScale, "File");
 	pButton1->AddWidget(pLabel1);
 
 	//Edit button
@@ -491,7 +492,7 @@ void CreateMenuBar()
 		OutputDebugString(L"Click on Edit button\n");
 		return true;
 		});
-	Label* pLabel2 = new Label(labelX, 0, 2, "Edit");
+	Label* pLabel2 = new Label(labelX, 0, labelScale, "Edit");
 	pButton2->AddWidget(pLabel2);
 
 	//Window button
@@ -500,7 +501,7 @@ void CreateMenuBar()
 		OutputDebugString(L"Click on Window button\n");
 		return true;
 		});
-	Label* pLabel3 = new Label(labelX, 0, 2, "Window");
+	Label* pLabel3 = new Label(labelX, 0, labelScale, "Window");
 	pButton3->AddWidget(pLabel3);
 
 	pLayout->AddWidget(pButton1);
