@@ -63,6 +63,34 @@ FontChar* Font::GetChar(char c) const
     return nullptr;
 }
 
+void Font::ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const
+{
+    rect.x = 0;
+    rect.y = 0;
+    char lastChar = -1; // no last character to start with
+    for (int i = 0; i < text.size(); ++i)
+    {
+        char c = text[i];
+        const FontChar* fc = GetChar(c);
+        // character not in font char set
+        if (fc == nullptr)
+        {
+            OutputDebugString(L"WARNING : Character not found in the font");
+            break;
+        }
+        // end of string
+        if (c == '\0')
+            break;
+        int kerning = 0;
+        if (i > 0)
+            kerning = GetKerning(lastChar, c);
+        rect.x += fc->m_xoffset + kerning + fc->m_xadvance;
+        rect.y = max(rect.y, fc->m_height);
+
+        lastChar = c;
+    }
+}
+
 void Font::LoadFntFile(const std::string& fntName)
 {
     std::ifstream fs;
