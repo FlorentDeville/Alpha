@@ -50,7 +50,6 @@ HLayout* g_pButton = nullptr;
 RenderableId g_CubeId;
 RenderableId g_SimpleQuadId;
 RenderableId g_CubeTextureId;
-RenderableId g_FontId;
 
 float g_FoV;
 
@@ -163,144 +162,9 @@ void Update();
 void Render();
 
 ID3D12DescriptorHeap* g_pSrvDescriptorHeap = nullptr;
-Font* g_pFont;
-ID3D12Resource* g_textVertexBuffer[3];
-char* g_textVBGPUAddress[3];
-D3D12_VERTEX_BUFFER_VIEW g_textVertexBufferView[3];
 
-void CreateTextVertexBuffer()
-{
-	// create text vertex buffer committed resources
-	int maxNumTextCharacters = 256;
-
-	for (int i = 0; i < g_pRenderModule->GetNumFrames(); ++i)
-	{
-		// create upload heap. We will fill this with data for our text
-		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxNumTextCharacters * sizeof(VertexText));
-		HRESULT hr = g_pRenderModule->GetDevice()->CreateCommittedResource(
-			&prop, // upload heap
-			D3D12_HEAP_FLAG_NONE, // no flags
-			&desc, // resource description for a buffer
-			D3D12_RESOURCE_STATE_GENERIC_READ, // GPU will read from this buffer and copy its contents to the default heap
-			nullptr,
-			IID_PPV_ARGS(&g_textVertexBuffer[i]));
-
-		ThrowIfFailed(hr);
-		g_textVertexBuffer[i]->SetName(L"Text Vertex Buffer Upload Resource Heap");
-
-		CD3DX12_RANGE readRange(0, 0);    // We do not intend to read from this resource on the CPU. (so end is less than or equal to begin)
-
-		// map the resource heap to get a gpu virtual address to the beginning of the heap
-		hr = g_textVertexBuffer[i]->Map(0, &readRange, reinterpret_cast<void**>(&g_textVBGPUAddress[i]));
-		ThrowIfFailed(hr);
-
-		g_textVertexBufferView[i].BufferLocation = g_textVertexBuffer[i]->GetGPUVirtualAddress();
-		g_textVertexBufferView[i].StrideInBytes = sizeof(VertexText);
-		g_textVertexBufferView[i].SizeInBytes = maxNumTextCharacters * sizeof(VertexText);
-	}
-}
-
-void RenderText(const Font& font, int numCharacters)
-{
-	ID3D12GraphicsCommandList2* pCommandList = g_pRenderModule->GetRenderCommandList();
-
-	// set the text pipeline state object
-	PipelineStateId pipelineStateId = g_pRenderableMgr->GetRenderable(g_FontId)->GetPipeplineStateId();
-	PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(pipelineStateId);
-	ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
-	pCommandList->SetPipelineState(pPSO);
-
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
-	pCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
-
-	// this way we only need 4 vertices per quad rather than 6 if we were to use a triangle list topology
-	pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-
-	// set the text vertex buffer
-	pCommandList->IASetVertexBuffers(0, 1, &g_textVertexBufferView[g_pRenderModule->m_currentBackBufferIndex]);
-
-	// bind the text srv. We will assume the correct descriptor heap and table are currently bound and set
-	ID3D12DescriptorHeap* pDescriptorHeap[] = { font.m_pSRVHeap };
-	pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-	pCommandList->SetGraphicsRootDescriptorTable(0, g_pFont->m_pSRVHeap->GetGPUDescriptorHandleForHeapStart());
-
-	pCommandList->RSSetViewports(1, &g_pRenderModule->m_viewport);
-	pCommandList->RSSetScissorRects(1, &g_pRenderModule->m_scissorRect);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv = g_pRenderModule->GetRTV();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = g_pRenderModule->GetDSV();
-	pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
-
-	// we are going to have 4 vertices per character (trianglestrip to make quad), and each instance is one character
-	pCommandList->DrawInstanced(4, numCharacters, 0, 0);
-}
-
-int PrepareRenderText(const std::string& text, DirectX::XMFLOAT2 screenPos, DirectX::XMFLOAT2 scale, const Font& font, int startCharIndex = 0)
-{
-	int numCharacters = 0;
-
-	float topLeftScreenX = screenPos.x;
-	float topLeftScreenY = screenPos.y;
-
-	float x = topLeftScreenX;
-	float y = topLeftScreenY;
-
-	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
-	VertexText* vert = (VertexText*)g_textVBGPUAddress[g_pRenderModule->m_currentBackBufferIndex];
-	vert;
-
-	char lastChar = -1; // no last character to start with
-
-	for (int i = 0; i < text.size(); ++i)
-	{
-		char c = text[i];
-
-		const FontChar* fc = font.GetChar(c);
-
-		// character not in font char set
-		if (fc == nullptr)
-			continue;
-
-		// end of string
-		if (c == '\0')
-			break;
-
-		// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
-		if (startCharIndex >= 255)
-			break;
-
-		float kerning = 0.0f;
-		if (i > 0)
-			kerning = font.GetKerning(lastChar, c);
-
-		float xoffset = fc->m_xoffset / g_pWindow->GetWidth();
-		float yoffset = fc->m_yoffset / g_pWindow->GetHeight();
-
-		float char_width = fc->m_width / g_pWindow->GetWidth();
-		float char_height = fc->m_height / g_pWindow->GetHeight();
-
-		vert[startCharIndex].Position.x = x + ((xoffset + kerning) * scale.x);
-		vert[startCharIndex].Position.y = y - (yoffset * scale.y);
-		vert[startCharIndex].Position.z = char_width * scale.x;
-		vert[startCharIndex].Position.w = char_height * scale.y;
-		vert[startCharIndex].Uv.x = fc->m_u;
-		vert[startCharIndex].Uv.y = fc->m_v;
-		vert[startCharIndex].Uv.z = fc->m_twidth;
-		vert[startCharIndex].Uv.w = fc->m_theight;
-		vert[startCharIndex].Color = DirectX::XMFLOAT4(1, 1, 1, 1);
-
-		numCharacters++;
-		startCharIndex++;
-
-		// remove horrizontal padding and advance to next char position
-		x += (fc->m_xadvance / g_pWindow->GetWidth()) * scale.x;
-
-		lastChar = c;
-	}
-
-	return startCharIndex;
-}
+FontId g_segoeUIFontId;
+FontId g_comicSansMsFontId;
 
 void LoadTexture()
 {
@@ -568,9 +432,9 @@ void Render()
 	}
 
 	{
-		int n = PrepareRenderText("Hello World", DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1), *g_pFont);
-		n = PrepareRenderText("The Lord Of The Rings", DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3), *g_pFont, n);
-		RenderText(*g_pFont, n);
+		g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1));
+		g_pRenderModule->PrepareRenderText("The Lord Of The Rings", g_comicSansMsFontId, DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3));
+		g_pRenderModule->RenderAllText();
 	}
 
 	g_pRenderModule->PostRender();
@@ -633,13 +497,17 @@ bool LoadContent()
 
 	//Load the font
 	{
-		CreateTextVertexBuffer();
+		{
+			std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\segoeUI.fnt";
+			Font* pFont = g_pFontMgr->CreateResource(g_segoeUIFontId, fontFilename);
+			pFont->Init(fontFilename);
+		}
 
-		//std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\arial.fnt";
-		std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\segoeUI.fnt";
-
-		g_pFont = new Font("default");
-		g_pFont->Init(fontFilename, g_pWindow->GetWidth(), g_pWindow->GetHeight());
+		{
+			std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\comicSansMs.fnt";
+			Font* pFont = g_pFontMgr->CreateResource(g_comicSansMsFontId, fontFilename);
+			pFont->Init(fontFilename);
+		}
 
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.vs.cso");
@@ -649,9 +517,9 @@ bool LoadContent()
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
-		MeshId id;
-		id.m_id = 0;
-		g_FontId = g_pRenderableMgr->CreateRenderable(id, text_pipelineStateId);
+		g_pRenderModule->InitialiseFont(g_segoeUIFontId, text_pipelineStateId, 1024);
+		g_pRenderModule->InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
+
 	}
 
 	g_contentLoaded = true;
@@ -661,6 +529,9 @@ bool LoadContent()
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
+	g_pFontMgr = new RESOURCE_MGR(Font);
+	g_pFontMgr->Init();
+
 	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
 	g_pPipelineStateMgr->Init();
 
@@ -724,7 +595,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pRenderModule->Shutdown();
 	g_pTextureMgr->Release();
 	g_pPipelineStateMgr->Release();
+	g_pFontMgr->Release();
 
+	delete g_pFontMgr;
 	delete g_pTextureMgr;
 	delete g_pWidgetMgr;
 	delete g_pRenderableMgr;
