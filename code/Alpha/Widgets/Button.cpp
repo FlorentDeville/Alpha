@@ -19,12 +19,10 @@ Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 Button::~Button()
 {}
 
-void Button::Draw(int32_t parentX, int32_t parentY, float parentZ)
+void Button::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
 {
 	DirectX::XMMATRIX mvpMatrix;
-	ComputeWVPMatrix(mvpMatrix, parentX, parentY, parentZ);
-	ComputeWorldPosition(parentX, parentY, m_wx, m_wy);
-	ComputeScreenPosition(m_wx, m_wy, m_screenX, m_screenY);
+	ComputeWVPMatrix(mvpMatrix);
 
 	DirectX::XMVECTOR color = m_backgroundColor;
 	if(m_hover)
@@ -40,7 +38,7 @@ void Button::Draw(int32_t parentX, int32_t parentY, float parentZ)
 	g_pRenderModule->SetConstantBuffer(2, sizeof(value), &value, 0);
 	g_pRenderModule->SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
 
-	float rect[2] = { (float)m_width, (float)m_height };
+	float rect[2] = { (float)m_size.x, (float)m_size.y };
 	g_pRenderModule->SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
 	g_pRenderModule->SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);

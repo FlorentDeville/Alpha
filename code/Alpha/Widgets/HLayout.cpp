@@ -18,12 +18,12 @@ HLayout::HLayout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 HLayout::~HLayout()
 {}
 
-void HLayout::Draw(int32_t parentX, int32_t parentY, float parentZ)
+void HLayout::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
 {
 	DirectX::XMMATRIX wvp;
-	ComputeWVPMatrix(wvp, parentX, parentY, parentZ);
+	ComputeWVPMatrix(wvp);
 	int valueShowBorder = m_showBorder ? 1 : 0;
-	float rect[2] = { (float)m_width, (float)m_height };
+	float rect[2] = { (float)m_size.x, (float)m_size.y};
 
 	{
 		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_SimpleQuadId);
@@ -39,17 +39,20 @@ void HLayout::Draw(int32_t parentX, int32_t parentY, float parentZ)
 		g_pRenderModule->PostRenderForRenderable(*pRenderable);
 	}
 
-	ComputeWorldPosition(parentX, parentY, m_wx, m_wy);
-	ComputeScreenPosition(m_wx, m_wy, m_screenX, m_screenY);
+	//ComputeWorldPosition(parentX, parentY, m_wx, m_wy);
+	//ComputeScreenPosition(m_wx, m_wy, m_screenX, m_screenY);
 
 	for (Widget* pWidget : m_children)
-		pWidget->Draw(m_wx, m_wy, parentZ - 0.1f);
+		pWidget->Draw(0, 0, 0);
 }
 
-void HLayout::Resize()
+void HLayout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& /*parentSize*/)
 {
+	m_absPos.x = parentAbsPos.x + m_locPos.x;
+	m_absPos.y = parentAbsPos.y + m_locPos.y;
+	m_absPos.z = parentAbsPos.z + m_locPos.z - 1;
+	
 	int32_t x = 0;
-
 	if (!m_children.empty())
 		x = m_children.front()->GetX();
 
@@ -57,5 +60,7 @@ void HLayout::Resize()
 	{
 		pWidget->SetX(x);
 		x = pWidget->GetX() + pWidget->GetWidth();
+
+		pWidget->Resize(m_absPos, m_size);
 	}
 }

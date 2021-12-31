@@ -369,7 +369,7 @@ void Render()
 	}
 
 	//Render texture cube
-	//if(false)
+	if(false)
 	{
 		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
 		g_pRenderModule->PreRenderForRenderable(*renderable);
@@ -388,7 +388,7 @@ void Render()
 	}
 	
 
-	// Render the quad
+	// Render the widgets
 	//if(false)
 	{
 		g_pWidgetMgr->Draw();
@@ -431,6 +431,8 @@ void Render()
 		g_pRenderModule->PostRenderForRenderable(*renderable);
 	}
 
+	//render text
+	if(false)
 	{
 		g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(1, 1));
 		g_pRenderModule->PrepareRenderText("The Lord Of The Rings", g_comicSansMsFontId, DirectX::XMFLOAT2(-1, 1), DirectX::XMFLOAT2(3, 3));
@@ -569,7 +571,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pButton->AddWidget(new Button(100, 50, 0, 0));
 	g_pButton->AddWidget(new Button(300, 100, 0, 0));
 	g_pButton->AddWidget(new Button(400, 150, 0, 0));
-	g_pButton->Resize();
+	g_pButton->Resize(DirectX::XMINT3(0, 0, 100), DirectX::XMUINT2(width, height));
 	g_pWidgetMgr->SetRoot(g_pButton);
 
 	LoadTexture();
