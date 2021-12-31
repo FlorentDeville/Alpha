@@ -36,7 +36,8 @@ void WidgetMgr::SetRoot(Widget* pRoot)
 
 void WidgetMgr::Draw()
 {
-	m_pRoot->Draw();
+	if(m_pRoot)
+		m_pRoot->Draw();
 }
 
 void WidgetMgr::HandleMsg(const Message& msg)
