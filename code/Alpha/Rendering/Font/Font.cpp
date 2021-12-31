@@ -176,14 +176,14 @@ void Font::LoadFntFile(const std::string& fntName)
         fs >> tmp; // width=47
         startpos = tmp.find("=") + 1;
         tmp = tmp.substr(startpos, tmp.size() - startpos);
-        m_CharList[c].m_width = (float)std::stoi(tmp);// / (float)windowWidth;
+        m_CharList[c].m_width = std::stoi(tmp);
         m_CharList[c].m_twidth = (float)std::stoi(tmp) / (float)m_textureWidth;
 
         // get height
         fs >> tmp; // height=57
         startpos = tmp.find("=") + 1;
         tmp = tmp.substr(startpos, tmp.size() - startpos);
-        m_CharList[c].m_height = (float)std::stoi(tmp);// / (float)windowHeight;
+        m_CharList[c].m_height = std::stoi(tmp);
         m_CharList[c].m_theight = (float)std::stoi(tmp) / (float)m_textureHeight;
 
         // get xoffset

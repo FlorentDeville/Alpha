@@ -370,8 +370,8 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		float xoffset = fc->m_xoffset / g_pWindow->GetWidth() * 2;
 		float yoffset = fc->m_yoffset / g_pWindow->GetHeight() * 2;
 
-		float char_width = fc->m_width / g_pWindow->GetWidth() * 2;
-		float char_height = fc->m_height / g_pWindow->GetHeight() * 2;
+		float char_width = static_cast<float>(fc->m_width) / g_pWindow->GetWidth() * 2.f;
+		float char_height = static_cast<float>(fc->m_height) / g_pWindow->GetHeight() * 2.f;
 
 		vert[info.m_characterCount].Position.x = x + ((xoffset + kerning) * scale.x);
 		vert[info.m_characterCount].Position.y = y - (yoffset * scale.y);

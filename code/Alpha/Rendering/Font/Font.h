@@ -25,8 +25,8 @@ public:
     float m_twidth; // width of character on texture
     float m_theight; // height of character on texture
 
-    float m_width; // width of character in screen coords
-    float m_height; // height of character in screen coords
+    uint32_t m_width; // width of character in pixels
+    uint32_t m_height; // height of character in pixels
 
     // these need to be normalized based on size of font
     float m_xoffset; // offset from current cursor pos to left side of character
