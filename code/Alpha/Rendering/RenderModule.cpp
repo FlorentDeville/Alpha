@@ -325,7 +325,7 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 	}
 }
 
-void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& uiPos, const DirectX::XMFLOAT2& scale)
+void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	const Font* pFont = g_pFontMgr->GetResource(fontId);
@@ -349,15 +349,19 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 
 		// character not in font char set
 		if (fc == nullptr)
-			continue;
+		{
+			OutputDebugString(L"WARNING : Character not found in the font");
+		}
 
 		// end of string
 		if (c == '\0')
 			break;
 
 		// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
-		if (info.m_characterCount >= 255)
-			break;
+		if (info.m_characterCount >= info.m_bufferSize)
+		{
+			OutputDebugString(L"WARNING : Too many characters rendered");
+		}
 
 		float kerning = 0.0f;
 		if (i > 0)
@@ -378,6 +382,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		vert[info.m_characterCount].Uv.z = fc->m_twidth;
 		vert[info.m_characterCount].Uv.w = fc->m_theight;
 		vert[info.m_characterCount].Color = DirectX::XMFLOAT4(1, 1, 1, 1);
+		vert[info.m_characterCount].Z = uiPos.z;
 
 		info.m_characterCount++;
 

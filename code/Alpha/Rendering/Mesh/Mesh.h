@@ -27,9 +27,10 @@ struct VertexPosColor
 
 struct VertexText
 {
-	DirectX::XMFLOAT4 Position;
-	DirectX::XMFLOAT4 Uv;
-	DirectX::XMFLOAT4 Color;
+	DirectX::XMFLOAT4	Position;		// (x, y) : top left position of the quad, (z, w) : width, height of the quad
+	DirectX::XMFLOAT4	Uv;				// (x, y) uv of the top left of the character in the texture, (z, w) width, height of the character in the texture
+	DirectX::XMFLOAT4	Color;			// color of the character
+	float				Z;				// Depth
 };
 
 class Mesh

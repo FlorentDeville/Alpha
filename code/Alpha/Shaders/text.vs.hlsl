@@ -9,6 +9,7 @@ struct VS_Input
 	float4 pos : POSITION;  // (x, y) : top left position of the quad, (z, w) : width, height of the quad
 	float4 texCoord : UV;   // (x, y) uv of the top left of the character in the texture, (z, w) width, height of the character in the texture
 	float4 color : COLOR;   // color of the character
+    float  z : DEPTH;       // depth of the quad
 };
 
 struct VS_Output

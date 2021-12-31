@@ -55,7 +55,7 @@ public:
 	void InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount);
 
 	//uiPos : origin : top left, range : [0, pixel screen size]
-	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT2& uiPos, const DirectX::XMFLOAT2& scale);
+	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale);
 	void RenderAllText();
 
 
