@@ -39,7 +39,7 @@ class FontKerning
 public:
     int m_firstid; // the first character
     int m_secondid; // the second character
-    float m_amount; // the amount to add/subtract to second characters x
+    int m_amount; // the amount to add/subtract to second characters x
 };
 
 class Font : public Resource
@@ -51,7 +51,7 @@ public:
     void Init(const std::string& fntName);
     void Release() override;
 
-    float GetKerning(char first, char second) const;
+    int GetKerning(char first, char second) const;
     FontChar* GetChar(char c) const;
 
     std::string m_fontImage;

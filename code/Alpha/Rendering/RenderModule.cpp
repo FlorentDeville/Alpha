@@ -366,7 +366,10 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 
 		float kerning = 0.0f;
 		if (i > 0)
-			kerning = pFont->GetKerning(lastChar, c);
+		{
+			kerning = static_cast<float>(pFont->GetKerning(lastChar, c));
+			kerning = kerning * g_pWindow->GetWidth() * 2;
+		}
 
 		float xoffset = static_cast<float>(fc->m_xoffset) / g_pWindow->GetWidth() * 2;
 		float yoffset = static_cast<float>(fc->m_yoffset) / g_pWindow->GetHeight() * 2;

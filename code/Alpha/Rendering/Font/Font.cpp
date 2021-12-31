@@ -43,14 +43,14 @@ void Font::Release()
     }
 }
 
-float Font::GetKerning(char first, char second) const
+int Font::GetKerning(char first, char second) const
 {
     for (int i = 0; i < m_numKernings; ++i)
     {
         if ((char)m_KerningsList[i].m_firstid == first && (char)m_KerningsList[i].m_secondid == second)
             return m_KerningsList[i].m_amount;
     }
-    return 0.0f;
+    return 0;
 }
 
 FontChar* Font::GetChar(char c) const
@@ -230,7 +230,7 @@ void Font::LoadFntFile(const std::string& fntName)
         fs >> tmp; // amount=-1
         startpos = tmp.find("=") + 1;
         int t = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
-        m_KerningsList[k].m_amount = (float)t;// / (float)windowWidth;
+        m_KerningsList[k].m_amount = t;
     }
 }
 
