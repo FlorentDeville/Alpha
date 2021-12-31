@@ -14,7 +14,7 @@ public:
 	Label(int32_t locX, int32_t locY, float scale, const std::string& text);
 	virtual ~Label();
 
-	void Draw(int32_t parentX, int32_t parentY, float parentZ) override;
+	void Draw() override;
 
 private:
 	float m_fontScale;

@@ -18,7 +18,7 @@ HLayout::HLayout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 HLayout::~HLayout()
 {}
 
-void HLayout::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
+void HLayout::Draw()
 {
 	DirectX::XMMATRIX wvp;
 	ComputeWVPMatrix(wvp);
@@ -39,11 +39,8 @@ void HLayout::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
 		g_pRenderModule->PostRenderForRenderable(*pRenderable);
 	}
 
-	//ComputeWorldPosition(parentX, parentY, m_wx, m_wy);
-	//ComputeScreenPosition(m_wx, m_wy, m_screenX, m_screenY);
-
 	for (Widget* pWidget : m_children)
-		pWidget->Draw(0, 0, 0);
+		pWidget->Draw();
 }
 
 void HLayout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& /*parentSize*/)

@@ -14,5 +14,5 @@ public:
 
 	void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
-	void Draw(int32_t parentX, int32_t parentY, float parentZ) override;
+	void Draw() override;
 };

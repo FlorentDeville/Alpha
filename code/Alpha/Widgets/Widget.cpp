@@ -40,10 +40,10 @@ Widget::~Widget()
 void Widget::Update()
 {}
 
-void Widget::Draw(int32_t /*x*/, int32_t /*y*/, float /*parentZ*/)
+void Widget::Draw()
 {
 	for (Widget* pChild : m_children)
-		pChild->Draw(0, 0, 1);
+		pChild->Draw();
 }
 
 void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& /*parentSize*/)

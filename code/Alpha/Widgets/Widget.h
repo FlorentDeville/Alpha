@@ -37,7 +37,7 @@ public:
 	virtual ~Widget();
 
 	virtual void Update();	//Handle events and propagate to children
-	virtual void Draw(int32_t parentX, int32_t parentY, float parentZ);	//Draw the widgets using the gfx api.
+	virtual void Draw();	//Draw the widgets using the gfx api.
 
 	virtual void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 

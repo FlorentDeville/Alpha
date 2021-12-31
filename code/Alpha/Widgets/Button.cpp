@@ -19,7 +19,7 @@ Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 Button::~Button()
 {}
 
-void Button::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
+void Button::Draw()
 {
 	DirectX::XMMATRIX mvpMatrix;
 	ComputeWVPMatrix(mvpMatrix);
@@ -45,7 +45,7 @@ void Button::Draw(int32_t /*parentX*/, int32_t /*parentY*/, float /*parentZ*/)
 
 	g_pRenderModule->PostRenderForRenderable(*pRenderable);
 
-	Widget::Draw(0, 0, 1);
+	Widget::Draw();
 }
 
 bool Button::Handle(const Message& msg)

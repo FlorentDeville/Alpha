@@ -36,12 +36,7 @@ void WidgetMgr::SetRoot(Widget* pRoot)
 
 void WidgetMgr::Draw()
 {
-	float windowWidth = static_cast<float>(g_pWindow->GetWidth());
-	float windowHeight = static_cast<float>(g_pWindow->GetHeight());
-	float x = -windowWidth * 0.5f;
-	float y = windowHeight * 0.5f;
-
-	m_pRoot->Draw(static_cast<int32_t>(x), static_cast<int32_t>(y), 10);
+	m_pRoot->Draw();
 }
 
 void WidgetMgr::HandleMsg(const Message& msg)
