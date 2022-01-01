@@ -230,6 +230,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_SIZE:
+	case WM_NCPAINT:
 	{
 		RECT clientRect = g_pWindow->GetWindowRectangle();
 		int width = clientRect.right - clientRect.left;
