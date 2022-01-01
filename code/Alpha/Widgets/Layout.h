@@ -13,7 +13,7 @@ public:
 	{
 		Horizontal,				//left to right
 		Horizontal_Reverse,		//right to left
-		//Vertical,				//top to bottom
+		Vertical,				//top to bottom
 		//Vertical_Reverse		//bottom to top
 	};
 

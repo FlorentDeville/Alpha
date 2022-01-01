@@ -73,23 +73,47 @@ void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 	if (m_children.empty())
 		return;
 
-	int32_t x = 0;
-	if (m_dir == Horizontal)
-		x = m_children.front()->GetX();
-	else if (m_dir == Horizontal_Reverse)
-		x = m_size.x;
+	int32_t pos = 0;
+	switch (m_dir)
+	{
+	case Horizontal:
+		pos = m_children.front()->GetX();
+		break;
+
+	case Horizontal_Reverse:
+		pos = m_size.x;
+		break;
+
+	case Vertical:
+		pos = m_children.front()->GetY();
+		break;
+
+	default:
+		assert(false);
+	}
 
 	for(Widget* pWidget : m_children)
 	{
-		if (m_dir == Horizontal)
+		switch (m_dir)
 		{
-			pWidget->SetX(x);
-			x = pWidget->GetX() + pWidget->GetWidth();
-		}
-		else if (m_dir == Horizontal_Reverse)
-		{
-			x -= pWidget->GetWidth();
-			pWidget->SetX(x);
+		case Horizontal:
+			pWidget->SetX(pos);
+			pos = pWidget->GetX() + pWidget->GetWidth();
+			break;
+
+		case Horizontal_Reverse:
+			pos -= pWidget->GetWidth();
+			pWidget->SetX(pos);
+			break;
+
+		case Vertical:
+			pWidget->SetY(pos);
+			pos = pWidget->GetY() + pWidget->GetHeight();
+			break;
+
+		default:
+			assert(false);
+			break;
 		}
 	}
 
