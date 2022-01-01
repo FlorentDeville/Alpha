@@ -12,3 +12,11 @@ enum MessageId
 	M_MouseLDown,	//The mouse left button is down
 	M_Count
 };
+
+//Button pressed in a M_MouseMove event
+enum MouseKey
+{
+	M_None	  = 0x00,
+	M_Control = 0x01,
+	M_LButton = 0x02
+};

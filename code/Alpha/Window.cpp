@@ -43,7 +43,8 @@ bool Window::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle
 	int windowY = (screenHeight - windowHeight) / 2;
 
 	m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, windowStyle, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
-	//SetWindowLong(m_hWindow, GWL_STYLE, 0);
+	SetWindowLong(m_hWindow, GWL_STYLE, 0);
+
 	if (m_hWindow == 0)
 	{
 		DWORD error = GetLastError();
@@ -128,6 +129,13 @@ HWND Window::GetWindowHandle() const
 }
 
 RECT Window::GetWindowRectangle() const
+{
+	RECT clientRect;
+	::GetWindowRect(m_hWindow, &clientRect);
+	return clientRect;
+}
+
+RECT Window::GetClientRectangle() const
 {
 	RECT clientRect;
 	::GetClientRect(m_hWindow, &clientRect);

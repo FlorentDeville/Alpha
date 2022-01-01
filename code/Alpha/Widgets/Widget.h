@@ -7,6 +7,8 @@
 #include <vector>
 
 #include <DirectXMath.h>
+#include <functional>
+#include "MessageId.h"
 
 struct Message;
 
@@ -88,6 +90,8 @@ public:
 
 	bool IsInside(uint32_t screenX, uint32_t screenY) const;
 
+	void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
+
 protected:
 	DirectX::XMUINT2 m_size; //width and height in pixels
 	DirectX::XMINT3 m_locPos; //local position of the top left corner in pixel
@@ -105,6 +109,8 @@ protected:
 	int m_sizeStyle;
 	HPOSITION_STYLE m_hPositionStyle;
 	VPOSITION_STYLE m_vPositionStyle;
+
+	std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
 
 	void ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const;
 

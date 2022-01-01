@@ -196,6 +196,11 @@ bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
 	return false;
 }
 
+void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)
+{
+	m_onMouseMove = callback;
+}
+
 void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const
 {
 	float width = static_cast<float>(m_size.x);

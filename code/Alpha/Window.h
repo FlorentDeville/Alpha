@@ -30,6 +30,7 @@ public:
 
 	HWND GetWindowHandle() const;
 	RECT GetWindowRectangle() const;
+	RECT GetClientRectangle() const;
 
 	uint32_t GetWidth() const;
 	uint32_t GetHeight() const;

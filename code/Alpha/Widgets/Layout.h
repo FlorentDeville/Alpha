@@ -24,8 +24,12 @@ public:
 
 	void Draw() override;
 
+	bool Handle(const Message& msg) override;
+
 	void SetDirection(Direction dir);
 
 private:
 	Direction m_dir;
+
+	DirectX::XMUINT2 m_previousMousePosition;
 };

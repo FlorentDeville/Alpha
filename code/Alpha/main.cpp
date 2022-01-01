@@ -232,7 +232,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_SIZE:
 	case WM_NCPAINT:
 	{
-		RECT clientRect = g_pWindow->GetWindowRectangle();
+		RECT clientRect = g_pWindow->GetClientRectangle();
 		int width = clientRect.right - clientRect.left;
 		int height = clientRect.bottom - clientRect.top;
 
@@ -265,6 +265,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[0] = x;
 		msg.m_low.m_pos[1] = y;
 
+		switch (wParam)
+		{
+			case MK_LBUTTON:
+				msg.m_high = M_LButton;
+				break;
+
+			default:
+				msg.m_high = M_None;
+				break;
+		}
+		
 		g_pWidgetMgr->HandleMsg(msg);
 	}
 		break;
@@ -282,6 +293,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		g_pWidgetMgr->HandleMsg(msg);
 	}
 	break;
+
+	case WM_SETCURSOR:
+	{
+		HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
+		SetCursor(hCurs1);
+	}
+		break;
 
 	default:
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
@@ -355,7 +373,7 @@ void Render()
 	g_pRenderModule->PreRender();
 
 	// Render the cube
-	if(false)
+	//if(false)
 	{
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
@@ -364,7 +382,7 @@ void Render()
 	}
 
 	//Render texture cube
-	//if(false)
+	if(false)
 	{
 		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
 		g_pRenderModule->PreRenderForRenderable(*renderable);
@@ -464,6 +482,8 @@ bool LoadContent()
 }
 
 bool g_isMaximized = false;
+int g_previousMouseX = 0;
+int g_previousMouseY = 0;
 
 void CreateMenuBar()
 {
@@ -473,6 +493,27 @@ void CreateMenuBar()
 	Layout* pLayout = new Layout(1000, menuBarHeight, 0, 0);
 	pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 	pLayout->SetDirection(Layout::Horizontal);
+	pLayout->OnMouseMove([](int x, int y, MouseKey k) -> bool {
+		if (k == M_LButton)
+		{
+			int dtX = x - g_previousMouseX;
+			int dtY = y - g_previousMouseY;
+
+			//wchar_t buffer[256];
+			//wsprintf(buffer, L"%d, %d\n", dtX, dtY);
+			//OutputDebugString(buffer);
+
+			RECT r = g_pWindow->GetWindowRectangle();
+			MoveWindow(g_pWindow->GetWindowHandle(), r.left + dtX, r.top + dtY, r.right - r.left, r.bottom - r.top, true);
+			return true;
+		}
+		else
+		{
+			g_previousMouseX = x;
+			g_previousMouseY = y;
+			return false;
+		}
+		});
 	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	Layout* pMenuBarLayout = new Layout(400, menuBarHeight, 0, 0);
