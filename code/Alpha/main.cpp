@@ -250,6 +250,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			g_pWidgetMgr->Resize();
 		}
+
+		return ::DefWindowProcW(hWnd, message, wParam, lParam);
 	}
 		break;
 
