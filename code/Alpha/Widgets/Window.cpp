@@ -43,12 +43,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pLayout->OnLeftMouseDown([this](int /*x*/, int /*y*/) -> bool 
 	{
 		m_drag = true;
-		
-		POINT cursorPosition;
-		GetCursorPos(&cursorPosition);
-		m_previousMousePosition.x = cursorPosition.x;
-		m_previousMousePosition.y = cursorPosition.y;
-
+		m_previousMousePosition = g_pWidgetMgr->GetCursorPosition();
 		return true;
 		});
 
@@ -198,17 +193,16 @@ void Window::Update()
 	if (!m_drag)
 		return;
 
-	POINT cursorPosition;
-	GetCursorPos(&cursorPosition);
+	DirectX::XMINT2 m_currentMousePosition = g_pWidgetMgr->GetCursorPosition();
 
-	int dtX = cursorPosition.x - m_previousMousePosition.x;
-	int dtY = cursorPosition.y - m_previousMousePosition.y;
+	int dtX = m_currentMousePosition.x - m_previousMousePosition.x;
+	int dtY = m_currentMousePosition.y - m_previousMousePosition.y;
 
 	RECT r = g_pWindow->GetWindowRectangle();
 	MoveWindow(g_pWindow->GetWindowHandle(), r.left + dtX, r.top + dtY, r.right - r.left, r.bottom - r.top, true);
 
-	m_previousMousePosition.x = cursorPosition.x;
-	m_previousMousePosition.y = cursorPosition.y;
+	m_previousMousePosition.x = m_currentMousePosition.x;
+	m_previousMousePosition.y = m_currentMousePosition.y;
 	Widget::Update();
 }
 

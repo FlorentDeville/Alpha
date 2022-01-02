@@ -206,6 +206,14 @@ FontId WidgetMgr::GetUIFontId() const
 	return m_segoeUIFontId;
 }
 
+DirectX::XMINT2 WidgetMgr::GetCursorPosition() const
+{
+	POINT cursorPosition;
+	GetCursorPos(&cursorPosition);
+
+	return DirectX::XMINT2 (cursorPosition.x, cursorPosition.y);
+}
+
 void WidgetMgr::ComputeSortedWidgetQueue()
 {
 	m_sortedWidgets.clear();

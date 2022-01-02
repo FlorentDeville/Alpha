@@ -48,6 +48,9 @@ public:
 
 	FontId GetUIFontId() const;
 
+	//Return the position of the cursor in the entire screen.
+	DirectX::XMINT2 GetCursorPosition() const;
+
 private:
 
 	std::set<Widget*> m_widgets;
