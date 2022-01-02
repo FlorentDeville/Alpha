@@ -38,19 +38,40 @@ ConstantBuffer<CB_TEXT_RECT_DESC> cb_texture : register(b2);
 VS_Output main(VS_Input input)
 {
 	VS_Output output;
+	
+	output.uv = input.uv;
 
-	float halfWidthRatio = cb_viewport.rect.x / cb_texture.rect.x / 2;
-	if (input.uv.x == 0)
+	if (cb_viewport.rect.x < cb_texture.rect.x) //stretch on the x axis
 	{
-		output.uv.x = 0.5 - halfWidthRatio;
-	}
-	else
-	{
-		output.uv.x = 0.5 + halfWidthRatio;
+		float halfWidthRatio = cb_viewport.rect.x / cb_texture.rect.x / 2;
+		if (input.uv.x == 0)
+		{
+			output.uv.x = 0.5 - halfWidthRatio;
+		}
+		else
+		{
+			output.uv.x = 0.5 + halfWidthRatio;
+		}
+
+		output.uv.y = input.uv.y;
 	}
 	
+	if (cb_viewport.rect.y < cb_texture.rect.y) //stretch on the y axis
+	{
+		float halfHeightRatio = cb_viewport.rect.y / cb_texture.rect.y / 2;
+		if (input.uv.y == 0)
+		{
+			output.uv.y = 0.5 - halfHeightRatio;
+		}
+		else
+		{
+			output.uv.y = 0.5 + halfHeightRatio;
+		}
+
+		output.uv.x = input.uv.x;
+	}
+
 	output.vertex = mul(cb_wvp.wvp, float4(input.vertex, 1.f));
-	output.uv.y = input.uv.y;
 
 	return output;
 }
