@@ -31,7 +31,7 @@ Window::Window(DirectX::XMUINT2 size)
 
 	//Full window vlayout
 	Layout* pWindowLayout = new Layout(0, 0, 0, 0);
-	pWindowLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::HSIZE_STRETCH);
+	pWindowLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pWindowLayout->SetDirection(Layout::Vertical);
 
 	//Header layout
@@ -188,6 +188,7 @@ Window::Window(DirectX::XMUINT2 size)
 	//Add the container
 	m_pContainer = new Widgets::Container();
 	pWindowLayout->AddWidget(m_pContainer);
+	pWindowLayout->SetName("window_layout");
 
 	Widget::AddWidget(pWindowLayout);
 }
