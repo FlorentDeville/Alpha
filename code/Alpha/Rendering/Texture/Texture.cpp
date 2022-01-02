@@ -115,6 +115,47 @@ void Texture::Init(const std::string& path)
 	}
 }
 
+void Texture::Init_RenderTarget(int width, int height)
+{
+	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	//Create a description
+	D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	m_resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+
+	//Create the texture
+	D3D12_CLEAR_VALUE clear;
+	clear.Format = format;
+	clear.Color[0] = 0.4f;
+	clear.Color[1] = 0.6f;
+	clear.Color[2] = 0.9f;
+	clear.Color[3] = 1.f;
+
+	ID3D12Device* pDevice = g_pRenderModule->GetDevice();
+	pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &m_resourceDesc,
+		D3D12_RESOURCE_STATE_RENDER_TARGET, &clear, IID_PPV_ARGS(&m_pResource));
+
+	//Create the SRV heap
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+		srvHeapDesc.NumDescriptors = 1;
+		srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+		ThrowIfFailed(res);
+	}
+
+	//Create the srv descriptor
+	{
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = m_resourceDesc.Format;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.Texture2D.MipLevels = 1;
+		pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	}
+}
+
 const ID3D12DescriptorHeap* Texture::GetSRV() const
 {
 	return m_pSrvDescriptorHeap;
@@ -123,6 +164,11 @@ const ID3D12DescriptorHeap* Texture::GetSRV() const
 ID3D12DescriptorHeap* Texture::GetSRV()
 {
 	return m_pSrvDescriptorHeap;
+}
+
+ID3D12Resource* Texture::GetResource()
+{
+	return m_pResource;
 }
 
 RESOURCE_MGR_PTR(Texture) g_pTextureMgr;

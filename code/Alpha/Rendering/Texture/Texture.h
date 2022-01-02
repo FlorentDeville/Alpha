@@ -19,9 +19,12 @@ public:
 	~Texture();
 
 	void Init(const std::string& path);
+	void Init_RenderTarget(int width, int height);
 
 	const ID3D12DescriptorHeap* GetSRV() const;
 	ID3D12DescriptorHeap* GetSRV();
+
+	ID3D12Resource* GetResource();
 
 private:
 	ID3D12Resource* m_pResource;
