@@ -178,6 +178,7 @@
     <ClCompile Include="Widgets\Label.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
     <ClCompile Include="Widgets\WidgetMgr.cpp" />
+    <ClCompile Include="Widgets\Window.cpp" />
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +211,7 @@
     <ClInclude Include="Widgets\MessageId.h" />
     <ClInclude Include="Widgets\Widget.h" />
     <ClInclude Include="Widgets\WidgetMgr.h" />
+    <ClInclude Include="Widgets\Window.h" />
     <ClInclude Include="SysWindow.h" />
   </ItemGroup>
   <ItemGroup>
