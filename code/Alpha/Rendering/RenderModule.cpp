@@ -36,7 +36,7 @@ extern SysWindow* g_pWindow;
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
 	, m_pSwapChain(nullptr)
-	, m_pRTVDescriptorHeap(nullptr)
+	, m_RTVHeap()
 	, m_pDSVDescriptorHeap(nullptr)
 	, m_RTVDescriptorSize(0)
 	, m_allowTearing(false)
@@ -78,7 +78,12 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), mainResolution.x, mainResolution.y, m_numFrames);
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
-	CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames);
+	m_RTVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames);
+	for (int ii = 0; ii < m_numFrames; ++ii)
+	{
+		m_mainRTV[ii] = m_RTVHeap.GetNewHandle();
+	}
+
 	CreateDSVDescriptorHeap();
 
 	m_RTVDescriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -131,7 +136,7 @@ void RenderModule::Shutdown()
 
 	m_pDepthBuffer->Release();
 	m_pDSVDescriptorHeap->Release();
-	m_pRTVDescriptorHeap->Release();
+	m_RTVHeap.Release();
 	m_pSwapChain->Release();
 	m_pDevice->Release();
 	ReportLiveObject();
@@ -179,9 +184,7 @@ void RenderModule::PreRender()
 	}
 
 	FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, m_RTVDescriptorSize);
-
-	m_pRenderCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
+	m_pRenderCommandList->ClearRenderTargetView(m_mainRTV[m_currentBackBufferIndex], clearColor, 0, nullptr);
 
 
 	// Clear the depth buffer
@@ -194,7 +197,7 @@ void RenderModule::PreRender()
 	m_pRenderCommandList->RSSetScissorRects(1, &m_mainScissorRect);
 
 	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+	m_pRenderCommandList->OMSetRenderTargets(1, &m_mainRTV[m_currentBackBufferIndex], FALSE, &dsv);
 }
 
 void RenderModule::PostRender()
@@ -717,15 +720,6 @@ void RenderModule::CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue,
 	pDxgiFactory4->Release();
 }
 
-void RenderModule::CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescriptors)
-{
-	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-	desc.NumDescriptors = numDescriptors;
-	desc.Type = type;
-
-	ThrowIfFailed(m_pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_pRTVDescriptorHeap)));
-}
-
 void RenderModule::CreateDSVDescriptorHeap()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
@@ -737,20 +731,14 @@ void RenderModule::CreateDSVDescriptorHeap()
 
 void RenderModule::UpdateRenderTargetViews()
 {
-	//UINT rtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
 	for (int ii = 0; ii < m_numFrames; ++ii)
 	{
 		ID3D12Resource* backBuffer;
 		ThrowIfFailed(m_pSwapChain->GetBuffer(ii, IID_PPV_ARGS(&backBuffer)));
 
-		m_pDevice->CreateRenderTargetView(backBuffer, nullptr, rtvHandle);
+		m_pDevice->CreateRenderTargetView(backBuffer, nullptr, m_mainRTV[ii]);
 
 		m_pBackBuffers[ii] = backBuffer;
-
-		rtvHandle.Offset(m_RTVDescriptorSize);
 	}
 }
 

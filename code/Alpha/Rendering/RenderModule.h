@@ -14,6 +14,7 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 
+#include "Rendering/DescriptorHeap.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Renderable/Renderable.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
@@ -84,7 +85,7 @@ private:
 
 	IDXGISwapChain4* m_pSwapChain;
 	
-	ID3D12DescriptorHeap* m_pRTVDescriptorHeap;	// render target view descriptor heap
+	Rendering::DescriptorHeap m_RTVHeap;
 	ID3D12DescriptorHeap* m_pDSVDescriptorHeap; //depth stencil view descriptor heap
 
 	UINT m_RTVDescriptorSize;
@@ -119,6 +120,7 @@ public:
 private:
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
 	ID3D12Resource* m_pDepthBuffer;
+	D3D12_CPU_DESCRIPTOR_HANDLE m_mainRTV[m_numFrames];
 
 	TextureId m_RenderTextureId[m_numFrames];
 	ID3D12DescriptorHeap* m_pRenderTargetViewDescriptorHeap;
@@ -129,7 +131,6 @@ private:
 	D3D12_VIEWPORT m_gameViewport;
 	D3D12_RECT m_gameScissorRect;
 
-private:
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 
 	IDXGIAdapter4* GetAdapter(bool useWarp);
@@ -137,7 +138,6 @@ private:
 	void CheckTearingSupport();
 
 	void CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue, uint32_t width, uint32_t height, uint32_t bufferCount);
-	void CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescriptors);
 	void CreateDSVDescriptorHeap();
 	void UpdateRenderTargetViews();
 
