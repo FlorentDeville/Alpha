@@ -17,6 +17,8 @@
 
 #include "SysWindow.h"
 
+#include <algorithm>
+
 extern SysWindow* g_pWindow;
 
 WidgetMgr::WidgetMgr()
@@ -131,6 +133,8 @@ void WidgetMgr::Resize()
 	DirectX::XMINT3 absPos(0, 0, 100);
 	DirectX::XMUINT2 size(g_pWindow->GetWidth(), g_pWindow->GetHeight());
 	m_pRoot->Resize(absPos, size);
+
+	ComputeSortedWidgetQueue();
 }
 
 void WidgetMgr::HandleMsg(const Message& msg)
@@ -139,8 +143,10 @@ void WidgetMgr::HandleMsg(const Message& msg)
 	{
 	case M_MouseMove:
 	{
-		for (Widget* pWidget : m_widgets)
+		for(std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
 		{
+			Widget* pWidget = *it;
+
 			bool handled = false;
 			if(pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
 			{
@@ -180,8 +186,9 @@ void WidgetMgr::HandleMsg(const Message& msg)
 	case M_MouseLDown:
 	case M_MouseLUp:
 	{
-		for (Widget* pWidget : m_widgets)
+		for (std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
 		{
+			Widget* pWidget = *it;
 			if (!pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
 				continue;
 
@@ -197,6 +204,16 @@ void WidgetMgr::HandleMsg(const Message& msg)
 FontId WidgetMgr::GetUIFontId() const
 {
 	return m_segoeUIFontId;
+}
+
+void WidgetMgr::ComputeSortedWidgetQueue()
+{
+	m_sortedWidgets.clear();
+
+	for (Widget* pWidget : m_widgets)
+		m_sortedWidgets.push_back(pWidget);
+
+	std::sort(m_sortedWidgets.begin(), m_sortedWidgets.end(), [](Widget* pA, Widget* pB) { return pA->m_absPos.z > pB->m_absPos.z; });
 }
 
 WidgetMgr* g_pWidgetMgr = nullptr;

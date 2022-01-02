@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <deque>
 #include <set>
 
 #include "Rendering/Font/Font.h"
@@ -50,8 +51,9 @@ public:
 private:
 
 	std::set<Widget*> m_widgets;
+	std::deque<Widget*> m_sortedWidgets; //sorted from the deepest to the highest.
 
-	Widget* m_pRoot;
+ 	Widget* m_pRoot;
 	
 	int32_t m_prevMouseX;
 	int32_t m_prevMouseY;
@@ -62,6 +64,8 @@ private:
 	RenderableId m_widgetRenderableId;
 	RenderableId m_iconRenderableId;
 	FontId m_segoeUIFontId;
+
+	void ComputeSortedWidgetQueue();
 };
 
 extern WidgetMgr* g_pWidgetMgr;
