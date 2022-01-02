@@ -123,7 +123,7 @@ private:
 	D3D12_CPU_DESCRIPTOR_HANDLE m_mainRTV[m_numFrames];
 
 	TextureId m_RenderTextureId[m_numFrames];
-	ID3D12DescriptorHeap* m_pRenderTargetViewDescriptorHeap;
+	D3D12_CPU_DESCRIPTOR_HANDLE m_gameRTV[m_numFrames];
 
 	D3D12_VIEWPORT m_mainViewport;
 	D3D12_RECT m_mainScissorRect;

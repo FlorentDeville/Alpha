@@ -78,10 +78,14 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), mainResolution.x, mainResolution.y, m_numFrames);
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
-	m_RTVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames);
+	m_RTVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames * 2);
 	for (int ii = 0; ii < m_numFrames; ++ii)
 	{
 		m_mainRTV[ii] = m_RTVHeap.GetNewHandle();
+	}
+	for (int ii = 0; ii < m_numFrames; ++ii)
+	{
+		m_gameRTV[ii] = m_RTVHeap.GetNewHandle();
 	}
 
 	CreateDSVDescriptorHeap();
@@ -94,25 +98,12 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	ResizeDepthBuffer(mainResolution.x, mainResolution.y);
 
 	//Create render texture
+	for (int ii = 0; ii < m_numFrames; ++ii)
 	{
-		D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-		desc.NumDescriptors = m_numFrames;
-		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		Texture* pRenderTexture = g_pTextureMgr->CreateResource(m_RenderTextureId[ii], "render texture");
+		pRenderTexture->Init_RenderTarget(gameResolution.x, gameResolution.y);
 
-		ThrowIfFailed(m_pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_pRenderTargetViewDescriptorHeap)));
-		
-		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRenderTargetViewDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-		UINT descriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-		for (int ii = 0; ii < m_numFrames; ++ii)
-		{
-			Texture* pRenderTexture = g_pTextureMgr->CreateResource(m_RenderTextureId[ii], "render texture");
-			pRenderTexture->Init_RenderTarget(gameResolution.x, gameResolution.y);
-
-			m_pDevice->CreateRenderTargetView(pRenderTexture->GetResource(), nullptr, rtvHandle);
-
-			rtvHandle.Offset(descriptorSize);
-		}
+		m_pDevice->CreateRenderTargetView(pRenderTexture->GetResource(), nullptr, m_gameRTV[ii]);
 	}
 
 	m_gameScissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
@@ -146,12 +137,8 @@ void RenderModule::PreRender_RenderToTexture()
 {
 	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
 
-	//get a pointer to the render target
-	UINT descriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRenderTargetViewDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, descriptorSize);
-
 	// Clear the render target.
-	m_pRenderCommandList->ClearRenderTargetView(rtv, m_clearColor, 0, nullptr);
+	m_pRenderCommandList->ClearRenderTargetView(m_gameRTV[m_currentBackBufferIndex], m_clearColor, 0, nullptr);
 
 	// Clear the depth buffer
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -163,7 +150,7 @@ void RenderModule::PreRender_RenderToTexture()
 	m_pRenderCommandList->RSSetScissorRects(1, &m_gameScissorRect);
 
 	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRTV[m_currentBackBufferIndex], FALSE, &dsv);
 }
 
 void RenderModule::PreRender()
