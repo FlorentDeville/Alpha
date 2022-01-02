@@ -3,6 +3,7 @@
 *.ipch
 code/.vs/*
 code/intermediate/*
+code/enc_temp_folder/*
 code/Alpha/x64/Debug/*
 code/Alpha/x64/Release/*
 code/x64/*

@@ -52,6 +52,8 @@ namespace Widgets
 
 	void Split3Way::Update()
 	{
+		const int MIN_SIZE = 50;
+
 		if (m_pLeftSplit->IsDragged())
 		{
 			DirectX::XMINT2 currentMousePosition = g_pWidgetMgr->GetCursorPosition();
@@ -61,13 +63,30 @@ namespace Widgets
 			dt.y = currentMousePosition.y - m_pLeftSplit->GetPreviousCursorPosition().y;
 
 			DirectX::XMUINT2 leftContainerSize = m_pLeftContainer->GetSize();
+
+			//prevent overflow cause leftContainerSize is unsigned
+			if (-dt.x > (int)leftContainerSize.x)
+				return;
+
 			leftContainerSize.x += dt.x;
 			leftContainerSize.y += dt.y;
-			m_pLeftContainer->SetSize(leftContainerSize);
+
+			if (leftContainerSize.x < MIN_SIZE)
+				return;
 
 			DirectX::XMUINT2 middleContainerSize = m_pMiddleContainer->GetSize();
+
+			//prevent overflow cause leftContainerSize is unsigned
+			if (dt.x > (int)middleContainerSize.x)
+				return;
+
 			middleContainerSize.x -= dt.x;
 			middleContainerSize.y -= dt.y;
+
+			if (middleContainerSize.x < MIN_SIZE)
+				return;
+
+			m_pLeftContainer->SetSize(leftContainerSize);
 			m_pMiddleContainer->SetSize(middleContainerSize);
 
 			g_pWidgetMgr->Resize();
@@ -84,8 +103,27 @@ namespace Widgets
 			dt.y = currentMousePosition.y - m_pRightSplit->GetPreviousCursorPosition().y;
 
 			DirectX::XMUINT2 middleContainerSize = m_pMiddleContainer->GetSize();
+			
+			//prevent overflow cause middleContainerSize is unsigned
+			if (-dt.x > (int)middleContainerSize.x)
+				return;
+
 			middleContainerSize.x += dt.x;
 			middleContainerSize.y += dt.y;
+
+			if (middleContainerSize.x < MIN_SIZE)
+				return;
+
+			DirectX::XMUINT2 rightContainerSize = m_pRightContainer->GetSize();
+
+			//prevent overflow cause rightContainerSize is unsigned
+			if (dt.x > (int)rightContainerSize.x)
+				return;
+
+			rightContainerSize.x -= dt.x;
+			if (rightContainerSize.x < MIN_SIZE)
+				return;
+
 			m_pMiddleContainer->SetSize(middleContainerSize);
 
 			g_pWidgetMgr->Resize();
