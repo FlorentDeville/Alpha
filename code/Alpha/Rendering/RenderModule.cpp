@@ -23,7 +23,7 @@
 
 #include "Shader.h"
 #include "ShaderMgr.h"
-#include "Window.h"
+#include "SysWindow.h"
 
 #include "InputLayout/InputLayout.h"
 
@@ -31,7 +31,7 @@
 #include <dxgidebug.h>
 #endif
 
-extern Window* g_pWindow;
+extern SysWindow* g_pWindow;
 
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)

@@ -4,12 +4,12 @@
 
 #include "Widget.h"
 
-#include "../Window.h"
+#include "SysWindow.h"
 
 #include "Widgets/WidgetMgr.h"
 struct Message;
 
-extern Window* g_pWindow;
+extern SysWindow* g_pWindow;
 
 Widget::Widget()
 	: m_children()

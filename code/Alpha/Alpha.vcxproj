@@ -176,7 +176,7 @@
     <ClCompile Include="Widgets\Label.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
     <ClCompile Include="Widgets\WidgetMgr.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h" />
@@ -208,7 +208,7 @@
     <ClInclude Include="Widgets\MessageId.h" />
     <ClInclude Include="Widgets\Widget.h" />
     <ClInclude Include="Widgets\WidgetMgr.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="SysWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.ps.hlsl">

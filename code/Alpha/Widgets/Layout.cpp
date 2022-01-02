@@ -8,8 +8,8 @@
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Message.h"
-#include "Window.h"
-extern Window* g_pWindow;
+//#include "Window.h"
+//extern Window* g_pWindow;
 extern RenderModule* g_pRenderModule;
 extern WidgetMgr* g_pWidgetMgr;
 

@@ -2,13 +2,13 @@
 /* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Window.h"
+#include "SysWindow.h"
 
 #include <algorithm>
 #include <assert.h>
 #include <cstdio>
 
-Window::Window()
+SysWindow::SysWindow()
 	: m_hWindow(nullptr)
 	, m_fullscreen(false)
 	, m_width(0)
@@ -16,10 +16,10 @@ Window::Window()
 	, m_windowRectangle()
 {}
 
-Window::~Window()
+SysWindow::~SysWindow()
 {}
 
-bool Window::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance)
+bool SysWindow::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance)
 {
 	m_width = width;
 	m_height = height;
@@ -55,7 +55,7 @@ bool Window::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle
 	return true;
 }
 
-void Window::SetFullscreen(bool fullscreen)
+void SysWindow::SetFullscreen(bool fullscreen)
 {
 	if (m_fullscreen != fullscreen)
 	{
@@ -107,52 +107,52 @@ void Window::SetFullscreen(bool fullscreen)
 	}
 }
 
-void Window::ToggleFullscreen()
+void SysWindow::ToggleFullscreen()
 {
 	SetFullscreen(!m_fullscreen);
 }
 
-void Window::Resize(uint32_t width, uint32_t height)
+void SysWindow::Resize(uint32_t width, uint32_t height)
 {
 	m_width = width;
 	m_height = height;
 }
 
-void Window::Show() const
+void SysWindow::Show() const
 {
 	::ShowWindow(m_hWindow, SW_SHOW);
 }
 
-HWND Window::GetWindowHandle() const
+HWND SysWindow::GetWindowHandle() const
 {
 	return m_hWindow;
 }
 
-RECT Window::GetWindowRectangle() const
+RECT SysWindow::GetWindowRectangle() const
 {
 	RECT clientRect;
 	::GetWindowRect(m_hWindow, &clientRect);
 	return clientRect;
 }
 
-RECT Window::GetClientRectangle() const
+RECT SysWindow::GetClientRectangle() const
 {
 	RECT clientRect;
 	::GetClientRect(m_hWindow, &clientRect);
 	return clientRect;
 }
 
-uint32_t Window::GetWidth() const
+uint32_t SysWindow::GetWidth() const
 {
 	return m_width;
 }
 
-uint32_t Window::GetHeight() const
+uint32_t SysWindow::GetHeight() const
 {
 	return m_height;
 }
 
-void Window::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName, WndProcCallback callback)
+void SysWindow::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName, WndProcCallback callback)
 {
 	WNDCLASSEXW windowClass = { 0 };
 	windowClass.cbSize = sizeof(WNDCLASSEX);

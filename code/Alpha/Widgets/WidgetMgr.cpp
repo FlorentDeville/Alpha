@@ -15,9 +15,9 @@
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
 
-#include "Window.h"
+#include "SysWindow.h"
 
-extern Window* g_pWindow;
+extern SysWindow* g_pWindow;
 
 WidgetMgr::WidgetMgr()
 	: m_pRoot(nullptr)

@@ -13,11 +13,11 @@
 
 typedef LRESULT (*WndProcCallback)(HWND, UINT, WPARAM, LPARAM);
 
-class Window
+class SysWindow
 {
 public:
-	Window();
-	virtual ~Window();
+	SysWindow();
+	virtual ~SysWindow();
 
 	bool Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance);
 

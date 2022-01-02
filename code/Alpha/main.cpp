@@ -32,7 +32,7 @@
 #include "Rendering/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
-#include "Window.h"
+#include "SysWindow.h"
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Icon.h"
@@ -46,7 +46,7 @@ bool g_VSync;
 
 bool g_IsInitialized = false;
 
-Window* g_pWindow = nullptr;
+SysWindow* g_pWindow = nullptr;
 
 RenderableId g_CubeId;
 RenderableId g_CubeTextureId;
@@ -659,8 +659,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
 	const wchar_t* pWindowClassName = L"DX12WindowClass";
-	Window::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
-	g_pWindow = new Window();
+	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
+	g_pWindow = new SysWindow();
 	g_pWindow->Create(pWindowClassName, L"Alpha", width, height, hInstance);
 
 	g_pRenderModule = new RenderModule();
