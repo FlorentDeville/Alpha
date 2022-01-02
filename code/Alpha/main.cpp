@@ -548,9 +548,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pTextureMgr = new RESOURCE_MGR(Texture);
 	g_pTextureMgr->Init();
 
-	int width = 1080;
-	int height = 789;
-
+	DirectX::XMUINT2 windowResolution(1080, 789);
+	DirectX::XMUINT2 gameResolution = windowResolution;
+	
 	//width = GetSystemMetrics(SM_CXFULLSCREEN);
 	//height = GetSystemMetrics(SM_CYFULLSCREEN);
 
@@ -559,10 +559,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	const wchar_t* pWindowClassName = L"DX12WindowClass";
 	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
 	g_pWindow = new SysWindow();
-	g_pWindow->Create(pWindowClassName, L"Alpha", width, height, hInstance);
+	g_pWindow->Create(pWindowClassName, L"Alpha", windowResolution.x, windowResolution.y, hInstance);
 
 	g_pRenderModule = new RenderModule();
-	g_pRenderModule->Init(g_pWindow->GetWindowHandle(), width, height);
+	g_pRenderModule->Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
 	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();

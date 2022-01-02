@@ -33,7 +33,7 @@ public:
 	RenderModule();
 	~RenderModule();
 
-	void Init(HWND hWindow, uint32_t width, uint32_t height);
+	void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& windowResolution);
 	void Shutdown();
 
 	void PreRender_RenderToTexture();
@@ -71,6 +71,9 @@ public:
 	static void ReportLiveObject();
 
 private:
+	DirectX::XMUINT2 m_gameResolution;
+	DirectX::XMUINT2 m_windowResolution;
+
 	static const int m_numFrames = 3;
 
 	ID3D12Device2* m_pDevice;

@@ -60,8 +60,11 @@ RenderModule::RenderModule()
 RenderModule::~RenderModule()
 {}
 
-void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
+void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& windowResolution)
 {
+	m_gameResolution = gameResolution;
+	m_windowResolution = windowResolution;
+
 	EnableDebugLayer();
 
 	CheckTearingSupport();
@@ -73,7 +76,7 @@ void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 	m_pRenderCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
 	m_pCopyCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
 
-	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), width, height, m_numFrames);
+	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), windowResolution.x, windowResolution.y, m_numFrames);
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
 	CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames);
@@ -84,7 +87,7 @@ void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 	UpdateRenderTargetViews();
 
 	//Resize also create the depth buffer
-	ResizeDepthBuffer(width, height);
+	ResizeDepthBuffer(windowResolution.x, windowResolution.y);
 
 	//Create render texture
 	{
@@ -100,7 +103,7 @@ void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 		for (int ii = 0; ii < m_numFrames; ++ii)
 		{
 			Texture* pRenderTexture = g_pTextureMgr->CreateResource(m_RenderTextureId[ii], "render texture");
-			pRenderTexture->Init_RenderTarget(width, height);
+			pRenderTexture->Init_RenderTarget(gameResolution.x, gameResolution.y);
 
 			m_pDevice->CreateRenderTargetView(pRenderTexture->GetResource(), nullptr, rtvHandle);
 
