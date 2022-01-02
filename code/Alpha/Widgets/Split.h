@@ -15,11 +15,15 @@ namespace Widgets
 		~Split();
 
 		void Draw() override;
-		//bool Handle(const Message& msg) override;
+		bool Handle(const Message& msg) override;
 
-		//bool IsDragged() const;
+		bool IsDragged();
+		DirectX::XMINT2 GetPreviousCursorPosition() const;
 
-	private:
-		//bool m_isDragged;
+		void SetPreviousCursorPosition(const DirectX::XMINT2& pos);
+
+	public:
+		bool m_isDragged;
+		DirectX::XMINT2 m_previousCursorPosition;
 	};
 }

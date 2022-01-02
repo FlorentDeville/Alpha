@@ -30,6 +30,5 @@ namespace Widgets
 
 		bool m_leftDragged;
 		bool m_rightDragged;
-		DirectX::XMINT2 m_previousMousePosition;
 	};
 }

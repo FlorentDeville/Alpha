@@ -124,6 +124,16 @@ bool Widget::Handle(const Message& msg)
 			return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
 		break;
 
+	case M_MouseEnter:
+		if (m_onMouseEnter)
+			return m_onMouseEnter();
+		break;
+
+	case M_MouseExit:
+		if (m_onMouseExit)
+			return m_onMouseExit();
+		break;
+
 	default:
 		break;
 	}
@@ -240,6 +250,16 @@ void Widget::OnLeftMouseDown(const std::function<bool(int, int)>& callback)
 void Widget::OnLeftMouseUp(const std::function<bool(int, int)>& callback)
 {
 	m_onLeftMouseUp = callback;
+}
+
+void Widget::OnMouseEnter(const std::function<bool()>& callback)
+{
+	m_onMouseEnter = callback;
+}
+
+void Widget::OnMouseExit(const std::function<bool()>& callback)
+{
+	m_onMouseExit = callback;
 }
 
 void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const

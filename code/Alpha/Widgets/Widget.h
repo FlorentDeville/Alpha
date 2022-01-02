@@ -100,6 +100,8 @@ public:
 	void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
 	void OnLeftMouseDown(const std::function<bool(int, int)>& callback);
 	void OnLeftMouseUp(const std::function<bool(int, int)>& callback);
+	void OnMouseEnter(const std::function<bool()>& callback);
+	void OnMouseExit(const std::function<bool()>& callback);
 
 protected:
 	DirectX::XMUINT2 m_size; //width and height in pixels
@@ -122,6 +124,8 @@ protected:
 	std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
 	std::function<bool(int x, int y)>			m_onLeftMouseDown;
 	std::function<bool(int x, int y)>			m_onLeftMouseUp;
+	std::function<bool()>						m_onMouseEnter;
+	std::function<bool()>						m_onMouseExit;
 
 	std::string m_name;
 

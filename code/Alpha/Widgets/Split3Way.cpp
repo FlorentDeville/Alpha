@@ -6,6 +6,8 @@
 
 #include "Widgets/WidgetMgr.h"
 
+extern LPCWSTR g_pIconName;
+
 namespace Widgets
 {
 	Split3Way::Split3Way()
@@ -18,7 +20,6 @@ namespace Widgets
 		, m_pLayout(nullptr)
 		, m_leftDragged(false)
 		, m_rightDragged(false)
-		, m_previousMousePosition(0, 0)
 	{
 		m_pLayout = new Layout(0, 0, 0, 0);
 		m_pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
@@ -31,17 +32,6 @@ namespace Widgets
 
 		m_pLeftSplit = new Split();
 		m_pLeftSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
-		m_pLeftSplit->OnLeftMouseDown([this](int /*x*/, int /*y*/) -> bool {
-			m_leftDragged = true;
-			m_previousMousePosition = g_pWidgetMgr->GetCursorPosition();
-			return true;
-			});
-
-		m_pLeftSplit->OnLeftMouseUp([this](int, int) -> bool {
-			m_leftDragged = false;
-			return true;
-			});
-
 		m_pLayout->AddWidget(m_pLeftSplit);
 
 		m_pMiddleContainer = new Container(300, 0);
@@ -50,17 +40,6 @@ namespace Widgets
 
 		m_pRightSplit = new Split();
 		m_pRightSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
-		m_pRightSplit->OnLeftMouseDown([this](int /*x*/, int /*y*/) -> bool {
-			m_rightDragged = true;
-			m_previousMousePosition = g_pWidgetMgr->GetCursorPosition();
-			return true;
-			});
-
-		m_pRightSplit->OnLeftMouseUp([this](int, int) -> bool {
-			m_rightDragged = false;
-			return true;
-			});
-
 		m_pLayout->AddWidget(m_pRightSplit);
 
 		m_pRightContainer = new Container(200, 0);
@@ -73,13 +52,13 @@ namespace Widgets
 
 	void Split3Way::Update()
 	{
-		if (m_leftDragged)
+		if (m_pLeftSplit->IsDragged())
 		{
 			DirectX::XMINT2 currentMousePosition = g_pWidgetMgr->GetCursorPosition();
 
 			DirectX::XMINT2 dt;
-			dt.x = currentMousePosition.x - m_previousMousePosition.x;
-			dt.y = currentMousePosition.y - m_previousMousePosition.y;
+			dt.x = currentMousePosition.x - m_pLeftSplit->GetPreviousCursorPosition().x;
+			dt.y = currentMousePosition.y - m_pLeftSplit->GetPreviousCursorPosition().y;
 
 			DirectX::XMUINT2 leftContainerSize = m_pLeftContainer->GetSize();
 			leftContainerSize.x += dt.x;
@@ -93,17 +72,16 @@ namespace Widgets
 
 			g_pWidgetMgr->Resize();
 
-			m_previousMousePosition.x = currentMousePosition.x;
-			m_previousMousePosition.y = currentMousePosition.y;
+			m_pLeftSplit->SetPreviousCursorPosition(currentMousePosition);
 		}
 
-		if (m_rightDragged)
+		if (m_pRightSplit->IsDragged())
 		{
 			DirectX::XMINT2 currentMousePosition = g_pWidgetMgr->GetCursorPosition();
 
 			DirectX::XMINT2 dt;
-			dt.x = currentMousePosition.x - m_previousMousePosition.x;
-			dt.y = currentMousePosition.y - m_previousMousePosition.y;
+			dt.x = currentMousePosition.x - m_pRightSplit->GetPreviousCursorPosition().x;
+			dt.y = currentMousePosition.y - m_pRightSplit->GetPreviousCursorPosition().y;
 
 			DirectX::XMUINT2 middleContainerSize = m_pMiddleContainer->GetSize();
 			middleContainerSize.x += dt.x;
@@ -112,8 +90,7 @@ namespace Widgets
 
 			g_pWidgetMgr->Resize();
 
-			m_previousMousePosition.x = currentMousePosition.x;
-			m_previousMousePosition.y = currentMousePosition.y;
+			m_pRightSplit->SetPreviousCursorPosition(currentMousePosition);
 		}
 	}
 

@@ -165,6 +165,7 @@ void Render();
 FontId g_comicSansMsFontId;
 
 TextureId g_textureId;
+LPCWSTR g_pIconName = IDC_ARROW;
 
 void LoadTexture()
 {
@@ -308,12 +309,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		g_pWidgetMgr->HandleMsg(msg);
 	}
 
-	//case WM_SETCURSOR:
-	//{
-	//	HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
-	//	SetCursor(hCurs1);
-	//}
-	//	break;
+	case WM_SETCURSOR:
+	{
+		HCURSOR hCurs1 = LoadCursor(NULL, g_pIconName);
+		SetCursor(hCurs1);
+		return 1;
+	}
+		break;
 
 	default:
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
