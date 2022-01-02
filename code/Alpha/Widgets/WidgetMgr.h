@@ -19,6 +19,7 @@ namespace Widgets
 {
 	class Container;
 	class Split;
+	class Viewport;
 }
 
 class WidgetMgr
@@ -26,6 +27,7 @@ class WidgetMgr
 	friend class Button;
 	friend class Widgets::Container;
 	friend class Widgets::Split;
+	friend class Widgets::Viewport;
 	friend class Icon;
 	friend class Label;
 	friend class Widget;

@@ -49,7 +49,13 @@ RenderModule::RenderModule()
 	, m_pDebugInterface(nullptr)
 #endif
 	, m_pRenderCommandList(nullptr)
-{}
+{
+	//FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+	m_clearColor[0] = 0.4f;
+	m_clearColor[1] = 0.6f;
+	m_clearColor[2] = 0.9f;
+	m_clearColor[3] = 1.0f;
+}
 
 RenderModule::~RenderModule()
 {}
@@ -130,21 +136,12 @@ void RenderModule::PreRender_RenderToTexture()
 {
 	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
 
-	//ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
-
-	{
-		//CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		//m_pRenderCommandList->ResourceBarrier(1, &barrier);
-	}
-	
 	//get a pointer to the render target
 	UINT descriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRenderTargetViewDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, descriptorSize);
 
 	// Clear the render target.
-	FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
-	m_pRenderCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
-
+	m_pRenderCommandList->ClearRenderTargetView(rtv, m_clearColor, 0, nullptr);
 
 	// Clear the depth buffer
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -161,12 +158,10 @@ void RenderModule::PreRender_RenderToTexture()
 
 void RenderModule::PreRender()
 {
-	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
-
 	//switch the render texture to a pixel shader resource
 	{
 		ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
 
@@ -209,7 +204,7 @@ void RenderModule::PostRender()
 	//switch back the render texture to render target
 	{
 		ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
 	
@@ -495,6 +490,11 @@ void RenderModule::RenderAllText()
 		//reset the character count for next frame
 		info.m_characterCount = 0;
 	}
+}
+
+TextureId RenderModule::GetRenderTextureId() const
+{
+	return m_RenderTextureId[m_currentBackBufferIndex];
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

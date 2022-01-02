@@ -38,6 +38,7 @@
 #include "Widgets/Message.h"
 #include "Widgets/Split.h"
 #include "Widgets/Split3Way.h"
+#include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Window.h"
 
@@ -164,6 +165,7 @@ void Render();
 
 FontId g_comicSansMsFontId;
 
+PipelineStateId g_texture_posuv_pipelineStateId;
 TextureId g_textureId;
 LPCWSTR g_pIconName = IDC_ARROW;
 
@@ -388,7 +390,7 @@ void Update()
 
 void Render()
 {
-	g_pRenderModule->PreRender();
+	g_pRenderModule->PreRender_RenderToTexture();
 
 	// Render the cube
 	//if(false)
@@ -398,6 +400,17 @@ void Render()
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
 		g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
 	}
+
+	g_pRenderModule->PreRender();
+
+	// Render the cube
+	//if(false)
+	//{
+	//	//// Update the MVP matrix
+	//	DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
+	//	mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
+	//	g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
+	//}
 
 	//Render texture cube
 	if(false)
@@ -430,7 +443,7 @@ void Render()
 	//if(false)
 	{
 		//g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT3(0, 0, 2), DirectX::XMFLOAT2(1, 1));
-		g_pRenderModule->PrepareRenderText("Hello World", g_comicSansMsFontId, DirectX::XMFLOAT3(540, 420, 2), DirectX::XMFLOAT2(3, 3));
+		//g_pRenderModule->PrepareRenderText("Hello World", g_comicSansMsFontId, DirectX::XMFLOAT3(540, 420, 2), DirectX::XMFLOAT2(3, 3));
 	}
 
 	g_pRenderModule->RenderAllText();
@@ -467,11 +480,10 @@ bool LoadContent()
 		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.ps.cso");
 
-		PipelineStateId texture_posuv_pipelineStateId;
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(texture_posuv_pipelineStateId, "texture");
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(g_texture_posuv_pipelineStateId, "texture");
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
 
-		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, texture_posuv_pipelineStateId);
+		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, g_texture_posuv_pipelineStateId);
 	}
 
 	//Load the font
@@ -503,11 +515,16 @@ void CreateMenuBar()
 {
 	Widgets::Window* pWindow = new Widgets::Window(DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
 	g_pWidgetMgr->SetRoot(pWindow);
-	g_pWidgetMgr->Resize();
 
 	Widgets::Split3Way* pSplit = new Widgets::Split3Way();
 	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pWindow->AddWidget(pSplit);
+
+	Widgets::Viewport* pViewport = new Widgets::Viewport();
+	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+	pSplit->AddMiddlePanel(pViewport);
+
+	g_pWidgetMgr->Resize();
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)

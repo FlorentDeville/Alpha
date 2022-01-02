@@ -60,6 +60,7 @@ public:
 	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale);
 	void RenderAllText();
 
+	TextureId GetRenderTextureId() const;
 
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
@@ -106,6 +107,8 @@ private:
 		PipelineStateId m_psoId;
 	};
 	std::map<FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
+
+	float m_clearColor[4];
 
 public:
 	UINT m_currentBackBufferIndex;
