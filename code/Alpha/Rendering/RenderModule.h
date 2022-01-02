@@ -63,8 +63,6 @@ public:
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
 	ID3D12GraphicsCommandList2* GetRenderCommandList();
-	D3D12_CPU_DESCRIPTOR_HANDLE GetRTV();
-	D3D12_CPU_DESCRIPTOR_HANDLE GetDSV();
 	ID3D12Device2* GetDevice();
 
 	static void ReportLiveObject();

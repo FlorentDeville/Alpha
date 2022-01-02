@@ -128,6 +128,13 @@ void RenderModule::PreRender()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	float depthValue = 1.f;
 	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+
+	//Set viewport and scissors
+	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
+
+	// Set render targets
+	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
 }
 
 void RenderModule::PostRender()
@@ -167,13 +174,6 @@ void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX&
 	m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
 	m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
 
-	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
-	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
-	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
-
 	m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
 
 	m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
@@ -193,13 +193,6 @@ void RenderModule::PreRenderForRenderable(const Renderable& renderable)
 	const Mesh* pMesh = g_pMeshMgr->GetMesh(renderable.GetMeshId());
 	m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
 	m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
-
-	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
-	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
-	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
 }
 
 void RenderModule::PostRenderForRenderable(const Renderable& renderable)
@@ -427,13 +420,6 @@ void RenderModule::RenderAllText()
 		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		pCommandList->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-		pCommandList->RSSetViewports(1, &g_pRenderModule->m_viewport);
-		pCommandList->RSSetScissorRects(1, &g_pRenderModule->m_scissorRect);
-
-		D3D12_CPU_DESCRIPTOR_HANDLE rtv = GetRTV();
-		D3D12_CPU_DESCRIPTOR_HANDLE dsv = GetDSV();
-		pCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
-
 		// we are going to have 4 vertices per character (trianglestrip to make quad), and each instance is one character
 		pCommandList->DrawInstanced(4, info.m_characterCount, 0, 0);
 
@@ -455,18 +441,6 @@ CommandQueue* RenderModule::GetCopyCommandQueue()
 ID3D12GraphicsCommandList2* RenderModule::GetRenderCommandList()
 {
 	return m_pRenderCommandList;
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE RenderModule::GetRTV()
-{
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, m_RTVDescriptorSize);
-	return rtv;
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE RenderModule::GetDSV()
-{
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	return dsv;
 }
 
 ID3D12Device2* RenderModule::GetDevice()
