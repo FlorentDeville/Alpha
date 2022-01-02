@@ -60,10 +60,10 @@ RenderModule::RenderModule()
 RenderModule::~RenderModule()
 {}
 
-void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& windowResolution)
+void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution)
 {
 	m_gameResolution = gameResolution;
-	m_windowResolution = windowResolution;
+	m_mainResolution = mainResolution;
 
 	EnableDebugLayer();
 
@@ -76,7 +76,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_pRenderCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
 	m_pCopyCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
 
-	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), windowResolution.x, windowResolution.y, m_numFrames);
+	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), mainResolution.x, mainResolution.y, m_numFrames);
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
 	CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames);
@@ -87,7 +87,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	UpdateRenderTargetViews();
 
 	//Resize also create the depth buffer
-	ResizeDepthBuffer(windowResolution.x, windowResolution.y);
+	ResizeDepthBuffer(mainResolution.x, mainResolution.y);
 
 	//Create render texture
 	{
@@ -275,6 +275,8 @@ void RenderModule::SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, vo
 
 void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 {
+	m_mainResolution = DirectX::XMUINT2(width, height);
+
 	// Flush the GPU queue to make sure the swap chain's back buffers
 	// are not being referenced by an in-flight command list.
 	m_pCopyCommandQueue->Flush();
@@ -500,6 +502,12 @@ void RenderModule::RenderAllText()
 TextureId RenderModule::GetRenderTextureId() const
 {
 	return m_RenderTextureId[m_currentBackBufferIndex];
+}
+
+void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
+{
+	ResizeSwapChain(size.x, size.y);
+	ResizeDepthBuffer(size.x, size.y);
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

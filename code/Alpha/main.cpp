@@ -249,9 +249,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
 		{
 			g_pWindow->Resize(uwidth, uheight);
-			g_pRenderModule->ResizeSwapChain(uwidth, uheight);
-			g_pRenderModule->ResizeDepthBuffer(uwidth, uheight);
-
+			g_pRenderModule->ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
 			g_pWidgetMgr->Resize();
 		}
 
@@ -551,9 +549,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution = windowResolution;
 	
-	//width = GetSystemMetrics(SM_CXFULLSCREEN);
-	//height = GetSystemMetrics(SM_CYFULLSCREEN);
-
 	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
 	const wchar_t* pWindowClassName = L"DX12WindowClass";

@@ -33,7 +33,7 @@ public:
 	RenderModule();
 	~RenderModule();
 
-	void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& windowResolution);
+	void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution);
 	void Shutdown();
 
 	void PreRender_RenderToTexture();
@@ -49,9 +49,6 @@ public:
 
 	void SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset);
 
-	void ResizeSwapChain(uint32_t width, uint32_t height);
-	void ResizeDepthBuffer(uint32_t width, uint32_t height);
-
 	int GetNumFrames() const;
 
 	void InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount);
@@ -61,6 +58,8 @@ public:
 	void RenderAllText();
 
 	TextureId GetRenderTextureId() const;
+
+	void ChangeMainResolution(const DirectX::XMUINT2& size);
 
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
@@ -72,7 +71,7 @@ public:
 
 private:
 	DirectX::XMUINT2 m_gameResolution;
-	DirectX::XMUINT2 m_windowResolution;
+	DirectX::XMUINT2 m_mainResolution;
 
 	static const int m_numFrames = 3;
 
@@ -137,6 +136,9 @@ private:
 	void CreateRTVDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescriptors);
 	void CreateDSVDescriptorHeap();
 	void UpdateRenderTargetViews();
+
+	void ResizeSwapChain(uint32_t width, uint32_t height);
+	void ResizeDepthBuffer(uint32_t width, uint32_t height);
 };
 
 extern RenderModule* g_pRenderModule;
