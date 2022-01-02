@@ -252,8 +252,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			g_pRenderModule->ResizeSwapChain(uwidth, uheight);
 			g_pRenderModule->ResizeDepthBuffer(uwidth, uheight);
 
-			g_pRenderModule->m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(uwidth), static_cast<float>(uheight));
-
 			g_pWidgetMgr->Resize();
 		}
 
@@ -359,7 +357,7 @@ void Update()
 	// Update the model matrix.
 	float angle = static_cast<float>(totalTimeElasped * 90.0);
 	//float angle = 0;
-	float scale = 2;
+	float scale = 1;
 	g_model = DirectX::XMMatrixScaling(scale, scale, scale);
 
 	const DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 1, 0);
@@ -586,11 +584,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pWindow->Show();
 
-	{
-		g_pRenderModule->m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
-		g_pRenderModule->m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
-		g_FoV = 45.f;
-	}
+	g_FoV = 45.f;
 
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)

@@ -292,6 +292,8 @@ void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 
 	UpdateRenderTargetViews();
 
+	m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
+
 	wchar_t buffer[500];
 	swprintf_s(buffer, 500, L"Resized swap chain %d %d\n", width, height);
 	OutputDebugString(buffer);
@@ -689,6 +691,9 @@ void RenderModule::CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue,
 
 	res = pSwapChain1->QueryInterface(&m_pSwapChain);
 	ThrowIfFailed(res);
+
+	m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
+	m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
 	pSwapChain1->Release();
 	pDxgiFactory4->Release();

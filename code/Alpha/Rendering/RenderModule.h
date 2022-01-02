@@ -120,11 +120,6 @@ private:
 	TextureId m_RenderTextureId[m_numFrames];
 	ID3D12DescriptorHeap* m_pRenderTargetViewDescriptorHeap;
 
-public:
-	/************************************************/
-	/*I'm not reall sure how to organize this yet	*/
-	/*so I just dump it here						*/
-	/************************************************/
 	D3D12_VIEWPORT m_viewport;
 	D3D12_RECT m_scissorRect;
 	
