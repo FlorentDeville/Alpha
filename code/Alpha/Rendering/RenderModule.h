@@ -36,6 +36,8 @@ public:
 	void Init(HWND hWindow, uint32_t width, uint32_t height);
 	void Shutdown();
 
+	void PreRender_RenderToTexture();
+
 	void PreRender();
 	void PostRender();
 
@@ -111,6 +113,9 @@ public:
 private:
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
 	ID3D12Resource* m_pDepthBuffer;
+
+	TextureId m_RenderTextureId[m_numFrames];
+	ID3D12DescriptorHeap* m_pRenderTargetViewDescriptorHeap;
 
 public:
 	/************************************************/

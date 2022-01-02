@@ -64,8 +64,6 @@ void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 	CreateDevice(pAdapter);
 	pAdapter->Release();
 
-	
-
 	m_pRenderCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
 	m_pCopyCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
 
@@ -81,6 +79,28 @@ void RenderModule::Init(HWND hWindow, uint32_t width, uint32_t height)
 
 	//Resize also create the depth buffer
 	ResizeDepthBuffer(width, height);
+
+	//Create render texture
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+		desc.NumDescriptors = m_numFrames;
+		desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+
+		ThrowIfFailed(m_pDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&m_pRenderTargetViewDescriptorHeap)));
+		
+		CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRenderTargetViewDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		UINT descriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+		for (int ii = 0; ii < m_numFrames; ++ii)
+		{
+			Texture* pRenderTexture = g_pTextureMgr->CreateResource(m_RenderTextureId[ii], "render texture");
+			pRenderTexture->Init_RenderTarget(width, height);
+
+			m_pDevice->CreateRenderTargetView(pRenderTexture->GetResource(), nullptr, rtvHandle);
+
+			rtvHandle.Offset(descriptorSize);
+		}
+	}
 }
 
 void RenderModule::Shutdown()
@@ -106,9 +126,49 @@ void RenderModule::Shutdown()
 	ReportLiveObject();
 }
 
+void RenderModule::PreRender_RenderToTexture()
+{
+	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
+
+	//ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+
+	{
+		//CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		//m_pRenderCommandList->ResourceBarrier(1, &barrier);
+	}
+	
+	//get a pointer to the render target
+	UINT descriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pRenderTargetViewDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_currentBackBufferIndex, descriptorSize);
+
+	// Clear the render target.
+	FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
+	m_pRenderCommandList->ClearRenderTargetView(rtv, clearColor, 0, nullptr);
+
+
+	// Clear the depth buffer
+	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	float depthValue = 1.f;
+	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+
+	//Set viewport and scissors
+	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
+
+	// Set render targets
+	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
+}
+
 void RenderModule::PreRender()
 {
 	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
+
+	//switch the render texture to a pixel shader resource
+	{
+		ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		m_pRenderCommandList->ResourceBarrier(1, &barrier);
+	}
 
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
 
@@ -141,9 +201,18 @@ void RenderModule::PostRender()
 {
 	//final command : switch the back buffer to present state
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
-	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	m_pRenderCommandList->ResourceBarrier(1, &barrier);
+	{
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+		m_pRenderCommandList->ResourceBarrier(1, &barrier);
+	}
 
+	//switch back the render texture to render target
+	{
+		ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_pRenderCommandList->ResourceBarrier(1, &barrier);
+	}
+	
 	//run the command list
 	uint64_t fenceValue = m_pRenderCommandQueue->ExecuteCommandList(m_pRenderCommandList);
 
