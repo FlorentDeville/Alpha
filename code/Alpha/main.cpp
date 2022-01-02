@@ -369,7 +369,8 @@ void Update()
 	g_view = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 
 	// Update the projection matrix.
-	float aspectRatio = g_pWindow->GetWidth() / static_cast<float>(g_pWindow->GetHeight());
+	const DirectX::XMUINT2 gameResolution = g_pRenderModule->GetGameResolution();
+	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
 	if (g_perspectiveRendering)
 	{				
 		float nearDistance = 0.1f;

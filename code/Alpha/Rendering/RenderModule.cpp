@@ -354,6 +354,11 @@ int RenderModule::GetNumFrames() const
 	return m_numFrames;
 }
 
+const DirectX::XMUINT2 RenderModule::GetGameResolution() const
+{
+	return m_gameResolution;
+}
+
 void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];

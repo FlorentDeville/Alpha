@@ -50,6 +50,7 @@ public:
 	void SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset);
 
 	int GetNumFrames() const;
+	const DirectX::XMUINT2 GetGameResolution() const;
 
 	void InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount);
 
