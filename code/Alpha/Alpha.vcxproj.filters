@@ -170,5 +170,8 @@
     <FxCompile Include="Shaders\text.vs.hlsl" />
     <FxCompile Include="Shaders\text.ps.hlsl" />
     <FxCompile Include="Shaders\text.rs.hlsl" />
+    <FxCompile Include="Shaders\widget_viewport.ps.hlsl" />
+    <FxCompile Include="Shaders\widget_viewport.vs.hlsl" />
+    <FxCompile Include="Shaders\widget_viewport.rs.hlsl" />
   </ItemGroup>
 </Project>

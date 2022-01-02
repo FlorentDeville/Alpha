@@ -26,6 +26,9 @@ public:
 
 	ID3D12Resource* GetResource();
 
+	uint64_t GetWidth() const;
+	uint64_t GetHeight() const;
+
 private:
 	ID3D12Resource* m_pResource;
 	D3D12_RESOURCE_DESC m_resourceDesc;

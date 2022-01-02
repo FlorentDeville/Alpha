@@ -171,4 +171,14 @@ ID3D12Resource* Texture::GetResource()
 	return m_pResource;
 }
 
+uint64_t Texture::GetWidth() const
+{
+	return m_resourceDesc.Width;
+}
+
+uint64_t Texture::GetHeight() const
+{
+	return m_resourceDesc.Height;
+}
+
 RESOURCE_MGR_PTR(Texture) g_pTextureMgr;
