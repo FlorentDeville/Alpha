@@ -166,6 +166,8 @@ void Render();
 FontId g_comicSansMsFontId;
 
 PipelineStateId g_texture_posuv_pipelineStateId;
+PipelineStateId g_widgetViewportPsoId;
+
 TextureId g_textureId;
 LPCWSTR g_pIconName = IDC_ARROW;
 
@@ -504,6 +506,16 @@ bool LoadContent()
 
 		g_pRenderModule->InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
 
+	}
+
+	//Load the widget viewport pso
+	{
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget_viewport.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget_viewport.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget_viewport.ps.cso");
+
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(g_widgetViewportPsoId, "widget_viewport");
+		pPipelineState->Init_PosUv(rsId, vsId, psId);
 	}
 
 	g_contentLoaded = true;
