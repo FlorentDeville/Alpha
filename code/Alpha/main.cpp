@@ -295,6 +295,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 
+	case WM_LBUTTONUP:
+	{
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseLUp;
+		msg.m_low.m_pos[0] = x;
+		msg.m_low.m_pos[1] = y;
+
+		g_pWidgetMgr->HandleMsg(msg);
+	}
+
 	case WM_SETCURSOR:
 	{
 		HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
@@ -367,6 +380,8 @@ void Update()
 		float h = w / aspectRatio;
 		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
 	}
+
+	g_pWidgetMgr->Update();
 }
 
 void Render()

@@ -111,6 +111,12 @@ void WidgetMgr::SetRoot(Widget* pRoot)
 	RegisterWidget(pRoot);
 }
 
+void WidgetMgr::Update()
+{
+	for (Widget* pWidget : m_widgets)
+		pWidget->Update();
+}
+
 void WidgetMgr::Draw()
 {
 	if(m_pRoot)
@@ -172,6 +178,7 @@ void WidgetMgr::HandleMsg(const Message& msg)
 		break;
 
 	case M_MouseLDown:
+	case M_MouseLUp:
 	{
 		for (Widget* pWidget : m_widgets)
 		{

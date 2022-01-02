@@ -7,7 +7,7 @@
 #include "SysWindow.h"
 
 #include "Widgets/WidgetMgr.h"
-struct Message;
+#include "Widgets/Message.h"
 
 extern SysWindow* g_pWindow;
 
@@ -110,8 +110,23 @@ void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 		pChild->Resize(m_absPos, m_size);
 }
 
-bool Widget::Handle(const Message& /*msg*/)
+bool Widget::Handle(const Message& msg)
 {
+	switch(msg.m_id)
+	{
+	case M_MouseLDown:
+		if (m_onLeftMouseDown)
+			return m_onLeftMouseDown(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+		break;
+
+	case M_MouseLUp:
+		if (m_onLeftMouseUp)
+			return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+		break;
+
+	default:
+		break;
+	}
 	return false;
 }
 
@@ -205,6 +220,16 @@ bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
 void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)
 {
 	m_onMouseMove = callback;
+}
+
+void Widget::OnLeftMouseDown(const std::function<bool(int, int)>& callback)
+{
+	m_onLeftMouseDown = callback;
+}
+
+void Widget::OnLeftMouseUp(const std::function<bool(int, int)>& callback)
+{
+	m_onLeftMouseUp = callback;
 }
 
 void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const

@@ -37,6 +37,8 @@ public:
 
 	void SetRoot(Widget* pRoot);
 
+	void Update();
+
 	void Draw();
 
 	void Resize();

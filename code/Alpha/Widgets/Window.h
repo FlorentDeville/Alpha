@@ -18,9 +18,10 @@ namespace Widgets
 		Window(DirectX::XMUINT2 size);
 		~Window();
 
-		void Draw();
+		void Update() override;
+		void Draw() override;
 
-		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
+		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		void AddWidget(Widget* pWidget) override;
 		void RemoveWidget(const Widget* pWidget) override;
@@ -28,6 +29,7 @@ namespace Widgets
 	private:
 		DirectX::XMINT2 m_previousMousePosition;
 		bool m_isMaximized;
+		bool m_drag;
 
 		Container* m_pContainer;
 	};

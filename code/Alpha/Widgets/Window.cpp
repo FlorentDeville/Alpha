@@ -26,6 +26,7 @@ Window::Window(DirectX::XMUINT2 size)
 	, m_previousMousePosition()
 	, m_isMaximized(false)
 	, m_pContainer(nullptr)
+	, m_drag(false)
 {
 	SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 
@@ -39,28 +40,24 @@ Window::Window(DirectX::XMUINT2 size)
 	Layout* pLayout = new Layout(1000, menuBarHeight, 0, 0);
 	pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 	pLayout->SetDirection(Layout::Horizontal);
-	pLayout->OnMouseMove([this](int x, int y, MouseKey k) -> bool {
-		if (k == M_LButton)
-		{
-			int dtX = x - m_previousMousePosition.x;
-			int dtY = y - m_previousMousePosition.y;
+	pLayout->OnLeftMouseDown([this](int /*x*/, int /*y*/) -> bool 
+	{
+		m_drag = true;
+		
+		POINT cursorPosition;
+		GetCursorPos(&cursorPosition);
+		m_previousMousePosition.x = cursorPosition.x;
+		m_previousMousePosition.y = cursorPosition.y;
 
-			//wchar_t buffer[256];
-			//wsprintf(buffer, L"%d, %d\n", dtX, dtY);
-			//OutputDebugString(buffer);
-
-			RECT r = g_pWindow->GetWindowRectangle();
-			MoveWindow(g_pWindow->GetWindowHandle(), r.left + dtX, r.top + dtY, r.right - r.left, r.bottom - r.top, true);
-			return true;
-		}
-		else
-		{
-			m_previousMousePosition.x = x;
-			m_previousMousePosition.y = y;
-			return false;
-		}
+		return true;
 		});
-	//pLayout->SetBackgroundColor(DirectX::XMVectorSet(1.f, 0.f, 0.f, 1.f));
+
+	pLayout->OnLeftMouseUp([this](int, int) -> bool
+	{
+		m_drag = false;
+		return true;
+	});
+
 	pWindowLayout->AddWidget(pLayout);
 
 	//Header left layout containig menus
@@ -195,6 +192,25 @@ Window::Window(DirectX::XMUINT2 size)
 
 Window::~Window()
 {}
+
+void Window::Update()
+{
+	if (!m_drag)
+		return;
+
+	POINT cursorPosition;
+	GetCursorPos(&cursorPosition);
+
+	int dtX = cursorPosition.x - m_previousMousePosition.x;
+	int dtY = cursorPosition.y - m_previousMousePosition.y;
+
+	RECT r = g_pWindow->GetWindowRectangle();
+	MoveWindow(g_pWindow->GetWindowHandle(), r.left + dtX, r.top + dtY, r.right - r.left, r.bottom - r.top, true);
+
+	m_previousMousePosition.x = cursorPosition.x;
+	m_previousMousePosition.y = cursorPosition.y;
+	Widget::Update();
+}
 
 void Window::Draw()
 {
