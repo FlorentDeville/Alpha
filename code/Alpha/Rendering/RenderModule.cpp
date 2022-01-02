@@ -356,7 +356,7 @@ int RenderModule::GetNumFrames() const
 	return m_numFrames;
 }
 
-const DirectX::XMUINT2 RenderModule::GetGameResolution() const
+const DirectX::XMUINT2& RenderModule::GetGameResolution() const
 {
 	return m_gameResolution;
 }
