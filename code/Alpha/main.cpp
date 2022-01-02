@@ -505,8 +505,6 @@ void CreateMenuBar()
 	g_pWidgetMgr->SetRoot(pWindow);
 	g_pWidgetMgr->Resize();
 
-	//Widgets::Split* pSplit = new Widgets::Split();
-	//pWindow->AddWidget(pSplit);
 	Widgets::Split3Way* pSplit = new Widgets::Split3Way();
 	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pWindow->AddWidget(pSplit);
