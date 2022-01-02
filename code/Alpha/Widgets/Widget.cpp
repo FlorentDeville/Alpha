@@ -24,6 +24,7 @@ Widget::Widget()
 	, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
 	, m_hPositionStyle(HPOSITION_STYLE::NONE)
 	, m_vPositionStyle(VPOSITION_STYLE::NONE)
+	, m_name()
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -153,6 +154,11 @@ void Widget::SetPositionStyle(Widget::HPOSITION_STYLE hStyle, Widget::VPOSITION_
 {
 	m_hPositionStyle = hStyle;
 	m_vPositionStyle = vStyle;
+}
+
+void Widget::SetName(const std::string& name)
+{
+	m_name = name;
 }
 
 int32_t Widget::GetX() const

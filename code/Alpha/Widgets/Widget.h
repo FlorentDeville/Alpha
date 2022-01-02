@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include <DirectXMath.h>
@@ -79,6 +80,8 @@ public:
 	void SetSizeStyle(int sizeStyle);
 	void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
 
+	void SetName(const std::string& name);
+
 	int32_t GetX() const; //Get the local x coordinate from the top left corner
 	int32_t GetY() const; //Get the local y coordinate from the top left corner
 
@@ -111,6 +114,8 @@ protected:
 	VPOSITION_STYLE m_vPositionStyle;
 
 	std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
+
+	std::string m_name;
 
 	void ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const;
 
