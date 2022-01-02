@@ -8,15 +8,18 @@
 
 namespace Widgets
 {
-
-	class Container : public Widget
+	class Split : public Widget
 	{
 	public:
-		Container();
-		Container(int width, int height);
-		~Container();
+		Split();
+		~Split();
 
 		void Draw() override;
-	};
+		//bool Handle(const Message& msg) override;
 
+		//bool IsDragged() const;
+
+	private:
+		//bool m_isDragged;
+	};
 }

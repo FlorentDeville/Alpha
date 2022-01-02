@@ -18,16 +18,19 @@ class Widget;
 namespace Widgets
 {
 	class Container;
+	class Split;
 }
 
 class WidgetMgr
 {
 	friend class Button;
 	friend class Widgets::Container;
+	friend class Widgets::Split;
 	friend class Icon;
 	friend class Label;
 	friend class Widget;
 	friend class Layout;
+
 public:
 	WidgetMgr();
 	~WidgetMgr();

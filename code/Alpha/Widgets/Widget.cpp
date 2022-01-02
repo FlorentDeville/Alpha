@@ -155,6 +155,11 @@ void Widget::SetY(int32_t y)
 	m_locPos.y = y;
 }
 
+void Widget::SetSize(const DirectX::XMUINT2& size)
+{
+	m_size = size;
+}
+
 void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
 {
 	m_backgroundColor = color;
@@ -184,6 +189,11 @@ int32_t Widget::GetX() const
 int32_t Widget::GetY() const
 {
 	return m_locPos.y;
+}
+
+DirectX::XMUINT2 Widget::GetSize() const
+{
+	return m_size;
 }
 
 int32_t Widget::GetScreenX() const

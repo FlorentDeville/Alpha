@@ -10,13 +10,11 @@
 #include <chrono>
 #include <windowsx.h>
 
-// DirectX 12 specific headers.
+
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
-
-// D3D12 extension library.
 #include <d3dx12.h>
 
 #include "Rendering/CommandQueue.h"
@@ -38,6 +36,8 @@
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Message.h"
+#include "Widgets/Split.h"
+#include "Widgets/Split3Way.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Window.h"
 
@@ -308,12 +308,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		g_pWidgetMgr->HandleMsg(msg);
 	}
 
-	case WM_SETCURSOR:
-	{
-		HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
-		SetCursor(hCurs1);
-	}
-		break;
+	//case WM_SETCURSOR:
+	//{
+	//	HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
+	//	SetCursor(hCurs1);
+	//}
+	//	break;
 
 	default:
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
@@ -502,6 +502,12 @@ void CreateMenuBar()
 	Widgets::Window* pWindow = new Widgets::Window(DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
 	g_pWidgetMgr->SetRoot(pWindow);
 	g_pWidgetMgr->Resize();
+
+	//Widgets::Split* pSplit = new Widgets::Split();
+	//pWindow->AddWidget(pSplit);
+	Widgets::Split3Way* pSplit = new Widgets::Split3Way();
+	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+	pWindow->AddWidget(pSplit);
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
@@ -545,6 +551,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	LoadTexture();
 
 	CreateMenuBar();
+
+	HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
+	SetCursor(hCurs1);
 
 	g_pWindow->Show();
 

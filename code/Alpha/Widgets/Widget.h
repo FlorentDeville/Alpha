@@ -76,6 +76,8 @@ public:
 	void SetX(int32_t x);
 	void SetY(int32_t y);
 
+	void SetSize(const DirectX::XMUINT2& size);
+
 	void SetBackgroundColor(const DirectX::XMVECTOR& color);
 	void SetSizeStyle(int sizeStyle);
 	void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
@@ -84,6 +86,8 @@ public:
 
 	int32_t GetX() const; //Get the local x coordinate from the top left corner
 	int32_t GetY() const; //Get the local y coordinate from the top left corner
+
+	DirectX::XMUINT2 GetSize() const;
 
 	int32_t GetScreenX() const; //Get the x coordinate from the top left corner
 	int32_t GetScreenY() const; //Get the y coordinate from the top left corner

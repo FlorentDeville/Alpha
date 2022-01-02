@@ -19,6 +19,10 @@ namespace Widgets
 		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	}
 
+	Container::Container(int width, int height)
+		: Widget(width, height, 0, 0)
+	{}
+
 	Container::~Container()
 	{}
 
