@@ -14,9 +14,15 @@
 struct Message;
 class Widget;
 
+namespace Widgets
+{
+	class Container;
+}
+
 class WidgetMgr
 {
 	friend class Button;
+	friend class Widgets::Container;
 	friend class Icon;
 	friend class Label;
 	friend class Widget;

@@ -6,6 +6,7 @@
 
 #include "Rendering/Font/Font.h"
 
+#include "Widgets/Container.h"
 #include "Widgets/Button.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
@@ -24,6 +25,7 @@ Window::Window(DirectX::XMUINT2 size)
 	: Widget(size.x, size.y, 0, 0)
 	, m_previousMousePosition()
 	, m_isMaximized(false)
+	, m_pContainer(nullptr)
 {
 	SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 
@@ -183,7 +185,11 @@ Window::Window(DirectX::XMUINT2 size)
 	pButtonLayout->AddWidget(pMaxButton);
 	pButtonLayout->AddWidget(pMinButton);
 
-	AddWidget(pWindowLayout);
+	//Add the container
+	m_pContainer = new Widgets::Container();
+	pWindowLayout->AddWidget(m_pContainer);
+
+	Widget::AddWidget(pWindowLayout);
 }
 
 Window::~Window()
@@ -197,6 +203,16 @@ void Window::Draw()
 void Window::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
 	Widget::Resize(parentAbsPos, parentSize);
+}
+
+void Window::AddWidget(Widget* pWidget)
+{
+	m_pContainer->AddWidget(pWidget);
+}
+
+void Window::RemoveWidget(const Widget* pWidget)
+{
+	m_pContainer->RemoveWidget(pWidget);
 }
 
 }

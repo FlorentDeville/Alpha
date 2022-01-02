@@ -10,6 +10,8 @@
 
 namespace Widgets
 {
+	class Container;
+
 	class Window : public Widget
 	{
 	public:
@@ -20,8 +22,13 @@ namespace Widgets
 
 		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 
+		void AddWidget(Widget* pWidget) override;
+		void RemoveWidget(const Widget* pWidget) override;
+
 	private:
 		DirectX::XMINT2 m_previousMousePosition;
 		bool m_isMaximized;
+
+		Container* m_pContainer;
 	};
 }
