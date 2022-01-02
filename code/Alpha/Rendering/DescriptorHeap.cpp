@@ -47,6 +47,7 @@ namespace Rendering
 	D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetNewHandle()
 	{
 		CD3DX12_CPU_DESCRIPTOR_HANDLE rtv(m_pHeap->GetCPUDescriptorHandleForHeapStart(), m_current, m_descriptorSize);
+		++m_current;
 		return rtv;
 	}
 }
