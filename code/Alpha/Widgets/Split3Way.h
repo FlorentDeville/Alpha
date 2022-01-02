@@ -20,6 +20,10 @@ namespace Widgets
 		void Update() override;
 		void Draw() override;
 
+		void AddLeftPanel(Widget* pWidget);
+		void AddMiddlePanel(Widget* pWidget);
+		void AddRightPanel(Widget* pWidget);
+
 	private:
 		Layout* m_pLayout;
 		Container* m_pLeftContainer;

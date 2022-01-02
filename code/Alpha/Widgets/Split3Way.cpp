@@ -136,4 +136,19 @@ namespace Widgets
 	{
 		Widget::Draw();
 	}
+
+	void Split3Way::AddLeftPanel(Widget* pWidget)
+	{
+		m_pLeftContainer->AddWidget(pWidget);
+	}
+
+	void Split3Way::AddMiddlePanel(Widget* pWidget)
+	{
+		m_pMiddleContainer->AddWidget(pWidget);
+	}
+
+	void Split3Way::AddRightPanel(Widget* pWidget)
+	{
+		m_pRightContainer->AddWidget(pWidget);
+	}
 }
