@@ -50,7 +50,6 @@ RenderModule::RenderModule()
 #endif
 	, m_pRenderCommandList(nullptr)
 {
-	//FLOAT clearColor[] = { 0.4f, 0.6f, 0.9f, 1.0f };
 	m_clearColor[0] = 0.4f;
 	m_clearColor[1] = 0.6f;
 	m_clearColor[2] = 0.9f;
@@ -110,6 +109,9 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 			rtvHandle.Offset(descriptorSize);
 		}
 	}
+
+	m_gameScissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
+	m_gameViewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(gameResolution.x), static_cast<float>(gameResolution.y));
 }
 
 void RenderModule::Shutdown()
@@ -152,8 +154,8 @@ void RenderModule::PreRender_RenderToTexture()
 	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 
 	//Set viewport and scissors
-	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
-	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
+	m_pRenderCommandList->RSSetViewports(1, &m_gameViewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_gameScissorRect);
 
 	// Set render targets
 	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
@@ -188,8 +190,8 @@ void RenderModule::PreRender()
 	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 
 	//Set viewport and scissors
-	m_pRenderCommandList->RSSetViewports(1, &m_viewport);
-	m_pRenderCommandList->RSSetScissorRects(1, &m_scissorRect);
+	m_pRenderCommandList->RSSetViewports(1, &m_mainViewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_mainScissorRect);
 
 	// Set render targets
 	m_pRenderCommandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
@@ -297,7 +299,7 @@ void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 
 	UpdateRenderTargetViews();
 
-	m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
+	m_mainViewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
 	wchar_t buffer[500];
 	swprintf_s(buffer, 500, L"Resized swap chain %d %d\n", width, height);
@@ -708,8 +710,8 @@ void RenderModule::CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue,
 	res = pSwapChain1->QueryInterface(&m_pSwapChain);
 	ThrowIfFailed(res);
 
-	m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
-	m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
+	m_mainScissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
+	m_mainViewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
 	pSwapChain1->Release();
 	pDxgiFactory4->Release();

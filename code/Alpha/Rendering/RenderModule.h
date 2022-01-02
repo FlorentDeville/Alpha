@@ -123,9 +123,12 @@ private:
 	TextureId m_RenderTextureId[m_numFrames];
 	ID3D12DescriptorHeap* m_pRenderTargetViewDescriptorHeap;
 
-	D3D12_VIEWPORT m_viewport;
-	D3D12_RECT m_scissorRect;
+	D3D12_VIEWPORT m_mainViewport;
+	D3D12_RECT m_mainScissorRect;
 	
+	D3D12_VIEWPORT m_gameViewport;
+	D3D12_RECT m_gameScissorRect;
+
 private:
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 
