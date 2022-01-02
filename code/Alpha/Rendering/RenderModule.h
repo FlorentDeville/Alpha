@@ -86,10 +86,7 @@ private:
 	IDXGISwapChain4* m_pSwapChain;
 	
 	Rendering::DescriptorHeap m_RTVHeap;
-	ID3D12DescriptorHeap* m_pDSVDescriptorHeap; //depth stencil view descriptor heap
-
-	UINT m_RTVDescriptorSize;
-
+	Rendering::DescriptorHeap m_DSVHeap;
 
 	CommandQueue* m_pRenderCommandQueue;
 	ID3D12GraphicsCommandList2* m_pRenderCommandList;
@@ -121,9 +118,11 @@ private:
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
 	ID3D12Resource* m_pDepthBuffer;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_mainRTV[m_numFrames];
+	D3D12_CPU_DESCRIPTOR_HANDLE m_mainDSV;
 
 	TextureId m_RenderTextureId[m_numFrames];
 	D3D12_CPU_DESCRIPTOR_HANDLE m_gameRTV[m_numFrames];
+	D3D12_CPU_DESCRIPTOR_HANDLE m_gameDSV;
 
 	D3D12_VIEWPORT m_mainViewport;
 	D3D12_RECT m_mainScissorRect;
@@ -138,11 +137,10 @@ private:
 	void CheckTearingSupport();
 
 	void CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue, uint32_t width, uint32_t height, uint32_t bufferCount);
-	void CreateDSVDescriptorHeap();
 	void UpdateRenderTargetViews();
 
 	void ResizeSwapChain(uint32_t width, uint32_t height);
-	void ResizeDepthBuffer(uint32_t width, uint32_t height);
+	void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 };
 
 extern RenderModule* g_pRenderModule;

@@ -37,8 +37,7 @@ RenderModule::RenderModule()
 	: m_pDevice(nullptr)
 	, m_pSwapChain(nullptr)
 	, m_RTVHeap()
-	, m_pDSVDescriptorHeap(nullptr)
-	, m_RTVDescriptorSize(0)
+	, m_DSVHeap()
 	, m_allowTearing(false)
 	, m_pRenderCommandQueue(nullptr)
 	, m_pCopyCommandQueue(nullptr)
@@ -88,14 +87,14 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 		m_gameRTV[ii] = m_RTVHeap.GetNewHandle();
 	}
 
-	CreateDSVDescriptorHeap();
-
-	m_RTVDescriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	m_DSVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2);
+	m_mainDSV = m_DSVHeap.GetNewHandle();
+	m_gameDSV = m_DSVHeap.GetNewHandle();
 
 	UpdateRenderTargetViews();
 
 	//Resize also create the depth buffer
-	ResizeDepthBuffer(mainResolution.x, mainResolution.y);
+	ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pDepthBuffer, m_mainDSV);
 
 	//Create render texture
 	for (int ii = 0; ii < m_numFrames; ++ii)
@@ -126,7 +125,7 @@ void RenderModule::Shutdown()
 		pBackBuffer->Release();
 
 	m_pDepthBuffer->Release();
-	m_pDSVDescriptorHeap->Release();
+	m_DSVHeap.Release();
 	m_RTVHeap.Release();
 	m_pSwapChain->Release();
 	m_pDevice->Release();
@@ -141,16 +140,15 @@ void RenderModule::PreRender_RenderToTexture()
 	m_pRenderCommandList->ClearRenderTargetView(m_gameRTV[m_currentBackBufferIndex], m_clearColor, 0, nullptr);
 
 	// Clear the depth buffer
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	float depthValue = 1.f;
-	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	m_pRenderCommandList->ClearDepthStencilView(m_mainDSV, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 
 	//Set viewport and scissors
 	m_pRenderCommandList->RSSetViewports(1, &m_gameViewport);
 	m_pRenderCommandList->RSSetScissorRects(1, &m_gameScissorRect);
 
 	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRTV[m_currentBackBufferIndex], FALSE, &dsv);
+	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRTV[m_currentBackBufferIndex], FALSE, &m_mainDSV);
 }
 
 void RenderModule::PreRender()
@@ -175,16 +173,15 @@ void RenderModule::PreRender()
 
 
 	// Clear the depth buffer
-	D3D12_CPU_DESCRIPTOR_HANDLE dsv = m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	float depthValue = 1.f;
-	m_pRenderCommandList->ClearDepthStencilView(dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	m_pRenderCommandList->ClearDepthStencilView(m_mainDSV, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 
 	//Set viewport and scissors
 	m_pRenderCommandList->RSSetViewports(1, &m_mainViewport);
 	m_pRenderCommandList->RSSetScissorRects(1, &m_mainScissorRect);
 
 	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &m_mainRTV[m_currentBackBufferIndex], FALSE, &dsv);
+	m_pRenderCommandList->OMSetRenderTargets(1, &m_mainRTV[m_currentBackBufferIndex], FALSE, &m_mainDSV);
 }
 
 void RenderModule::PostRender()
@@ -296,17 +293,12 @@ void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 	OutputDebugString(buffer);
 }
 
-void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
+void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv)
 {
-	//if (!m_contentLoaded)
-	//	return;
-
 	// Flush any GPU commands that might be referencing the depth buffer.
 	m_pCopyCommandQueue->Flush();
 	m_pRenderCommandQueue->Flush();
 
-	// Resize screen dependent resources.
-	// Create a depth buffer.
 	D3D12_CLEAR_VALUE optimizedClearValue = {};
 	optimizedClearValue.Format = DXGI_FORMAT_D32_FLOAT;
 	optimizedClearValue.DepthStencil = { 1.0f, 0 };
@@ -314,8 +306,8 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 	D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, width, height, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 	
-	if (m_pDepthBuffer)
-		m_pDepthBuffer->Release();
+	if (*pResource)
+		(*pResource)->Release();
 
 	ThrowIfFailed(m_pDevice->CreateCommittedResource(
 		&heapProperty,
@@ -323,17 +315,17 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height)
 		&resourceDesc,
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&optimizedClearValue,
-		IID_PPV_ARGS(&m_pDepthBuffer)
+		IID_PPV_ARGS(pResource)
 	));
 
 	// Update the depth-stencil view.
-	D3D12_DEPTH_STENCIL_VIEW_DESC dsv = {};
-	dsv.Format = DXGI_FORMAT_D32_FLOAT;
-	dsv.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	dsv.Texture2D.MipSlice = 0;
-	dsv.Flags = D3D12_DSV_FLAG_NONE;
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Texture2D.MipSlice = 0;
+	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-	m_pDevice->CreateDepthStencilView(m_pDepthBuffer, &dsv, m_pDSVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	m_pDevice->CreateDepthStencilView(m_pDepthBuffer, &dsvDesc, dsv);
 
 	wchar_t buffer[500];
 	swprintf_s(buffer, 500, L"Resized depth buffer %d %d\n", width, height);
@@ -504,7 +496,7 @@ TextureId RenderModule::GetRenderTextureId() const
 void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
 {
 	ResizeSwapChain(size.x, size.y);
-	ResizeDepthBuffer(size.x, size.y);
+	ResizeDepthBuffer(size.x, size.y, &m_pDepthBuffer, m_mainDSV);
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()
@@ -705,15 +697,6 @@ void RenderModule::CreateSwapChain(HWND hWnd, ID3D12CommandQueue* pCommandQueue,
 
 	pSwapChain1->Release();
 	pDxgiFactory4->Release();
-}
-
-void RenderModule::CreateDSVDescriptorHeap()
-{
-	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
-	dsvHeapDesc.NumDescriptors = 1;
-	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	ThrowIfFailed(m_pDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_pDSVDescriptorHeap)));
 }
 
 void RenderModule::UpdateRenderTargetViews()
