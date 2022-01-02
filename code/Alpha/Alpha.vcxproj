@@ -158,6 +158,7 @@
     <ClCompile Include="Rendering\CommandQueue.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Rendering\DescriptorHeap.cpp" />
     <ClCompile Include="Rendering\Font\Font.cpp" />
     <ClCompile Include="Rendering\InputLayout\InputLayout.cpp" />
     <ClCompile Include="Rendering\Mesh\Mesh.cpp" />
@@ -188,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Rendering\DescriptorHeap.h" />
     <ClInclude Include="Rendering\Font\Font.h" />
     <ClInclude Include="Rendering\InputLayout\InputLayout.h" />
     <ClInclude Include="Rendering\Mesh\Mesh.h" />

@@ -103,6 +103,9 @@
     <ClCompile Include="Widgets\Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Rendering\DescriptorHeap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
@@ -152,6 +155,7 @@
     <ClInclude Include="Widgets\Split3Way.h" />
     <ClInclude Include="Widgets\Split.h" />
     <ClInclude Include="Widgets\Viewport.h" />
+    <ClInclude Include="Rendering\DescriptorHeap.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
