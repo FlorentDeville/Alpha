@@ -236,11 +236,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_SIZE:
+	{
+		if (wParam == SIZE_MINIMIZED)
+			return true;
+
+		RECT clientRect = g_pWindow->GetClientRectangle();
+		int width = clientRect.right - clientRect.left;
+		int height = clientRect.bottom - clientRect.top;
+
+		// Don't allow 0 size swap chain back buffers.
+		uint32_t uwidth = std::max(1, width);
+		uint32_t uheight = std::max(1, height);
+
+		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
+		{
+			g_pWindow->Resize(uwidth, uheight);
+			g_pRenderModule->ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
+			g_pWidgetMgr->Resize();
+		}
+
+		return ::DefWindowProcW(hWnd, message, wParam, lParam);
+	}
+		break;
+
 	case WM_NCPAINT:
 	{
 		RECT clientRect = g_pWindow->GetClientRectangle();
 		int width = clientRect.right - clientRect.left;
 		int height = clientRect.bottom - clientRect.top;
+
+		//This is a minimiz event. Ignore it.
+		if (width == 0 && height == 0)
+			return true;
 
 		// Don't allow 0 size swap chain back buffers.
 		uint32_t uwidth = std::max(1, width);
@@ -352,9 +379,10 @@ void Update()
 
 	auto dt = clock.now() - start;
 	double totalTimeElasped = dt.count() * 1e-9;
+	totalTimeElasped;
 	// Update the model matrix.
-	float angle = static_cast<float>(totalTimeElasped * 90.0);
-	//float angle = 0;
+	//float angle = static_cast<float>(totalTimeElasped * 90.0);
+	float angle = 0;
 	float scale = 1;
 	g_model = DirectX::XMMatrixScaling(scale, scale, scale);
 
@@ -436,13 +464,6 @@ void Render()
 	//if(false)
 	{
 		g_pWidgetMgr->Draw();
-	}
-
-	//render text
-	//if(false)
-	{
-		//g_pRenderModule->PrepareRenderText("Hello World", g_segoeUIFontId, DirectX::XMFLOAT3(0, 0, 2), DirectX::XMFLOAT2(1, 1));
-		//g_pRenderModule->PrepareRenderText("Hello World", g_comicSansMsFontId, DirectX::XMFLOAT3(540, 420, 2), DirectX::XMFLOAT2(3, 3));
 	}
 
 	g_pRenderModule->RenderAllText();
