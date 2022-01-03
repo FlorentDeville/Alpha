@@ -116,11 +116,12 @@ public:
 
 private:
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
-	ID3D12Resource* m_pDepthBuffer;
+	ID3D12Resource* m_pMainDepthBuffer;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_mainRTV[m_numFrames];
 	D3D12_CPU_DESCRIPTOR_HANDLE m_mainDSV;
 
 	TextureId m_RenderTextureId[m_numFrames];
+	ID3D12Resource* m_pGameDepthBuffer;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_gameRTV[m_numFrames];
 	D3D12_CPU_DESCRIPTOR_HANDLE m_gameDSV;
 

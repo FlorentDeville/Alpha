@@ -43,7 +43,8 @@ RenderModule::RenderModule()
 	, m_pCopyCommandQueue(nullptr)
 	, m_currentBackBufferIndex(0)
 	, m_vSync(true)
-	, m_pDepthBuffer(nullptr)
+	, m_pMainDepthBuffer(nullptr)
+	, m_pGameDepthBuffer(nullptr)
 #if defined(_DEBUG)
 	, m_pDebugInterface(nullptr)
 #endif
@@ -93,8 +94,8 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 
 	UpdateRenderTargetViews();
 
-	//Resize also create the depth buffer
-	ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pDepthBuffer, m_mainDSV);
+	ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pMainDepthBuffer, m_mainDSV);
+	ResizeDepthBuffer(gameResolution.x, gameResolution.y, &m_pGameDepthBuffer, m_gameDSV);
 
 	//Create render texture
 	for (int ii = 0; ii < m_numFrames; ++ii)
@@ -124,7 +125,8 @@ void RenderModule::Shutdown()
 	for (ID3D12Resource* pBackBuffer : m_pBackBuffers)
 		pBackBuffer->Release();
 
-	m_pDepthBuffer->Release();
+	m_pMainDepthBuffer->Release();
+	m_pGameDepthBuffer->Release();
 	m_DSVHeap.Release();
 	m_RTVHeap.Release();
 	m_pSwapChain->Release();
@@ -141,14 +143,14 @@ void RenderModule::PreRender_RenderToTexture()
 
 	// Clear the depth buffer
 	float depthValue = 1.f;
-	m_pRenderCommandList->ClearDepthStencilView(m_mainDSV, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	m_pRenderCommandList->ClearDepthStencilView(m_gameDSV, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 
 	//Set viewport and scissors
 	m_pRenderCommandList->RSSetViewports(1, &m_gameViewport);
 	m_pRenderCommandList->RSSetScissorRects(1, &m_gameScissorRect);
 
 	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRTV[m_currentBackBufferIndex], FALSE, &m_mainDSV);
+	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRTV[m_currentBackBufferIndex], FALSE, &m_gameDSV);
 }
 
 void RenderModule::PreRender()
@@ -325,7 +327,7 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Reso
 	dsvDesc.Texture2D.MipSlice = 0;
 	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-	m_pDevice->CreateDepthStencilView(m_pDepthBuffer, &dsvDesc, dsv);
+	m_pDevice->CreateDepthStencilView(*pResource, &dsvDesc, dsv);
 
 	wchar_t buffer[500];
 	swprintf_s(buffer, 500, L"Resized depth buffer %d %d\n", width, height);
@@ -496,7 +498,7 @@ TextureId RenderModule::GetRenderTextureId() const
 void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
 {
 	ResizeSwapChain(size.x, size.y);
-	ResizeDepthBuffer(size.x, size.y, &m_pDepthBuffer, m_mainDSV);
+	ResizeDepthBuffer(size.x, size.y, &m_pMainDepthBuffer, m_mainDSV);
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()
