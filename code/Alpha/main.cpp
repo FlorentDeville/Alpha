@@ -17,8 +17,10 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 
-#include "Rendering/CommandQueue.h"
+#include "CommandLine.h"
 #include "Helper.h"
+
+#include "Rendering/CommandQueue.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -171,10 +173,13 @@ PipelineStateId g_widgetViewportPsoId;
 TextureId g_textureId;
 LPCWSTR g_pIconName = IDC_ARROW;
 
+std::string g_dataRoot;
+std::string g_shaderRoot;
+
 void LoadTexture()
 {
 	//std::string textureName = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
-	std::string textureName = "C:\\workspace\\Alpha\\data\\fonts\\arial_0.tga";
+	std::string textureName = g_dataRoot + "\\fonts\\arial_0.tga";
 
 	Texture* pTexture = g_pTextureMgr->CreateResource(g_textureId, textureName);
 	pTexture->Init(textureName);
@@ -491,9 +496,9 @@ bool LoadContent()
 		g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
 		pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
 
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\base.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
 		PipelineStateId base_PosColor_pipelineStateId;
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(base_PosColor_pipelineStateId, "base");
@@ -509,9 +514,9 @@ bool LoadContent()
 		g_pMeshMgr->CreateMesh(&pCubeTexture, cubeTextureMeshId);
 		pCubeTexture->LoadVertexAndIndexBuffer(g_CubeTexture, _countof(g_CubeTexture), g_CubeTextureIndices, _countof(g_CubeTextureIndices));
 
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
 
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(g_texture_posuv_pipelineStateId, "texture");
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
@@ -522,14 +527,14 @@ bool LoadContent()
 	//Load the font
 	{
 		{
-			std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\comicSansMs.fnt";
+			std::string fontFilename = g_dataRoot + "\\fonts\\comicSansMs.fnt";
 			Font* pFont = g_pFontMgr->CreateResource(g_comicSansMsFontId, fontFilename);
 			pFont->Init(fontFilename);
 		}
 
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
 		PipelineStateId text_pipelineStateId;
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
@@ -541,9 +546,9 @@ bool LoadContent()
 
 	//Load the widget viewport pso
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget_viewport.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget_viewport.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget_viewport.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\widget_viewport.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.ps.cso");
 
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(g_widgetViewportPsoId, "widget_viewport");
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
@@ -570,8 +575,19 @@ void CreateMenuBar()
 	g_pWidgetMgr->Resize();
 }
 
-int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
+int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR lpCmdLine, _In_ int /*nCmdShow*/)
 {
+	CommandLine cmd;
+	cmd.AddArgument("-dataroot", "", CommandLine::ARG_TYPE::STRING, CommandLine::ARG_ACTION::STORE, &g_dataRoot, "Path of the data folder.");
+	cmd.Parse(lpCmdLine);
+
+	const int size = 256;
+	char buffer[size];
+	GetModuleFileNameA(NULL, buffer, size);
+	g_shaderRoot = buffer;
+	size_t lastSlash = g_shaderRoot.find_last_of('\\');
+	g_shaderRoot = g_shaderRoot.substr(0, lastSlash);
+
 	g_pFontMgr = new RESOURCE_MGR(Font);
 	g_pFontMgr->Init();
 

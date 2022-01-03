@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <assert.h>
 #include <cstdio>
+#include <string>
+
+extern std::string g_dataRoot;
 
 SysWindow::SysWindow()
 	: m_hWindow(nullptr)
@@ -154,6 +157,8 @@ uint32_t SysWindow::GetHeight() const
 
 void SysWindow::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName, WndProcCallback callback)
 {
+	std::string iconPath = g_dataRoot + "\\textures\\alpha.ico";
+
 	WNDCLASSEXW windowClass = { 0 };
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -161,7 +166,7 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClass
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInst;
-	windowClass.hIcon = (HICON)::LoadImage(NULL, L"C:\\workspace\\Alpha\\data\\textures\\alpha.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	windowClass.hIcon = (HICON)::LoadImageA(NULL, iconPath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 	windowClass.hCursor = ::LoadCursor(hInst, IDC_ARROW);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszMenuName = nullptr;

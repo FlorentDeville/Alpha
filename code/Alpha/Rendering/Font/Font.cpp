@@ -9,6 +9,8 @@
 
 #include <fstream>
 
+extern std::string g_dataRoot;
+
 Font::Font(const std::string& name)
     : Resource(name)
     , m_CharList(nullptr)
@@ -22,7 +24,7 @@ void Font::Init(const std::string& fntName)
 {
     LoadFntFile(fntName);
 
-    std::string textureFilename = "C:\\workspace\\Alpha\\data\\fonts\\" + m_fontImage;
+    std::string textureFilename = g_dataRoot + "\\fonts\\" + m_fontImage;
     
     Texture* pTexture = g_pTextureMgr->CreateResource(m_texture, m_fontImage);
     pTexture->Init(textureFilename);

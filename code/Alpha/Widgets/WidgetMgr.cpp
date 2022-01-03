@@ -21,6 +21,9 @@
 
 extern SysWindow* g_pWindow;
 
+extern std::string g_dataRoot;
+extern std::string g_shaderRoot;
+
 WidgetMgr::WidgetMgr()
 	: m_pRoot(nullptr)
 	, m_prevMouseX(0)
@@ -59,9 +62,9 @@ void WidgetMgr::Init()
 
 	//Root signature for basic widget
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\widget.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\widget.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.ps.cso");
 
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(m_widgetPsoId, "widget");
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
@@ -74,13 +77,13 @@ void WidgetMgr::Init()
 
 	//Font for label
 	{
-		std::string fontFilename = "C:\\workspace\\Alpha\\data\\fonts\\segoeUI.fnt";
+		std::string fontFilename = g_dataRoot + "\\fonts\\segoeUI.fnt";
 		Font* pFont = g_pFontMgr->CreateResource(m_segoeUIFontId, fontFilename);
 		pFont->Init(fontFilename);
 
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\text.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
 		PipelineStateId text_pipelineStateId;
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
@@ -91,9 +94,9 @@ void WidgetMgr::Init()
 
 	//Renderable for icon
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader("C:\\workspace\\Alpha\\code\\x64\\Debug\\texture.ps.cso");
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
 
 		PipelineStateId texture_posuv_pipelineStateId;
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(texture_posuv_pipelineStateId, "texture");
