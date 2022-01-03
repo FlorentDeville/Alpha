@@ -39,37 +39,33 @@ VS_Output main(VS_Input input)
 {
 	VS_Output output;
 	
-	output.uv = input.uv;
+	float textureRatio = cb_texture.rect.x / cb_texture.rect.y;
 
-	if (cb_viewport.rect.x < cb_texture.rect.x) //stretch on the x axis
+	float h = cb_viewport.rect.y;
+	float w = h * textureRatio;
+	if (w < cb_viewport.rect.x)
 	{
-		float halfWidthRatio = cb_viewport.rect.x / cb_texture.rect.x / 2;
-		if (input.uv.x == 0)
-		{
-			output.uv.x = 0.5 - halfWidthRatio;
-		}
-		else
-		{
-			output.uv.x = 0.5 + halfWidthRatio;
-		}
-
-		output.uv.y = input.uv.y;
+		w = cb_viewport.rect.x;
+		h = w / textureRatio;
 	}
-	
-	if (cb_viewport.rect.y < cb_texture.rect.y) //stretch on the y axis
-	{
-		float halfHeightRatio = cb_viewport.rect.y / cb_texture.rect.y / 2;
-		if (input.uv.y == 0)
-		{
-			output.uv.y = 0.5 - halfHeightRatio;
-		}
-		else
-		{
-			output.uv.y = 0.5 + halfHeightRatio;
-		}
 
-		output.uv.x = input.uv.x;
-	}
+	float dw = w - cb_viewport.rect.x;
+	float pixelOffsetX = dw / 2;
+	float uvOffsetX = pixelOffsetX / w;
+
+	float dh = h - cb_viewport.rect.y;
+	float pixelOffsetY = dh / 2;
+	float uvOffsetY = pixelOffsetY / h;
+
+	if (input.uv.x == 0)
+		output.uv.x = 0 + uvOffsetX;
+	else
+		output.uv.x = 1 - uvOffsetX;
+
+	if (input.uv.y == 0)
+		output.uv.y = 0 + uvOffsetY;
+	else
+		output.uv.y = 1 - uvOffsetY;
 
 	output.vertex = mul(cb_wvp.wvp, float4(input.vertex, 1.f));
 
