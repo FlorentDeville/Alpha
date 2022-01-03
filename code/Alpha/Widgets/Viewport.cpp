@@ -17,6 +17,9 @@ extern RenderModule* g_pRenderModule;
 extern PipelineStateId g_widgetViewportPsoId;
 extern TextureId g_textureId;
 
+extern DirectX::XMVECTOR g_eyePosition;
+extern DirectX::XMVECTOR g_focusPoint;
+
 namespace Widgets
 {
 	Viewport::Viewport()
@@ -81,6 +84,47 @@ namespace Widgets
 			wchar_t buffer[256];
 			wsprintf(buffer, L"Viewport received key %c\n", c);
 			OutputDebugString(buffer);
+			
+			const float speed = 0.5f;
+			switch (c)
+			{
+			case 'a':
+			case 'A':
+			{
+				DirectX::XMVECTOR offset = DirectX::XMVectorSet(-speed, 0, 0, 1);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
+				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+			}
+				break;
+
+			case 'd':
+			case 'D':
+			{
+				DirectX::XMVECTOR offset = DirectX::XMVectorSet(speed, 0, 0, 1);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
+				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+			}
+				break;
+
+			case 'w':
+			case 'W':
+			{
+				DirectX::XMVECTOR offset = DirectX::XMVectorSet(0, 0, speed, 1);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
+				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+			}
+				break;
+
+			case 's':
+			case 'S':
+			{
+				DirectX::XMVECTOR offset = DirectX::XMVectorSet(0, 0, -speed, 1);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
+				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+			}
+				break;
+			}
+
 			return true;
 		}
 		break;

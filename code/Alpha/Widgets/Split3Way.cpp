@@ -26,7 +26,7 @@ namespace Widgets
 		m_pLayout->SetDirection(Layout::Direction::Horizontal);
 		AddWidget(m_pLayout);
 
-		m_pLeftContainer = new Container(400, 0);
+		m_pLeftContainer = new Container(200, 0);
 		m_pLeftContainer->SetSizeStyle(Widget::VSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pLeftContainer);
 
@@ -34,7 +34,7 @@ namespace Widgets
 		m_pLeftSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pLeftSplit);
 
-		m_pMiddleContainer = new Container(300, 0);
+		m_pMiddleContainer = new Container(600, 0);
 		m_pMiddleContainer->SetSizeStyle(Widget::VSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pMiddleContainer);
 

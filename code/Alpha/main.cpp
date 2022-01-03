@@ -180,6 +180,10 @@ void LoadTexture()
 	pTexture->Init(textureName);
 }
 
+DirectX::XMVECTOR g_eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
+DirectX::XMVECTOR g_focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
+DirectX::XMVECTOR g_upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if (!g_IsInitialized)
@@ -391,7 +395,7 @@ void Update()
 	// Update the model matrix.
 	//float angle = static_cast<float>(totalTimeElasped * 90.0);
 	float angle = 0;
-	float scale = 1;
+	float scale = 0.5;
 	g_model = DirectX::XMMatrixScaling(scale, scale, scale);
 
 	const DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 1, 0);
@@ -399,10 +403,7 @@ void Update()
 	g_model = DirectX::XMMatrixMultiply(g_model, rot);
 
 	// Update the view matrix.
-	const DirectX::XMVECTOR eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
-	const DirectX::XMVECTOR focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
-	const DirectX::XMVECTOR upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
-	g_view = DirectX::XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
+	g_view = DirectX::XMMatrixLookAtLH(g_eyePosition, g_focusPoint, g_upDirection);
 
 	// Update the projection matrix.
 	const DirectX::XMUINT2 gameResolution = g_pRenderModule->GetGameResolution();
