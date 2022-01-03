@@ -137,6 +137,39 @@ namespace Widgets
 		Widget::Draw();
 	}
 
+	void Split3Way::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	{
+		const DirectX::XMUINT2 oldSize = m_size;
+
+		float leftContainerRatio = 1;
+		float middleContainerRatio = 1;
+		if (oldSize.x != 0)
+		{
+			leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(oldSize.x);
+			middleContainerRatio = m_pMiddleContainer->GetSize().x / static_cast<float>(oldSize.x);
+		}
+		else
+		{
+			leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(parentSize.x);
+			middleContainerRatio = m_pMiddleContainer->GetSize().x / static_cast<float>(parentSize.x);
+		}
+
+		ReComputeSize(parentSize);
+		ReComputePosition(parentAbsPos, parentSize);
+
+		DirectX::XMUINT2 leftcontainerNewSize = m_pLeftContainer->GetSize();
+		leftcontainerNewSize.x = static_cast<uint32_t>(leftContainerRatio * m_size.x);
+		m_pLeftContainer->SetSize(leftcontainerNewSize);
+
+		DirectX::XMUINT2 middlecontainerNewSize = m_pMiddleContainer->GetSize();
+		middlecontainerNewSize.x = static_cast<uint32_t>(middleContainerRatio * m_size.x);
+		m_pMiddleContainer->SetSize(middlecontainerNewSize);
+
+		for (Widget* pChild : m_children)
+			pChild->Resize(m_absPos, m_size);
+
+	}
+
 	void Split3Way::AddLeftPanel(Widget* pWidget)
 	{
 		m_pLeftContainer->AddWidget(pWidget);

@@ -19,6 +19,7 @@ namespace Widgets
 
 		void Update() override;
 		void Draw() override;
+		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		void AddLeftPanel(Widget* pWidget);
 		void AddMiddlePanel(Widget* pWidget);
