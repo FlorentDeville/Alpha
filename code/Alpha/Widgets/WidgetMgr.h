@@ -56,10 +56,14 @@ public:
 	//Return the position of the cursor in the entire screen.
 	DirectX::XMINT2 GetCursorPosition() const;
 
+	void SetFocus(Widget* pWidget);
+
 private:
 
 	std::set<Widget*> m_widgets;
 	std::deque<Widget*> m_sortedWidgets; //sorted from the deepest to the highest.
+
+	Widget* m_pFocusedWidget;
 
  	Widget* m_pRoot;
 	

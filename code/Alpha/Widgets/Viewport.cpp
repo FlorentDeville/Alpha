@@ -9,7 +9,9 @@
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
+
 
 extern RenderModule* g_pRenderModule;
 extern PipelineStateId g_widgetViewportPsoId;
@@ -62,5 +64,20 @@ namespace Widgets
 
 		//Draw!!!
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+	}
+
+	bool Viewport::Handle(const Message& msg)
+	{
+		switch(msg.m_id)
+		{
+		case M_MouseLDown:
+			g_pWidgetMgr->SetFocus(this);
+			return true;
+			break;
+
+		default:
+			return false;
+			break;
+		}
 	}
 }

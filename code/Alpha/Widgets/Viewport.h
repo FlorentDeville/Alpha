@@ -15,5 +15,7 @@ namespace Widgets
 		~Viewport();
 
 		void Draw() override;
+
+		bool Handle(const Message& msg) override;
 	};
 }

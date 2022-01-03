@@ -25,6 +25,7 @@ WidgetMgr::WidgetMgr()
 	: m_pRoot(nullptr)
 	, m_prevMouseX(0)
 	, m_prevMouseY(0)
+	, m_pFocusedWidget(nullptr)
 {}
 
 WidgetMgr::~WidgetMgr()
@@ -212,6 +213,11 @@ DirectX::XMINT2 WidgetMgr::GetCursorPosition() const
 	GetCursorPos(&cursorPosition);
 
 	return DirectX::XMINT2 (cursorPosition.x, cursorPosition.y);
+}
+
+void WidgetMgr::SetFocus(Widget* pWidget)
+{
+	m_pFocusedWidget = pWidget;
 }
 
 void WidgetMgr::ComputeSortedWidgetQueue()
