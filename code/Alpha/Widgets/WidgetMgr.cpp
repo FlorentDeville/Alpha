@@ -199,6 +199,11 @@ void WidgetMgr::HandleMsg(const Message& msg)
 		}
 	}
 		break;
+
+	case M_KeyDown:
+		if (m_pFocusedWidget)
+			m_pFocusedWidget->Handle(msg);
+		break;
 	}
 }
 

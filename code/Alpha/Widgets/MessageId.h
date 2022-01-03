@@ -11,6 +11,7 @@ enum MessageId
 	M_MouseExit,	//The mouse exited the area of a widget
 	M_MouseLDown,	//The mouse left button is down
 	M_MouseLUp,		//The mouse left button is up
+	M_KeyDown,
 	M_Count
 };
 

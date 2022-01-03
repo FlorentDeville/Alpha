@@ -200,33 +200,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				::PostQuitMessage(0);
 				break;
 
-			case VK_F11:
-				g_pWindow->ToggleFullscreen();
-				break;
-
-			case VK_NUMPAD0:
-				g_perspectiveRendering = !g_perspectiveRendering;
-				break;
-
-			case VK_UP:
-				//g_pButton->SetY(g_pButton->GetY() - 1);
-				break;
-
-			case VK_DOWN:
-				//g_pButton->SetY(g_pButton->GetY() + 1);
-				break;
-
-			case VK_LEFT:
-				//g_pButton->SetX(g_pButton->GetX() - 1);
-				break;
-
-			case VK_RIGHT:
-				//g_pButton->SetX(g_pButton->GetX() + 1);
-				break;
-
 			default:
+			{
+				Message msg;
+				msg.m_id = M_KeyDown;
+				msg.m_high = wParam;
+				g_pWidgetMgr->HandleMsg(msg);
+			}
+			break;
+			/*case VK_F11:
+				g_pWindow->ToggleFullscreen();
+				break;*/
+
+			//case VK_NUMPAD0:
+			//	g_perspectiveRendering = !g_perspectiveRendering;
+			//	break;
+
+			//case VK_UP:
+			//	//g_pButton->SetY(g_pButton->GetY() - 1);
+			//	break;
+
+			//case VK_DOWN:
+			//	//g_pButton->SetY(g_pButton->GetY() + 1);
+			//	break;
+
+			//case VK_LEFT:
+			//	//g_pButton->SetX(g_pButton->GetX() - 1);
+			//	break;
+
+			//case VK_RIGHT:
+			//	//g_pButton->SetX(g_pButton->GetX() + 1);
+			//	break;
+
+			/*default:
 				return ::DefWindowProcW(hWnd, message, wParam, lParam);
-				break;
+				break;*/
 			}
 		}
 		break;

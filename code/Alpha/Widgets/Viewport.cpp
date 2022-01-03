@@ -75,6 +75,16 @@ namespace Widgets
 			return true;
 			break;
 
+		case M_KeyDown:
+		{
+			char c = (char)msg.m_high;
+			wchar_t buffer[256];
+			wsprintf(buffer, L"Viewport received key %c\n", c);
+			OutputDebugString(buffer);
+			return true;
+		}
+		break;
+
 		default:
 			return false;
 			break;
