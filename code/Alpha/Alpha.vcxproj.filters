@@ -106,6 +106,9 @@
     <ClCompile Include="Rendering\DescriptorHeap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommandLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
@@ -156,6 +159,7 @@
     <ClInclude Include="Widgets\Split.h" />
     <ClInclude Include="Widgets\Viewport.h" />
     <ClInclude Include="Rendering\DescriptorHeap.h" />
+    <ClInclude Include="CommandLine.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
