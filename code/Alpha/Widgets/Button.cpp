@@ -81,8 +81,3 @@ bool Button::Handle(const Message& msg)
 
 	return false;
 }
-
-void Button::OnClick(const std::function<bool()>& callback)
-{
-	m_onClick = callback;
-}

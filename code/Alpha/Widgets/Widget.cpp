@@ -262,6 +262,11 @@ void Widget::OnMouseExit(const std::function<bool()>& callback)
 	m_onMouseExit = callback;
 }
 
+void Widget::OnClick(const std::function<bool()>& callback)
+{
+	m_onClick = callback;
+}
+
 void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const
 {
 	float width = static_cast<float>(m_size.x);
