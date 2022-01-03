@@ -181,8 +181,10 @@ void LoadTexture()
 }
 
 DirectX::XMVECTOR g_eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
-DirectX::XMVECTOR g_focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
+//DirectX::XMVECTOR g_focusPoint = DirectX::XMVectorSet(0, 0, 0, 1);
+DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(0, 0, 1, 1);
 DirectX::XMVECTOR g_upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
+DirectX::XMVECTOR g_euler = DirectX::XMVectorSet(0, 0, 0, 1);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -403,7 +405,9 @@ void Update()
 	g_model = DirectX::XMMatrixMultiply(g_model, rot);
 
 	// Update the view matrix.
-	g_view = DirectX::XMMatrixLookAtLH(g_eyePosition, g_focusPoint, g_upDirection);
+	DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(g_euler);
+	DirectX::XMVECTOR direction = DirectX::XMVector3Transform(g_direction, orientation);
+	g_view = DirectX::XMMatrixLookToLH(g_eyePosition, direction, g_upDirection);
 
 	// Update the projection matrix.
 	const DirectX::XMUINT2 gameResolution = g_pRenderModule->GetGameResolution();

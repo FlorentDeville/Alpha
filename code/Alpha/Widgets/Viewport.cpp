@@ -12,13 +12,16 @@
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
+#include <DirectXMath.h>
+using namespace DirectX;
 
 extern RenderModule* g_pRenderModule;
 extern PipelineStateId g_widgetViewportPsoId;
 extern TextureId g_textureId;
 
 extern DirectX::XMVECTOR g_eyePosition;
-extern DirectX::XMVECTOR g_focusPoint;
+extern DirectX::XMVECTOR g_euler;
+extern DirectX::XMVECTOR g_direction;
 
 namespace Widgets
 {
@@ -75,52 +78,48 @@ namespace Widgets
 		{
 		case M_MouseLDown:
 			g_pWidgetMgr->SetFocus(this);
+			m_previousMousePosition.x = msg.m_low.m_pos[0];
+			m_previousMousePosition.y = msg.m_low.m_pos[1];
 			return true;
 			break;
 
 		case M_KeyDown:
 		{
-			char c = (char)msg.m_high;
-			wchar_t buffer[256];
-			wsprintf(buffer, L"Viewport received key %c\n", c);
-			OutputDebugString(buffer);
-			
 			const float speed = 0.5f;
+
+			DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(g_euler);
+			DirectX::XMVECTOR direction = DirectX::XMVector3Transform(g_direction, orientation);
+			DirectX::XMVECTOR xAxis = speed * DirectX::XMVector3Transform(DirectX::XMVectorSet(1, 0, 0, 0), orientation);
+			DirectX::XMVECTOR zAxis = speed * DirectX::XMVector3Transform(DirectX::XMVectorSet(0, 0, 1, 0), orientation);
+			
+			char c = (char)msg.m_high;
 			switch (c)
 			{
 			case 'a':
 			case 'A':
 			{
-				DirectX::XMVECTOR offset = DirectX::XMVectorSet(-speed, 0, 0, 1);
-				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
-				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, -xAxis);
 			}
 				break;
 
 			case 'd':
 			case 'D':
 			{
-				DirectX::XMVECTOR offset = DirectX::XMVectorSet(speed, 0, 0, 1);
-				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
-				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, xAxis);
 			}
 				break;
 
 			case 'w':
 			case 'W':
 			{
-				DirectX::XMVECTOR offset = DirectX::XMVectorSet(0, 0, speed, 1);
-				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
-				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, zAxis);
 			}
 				break;
 
 			case 's':
 			case 'S':
 			{
-				DirectX::XMVECTOR offset = DirectX::XMVectorSet(0, 0, -speed, 1);
-				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, offset);
-				g_focusPoint = DirectX::XMVectorAdd(g_focusPoint, offset);
+				g_eyePosition = DirectX::XMVectorAdd(g_eyePosition, -zAxis);
 			}
 				break;
 			}
@@ -129,9 +128,31 @@ namespace Widgets
 		}
 		break;
 
+		case M_MouseMove:
+		{
+			if (msg.m_high == M_LButton)
+			{
+				float speed = 0.01f;
+				DirectX::XMINT2 dt;
+				dt.x = msg.m_low.m_pos[0] - m_previousMousePosition.x;
+				dt.y = msg.m_low.m_pos[1] - m_previousMousePosition.y;
+				
+				//For some reason the order is Roll/Pitch/Yaw instead of Pitch/Roll/Yaw
+				DirectX::XMVECTOR offset = DirectX::XMVectorSet(dt.y * speed, dt.x * speed , 0, 0);
+				g_euler = DirectX::XMVectorAdd(g_euler, offset);
+
+				m_previousMousePosition.x = msg.m_low.m_pos[0];
+				m_previousMousePosition.y = msg.m_low.m_pos[1];
+				return true;
+			}
+		}
+		break;
+
 		default:
 			return false;
 			break;
 		}
+
+		return false;
 	}
 }
