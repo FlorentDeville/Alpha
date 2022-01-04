@@ -155,6 +155,11 @@ void Widget::RemoveWidget(const Widget* pWidget)
 	m_children.erase(it);
 }
 
+void Widget::RemoveAllWidgets()
+{
+	m_children.clear();
+}
+
 void Widget::SetX(int32_t x)
 {
 	m_locPos.x = x;
@@ -199,6 +204,14 @@ int32_t Widget::GetX() const
 int32_t Widget::GetY() const
 {
 	return m_locPos.y;
+}
+
+DirectX::XMINT2 Widget::GetPosition() const
+{
+	DirectX::XMINT2 pos;
+	pos.x = m_locPos.x;
+	pos.y = m_locPos.y;
+	return pos;
 }
 
 DirectX::XMUINT2 Widget::GetSize() const
