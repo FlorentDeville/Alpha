@@ -78,6 +78,8 @@ private:
 	FontId m_segoeUIFontId;
 
 	void ComputeSortedWidgetQueue();
+
+	const Widget* GetFocusedWidget() const;
 };
 
 extern WidgetMgr* g_pWidgetMgr;

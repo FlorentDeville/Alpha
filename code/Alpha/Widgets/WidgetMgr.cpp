@@ -238,4 +238,9 @@ void WidgetMgr::ComputeSortedWidgetQueue()
 	std::sort(m_sortedWidgets.begin(), m_sortedWidgets.end(), [](Widget* pA, Widget* pB) { return pA->m_absPos.z > pB->m_absPos.z; });
 }
 
+const Widget* WidgetMgr::GetFocusedWidget() const
+{
+	return m_pFocusedWidget;
+}
+
 WidgetMgr* g_pWidgetMgr = nullptr;
