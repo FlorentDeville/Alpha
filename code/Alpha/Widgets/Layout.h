@@ -27,9 +27,12 @@ public:
 	bool Handle(const Message& msg) override;
 
 	void SetDirection(Direction dir);
+	void SetSpace(const DirectX::XMINT2& space);
 
 private:
 	Direction m_dir;
 
 	DirectX::XMUINT2 m_previousMousePosition;
+
+	DirectX::XMINT2 m_space; //space to add between widgets
 };

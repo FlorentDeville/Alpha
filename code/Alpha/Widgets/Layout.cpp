@@ -15,6 +15,9 @@ extern WidgetMgr* g_pWidgetMgr;
 
 Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 	: Widget(w, h, x ,y)
+	, m_space(0, 0)
+	, m_previousMousePosition(0, 0)
+	, m_dir(Layout::Direction::Horizontal)
 {}
 
 Layout::~Layout()
@@ -98,17 +101,17 @@ void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 		{
 		case Horizontal:
 			pWidget->SetX(pos);
-			pos = pWidget->GetX() + pWidget->GetWidth();
+			pos = pWidget->GetX() + pWidget->GetWidth() + m_space.x;
 			break;
 
 		case Horizontal_Reverse:
-			pos -= pWidget->GetWidth();
+			pos -= pWidget->GetWidth() - m_space.x;
 			pWidget->SetX(pos);
 			break;
 
 		case Vertical:
 			pWidget->SetY(pos);
-			pos = pWidget->GetY() + pWidget->GetHeight();
+			pos = pWidget->GetY() + pWidget->GetHeight() + m_space.y;
 			break;
 
 		default:
@@ -123,4 +126,9 @@ void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2&
 void Layout::SetDirection(Direction dir)
 {
 	m_dir = dir;
+}
+
+void Layout::SetSpace(const DirectX::XMINT2& space)
+{
+	m_space = space;
 }
