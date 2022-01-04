@@ -130,7 +130,7 @@ namespace Widgets
 
 		case M_MouseMove:
 		{
-			if (msg.m_high == M_LButton)
+			if (msg.m_high == M_LButton && g_pWidgetMgr->GetFocusedWidget() == this)
 			{
 				float speed = 0.01f;
 				DirectX::XMINT2 dt;
