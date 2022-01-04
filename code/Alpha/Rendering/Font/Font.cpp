@@ -68,7 +68,7 @@ FontChar* Font::GetChar(char c) const
 void Font::ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const
 {
     rect.x = 0;
-    rect.y = 0;
+    rect.y = m_lineHeight;
     char lastChar = -1; // no last character to start with
     for (int i = 0; i < text.size(); ++i)
     {
@@ -87,7 +87,6 @@ void Font::ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const
         if (i > 0)
             kerning = GetKerning(lastChar, c);
         rect.x += fc->m_xoffset + kerning + fc->m_xadvance;
-        rect.y = max(rect.y, fc->m_height);
 
         lastChar = c;
     }
@@ -146,7 +145,7 @@ void Font::LoadFntFile(const std::string& fntName)
     // get lineheight (how much to move down for each line), and normalize (between 0.0 and 1.0 based on size of font)
     fs >> tmp >> tmp; // common lineHeight=95
     startpos = tmp.find("=") + 1;
-    m_lineHeight = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowHeight;
+    m_lineHeight = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
     // get base height (height of all characters), and normalize (between 0.0 and 1.0 based on size of font)
     fs >> tmp; // base=68

@@ -61,7 +61,7 @@ public:
 
     std::string m_fontImage;
     int m_size; // size of font, lineheight and baseheight will be based on this as if this is a single unit (1.0)
-    float m_lineHeight; // how far to move down to next line, will be normalized
+    uint32_t m_lineHeight; // how far to move down to next line, will be normalized
     float m_baseHeight; // height of all characters, will be normalized
     int m_textureWidth; // width of the font texture
     int m_textureHeight; // height of the font texture
