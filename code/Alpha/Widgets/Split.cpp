@@ -76,6 +76,11 @@ bool Split::Handle(const Message& msg)
 
 	case M_MouseLUp:
 	{
+		ReleaseMouse();
+
+		if(!IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
+			g_pIconName = IDC_ARROW;
+
 		m_isDragged = false;
 		return true;
 	}
@@ -83,6 +88,8 @@ bool Split::Handle(const Message& msg)
 
 	case M_MouseLDown:
 	{
+		CaptureMouse();
+
 		m_isDragged = true;
 		m_previousCursorPosition = g_pWidgetMgr->GetCursorPosition();
 
