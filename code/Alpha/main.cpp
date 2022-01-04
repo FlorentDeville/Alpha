@@ -34,12 +34,14 @@
 
 #include "SysWindow.h"
 #include "Widgets/Button.h"
+#include "Widgets/Container.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Message.h"
 #include "Widgets/Split.h"
 #include "Widgets/Split3Way.h"
+#include "Widgets/Tab.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Window.h"
@@ -536,7 +538,7 @@ bool LoadContent()
 	return true;
 }
 
-void CreateMenuBar()
+void CreateMainWindow()
 {
 	Widgets::Window* pWindow = new Widgets::Window(DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
 	g_pWidgetMgr->SetRoot(pWindow);
@@ -545,10 +547,16 @@ void CreateMenuBar()
 	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pWindow->AddWidget(pSplit);
 
+	Widgets::Tab* pViewportTab = new Widgets::Tab("Game");
+	pSplit->AddMiddlePanel(pViewportTab);
+
 	Widgets::Viewport* pViewport = new Widgets::Viewport();
 	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-	pSplit->AddMiddlePanel(pViewport);
+	//pSplit->AddMiddlePanel(pViewport);
+	pViewportTab->AddWidget(pViewport);
 
+	//Widgets::Container* pTestContainer = new Widgets::Container();
+	//pViewportTab->AddWidget(pTestContainer);
 	g_pWidgetMgr->Resize();
 }
 
@@ -600,7 +608,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	LoadTexture();
 
-	CreateMenuBar();
+	CreateMainWindow();
 
 	HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
 	SetCursor(hCurs1);

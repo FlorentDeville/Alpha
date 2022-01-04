@@ -181,6 +181,7 @@
     <ClCompile Include="Widgets\Label.cpp" />
     <ClCompile Include="Widgets\Split.cpp" />
     <ClCompile Include="Widgets\Split3Way.cpp" />
+    <ClCompile Include="Widgets\Tab.cpp" />
     <ClCompile Include="Widgets\Viewport.cpp" />
     <ClCompile Include="Widgets\Widget.cpp" />
     <ClCompile Include="Widgets\WidgetMgr.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="Widgets\MessageId.h" />
     <ClInclude Include="Widgets\Split.h" />
     <ClInclude Include="Widgets\Split3Way.h" />
+    <ClInclude Include="Widgets\Tab.h" />
     <ClInclude Include="Widgets\Viewport.h" />
     <ClInclude Include="Widgets\Widget.h" />
     <ClInclude Include="Widgets\WidgetMgr.h" />
