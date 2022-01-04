@@ -57,13 +57,15 @@ public:
 	DirectX::XMINT2 GetCursorPosition() const;
 
 	void SetFocus(Widget* pWidget);
+	void CaptureMouse(Widget* pWidget);
 
 private:
 
 	std::set<Widget*> m_widgets;
 	std::deque<Widget*> m_sortedWidgets; //sorted from the deepest to the highest.
 
-	Widget* m_pFocusedWidget;
+	Widget* m_pFocusedWidget;	//Widget currently getting the focus. It will receive the keyboard event
+	Widget* m_pCapturedWidget;	//Widget current requesting to capture the mouse event.
 
  	Widget* m_pRoot;
 	

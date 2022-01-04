@@ -97,6 +97,9 @@ public:
 
 	bool IsInside(uint32_t screenX, uint32_t screenY) const;
 
+	void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
+	void ReleaseMouse();	//Stop receiving the mouse events
+
 	void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
 	void OnLeftMouseDown(const std::function<bool(int, int)>& callback);
 	void OnLeftMouseUp(const std::function<bool(int, int)>& callback);

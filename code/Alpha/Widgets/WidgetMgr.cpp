@@ -29,6 +29,7 @@ WidgetMgr::WidgetMgr()
 	, m_prevMouseX(0)
 	, m_prevMouseY(0)
 	, m_pFocusedWidget(nullptr)
+	, m_pCapturedWidget(nullptr)
 {}
 
 WidgetMgr::~WidgetMgr()
@@ -143,6 +144,14 @@ void WidgetMgr::Resize()
 
 void WidgetMgr::HandleMsg(const Message& msg)
 {
+	//Send first to the control who requested to capture events.
+	if (m_pCapturedWidget)
+	{
+		bool handled = m_pCapturedWidget->Handle(msg);
+		if (handled)
+			return;
+	}
+
 	switch (msg.m_id)
 	{
 	case M_MouseMove:
@@ -226,6 +235,17 @@ DirectX::XMINT2 WidgetMgr::GetCursorPosition() const
 void WidgetMgr::SetFocus(Widget* pWidget)
 {
 	m_pFocusedWidget = pWidget;
+}
+
+void WidgetMgr::CaptureMouse(Widget* pWidget)
+{
+	if (pWidget)
+	{
+		//You can have 2 widgets requesting to capture events
+		assert(!m_pCapturedWidget);
+	}
+
+	m_pCapturedWidget = pWidget;
 }
 
 void WidgetMgr::ComputeSortedWidgetQueue()

@@ -219,33 +219,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				g_pWidgetMgr->HandleMsg(msg);
 			}
 			break;
-			/*case VK_F11:
-				g_pWindow->ToggleFullscreen();
-				break;*/
-
-			//case VK_NUMPAD0:
-			//	g_perspectiveRendering = !g_perspectiveRendering;
-			//	break;
-
-			//case VK_UP:
-			//	//g_pButton->SetY(g_pButton->GetY() - 1);
-			//	break;
-
-			//case VK_DOWN:
-			//	//g_pButton->SetY(g_pButton->GetY() + 1);
-			//	break;
-
-			//case VK_LEFT:
-			//	//g_pButton->SetX(g_pButton->GetX() - 1);
-			//	break;
-
-			//case VK_RIGHT:
-			//	//g_pButton->SetX(g_pButton->GetX() + 1);
-			//	break;
-
-			/*default:
-				return ::DefWindowProcW(hWnd, message, wParam, lParam);
-				break;*/
 			}
 		}
 		break;
@@ -330,6 +303,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 	{
+		SetCapture(hWnd);
+
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
@@ -344,6 +319,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONUP:
 	{
+		ReleaseCapture();
+
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 

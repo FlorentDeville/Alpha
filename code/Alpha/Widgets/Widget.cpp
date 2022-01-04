@@ -237,6 +237,16 @@ bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
 	return false;
 }
 
+void Widget::CaptureMouse()
+{
+	g_pWidgetMgr->CaptureMouse(this);
+}
+
+void Widget::ReleaseMouse()
+{
+	g_pWidgetMgr->CaptureMouse(nullptr);
+}
+
 void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)
 {
 	m_onMouseMove = callback;
