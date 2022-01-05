@@ -25,6 +25,7 @@ Widget::Widget()
 	, m_hPositionStyle(HPOSITION_STYLE::NONE)
 	, m_vPositionStyle(VPOSITION_STYLE::NONE)
 	, m_name()
+	, m_enabled(true)
 {}
 
 Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -46,6 +47,9 @@ void Widget::Update()
 
 void Widget::Draw()
 {
+	if (!IsEnabled())
+		return;
+
 	for (Widget* pChild : m_children)
 		pChild->Draw();
 }
@@ -160,6 +164,20 @@ void Widget::RemoveAllWidgets()
 	m_children.clear();
 }
 
+void Widget::Enable()
+{
+	m_enabled = true;
+	for (Widget* pWidget : m_children)
+		pWidget->Enable();
+}
+
+void Widget::Disable()
+{
+	m_enabled = false;
+	for (Widget* pWidget : m_children)
+		pWidget->Disable();
+}
+
 void Widget::SetX(int32_t x)
 {
 	m_locPos.x = x;
@@ -248,6 +266,11 @@ bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
 	}
 
 	return false;
+}
+
+bool Widget::IsEnabled() const
+{
+	return m_enabled;
 }
 
 void Widget::CaptureMouse()

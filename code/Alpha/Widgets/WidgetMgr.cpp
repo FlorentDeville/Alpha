@@ -126,7 +126,7 @@ void WidgetMgr::Update()
 
 void WidgetMgr::Draw()
 {
-	if(m_pRoot)
+	if(m_pRoot && m_pRoot->IsEnabled())
 		m_pRoot->Draw();
 }
 
@@ -159,6 +159,8 @@ void WidgetMgr::HandleMsg(const Message& msg)
 		for(std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
 		{
 			Widget* pWidget = *it;
+			if (!pWidget->IsEnabled())
+				continue;
 
 			bool handled = false;
 			if(pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
@@ -202,6 +204,9 @@ void WidgetMgr::HandleMsg(const Message& msg)
 		for (std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
 		{
 			Widget* pWidget = *it;
+			if (!pWidget->IsEnabled())
+				continue;
+
 			if (!pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
 				continue;
 

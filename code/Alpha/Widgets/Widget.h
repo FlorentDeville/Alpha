@@ -74,6 +74,9 @@ public:
 	virtual void RemoveWidget(const Widget* pWidget);
 	virtual void RemoveAllWidgets();
 
+	virtual void Enable();
+	virtual void Disable();
+
 	void SetX(int32_t x);
 	void SetY(int32_t y);
 
@@ -98,6 +101,7 @@ public:
 	uint32_t GetHeight() const;
 
 	bool IsInside(uint32_t screenX, uint32_t screenY) const;
+	bool IsEnabled() const;
 
 	void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
 	void ReleaseMouse();	//Stop receiving the mouse events
@@ -119,6 +123,7 @@ protected:
 	int m_borderWidth;
 	
 	bool m_hover;	//Indicate if the mouse is hovering the widget;
+	bool m_enabled;	//If a widget is disabled, it is not rendered and doesn't receive messages
 
 	std::vector<Widget*> m_children;
 
