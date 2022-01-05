@@ -103,11 +103,10 @@ public:
 	void ReleaseMouse();	//Stop receiving the mouse events
 
 	void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
-	void OnLeftMouseDown(const std::function<bool(int, int)>& callback);
 	void OnLeftMouseUp(const std::function<bool(int, int)>& callback);
 	void OnMouseEnter(const std::function<bool()>& callback);
 	void OnMouseExit(const std::function<bool()>& callback);
-	void OnClick(const std::function<bool()>& callback);
+	void OnClick(const std::function<bool(int, int)>& callback);
 
 protected:
 	DirectX::XMUINT2 m_size; //width and height in pixels
@@ -128,11 +127,10 @@ protected:
 	VPOSITION_STYLE m_vPositionStyle;
 
 	std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
-	std::function<bool(int x, int y)>			m_onLeftMouseDown;
 	std::function<bool(int x, int y)>			m_onLeftMouseUp;
 	std::function<bool()>						m_onMouseEnter;
 	std::function<bool()>						m_onMouseExit;
-	std::function<bool()>						m_onClick;
+	std::function<bool(int x, int y)>			m_onClick;
 
 	std::string m_name;
 

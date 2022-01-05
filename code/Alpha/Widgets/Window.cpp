@@ -41,7 +41,7 @@ Window::Window(DirectX::XMUINT2 size)
 	Layout* pLayout = new Layout(1000, menuBarHeight, 0, 0);
 	pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 	pLayout->SetDirection(Layout::Horizontal);
-	pLayout->OnLeftMouseDown([this](int /*x*/, int /*y*/) -> bool 
+	pLayout->OnClick([this](int, int) -> bool 
 	{
 		m_drag = true;
 		m_previousMousePosition = g_pWidgetMgr->GetCursorPosition();
@@ -87,7 +87,7 @@ Window::Window(DirectX::XMUINT2 size)
 	const Font* pFont = g_pFontMgr->GetResource(g_pWidgetMgr->GetUIFontId());
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton1 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
-	pButton1->OnClick([]() -> bool {
+	pButton1->OnClick([](int, int) -> bool {
 		OutputDebugString(L"Click on File button\n");
 		return true;
 		});
@@ -100,7 +100,7 @@ Window::Window(DirectX::XMUINT2 size)
 	fileText = "Edit";
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton2 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
-	pButton2->OnClick([]() -> bool {
+	pButton2->OnClick([](int, int) -> bool {
 		OutputDebugString(L"Click on Edit button\n");
 		return true;
 		});
@@ -111,7 +111,7 @@ Window::Window(DirectX::XMUINT2 size)
 	fileText = "Window";
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton3 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
-	pButton3->OnClick([]() -> bool {
+	pButton3->OnClick([](int, int) -> bool {
 		OutputDebugString(L"Click on Window button\n");
 		return true;
 		});
@@ -129,7 +129,7 @@ Window::Window(DirectX::XMUINT2 size)
 	Icon* pCloseIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_close_16.png");
 	pCloseIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pCloseButton->AddWidget(pCloseIcon);
-	pCloseButton->OnClick([]()-> bool {
+	pCloseButton->OnClick([](int, int)-> bool {
 		OutputDebugString(L"Click on close button\n");
 		SendMessage(g_pWindow->GetWindowHandle(), WM_DESTROY, 0, 0);
 		return true;
@@ -143,7 +143,7 @@ Window::Window(DirectX::XMUINT2 size)
 	Icon* pRestoreIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_restore_16.png");
 	pRestoreIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pMaxButton->AddWidget(pMaxIcon);
-	pMaxButton->OnClick([this, pMaxButton, pMaxIcon, pRestoreIcon]()-> bool {
+	pMaxButton->OnClick([this, pMaxButton, pMaxIcon, pRestoreIcon](int, int)-> bool {
 		OutputDebugString(L"Click on maximize/restore button\n");
 		if (m_isMaximized)
 		{
@@ -168,7 +168,7 @@ Window::Window(DirectX::XMUINT2 size)
 	Icon* pMinIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_minimize_16.png");
 	pMinIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pMinButton->AddWidget(pMinIcon);
-	pMinButton->OnClick([]()-> bool {
+	pMinButton->OnClick([](int, int)-> bool {
 		OutputDebugString(L"Click on minimize button\n");
 		ShowWindow(g_pWindow->GetWindowHandle(), SW_SHOWMINIMIZED);
 		return true;

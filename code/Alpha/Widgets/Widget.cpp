@@ -115,8 +115,8 @@ bool Widget::Handle(const Message& msg)
 	switch(msg.m_id)
 	{
 	case M_MouseLDown:
-		if (m_onLeftMouseDown)
-			return m_onLeftMouseDown(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+		if (m_onClick)
+			return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
 		break;
 
 	case M_MouseLUp:
@@ -265,11 +265,6 @@ void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback
 	m_onMouseMove = callback;
 }
 
-void Widget::OnLeftMouseDown(const std::function<bool(int, int)>& callback)
-{
-	m_onLeftMouseDown = callback;
-}
-
 void Widget::OnLeftMouseUp(const std::function<bool(int, int)>& callback)
 {
 	m_onLeftMouseUp = callback;
@@ -285,7 +280,7 @@ void Widget::OnMouseExit(const std::function<bool()>& callback)
 	m_onMouseExit = callback;
 }
 
-void Widget::OnClick(const std::function<bool()>& callback)
+void Widget::OnClick(const std::function<bool(int, int)>& callback)
 {
 	m_onClick = callback;
 }

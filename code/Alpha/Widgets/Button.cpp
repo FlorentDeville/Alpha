@@ -69,15 +69,8 @@ bool Button::Handle(const Message& msg)
 	}
 	break;
 
-	case M_MouseLDown:
-	{
-		if (m_onClick)
-			return m_onClick();
-
-		return false;
+	default:
+		return Widget::Handle(msg);
+		break;
 	}
-	break;
-	}
-
-	return false;
 }
