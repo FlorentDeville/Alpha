@@ -112,6 +112,9 @@
     <ClCompile Include="Widgets\Tab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Widgets\TabContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
@@ -164,6 +167,7 @@
     <ClInclude Include="Rendering\DescriptorHeap.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Widgets\Tab.h" />
+    <ClInclude Include="Widgets\TabContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">

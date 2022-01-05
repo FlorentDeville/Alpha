@@ -42,6 +42,7 @@
 #include "Widgets/Split.h"
 #include "Widgets/Split3Way.h"
 #include "Widgets/Tab.h"
+#include "Widgets/TabContainer.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Window.h"
@@ -547,16 +548,24 @@ void CreateMainWindow()
 	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pWindow->AddWidget(pSplit);
 
-	Widgets::Tab* pViewportTab = new Widgets::Tab("Game");
-	pSplit->AddMiddlePanel(pViewportTab);
+	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
+	pSplit->AddMiddlePanel(pMiddleTabContainer);
+
+	Widgets::Tab* pDummyTab1 = new Widgets::Tab();
+	pMiddleTabContainer->AddTab("Dumb", pDummyTab1);
+
+	Widgets::Tab* pViewportTab = new Widgets::Tab();
+	pMiddleTabContainer->AddTab("Game", pViewportTab);
+
+	Widgets::Tab* pDummyTab2 = new Widgets::Tab();
+	pMiddleTabContainer->AddTab("Dumber", pDummyTab2);
+
+	pMiddleTabContainer->SetSelectedTab(1);
 
 	Widgets::Viewport* pViewport = new Widgets::Viewport();
 	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-	//pSplit->AddMiddlePanel(pViewport);
 	pViewportTab->AddWidget(pViewport);
 
-	//Widgets::Container* pTestContainer = new Widgets::Container();
-	//pViewportTab->AddWidget(pTestContainer);
 	g_pWidgetMgr->Resize();
 }
 

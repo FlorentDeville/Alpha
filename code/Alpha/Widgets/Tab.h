@@ -8,20 +8,18 @@
 
 //class Label;
 class Layout;
-class Container;
 
 namespace Widgets
 {
+	class Container;
+
 	class Tab : public Widget
 	{
 	public:
-		Tab(const std::string& title);
+		Tab();
 		~Tab();
 
-		void AddWidget(Widget* pWidget) override;
+		bool Handle(const Message& msg) override;
 
-	private:
-		const std::string m_title;
-		Layout* m_pInternalLayout;
 	};
 }
