@@ -5,7 +5,7 @@
 #include "Rendering/Font/Font.h"
 
 #include "Rendering/RenderModule.h"
-#include "Helper.h"
+#include "Core/Helper.h"
 
 #include <fstream>
 

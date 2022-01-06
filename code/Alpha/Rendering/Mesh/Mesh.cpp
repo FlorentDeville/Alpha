@@ -8,7 +8,7 @@
 
 #include "Rendering/CommandQueue.h"
 #include "Rendering/RenderModule.h"
-#include "Helper.h"
+#include "Core/Helper.h"
 
 
 extern RenderModule* g_pRenderModule;

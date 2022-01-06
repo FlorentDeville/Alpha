@@ -6,7 +6,7 @@
 
 #include <d3dcompiler.h>
 
-#include "Helper.h"
+#include "Core/Helper.h"
 #include "Rendering/RenderModule.h"
 
 extern RenderModule* g_pRenderModule;

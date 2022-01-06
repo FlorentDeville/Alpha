@@ -22,9 +22,6 @@
     <ClCompile Include="Rendering\CommandQueue.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
-    <ClCompile Include="Helper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SysWindow.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
@@ -103,9 +100,6 @@
     <ClCompile Include="Rendering\DescriptorHeap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CommandLine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Widgets\Tab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -116,9 +110,6 @@
   <ItemGroup>
     <ClInclude Include="Rendering\CommandQueue.h">
       <Filter>gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="Helper.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="SysWindow.h">
       <Filter>gfx</Filter>
@@ -160,7 +151,6 @@
     <ClInclude Include="Widgets\Split.h" />
     <ClInclude Include="Widgets\Viewport.h" />
     <ClInclude Include="Rendering\DescriptorHeap.h" />
-    <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Widgets\Tab.h" />
     <ClInclude Include="Widgets\TabContainer.h" />
   </ItemGroup>

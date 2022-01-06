@@ -5,7 +5,7 @@
 #include "Shader.h"
 
 #include <d3dcompiler.h>
-#include "Helper.h"
+#include "Core/Helper.h"
 
 Shader::Shader(const std::string& path)
 	: m_pBlob(nullptr)

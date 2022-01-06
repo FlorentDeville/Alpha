@@ -4,7 +4,7 @@
 
 #include "Rendering/Texture/Texture.h"
 
-#include "Helper.h"
+#include "Core/Helper.h"
 #include "Rendering/CommandQueue.h"
 #include "Rendering/RenderModule.h"
 

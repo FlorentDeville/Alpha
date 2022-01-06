@@ -4,7 +4,7 @@
 
 #include "Rendering/DescriptorHeap.h"
 
-#include "Helper.h"
+#include "Core/Helper.h"
 
 #include <d3dx12.h>
 

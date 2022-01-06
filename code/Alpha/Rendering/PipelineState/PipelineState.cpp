@@ -7,7 +7,7 @@
 #include <d3d12.h>
 #include <d3dx12.h>
 
-#include "Helper.h"
+#include "Core/Helper.h"
 #include "Rendering/InputLayout/InputLayout.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"

@@ -12,7 +12,7 @@
 #include <DirectXMath.h>
 
 #include "CommandQueue.h"
-#include "Helper.h"
+#include "Core/Helper.h"
 
 #include "Rendering/Mesh/Mesh.h"
 

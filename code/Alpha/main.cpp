@@ -17,8 +17,8 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 
-#include "CommandLine.h"
-#include "Helper.h"
+#include "Core/CommandLine.h"
+#include "Core/Helper.h"
 
 #include "Rendering/CommandQueue.h"
 #include "Rendering/Font/Font.h"

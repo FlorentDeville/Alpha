@@ -155,9 +155,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Rendering\CommandQueue.cpp" />
-    <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rendering\DescriptorHeap.cpp" />
     <ClCompile Include="Rendering\Font\Font.cpp" />
@@ -189,9 +187,7 @@
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Rendering\CommandQueue.h" />
-    <ClInclude Include="Helper.h" />
     <ClInclude Include="Rendering\DescriptorHeap.h" />
     <ClInclude Include="Rendering\Font\Font.h" />
     <ClInclude Include="Rendering\InputLayout\InputLayout.h" />
