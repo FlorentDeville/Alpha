@@ -47,7 +47,7 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Window.h"
 
-#include "Resource/ResourceMgr.h"
+#include "Core/Resource/ResourceMgr.h"
 
 bool g_VSync;
 

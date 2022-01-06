@@ -7,9 +7,9 @@
 #include <string>
 
 #include "Rendering/Texture/Texture.h"
-#include "Resource/Resource.h"
+#include "Core/Resource/Resource.h"
 
-#include "Resource/ResourceMgr.h"
+#include "Core/Resource/ResourceMgr.h"
 
 #include <DirectXMath.h>
 

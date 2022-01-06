@@ -6,7 +6,7 @@
 
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/ShaderId.h"
-#include "Resource/ResourceMgr.h"
+#include "Core/Resource/ResourceMgr.h"
 
 #include <d3d12.h>
 

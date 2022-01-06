@@ -173,7 +173,6 @@
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Rendering\ShaderMgr.cpp" />
     <ClCompile Include="Rendering\Texture\Texture.cpp" />
-    <ClCompile Include="Resource\Resource.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
     <ClCompile Include="Widgets\Container.cpp" />
     <ClCompile Include="Widgets\Layout.cpp" />
@@ -211,8 +210,6 @@
     <ClInclude Include="Rendering\ShaderId.h" />
     <ClInclude Include="Rendering\ShaderMgr.h" />
     <ClInclude Include="Rendering\Texture\Texture.h" />
-    <ClInclude Include="Resource\Resource.h" />
-    <ClInclude Include="Resource\ResourceMgr.h" />
     <ClInclude Include="Widgets\Button.h" />
     <ClInclude Include="Widgets\Container.h" />
     <ClInclude Include="Widgets\Layout.h" />
@@ -350,6 +347,11 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RootSignature</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RootSignature</ShaderType>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{4586120c-fb2d-4271-bb5d-7e160dfd6437}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

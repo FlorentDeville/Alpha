@@ -76,9 +76,6 @@
     <ClCompile Include="Rendering\Texture\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Resource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Rendering\Font\Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -154,8 +151,6 @@
     <ClInclude Include="Widgets\Message.h" />
     <ClInclude Include="Widgets\MessageId.h" />
     <ClInclude Include="Rendering\Texture\Texture.h" />
-    <ClInclude Include="Resource\Resource.h" />
-    <ClInclude Include="Resource\ResourceMgr.h" />
     <ClInclude Include="Rendering\Font\Font.h" />
     <ClInclude Include="Widgets\Label.h" />
     <ClInclude Include="Widgets\Icon.h" />

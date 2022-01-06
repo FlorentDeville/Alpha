@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "Resource/Resource.h"
+#include "Core/Resource/Resource.h"
 
 //Resource id name
 #define RESOURCE_ID(ResType) ResType##Id

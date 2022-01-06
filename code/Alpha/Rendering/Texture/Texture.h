@@ -7,8 +7,8 @@
 #include <string>
 #include <d3d12.h>
 
-#include "Resource/Resource.h"
-#include "Resource/ResourceMgr.h"
+#include "Core/Resource/Resource.h"
+#include "Core/Resource/ResourceMgr.h"
 
 struct ID3D12Resource;
 
