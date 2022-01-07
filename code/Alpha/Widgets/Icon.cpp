@@ -9,8 +9,6 @@
 
 #include "Widgets/WidgetMgr.h"
 
-extern WidgetMgr* g_pWidgetMgr;
-
 Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
 	: Widget(size.x, size.y, pos.x, pos.y)
 {
@@ -26,7 +24,7 @@ void Icon::Draw()
 	DirectX::XMMATRIX wvp;
 	ComputeWVPMatrix(wvp);
 
-	const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_pWidgetMgr->m_iconRenderableId);
+	const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_iconRenderableId);
 	g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
 	g_pRenderModule->SetConstantBuffer(0, sizeof(wvp), &wvp, 0);

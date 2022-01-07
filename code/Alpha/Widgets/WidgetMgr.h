@@ -12,6 +12,8 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
 
+#include "Singleton.h"
+
 struct Message;
 class Widget;
 
@@ -22,7 +24,7 @@ namespace Widgets
 	class Viewport;
 }
 
-class WidgetMgr
+class WidgetMgr : public Core::Singleton<WidgetMgr>
 {
 	friend class Button;
 	friend class Widgets::Container;
@@ -83,5 +85,3 @@ private:
 
 	const Widget* GetFocusedWidget() const;
 };
-
-extern WidgetMgr* g_pWidgetMgr;

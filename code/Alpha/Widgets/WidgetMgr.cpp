@@ -267,5 +267,3 @@ const Widget* WidgetMgr::GetFocusedWidget() const
 {
 	return m_pFocusedWidget;
 }
-
-WidgetMgr* g_pWidgetMgr = nullptr;

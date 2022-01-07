@@ -33,7 +33,7 @@ void Split::Draw()
 
 	DirectX::XMVECTOR color = DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1);
 
-	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_pWidgetMgr->m_widgetRenderableId);
+	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
 	g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
 	g_pRenderModule->SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
@@ -91,7 +91,7 @@ bool Split::Handle(const Message& msg)
 		CaptureMouse();
 
 		m_isDragged = true;
-		m_previousCursorPosition = g_pWidgetMgr->GetCursorPosition();
+		m_previousCursorPosition = WidgetMgr::Get().GetCursorPosition();
 
 		g_pIconName = IDC_SIZEWE;
 		return true;

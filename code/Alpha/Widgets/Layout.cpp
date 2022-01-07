@@ -11,7 +11,6 @@
 //#include "Window.h"
 //extern Window* g_pWindow;
 extern RenderModule* g_pRenderModule;
-extern WidgetMgr* g_pWidgetMgr;
 
 Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 	: Widget(w, h, x ,y)
@@ -31,7 +30,7 @@ void Layout::Draw()
 	float rect[2] = { (float)m_size.x, (float)m_size.y};
 
 	{
-		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_pWidgetMgr->m_widgetRenderableId);
+		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
 		g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
 		g_pRenderModule->SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &wvp, 0);

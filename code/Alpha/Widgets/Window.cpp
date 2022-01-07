@@ -17,7 +17,6 @@
 
 extern std::string g_dataRoot;
 extern SysWindow* g_pWindow;
-extern WidgetMgr* g_pWidgetMgr;
 
 namespace Widgets
 {
@@ -44,7 +43,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pLayout->OnClick([this](int, int) -> bool 
 	{
 		m_drag = true;
-		m_previousMousePosition = g_pWidgetMgr->GetCursorPosition();
+		m_previousMousePosition = WidgetMgr::Get().GetCursorPosition();
 		return true;
 		});
 
@@ -84,7 +83,7 @@ Window::Window(DirectX::XMUINT2 size)
 	//File button
 	std::string fileText = "File";
 	DirectX::XMUINT2 textSize;
-	const Font* pFont = g_pFontMgr->GetResource(g_pWidgetMgr->GetUIFontId());
+	const Font* pFont = g_pFontMgr->GetResource(WidgetMgr::Get().GetUIFontId());
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton1 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton1->OnClick([](int, int) -> bool {
@@ -194,7 +193,7 @@ void Window::Update()
 	if (!m_drag)
 		return;
 
-	DirectX::XMINT2 m_currentMousePosition = g_pWidgetMgr->GetCursorPosition();
+	DirectX::XMINT2 m_currentMousePosition = WidgetMgr::Get().GetCursorPosition();
 
 	int dtX = m_currentMousePosition.x - m_previousMousePosition.x;
 	int dtY = m_currentMousePosition.y - m_previousMousePosition.y;

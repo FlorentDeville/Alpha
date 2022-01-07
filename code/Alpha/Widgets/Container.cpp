@@ -9,8 +9,6 @@
 
 #include "Widgets/WidgetMgr.h"
 
-extern WidgetMgr* g_pWidgetMgr;
-
 namespace Widgets
 {
 	Container::Container()
@@ -33,7 +31,7 @@ namespace Widgets
 
 		DirectX::XMVECTOR color = m_backgroundColor;
 
-		Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_pWidgetMgr->m_widgetRenderableId);
+		Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
 		g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
 		g_pRenderModule->SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);

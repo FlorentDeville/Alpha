@@ -34,7 +34,7 @@ namespace Widgets
 
 	void Viewport::Draw()
 	{
-		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_pWidgetMgr->m_widgetRenderableId);
+		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
 		const PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(g_widgetViewportPsoId);
 		RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
 		const Mesh* pMesh = g_pMeshMgr->GetMesh(pRenderable->GetMeshId());
@@ -77,7 +77,7 @@ namespace Widgets
 		switch(msg.m_id)
 		{
 		case M_MouseLDown:
-			g_pWidgetMgr->SetFocus(this);
+			WidgetMgr::Get().SetFocus(this);
 			m_previousMousePosition.x = msg.m_low.m_pos[0];
 			m_previousMousePosition.y = msg.m_low.m_pos[1];
 			return true;
@@ -130,7 +130,7 @@ namespace Widgets
 
 		case M_MouseMove:
 		{
-			if (msg.m_high == M_LButton && g_pWidgetMgr->GetFocusedWidget() == this)
+			if (msg.m_high == M_LButton && WidgetMgr::Get().GetFocusedWidget() == this)
 			{
 				float speed = 0.01f;
 				DirectX::XMINT2 dt;

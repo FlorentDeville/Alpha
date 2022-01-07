@@ -153,6 +153,7 @@
     <ClInclude Include="Rendering\DescriptorHeap.h" />
     <ClInclude Include="Widgets\Tab.h" />
     <ClInclude Include="Widgets\TabContainer.h" />
+    <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">

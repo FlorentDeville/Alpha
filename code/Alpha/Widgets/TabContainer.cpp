@@ -51,7 +51,7 @@ namespace Widgets
 
 	void TabContainer::AddTab(const std::string& header, Tab* pTab)
 	{
-		const Font* pFont = g_pFontMgr->GetResource(g_pWidgetMgr->GetUIFontId());
+		const Font* pFont = g_pFontMgr->GetResource(WidgetMgr::Get().GetUIFontId());
 		DirectX::XMUINT2 textRect;
 		pFont->ComputeRect(header, textRect);
 

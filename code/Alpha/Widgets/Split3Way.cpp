@@ -56,7 +56,7 @@ namespace Widgets
 
 		if (m_pLeftSplit->IsDragged())
 		{
-			DirectX::XMINT2 currentMousePosition = g_pWidgetMgr->GetCursorPosition();
+			DirectX::XMINT2 currentMousePosition = WidgetMgr::Get().GetCursorPosition();
 
 			DirectX::XMINT2 dt;
 			dt.x = currentMousePosition.x - m_pLeftSplit->GetPreviousCursorPosition().x;
@@ -89,14 +89,14 @@ namespace Widgets
 			m_pLeftContainer->SetSize(leftContainerSize);
 			m_pMiddleContainer->SetSize(middleContainerSize);
 
-			g_pWidgetMgr->Resize();
+			WidgetMgr::Get().Resize();
 
 			m_pLeftSplit->SetPreviousCursorPosition(currentMousePosition);
 		}
 
 		if (m_pRightSplit->IsDragged())
 		{
-			DirectX::XMINT2 currentMousePosition = g_pWidgetMgr->GetCursorPosition();
+			DirectX::XMINT2 currentMousePosition = WidgetMgr::Get().GetCursorPosition();
 
 			DirectX::XMINT2 dt;
 			dt.x = currentMousePosition.x - m_pRightSplit->GetPreviousCursorPosition().x;
@@ -126,7 +126,7 @@ namespace Widgets
 
 			m_pMiddleContainer->SetSize(middleContainerSize);
 
-			g_pWidgetMgr->Resize();
+			WidgetMgr::Get().Resize();
 
 			m_pRightSplit->SetPreviousCursorPosition(currentMousePosition);
 		}

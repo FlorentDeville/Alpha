@@ -147,7 +147,7 @@ bool Widget::Handle(const Message& msg)
 void Widget::AddWidget(Widget* pWidget)
 {
 	m_children.push_back(pWidget);
-	g_pWidgetMgr->RegisterWidget(pWidget);
+	WidgetMgr::Get().RegisterWidget(pWidget);
 }
 
 void Widget::RemoveWidget(const Widget* pWidget)
@@ -275,12 +275,12 @@ bool Widget::IsEnabled() const
 
 void Widget::CaptureMouse()
 {
-	g_pWidgetMgr->CaptureMouse(this);
+	WidgetMgr::Get().CaptureMouse(this);
 }
 
 void Widget::ReleaseMouse()
 {
-	g_pWidgetMgr->CaptureMouse(nullptr);
+	WidgetMgr::Get().CaptureMouse(nullptr);
 }
 
 void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)

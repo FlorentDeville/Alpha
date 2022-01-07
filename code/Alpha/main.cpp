@@ -219,7 +219,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				Message msg;
 				msg.m_id = M_KeyDown;
 				msg.m_high = wParam;
-				g_pWidgetMgr->HandleMsg(msg);
+				WidgetMgr::Get().HandleMsg(msg);
 			}
 			break;
 			}
@@ -247,7 +247,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			g_pWindow->Resize(uwidth, uheight);
 			g_pRenderModule->ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
-			g_pWidgetMgr->Resize();
+			WidgetMgr::Get().Resize();
 		}
 
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
@@ -272,7 +272,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			g_pWindow->Resize(uwidth, uheight);
 			g_pRenderModule->ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
-			g_pWidgetMgr->Resize();
+			WidgetMgr::Get().Resize();
 		}
 
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
@@ -300,7 +300,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 		}
 		
-		g_pWidgetMgr->HandleMsg(msg);
+		WidgetMgr::Get().HandleMsg(msg);
 	}
 		break;
 
@@ -316,7 +316,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[0] = x;
 		msg.m_low.m_pos[1] = y;
 
-		g_pWidgetMgr->HandleMsg(msg);
+		WidgetMgr::Get().HandleMsg(msg);
 	}
 	break;
 
@@ -332,7 +332,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[0] = x;
 		msg.m_low.m_pos[1] = y;
 
-		g_pWidgetMgr->HandleMsg(msg);
+		WidgetMgr::Get().HandleMsg(msg);
 	}
 
 	case WM_SETCURSOR:
@@ -410,7 +410,7 @@ void Update()
 		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
 	}
 
-	g_pWidgetMgr->Update();
+	WidgetMgr::Get().Update();
 }
 
 void Render()
@@ -461,7 +461,7 @@ void Render()
 	// Render the widgets
 	//if(false)
 	{
-		g_pWidgetMgr->Draw();
+		WidgetMgr::Get().Draw();
 	}
 
 	g_pRenderModule->RenderAllText();
@@ -542,7 +542,7 @@ bool LoadContent()
 void CreateMainWindow()
 {
 	Widgets::Window* pWindow = new Widgets::Window(DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
-	g_pWidgetMgr->SetRoot(pWindow);
+	WidgetMgr::Get().SetRoot(pWindow);
 
 	Widgets::Split3Way* pSplit = new Widgets::Split3Way();
 	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
@@ -566,7 +566,7 @@ void CreateMainWindow()
 	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pViewportTab->AddWidget(pViewport);
 
-	g_pWidgetMgr->Resize();
+	WidgetMgr::Get().Resize();
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR lpCmdLine, _In_ int /*nCmdShow*/)
@@ -608,8 +608,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
 	g_pRenderableMgr = new RenderableMgr();
-	g_pWidgetMgr = new WidgetMgr();
-	g_pWidgetMgr->Init();
+
+	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
+	widgetMgr.Init();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -641,9 +642,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pPipelineStateMgr->Release();
 	g_pFontMgr->Release();
 
+	WidgetMgr::ReleaseSingleton();
+
 	delete g_pFontMgr;
 	delete g_pTextureMgr;
-	delete g_pWidgetMgr;
 	delete g_pRenderableMgr;
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;

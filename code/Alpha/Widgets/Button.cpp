@@ -11,7 +11,6 @@
 #include "Widgets/WidgetMgr.h"
 
 extern RenderModule* g_pRenderModule;
-extern WidgetMgr* g_pWidgetMgr;
 
 Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 	: Widget(w, h, x, y)
@@ -29,7 +28,7 @@ void Button::Draw()
 	if(m_hover)
 		color = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
 
-	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(g_pWidgetMgr->m_widgetRenderableId);
+	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
 	g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
 	g_pRenderModule->SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
