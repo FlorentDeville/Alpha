@@ -16,7 +16,6 @@
 using namespace DirectX;
 
 extern RenderModule* g_pRenderModule;
-extern PipelineStateId g_widgetViewportPsoId;
 extern TextureId g_textureId;
 
 extern DirectX::XMVECTOR g_eyePosition;
@@ -35,7 +34,7 @@ namespace Widgets
 	void Viewport::Draw()
 	{
 		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
-		const PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(g_widgetViewportPsoId);
+		const PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(WidgetMgr::Get().m_widgetViewportPsoId);
 		RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
 		const Mesh* pMesh = g_pMeshMgr->GetMesh(pRenderable->GetMeshId());
 		Texture* pTexture = g_pTextureMgr->GetResource(g_pRenderModule->GetRenderTextureId());

@@ -41,6 +41,8 @@ public:
 
 	void Init();
 
+	void Release();
+
 	void RegisterWidget(Widget* pWidget);
 
 	void SetRoot(Widget* pRoot);
@@ -77,6 +79,7 @@ private:
 	//Ids of resources used to render widgets
 	MeshId m_quadMeshId;
 	PipelineStateId m_widgetPsoId;
+	PipelineStateId m_widgetViewportPsoId;
 	RenderableId m_widgetRenderableId;
 	RenderableId m_iconRenderableId;
 	FontId m_segoeUIFontId;

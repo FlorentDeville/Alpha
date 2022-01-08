@@ -30,6 +30,7 @@ WidgetMgr::WidgetMgr()
 	, m_prevMouseY(0)
 	, m_pFocusedWidget(nullptr)
 	, m_pCapturedWidget(nullptr)
+	, m_widgetViewportPsoId()
 {}
 
 WidgetMgr::~WidgetMgr()
@@ -105,6 +106,21 @@ void WidgetMgr::Init()
 
 		m_iconRenderableId = g_pRenderableMgr->CreateRenderable(m_quadMeshId, texture_posuv_pipelineStateId);
 	}
+
+	//Renderable for viewports
+	{
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\widget_viewport.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.ps.cso");
+
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(m_widgetViewportPsoId, "widget_viewport");
+		pPipelineState->Init_PosUv(rsId, vsId, psId);
+	}
+}
+
+void WidgetMgr::Release()
+{
+	g_pPipelineStateMgr->ReleaseResource(m_widgetViewportPsoId);
 }
 
 void WidgetMgr::RegisterWidget(Widget* pWidget)
