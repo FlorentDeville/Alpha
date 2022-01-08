@@ -80,7 +80,7 @@ void WidgetMgr::Init()
 	//Font for label
 	{
 		std::string fontFilename = g_dataRoot + "\\fonts\\segoeUI.fnt";
-		Font* pFont = g_pFontMgr->CreateResource(m_segoeUIFontId, fontFilename);
+		Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontFilename);
 		pFont->Init(fontFilename);
 
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\text.rs.cso");

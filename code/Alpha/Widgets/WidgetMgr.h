@@ -7,10 +7,12 @@
 #include <deque>
 #include <set>
 
+
 #include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
+#include "Rendering/RenderModule.h"
 
 #include "Core/Singleton.h"
 

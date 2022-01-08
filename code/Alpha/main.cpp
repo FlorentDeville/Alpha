@@ -507,7 +507,7 @@ bool LoadContent()
 	{
 		{
 			std::string fontFilename = g_dataRoot + "\\fonts\\comicSansMs.fnt";
-			Font* pFont = g_pFontMgr->CreateResource(g_comicSansMsFontId, fontFilename);
+			Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(g_comicSansMsFontId, fontFilename);
 			pFont->Init(fontFilename);
 		}
 
@@ -571,9 +571,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	size_t lastSlash = g_shaderRoot.find_last_of('\\');
 	g_shaderRoot = g_shaderRoot.substr(0, lastSlash);
 
-	g_pFontMgr = new RESOURCE_MGR(Font);
-	g_pFontMgr->Init();
-
 	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
 	g_pPipelineStateMgr->Init();
 
@@ -631,12 +628,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_pTextureMgr->Release();
 	g_pPipelineStateMgr->Release();
-	g_pFontMgr->Release();
 
 	WidgetMgr::Get().Release();
 	WidgetMgr::ReleaseSingleton();
 
-	delete g_pFontMgr;
 	delete g_pTextureMgr;
 	delete g_pRenderableMgr;
 	delete g_pShaderMgr;

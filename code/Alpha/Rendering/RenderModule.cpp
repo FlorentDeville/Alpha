@@ -64,6 +64,8 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameResolution = gameResolution;
 	m_mainResolution = mainResolution;
 
+	m_fontMgr.Init();
+
 	EnableDebugLayer();
 
 	CheckTearingSupport();
@@ -131,6 +133,9 @@ void RenderModule::Release()
 	m_RTVHeap.Release();
 	m_pSwapChain->Release();
 	m_pDevice->Release();
+
+	m_fontMgr.Release();
+
 	ReportLiveObject();
 }
 
@@ -383,7 +388,7 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
-	const Font* pFont = g_pFontMgr->GetResource(fontId);
+	const Font* pFont = m_fontMgr.GetResource(fontId);
 
 	//convert from ui coordinates to screen coordinate
 	// ui coordinate : from the top left corner in pixels
@@ -458,7 +463,7 @@ void RenderModule::RenderAllText()
 	for (auto& fontPair : m_fontVertexBuffers)
 	{
 		FontRenderInfo& info = fontPair.second;
-		const Font* pFont = g_pFontMgr->GetResource(fontPair.first);
+		const Font* pFont = m_fontMgr.GetResource(fontPair.first);
 
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
 
@@ -532,6 +537,11 @@ void RenderModule::ReportLiveObject()
 		pDxgiDebug->Release();
 	}
 #endif
+}
+
+ResourceMgr<Font, FontId>& RenderModule::GetFontMgr()
+{
+	return m_fontMgr;
 }
 
 void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)

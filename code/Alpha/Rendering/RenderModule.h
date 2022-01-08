@@ -15,6 +15,7 @@
 #include <DirectXMath.h>
 
 #include "Core/Singleton.h"
+#include "Core/Resource/ResourceMgr.h"
 
 #include "Rendering/DescriptorHeap.h"
 #include "Rendering/Font/Font.h"
@@ -29,6 +30,8 @@ struct ID3D12DescriptorHeap;
 struct ID3D12Device2;
 
 class CommandQueue;
+
+using FontId = size_t;
 
 class RenderModule : public Core::Singleton<RenderModule>
 {
@@ -73,6 +76,8 @@ public:
 
 	static void ReportLiveObject();
 
+	ResourceMgr<Font, FontId>& GetFontMgr();
+
 private:
 	DirectX::XMUINT2 m_gameResolution;
 	DirectX::XMUINT2 m_mainResolution;
@@ -112,6 +117,8 @@ private:
 	std::map<FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 
 	float m_clearColor[4];
+
+	ResourceMgr<Font, FontId> m_fontMgr;
 
 public:
 	UINT m_currentBackBufferIndex;

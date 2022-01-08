@@ -262,5 +262,3 @@ void Font::LoadFntFile(const std::string& fntName)
         m_KerningsList[k].m_amount = t;
     }
 }
-
-RESOURCE_MGR_PTR(Font) g_pFontMgr = nullptr;

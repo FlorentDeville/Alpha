@@ -5,6 +5,7 @@
 #include "Widgets/Window.h"
 
 #include "Rendering/Font/Font.h"
+#include "Rendering/RenderModule.h"
 
 #include "Widgets/Container.h"
 #include "Widgets/Button.h"
@@ -83,7 +84,7 @@ Window::Window(DirectX::XMUINT2 size)
 	//File button
 	std::string fileText = "File";
 	DirectX::XMUINT2 textSize;
-	const Font* pFont = g_pFontMgr->GetResource(WidgetMgr::Get().GetUIFontId());
+	const Font* pFont = RenderModule::Get().GetFontMgr().GetResource(WidgetMgr::Get().GetUIFontId());
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton1 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton1->OnClick([](int, int) -> bool {

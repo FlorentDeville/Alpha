@@ -84,7 +84,3 @@ public:
 private:
     void LoadFntFile(const std::string& fntName);
 };
-
-DECLARE_RESOURCE_ID(Font);
-
-extern RESOURCE_MGR_PTR(Font) g_pFontMgr;

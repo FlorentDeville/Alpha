@@ -10,6 +10,8 @@
 #include "Widgets/Tab.h"
 #include "Widgets/WidgetMgr.h"
 
+#include "Rendering/RenderModule.h"
+
 namespace Widgets
 {
 	TabContainer::TabContainer()
@@ -51,7 +53,7 @@ namespace Widgets
 
 	void TabContainer::AddTab(const std::string& header, Tab* pTab)
 	{
-		const Font* pFont = g_pFontMgr->GetResource(WidgetMgr::Get().GetUIFontId());
+		const Font* pFont = RenderModule::Get().GetFontMgr().GetResource(WidgetMgr::Get().GetUIFontId());
 		DirectX::XMUINT2 textRect;
 		pFont->ComputeRect(header, textRect);
 
