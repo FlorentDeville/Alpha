@@ -20,5 +20,5 @@ Label::~Label()
 void Label::Draw()
 {
 	DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
-	g_pRenderModule->PrepareRenderText(m_text, WidgetMgr::Get().m_segoeUIFontId, uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale));
+	RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().m_segoeUIFontId, uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale));
 }

@@ -10,8 +10,6 @@
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
-extern RenderModule* g_pRenderModule;
-
 Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 	: Widget(w, h, x, y)
 {}
@@ -29,21 +27,23 @@ void Button::Draw()
 		color = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
 
 	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
-	g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
-	g_pRenderModule->SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
-	g_pRenderModule->SetConstantBuffer(1, sizeof(color), &color, 0);
+	RenderModule& render = RenderModule::Get();
+	render.PreRenderForRenderable(*pRenderable);
+
+	render.SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
+	render.SetConstantBuffer(1, sizeof(color), &color, 0);
 
 	int value = m_showBorder ? 1 : 0;
-	g_pRenderModule->SetConstantBuffer(2, sizeof(value), &value, 0);
-	g_pRenderModule->SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+	render.SetConstantBuffer(2, sizeof(value), &value, 0);
+	render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
 
 	float rect[2] = { (float)m_size.x, (float)m_size.y };
-	g_pRenderModule->SetConstantBuffer(4, sizeof(rect), &rect, 0);
+	render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-	g_pRenderModule->SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+	render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-	g_pRenderModule->PostRenderForRenderable(*pRenderable);
+	render.PostRenderForRenderable(*pRenderable);
 
 	Widget::Draw();
 }

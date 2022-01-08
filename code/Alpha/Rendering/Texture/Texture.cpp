@@ -32,7 +32,7 @@ Texture::~Texture()
 
 void Texture::Init(const std::string& path)
 {
-	ID3D12Device* pDevice = g_pRenderModule->GetDevice();
+	ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 
 	//Load the texture
 	int textureWidth = 0;
@@ -74,7 +74,7 @@ void Texture::Init(const std::string& path)
 
 	//Upload the texture
 	{
-		CommandQueue* pCopyCommandQueue = g_pRenderModule->GetRenderCommandQueue();
+		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetRenderCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
 		D3D12_SUBRESOURCE_DATA subresourceData = {};
@@ -131,7 +131,7 @@ void Texture::Init_RenderTarget(int width, int height)
 	clear.Color[2] = 0.9f;
 	clear.Color[3] = 1.f;
 
-	ID3D12Device* pDevice = g_pRenderModule->GetDevice();
+	ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 	pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &m_resourceDesc,
 		D3D12_RESOURCE_STATE_RENDER_TARGET, &clear, IID_PPV_ARGS(&m_pResource));
 

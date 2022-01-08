@@ -76,7 +76,7 @@ void PipelineState::Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
 	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 		sizeof(PipelineStateStream), &pipelineStateStream
 	};
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
 void PipelineState::Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -103,7 +103,7 @@ void PipelineState::Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psI
 	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 		sizeof(PipelineStateStream), &pipelineStateStream
 	};
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
 void PipelineState::Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -130,7 +130,7 @@ void PipelineState::Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId 
 	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 		sizeof(PipelineStateStream), &pipelineStateStream
 	};
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
 void PipelineState::Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -173,7 +173,7 @@ void PipelineState::Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId
 	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 		sizeof(TextPipelineStateStream), &pipelineStateStream
 	};
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
 void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -216,7 +216,7 @@ void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId
 	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 		sizeof(TextPipelineStateStream), &pipelineStateStream
 	};
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
 ID3D12PipelineState* PipelineState::GetPipelineState() const

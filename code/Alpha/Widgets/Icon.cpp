@@ -25,14 +25,16 @@ void Icon::Draw()
 	ComputeWVPMatrix(wvp);
 
 	const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_iconRenderableId);
-	g_pRenderModule->PreRenderForRenderable(*pRenderable);
 
-	g_pRenderModule->SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
+	RenderModule& render = RenderModule::Get();
+	render.PreRenderForRenderable(*pRenderable);
+
+	render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
 
 	ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(m_textureId)->GetSRV();
 	ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-	g_pRenderModule->GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-	g_pRenderModule->GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+	render.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+	render.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-	g_pRenderModule->PostRenderForRenderable(*pRenderable);
+	render.PostRenderForRenderable(*pRenderable);
 }

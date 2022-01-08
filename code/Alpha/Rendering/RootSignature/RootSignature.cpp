@@ -9,8 +9,6 @@
 #include "Core/Helper.h"
 #include "Rendering/RenderModule.h"
 
-extern RenderModule* g_pRenderModule;
-
 RootSignature::RootSignature(const std::string& path)
 	: m_path(path)
 	, m_pRootSignature(nullptr)
@@ -23,13 +21,13 @@ RootSignature::RootSignature(const std::string& path)
 	// Create a root signature.
 	D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
 	featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
-	if (FAILED(g_pRenderModule->GetDevice()->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
+	if (FAILED(RenderModule::Get().GetDevice()->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
 	{
 		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 	}
 
 	// Create the root signature.
-	ThrowIfFailed(g_pRenderModule->GetDevice()->CreateRootSignature(0, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreateRootSignature(0, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
 
 	pBlob->Release();
 }

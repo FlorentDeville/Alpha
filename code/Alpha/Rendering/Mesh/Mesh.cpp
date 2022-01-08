@@ -10,9 +10,6 @@
 #include "Rendering/RenderModule.h"
 #include "Core/Helper.h"
 
-
-extern RenderModule* g_pRenderModule;
-
 static void UpdateBufferResource(ID3D12GraphicsCommandList2* pCommandList, ID3D12Resource** pDestinationResource,
 	ID3D12Resource** pIntermediateResource, size_t numElements, size_t elementSize, const void* bufferData, D3D12_RESOURCE_FLAGS flags)
 {
@@ -21,7 +18,7 @@ static void UpdateBufferResource(ID3D12GraphicsCommandList2* pCommandList, ID3D1
 	// Create a committed resource for the GPU resource in a default heap.
 	D3D12_HEAP_PROPERTIES heapProrperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize, flags);
-	HRESULT res = g_pRenderModule->GetDevice()->CreateCommittedResource(&heapProrperty, D3D12_HEAP_FLAG_NONE, &resourceDesc,
+	HRESULT res = RenderModule::Get().GetDevice()->CreateCommittedResource(&heapProrperty, D3D12_HEAP_FLAG_NONE, &resourceDesc,
 		D3D12_RESOURCE_STATE_COPY_DEST,
 		nullptr,
 		IID_PPV_ARGS(pDestinationResource));
@@ -34,7 +31,7 @@ static void UpdateBufferResource(ID3D12GraphicsCommandList2* pCommandList, ID3D1
 		D3D12_HEAP_PROPERTIES heapPropertyInt = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 		D3D12_RESOURCE_DESC resourceDescInt = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
 
-		res = g_pRenderModule->GetDevice()->CreateCommittedResource(
+		res = RenderModule::Get().GetDevice()->CreateCommittedResource(
 			&heapPropertyInt,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDescInt,
@@ -74,7 +71,7 @@ void Mesh::LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCoun
 {
 	m_indicesCount = indicesCount;
 
-	CommandQueue* pCopyCommandQueue = g_pRenderModule->GetCopyCommandQueue();
+	CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
 	ID3D12Resource* pIntermediateVertexBuffer;
@@ -102,7 +99,7 @@ void Mesh::LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int vertice
 {
 	m_indicesCount = indicesCount;
 
-	CommandQueue* pCopyCommandQueue = g_pRenderModule->GetCopyCommandQueue();
+	CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
 	ID3D12Resource* pIntermediateVertexBuffer;
@@ -130,7 +127,7 @@ void Mesh::LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCo
 {
 	m_indicesCount = indicesCount;
 
-	CommandQueue* pCopyCommandQueue = g_pRenderModule->GetCopyCommandQueue();
+	CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
 	ID3D12Resource* pIntermediateVertexBuffer;

@@ -110,7 +110,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameViewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(gameResolution.x), static_cast<float>(gameResolution.y));
 }
 
-void RenderModule::Shutdown()
+void RenderModule::Release()
 {
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
@@ -357,7 +357,7 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 		// create upload heap. We will fill this with data for our text
 		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxCharacterCount * sizeof(VertexText));
-		HRESULT hr = g_pRenderModule->GetDevice()->CreateCommittedResource(
+		HRESULT hr = RenderModule::Get().GetDevice()->CreateCommittedResource(
 			&prop, // upload heap
 			D3D12_HEAP_FLAG_NONE, // no flags
 			&desc, // resource description for a buffer
@@ -713,5 +713,3 @@ void RenderModule::UpdateRenderTargetViews()
 		m_pBackBuffers[ii] = backBuffer;
 	}
 }
-
-RenderModule* g_pRenderModule = nullptr;

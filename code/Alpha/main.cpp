@@ -245,7 +245,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
 		{
 			g_pWindow->Resize(uwidth, uheight);
-			g_pRenderModule->ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
+			RenderModule::Get().ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
 			WidgetMgr::Get().Resize();
 		}
 
@@ -270,7 +270,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
 		{
 			g_pWindow->Resize(uwidth, uheight);
-			g_pRenderModule->ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
+			RenderModule::Get().ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
 			WidgetMgr::Get().Resize();
 		}
 
@@ -394,7 +394,7 @@ void Update()
 	g_view = DirectX::XMMatrixLookToLH(g_eyePosition, direction, g_upDirection);
 
 	// Update the projection matrix.
-	const DirectX::XMUINT2 gameResolution = g_pRenderModule->GetGameResolution();
+	const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
 	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
 	if (g_perspectiveRendering)
 	{				
@@ -414,7 +414,7 @@ void Update()
 
 void Render()
 {
-	g_pRenderModule->PreRender_RenderToTexture();
+	RenderModule::Get().PreRender_RenderToTexture();
 
 	// Render the cube
 	//if(false)
@@ -422,10 +422,10 @@ void Render()
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
+		RenderModule::Get().Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
 	}
 
-	g_pRenderModule->PreRender();
+	RenderModule::Get().PreRender();
 
 	// Render the cube
 	//if(false)
@@ -440,20 +440,20 @@ void Render()
 	if(false)
 	{
 		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
-		g_pRenderModule->PreRenderForRenderable(*renderable);
+		RenderModule::Get().PreRenderForRenderable(*renderable);
 
 		//DirectX::XMMATRIX wvpMatrix = DirectX::XMMatrixMultiply(DirectX::XMMatrixIdentity(), g_view);
 		DirectX::XMMATRIX wvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
 		wvpMatrix = DirectX::XMMatrixMultiply(wvpMatrix, g_projection);
 
-		g_pRenderModule->SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
+		RenderModule::Get().SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
 
 		ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(g_textureId)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-		g_pRenderModule->GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-		g_pRenderModule->GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+		RenderModule::Get().GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		RenderModule::Get().GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-		g_pRenderModule->PostRenderForRenderable(*renderable);
+		RenderModule::Get().PostRenderForRenderable(*renderable);
 	}
 	
 
@@ -463,8 +463,8 @@ void Render()
 		WidgetMgr::Get().Draw();
 	}
 
-	g_pRenderModule->RenderAllText();
-	g_pRenderModule->PostRender();
+	RenderModule::Get().RenderAllText();
+	RenderModule::Get().PostRender();
 }
 
 bool LoadContent()
@@ -519,7 +519,7 @@ bool LoadContent()
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
-		g_pRenderModule->InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
+		RenderModule::Get().InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
 
 	}
 
@@ -590,8 +590,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pWindow = new SysWindow();
 	g_pWindow->Create(pWindowClassName, L"Alpha", windowResolution.x, windowResolution.y, hInstance);
 
-	g_pRenderModule = new RenderModule();
-	g_pRenderModule->Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
+	RenderModule& render = RenderModule::InitSingleton();
+	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
 	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();
@@ -626,7 +626,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		}
 	}
 
-	g_pRenderModule->Shutdown();
+	render.Release();
+	RenderModule::ReleaseSingleton();
+
 	g_pTextureMgr->Release();
 	g_pPipelineStateMgr->Release();
 	g_pFontMgr->Release();
@@ -642,7 +644,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	delete g_pPipelineStateMgr;
 	delete g_pMeshMgr;
 	delete g_pWindow;
-	delete g_pRenderModule;
 
 	return 0;
 }

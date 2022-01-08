@@ -14,6 +14,8 @@
 #include <d3d12.h>
 #include <DirectXMath.h>
 
+#include "Core/Singleton.h"
+
 #include "Rendering/DescriptorHeap.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Renderable/Renderable.h"
@@ -28,14 +30,14 @@ struct ID3D12Device2;
 
 class CommandQueue;
 
-class RenderModule
+class RenderModule : public Core::Singleton<RenderModule>
 {
 public:
 	RenderModule();
 	~RenderModule();
 
 	void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution);
-	void Shutdown();
+	void Release();
 
 	void PreRender_RenderToTexture();
 
@@ -143,5 +145,3 @@ private:
 	void ResizeSwapChain(uint32_t width, uint32_t height);
 	void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 };
-
-extern RenderModule* g_pRenderModule;
