@@ -166,6 +166,7 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Resource\Resource.h" />
     <ClInclude Include="Resource\ResourceMgr.h" />
+    <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

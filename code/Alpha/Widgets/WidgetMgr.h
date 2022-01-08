@@ -12,7 +12,7 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
 
-#include "Singleton.h"
+#include "Core/Singleton.h"
 
 struct Message;
 class Widget;
