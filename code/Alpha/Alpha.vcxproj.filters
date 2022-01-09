@@ -19,9 +19,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SysWindow.cpp">
-      <Filter>gfx</Filter>
-    </ClCompile>
     <ClCompile Include="Widgets\Widget.cpp">
       <Filter>Widgets</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SysWindow.h">
-      <Filter>gfx</Filter>
-    </ClInclude>
     <ClInclude Include="Widgets\Widget.h">
       <Filter>Widgets</Filter>
     </ClInclude>

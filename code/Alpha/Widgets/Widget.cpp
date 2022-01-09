@@ -4,7 +4,7 @@
 
 #include "Widget.h"
 
-#include "SysWindow.h"
+#include "OsWin/SysWindow.h"
 
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Message.h"

@@ -15,7 +15,7 @@
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
 
-#include "SysWindow.h"
+#include "OsWin/SysWindow.h"
 
 #include <algorithm>
 

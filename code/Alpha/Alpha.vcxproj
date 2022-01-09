@@ -169,7 +169,6 @@
     <ClCompile Include="Widgets\Widget.cpp" />
     <ClCompile Include="Widgets\WidgetMgr.cpp" />
     <ClCompile Include="Widgets\Window.cpp" />
-    <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Widgets\Button.h" />
@@ -187,7 +186,6 @@
     <ClInclude Include="Widgets\Widget.h" />
     <ClInclude Include="Widgets\WidgetMgr.h" />
     <ClInclude Include="Widgets\Window.h" />
-    <ClInclude Include="SysWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.ps.hlsl">
@@ -313,6 +311,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{4586120c-fb2d-4271-bb5d-7e160dfd6437}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\OsWin\OsWin.vcxproj">
+      <Project>{e1515c2c-417c-4022-a379-4c67bf9c7fbc}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">
       <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>

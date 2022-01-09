@@ -14,7 +14,7 @@
 #include "Widgets/Layout.h"
 #include "Widgets/WidgetMgr.h"
 
-#include "SysWindow.h"
+#include "OsWin/SysWindow.h"
 
 extern std::string g_dataRoot;
 extern SysWindow* g_pWindow;
