@@ -4,8 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Alpha", "Alpha\Alpha.vcxproj", "{DE088C60-F0FA-43B1-96D7-449B9D8E13A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F6D68A90-3996-495A-977C-DB2E9121805E} = {F6D68A90-3996-495A-977C-DB2E9121805E}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{4586120C-FB2D-4271-BB5D-7E160DFD6437}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rendering", "Rendering\Rendering.vcxproj", "{F6D68A90-3996-495A-977C-DB2E9121805E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4586120C-FB2D-4271-BB5D-7E160DFD6437} = {4586120C-FB2D-4271-BB5D-7E160DFD6437}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +39,14 @@ Global
 		{4586120C-FB2D-4271-BB5D-7E160DFD6437}.Release|x64.Build.0 = Release|x64
 		{4586120C-FB2D-4271-BB5D-7E160DFD6437}.Release|x86.ActiveCfg = Release|Win32
 		{4586120C-FB2D-4271-BB5D-7E160DFD6437}.Release|x86.Build.0 = Release|Win32
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Debug|x64.ActiveCfg = Debug|x64
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Debug|x64.Build.0 = Debug|x64
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Debug|x86.ActiveCfg = Debug|Win32
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Debug|x86.Build.0 = Debug|Win32
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Release|x64.ActiveCfg = Release|x64
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Release|x64.Build.0 = Release|x64
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Release|x86.ActiveCfg = Release|Win32
+		{F6D68A90-3996-495A-977C-DB2E9121805E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

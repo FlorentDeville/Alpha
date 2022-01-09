@@ -23,15 +23,12 @@
 
 #include "Shader.h"
 #include "ShaderMgr.h"
-#include "SysWindow.h"
 
 #include "InputLayout/InputLayout.h"
 
 #if defined(_DEBUG)
 #include <dxgidebug.h>
 #endif
-
-extern SysWindow* g_pWindow;
 
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
@@ -393,8 +390,8 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 	//convert from ui coordinates to screen coordinate
 	// ui coordinate : from the top left corner in pixels
 	// screen coordinate : from the center, range [-1, 1]
-	float x = (uiPos.x * 2 / g_pWindow->GetWidth()) -1;
-	float y = 2 - (uiPos.y * 2 / g_pWindow->GetHeight()) - 1;
+	float x = (uiPos.x * 2 / m_mainResolution.x) -1;
+	float y = 2 - (uiPos.y * 2 / m_mainResolution.y) - 1;
 
 	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
 	VertexText* vert = (VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
@@ -428,14 +425,14 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		if (i > 0)
 		{
 			kerning = static_cast<float>(pFont->GetKerning(lastChar, c));
-			kerning = kerning * g_pWindow->GetWidth() * 2;
+			kerning = kerning * m_mainResolution.x * 2;
 		}
 
-		float xoffset = static_cast<float>(fc->m_xoffset) / g_pWindow->GetWidth() * 2;
-		float yoffset = static_cast<float>(fc->m_yoffset) / g_pWindow->GetHeight() * 2;
+		float xoffset = static_cast<float>(fc->m_xoffset) / m_mainResolution.x * 2;
+		float yoffset = static_cast<float>(fc->m_yoffset) / m_mainResolution.y * 2;
 
-		float char_width = static_cast<float>(fc->m_width) / g_pWindow->GetWidth() * 2.f;
-		float char_height = static_cast<float>(fc->m_height) / g_pWindow->GetHeight() * 2.f;
+		float char_width = static_cast<float>(fc->m_width) / m_mainResolution.x * 2.f;
+		float char_height = static_cast<float>(fc->m_height) / m_mainResolution.y * 2.f;
 
 		vert[info.m_characterCount].Position.x = x + ((xoffset + kerning) * scale.x);
 		vert[info.m_characterCount].Position.y = y - (yoffset * scale.y);
@@ -451,7 +448,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		info.m_characterCount++;
 
 		// remove horrizontal padding and advance to next char position
-		float advance = static_cast<float>(fc->m_xadvance) / g_pWindow->GetWidth() * 2;
+		float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
 		x += advance * scale.x;
 
 		lastChar = c;

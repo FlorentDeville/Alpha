@@ -155,22 +155,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Rendering\CommandQueue.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Rendering\DescriptorHeap.cpp" />
-    <ClCompile Include="Rendering\Font\Font.cpp" />
-    <ClCompile Include="Rendering\InputLayout\InputLayout.cpp" />
-    <ClCompile Include="Rendering\Mesh\Mesh.cpp" />
-    <ClCompile Include="Rendering\Mesh\MeshMgr.cpp" />
-    <ClCompile Include="Rendering\PipelineState\PipelineState.cpp" />
-    <ClCompile Include="Rendering\Renderable\Renderable.cpp" />
-    <ClCompile Include="Rendering\Renderable\RenderableMgr.cpp" />
-    <ClCompile Include="Rendering\RenderModule.cpp" />
-    <ClCompile Include="Rendering\RootSignature\RootSignature.cpp" />
-    <ClCompile Include="Rendering\RootSignature\RootSignatureMgr.cpp" />
-    <ClCompile Include="Rendering\Shader.cpp" />
-    <ClCompile Include="Rendering\ShaderMgr.cpp" />
-    <ClCompile Include="Rendering\Texture\Texture.cpp" />
     <ClCompile Include="Widgets\Button.cpp" />
     <ClCompile Include="Widgets\Container.cpp" />
     <ClCompile Include="Widgets\Layout.cpp" />
@@ -187,25 +172,6 @@
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Rendering\CommandQueue.h" />
-    <ClInclude Include="Rendering\DescriptorHeap.h" />
-    <ClInclude Include="Rendering\Font\Font.h" />
-    <ClInclude Include="Rendering\InputLayout\InputLayout.h" />
-    <ClInclude Include="Rendering\Mesh\Mesh.h" />
-    <ClInclude Include="Rendering\Mesh\MeshId.h" />
-    <ClInclude Include="Rendering\Mesh\MeshMgr.h" />
-    <ClInclude Include="Rendering\PipelineState\PipelineState.h" />
-    <ClInclude Include="Rendering\Renderable\Renderable.h" />
-    <ClInclude Include="Rendering\Renderable\RenderableId.h" />
-    <ClInclude Include="Rendering\Renderable\RenderableMgr.h" />
-    <ClInclude Include="Rendering\RenderModule.h" />
-    <ClInclude Include="Rendering\RootSignature\RootSignature.h" />
-    <ClInclude Include="Rendering\RootSignature\RootSignatureId.h" />
-    <ClInclude Include="Rendering\RootSignature\RootSignatureMgr.h" />
-    <ClInclude Include="Rendering\Shader.h" />
-    <ClInclude Include="Rendering\ShaderId.h" />
-    <ClInclude Include="Rendering\ShaderMgr.h" />
-    <ClInclude Include="Rendering\Texture\Texture.h" />
     <ClInclude Include="Widgets\Button.h" />
     <ClInclude Include="Widgets\Container.h" />
     <ClInclude Include="Widgets\Layout.h" />
@@ -347,6 +313,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{4586120c-fb2d-4271-bb5d-7e160dfd6437}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Rendering\Rendering.vcxproj">
+      <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

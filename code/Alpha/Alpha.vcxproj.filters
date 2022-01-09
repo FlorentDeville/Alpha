@@ -19,13 +19,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\CommandQueue.cpp">
-      <Filter>gfx</Filter>
-    </ClCompile>
     <ClCompile Include="SysWindow.cpp">
-      <Filter>gfx</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\RenderModule.cpp">
       <Filter>gfx</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Widget.cpp">
@@ -37,43 +31,7 @@
     <ClCompile Include="Widgets\Layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\ShaderMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\InputLayout\InputLayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\PipelineState\PipelineState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Renderable\Renderable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Renderable\RenderableMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\RootSignature\RootSignature.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\RootSignature\RootSignatureMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Mesh\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Mesh\MeshMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Widgets\WidgetMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Texture\Texture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Rendering\Font\Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Label.cpp">
@@ -97,9 +55,6 @@
     <ClCompile Include="Widgets\Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering\DescriptorHeap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Widgets\Tab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,13 +63,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Rendering\CommandQueue.h">
-      <Filter>gfx</Filter>
-    </ClInclude>
     <ClInclude Include="SysWindow.h">
-      <Filter>gfx</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\RenderModule.h">
       <Filter>gfx</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Widget.h">
@@ -125,24 +74,8 @@
     </ClInclude>
     <ClInclude Include="Widgets\WidgetMgr.h" />
     <ClInclude Include="Widgets\Layout.h" />
-    <ClInclude Include="Rendering\ShaderId.h" />
-    <ClInclude Include="Rendering\Shader.h" />
-    <ClInclude Include="Rendering\ShaderMgr.h" />
-    <ClInclude Include="Rendering\InputLayout\InputLayout.h" />
-    <ClInclude Include="Rendering\PipelineState\PipelineState.h" />
-    <ClInclude Include="Rendering\Renderable\Renderable.h" />
-    <ClInclude Include="Rendering\Renderable\RenderableId.h" />
-    <ClInclude Include="Rendering\Renderable\RenderableMgr.h" />
-    <ClInclude Include="Rendering\RootSignature\RootSignature.h" />
-    <ClInclude Include="Rendering\RootSignature\RootSignatureId.h" />
-    <ClInclude Include="Rendering\RootSignature\RootSignatureMgr.h" />
-    <ClInclude Include="Rendering\Mesh\Mesh.h" />
-    <ClInclude Include="Rendering\Mesh\MeshMgr.h" />
-    <ClInclude Include="Rendering\Mesh\MeshId.h" />
     <ClInclude Include="Widgets\Message.h" />
     <ClInclude Include="Widgets\MessageId.h" />
-    <ClInclude Include="Rendering\Texture\Texture.h" />
-    <ClInclude Include="Rendering\Font\Font.h" />
     <ClInclude Include="Widgets\Label.h" />
     <ClInclude Include="Widgets\Icon.h" />
     <ClInclude Include="Widgets\Window.h" />
@@ -150,7 +83,6 @@
     <ClInclude Include="Widgets\Split3Way.h" />
     <ClInclude Include="Widgets\Split.h" />
     <ClInclude Include="Widgets\Viewport.h" />
-    <ClInclude Include="Rendering\DescriptorHeap.h" />
     <ClInclude Include="Widgets\Tab.h" />
     <ClInclude Include="Widgets\TabContainer.h" />
   </ItemGroup>
