@@ -19,66 +19,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\Widget.cpp">
-      <Filter>Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Button.cpp">
-      <Filter>Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Layout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\WidgetMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Label.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Icon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Container.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Split.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Split3Way.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Viewport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\Tab.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\TabContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Widgets\Widget.h">
-      <Filter>Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Widgets\Button.h">
-      <Filter>Widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="Widgets\WidgetMgr.h" />
-    <ClInclude Include="Widgets\Layout.h" />
-    <ClInclude Include="Widgets\Message.h" />
-    <ClInclude Include="Widgets\MessageId.h" />
-    <ClInclude Include="Widgets\Label.h" />
-    <ClInclude Include="Widgets\Icon.h" />
-    <ClInclude Include="Widgets\Window.h" />
-    <ClInclude Include="Widgets\Container.h" />
-    <ClInclude Include="Widgets\Split3Way.h" />
-    <ClInclude Include="Widgets\Split.h" />
-    <ClInclude Include="Widgets\Viewport.h" />
-    <ClInclude Include="Widgets\Tab.h" />
-    <ClInclude Include="Widgets\TabContainer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">

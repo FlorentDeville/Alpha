@@ -156,36 +156,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Widgets\Button.cpp" />
-    <ClCompile Include="Widgets\Container.cpp" />
-    <ClCompile Include="Widgets\Layout.cpp" />
-    <ClCompile Include="Widgets\Icon.cpp" />
-    <ClCompile Include="Widgets\Label.cpp" />
-    <ClCompile Include="Widgets\Split.cpp" />
-    <ClCompile Include="Widgets\Split3Way.cpp" />
-    <ClCompile Include="Widgets\Tab.cpp" />
-    <ClCompile Include="Widgets\TabContainer.cpp" />
-    <ClCompile Include="Widgets\Viewport.cpp" />
-    <ClCompile Include="Widgets\Widget.cpp" />
-    <ClCompile Include="Widgets\WidgetMgr.cpp" />
-    <ClCompile Include="Widgets\Window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Widgets\Button.h" />
-    <ClInclude Include="Widgets\Container.h" />
-    <ClInclude Include="Widgets\Layout.h" />
-    <ClInclude Include="Widgets\Icon.h" />
-    <ClInclude Include="Widgets\Label.h" />
-    <ClInclude Include="Widgets\Message.h" />
-    <ClInclude Include="Widgets\MessageId.h" />
-    <ClInclude Include="Widgets\Split.h" />
-    <ClInclude Include="Widgets\Split3Way.h" />
-    <ClInclude Include="Widgets\Tab.h" />
-    <ClInclude Include="Widgets\TabContainer.h" />
-    <ClInclude Include="Widgets\Viewport.h" />
-    <ClInclude Include="Widgets\Widget.h" />
-    <ClInclude Include="Widgets\WidgetMgr.h" />
-    <ClInclude Include="Widgets\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.ps.hlsl">
@@ -317,6 +287,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">
       <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Widgets\Widgets.vcxproj">
+      <Project>{79e85242-424c-4b35-829b-b2afa0e0b255}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
