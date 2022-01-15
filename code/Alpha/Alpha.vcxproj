@@ -155,6 +155,11 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\MeshComponent.cpp" />
+    <ClCompile Include="Components\TransformComponent.cpp" />
+    <ClCompile Include="Components\GameComponent.cpp" />
+    <ClCompile Include="Entities\GameEntity.cpp" />
+    <ClCompile Include="Entities\LocatorEntity.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -291,6 +296,14 @@
     <ProjectReference Include="..\Widgets\Widgets.vcxproj">
       <Project>{79e85242-424c-4b35-829b-b2afa0e0b255}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Components\MeshComponent.h" />
+    <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Components\GameComponent.h" />
+    <ClInclude Include="Entities\GameEntity.h" />
+    <ClInclude Include="Entities\LocatorEntity.h" />
+    <ClInclude Include="GameMgr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

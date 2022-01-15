@@ -19,6 +19,21 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\GameComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\GameEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\TransformComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\LocatorEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\MeshComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -40,5 +55,13 @@
     <FxCompile Include="Shaders\widget_viewport.ps.hlsl" />
     <FxCompile Include="Shaders\widget_viewport.vs.hlsl" />
     <FxCompile Include="Shaders\widget_viewport.rs.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameMgr.h" />
+    <ClInclude Include="Entities\GameEntity.h" />
+    <ClInclude Include="Components\GameComponent.h" />
+    <ClInclude Include="Components\TransformComponent.h" />
+    <ClInclude Include="Entities\LocatorEntity.h" />
+    <ClInclude Include="Components\MeshComponent.h" />
   </ItemGroup>
 </Project>
