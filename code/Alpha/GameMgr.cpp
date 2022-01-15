@@ -4,8 +4,24 @@
 
 #include "GameMgr.h"
 
+#include "Components/MeshComponent.h"
 #include "Entities/CameraEntity.h"
 #include "Entities/GameEntity.h"
+
+GameMgr::GameMgr()
+	: m_entities()
+	, m_pCurrentCamera()
+{}
+
+GameMgr::~GameMgr()
+{
+	for (GameEntity* pEntity : m_entities)
+		delete pEntity;
+
+	m_entities.clear();
+
+	m_pCurrentCamera = nullptr;
+}
 
 void GameMgr::Init()
 {}
@@ -13,14 +29,38 @@ void GameMgr::Init()
 void GameMgr::Release()
 {}
 
-void GameMgr::CreatePlayerEntity()
-{}
+void GameMgr::CreatePlayerEntity(RenderableId rId)
+{
+	LocatorEntity* pEntity = new LocatorEntity();
 
-void GameMgr::CreateCameraEntity()
-{}
+	MeshComponent* pMesh = new MeshComponent(pEntity, rId);
+	pEntity->AddGameComponent(pMesh);
 
-void GameMgr::CreateBackgroundEntity()
-{}
+	DirectX::XMMATRIX transform = DirectX::XMMatrixTranslation(0, 1, 0);
+	pEntity->SetTransform(transform);
+
+	m_entities.push_back(pEntity);
+}
+
+void GameMgr::CreateCameraEntity(float aspectRatio)
+{
+	CameraEntity* pCamera = new CameraEntity(aspectRatio);
+	m_entities.push_back(pCamera);
+	m_pCurrentCamera = pCamera;
+}
+
+void GameMgr::CreateBackgroundEntity(RenderableId rId)
+{
+	LocatorEntity* pEntity = new LocatorEntity();
+
+	MeshComponent* pMesh = new MeshComponent(pEntity, rId);
+	pEntity->AddGameComponent(pMesh);
+
+	DirectX::XMMATRIX transform = DirectX::XMMatrixScaling(100, 1, 100);
+	pEntity->SetTransform(transform);
+
+	m_entities.push_back(pEntity);
+}
 
 void GameMgr::Update()
 {
@@ -42,19 +82,4 @@ const DirectX::XMMATRIX& GameMgr::GetView() const
 const DirectX::XMMATRIX& GameMgr::GetProjection() const
 {
 	return m_pCurrentCamera->GetProjection();
-}
-
-GameMgr::GameMgr()
-	: m_entities()
-	, m_pCurrentCamera()
-{}
-
-GameMgr::~GameMgr()
-{
-	for (GameEntity* pEntity : m_entities)
-		delete pEntity;
-
-	m_entities.clear();
-
-	m_pCurrentCamera = nullptr;
 }

@@ -20,6 +20,8 @@
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
 
+#include "GameMgr.h"
+
 #include "Rendering/CommandQueue.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/Mesh.h"
@@ -409,6 +411,7 @@ void Update()
 		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
 	}
 
+	GameMgr::Get().Update();
 	WidgetMgr::Get().Update();
 }
 
@@ -417,7 +420,7 @@ void Render()
 	RenderModule::Get().PreRender_RenderToTexture();
 
 	// Render the cube
-	//if(false)
+	if(false)
 	{
 		//// Update the MVP matrix
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
@@ -425,6 +428,9 @@ void Render()
 		RenderModule::Get().Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
 	}
 
+	GameMgr::Get().Render();
+
+	//This call makes the transition between the game render target (a texture) and the actual frame buffer (the screen)
 	RenderModule::Get().PreRender();
 
 	// Render the cube
@@ -523,6 +529,17 @@ bool LoadContent()
 
 	}
 
+
+	//Load the entities
+	GameMgr& gameMgr = GameMgr::Get();
+	gameMgr.CreatePlayerEntity(g_CubeId);
+
+	const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
+	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
+	gameMgr.CreateCameraEntity(aspectRatio);
+
+	gameMgr.CreateBackgroundEntity(g_CubeId);
+
 	g_contentLoaded = true;
 
 	return true;
@@ -598,6 +615,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
 	widgetMgr.Init();
 
+	GameMgr& gameMgr = GameMgr::InitSingleton();
+	gameMgr.Init();
+
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
@@ -622,6 +642,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 			::DispatchMessage(&msg);
 		}
 	}
+
+	gameMgr.Release();
+	GameMgr::ReleaseSingleton();
 
 	render.Release();
 	RenderModule::ReleaseSingleton();

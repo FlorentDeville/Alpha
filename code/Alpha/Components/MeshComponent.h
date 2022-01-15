@@ -11,7 +11,7 @@
 class MeshComponent : public GameComponent
 {
 public:
-	MeshComponent(GameEntity* pParent);
+	MeshComponent(GameEntity* pParent, RenderableId id);
 	virtual ~MeshComponent();
 
 	void Render() override;

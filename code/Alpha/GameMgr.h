@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Singleton.h"
+#include "Rendering/Renderable/RenderableId.h"
 
 #include <vector>
 
@@ -19,22 +20,21 @@ namespace DirectX
 class GameMgr : public Core::Singleton<GameMgr>
 {
 public:
+	GameMgr();
+	~GameMgr();
+
 	void Init();
 	void Release();
 
-	void CreatePlayerEntity();
-	void CreateCameraEntity();
-	void CreateBackgroundEntity();
+	void CreatePlayerEntity(RenderableId rId);
+	void CreateCameraEntity(float aspectRatio);
+	void CreateBackgroundEntity(RenderableId rId);
 
 	void Update();
 	void Render();
 
 	const DirectX::XMMATRIX& GetView() const;
 	const DirectX::XMMATRIX& GetProjection() const;
-
-private:
-	GameMgr();
-	~GameMgr();
 
 	std::vector<GameEntity*> m_entities;
 

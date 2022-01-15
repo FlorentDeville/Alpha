@@ -12,9 +12,9 @@
 #include "Rendering/RenderModule.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 
-MeshComponent::MeshComponent(GameEntity* pParent)
+MeshComponent::MeshComponent(GameEntity* pParent, RenderableId id)
 	: GameComponent(pParent)
-	, m_renderableId()
+	, m_renderableId(id)
 {}
 
 MeshComponent::~MeshComponent()
