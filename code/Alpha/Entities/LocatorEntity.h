@@ -20,6 +20,7 @@ public:
 	virtual ~LocatorEntity();
 
 	const DirectX::XMMATRIX& GetTransform() const;
+	void SetTransform(const DirectX::XMMATRIX& transform);
 
 protected:
 	TransformComponent* m_pTransform;

@@ -158,7 +158,9 @@
     <ClCompile Include="Components\MeshComponent.cpp" />
     <ClCompile Include="Components\TransformComponent.cpp" />
     <ClCompile Include="Components\GameComponent.cpp" />
+    <ClCompile Include="Entities\CameraEntity.cpp" />
     <ClCompile Include="Entities\GameEntity.cpp" />
+    <ClCompile Include="GameMgr.cpp" />
     <ClCompile Include="Entities\LocatorEntity.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -301,6 +303,7 @@
     <ClInclude Include="Components\MeshComponent.h" />
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Components\GameComponent.h" />
+    <ClInclude Include="Entities\CameraEntity.h" />
     <ClInclude Include="Entities\GameEntity.h" />
     <ClInclude Include="Entities\LocatorEntity.h" />
     <ClInclude Include="GameMgr.h" />

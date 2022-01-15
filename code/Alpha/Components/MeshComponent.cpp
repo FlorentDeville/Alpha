@@ -4,14 +4,17 @@
 
 #include "Components/MeshComponent.h"
 
-#include "Entities/LocatorEntity.h"
 #include "DirectXMath.h"
+
+#include "Entities/LocatorEntity.h"
+#include "GameMgr.h"
 
 #include "Rendering/RenderModule.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 
 MeshComponent::MeshComponent(GameEntity* pParent)
 	: GameComponent(pParent)
+	, m_renderableId()
 {}
 
 MeshComponent::~MeshComponent()
@@ -23,11 +26,15 @@ void MeshComponent::Render()
 	const DirectX::XMMATRIX& transform = pLocatorParent->GetTransform();
 
 	//retrieve the camera position
+	GameMgr& gameMgr = GameMgr::Get();
 
-	//compute the projection
+	const DirectX::XMMATRIX& view = gameMgr.GetView();
+	const DirectX::XMMATRIX& projection = gameMgr.GetProjection();
 
 	//compute the wvp
+	DirectX::XMMATRIX wvp = DirectX::XMMatrixMultiply(transform, view);
+	wvp = DirectX::XMMatrixMultiply(wvp, projection);
 
 	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(m_renderableId);
-	RenderModule::Get().Render(*pRenderable, transform);
+	RenderModule::Get().Render(*pRenderable, wvp);
 }

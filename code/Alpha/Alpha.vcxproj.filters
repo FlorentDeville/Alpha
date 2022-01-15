@@ -34,6 +34,12 @@
     <ClCompile Include="Components\MeshComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Entities\CameraEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -63,5 +69,6 @@
     <ClInclude Include="Components\TransformComponent.h" />
     <ClInclude Include="Entities\LocatorEntity.h" />
     <ClInclude Include="Components\MeshComponent.h" />
+    <ClInclude Include="Entities\CameraEntity.h" />
   </ItemGroup>
 </Project>

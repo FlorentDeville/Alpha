@@ -19,3 +19,8 @@ const DirectX::XMMATRIX& LocatorEntity::GetTransform() const
 {
 	return m_pTransform->GetTransform();
 }
+
+void LocatorEntity::SetTransform(const DirectX::XMMATRIX& transform)
+{
+	m_pTransform->SetTransform(transform);
+}
