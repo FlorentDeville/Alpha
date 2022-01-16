@@ -4,12 +4,8 @@
 
 #include "Widget.h"
 
-#include "OsWin/SysWindow.h"
-
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Message.h"
-
-extern SysWindow* g_pWindow;
 
 Widget::Widget()
 	: m_children()
@@ -45,13 +41,13 @@ Widget::~Widget()
 void Widget::Update()
 {}
 
-void Widget::Draw()
+void Widget::Draw(const DirectX::XMFLOAT2& windowSize)
 {
 	if (!IsEnabled())
 		return;
 
 	for (Widget* pChild : m_children)
-		pChild->Draw();
+		pChild->Draw(windowSize);
 }
 
 void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
@@ -308,15 +304,15 @@ void Widget::OnClick(const std::function<bool(int, int)>& callback)
 	m_onClick = callback;
 }
 
-void Widget::ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const
+void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
 {
 	float width = static_cast<float>(m_size.x);
 	float height = static_cast<float>(m_size.y);
 	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
 
 	//position : top left corner
-	float windowWidth = static_cast<float>(g_pWindow->GetWidth());
-	float windowHeight = static_cast<float>(g_pWindow->GetHeight());
+	float windowWidth = windowSize.x;
+	float windowHeight = windowSize.y;
 
 	//compute the position on the screen.
 	//this is in screen space coordinate but the unit is a pixel

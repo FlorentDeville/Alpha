@@ -23,9 +23,7 @@ namespace Widgets
 
 		void AddTab(const std::string& header, Tab* pTab);
 
-		//void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
-
-		void Draw() override;
+		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 		void SetSelectedTab(int index);
 

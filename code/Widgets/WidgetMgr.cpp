@@ -11,11 +11,10 @@
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
 
+#include "OsWin/SysWindow.h"
 
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
-
-#include "OsWin/SysWindow.h"
 
 #include <algorithm>
 
@@ -142,8 +141,13 @@ void WidgetMgr::Update()
 
 void WidgetMgr::Draw()
 {
-	if(m_pRoot && m_pRoot->IsEnabled())
-		m_pRoot->Draw();
+	if (m_pRoot && m_pRoot->IsEnabled())
+	{
+		DirectX::XMFLOAT2 windowSize;
+		windowSize.x = static_cast<float>(m_pRoot->GetSize().x);
+		windowSize.y = static_cast<float>(m_pRoot->GetSize().y);
+		m_pRoot->Draw(windowSize);
+	}
 }
 
 void WidgetMgr::Resize()

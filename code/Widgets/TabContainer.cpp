@@ -75,9 +75,9 @@ namespace Widgets
 		m_tabContent.push_back(pTab);
 	}
 
-	void TabContainer::Draw()
+	void TabContainer::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-		Widget::Draw();
+		Widget::Draw(windowSize);
 	}
 
 	void TabContainer::SetSelectedTab(int index)

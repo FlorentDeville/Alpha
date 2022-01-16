@@ -64,7 +64,7 @@ public:
 	virtual ~Widget();
 
 	virtual void Update();	//Handle events and propagate to children
-	virtual void Draw();	//Draw the widgets using the gfx api.
+	virtual void Draw(const DirectX::XMFLOAT2& windowSize);	//Draw the widgets using the gfx api.
 
 	virtual void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 
@@ -139,7 +139,7 @@ protected:
 
 	std::string m_name;
 
-	void ComputeWVPMatrix(DirectX::XMMATRIX& wvp) const;
+	void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;
 
 	virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 	virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);

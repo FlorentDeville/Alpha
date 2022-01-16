@@ -14,7 +14,7 @@ namespace Widgets
 		Split();
 		~Split();
 
-		void Draw() override;
+		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 		bool Handle(const Message& msg) override;
 
 		bool IsDragged();

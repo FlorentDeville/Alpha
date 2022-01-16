@@ -26,10 +26,10 @@ Split::Split()
 Split::~Split()
 {}
 
-void Split::Draw()
+void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 {
 	DirectX::XMMATRIX mvpMatrix;
-	ComputeWVPMatrix(mvpMatrix);
+	ComputeWVPMatrix(windowSize, mvpMatrix);
 
 	DirectX::XMVECTOR color = DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1);
 
@@ -54,7 +54,7 @@ void Split::Draw()
 
 	render.PostRenderForRenderable(*pRenderable);
 
-	Widget::Draw();
+	Widget::Draw(windowSize);
 }
 
 bool Split::Handle(const Message& msg)

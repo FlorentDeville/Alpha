@@ -19,10 +19,10 @@ Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::s
 Icon::~Icon()
 {}
 
-void Icon::Draw()
+void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
 {
 	DirectX::XMMATRIX wvp;
-	ComputeWVPMatrix(wvp);
+	ComputeWVPMatrix(windowSize, wvp);
 
 	const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_iconRenderableId);
 

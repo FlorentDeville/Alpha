@@ -246,8 +246,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
 		{
+			DirectX::XMUINT2 size(uwidth, uheight);
 			g_pWindow->Resize(uwidth, uheight);
-			RenderModule::Get().ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
+			RenderModule::Get().ChangeMainResolution(size);
 			WidgetMgr::Get().Resize();
 		}
 
@@ -271,8 +272,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
 		{
+			DirectX::XMUINT2 size(uwidth, uheight);
 			g_pWindow->Resize(uwidth, uheight);
-			RenderModule::Get().ChangeMainResolution(DirectX::XMUINT2(uwidth, uheight));
+			RenderModule::Get().ChangeMainResolution(size);
 			WidgetMgr::Get().Resize();
 		}
 
@@ -572,7 +574,7 @@ void CreateMainWindow()
 	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pViewportTab->AddWidget(pViewport);
 
-	WidgetMgr::Get().Resize();
+	//WidgetMgr::Get().Resize();
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR lpCmdLine, _In_ int /*nCmdShow*/)

@@ -24,10 +24,10 @@ namespace Widgets
 	Container::~Container()
 	{}
 
-	void Container::Draw()
+	void Container::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
 		DirectX::XMMATRIX mvpMatrix;
-		ComputeWVPMatrix(mvpMatrix);
+		ComputeWVPMatrix(windowSize, mvpMatrix);
 
 		DirectX::XMVECTOR color = m_backgroundColor;
 
@@ -51,6 +51,6 @@ namespace Widgets
 
 		render.PostRenderForRenderable(*pRenderable);
 
-		Widget::Draw();
+		Widget::Draw(windowSize);
 	}
 }

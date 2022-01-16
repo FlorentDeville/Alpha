@@ -22,7 +22,7 @@ public:
 
 	void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
-	void Draw() override;
+	void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 	bool Handle(const Message& msg) override;
 

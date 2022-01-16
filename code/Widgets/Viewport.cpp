@@ -30,7 +30,7 @@ namespace Widgets
 	Viewport::~Viewport()
 	{}
 
-	void Viewport::Draw()
+	void Viewport::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
 		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
 		const PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(WidgetMgr::Get().m_widgetViewportPsoId);
@@ -51,7 +51,7 @@ namespace Widgets
 
 		//Set Constant buffer
 		DirectX::XMMATRIX wvp;
-		ComputeWVPMatrix(wvp);
+		ComputeWVPMatrix(windowSize, wvp);
 		pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(wvp) / 4, &wvp, 0);
 
 		pCommandList->SetGraphicsRoot32BitConstants(1, sizeof(m_size) / 4, &m_size, 0);

@@ -16,7 +16,7 @@ namespace Widgets
 		Container(int width, int height);
 		~Container();
 
-		void Draw() override;
+		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 	};
 
 }

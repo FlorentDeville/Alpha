@@ -19,10 +19,10 @@ Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 Layout::~Layout()
 {}
 
-void Layout::Draw()
+void Layout::Draw(const DirectX::XMFLOAT2& windowSize)
 {
 	DirectX::XMMATRIX wvp;
-	ComputeWVPMatrix(wvp);
+	ComputeWVPMatrix(windowSize, wvp);
 	int valueShowBorder = m_showBorder ? 1 : 0;
 	float rect[2] = { (float)m_size.x, (float)m_size.y};
 
@@ -42,7 +42,7 @@ void Layout::Draw()
 	}
 
 	for (Widget* pWidget : m_children)
-		pWidget->Draw();
+		pWidget->Draw(windowSize);
 }
 
 bool Layout::Handle(const Message& msg)

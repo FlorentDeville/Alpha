@@ -17,10 +17,10 @@ Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 Button::~Button()
 {}
 
-void Button::Draw()
+void Button::Draw(const DirectX::XMFLOAT2& windowSize)
 {
 	DirectX::XMMATRIX mvpMatrix;
-	ComputeWVPMatrix(mvpMatrix);
+	ComputeWVPMatrix(windowSize, mvpMatrix);
 
 	DirectX::XMVECTOR color = m_backgroundColor;
 	if(m_hover)
@@ -45,7 +45,7 @@ void Button::Draw()
 
 	render.PostRenderForRenderable(*pRenderable);
 
-	Widget::Draw();
+	Widget::Draw(windowSize);
 }
 
 bool Button::Handle(const Message& msg)

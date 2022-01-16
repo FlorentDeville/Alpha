@@ -207,9 +207,9 @@ void Window::Update()
 	Widget::Update();
 }
 
-void Window::Draw()
+void Window::Draw(const DirectX::XMFLOAT2& windowSize)
 {
-	Widget::Draw();
+	Widget::Draw(windowSize);
 }
 
 void Window::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)

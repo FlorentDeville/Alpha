@@ -16,7 +16,7 @@ public:
 	Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path);
 	~Icon();
 
-	void Draw() override;
+	void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 private:
 	TextureId m_textureId;

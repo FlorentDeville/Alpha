@@ -132,9 +132,9 @@ namespace Widgets
 		}
 	}
 
-	void Split3Way::Draw()
+	void Split3Way::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-		Widget::Draw();
+		Widget::Draw(windowSize);
 	}
 
 	void Split3Way::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
