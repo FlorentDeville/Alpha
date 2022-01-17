@@ -4,14 +4,17 @@
 
 #pragma once
 
-enum class InputCommand
+namespace GameInputs
 {
-	MoveForward,
-	MoveBackward,
-	MoveLeft,
-	MoveRight,
-	TurnLeft,
-	TurnRight,
-	CameraLookUp,
-	CameraLookDown
-};
+	enum class InputCommand
+	{
+		MoveForward,
+		MoveBackward,
+		MoveLeft,
+		MoveRight,
+		TurnLeft,
+		TurnRight,
+		CameraLookUp,
+		CameraLookDown
+	};
+}

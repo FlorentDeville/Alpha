@@ -163,7 +163,6 @@
     <ClCompile Include="Entities\PlayerEntity.cpp" />
     <ClCompile Include="GameMgr.cpp" />
     <ClCompile Include="Entities\LocatorEntity.cpp" />
-    <ClCompile Include="Inputs\InputMgr.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -291,6 +290,12 @@
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{4586120c-fb2d-4271-bb5d-7e160dfd6437}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Editors\Editors.vcxproj">
+      <Project>{e4c43edc-88b3-4687-9e69-33b02c08403a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GameInputs\GameInputs.vcxproj">
+      <Project>{7103a061-0369-4b24-bd99-9c3129816d83}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\OsWin\OsWin.vcxproj">
       <Project>{e1515c2c-417c-4022-a379-4c67bf9c7fbc}</Project>
     </ProjectReference>
@@ -310,8 +315,6 @@
     <ClInclude Include="Entities\LocatorEntity.h" />
     <ClInclude Include="Entities\PlayerEntity.h" />
     <ClInclude Include="GameMgr.h" />
-    <ClInclude Include="Inputs\InputCommand.h" />
-    <ClInclude Include="Inputs\InputMgr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

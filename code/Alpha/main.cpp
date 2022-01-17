@@ -20,7 +20,9 @@
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
 
-#include "Inputs/InputMgr.h"
+#include "Editors/GamePlayer/GamePlayer.h"
+
+#include "GameInputs/Inputs/InputMgr.h"
 
 #include "GameMgr.h"
 
@@ -207,7 +209,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		Update();
 		Render();
-		InputMgr::Get().ClearAllStates();
+		GameInputs::InputMgr::Get().ClearAllStates();
 		break;
 
 	case WM_KEYDOWN:
@@ -225,7 +227,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				msg.m_high = wParam;
 				WidgetMgr::Get().HandleMsg(msg);
 
-				InputMgr::Get().Update(wParam);
+				GameInputs::InputMgr::Get().Update(wParam);
 			}
 			break;
 			}
@@ -564,26 +566,12 @@ void CreateMainWindow()
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
 	pSplit->AddMiddlePanel(pMiddleTabContainer);
 
-	Widgets::Tab* pDummyTab1 = new Widgets::Tab();
-	pMiddleTabContainer->AddTab("Dumb", pDummyTab1);
-
-	Widgets::Tab* pViewportTab = new Widgets::Tab();
-	pMiddleTabContainer->AddTab("Game", pViewportTab);
-
 	Widgets::Tab* pDummyTab2 = new Widgets::Tab();
 	pMiddleTabContainer->AddTab("Dumber", pDummyTab2);
 
+	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
+
 	pMiddleTabContainer->SetSelectedTab(1);
-
-	Widgets::Viewport* pViewport = new Widgets::Viewport();
-	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-	pViewport->OnGetFocus([]() -> bool { InputMgr::Get().Enable(); return true; });
-	pViewport->OnLoseFocus([]() -> bool { InputMgr::Get().Disable(); return true; });
-	pViewport->OnGetRenderTargetTexture([]() -> TextureId { return RenderModule::Get().GetGameRenderTargetTextureId(); });
-
-	pViewportTab->AddWidget(pViewport);
-
-	//WidgetMgr::Get().Resize();
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR lpCmdLine, _In_ int /*nCmdShow*/)
@@ -626,8 +614,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	GameMgr& gameMgr = GameMgr::InitSingleton();
 	gameMgr.Init();
 
-	InputMgr& inputMgr = InputMgr::InitSingleton();
+	GameInputs::InputMgr& inputMgr = GameInputs::InputMgr::InitSingleton();
 	inputMgr.Init();
+
+	Editors::GamePlayer::InitSingleton();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -654,6 +644,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		}
 	}
 
+	Editors::GamePlayer::ReleaseSingleton();
+
 	gameMgr.Release();
 	GameMgr::ReleaseSingleton();
 
@@ -661,7 +653,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	RenderModule::ReleaseSingleton();
 
 	inputMgr.Release();
-	InputMgr::ReleaseSingleton();
+	GameInputs::InputMgr::ReleaseSingleton();
 
 	g_pPipelineStateMgr->Release();
 
