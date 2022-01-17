@@ -538,7 +538,7 @@ void RenderModule::ReportLiveObject()
 #endif
 }
 
-ResourceMgr<Texture, TextureId>& RenderModule::GetTextureMgr()
+RenderModule::TextureMgr& RenderModule::GetTextureMgr()
 {
 	return m_textureMgr;
 }

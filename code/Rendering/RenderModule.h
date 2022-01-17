@@ -36,6 +36,8 @@ using FontId = size_t;
 class RenderModule : public Core::Singleton<RenderModule>
 {
 public:
+	using TextureMgr = ResourceMgr<Texture, TextureId>;
+
 	RenderModule();
 	~RenderModule();
 
@@ -76,7 +78,7 @@ public:
 
 	static void ReportLiveObject();
 
-	ResourceMgr<Texture, TextureId>& GetTextureMgr();
+	TextureMgr& GetTextureMgr();
 	ResourceMgr<Font, FontId>& GetFontMgr();
 
 private:
@@ -119,7 +121,7 @@ private:
 
 	float m_clearColor[4];
 
-	ResourceMgr<Texture, TextureId> m_textureMgr;
+	TextureMgr m_textureMgr;
 	ResourceMgr<Font, FontId> m_fontMgr;
 
 public:
