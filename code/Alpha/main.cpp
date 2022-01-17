@@ -577,6 +577,8 @@ void CreateMainWindow()
 
 	Widgets::Viewport* pViewport = new Widgets::Viewport();
 	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+	pViewport->OnGetFocus([]() -> bool { InputMgr::Get().Enable(); return true; });
+	pViewport->OnLoseFocus([]() -> bool { InputMgr::Get().Disable(); return true; });
 	pViewportTab->AddWidget(pViewport);
 
 	//WidgetMgr::Get().Resize();
