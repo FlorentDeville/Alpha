@@ -61,6 +61,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameResolution = gameResolution;
 	m_mainResolution = mainResolution;
 
+	m_textureMgr.Init();
 	m_fontMgr.Init();
 
 	EnableDebugLayer();
@@ -99,7 +100,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	//Create render texture
 	for (int ii = 0; ii < m_numFrames; ++ii)
 	{
-		Texture* pRenderTexture = g_pTextureMgr->CreateResource(m_RenderTextureId[ii], "render texture");
+		Texture* pRenderTexture = m_textureMgr.CreateResource(m_RenderTextureId[ii], "render texture");
 		pRenderTexture->Init_RenderTarget(gameResolution.x, gameResolution.y);
 
 		m_pDevice->CreateRenderTargetView(pRenderTexture->GetResource(), nullptr, m_gameRTV[ii]);
@@ -132,6 +133,7 @@ void RenderModule::Release()
 	m_pDevice->Release();
 
 	m_fontMgr.Release();
+	m_textureMgr.Release();
 
 	ReportLiveObject();
 }
@@ -159,7 +161,7 @@ void RenderModule::PreRender()
 {
 	//switch the render texture to a pixel shader resource
 	{
-		ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+		ID3D12Resource* pTexture = m_textureMgr.GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
@@ -199,7 +201,7 @@ void RenderModule::PostRender()
 
 	//switch back the render texture to render target
 	{
-		ID3D12Resource* pTexture = g_pTextureMgr->GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+		ID3D12Resource* pTexture = m_textureMgr.GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
@@ -479,7 +481,7 @@ void RenderModule::RenderAllText()
 		pCommandList->IASetVertexBuffers(0, 1, &info.m_textVertexBufferView[m_currentBackBufferIndex]);
 
 		// bind the text srv.
-		ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(pFont->m_texture)->GetSRV();
+		ID3D12DescriptorHeap* pSrv = m_textureMgr.GetResource(pFont->m_texture)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		pCommandList->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
@@ -534,6 +536,11 @@ void RenderModule::ReportLiveObject()
 		pDxgiDebug->Release();
 	}
 #endif
+}
+
+ResourceMgr<Texture, TextureId>& RenderModule::GetTextureMgr()
+{
+	return m_textureMgr;
 }
 
 ResourceMgr<Font, FontId>& RenderModule::GetFontMgr()

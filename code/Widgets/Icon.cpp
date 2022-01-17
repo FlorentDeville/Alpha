@@ -12,7 +12,7 @@
 Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
 	: Widget(size.x, size.y, pos.x, pos.y)
 {
-	Texture* pTexture = g_pTextureMgr->CreateResource(m_textureId, path);
+	Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_textureId, path);
 	pTexture->Init(path);
 }
 
@@ -31,7 +31,7 @@ void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
 
 	render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
 
-	ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(m_textureId)->GetSRV();
+	ID3D12DescriptorHeap* pSrv = RenderModule::Get().GetTextureMgr().GetResource(m_textureId)->GetSRV();
 	ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 	render.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 	render.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());

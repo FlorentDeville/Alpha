@@ -76,6 +76,7 @@ public:
 
 	static void ReportLiveObject();
 
+	ResourceMgr<Texture, TextureId>& GetTextureMgr();
 	ResourceMgr<Font, FontId>& GetFontMgr();
 
 private:
@@ -118,6 +119,7 @@ private:
 
 	float m_clearColor[4];
 
+	ResourceMgr<Texture, TextureId> m_textureMgr;
 	ResourceMgr<Font, FontId> m_fontMgr;
 
 public:

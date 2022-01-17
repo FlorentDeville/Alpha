@@ -187,7 +187,7 @@ void LoadTexture()
 	//std::string textureName = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
 	std::string textureName = g_dataRoot + "\\fonts\\arial_0.tga";
 
-	Texture* pTexture = g_pTextureMgr->CreateResource(g_textureId, textureName);
+	Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(g_textureId, textureName);
 	pTexture->Init(textureName);
 }
 
@@ -461,7 +461,7 @@ void Render()
 
 		RenderModule::Get().SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
 
-		ID3D12DescriptorHeap* pSrv = g_pTextureMgr->GetResource(g_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pSrv = RenderModule::Get().GetTextureMgr().GetResource(g_textureId)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		RenderModule::Get().GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		RenderModule::Get().GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
@@ -598,9 +598,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
 	g_pPipelineStateMgr->Init();
 
-	g_pTextureMgr = new RESOURCE_MGR(Texture);
-	g_pTextureMgr->Init();
-
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution = windowResolution;
 	
@@ -662,13 +659,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Release();
 	InputMgr::ReleaseSingleton();
 
-	g_pTextureMgr->Release();
 	g_pPipelineStateMgr->Release();
 
 	WidgetMgr::Get().Release();
 	WidgetMgr::ReleaseSingleton();
 
-	delete g_pTextureMgr;
 	delete g_pRenderableMgr;
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;

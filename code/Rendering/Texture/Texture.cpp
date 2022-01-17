@@ -180,5 +180,3 @@ uint64_t Texture::GetHeight() const
 {
 	return m_resourceDesc.Height;
 }
-
-RESOURCE_MGR_PTR(Texture) g_pTextureMgr;

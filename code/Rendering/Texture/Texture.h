@@ -8,9 +8,10 @@
 #include <d3d12.h>
 
 #include "Core/Resource/Resource.h"
-#include "Core/Resource/ResourceMgr.h"
 
 struct ID3D12Resource;
+
+using TextureId = size_t;
 
 class Texture : public Resource
 {
@@ -34,6 +35,3 @@ private:
 	D3D12_RESOURCE_DESC m_resourceDesc;
 	ID3D12DescriptorHeap* m_pSrvDescriptorHeap;
 };
-
-DECLARE_RESOURCE_ID(Texture);
-extern RESOURCE_MGR_PTR(Texture) g_pTextureMgr;

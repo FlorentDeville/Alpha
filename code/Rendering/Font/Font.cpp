@@ -26,7 +26,7 @@ void Font::Init(const std::string& fntName)
 
     std::string textureFilename = g_dataRoot + "\\fonts\\" + m_fontImage;
     
-    Texture* pTexture = g_pTextureMgr->CreateResource(m_texture, m_fontImage);
+    Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_texture, m_fontImage);
     pTexture->Init(textureFilename);
 }
 
