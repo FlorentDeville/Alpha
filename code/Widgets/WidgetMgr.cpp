@@ -18,7 +18,7 @@
 
 #include <algorithm>
 
-#pragma optimize("", off)
+//#pragma optimize("", off)
 
 extern SysWindow* g_pWindow;
 

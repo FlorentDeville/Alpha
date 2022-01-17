@@ -15,8 +15,5 @@ namespace Widgets
 		~Viewport();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
-
-	private:
-		DirectX::XMINT2 m_previousMousePosition;
 	};
 }
