@@ -7,6 +7,7 @@
 #include "Components/MeshComponent.h"
 #include "Entities/CameraEntity.h"
 #include "Entities/GameEntity.h"
+#include "Entities/PlayerEntity.h"
 
 GameMgr::GameMgr()
 	: m_entities()
@@ -31,7 +32,7 @@ void GameMgr::Release()
 
 void GameMgr::CreatePlayerEntity(RenderableId rId)
 {
-	LocatorEntity* pEntity = new LocatorEntity();
+	PlayerEntity* pEntity = new PlayerEntity();
 
 	MeshComponent* pMesh = new MeshComponent(pEntity, rId);
 	pEntity->AddGameComponent(pMesh);

@@ -20,6 +20,8 @@
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
 
+#include "Inputs/InputMgr.h"
+
 #include "GameMgr.h"
 
 #include "Rendering/CommandQueue.h"
@@ -205,6 +207,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		Update();
 		Render();
+		InputMgr::Get().ClearAllStates();
 		break;
 
 	case WM_KEYDOWN:
@@ -221,6 +224,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				msg.m_id = M_KeyDown;
 				msg.m_high = wParam;
 				WidgetMgr::Get().HandleMsg(msg);
+
+				InputMgr::Get().Update(wParam);
 			}
 			break;
 			}
@@ -620,6 +625,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	GameMgr& gameMgr = GameMgr::InitSingleton();
 	gameMgr.Init();
 
+	InputMgr& inputMgr = InputMgr::InitSingleton();
+	inputMgr.Init();
+
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
@@ -650,6 +658,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	render.Release();
 	RenderModule::ReleaseSingleton();
+
+	inputMgr.Release();
+	InputMgr::ReleaseSingleton();
 
 	g_pTextureMgr->Release();
 	g_pPipelineStateMgr->Release();

@@ -40,6 +40,12 @@
     <ClCompile Include="GameMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Inputs\InputMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\PlayerEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -70,5 +76,8 @@
     <ClInclude Include="Entities\LocatorEntity.h" />
     <ClInclude Include="Components\MeshComponent.h" />
     <ClInclude Include="Entities\CameraEntity.h" />
+    <ClInclude Include="Inputs\InputMgr.h" />
+    <ClInclude Include="Inputs\InputCommand.h" />
+    <ClInclude Include="Entities\PlayerEntity.h" />
   </ItemGroup>
 </Project>

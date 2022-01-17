@@ -160,8 +160,10 @@
     <ClCompile Include="Components\GameComponent.cpp" />
     <ClCompile Include="Entities\CameraEntity.cpp" />
     <ClCompile Include="Entities\GameEntity.cpp" />
+    <ClCompile Include="Entities\PlayerEntity.cpp" />
     <ClCompile Include="GameMgr.cpp" />
     <ClCompile Include="Entities\LocatorEntity.cpp" />
+    <ClCompile Include="Inputs\InputMgr.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -306,7 +308,10 @@
     <ClInclude Include="Entities\CameraEntity.h" />
     <ClInclude Include="Entities\GameEntity.h" />
     <ClInclude Include="Entities\LocatorEntity.h" />
+    <ClInclude Include="Entities\PlayerEntity.h" />
     <ClInclude Include="GameMgr.h" />
+    <ClInclude Include="Inputs\InputCommand.h" />
+    <ClInclude Include="Inputs\InputMgr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

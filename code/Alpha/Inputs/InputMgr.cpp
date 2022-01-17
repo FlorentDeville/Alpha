@@ -1,0 +1,52 @@
+/********************************************************************/
+/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#include "InputMgr.h"
+
+//#pragma optimize("", off)
+
+InputMgr::InputMgr()
+{}
+
+InputMgr::~InputMgr()
+{}
+
+void InputMgr::Init()
+{
+	m_keyToCommand['w'] = InputCommand::MoveForward;
+	m_keyToCommand['W'] = InputCommand::MoveForward;
+	m_keyToCommand['s'] = InputCommand::MoveBackward;
+	m_keyToCommand['S'] = InputCommand::MoveBackward;
+	m_keyToCommand['a'] = InputCommand::MoveLeft;
+	m_keyToCommand['A'] = InputCommand::MoveLeft;
+	m_keyToCommand['d'] = InputCommand::MoveRight;
+	m_keyToCommand['D'] = InputCommand::MoveRight;
+}
+
+void InputMgr::Release()
+{}
+
+void InputMgr::Update(uint64_t virtualKey)
+{
+	std::map<uint64_t, InputCommand>::const_iterator it = m_keyToCommand.find(virtualKey);
+	if (it == m_keyToCommand.cend())
+		return;
+
+	m_commandState[it->second] = true;
+}
+
+bool InputMgr::GetState(InputCommand command) const
+{
+	std::map<InputCommand, bool>::const_iterator it = m_commandState.find(command);
+	if (it == m_commandState.cend())
+		return false;
+
+	return it->second;
+}
+
+void InputMgr::ClearAllStates()
+{
+	for (std::map<InputCommand, bool>::iterator it = m_commandState.begin(); it != m_commandState.end(); ++it)
+		it->second = false;
+}
