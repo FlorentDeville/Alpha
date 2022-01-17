@@ -111,6 +111,8 @@ public:
 	void OnMouseEnter(const std::function<bool()>& callback);
 	void OnMouseExit(const std::function<bool()>& callback);
 	void OnClick(const std::function<bool(int, int)>& callback);
+	void OnGetFocus(const std::function<bool()>& callback);
+	void OnLoseFocus(const std::function<bool()>& callback);
 
 protected:
 	DirectX::XMUINT2 m_size; //width and height in pixels
@@ -136,7 +138,8 @@ protected:
 	std::function<bool()>						m_onMouseEnter;
 	std::function<bool()>						m_onMouseExit;
 	std::function<bool(int x, int y)>			m_onClick;
-
+	std::function<bool()>						m_onGetFocus;
+	std::function<bool()>						m_onLoseFocus;
 	std::string m_name;
 
 	void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;

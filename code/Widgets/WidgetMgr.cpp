@@ -18,6 +18,8 @@
 
 #include <algorithm>
 
+#pragma optimize("", off)
+
 extern SysWindow* g_pWindow;
 
 extern std::string g_dataRoot;
@@ -221,6 +223,7 @@ void WidgetMgr::HandleMsg(const Message& msg)
 	case M_MouseLDown:
 	case M_MouseLUp:
 	{
+		bool setFocus = false;
 		for (std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
 		{
 			Widget* pWidget = *it;
@@ -229,6 +232,12 @@ void WidgetMgr::HandleMsg(const Message& msg)
 
 			if (!pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
 				continue;
+
+			if (!setFocus)
+			{
+				SetFocus(pWidget);
+				setFocus = true;
+			}
 
 			bool handled = pWidget->Handle(msg);
 			if (handled)
@@ -259,6 +268,15 @@ DirectX::XMINT2 WidgetMgr::GetCursorPosition() const
 
 void WidgetMgr::SetFocus(Widget* pWidget)
 {
+	if (pWidget == m_pFocusedWidget)
+		return;
+
+	if (m_pFocusedWidget && m_pFocusedWidget->m_onLoseFocus)
+		m_pFocusedWidget->m_onLoseFocus();
+
+	if (pWidget && pWidget->m_onGetFocus)
+		pWidget->m_onGetFocus();
+
 	m_pFocusedWidget = pWidget;
 }
 
@@ -266,7 +284,7 @@ void WidgetMgr::CaptureMouse(Widget* pWidget)
 {
 	if (pWidget)
 	{
-		//You can have 2 widgets requesting to capture events
+		//You can't have 2 widgets requesting to capture events
 		assert(!m_pCapturedWidget);
 	}
 

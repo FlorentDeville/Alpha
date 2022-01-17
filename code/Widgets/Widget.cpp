@@ -304,6 +304,16 @@ void Widget::OnClick(const std::function<bool(int, int)>& callback)
 	m_onClick = callback;
 }
 
+void Widget::OnGetFocus(const std::function<bool()>& callback)
+{
+	m_onGetFocus = callback;
+}
+
+void Widget::OnLoseFocus(const std::function<bool()>& callback)
+{
+	m_onLoseFocus = callback;
+}
+
 void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
 {
 	float width = static_cast<float>(m_size.x);
