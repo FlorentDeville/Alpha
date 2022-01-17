@@ -7,6 +7,7 @@
 //#pragma optimize("", off)
 
 InputMgr::InputMgr()
+	: m_enabled(false)
 {}
 
 InputMgr::~InputMgr()
@@ -29,6 +30,9 @@ void InputMgr::Release()
 
 void InputMgr::Update(uint64_t virtualKey)
 {
+	if (!m_enabled)
+		return;
+
 	std::map<uint64_t, InputCommand>::const_iterator it = m_keyToCommand.find(virtualKey);
 	if (it == m_keyToCommand.cend())
 		return;
@@ -49,4 +53,14 @@ void InputMgr::ClearAllStates()
 {
 	for (std::map<InputCommand, bool>::iterator it = m_commandState.begin(); it != m_commandState.end(); ++it)
 		it->second = false;
+}
+
+void InputMgr::Enable()
+{
+	m_enabled = true;
+}
+
+void InputMgr::Disable()
+{
+	m_enabled = false;
 }

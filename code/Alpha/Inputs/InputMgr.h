@@ -25,7 +25,12 @@ public:
 
 	void ClearAllStates();
 
+	void Enable();
+	void Disable();
+
 private:
 	std::map<uint64_t, InputCommand> m_keyToCommand;
 	std::map<InputCommand, bool> m_commandState;
+
+	bool m_enabled;
 };
