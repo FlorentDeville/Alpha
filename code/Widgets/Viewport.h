@@ -16,8 +16,6 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
-		bool Handle(const Message& msg) override;
-
 	private:
 		DirectX::XMINT2 m_previousMousePosition;
 	};
