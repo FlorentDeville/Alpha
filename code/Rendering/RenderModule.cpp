@@ -477,7 +477,7 @@ void RenderModule::RenderAllText()
 	}
 }
 
-TextureId RenderModule::GetRenderTextureId() const
+TextureId RenderModule::GetGameRenderTargetTextureId() const
 {
 	return m_gameRenderTarget->m_renderTargetsId[m_currentBackBufferIndex];
 }

@@ -579,6 +579,8 @@ void CreateMainWindow()
 	pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	pViewport->OnGetFocus([]() -> bool { InputMgr::Get().Enable(); return true; });
 	pViewport->OnLoseFocus([]() -> bool { InputMgr::Get().Disable(); return true; });
+	pViewport->OnGetRenderTargetTexture([]() -> TextureId { return RenderModule::Get().GetGameRenderTargetTextureId(); });
+
 	pViewportTab->AddWidget(pViewport);
 
 	//WidgetMgr::Get().Resize();

@@ -6,6 +6,8 @@
 
 #include "Widgets/Widget.h"
 
+#include "Rendering/Texture/Texture.h"
+
 namespace Widgets
 {
 	class Viewport : public Widget
@@ -15,5 +17,10 @@ namespace Widgets
 		~Viewport();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+
+		void OnGetRenderTargetTexture(const std::function<TextureId ()>& callback);
+
+	private:
+		std::function<TextureId ()> m_onGetRenderTargetTexture;		//callback to retrieve the texture to show in the viewport
 	};
 }

@@ -70,7 +70,7 @@ public:
 	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale);
 	void RenderAllText();
 
-	TextureId GetRenderTextureId() const;
+	TextureId GetGameRenderTargetTextureId() const;
 
 	void ChangeMainResolution(const DirectX::XMUINT2& size);
 

@@ -36,7 +36,7 @@ namespace Widgets
 		const PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(WidgetMgr::Get().m_widgetViewportPsoId);
 		RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
 		const Mesh* pMesh = g_pMeshMgr->GetMesh(pRenderable->GetMeshId());
-		Texture* pTexture = RenderModule::Get().GetTextureMgr().GetResource(RenderModule::Get().GetRenderTextureId());
+		Texture* pTexture = RenderModule::Get().GetTextureMgr().GetResource(m_onGetRenderTargetTexture());
 		ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();
 
 		ID3D12GraphicsCommandList2* pCommandList = RenderModule::Get().GetRenderCommandList();
@@ -68,5 +68,10 @@ namespace Widgets
 
 		//Draw!!!
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+	}
+
+	void Viewport::OnGetRenderTargetTexture(const std::function<TextureId ()>& callback)
+	{
+		m_onGetRenderTargetTexture = callback;
 	}
 }
