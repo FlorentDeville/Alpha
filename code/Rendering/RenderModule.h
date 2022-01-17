@@ -30,6 +30,10 @@ struct ID3D12DescriptorHeap;
 struct ID3D12Device2;
 
 class CommandQueue;
+namespace Rendering
+{
+	class RenderTarget;
+}
 
 using FontId = size_t;
 
@@ -132,17 +136,10 @@ private:
 	ID3D12Resource* m_pMainDepthBuffer;
 	D3D12_CPU_DESCRIPTOR_HANDLE m_mainRTV[m_numFrames];
 	D3D12_CPU_DESCRIPTOR_HANDLE m_mainDSV;
-
-	TextureId m_RenderTextureId[m_numFrames];
-	ID3D12Resource* m_pGameDepthBuffer;
-	D3D12_CPU_DESCRIPTOR_HANDLE m_gameRTV[m_numFrames];
-	D3D12_CPU_DESCRIPTOR_HANDLE m_gameDSV;
-
 	D3D12_VIEWPORT m_mainViewport;
 	D3D12_RECT m_mainScissorRect;
 	
-	D3D12_VIEWPORT m_gameViewport;
-	D3D12_RECT m_gameScissorRect;
+	Rendering::RenderTarget* m_gameRenderTarget;
 
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 

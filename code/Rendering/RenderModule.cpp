@@ -15,7 +15,7 @@
 #include "Core/Helper.h"
 
 #include "Rendering/Mesh/Mesh.h"
-
+#include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/PipelineState/PipelineState.h"
 
 #include "Rendering/RootSignature/RootSignature.h"
@@ -41,7 +41,6 @@ RenderModule::RenderModule()
 	, m_currentBackBufferIndex(0)
 	, m_vSync(true)
 	, m_pMainDepthBuffer(nullptr)
-	, m_pGameDepthBuffer(nullptr)
 #if defined(_DEBUG)
 	, m_pDebugInterface(nullptr)
 #endif
@@ -83,31 +82,16 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	{
 		m_mainRTV[ii] = m_RTVHeap.GetNewHandle();
 	}
-	for (int ii = 0; ii < m_numFrames; ++ii)
-	{
-		m_gameRTV[ii] = m_RTVHeap.GetNewHandle();
-	}
 
 	m_DSVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2);
 	m_mainDSV = m_DSVHeap.GetNewHandle();
-	m_gameDSV = m_DSVHeap.GetNewHandle();
 
 	UpdateRenderTargetViews();
 
 	ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pMainDepthBuffer, m_mainDSV);
-	ResizeDepthBuffer(gameResolution.x, gameResolution.y, &m_pGameDepthBuffer, m_gameDSV);
 
-	//Create render texture
-	for (int ii = 0; ii < m_numFrames; ++ii)
-	{
-		Texture* pRenderTexture = m_textureMgr.CreateResource(m_RenderTextureId[ii], "render texture");
-		pRenderTexture->Init_RenderTarget(gameResolution.x, gameResolution.y);
-
-		m_pDevice->CreateRenderTargetView(pRenderTexture->GetResource(), nullptr, m_gameRTV[ii]);
-	}
-
-	m_gameScissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
-	m_gameViewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(gameResolution.x), static_cast<float>(gameResolution.y));
+	//Render target for the game
+	m_gameRenderTarget = new Rendering::RenderTarget(m_numFrames, gameResolution.x, gameResolution.y, m_RTVHeap, m_DSVHeap);
 }
 
 void RenderModule::Release()
@@ -126,7 +110,6 @@ void RenderModule::Release()
 		pBackBuffer->Release();
 
 	m_pMainDepthBuffer->Release();
-	m_pGameDepthBuffer->Release();
 	m_DSVHeap.Release();
 	m_RTVHeap.Release();
 	m_pSwapChain->Release();
@@ -143,25 +126,25 @@ void RenderModule::PreRender_RenderToTexture()
 	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
 
 	// Clear the render target.
-	m_pRenderCommandList->ClearRenderTargetView(m_gameRTV[m_currentBackBufferIndex], m_clearColor, 0, nullptr);
+	m_pRenderCommandList->ClearRenderTargetView(m_gameRenderTarget->m_rtv[m_currentBackBufferIndex], m_clearColor, 0, nullptr);
 
 	// Clear the depth buffer
 	float depthValue = 1.f;
-	m_pRenderCommandList->ClearDepthStencilView(m_gameDSV, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	m_pRenderCommandList->ClearDepthStencilView(m_gameRenderTarget->m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 
 	//Set viewport and scissors
-	m_pRenderCommandList->RSSetViewports(1, &m_gameViewport);
-	m_pRenderCommandList->RSSetScissorRects(1, &m_gameScissorRect);
+	m_pRenderCommandList->RSSetViewports(1, &m_gameRenderTarget->m_viewport);
+	m_pRenderCommandList->RSSetScissorRects(1, &m_gameRenderTarget->m_scissorRect);
 
 	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRTV[m_currentBackBufferIndex], FALSE, &m_gameDSV);
+	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRenderTarget->m_rtv[m_currentBackBufferIndex], FALSE, &m_gameRenderTarget->m_dsv);
 }
 
 void RenderModule::PreRender()
 {
 	//switch the render texture to a pixel shader resource
 	{
-		ID3D12Resource* pTexture = m_textureMgr.GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+		ID3D12Resource* pTexture = m_gameRenderTarget->m_renderTargets[m_currentBackBufferIndex]->GetResource();
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
@@ -201,7 +184,7 @@ void RenderModule::PostRender()
 
 	//switch back the render texture to render target
 	{
-		ID3D12Resource* pTexture = m_textureMgr.GetResource(m_RenderTextureId[m_currentBackBufferIndex])->GetResource();
+		ID3D12Resource* pTexture = m_gameRenderTarget->m_renderTargets[m_currentBackBufferIndex]->GetResource();
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
@@ -496,7 +479,7 @@ void RenderModule::RenderAllText()
 
 TextureId RenderModule::GetRenderTextureId() const
 {
-	return m_RenderTextureId[m_currentBackBufferIndex];
+	return m_gameRenderTarget->m_renderTargetsId[m_currentBackBufferIndex];
 }
 
 void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)

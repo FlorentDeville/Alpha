@@ -31,6 +31,7 @@
     <ClInclude Include="Renderable\RenderableId.h" />
     <ClInclude Include="Renderable\RenderableMgr.h" />
     <ClInclude Include="RenderModule.h" />
+    <ClInclude Include="RenderTargets\RenderTarget.h" />
     <ClInclude Include="RootSignature\RootSignature.h" />
     <ClInclude Include="RootSignature\RootSignatureId.h" />
     <ClInclude Include="RootSignature\RootSignatureMgr.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="Renderable\Renderable.cpp" />
     <ClCompile Include="Renderable\RenderableMgr.cpp" />
     <ClCompile Include="RenderModule.cpp" />
+    <ClCompile Include="RenderTargets\RenderTarget.cpp" />
     <ClCompile Include="RootSignature\RootSignature.cpp" />
     <ClCompile Include="RootSignature\RootSignatureMgr.cpp" />
     <ClCompile Include="Shader.cpp" />
