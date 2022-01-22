@@ -488,7 +488,8 @@ bool LoadContent()
 		Mesh* pCubeMesh = nullptr;
 		MeshId cubeMeshId;
 		g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
-		pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
+		//pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
+		pCubeMesh->Load("c:\\tmp\\cube.json");
 
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
