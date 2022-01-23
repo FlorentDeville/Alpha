@@ -25,25 +25,31 @@ for obj in bpy.data.objects:
         vertex_index_to_out_vertex_index[loop.index] = vertex_index
         vertex_index = vertex_index + 1
         
-        vertex_buffer.append(vertex.co[0])        
-        vertex_buffer.append(vertex.co[1])
-        vertex_buffer.append(vertex.co[2])
+        vertex_buffer.append(vertex.co[0]) #x is right       
+        vertex_buffer.append(vertex.co[2]) #z is up
+        vertex_buffer.append(vertex.co[1]) #y is forward
         vertex_buffer.append(color[0])
         vertex_buffer.append(color[1])
         vertex_buffer.append(color[2])
         
-    print(vertex_index_to_out_vertex_index)
     for polygon in mesh.polygons:
-        for loop_index in polygon.loop_indices:
-            #loop = mesh.loops[loop_index]
-            #print (loop_index)
-            vertex_index = vertex_index_to_out_vertex_index[loop_index]
-            index_buffer.append(vertex_index)
+        count = len(polygon.loop_indices)
+        if count != 3:
+            print ("Triangulate the mesh!")
+            exit()
+        
+        loop_indices = polygon.loop_indices    
+        vertex_index = vertex_index_to_out_vertex_index[loop_indices[0]]
+        index_buffer.append(vertex_index)
+        vertex_index = vertex_index_to_out_vertex_index[loop_indices[2]]
+        index_buffer.append(vertex_index)
+        vertex_index = vertex_index_to_out_vertex_index[loop_indices[1]]
+        index_buffer.append(vertex_index)
         
     out_mesh["vertex_buffer"] = vertex_buffer
     out_mesh["index_buffer"] = index_buffer
     
-    with open("c:/tmp/cube.json", 'w') as out_file:
+    with open("c:/tmp/plane.json", 'w') as out_file:
         json.dump(out_mesh, out_file, indent = 2)
 
 print ("Over")
