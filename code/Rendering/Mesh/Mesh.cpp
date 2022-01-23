@@ -194,13 +194,13 @@ void Mesh::Load(const std::string& filename)
 			pVertices[ii].Position.y = vertices[start + 1].GetFloat();
 			pVertices[ii].Position.z = vertices[start + 2].GetFloat();
 			pVertices[ii].Color.x = vertices[start + 3].GetFloat();
-			pVertices[ii].Color.x = vertices[start + 4].GetFloat();
-			pVertices[ii].Color.x = vertices[start + 5].GetFloat();
+			pVertices[ii].Color.y = vertices[start + 4].GetFloat();
+			pVertices[ii].Color.z = vertices[start + 5].GetFloat();
 		}
 
 		LoadVertexAndIndexBuffer(pVertices, verticesCount, pIndices, indicesCount);
 
-		delete[] pVertices;
+		//delete[] pVertices;
 	}
 	else
 	{
@@ -208,7 +208,7 @@ void Mesh::Load(const std::string& filename)
 		assert(false);
 	}
 
-	delete[] pIndices;
+	//delete[] pIndices;
 
 	fclose(pFile);
 }
