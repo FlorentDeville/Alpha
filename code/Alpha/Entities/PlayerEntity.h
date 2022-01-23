@@ -17,7 +17,9 @@ public:
 	void Update() override;
 
 private:
+#if !_DEBUG
 	char m_padding[8];
+#endif
 	DirectX::XMVECTOR m_position;
 	DirectX::XMVECTOR m_euler;
 	DirectX::XMVECTOR m_scale;
