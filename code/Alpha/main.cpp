@@ -484,6 +484,7 @@ void Render()
 
 bool LoadContent()
 {
+	PipelineStateId base_PosColor_pipelineStateId;
 	{
 		Mesh* pCubeMesh = nullptr;
 		MeshId cubeMeshId;
@@ -495,11 +496,21 @@ bool LoadContent()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
-		PipelineStateId base_PosColor_pipelineStateId;
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(base_PosColor_pipelineStateId, "base");
 		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
 		g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
+	}
+
+	RenderableId planeId;
+	{
+		Mesh* pPlaneMesh = nullptr;
+		MeshId meshId;
+		g_pMeshMgr->CreateMesh(&pPlaneMesh, meshId);
+		pPlaneMesh->Load("c:\\tmp\\plane.json");
+
+		planeId = g_pRenderableMgr->CreateRenderable(meshId, base_PosColor_pipelineStateId);
+
 	}
 
 	//Load the textured cube
@@ -548,7 +559,7 @@ bool LoadContent()
 	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
 	gameMgr.CreateCameraEntity(aspectRatio);
 
-	gameMgr.CreateBackgroundEntity(g_CubeId);
+	gameMgr.CreateBackgroundEntity(planeId);
 
 	g_contentLoaded = true;
 
