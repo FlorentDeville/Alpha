@@ -1,0 +1,13 @@
+prefix=E:/w/ca6c508eae419cf8/_install/win64_py36_release
+exec_prefix=E:/w/ca6c508eae419cf8/_install/win64_py36_release
+libdir=E:/w/ca6c508eae419cf8/_install/win64_py36_release/lib
+sharedlibdir=E:/w/ca6c508eae419cf8/_install/win64_py36_release/lib
+includedir=E:/w/ca6c508eae419cf8/_install/win64_py36_release/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.11
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

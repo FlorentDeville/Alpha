@@ -1,0 +1,5 @@
+Package : nv_usd 
+Description : Universal Scene Description libraries and packaging for Omniverse
+Maintainers : Aaron Luk
+SWIPAT NvBug : http://nvbugs/2515781
+Repository : https://gitlab-master.nvidia.com/omniverse/usd-build
