@@ -206,11 +206,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
-	case WM_PAINT:
-		Update();
-		Render();
-		GameInputs::InputMgr::Get().ClearAllStates();
-		break;
 
 	case WM_KEYDOWN:
 		{
@@ -654,6 +649,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 		}
+
+		Update();
+		Render();
+		GameInputs::InputMgr::Get().ClearAllStates();
 	}
 
 	Editors::GamePlayer::ReleaseSingleton();
