@@ -74,9 +74,6 @@ bool g_contentLoaded;
 
 bool g_perspectiveRendering = true;
 
-float g_posX = 0;
-float g_posY = 0;
-
 static VertexPosColor g_Vertices[8] = {
 	{ DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
 	{ DirectX::XMFLOAT3(-1.0f,  1.0f, -1.0f),	DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f) }, // 1
