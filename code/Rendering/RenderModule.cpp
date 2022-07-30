@@ -91,7 +91,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pMainDepthBuffer, m_mainDSV);
 
 	//Render target for the game
-	m_gameRenderTarget = new Rendering::RenderTarget(m_numFrames, gameResolution.x, gameResolution.y, m_RTVHeap, m_DSVHeap);
+	m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
 }
 
 void RenderModule::Release()
@@ -486,6 +486,11 @@ void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
 {
 	ResizeSwapChain(size.x, size.y);
 	ResizeDepthBuffer(size.x, size.y, &m_pMainDepthBuffer, m_mainDSV);
+}
+
+Rendering::RenderTarget* RenderModule::CreateRenderTarget(int width, int height)
+{
+	return new Rendering::RenderTarget(m_numFrames, width, height, m_RTVHeap, m_DSVHeap);
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

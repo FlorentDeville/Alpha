@@ -74,6 +74,8 @@ public:
 
 	void ChangeMainResolution(const DirectX::XMUINT2& size);
 
+	Rendering::RenderTarget* CreateRenderTarget(int width, int height);
+
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
 	CommandQueue* GetCopyCommandQueue();
