@@ -10,21 +10,29 @@
 #include "Rendering/RenderModule.h"
 
 #include "d3dx12.h"
+#pragma optimize("", off)
 
 namespace Rendering
 {
-	RenderTarget::RenderTarget(int numFrame, int width, int height, DescriptorHeap& rtvHeap, DescriptorHeap& dsvHeap)
+	RenderTarget::RenderTarget(int numFrame, int width, int height)
 		: m_numFrames(numFrame)
 		, m_renderTargets(nullptr)
 		, m_rtv(nullptr)
 		, m_dsv()
 	{
+		RenderModule& renderModule = RenderModule::Get();
+
+		//create the rtv and dsv heap
+		m_pRTVHeap = renderModule.CreateRTVHeap();
+		m_pDSVHeap = renderModule.CreateDSVHeap();
+
+		//create the render target
 		m_renderTargetsId = new TextureId[numFrame];
 		m_renderTargets = new Texture*[numFrame];
 		m_rtv = new D3D12_CPU_DESCRIPTOR_HANDLE[numFrame];
 
-		RenderModule::TextureMgr& textureMgr = RenderModule::Get().GetTextureMgr();
-		ID3D12Device2* pDevice = RenderModule::Get().GetDevice();
+		RenderModule::TextureMgr& textureMgr = renderModule.GetTextureMgr();
+		ID3D12Device2* pDevice = renderModule.GetDevice();
 
 		//Create render texture and rtv
 		for (int ii = 0; ii < m_numFrames; ++ii)
@@ -32,24 +40,29 @@ namespace Rendering
 			m_renderTargets[ii] = textureMgr.CreateResource(m_renderTargetsId[ii], "render texture");
 			m_renderTargets[ii]->Init_RenderTarget(width, height);
 
-			m_rtv[ii] = rtvHeap.GetNewHandle();
+			m_rtv[ii] = m_pRTVHeap->GetNewHandle();
 			pDevice->CreateRenderTargetView(m_renderTargets[ii]->GetResource(), nullptr, m_rtv[ii]);
 		}
 
 		m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
 		m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
-		m_dsv = dsvHeap.GetNewHandle();
+		m_dsv = m_pDSVHeap->GetNewHandle();
 		CreateDepthBuffer(width, height);
 	}
 
 	RenderTarget::~RenderTarget()
 	{
+		m_pRTVHeap->Release();
+		delete m_pRTVHeap;
+
+		m_pDSVHeap->Release();
+		delete m_pDSVHeap;
+
 		delete m_renderTargetsId;
 		delete m_renderTargets;
 		delete m_rtv;
 	}
-
 
 	void RenderTarget::CreateDepthBuffer(int width, int height)
 	{

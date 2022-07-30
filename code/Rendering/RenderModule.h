@@ -75,6 +75,10 @@ public:
 	void ChangeMainResolution(const DirectX::XMUINT2& size);
 
 	Rendering::RenderTarget* CreateRenderTarget(int width, int height);
+	Rendering::DescriptorHeap* CreateRTVHeap();
+	Rendering::DescriptorHeap* CreateDSVHeap();
+
+	TextureId GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const;
 
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
@@ -101,8 +105,8 @@ private:
 
 	IDXGISwapChain4* m_pSwapChain;
 	
-	Rendering::DescriptorHeap m_RTVHeap;
-	Rendering::DescriptorHeap m_DSVHeap;
+	Rendering::DescriptorHeap* m_pRTVHeap;
+	Rendering::DescriptorHeap* m_pDSVHeap;
 
 	CommandQueue* m_pRenderCommandQueue;
 	ID3D12GraphicsCommandList2* m_pRenderCommandList;

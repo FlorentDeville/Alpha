@@ -5,22 +5,26 @@
 #pragma once
 
 #include "Rendering/Texture/Texture.h"
+#include "Rendering/DescriptorHeap.h"
 
 class RenderModule;
 
 namespace Rendering
 {
-	class DescriptorHeap;
+	//class DescriptorHeap;
 
 	class RenderTarget
 	{
 		friend RenderModule;
 
 	public:
-		RenderTarget(int numFrame, int width, int height, DescriptorHeap& rtvHeap, DescriptorHeap& dsvHeap);
+		RenderTarget(int numFrame, int width, int height);
 		~RenderTarget();
 
 	private:
+		DescriptorHeap* m_pRTVHeap;				// memory heap for the render target view
+		DescriptorHeap* m_pDSVHeap;				// memory heap for the depth stencil view
+
 		int m_numFrames;						// number of buffers
 		TextureId* m_renderTargetsId;			// Ids of the textures used as render targets
 		Texture** m_renderTargets;				// Array of textures used as render target

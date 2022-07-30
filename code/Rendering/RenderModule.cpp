@@ -33,8 +33,8 @@
 RenderModule::RenderModule()
 	: m_pDevice(nullptr)
 	, m_pSwapChain(nullptr)
-	, m_RTVHeap()
-	, m_DSVHeap()
+	, m_pRTVHeap(nullptr)
+	, m_pDSVHeap(nullptr)
 	, m_allowTearing(false)
 	, m_pRenderCommandQueue(nullptr)
 	, m_pCopyCommandQueue(nullptr)
@@ -77,14 +77,14 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), mainResolution.x, mainResolution.y, m_numFrames);
 	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 
-	m_RTVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames * 2);
+	m_pRTVHeap = CreateRTVHeap();
 	for (int ii = 0; ii < m_numFrames; ++ii)
 	{
-		m_mainRTV[ii] = m_RTVHeap.GetNewHandle();
+		m_mainRTV[ii] = m_pRTVHeap->GetNewHandle();
 	}
 
-	m_DSVHeap.Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2);
-	m_mainDSV = m_DSVHeap.GetNewHandle();
+	m_pDSVHeap = CreateDSVHeap();
+	m_mainDSV = m_pDSVHeap->GetNewHandle();
 
 	UpdateRenderTargetViews();
 
@@ -110,13 +110,16 @@ void RenderModule::Release()
 		pBackBuffer->Release();
 
 	m_pMainDepthBuffer->Release();
-	m_DSVHeap.Release();
-	m_RTVHeap.Release();
+	m_pDSVHeap->Release();
+	m_pRTVHeap->Release();
 	m_pSwapChain->Release();
 	m_pDevice->Release();
 
 	m_fontMgr.Release();
 	m_textureMgr.Release();
+
+	delete m_pRTVHeap;
+	delete m_pDSVHeap;
 
 	ReportLiveObject();
 }
@@ -479,7 +482,7 @@ void RenderModule::RenderAllText()
 
 TextureId RenderModule::GetGameRenderTargetTextureId() const
 {
-	return m_gameRenderTarget->m_renderTargetsId[m_currentBackBufferIndex];
+	return GetRenderTargetTextureId(m_gameRenderTarget);
 }
 
 void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
@@ -490,7 +493,26 @@ void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
 
 Rendering::RenderTarget* RenderModule::CreateRenderTarget(int width, int height)
 {
-	return new Rendering::RenderTarget(m_numFrames, width, height, m_RTVHeap, m_DSVHeap);
+	return new Rendering::RenderTarget(m_numFrames, width, height);
+}
+
+Rendering::DescriptorHeap* RenderModule::CreateRTVHeap()
+{
+	Rendering::DescriptorHeap* heap = new Rendering::DescriptorHeap();
+	heap->Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames * 2);
+	return heap;
+}
+
+Rendering::DescriptorHeap* RenderModule::CreateDSVHeap()
+{
+	Rendering::DescriptorHeap* heap = new Rendering::DescriptorHeap();
+	heap->Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2);
+	return heap;
+}
+
+TextureId RenderModule::GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const
+{
+	return pRenderTarget->m_renderTargetsId[m_currentBackBufferIndex];
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

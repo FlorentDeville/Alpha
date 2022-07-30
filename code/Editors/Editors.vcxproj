@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamePlayer\GamePlayer.h" />
+    <ClInclude Include="LevelEditor\LevelEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
+    <ClCompile Include="LevelEditor\LevelEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

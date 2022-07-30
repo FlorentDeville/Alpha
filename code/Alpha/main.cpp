@@ -21,6 +21,7 @@
 #include "Core/Helper.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
+#include "Editors/LevelEditor/LevelEditor.h"
 
 #include "GameInputs/Inputs/InputMgr.h"
 
@@ -574,6 +575,7 @@ void CreateMainWindow()
 	pMiddleTabContainer->AddTab("Dumber", pDummyTab2);
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
+	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
 
 	pMiddleTabContainer->SetSelectedTab(1);
 }
@@ -622,6 +624,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Init();
 
 	Editors::GamePlayer::InitSingleton();
+	Editors::LevelEditor::InitSingleton();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -652,6 +655,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		GameInputs::InputMgr::Get().ClearAllStates();
 	}
 
+	Editors::LevelEditor::ReleaseSingleton();
 	Editors::GamePlayer::ReleaseSingleton();
 
 	gameMgr.Release();
