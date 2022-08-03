@@ -678,9 +678,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	gameMgr.Release();
 	GameMgr::ReleaseSingleton();
 
-	render.Release();
-	RenderModule::ReleaseSingleton();
-
 	inputMgr.Release();
 	GameInputs::InputMgr::ReleaseSingleton();
 
@@ -695,6 +692,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	delete g_pPipelineStateMgr;
 	delete g_pMeshMgr;
 	delete g_pWindow;
+
+	render.Release();
+	RenderModule::ReleaseSingleton();
 
 	return 0;
 }
