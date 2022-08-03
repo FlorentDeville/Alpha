@@ -113,6 +113,8 @@ void Texture::Init(const std::string& path)
 		srvDesc.Texture2D.MipLevels = 1;
 		pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 	}
+
+	pUploadResource->Release();
 }
 
 void Texture::Init_RenderTarget(int width, int height)
