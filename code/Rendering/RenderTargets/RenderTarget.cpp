@@ -50,6 +50,8 @@ namespace Rendering
 		RenderModule::TextureMgr& textureMgr = renderModule.GetTextureMgr();
 		textureMgr.ReleaseResource(m_textureId);
 
+		m_pDepthBuffer->Release();
+
 		m_pRTVHeap->Release();
 		delete m_pRTVHeap;
 
