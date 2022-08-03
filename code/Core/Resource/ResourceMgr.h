@@ -54,13 +54,9 @@ template <class T, typename Id> void ResourceMgr<T, Id>::Init()
 
 template <class T, typename Id> void ResourceMgr<T, Id>::Release()
 {
-	for (T* ptr : m_resources)
+	for(int ii = 0; ii < m_resources.size(); ++ii)
 	{
-		if (ptr)
-		{
-			Resource* pResource = static_cast<Resource*>(ptr);
-			pResource->Release();
-		}
+		ReleaseResource(ii);
 	}
 }
 
