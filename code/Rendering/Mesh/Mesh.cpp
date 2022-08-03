@@ -155,6 +155,9 @@ void Mesh::LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCo
 	//Upload everything to the gpu
 	uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
 	pCopyCommandQueue->WaitForFenceValue(fenceValue);
+
+	pIntermediateIndexBuffer->Release();
+	pIntermediateVertexBuffer->Release();
 }
 
 void Mesh::Load(const std::string& filename)
