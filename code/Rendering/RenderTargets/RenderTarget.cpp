@@ -46,6 +46,10 @@ namespace Rendering
 
 	RenderTarget::~RenderTarget()
 	{
+		RenderModule& renderModule = RenderModule::Get();
+		RenderModule::TextureMgr& textureMgr = renderModule.GetTextureMgr();
+		textureMgr.ReleaseResource(m_textureId);
+
 		m_pRTVHeap->Release();
 		delete m_pRTVHeap;
 

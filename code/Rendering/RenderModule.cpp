@@ -101,6 +101,7 @@ void RenderModule::Release()
 
 	delete m_pRenderCommandQueue;
 	delete m_pCopyCommandQueue;
+	delete m_gameRenderTarget;
 
 #if defined(_DEBUG)
 	m_pDebugInterface->Release();
