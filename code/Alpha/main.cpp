@@ -34,6 +34,7 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/ShaderMgr.h"
@@ -419,7 +420,13 @@ void Update()
 
 void Render()
 {
-	RenderModule::Get().PreRender_RenderToTexture();
+
+	RenderModule& renderModule = RenderModule::Get();
+
+	renderModule.PreRender();
+
+	//first render the game
+	renderModule.m_gameRenderTarget->BeginScene();
 
 	// Render the cube
 	if(false)
@@ -432,9 +439,14 @@ void Render()
 
 	GameMgr::Get().Render();
 
-	//This call makes the transition between the game render target (a texture) and the actual frame buffer (the screen)
-	RenderModule::Get().PreRender();
+	renderModule.m_gameRenderTarget->EndScene();
 
+	//render the level editor
+	Editors::LevelEditor::Get().Render();
+
+	//render the back buffer
+	renderModule.BeginMainScene();
+	
 	// Render the cube
 	//if(false)
 	//{
@@ -471,8 +483,13 @@ void Render()
 		WidgetMgr::Get().Draw();
 	}
 
-	RenderModule::Get().RenderAllText();
-	RenderModule::Get().PostRender();
+	renderModule.RenderAllText();
+	renderModule.EndMainScene();
+	
+	renderModule.PostRender();
+
+	//run all the render command
+	renderModule.ExecuteRenderCommand();
 }
 
 bool LoadContent()
@@ -577,7 +594,7 @@ void CreateMainWindow()
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
 
-	pMiddleTabContainer->SetSelectedTab(1);
+	pMiddleTabContainer->SetSelectedTab(0);
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR lpCmdLine, _In_ int /*nCmdShow*/)

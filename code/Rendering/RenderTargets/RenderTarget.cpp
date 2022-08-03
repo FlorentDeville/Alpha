@@ -14,11 +14,12 @@
 
 namespace Rendering
 {
-	RenderTarget::RenderTarget(int numFrame, int width, int height)
-		: m_numFrames(numFrame)
-		, m_renderTargets(nullptr)
-		, m_rtv(nullptr)
+	RenderTarget::RenderTarget(int width, int height)
+		: m_textureId()
+		, m_texture()
+		, m_rtv()
 		, m_dsv()
+		, m_currentState(D3D12_RESOURCE_STATE_RENDER_TARGET)
 	{
 		RenderModule& renderModule = RenderModule::Get();
 
@@ -26,23 +27,15 @@ namespace Rendering
 		m_pRTVHeap = renderModule.CreateRTVHeap();
 		m_pDSVHeap = renderModule.CreateDSVHeap();
 
-		//create the render target
-		m_renderTargetsId = new TextureId[numFrame];
-		m_renderTargets = new Texture*[numFrame];
-		m_rtv = new D3D12_CPU_DESCRIPTOR_HANDLE[numFrame];
-
 		RenderModule::TextureMgr& textureMgr = renderModule.GetTextureMgr();
 		ID3D12Device2* pDevice = renderModule.GetDevice();
 
 		//Create render texture and rtv
-		for (int ii = 0; ii < m_numFrames; ++ii)
-		{
-			m_renderTargets[ii] = textureMgr.CreateResource(m_renderTargetsId[ii], "render texture");
-			m_renderTargets[ii]->Init_RenderTarget(width, height);
+		m_texture = textureMgr.CreateResource(m_textureId, "render texture");
+		m_texture->Init_RenderTarget(width, height);
 
-			m_rtv[ii] = m_pRTVHeap->GetNewHandle();
-			pDevice->CreateRenderTargetView(m_renderTargets[ii]->GetResource(), nullptr, m_rtv[ii]);
-		}
+		m_rtv = m_pRTVHeap->GetNewHandle();
+		pDevice->CreateRenderTargetView(m_texture->GetResource(), nullptr, m_rtv);
 
 		m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
 		m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
@@ -58,10 +51,49 @@ namespace Rendering
 
 		m_pDSVHeap->Release();
 		delete m_pDSVHeap;
+	}
 
-		delete m_renderTargetsId;
-		delete m_renderTargets;
-		delete m_rtv;
+	void RenderTarget::TransitionTo(D3D12_RESOURCE_STATES nextState)
+	{
+		if (nextState == m_currentState)
+			return;
+
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
+
+		ID3D12Resource* pTexture = m_texture->GetResource();
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, m_currentState, nextState);
+		commandList->ResourceBarrier(1, &barrier);
+
+		m_currentState = nextState;
+	}
+
+	void RenderTarget::BeginScene()
+	{
+		TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
+
+		// Clear the render target.
+		float clearColor[4] = { 0.4f, 0.6f, 0.9f, 1.0f };
+		commandList->ClearRenderTargetView(m_rtv, clearColor, 0, nullptr);
+
+		// Clear the depth buffer
+		float depthValue = 1.f;
+		commandList->ClearDepthStencilView(m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+
+		//Set viewport and scissors
+		commandList->RSSetViewports(1, &m_viewport);
+		commandList->RSSetScissorRects(1, &m_scissorRect);
+
+		// Set render targets
+		commandList->OMSetRenderTargets(1, &m_rtv, FALSE, &m_dsv);
+	}
+
+	void RenderTarget::EndScene()
+	{
+		TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 	}
 
 	void RenderTarget::CreateDepthBuffer(int width, int height)

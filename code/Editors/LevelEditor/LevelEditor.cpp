@@ -54,6 +54,7 @@ namespace Editors
 
 	void LevelEditor::Render()
 	{
-
+		m_pRenderTarget->BeginScene();
+		m_pRenderTarget->EndScene();
 	}
 }

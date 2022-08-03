@@ -124,34 +124,19 @@ void RenderModule::Release()
 	ReportLiveObject();
 }
 
-void RenderModule::PreRender_RenderToTexture()
-{
-	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
-
-	// Clear the render target.
-	m_pRenderCommandList->ClearRenderTargetView(m_gameRenderTarget->m_rtv[m_currentBackBufferIndex], m_clearColor, 0, nullptr);
-
-	// Clear the depth buffer
-	float depthValue = 1.f;
-	m_pRenderCommandList->ClearDepthStencilView(m_gameRenderTarget->m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
-
-	//Set viewport and scissors
-	m_pRenderCommandList->RSSetViewports(1, &m_gameRenderTarget->m_viewport);
-	m_pRenderCommandList->RSSetScissorRects(1, &m_gameRenderTarget->m_scissorRect);
-
-	// Set render targets
-	m_pRenderCommandList->OMSetRenderTargets(1, &m_gameRenderTarget->m_rtv[m_currentBackBufferIndex], FALSE, &m_gameRenderTarget->m_dsv);
-}
-
 void RenderModule::PreRender()
 {
-	//switch the render texture to a pixel shader resource
-	{
-		ID3D12Resource* pTexture = m_gameRenderTarget->m_renderTargets[m_currentBackBufferIndex]->GetResource();
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-		m_pRenderCommandList->ResourceBarrier(1, &barrier);
-	}
+	//new render command list
+	m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
+}
 
+void RenderModule::PostRender()
+{
+
+}
+
+void RenderModule::BeginMainScene()
+{
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
 
 	// Clear the render target.
@@ -176,7 +161,7 @@ void RenderModule::PreRender()
 	m_pRenderCommandList->OMSetRenderTargets(1, &m_mainRTV[m_currentBackBufferIndex], FALSE, &m_mainDSV);
 }
 
-void RenderModule::PostRender()
+void RenderModule::EndMainScene()
 {
 	//final command : switch the back buffer to present state
 	ID3D12Resource* pBackBuffer = m_pBackBuffers[m_currentBackBufferIndex];
@@ -184,27 +169,6 @@ void RenderModule::PostRender()
 		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pBackBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 		m_pRenderCommandList->ResourceBarrier(1, &barrier);
 	}
-
-	//switch back the render texture to render target
-	{
-		ID3D12Resource* pTexture = m_gameRenderTarget->m_renderTargets[m_currentBackBufferIndex]->GetResource();
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		m_pRenderCommandList->ResourceBarrier(1, &barrier);
-	}
-	
-	//run the command list
-	uint64_t fenceValue = m_pRenderCommandQueue->ExecuteCommandList(m_pRenderCommandList);
-
-	//present
-	UINT syncInterval = m_vSync ? 1 : 0;
-	UINT presentFlags = m_allowTearing && !m_vSync? DXGI_PRESENT_ALLOW_TEARING : 0;
-	ThrowIfFailed(m_pSwapChain->Present(syncInterval, presentFlags));
-
-	//wait for the commands to be run
-	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
-
-	m_pRenderCommandQueue->WaitForFenceValue(fenceValue);
-	m_pRenderCommandList = nullptr;
 }
 
 void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp)
@@ -225,6 +189,23 @@ void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX&
 	m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
 
 	m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+}
+
+void RenderModule::ExecuteRenderCommand()
+{
+	//run the command list
+	uint64_t fenceValue = m_pRenderCommandQueue->ExecuteCommandList(m_pRenderCommandList);
+
+	//present
+	UINT syncInterval = m_vSync ? 1 : 0;
+	UINT presentFlags = m_allowTearing && !m_vSync ? DXGI_PRESENT_ALLOW_TEARING : 0;
+	ThrowIfFailed(m_pSwapChain->Present(syncInterval, presentFlags));
+
+	//wait for the commands to be run
+	m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
+
+	m_pRenderCommandQueue->WaitForFenceValue(fenceValue);
+	m_pRenderCommandList = nullptr;
 }
 
 void RenderModule::PreRenderForRenderable(const Renderable& renderable)
@@ -493,7 +474,7 @@ void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
 
 Rendering::RenderTarget* RenderModule::CreateRenderTarget(int width, int height)
 {
-	return new Rendering::RenderTarget(m_numFrames, width, height);
+	return new Rendering::RenderTarget(width, height);
 }
 
 Rendering::DescriptorHeap* RenderModule::CreateRTVHeap()
@@ -512,7 +493,7 @@ Rendering::DescriptorHeap* RenderModule::CreateDSVHeap()
 
 TextureId RenderModule::GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const
 {
-	return pRenderTarget->m_renderTargetsId[m_currentBackBufferIndex];
+	return pRenderTarget->m_textureId;
 }
 
 CommandQueue* RenderModule::GetRenderCommandQueue()

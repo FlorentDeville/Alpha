@@ -48,12 +48,14 @@ public:
 	void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution);
 	void Release();
 
-	void PreRender_RenderToTexture();
-
 	void PreRender();
 	void PostRender();
 
+	void BeginMainScene();
+	void EndMainScene();
+
 	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp);
+	void ExecuteRenderCommand();
 
 	//Call PreRenderForRenderable, then SetConstantBuffer, then PostRenderForRenderable.
 	void PreRenderForRenderable(const Renderable& renderable);
@@ -136,6 +138,7 @@ private:
 
 public:
 	UINT m_currentBackBufferIndex;
+	Rendering::RenderTarget* m_gameRenderTarget;
 
 private:
 	ID3D12Resource* m_pBackBuffers[m_numFrames];
@@ -145,8 +148,6 @@ private:
 	D3D12_VIEWPORT m_mainViewport;
 	D3D12_RECT m_mainScissorRect;
 	
-	Rendering::RenderTarget* m_gameRenderTarget;
-
 	void CreateDevice(IDXGIAdapter4* pAdapter);
 
 	IDXGIAdapter4* GetAdapter(bool useWarp);
