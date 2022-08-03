@@ -96,6 +96,16 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 
 void RenderModule::Release()
 {
+	for (std::pair<FontId, FontRenderInfo> it : m_fontVertexBuffers)
+	{
+		for (int ii = 0; ii < 3; ++ii)
+		{
+			ID3D12Resource* pResource = it.second.m_textVertexBuffer[ii];
+			if (pResource)
+				pResource->Release();
+		}
+	}
+
 	m_fontMgr.Release();
 	m_textureMgr.Release();
 
