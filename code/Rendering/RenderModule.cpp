@@ -96,31 +96,43 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 
 void RenderModule::Release()
 {
+	m_fontMgr.Release();
+	m_textureMgr.Release();
+
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
 
 	delete m_pRenderCommandQueue;
 	delete m_pCopyCommandQueue;
 	delete m_gameRenderTarget;
-
+	
 #if defined(_DEBUG)
 	m_pDebugInterface->Release();
 #endif
 
 	for (ID3D12Resource* pBackBuffer : m_pBackBuffers)
-		pBackBuffer->Release();
+	{
+		if(pBackBuffer)
+			pBackBuffer->Release();
+	}
 
-	m_pMainDepthBuffer->Release();
-	m_pDSVHeap->Release();
-	m_pRTVHeap->Release();
+	if(m_pMainDepthBuffer)
+		m_pMainDepthBuffer->Release();
+	
+	if (m_pDSVHeap)
+	{
+		m_pDSVHeap->Release();
+		delete m_pDSVHeap;
+	}
+
+	if (m_pRTVHeap)
+	{
+		m_pRTVHeap->Release();
+		delete m_pRTVHeap;
+	}
+
 	m_pSwapChain->Release();
 	m_pDevice->Release();
-
-	m_fontMgr.Release();
-	m_textureMgr.Release();
-
-	delete m_pRTVHeap;
-	delete m_pDSVHeap;
 
 	ReportLiveObject();
 }
