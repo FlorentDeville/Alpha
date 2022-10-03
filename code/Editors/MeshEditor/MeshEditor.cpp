@@ -28,12 +28,18 @@ extern std::string g_shaderRoot;
 
 namespace Editors
 {
+	MeshEntry::MeshEntry()
+		: m_filename()
+	{
+		m_meshId.m_id = -1;
+		m_renderableId.m_id = -1;
+	}
+
 	MeshEditor::MeshEditor()
 		: Core::Singleton<MeshEditor>()
 		, m_pRenderTarget(nullptr)
-	{
-		m_meshToRender.m_id = -1;
-	}
+		, m_selectedMesh(-1)
+	{}
 
 	MeshEditor::~MeshEditor()
 	{
@@ -74,7 +80,8 @@ namespace Editors
 		std::string meshRoot = "c:\\workspace\\Alpha\\data\\mesh";
 		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(meshRoot))
 		{
-			m_meshesFilenameList.push_back(entry.path().string());
+			m_allMeshes.push_back(MeshEntry());
+			m_allMeshes.back().m_filename = entry.path().string();
 		}
 
 		//create a button and label per mesh
@@ -83,16 +90,27 @@ namespace Editors
 		pMeshListLayout->SetDirection(Layout::Direction::Vertical);
 		pSplit->AddLeftPanel(pMeshListLayout);
 
-		for (const std::string& mesh : m_meshesFilenameList)
+		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
 		{
+			const MeshEntry& entry = m_allMeshes[ii];
+
+			const std::string& meshName = entry.m_filename;
 			Button* pButton = new Button(0, 20, 0, 0);
 			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, mesh](int x, int y) -> bool { LoadMesh(mesh); return true; });
+			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
 			pMeshListLayout->AddWidget(pButton);
 
-			Label* pLabel = new Label(0, 0, 1, mesh);
+			Label* pLabel = new Label(0, 0, 1, meshName);
 			pButton->AddWidget(pLabel);
 		}
+
+		//load the material to render the mesh
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
+
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(m_pid, "base");
+		pPipelineState->Init_PosColor(rsId, vsId, psId);
 	}
 
 	void MeshEditor::Update()
@@ -126,32 +144,43 @@ namespace Editors
 		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, aspectRatio, nearDistance, 100.0f);
 
 		//RENDER
-		if (m_meshToRender.m_id != -1)
+		if (m_selectedMesh != -1)
 		{
+			const MeshEntry& entry = m_allMeshes[m_selectedMesh];
+
 			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
 			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
-			RenderModule::Get().Render(*g_pRenderableMgr->GetRenderable(m_meshToRender), mvpMatrix);
+			RenderModule::Get().Render(*g_pRenderableMgr->GetRenderable(entry.m_renderableId), mvpMatrix);
 		}
 
 		m_pRenderTarget->EndScene();
 	}
 
-	void MeshEditor::LoadMesh(const std::string& meshFilename)
+	void MeshEditor::ShowMesh(int entryIndex)
 	{
-		Mesh* pCubeMesh = nullptr;
-		MeshId cubeMeshId;
-		g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
-		pCubeMesh->Load(meshFilename);
-
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
-
-		PipelineStateId pid = 0;
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "base");
-		pPipelineState->Init_PosColor(rsId, vsId, psId);
-
-		m_meshToRender = g_pRenderableMgr->CreateRenderable(cubeMeshId, pid);
+		m_selectedMesh = entryIndex;
 	}
 
+	void MeshEditor::LoadMesh(const std::string& meshFilename, MeshEntry& entry)
+	{
+		entry.m_filename = meshFilename;
+
+		Mesh* pCubeMesh = nullptr;
+		g_pMeshMgr->CreateMesh(&pCubeMesh, entry.m_meshId);
+		pCubeMesh->Load(meshFilename);
+
+		entry.m_renderableId = g_pRenderableMgr->CreateRenderable(entry.m_meshId, m_pid);
+	}
+
+	void MeshEditor::OnMeshEntryClicked(int entryIndex)
+	{
+		MeshEntry& entry = m_allMeshes[entryIndex];
+
+		if (entry.m_renderableId.m_id == -1)
+		{
+			LoadMesh(entry.m_filename, entry);
+		}
+
+		ShowMesh(entryIndex);
+	}
 }
