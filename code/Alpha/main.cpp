@@ -22,6 +22,7 @@
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditor.h"
+#include "Editors/MeshEditor/MeshEditor.h"
 
 #include "GameInputs/Inputs/InputMgr.h"
 
@@ -443,6 +444,7 @@ void Render()
 
 	//render the level editor
 	Editors::LevelEditor::Get().Render();
+	Editors::MeshEditor::Get().Render();
 
 	//render the back buffer
 	renderModule.BeginMainScene();
@@ -500,7 +502,7 @@ bool LoadContent()
 		MeshId cubeMeshId;
 		g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
 		//pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
-		pCubeMesh->Load("c:\\tmp\\cube.json");
+		pCubeMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_torus.json");
 
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
@@ -581,18 +583,19 @@ void CreateMainWindow()
 	Widgets::Window* pWindow = new Widgets::Window(DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
 	WidgetMgr::Get().SetRoot(pWindow);
 
-	Widgets::Split3Way* pSplit = new Widgets::Split3Way();
-	pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-	pWindow->AddWidget(pSplit);
+	//Widgets::Split3Way* pSplit = new Widgets::Split3Way();
+	//pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+	//pWindow->AddWidget(pSplit);
 
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
-	pSplit->AddMiddlePanel(pMiddleTabContainer);
+	pWindow->AddWidget(pMiddleTabContainer);
 
-	Widgets::Tab* pDummyTab2 = new Widgets::Tab();
-	pMiddleTabContainer->AddTab("Dumber", pDummyTab2);
+	//Widgets::Tab* pDummyTab2 = new Widgets::Tab();
+	//pMiddleTabContainer->AddTab("Dumber", pDummyTab2);
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
+	Editors::MeshEditor::Get().CreateEditor(pMiddleTabContainer);
 
 	pMiddleTabContainer->SetSelectedTab(0);
 }
@@ -642,6 +645,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Editors::GamePlayer::InitSingleton();
 	Editors::LevelEditor::InitSingleton();
+	Editors::MeshEditor::InitSingleton();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -672,6 +676,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		GameInputs::InputMgr::Get().ClearAllStates();
 	}
 
+	Editors::MeshEditor::ReleaseSingleton();
 	Editors::LevelEditor::ReleaseSingleton();
 	Editors::GamePlayer::ReleaseSingleton();
 
