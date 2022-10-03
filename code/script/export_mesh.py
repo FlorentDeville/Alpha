@@ -1,6 +1,5 @@
 import bpy
 import json
-import os
 
 out_mesh = {}
 out_mesh["vertex_structure"] = "pos,col"
@@ -26,38 +25,34 @@ for obj in bpy.data.objects:
         vertex_index_to_out_vertex_index[loop.index] = vertex_index
         vertex_index = vertex_index + 1
         
-        vertex_buffer.append(vertex.co[0]) #x is right       
-        vertex_buffer.append(vertex.co[2]) #z is up
-        vertex_buffer.append(vertex.co[1]) #y is forward
+        vertex_buffer.append(vertex.co[0])        
+        vertex_buffer.append(vertex.co[2])
+        vertex_buffer.append(vertex.co[1])
         vertex_buffer.append(color[0])
         vertex_buffer.append(color[1])
         vertex_buffer.append(color[2])
         
     for polygon in mesh.polygons:
-        count = len(polygon.loop_indices)
-        if count != 3:
-            print ("Triangulate the mesh!")
-            exit()
-        
-        loop_indices = polygon.loop_indices    
-        vertex_index = vertex_index_to_out_vertex_index[loop_indices[0]]
-        index_buffer.append(vertex_index)
-        vertex_index = vertex_index_to_out_vertex_index[loop_indices[2]]
-        index_buffer.append(vertex_index)
-        vertex_index = vertex_index_to_out_vertex_index[loop_indices[1]]
-        index_buffer.append(vertex_index)
-        
+        loop_length = len(polygon.loop_indices)
+        for ii in range(0, loop_length, 3):
+            #print ("boom")
+            loop_index = polygon.loop_indices[ii]
+            vertex_index = vertex_index_to_out_vertex_index[loop_index]
+            index_buffer.append(vertex_index)
+            
+            loop_index = polygon.loop_indices[ii + 2]
+            vertex_index = vertex_index_to_out_vertex_index[loop_index]
+            index_buffer.append(vertex_index)
+            
+            loop_index = polygon.loop_indices[ii + 1]
+            vertex_index = vertex_index_to_out_vertex_index[loop_index]
+            index_buffer.append(vertex_index)
+                
     out_mesh["vertex_buffer"] = vertex_buffer
+    out_mesh["triangle_count"] = int(len(index_buffer) / 3)
     out_mesh["index_buffer"] = index_buffer
     
-    blender_filename = bpy.data.filepath
-    filename = os.path.basename(blender_filename)
-    filename = os.path.splitext(filename)[0]
-    
-    json_filename = "c:/tmp/" + filename + ".json"
-    with open(json_filename, "w") as out_file:
+    with open("c:/tmp/cube.json", 'w') as out_file:
         json.dump(out_mesh, out_file, indent = 2)
-        
-    print("Mesh %s written" % json_filename)
 
 print ("Over")
