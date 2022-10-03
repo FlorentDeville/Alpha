@@ -9,6 +9,8 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
 
+#include "DirectXMath.h"
+
 #include <vector>
 #include <string>
 
@@ -49,6 +51,11 @@ namespace Editors
 		int m_selectedMesh; //id in m_allMeshes, -1 if nothing selected
 
 		PipelineStateId m_pid; //pipeline state id to render the mesh
+
+		//camera position
+		DirectX::XMVECTOR m_cameraTarget;
+		DirectX::XMVECTOR m_cameraEuler;
+		float m_cameraDistance;
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(const std::string& meshFilename, MeshEntry& entry);

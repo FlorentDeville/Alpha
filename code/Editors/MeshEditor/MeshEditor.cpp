@@ -39,7 +39,12 @@ namespace Editors
 		: Core::Singleton<MeshEditor>()
 		, m_pRenderTarget(nullptr)
 		, m_selectedMesh(-1)
-	{}
+		, m_cameraDistance(10.f)
+		, m_pid(-1)
+	{
+		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
+		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
+	}
 
 	MeshEditor::~MeshEditor()
 	{
@@ -114,7 +119,30 @@ namespace Editors
 	}
 
 	void MeshEditor::Update()
-	{}
+	{
+		DirectX::XMVECTOR ySpeed = DirectX::XMVectorSet(0, 0.05f, 0, 0);
+		DirectX::XMVECTOR xSpeed = DirectX::XMVectorSet(0.05f, 0, 0, 0);
+
+		//I should not use the game input but it's good enough for now
+		GameInputs::InputMgr& inputs = GameInputs::InputMgr::Get();
+		if (inputs.GetState(GameInputs::InputCommand::MoveLeft))
+		{
+			m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, ySpeed);
+		}
+		else if (inputs.GetState(GameInputs::InputCommand::MoveRight))
+		{
+			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, ySpeed);
+		}
+
+		if (inputs.GetState(GameInputs::InputCommand::MoveForward))
+		{
+			m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, xSpeed);
+		}
+		else if (inputs.GetState(GameInputs::InputCommand::MoveBackward))
+		{
+			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, xSpeed);
+		}
+	}
 
 	void MeshEditor::Render()
 	{
@@ -124,21 +152,25 @@ namespace Editors
 		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
 		//view
-		DirectX::XMVECTOR euler = DirectX::XMVectorSet(0, 0, 0, 1);
 		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
 		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
+
+		//calculate the camera position
+		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
+		DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 0, m_cameraDistance, 1));
+		DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
+		DirectX::XMVECTOR cameraPosition = DirectX::XMVector3Transform(m_cameraTarget, txPos);
+		
+
 		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
 		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
 
-		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(euler);
-		DirectX::XMVECTOR direction = DirectX::XMVector3Transform(cameraDirection, orientation);
-		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, direction, cameraUp);
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
 		float fov = 45.f;
 		const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
-		float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
+		float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y); //ratio shoudl be based on the viewport size, not the game resolution
 		float nearDistance = 0.1f;
 		float fovRad = DirectX::XMConvertToRadians(fov);
 		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, aspectRatio, nearDistance, 100.0f);

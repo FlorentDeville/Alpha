@@ -415,6 +415,7 @@ void Update()
 		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
 	}
 
+	Editors::MeshEditor::Get().Update();
 	GameMgr::Get().Update();
 	WidgetMgr::Get().Update();
 }
