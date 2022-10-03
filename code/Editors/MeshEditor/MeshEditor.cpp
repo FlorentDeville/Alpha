@@ -41,6 +41,7 @@ namespace Editors
 		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
 		, m_pid(-1)
+		, m_aspectRatio(0.f)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -54,7 +55,10 @@ namespace Editors
 	void MeshEditor::CreateEditor(Widget* pParent)
 	{
 		//create the render target
-		m_pRenderTarget = RenderModule::Get().CreateRenderTarget(1280, 720);
+		const int width = 1280;
+		const int height = 720;
+		m_aspectRatio = width / static_cast<float>(height);
+		m_pRenderTarget = RenderModule::Get().CreateRenderTarget(width, height);
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -168,12 +172,10 @@ namespace Editors
 		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
-		float fov = 45.f;
-		const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
-		float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y); //ratio shoudl be based on the viewport size, not the game resolution
+		const float fov = 45.f;
 		float nearDistance = 0.1f;
 		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, aspectRatio, nearDistance, 100.0f);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
 
 		//RENDER
 		if (m_selectedMesh != -1)

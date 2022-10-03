@@ -57,6 +57,8 @@ namespace Editors
 		DirectX::XMVECTOR m_cameraEuler;
 		float m_cameraDistance;
 
+		float m_aspectRatio;
+
 		void ShowMesh(int entryIndex);
 		void LoadMesh(const std::string& meshFilename, MeshEntry& entry);
 
