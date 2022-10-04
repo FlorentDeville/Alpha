@@ -374,7 +374,7 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 	}
 }
 
-void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale)
+void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	const Font* pFont = m_fontMgr.GetResource(fontId);
@@ -384,6 +384,9 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 	// screen coordinate : from the center, range [-1, 1]
 	float x = (uiPos.x * 2 / m_mainResolution.x) -1;
 	float y = 2 - (uiPos.y * 2 / m_mainResolution.y) - 1;
+
+	float scissorXMax = static_cast<float>(scissor.x + scissor.z);
+	scissorXMax = (scissorXMax * 2 / m_mainResolution.x) - 1;
 
 	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
 	VertexText* vert = (VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
@@ -426,16 +429,20 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		float char_width = static_cast<float>(fc->m_width) / m_mainResolution.x * 2.f;
 		float char_height = static_cast<float>(fc->m_height) / m_mainResolution.y * 2.f;
 
-		vert[info.m_characterCount].Position.x = x + ((xoffset + kerning) * scale.x);
-		vert[info.m_characterCount].Position.y = y - (yoffset * scale.y);
-		vert[info.m_characterCount].Position.z = char_width * scale.x;
-		vert[info.m_characterCount].Position.w = char_height * scale.y;
-		vert[info.m_characterCount].Uv.x = fc->m_u;
-		vert[info.m_characterCount].Uv.y = fc->m_v;
-		vert[info.m_characterCount].Uv.z = fc->m_twidth;
-		vert[info.m_characterCount].Uv.w = fc->m_theight;
-		vert[info.m_characterCount].Color = DirectX::XMFLOAT4(1, 1, 1, 1);
-		vert[info.m_characterCount].Z = uiPos.z;
+		VertexText& pVertexText = vert[info.m_characterCount];
+		pVertexText.Position.x = x + ((xoffset + kerning) * scale.x);
+		pVertexText.Position.y = y - (yoffset * scale.y);
+		pVertexText.Position.z = char_width * scale.x;
+		pVertexText.Position.w = char_height * scale.y;
+		pVertexText.Uv.x = fc->m_u;
+		pVertexText.Uv.y = fc->m_v;
+		pVertexText.Uv.z = fc->m_twidth;
+		pVertexText.Uv.w = fc->m_theight;
+		pVertexText.Color = DirectX::XMFLOAT4(1, 1, 1, 1);
+		pVertexText.Z = uiPos.z;
+
+		if (pVertexText.Position.x + pVertexText.Position.w > scissorXMax)
+			break;
 
 		info.m_characterCount++;
 

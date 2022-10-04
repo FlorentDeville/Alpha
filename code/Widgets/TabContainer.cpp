@@ -56,6 +56,7 @@ namespace Widgets
 		const Font* pFont = RenderModule::Get().GetFontMgr().GetResource(WidgetMgr::Get().GetUIFontId());
 		DirectX::XMUINT2 textRect;
 		pFont->ComputeRect(header, textRect);
+		textRect.x += 5;
 
 		int tabIndex = static_cast<int>(m_tabHeaders.size());
 
