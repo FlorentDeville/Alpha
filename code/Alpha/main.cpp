@@ -222,7 +222,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				msg.m_high = wParam;
 				WidgetMgr::Get().HandleMsg(msg);
 
-				GameInputs::InputMgr::Get().Update(wParam);
+				GameInputs::InputMgr::Get().UpdateKeyboard(wParam);
 			}
 			break;
 			}
@@ -289,6 +289,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
+		GameInputs::InputMgr::MouseState mouseState;
+
 		Message msg;
 		msg.m_id = M_MouseMove;
 		msg.m_low.m_pos[0] = x;
@@ -298,6 +300,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			case MK_LBUTTON:
 				msg.m_high = M_LButton;
+				mouseState.m_mouseLeftButton = true;
 				break;
 
 			default:
@@ -306,6 +309,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		
 		WidgetMgr::Get().HandleMsg(msg);
+
+		
+		mouseState.m_mouseX = x;
+		mouseState.m_mouseY = y;
+		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 		break;
 
@@ -322,6 +330,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[1] = y;
 
 		WidgetMgr::Get().HandleMsg(msg);
+
+
+		GameInputs::InputMgr::MouseState mouseState;
+		mouseState.m_mouseX = x;
+		mouseState.m_mouseY = y;
+		mouseState.m_mouseLeftButton = true;
+		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 	break;
 
@@ -338,6 +353,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[1] = y;
 
 		WidgetMgr::Get().HandleMsg(msg);
+
+		GameInputs::InputMgr::MouseState mouseState;
+		mouseState.m_mouseX = x;
+		mouseState.m_mouseY = y;
+		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 
 	case WM_SETCURSOR:

@@ -10,6 +10,7 @@ namespace GameInputs
 {
 	InputMgr::InputMgr()
 		: m_enabled(false)
+		, m_mouseState()
 	{}
 
 	InputMgr::~InputMgr()
@@ -30,7 +31,7 @@ namespace GameInputs
 	void InputMgr::Release()
 	{}
 
-	void InputMgr::Update(uint64_t virtualKey)
+	void InputMgr::UpdateKeyboard(uint64_t virtualKey)
 	{
 		m_keyboardState[virtualKey] = true;
 
@@ -42,6 +43,11 @@ namespace GameInputs
 			return;
 
 		m_commandState[it->second] = true;
+	}
+
+	void InputMgr::UpdateMouseState(const MouseState& mouseState)
+	{
+		m_mouseState = mouseState;
 	}
 
 	bool InputMgr::GetState(InputCommand command) const
@@ -60,6 +66,8 @@ namespace GameInputs
 
 		for (std::map<uint64_t, bool>::iterator it = m_keyboardState.begin(); it != m_keyboardState.end(); ++it)
 			it->second = false;
+
+		m_mouseState = MouseState();
 	}
 
 	void InputMgr::Enable()
@@ -79,5 +87,16 @@ namespace GameInputs
 			return false;
 
 		return it->second;
+	}
+
+	bool InputMgr::IsMouseLeftButtonDown() const
+	{
+		return m_mouseState.m_mouseLeftButton;
+	}
+
+	void InputMgr::GetMousePosition(uint32_t& x, uint32_t& y) const
+	{
+		x = m_mouseState.m_mouseX;
+		y = m_mouseState.m_mouseY;
 	}
 }

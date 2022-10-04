@@ -43,6 +43,7 @@ namespace Editors
 		, m_pid(-1)
 		, m_aspectRatio(0.f)
 		, m_enableViewportControl(false)
+		, m_firstFrameMouseDown(true)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -127,27 +128,31 @@ namespace Editors
 	{
 		if (m_enableViewportControl)
 		{
-			DirectX::XMVECTOR ySpeed = DirectX::XMVectorSet(0, 0.05f, 0, 0);
-			DirectX::XMVECTOR xSpeed = DirectX::XMVectorSet(0.05f, 0, 0, 0);
-
-			//I should not use the game input but it's good enough for now
 			GameInputs::InputMgr& inputs = GameInputs::InputMgr::Get();
-			if (inputs.IsKeyPressed('A'))
+			if (inputs.IsMouseLeftButtonDown())
 			{
-				m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, ySpeed);
-			}
-			else if (inputs.IsKeyPressed('D'))
-			{
-				m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, ySpeed);
-			}
+				DirectX::XMUINT2 mousePosition;
+				inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+				if (m_firstFrameMouseDown)
+				{
+					m_mousePreviousPos = mousePosition;
+					m_firstFrameMouseDown = false;
+				}
 
-			if (inputs.IsKeyPressed('W'))
-			{
-				m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, xSpeed);
+				DirectX::XMINT2 delta;
+				delta.x = m_mousePreviousPos.x - mousePosition.x;
+				delta.y = m_mousePreviousPos.y - mousePosition.y;
+
+				const float ROTATION_SPEED = 0.01f;
+				DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+
+				m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+
+				m_mousePreviousPos = mousePosition;
 			}
-			else if (inputs.IsKeyPressed('S'))
+			else if (!m_firstFrameMouseDown)
 			{
-				m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, xSpeed);
+				m_firstFrameMouseDown = true;
 			}
 		}
 	}

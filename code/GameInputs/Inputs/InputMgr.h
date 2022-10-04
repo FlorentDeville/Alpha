@@ -15,13 +15,31 @@ namespace GameInputs
 	class InputMgr : public Core::Singleton<InputMgr>
 	{
 	public:
+		struct MouseState
+		{
+			bool m_mouseLeftButton;
+			bool m_mouseMiddleButton;
+			bool m_mouseRightButton;
+			uint32_t m_mouseX;
+			uint32_t m_mouseY;
+
+			MouseState()
+				: m_mouseLeftButton(false)
+				, m_mouseMiddleButton(false)
+				, m_mouseRightButton(false)
+				, m_mouseX(0)
+				, m_mouseY(0)
+			{}
+		};
+
 		InputMgr();
 		virtual ~InputMgr();
 
 		void Init();
 		void Release();
 
-		void Update(uint64_t virtualKey);
+		void UpdateKeyboard(uint64_t virtualKey);
+		void UpdateMouseState(const MouseState& mouseState);
 
 		bool GetState(InputCommand command) const;
 
@@ -32,6 +50,8 @@ namespace GameInputs
 
 		//use only in editor, not in game, game should use commands
 		bool IsKeyPressed(char key) const;
+		bool IsMouseLeftButtonDown() const;
+		void GetMousePosition(uint32_t& x, uint32_t& y) const;
 
 	private:
 		//game command
@@ -41,6 +61,8 @@ namespace GameInputs
 		bool m_enabled;
 
 		//raw keyboard mouse event
-		std::map<uint64_t, bool> m_keyboardState; //true to down
+		std::map<uint64_t, bool> m_keyboardState; //true for down
+		bool m_mouseLeftButton;
+		MouseState m_mouseState;
 	};
 }
