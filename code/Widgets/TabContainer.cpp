@@ -51,29 +51,34 @@ namespace Widgets
 		assert(false);
 	}
 
-	void TabContainer::AddTab(const std::string& header, Tab* pTab)
+	Container* TabContainer::AddTab(const std::string& header, Tab* pTab)
 	{
 		const Font* pFont = RenderModule::Get().GetFontMgr().GetResource(WidgetMgr::Get().GetUIFontId());
-		DirectX::XMUINT2 textRect;
-		pFont->ComputeRect(header, textRect);
-		textRect.x += 5;
+
+		const int DEFAULT_WIDTH = 50;
+		const int DEFAULT_HEIGHT = 17;
+		DirectX::XMUINT2 textRect(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 		int tabIndex = static_cast<int>(m_tabHeaders.size());
 
-		Widgets::Container* titleContainer = new Widgets::Container(textRect.x, textRect.y);
-		titleContainer->SetBackgroundColor(m_defaultHeaderColor);
+		Widgets::Container* pTitleContainer = new Widgets::Container(textRect.x, textRect.y);
+		pTitleContainer->SetBackgroundColor(m_defaultHeaderColor);
 		Label* pTitleLabel = new Label(0, 0, 1, header);
-		titleContainer->AddWidget(pTitleLabel);
-		titleContainer->OnClick([this, tabIndex](int, int) -> bool {
+		pTitleContainer->AddWidget(pTitleLabel);
+		pTitleContainer->OnClick([this, tabIndex](int, int) -> bool {
 			SetSelectedTab(tabIndex);
 			return true;
 			});
 
-		m_pHeaderLayout->AddWidget(titleContainer);
+		m_pHeaderLayout->AddWidget(pTitleContainer);
 		m_pContentContainer->AddWidget(pTab);
 
-		m_tabHeaders.push_back(titleContainer);
+		m_selectedTab = static_cast<int>(m_tabContent.size());
+
+		m_tabHeaders.push_back(pTitleContainer);
 		m_tabContent.push_back(pTab);
+
+		return pTitleContainer;
 	}
 
 	void TabContainer::Draw(const DirectX::XMFLOAT2& windowSize)

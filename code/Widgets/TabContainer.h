@@ -21,7 +21,7 @@ namespace Widgets
 
 		void AddWidget(Widget* pWidget) override;
 
-		void AddTab(const std::string& header, Tab* pTab);
+		Container* AddTab(const std::string& header, Tab* pTab);
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
