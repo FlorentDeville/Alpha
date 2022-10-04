@@ -30,10 +30,17 @@ namespace GameInputs
 		void Enable();
 		void Disable();
 
+		//use only in editor, not in game, game should use commands
+		bool IsKeyPressed(char key) const;
+
 	private:
+		//game command
 		std::map<uint64_t, InputCommand> m_keyToCommand;
 		std::map<InputCommand, bool> m_commandState;
 
 		bool m_enabled;
+
+		//raw keyboard mouse event
+		std::map<uint64_t, bool> m_keyboardState; //true to down
 	};
 }

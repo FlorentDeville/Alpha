@@ -42,6 +42,7 @@ namespace Editors
 		, m_cameraDistance(10.f)
 		, m_pid(-1)
 		, m_aspectRatio(0.f)
+		, m_enableViewportControl(false)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -80,9 +81,9 @@ namespace Editors
 		//create left viewport
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
 		pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pViewport->OnGetFocus([]() -> bool { GameInputs::InputMgr::Get().Enable(); return true; });
-		pViewport->OnLoseFocus([]() -> bool { GameInputs::InputMgr::Get().Disable(); return true; });
 		pViewport->OnGetRenderTargetTexture([this]() -> TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
+		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
+		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pSplit->AddRightPanel(pViewport);
 
 		//create the list of meshes
@@ -124,27 +125,30 @@ namespace Editors
 
 	void MeshEditor::Update()
 	{
-		DirectX::XMVECTOR ySpeed = DirectX::XMVectorSet(0, 0.05f, 0, 0);
-		DirectX::XMVECTOR xSpeed = DirectX::XMVectorSet(0.05f, 0, 0, 0);
+		if (m_enableViewportControl)
+		{
+			DirectX::XMVECTOR ySpeed = DirectX::XMVectorSet(0, 0.05f, 0, 0);
+			DirectX::XMVECTOR xSpeed = DirectX::XMVectorSet(0.05f, 0, 0, 0);
 
-		//I should not use the game input but it's good enough for now
-		GameInputs::InputMgr& inputs = GameInputs::InputMgr::Get();
-		if (inputs.GetState(GameInputs::InputCommand::MoveLeft))
-		{
-			m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, ySpeed);
-		}
-		else if (inputs.GetState(GameInputs::InputCommand::MoveRight))
-		{
-			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, ySpeed);
-		}
+			//I should not use the game input but it's good enough for now
+			GameInputs::InputMgr& inputs = GameInputs::InputMgr::Get();
+			if (inputs.IsKeyPressed('A'))
+			{
+				m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, ySpeed);
+			}
+			else if (inputs.IsKeyPressed('D'))
+			{
+				m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, ySpeed);
+			}
 
-		if (inputs.GetState(GameInputs::InputCommand::MoveForward))
-		{
-			m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, xSpeed);
-		}
-		else if (inputs.GetState(GameInputs::InputCommand::MoveBackward))
-		{
-			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, xSpeed);
+			if (inputs.IsKeyPressed('W'))
+			{
+				m_cameraEuler = DirectX::XMVectorSubtract(m_cameraEuler, xSpeed);
+			}
+			else if (inputs.IsKeyPressed('S'))
+			{
+				m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, xSpeed);
+			}
 		}
 	}
 

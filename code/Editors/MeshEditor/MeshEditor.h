@@ -59,6 +59,8 @@ namespace Editors
 
 		float m_aspectRatio;
 
+		bool m_enableViewportControl;
+
 		void ShowMesh(int entryIndex);
 		void LoadMesh(const std::string& meshFilename, MeshEntry& entry);
 

@@ -32,6 +32,8 @@ namespace GameInputs
 
 	void InputMgr::Update(uint64_t virtualKey)
 	{
+		m_keyboardState[virtualKey] = true;
+
 		if (!m_enabled)
 			return;
 
@@ -55,6 +57,9 @@ namespace GameInputs
 	{
 		for (std::map<InputCommand, bool>::iterator it = m_commandState.begin(); it != m_commandState.end(); ++it)
 			it->second = false;
+
+		for (std::map<uint64_t, bool>::iterator it = m_keyboardState.begin(); it != m_keyboardState.end(); ++it)
+			it->second = false;
 	}
 
 	void InputMgr::Enable()
@@ -65,5 +70,14 @@ namespace GameInputs
 	void InputMgr::Disable()
 	{
 		m_enabled = false;
+	}
+
+	bool InputMgr::IsKeyPressed(char key) const
+	{
+		std::map<uint64_t, bool>::const_iterator it = m_keyboardState.find(key);
+		if (it == m_keyboardState.cend())
+			return false;
+
+		return it->second;
 	}
 }
