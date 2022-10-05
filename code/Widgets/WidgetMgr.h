@@ -21,6 +21,7 @@ class Widget;
 
 namespace Widgets
 {
+	class Button;
 	class Container;
 	class Layout;
 	class Split;
@@ -29,7 +30,7 @@ namespace Widgets
 
 class WidgetMgr : public Core::Singleton<WidgetMgr>
 {
-	friend class Button;
+	friend class Widgets::Button;
 	friend class Widgets::Container;
 	friend class Widgets::Split;
 	friend class Widgets::Viewport;

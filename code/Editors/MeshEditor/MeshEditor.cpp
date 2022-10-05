@@ -106,7 +106,7 @@ namespace Editors
 			const MeshEntry& entry = m_allMeshes[ii];
 
 			const std::string& meshName = entry.m_filename;
-			Button* pButton = new Button(0, 20, 0, 0);
+			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
 			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
 			pMeshListLayout->AddWidget(pButton);
