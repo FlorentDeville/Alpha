@@ -111,7 +111,7 @@ namespace Editors
 			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
 			pMeshListLayout->AddWidget(pButton);
 
-			Label* pLabel = new Label(0, 0, 1, meshName);
+			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, meshName);
 			pButton->AddWidget(pLabel);
 		}
 
