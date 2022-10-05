@@ -9,12 +9,13 @@
 #include "Entities/LocatorEntity.h"
 #include "GameMgr.h"
 
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 
-MeshComponent::MeshComponent(GameEntity* pParent, RenderableId id)
+MeshComponent::MeshComponent(GameEntity* pParent, MeshId meshId, Rendering::MaterialId materialId)
 	: GameComponent(pParent)
-	, m_renderableId(id)
+	, m_meshId(meshId)
+	, m_materialId(materialId)
 {}
 
 MeshComponent::~MeshComponent()
@@ -22,6 +23,8 @@ MeshComponent::~MeshComponent()
 
 void MeshComponent::Render()
 {
+	RenderModule& renderer = RenderModule::Get();
+
 	LocatorEntity* pLocatorParent = static_cast<LocatorEntity*>(m_pParent);
 	const DirectX::XMMATRIX& transform = pLocatorParent->GetTransform();
 
@@ -35,6 +38,11 @@ void MeshComponent::Render()
 	DirectX::XMMATRIX wvp = DirectX::XMMatrixMultiply(transform, view);
 	wvp = DirectX::XMMatrixMultiply(wvp, projection);
 
-	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(m_renderableId);
-	RenderModule::Get().Render(*pRenderable, wvp);
+	const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(m_materialId);
+	renderer.BindMaterial(*pMaterial, wvp);
+
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(m_meshId);
+	renderer.RenderMesh(*pMesh);
+	//Renderable* pRenderable = g_pRenderableMgr->GetRenderable(m_renderableId);
+	//RenderModule::Get().Render(*pRenderable, wvp);
 }

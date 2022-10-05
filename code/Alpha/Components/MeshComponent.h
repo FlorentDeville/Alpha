@@ -6,16 +6,18 @@
 
 #include "Components/GameComponent.h"
 
-#include "Rendering/Renderable/RenderableId.h"
+#include "Rendering/Material/MaterialId.h"
+#include "Rendering/Mesh/MeshId.h"
 
 class MeshComponent : public GameComponent
 {
 public:
-	MeshComponent(GameEntity* pParent, RenderableId id);
+	MeshComponent(GameEntity* pParent, MeshId meshId, Rendering::MaterialId materialId);
 	virtual ~MeshComponent();
 
 	void Render() override;
 
 private:
-	RenderableId m_renderableId;
+	MeshId m_meshId;
+	Rendering::MaterialId m_materialId;
 };

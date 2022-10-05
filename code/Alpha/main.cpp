@@ -30,6 +30,8 @@
 
 #include "Rendering/CommandQueue.h"
 #include "Rendering/Font/Font.h"
+#include "Rendering/Material/MaterialMgr.h"
+#include "Rendering/Material/Material.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -64,7 +66,6 @@ bool g_IsInitialized = false;
 
 SysWindow* g_pWindow = nullptr;
 
-RenderableId g_CubeId;
 RenderableId g_CubeTextureId;
 
 float g_FoV;
@@ -450,15 +451,6 @@ void Render()
 	//first render the game
 	renderModule.m_gameRenderTarget->BeginScene();
 
-	// Render the cube
-	if(false)
-	{
-		//// Update the MVP matrix
-		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
-		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-		RenderModule::Get().Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
-	}
-
 	GameMgr::Get().Render();
 
 	renderModule.m_gameRenderTarget->EndScene();
@@ -517,33 +509,36 @@ void Render()
 
 bool LoadContent()
 {
-	PipelineStateId base_PosColor_pipelineStateId;
+	//create the base material
+	Rendering::MaterialId baseMaterialId;
 	{
-		Mesh* pCubeMesh = nullptr;
-		MeshId cubeMeshId;
-		g_pMeshMgr->CreateMesh(&pCubeMesh, cubeMeshId);
-		//pCubeMesh->LoadVertexAndIndexBuffer(g_Vertices, _countof(g_Vertices), g_Indicies, _countof(g_Indicies));
-		pCubeMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_torus.json");
-
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(base_PosColor_pipelineStateId, "base");
+		PipelineStateId pid;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "base");
 		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
-		g_CubeId = g_pRenderableMgr->CreateRenderable(cubeMeshId, base_PosColor_pipelineStateId);
+		Rendering::Material* pMaterial = nullptr;
+		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
+		pMaterial->Init(rsId, pid);
 	}
 
-	RenderableId planeId;
+	//load cube mesh
+	MeshId torusMeshId;
+	{
+		Mesh* pCubeMesh = nullptr;
+		g_pMeshMgr->CreateMesh(&pCubeMesh, torusMeshId);
+		pCubeMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_torus.json");
+	}
+
+	//load plane
+	MeshId planeMeshId;
 	{
 		Mesh* pPlaneMesh = nullptr;
-		MeshId meshId;
-		g_pMeshMgr->CreateMesh(&pPlaneMesh, meshId);
-		pPlaneMesh->Load("c:\\tmp\\plane.json");
-
-		planeId = g_pRenderableMgr->CreateRenderable(meshId, base_PosColor_pipelineStateId);
-
+		g_pMeshMgr->CreateMesh(&pPlaneMesh, planeMeshId);
+		pPlaneMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_plane.json");
 	}
 
 	//Load the textured cube
@@ -586,13 +581,13 @@ bool LoadContent()
 
 	//Load the entities
 	GameMgr& gameMgr = GameMgr::Get();
-	gameMgr.CreatePlayerEntity(g_CubeId);
+	gameMgr.CreatePlayerEntity(torusMeshId, baseMaterialId);
 
 	const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
 	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
 	gameMgr.CreateCameraEntity(aspectRatio);
 
-	gameMgr.CreateBackgroundEntity(planeId);
+	gameMgr.CreateBackgroundEntity(planeMeshId, baseMaterialId);
 
 	g_contentLoaded = true;
 

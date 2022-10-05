@@ -30,11 +30,11 @@ void GameMgr::Init()
 void GameMgr::Release()
 {}
 
-void GameMgr::CreatePlayerEntity(RenderableId rId)
+void GameMgr::CreatePlayerEntity(MeshId meshId, Rendering::MaterialId materialId)
 {
 	PlayerEntity* pEntity = new PlayerEntity();
 
-	MeshComponent* pMesh = new MeshComponent(pEntity, rId);
+	MeshComponent* pMesh = new MeshComponent(pEntity, meshId, materialId);
 	pEntity->AddGameComponent(pMesh);
 
 	DirectX::XMMATRIX transform = DirectX::XMMatrixTranslation(0, 1, 0);
@@ -50,11 +50,11 @@ void GameMgr::CreateCameraEntity(float aspectRatio)
 	m_pCurrentCamera = pCamera;
 }
 
-void GameMgr::CreateBackgroundEntity(RenderableId rId)
+void GameMgr::CreateBackgroundEntity(MeshId meshId, Rendering::MaterialId materialId)
 {
 	LocatorEntity* pEntity = new LocatorEntity();
 
-	MeshComponent* pMesh = new MeshComponent(pEntity, rId);
+	MeshComponent* pMesh = new MeshComponent(pEntity, meshId, materialId);
 	pEntity->AddGameComponent(pMesh);
 
 	DirectX::XMMATRIX transform = DirectX::XMMatrixScaling(100, 1, 100);

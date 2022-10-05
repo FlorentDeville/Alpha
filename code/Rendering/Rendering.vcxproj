@@ -23,6 +23,9 @@
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="Font\Font.h" />
     <ClInclude Include="InputLayout\InputLayout.h" />
+    <ClInclude Include="Material\Material.h" />
+    <ClInclude Include="Material\MaterialId.h" />
+    <ClInclude Include="Material\MaterialMgr.h" />
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
@@ -45,6 +48,9 @@
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="Font\Font.cpp" />
     <ClCompile Include="InputLayout\InputLayout.cpp" />
+    <ClCompile Include="Material\Material.cpp" />
+    <ClCompile Include="Material\MaterialId.cpp" />
+    <ClCompile Include="Material\MaterialMgr.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />
     <ClCompile Include="PipelineState\PipelineState.cpp" />

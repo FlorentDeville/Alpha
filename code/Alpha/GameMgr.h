@@ -5,7 +5,8 @@
 #pragma once
 
 #include "Core/Singleton.h"
-#include "Rendering/Renderable/RenderableId.h"
+#include "Rendering/Material/MaterialId.h"
+#include "Rendering/Mesh/MeshId.h"
 
 #include <vector>
 
@@ -26,9 +27,9 @@ public:
 	void Init();
 	void Release();
 
-	void CreatePlayerEntity(RenderableId rId);
+	void CreatePlayerEntity(MeshId meshId, Rendering::MaterialId materialId);
 	void CreateCameraEntity(float aspectRatio);
-	void CreateBackgroundEntity(RenderableId rId);
+	void CreateBackgroundEntity(MeshId meshId, Rendering::MaterialId materialId);
 
 	void Update();
 	void Render();

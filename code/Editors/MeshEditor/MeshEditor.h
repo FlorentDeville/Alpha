@@ -7,7 +7,7 @@
 #include "Core/Singleton.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/Renderable/RenderableId.h"
+#include "Rendering/Material/MaterialId.h"
 
 #include "DirectXMath.h"
 
@@ -27,8 +27,7 @@ namespace Editors
 	public:
 		std::string m_filename;
 		MeshId m_meshId;
-		RenderableId m_renderableId;
-
+		
 		MeshEntry();
 	};
 
@@ -44,20 +43,20 @@ namespace Editors
 		void Render();
 
 	private:
+		//camera position
+		float m_cameraDistance;
+		float m_aspectRatio;
+		DirectX::XMVECTOR m_cameraTarget;
+		DirectX::XMVECTOR m_cameraEuler;
+		
+
 		Rendering::RenderTarget* m_pRenderTarget;
 
 		std::vector<MeshEntry> m_allMeshes;
 
 		int m_selectedMesh; //id in m_allMeshes, -1 if nothing selected
 
-		PipelineStateId m_pid; //pipeline state id to render the mesh
-
-		//camera position
-		DirectX::XMVECTOR m_cameraTarget;
-		DirectX::XMVECTOR m_cameraEuler;
-		float m_cameraDistance;
-
-		float m_aspectRatio;
+		Rendering::MaterialId m_materialId; //material to use to render the mesh
 
 		bool m_enableViewportControl;
 		DirectX::XMUINT2 m_mousePreviousPos;

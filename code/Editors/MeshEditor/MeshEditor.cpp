@@ -6,9 +6,10 @@
 
 #include "GameInputs/Inputs/InputMgr.h"
 
+#include "Rendering/Material/Material.h"
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/Mesh/Mesh.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -32,7 +33,6 @@ namespace Editors
 		: m_filename()
 	{
 		m_meshId.m_id = -1;
-		m_renderableId.m_id = -1;
 	}
 
 	MeshEditor::MeshEditor()
@@ -40,10 +40,11 @@ namespace Editors
 		, m_pRenderTarget(nullptr)
 		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
-		, m_pid(-1)
+		, m_materialId(Rendering::MaterialId::INVALID)
 		, m_aspectRatio(0.f)
 		, m_enableViewportControl(false)
 		, m_firstFrameMouseDown(true)
+		, m_mousePreviousPos(0, 0)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -116,12 +117,21 @@ namespace Editors
 		}
 
 		//load the material to render the mesh
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+		Rendering::Material* pMaterial = nullptr;
+		materialMgr.CreateMaterial(&pMaterial, m_materialId);
 
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(m_pid, "base");
-		pPipelineState->Init_PosColor(rsId, vsId, psId);
+		{
+			RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
+			ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
+			ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
+			
+			PipelineStateId pid;
+			PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "base");
+			pPipelineState->Init_PosColor(rsId, vsId, psId);
+
+			pMaterial->Init(rsId, pid);
+		}
 	}
 
 	void MeshEditor::Update()
@@ -193,7 +203,14 @@ namespace Editors
 
 			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
 			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
-			RenderModule::Get().Render(*g_pRenderableMgr->GetRenderable(entry.m_renderableId), mvpMatrix);
+
+			RenderModule& renderer = RenderModule::Get();
+
+			const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(m_materialId);
+			renderer.BindMaterial(*pMaterial, mvpMatrix);
+
+			const Mesh* pMesh = g_pMeshMgr->GetMesh(entry.m_meshId);
+			renderer.RenderMesh(*pMesh);
 		}
 
 		m_pRenderTarget->EndScene();
@@ -211,15 +228,13 @@ namespace Editors
 		Mesh* pCubeMesh = nullptr;
 		g_pMeshMgr->CreateMesh(&pCubeMesh, entry.m_meshId);
 		pCubeMesh->Load(meshFilename);
-
-		entry.m_renderableId = g_pRenderableMgr->CreateRenderable(entry.m_meshId, m_pid);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
 	{
 		MeshEntry& entry = m_allMeshes[entryIndex];
 
-		if (entry.m_renderableId.m_id == -1)
+		if (entry.m_meshId.m_id == -1)
 		{
 			LoadMesh(entry.m_filename, entry);
 		}

@@ -32,6 +32,7 @@ struct ID3D12Device2;
 class CommandQueue;
 namespace Rendering
 {
+	class Material;
 	class RenderTarget;
 }
 
@@ -54,7 +55,9 @@ public:
 	void BeginMainScene();
 	void EndMainScene();
 
-	void Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp);
+	void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
+	void RenderMesh(const Mesh& mesh);
+
 	void ExecuteRenderCommand();
 
 	//Call PreRenderForRenderable, then SetConstantBuffer, then PostRenderForRenderable.

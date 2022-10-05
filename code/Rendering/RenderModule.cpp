@@ -14,6 +14,8 @@
 #include "CommandQueue.h"
 #include "Core/Helper.h"
 
+#include "Rendering/Material/Material.h"
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -60,6 +62,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameResolution = gameResolution;
 	m_mainResolution = mainResolution;
 
+	Rendering::MaterialMgr::InitSingleton();
 	m_textureMgr.Init();
 	m_fontMgr.Init();
 
@@ -108,6 +111,7 @@ void RenderModule::Release()
 
 	m_fontMgr.Release();
 	m_textureMgr.Release();
+	Rendering::MaterialMgr::ReleaseSingleton();
 
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
@@ -194,24 +198,22 @@ void RenderModule::EndMainScene()
 	}
 }
 
-void RenderModule::Render(const Renderable& renderable, const DirectX::XMMATRIX& wvp)
+void RenderModule::BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp)
 {
-	PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(renderable.GetPipeplineStateId());
-
-	m_pRenderCommandList->SetPipelineState(pPipelineState->GetPipelineState());
-
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
-	m_pRenderCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
-
-	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	const Mesh* pMesh = g_pMeshMgr->GetMesh(renderable.GetMeshId());
-	m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
-	m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+	m_pRenderCommandList->SetPipelineState(material.m_pPipelineState->GetPipelineState());
+	m_pRenderCommandList->SetGraphicsRootSignature(material.m_pRootSignature->GetRootSignature());
 
 	m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+}
 
-	m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+void RenderModule::RenderMesh(const Mesh& mesh)
+{
+	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	m_pRenderCommandList->IASetVertexBuffers(0, 1, &mesh.GetVertexBufferView());
+	m_pRenderCommandList->IASetIndexBuffer(&mesh.GetIndexBufferView());
+
+	m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 }
 
 void RenderModule::ExecuteRenderCommand()
