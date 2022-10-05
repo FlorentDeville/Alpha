@@ -22,6 +22,9 @@ public:
 	void Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 	void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 
+	//this is the generic pipeline state for meshes containing every vertex attributes
+	void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+
 	ID3D12PipelineState* GetPipelineState() const;
 	RootSignatureId GetRootSignatureId() const;
 

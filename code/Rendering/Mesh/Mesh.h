@@ -27,6 +27,13 @@ struct VertexPosColor
 	DirectX::XMFLOAT3 Color;
 };
 
+struct VertexGeneric
+{
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT3 Color;
+	DirectX::XMFLOAT2 Uv;
+};
+
 struct VertexText
 {
 	DirectX::XMFLOAT4	Position;		// (x, y) : top left position of the quad, (z, w) : width, height of the quad
@@ -44,6 +51,7 @@ public:
 	void LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 	void LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 	void LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
+	void LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 
 	void Load(const std::string& filename);
 

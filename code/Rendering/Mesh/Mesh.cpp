@@ -163,6 +163,34 @@ void Mesh::LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCo
 	pIntermediateVertexBuffer->Release();
 }
 
+void Mesh::LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
+{
+	m_indicesCount = indicesCount;
+
+	CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
+	ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
+
+	ID3D12Resource* pIntermediateVertexBuffer;
+	UpdateBufferResource(pCommandList, &m_pVertexBuffer, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexGeneric), pVertices, D3D12_RESOURCE_FLAG_NONE);
+
+	// Create the vertex buffer view.
+	m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
+	m_vertexBufferView.SizeInBytes = sizeof(VertexGeneric) * verticesCount;
+	m_vertexBufferView.StrideInBytes = sizeof(VertexGeneric);
+
+	ID3D12Resource* pIntermediateIndexBuffer;
+	UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+
+	// Create index buffer view.
+	m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
+	m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+	m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+
+	//Upload everything to the gpu
+	uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
+	pCopyCommandQueue->WaitForFenceValue(fenceValue);
+}
+
 void Mesh::Load(const std::string& filename)
 {
 	FILE* pFile = nullptr;;
@@ -205,8 +233,29 @@ void Mesh::Load(const std::string& filename)
 		}
 
 		LoadVertexAndIndexBuffer(pVertices, verticesCount, pIndices, indicesCount);
+	}
+	else if (strcmp(vertexStructure, "pos,col,uv") == 0)
+	{
+		const int ELEMENT_COUNT = 8;
+		const rapidjson::Value& vertices = jsonDocument["vertex_buffer"];
+		int verticesCount = vertices.Size() / ELEMENT_COUNT;
 
-		//delete[] pVertices;
+		VertexGeneric* pVertices = new VertexGeneric[verticesCount];
+
+		for (int ii = 0; ii < verticesCount; ++ii)
+		{
+			int start = ii * ELEMENT_COUNT;
+			pVertices[ii].Position.x = vertices[start].GetFloat();
+			pVertices[ii].Position.y = vertices[start + 1].GetFloat();
+			pVertices[ii].Position.z = vertices[start + 2].GetFloat();
+			pVertices[ii].Color.x = vertices[start + 3].GetFloat();
+			pVertices[ii].Color.y = vertices[start + 4].GetFloat();
+			pVertices[ii].Color.z = vertices[start + 5].GetFloat();
+			pVertices[ii].Uv.x = vertices[start + 6].GetFloat();
+			pVertices[ii].Uv.y = vertices[start + 7].GetFloat();
+		}
+
+		LoadVertexAndIndexBuffer(pVertices, verticesCount, pIndices, indicesCount);
 	}
 	else
 	{

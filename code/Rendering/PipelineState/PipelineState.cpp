@@ -219,6 +219,33 @@ void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId
 	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 }
 
+void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+{
+	m_rsId = rsId;
+	m_vsId = vsId;
+	m_psId = psId;
+
+	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+	rtvFormats.NumRenderTargets = 1;
+	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+
+	PipelineStateStream pipelineStateStream;
+	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+	pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
+	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+	pipelineStateStream.RTVFormats = rtvFormats;
+
+	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+		sizeof(PipelineStateStream), &pipelineStateStream
+	};
+	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+}
+
 ID3D12PipelineState* PipelineState::GetPipelineState() const
 {
 	return m_pPipelineState;
