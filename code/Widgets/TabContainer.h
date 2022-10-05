@@ -6,11 +6,10 @@
 
 #include "Widgets/Widget.h"
 
-class Layout;
-
 namespace Widgets
 {
 	class Container;
+	class Layout;
 	class Tab;
 
 	class TabContainer : public Widget

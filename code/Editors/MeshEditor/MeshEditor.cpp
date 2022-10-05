@@ -96,9 +96,9 @@ namespace Editors
 		}
 
 		//create a button and label per mesh
-		Layout* pMeshListLayout = new Layout(0, 0, 0, 0);
+		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
 		pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pMeshListLayout->SetDirection(Layout::Direction::Vertical);
+		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pSplit->AddLeftPanel(pMeshListLayout);
 
 		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
