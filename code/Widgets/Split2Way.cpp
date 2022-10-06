@@ -134,4 +134,11 @@ namespace Widgets
 	{
 		m_pRightContainer->AddWidget(pWidget);
 	}
+
+	void Split2Way::SetLeftPanelWidth(int width)
+	{
+		DirectX::XMUINT2 size = m_pLeftContainer->GetSize();
+		size.x = width;
+		m_pLeftContainer->SetSize(size);
+	}
 }

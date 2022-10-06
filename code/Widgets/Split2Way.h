@@ -26,6 +26,8 @@ namespace Widgets
 		void AddLeftPanel(Widget* pWidget);
 		void AddRightPanel(Widget* pWidget);
 
+		void SetLeftPanelWidth(int width);
+
 	private:
 		Layout* m_pLayout;
 		Container* m_pLeftContainer;
