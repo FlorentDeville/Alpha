@@ -91,12 +91,20 @@ namespace Widgets
 		if (m_selectedTab == index)
 			return;
 
+		//reset all the other tab to the default state
+		for (int ii = 0; ii < m_tabContent.size(); ++ii)
+		{
+			if (ii == index)
+				continue;
+
+			m_tabHeaders[ii]->SetBackgroundColor(m_defaultHeaderColor);
+			m_tabContent[ii]->Disable();
+		}
+
 		//Change the header color
-		m_tabHeaders[m_selectedTab]->SetBackgroundColor(m_defaultHeaderColor);
 		m_tabHeaders[index]->SetBackgroundColor(m_selectedHeaderColor);
 
 		//Show the new content
-		m_tabContent[m_selectedTab]->Disable();
 		m_tabContent[index]->Enable();
 
 		//Update the selected index
