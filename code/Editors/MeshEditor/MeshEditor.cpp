@@ -45,6 +45,7 @@ namespace Editors
 		, m_enableViewportControl(false)
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos(0, 0)
+		, m_pMeshListLayout(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -97,10 +98,10 @@ namespace Editors
 		}
 
 		//create a button and label per mesh
-		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
-		pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pSplit->AddLeftPanel(pMeshListLayout);
+		m_pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
+		m_pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		m_pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		pSplit->AddLeftPanel(m_pMeshListLayout);
 
 		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
 		{
@@ -110,7 +111,7 @@ namespace Editors
 			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
 			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			pMeshListLayout->AddWidget(pButton);
+			m_pMeshListLayout->AddWidget(pButton);
 
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, meshName);
 			pButton->AddWidget(pLabel);
@@ -232,8 +233,22 @@ namespace Editors
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
 	{
-		MeshEntry& entry = m_allMeshes[entryIndex];
+		//deselect all buttons
+		const std::vector<Widget*>& allButtons = m_pMeshListLayout->GetChildren();
+		for (Widget* pWidget : allButtons)
+		{
+			Widgets::Button* pButton = static_cast<Widgets::Button*>(pWidget);
+			pButton->Unselect();
+		}
 
+		//select new button
+		Widget* pWidget = allButtons[entryIndex];
+		Widgets::Button* pButton = static_cast<Widgets::Button*>(pWidget);
+		pButton->Select();
+
+		MeshEntry& entry = m_allMeshes[entryIndex];
+		
+		//load the mesh if necessary
 		if (entry.m_meshId.m_id == -1)
 		{
 			LoadMesh(entry.m_filename, entry);

@@ -20,6 +20,11 @@ namespace Rendering
 	class RenderTarget;
 }
 
+namespace Widgets
+{
+	class Layout;
+}
+
 namespace Editors
 {
 	class MeshEntry
@@ -49,7 +54,6 @@ namespace Editors
 		DirectX::XMVECTOR m_cameraTarget;
 		DirectX::XMVECTOR m_cameraEuler;
 		
-
 		Rendering::RenderTarget* m_pRenderTarget;
 
 		std::vector<MeshEntry> m_allMeshes;
@@ -61,6 +65,8 @@ namespace Editors
 		bool m_enableViewportControl;
 		DirectX::XMUINT2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
+
+		Widgets::Layout* m_pMeshListLayout;
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(const std::string& meshFilename, MeshEntry& entry);
