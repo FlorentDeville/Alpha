@@ -253,6 +253,11 @@ uint32_t Widget::GetHeight() const
 	return m_size.y;
 }
 
+const std::vector<Widget*>& Widget::GetChildren() const
+{
+	return m_children;
+}
+
 bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
 {
 	if (screenX > (uint32_t)GetScreenX() && screenX < GetScreenX() + GetWidth() &&

@@ -14,6 +14,7 @@ namespace Widgets
 {
 	Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 		: Widget(w, h, x, y)
+		, m_isSelected(false)
 	{}
 
 	Button::~Button()
@@ -25,7 +26,7 @@ namespace Widgets
 		ComputeWVPMatrix(windowSize, mvpMatrix);
 
 		DirectX::XMVECTOR color = m_backgroundColor;
-		if (m_hover)
+		if (m_hover || m_isSelected)
 			color = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
 
 		Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
@@ -74,5 +75,15 @@ namespace Widgets
 			return Widget::Handle(msg);
 			break;
 		}
+	}
+
+	void Button::Select()
+	{
+		m_isSelected = true;
+	}
+
+	void Button::Unselect()
+	{
+		m_isSelected = false;
 	}
 }

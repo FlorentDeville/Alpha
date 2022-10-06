@@ -100,6 +100,8 @@ public:
 	uint32_t GetWidth() const;
 	uint32_t GetHeight() const;
 
+	const std::vector<Widget*>& GetChildren() const;
+
 	bool IsInside(uint32_t screenX, uint32_t screenY) const;
 	bool IsEnabled() const;
 
