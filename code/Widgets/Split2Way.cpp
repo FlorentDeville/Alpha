@@ -6,8 +6,6 @@
 
 #include "Widgets/WidgetMgr.h"
 
-extern LPCWSTR g_pIconName;
-
 namespace Widgets
 {
 	Split2Way::Split2Way()
@@ -21,7 +19,7 @@ namespace Widgets
 		m_pLayout = new Layout(0, 0, 0, 0);
 		m_pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 		m_pLayout->SetDirection(Layout::Direction::Horizontal);
-		AddWidget(m_pLayout);
+		Widget::AddWidget(m_pLayout);
 
 		m_pLeftContainer = new Container(200, 0);
 		m_pLeftContainer->SetSizeStyle(Widget::VSIZE_STRETCH);
@@ -120,6 +118,11 @@ namespace Widgets
 		for (Widget* pChild : m_children)
 			pChild->Resize(m_absPos, m_size);
 
+	}
+
+	void Split2Way::AddWidget(Widget* pWidget)
+	{
+		assert(false && "You must use AddLeftPanel or AddRightPanel in a Split2Way widget.");
 	}
 
 	void Split2Way::AddLeftPanel(Widget* pWidget)
