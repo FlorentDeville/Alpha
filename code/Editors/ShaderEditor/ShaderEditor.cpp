@@ -185,53 +185,88 @@ namespace Editors
 			OutputDebugString(buffer);
 		}
 
+		// Set the bInheritHandle flag so pipe handles are inherited. 
+		SECURITY_ATTRIBUTES saAttr;
+		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+		saAttr.bInheritHandle = TRUE;
+		saAttr.lpSecurityDescriptor = NULL;
+
+		//create standard output pipe
+		HANDLE standardOutputRead;
+		HANDLE standardOutputWrite;
+		bool standardOutputPipe = CreatePipe(&standardOutputRead, &standardOutputWrite, &saAttr, 0);
+		assert(standardOutputPipe);
+		SetHandleInformation(standardOutputRead, HANDLE_FLAG_INHERIT, 0);
+
+		//create error output pipe
+		HANDLE errorOutputRead;
+		HANDLE errorOutputWrite;
+		bool errorOutputPipe = CreatePipe(&errorOutputRead, &errorOutputWrite, &saAttr, 0);
+		assert(errorOutputPipe);
+		SetHandleInformation(errorOutputRead, HANDLE_FLAG_INHERIT, 0);
+		
 		//start process
 		STARTUPINFO info = { sizeof(info) };
+		info.hStdError = errorOutputWrite;
+		info.hStdOutput = standardOutputWrite;
+		info.dwFlags = STARTF_USESTDHANDLES;
+
 		PROCESS_INFORMATION processInfo;
 		bool processCreated = CreateProcess(NULL, cmdline.data(), NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo);
 		if (!processCreated)
 		{
 			OutputDebugString("Failed to start process\n");
+
+			CloseHandle(processInfo.hProcess);
+			CloseHandle(processInfo.hThread);
+			CloseHandle(standardOutputRead);
+			CloseHandle(standardOutputWrite);
+			CloseHandle(errorOutputRead);
+			CloseHandle(errorOutputWrite);
+
 			return true;
 		}
 
-		WaitForSingleObject(processInfo.hProcess, INFINITE);
+		HANDLE WaitHandles[] = { processInfo.hProcess, standardOutputRead, errorOutputRead };
+
+		const DWORD BUFSIZE = 4096;
+		BYTE buff[BUFSIZE];
+
+		while (1)
+		{
+			DWORD dwBytesRead, dwBytesAvailable;
+
+			DWORD dwWaitResult = WaitForMultipleObjects(3, WaitHandles, FALSE, 60000L);
+			
+			// Read from the pipes...
+			while (PeekNamedPipe(standardOutputRead, NULL, 0, NULL, &dwBytesAvailable, NULL) && dwBytesAvailable)
+			{
+				bool res = ReadFile(standardOutputRead, buff, BUFSIZE - 1, &dwBytesRead, 0);
+				assert(res);
+				std::string output((char*)buff, (size_t)dwBytesRead);
+				OutputDebugString(output.c_str());
+			}
+
+			while (PeekNamedPipe(errorOutputRead, NULL, 0, NULL, &dwBytesAvailable, NULL) && dwBytesAvailable)
+			{
+				bool res = ReadFile(errorOutputRead, buff, BUFSIZE - 1, &dwBytesRead, 0);
+				assert(res);
+				std::string outputErr((char*)buff, (size_t)dwBytesRead);
+				OutputDebugString(outputErr.c_str());
+			}
+
+			// Process is done, or we timed out:
+			if (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_TIMEOUT)
+				break;
+		}
+
+		OutputDebugString("Process over\n");
 		CloseHandle(processInfo.hProcess);
 		CloseHandle(processInfo.hThread);
-		OutputDebugString("Process over\n");
-		//HANDLE WaitHandles[] = { processInfo.hProcess, info.hStdOutput, info.hStdError };
-
-		//const DWORD BUFSIZE = 4096;
-		//BYTE buff[BUFSIZE];
-
-		//while (1)
-		//{
-		//	DWORD dwBytesRead, dwBytesAvailable;
-
-		//	//DWORD dwWaitResult = WaitForMultipleObjects(3, WaitHandles, FALSE, INFINITE);
-
-		//	// Read from the pipes...
-		//	while (PeekNamedPipe(info.hStdOutput, NULL, 0, NULL, &dwBytesAvailable, NULL) && dwBytesAvailable)
-		//	{
-		//		ReadFile(info.hStdOutput, buff, BUFSIZE - 1, &dwBytesRead, 0);
-		//		std::string output((char*)buff, (size_t)dwBytesRead);
-		//		OutputDebugString(output.c_str());
-		//	}
-
-		//	while (PeekNamedPipe(info.hStdError, NULL, 0, NULL, &dwBytesAvailable, NULL) && dwBytesAvailable)
-		//	{
-		//		ReadFile(info.hStdError, buff, BUFSIZE - 1, &dwBytesRead, 0);
-		//		std::string outputErr((char*)buff, (size_t)dwBytesRead);
-		//		OutputDebugString(outputErr.c_str());
-		//	}
-
-		//	// Process is done, or we timed out:
-		//	if (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_TIMEOUT)
-		//		break;
-		//}
-
-		//CloseHandle(processInfo.hProcess);
-		//CloseHandle(processInfo.hThread);
+		CloseHandle(standardOutputRead);
+		CloseHandle(standardOutputWrite);
+		CloseHandle(errorOutputRead);
+		CloseHandle(errorOutputWrite);
 
 		return true;
 
