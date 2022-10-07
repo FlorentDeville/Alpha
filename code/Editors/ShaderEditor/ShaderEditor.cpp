@@ -7,7 +7,6 @@
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
-#include "Widgets/SplitHorizontal.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
@@ -80,24 +79,24 @@ namespace Editors
 			pButton->AddWidget(pLabel);
 		}
 
-		//create a horizontal split on the right side
-		Widgets::SplitHorizontal* pHSplit = new Widgets::SplitHorizontal();
-		pHSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pSplit->AddRightPanel(pHSplit);
-
 		//right panel : add option layout
-		/*Widgets::Layout* pShaderOptionLayout = new Widgets::Layout(0, 0, 0, 0);
-		pShaderOptionLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pShaderOptionLayout->SetDirection(Widgets::Layout::Direction::Vertical);*/
-		//pHSplit->
+		Widgets::Layout* pRightPanelLayout = new Widgets::Layout(0, 0, 0, 0);
+		pRightPanelLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pRightPanelLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		pSplit->AddRightPanel(pRightPanelLayout);
+
+		//horizontal layout for buttons
+		Widgets::Layout* pButtonLayout = new Widgets::Layout(0, 20, 0, 0);
+		pButtonLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+		pButtonLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
+		pRightPanelLayout->AddWidget(pButtonLayout);
 
 		//add compile button
 		{
-			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			Widgets::Button* pButton = new Widgets::Button(60, 0, 0, 0);
+			pButton->SetSizeStyle(Widget::VSIZE_STRETCH);
 			pButton->OnClick([this](int x, int y) -> bool { return OnCompileClicked(); });
-			//pShaderOptionLayout->AddWidget(pButton);
-			pHSplit->AddTopPanel(pButton);
+			pButtonLayout->AddWidget(pButton);
 
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Compile");
 			pButton->AddWidget(pLabel);
@@ -105,11 +104,10 @@ namespace Editors
 
 		//add open button
 		{
-			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
+			pButton->SetSizeStyle(Widget::VSIZE_STRETCH);
 			//pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			//pShaderOptionLayout->AddWidget(pButton);
-			pHSplit->AddBottomPanel(pButton);
+			pButtonLayout->AddWidget(pButton);
 
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
 			pButton->AddWidget(pLabel);
