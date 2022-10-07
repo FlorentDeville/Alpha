@@ -31,7 +31,8 @@ namespace Rendering
 
 	bool MaterialMgr::DestroyMaterial(MaterialId id)
 	{
-		delete m_materials[id.m_id];
+		Material* pMaterial = m_materials[id.m_id];
+		delete pMaterial;
 		m_materials[id.m_id] = nullptr;
 		return true;
 	}
