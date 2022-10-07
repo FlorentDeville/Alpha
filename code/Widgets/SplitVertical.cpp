@@ -11,7 +11,7 @@
 
 namespace Widgets
 {
-	Split2Way::Split2Way()
+	SplitVertical::SplitVertical()
 		: Widget()
 		, m_pLeftContainer(nullptr)
 		, m_pRightContainer(nullptr)
@@ -37,10 +37,10 @@ namespace Widgets
 		m_pLayout->AddWidget(m_pRightContainer);
 	}
 
-	Split2Way::~Split2Way()
+	SplitVertical::~SplitVertical()
 	{}
 
-	void Split2Way::Update()
+	void SplitVertical::Update()
 	{
 		const int MIN_SIZE = 50;
 
@@ -85,12 +85,12 @@ namespace Widgets
 		}
 	}
 
-	void Split2Way::Draw(const DirectX::XMFLOAT2& windowSize)
+	void SplitVertical::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
 		Widget::Draw(windowSize);
 	}
 
-	void Split2Way::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void SplitVertical::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		const DirectX::XMUINT2 oldSize = m_size;
 
@@ -123,22 +123,22 @@ namespace Widgets
 
 	}
 
-	void Split2Way::AddWidget(Widget* pWidget)
+	void SplitVertical::AddWidget(Widget* pWidget)
 	{
 		assert(false && "You must use AddLeftPanel or AddRightPanel in a Split2Way widget.");
 	}
 
-	void Split2Way::AddLeftPanel(Widget* pWidget)
+	void SplitVertical::AddLeftPanel(Widget* pWidget)
 	{
 		m_pLeftContainer->AddWidget(pWidget);
 	}
 
-	void Split2Way::AddRightPanel(Widget* pWidget)
+	void SplitVertical::AddRightPanel(Widget* pWidget)
 	{
 		m_pRightContainer->AddWidget(pWidget);
 	}
 
-	void Split2Way::SetLeftPanelWidth(int width)
+	void SplitVertical::SetLeftPanelWidth(int width)
 	{
 		DirectX::XMUINT2 size = m_pLeftContainer->GetSize();
 		size.x = width;

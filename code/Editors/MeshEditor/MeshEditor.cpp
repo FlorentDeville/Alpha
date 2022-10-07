@@ -77,7 +77,7 @@ namespace Editors
 		}
 
 		//create the split
-		Widgets::Split2Way* pSplit = new Widgets::Split2Way();
+		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(400);
 		pViewportTab->AddWidget(pSplit);

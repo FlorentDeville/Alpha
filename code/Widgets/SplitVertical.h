@@ -12,11 +12,11 @@ namespace Widgets
 	class Layout;
 	class Split;
 	
-	class Split2Way : public Widget
+	class SplitVertical : public Widget
 	{
 	public:
-		Split2Way();
-		~Split2Way();
+		SplitVertical();
+		~SplitVertical();
 
 		void Update() override;
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
