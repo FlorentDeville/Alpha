@@ -123,7 +123,7 @@ namespace Editors
 		Rendering::Material* pMaterial = nullptr;
 		materialMgr.CreateMaterial(&pMaterial, m_materialId);
 
-		{
+		/*{
 			RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
 			ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
 			ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
@@ -133,6 +133,24 @@ namespace Editors
 			pPipelineState->Init_PosColor(rsId, vsId, psId);
 
 			pMaterial->Init(rsId, pid);
+		}*/
+		{
+			std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
+			RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(root + "texture.rs.cso");
+			ShaderId vsId = g_pShaderMgr->CreateShader(root + "texture.vs.cso");
+			ShaderId psId = g_pShaderMgr->CreateShader(root + "texture.ps.cso");
+
+			PipelineStateId pid;
+			PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "texture");
+			pPipelineState->Init_Generic(rsId, vsId, psId);
+
+			std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
+			TextureId tid;
+			Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
+			pTexture->Init(textureFilename);
+
+			pMaterial->Init(rsId, pid);
+			pMaterial->SetTexture(tid);
 		}
 	}
 
