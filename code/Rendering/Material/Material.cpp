@@ -12,6 +12,7 @@ namespace Rendering
 	Material::Material()
 		: m_pRootSignature(nullptr)
 		, m_pPipelineState(nullptr)
+		, m_textureId(-1)
 	{}
 
 	Material::~Material()
@@ -23,5 +24,10 @@ namespace Rendering
 		m_pPipelineState = g_pPipelineStateMgr->GetResource(pid);
 
 		return true;
+	}
+
+	void Material::SetTexture(TextureId id)
+	{
+		m_textureId = id;
 	}
 }

@@ -204,6 +204,14 @@ void RenderModule::BindMaterial(const Rendering::Material& material, const Direc
 	m_pRenderCommandList->SetGraphicsRootSignature(material.m_pRootSignature->GetRootSignature());
 
 	m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+
+	if (material.m_textureId != -1)
+	{
+		ID3D12DescriptorHeap* pSrv = m_textureMgr.GetResource(material.m_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+		m_pRenderCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		m_pRenderCommandList->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+	}
 }
 
 void RenderModule::RenderMesh(const Mesh& mesh)

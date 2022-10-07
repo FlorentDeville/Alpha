@@ -66,8 +66,6 @@ bool g_IsInitialized = false;
 
 SysWindow* g_pWindow = nullptr;
 
-RenderableId g_CubeTextureId;
-
 float g_FoV;
 
 DirectX::XMMATRIX g_model;
@@ -77,65 +75,6 @@ DirectX::XMMATRIX g_projection;
 bool g_contentLoaded;
 
 bool g_perspectiveRendering = true;
-
-static VertexPosUv g_CubeTexture[] = {
-	// front face
-	{ DirectX::XMFLOAT3(-0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3( 0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3( 0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
-	  
-	//DirectX::XMFLOAT3( right side face   ), DirectX::XMFLOAT2(		   )
-	{ DirectX::XMFLOAT3( 0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3( 0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3( 0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
-	{ DirectX::XMFLOAT3( 0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
-	  
-	//DirectX::XMFLOAT3( left side face	   ), DirectX::XMFLOAT2(		   )
-	{ DirectX::XMFLOAT3(-0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
-	  
-	//DirectX::XMFLOAT3( back face		   ), DirectX::XMFLOAT2(		   )
-	{ DirectX::XMFLOAT3( 0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
-	{ DirectX::XMFLOAT3( 0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
-	  
-	//DirectX::XMFLOAT3( top face		   ), DirectX::XMFLOAT2(		   )
-	{ DirectX::XMFLOAT3(-0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3( 0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
-	{ DirectX::XMFLOAT3( 0.5f,  0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-0.5f,  0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
-	  
-	//DirectX::XMFLOAT3( bottom face	   ), DirectX::XMFLOAT2(		   )
-	{ DirectX::XMFLOAT3( 0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 0.0f, 0.0f) },
-	{ DirectX::XMFLOAT3(-0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 1.0f, 1.0f) },
-	{ DirectX::XMFLOAT3( 0.5f, -0.5f, -0.5f), DirectX::XMFLOAT2( 0.0f, 1.0f) },
-	{ DirectX::XMFLOAT3(-0.5f, -0.5f,  0.5f), DirectX::XMFLOAT2( 1.0f, 0.0f) },
-};
-
-static uint16_t g_CubeTextureIndices[] =
-{
-	0, 1, 2,
-	0, 3, 1,
-
-	4, 5, 7,
-	4, 6, 5,
-
-	8, 9, 10,
-	10, 11, 9,
-
-	12, 13, 14,
-	14, 15, 12,
-
-	16, 17, 18,
-	18, 19, 16,
-
-	20, 21, 22,
-	22, 23, 20
-};
 
 void Update();
 void Render();
@@ -423,26 +362,6 @@ void Render()
 
 	GameMgr::Get().Render();
 
-	//Render texture cube
-	if (true)
-	{
-		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
-		RenderModule::Get().PreRenderForRenderable(*renderable);
-
-		//DirectX::XMMATRIX wvpMatrix = DirectX::XMMatrixMultiply(DirectX::XMMatrixIdentity(), g_view);
-		DirectX::XMMATRIX wvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
-		wvpMatrix = DirectX::XMMatrixMultiply(wvpMatrix, g_projection);
-
-		RenderModule::Get().SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
-
-		ID3D12DescriptorHeap* pSrv = RenderModule::Get().GetTextureMgr().GetResource(g_gridTextureId)->GetSRV();
-		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-		RenderModule::Get().GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-		RenderModule::Get().GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
-
-		RenderModule::Get().PostRenderForRenderable(*renderable);
-	}
-
 	renderModule.m_gameRenderTarget->EndScene();
 
 	//render the level editor
@@ -483,7 +402,30 @@ bool LoadContent()
 		pMaterial->Init(rsId, pid);
 	}
 
-	//load cube mesh
+	//create the texture material
+	Rendering::MaterialId textureMaterialId;
+	{
+		std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
+		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(root + "\\texture.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(root + "\\texture.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(root + "\\texture.ps.cso");
+
+		PipelineStateId pid;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "texture2");
+		pPipelineState->Init_Generic(rsId, vsId, psId);
+
+		std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_blue.png";
+		TextureId tid;
+		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
+		pTexture->Init(textureFilename);
+
+		Rendering::Material* pMaterial = nullptr;
+		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
+		pMaterial->Init(rsId, pid);
+		pMaterial->SetTexture(tid);
+	}
+
+	//load torus mesh
 	MeshId torusMeshId;
 	{
 		Mesh* pCubeMesh = nullptr;
@@ -499,9 +441,16 @@ bool LoadContent()
 		pPlaneMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_plane.json");
 	}
 
+	//load plane
+	//{
+	//	Mesh* pMesh = nullptr;
+	//	g_pMeshMgr->CreateMesh(&pMesh, g_cubeMeshId);
+	//	pMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_cube.json");
+	//}
+
 	//Load the textured cube
 	{
-		Mesh* pCubeTexture = nullptr;
+		/*Mesh* pCubeTexture = nullptr;
 		MeshId cubeTextureMeshId;
 		g_pMeshMgr->CreateMesh(&pCubeTexture, cubeTextureMeshId);
 		pCubeTexture->LoadVertexAndIndexBuffer(g_CubeTexture, _countof(g_CubeTexture), g_CubeTextureIndices, _countof(g_CubeTextureIndices));
@@ -513,7 +462,7 @@ bool LoadContent()
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(g_texture_posuv_pipelineStateId, "texture");
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
 
-		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, g_texture_posuv_pipelineStateId);
+		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, g_texture_posuv_pipelineStateId);*/
 	}
 
 	//Load the grid texture
@@ -552,7 +501,7 @@ bool LoadContent()
 	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
 	gameMgr.CreateCameraEntity(aspectRatio);
 
-	gameMgr.CreateBackgroundEntity(planeMeshId, baseMaterialId);
+	gameMgr.CreateBackgroundEntity(planeMeshId, textureMaterialId);
 
 	g_contentLoaded = true;
 
