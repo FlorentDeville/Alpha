@@ -67,10 +67,6 @@ SysWindow* g_pWindow = nullptr;
 
 float g_FoV;
 
-DirectX::XMMATRIX g_model;
-DirectX::XMMATRIX g_view;
-DirectX::XMMATRIX g_projection;
-
 bool g_contentLoaded;
 
 bool g_perspectiveRendering = true;
@@ -312,36 +308,6 @@ void Update()
 	auto dt = clock.now() - start;
 	double totalTimeElasped = dt.count() * 1e-9;
 	totalTimeElasped;
-	// Update the model matrix.
-	//float angle = static_cast<float>(totalTimeElasped * 90.0);
-	float angle = 0;
-	float scale = 0.5;
-	g_model = DirectX::XMMatrixScaling(scale, scale, scale);
-
-	const DirectX::XMVECTOR rotationAxis = DirectX::XMVectorSet(0, 1, 1, 0);
-	DirectX::XMMATRIX rot = DirectX::XMMatrixRotationAxis(rotationAxis, DirectX::XMConvertToRadians(angle));
-	g_model = DirectX::XMMatrixMultiply(g_model, rot);
-
-	// Update the view matrix.
-	DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(g_euler);
-	DirectX::XMVECTOR direction = DirectX::XMVector3Transform(g_direction, orientation);
-	g_view = DirectX::XMMatrixLookToLH(g_eyePosition, direction, g_upDirection);
-
-	// Update the projection matrix.
-	const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
-	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
-	if (g_perspectiveRendering)
-	{				
-		float nearDistance = 0.1f;
-		float fovRad = DirectX::XMConvertToRadians(g_FoV);
-		g_projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, aspectRatio, nearDistance, 100.0f);
-	}
-	else
-	{
-		float w = 20.f;
-		float h = w / aspectRatio;
-		g_projection = DirectX::XMMatrixOrthographicLH(w, h, 0.1f, 100.f);
-	}
 
 	Editors::MeshEditor::Get().Update();
 	Editors::ShaderEditor::Get().Update();
