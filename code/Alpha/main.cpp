@@ -224,32 +224,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 		break;
 
-	case WM_NCPAINT:
-	{
-		RECT clientRect = g_pWindow->GetClientRectangle();
-		int width = clientRect.right - clientRect.left;
-		int height = clientRect.bottom - clientRect.top;
-
-		//This is a minimiz event. Ignore it.
-		if (width == 0 && height == 0)
-			return true;
-
-		// Don't allow 0 size swap chain back buffers.
-		uint32_t uwidth = std::max(1, width);
-		uint32_t uheight = std::max(1, height);
-
-		if (g_pWindow->GetWidth() != uwidth || g_pWindow->GetHeight() != uheight)
-		{
-			DirectX::XMUINT2 size(uwidth, uheight);
-			g_pWindow->Resize(uwidth, uheight);
-			RenderModule::Get().ChangeMainResolution(size);
-			WidgetMgr::Get().Resize();
-		}
-
-		return ::DefWindowProcW(hWnd, message, wParam, lParam);
-	}
-		break;
-
 	case WM_MOUSEMOVE:
 	{
 		int x = GET_X_LPARAM(lParam);
