@@ -9,6 +9,7 @@
 
 
 #include "Rendering/Font/Font.h"
+#include "Rendering/Material/MaterialId.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Renderable/RenderableId.h"
@@ -80,10 +81,10 @@ private:
 	int32_t m_prevMouseY;
 
 	//Ids of resources used to render widgets
+	Rendering::MaterialId m_materialId;
 	MeshId m_quadMeshId;
-	PipelineStateId m_widgetPsoId;
+
 	PipelineStateId m_widgetViewportPsoId;
-	RenderableId m_widgetRenderableId;
 	RenderableId m_iconRenderableId;
 	FontId m_segoeUIFontId;
 

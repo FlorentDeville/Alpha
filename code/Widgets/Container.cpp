@@ -4,8 +4,8 @@
 
 #include "Widgets/Container.h"
 
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 
 #include "Widgets/WidgetMgr.h"
 
@@ -31,12 +31,13 @@ namespace Widgets
 
 		DirectX::XMVECTOR color = m_backgroundColor;
 
-		Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
-
+		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		RenderModule& render = RenderModule::Get();
-		render.PreRenderForRenderable(*pRenderable);
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-		render.SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
+		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+		render.BindMaterial(*pMaterial, mvpMatrix);
+
 		render.SetConstantBuffer(1, sizeof(color), &color, 0);
 
 		int value = 0;
@@ -49,7 +50,8 @@ namespace Widgets
 		m_borderWidth = 3;
 		render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-		render.PostRenderForRenderable(*pRenderable);
+		const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+		render.RenderMesh(*pMesh);
 
 		Widget::Draw(windowSize);
 	}

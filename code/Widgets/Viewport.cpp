@@ -5,7 +5,6 @@
 #include "Widgets/Viewport.h"
 
 #include "Rendering/Mesh/Mesh.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -32,10 +31,10 @@ namespace Widgets
 
 	void Viewport::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-		const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
+		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		const PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(WidgetMgr::Get().m_widgetViewportPsoId);
 		RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
-		const Mesh* pMesh = g_pMeshMgr->GetMesh(pRenderable->GetMeshId());
+		const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
 		Texture* pTexture = RenderModule::Get().GetTextureMgr().GetResource(m_onGetRenderTargetTexture());
 		ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();
 

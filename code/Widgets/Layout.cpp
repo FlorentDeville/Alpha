@@ -4,8 +4,8 @@
 
 #include "Layout.h"
 
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Message.h"
 
@@ -29,18 +29,21 @@ namespace Widgets
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 
 		{
-			const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
+			WidgetMgr& widgetMgr = WidgetMgr::Get();
 			RenderModule& render = RenderModule::Get();
-			render.PreRenderForRenderable(*pRenderable);
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-			render.SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &wvp, 0);
+			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+			render.BindMaterial(*pMaterial, wvp);
+
 			render.SetConstantBuffer(1, sizeof(m_backgroundColor), &m_backgroundColor, 0);
 			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
 			render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-			render.PostRenderForRenderable(*pRenderable);
+			const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+			render.RenderMesh(*pMesh);
 		}
 
 		for (Widget* pWidget : m_children)

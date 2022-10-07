@@ -6,6 +6,8 @@
 
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/Material/Material.h"
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -69,13 +71,14 @@ void WidgetMgr::Init()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.ps.cso");
 
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(m_widgetPsoId, "widget");
+		PipelineStateId psoId;
+		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(psoId, "widget");
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
-	}
 
-	//Renderable for basic widget
-	{
-		m_widgetRenderableId = g_pRenderableMgr->CreateRenderable(m_quadMeshId, m_widgetPsoId);
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+		Rendering::Material* pWidgetMaterial = nullptr;
+		materialMgr.CreateMaterial(&pWidgetMaterial, m_materialId);
+		pWidgetMaterial->Init(rsId, psoId);
 	}
 
 	//Font for label

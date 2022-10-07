@@ -7,7 +7,7 @@
 
 #include "Widgets/WidgetMgr.h"
 
-#include "Rendering/Renderable/RenderableMgr.h"
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
 
 extern LPCWSTR g_pIconName;
@@ -35,13 +35,13 @@ void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 
 	DirectX::XMVECTOR color = DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1);
 
-	Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
-
+	WidgetMgr& widgetMgr = WidgetMgr::Get();
 	RenderModule& render = RenderModule::Get();
+	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-	render.PreRenderForRenderable(*pRenderable);
+	const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+	render.BindMaterial(*pMaterial, mvpMatrix);
 
-	render.SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
 	render.SetConstantBuffer(1, sizeof(color), &color, 0);
 
 	int value = 1;
@@ -54,7 +54,8 @@ void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 	m_borderWidth = 3;
 	render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-	render.PostRenderForRenderable(*pRenderable);
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+	render.RenderMesh(*pMesh);
 
 	Widget::Draw(windowSize);
 }

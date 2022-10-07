@@ -4,8 +4,8 @@
 
 #include "Button.h"
 
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
@@ -29,12 +29,13 @@ namespace Widgets
 		if (m_hover || m_isSelected)
 			color = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
 
-		Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_widgetRenderableId);
-
+		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		RenderModule& render = RenderModule::Get();
-		render.PreRenderForRenderable(*pRenderable);
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-		render.SetConstantBuffer(0, sizeof(DirectX::XMMATRIX), &mvpMatrix, 0);
+		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+		render.BindMaterial(*pMaterial, mvpMatrix);
+
 		render.SetConstantBuffer(1, sizeof(color), &color, 0);
 
 		int value = m_showBorder ? 1 : 0;
@@ -46,7 +47,8 @@ namespace Widgets
 
 		render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-		render.PostRenderForRenderable(*pRenderable);
+		const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+		render.RenderMesh(*pMesh);
 
 		Widget::Draw(windowSize);
 	}
