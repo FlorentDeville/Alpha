@@ -27,9 +27,4 @@ namespace Widgets
 		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
 		RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
 	}
-
-	void Label::AppendText(const std::string& textToAppend)
-	{
-		m_text += textToAppend;
-	}
 }

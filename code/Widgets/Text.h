@@ -1,5 +1,5 @@
 /********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #pragma once
@@ -10,13 +10,15 @@
 
 namespace Widgets
 {
-	class Label : public Widget
+	class Text : public Widget
 	{
 	public:
-		Label(int32_t locX, int32_t locY, float scale, const std::string& text);
-		virtual ~Label();
+		Text(float scale, const std::string& text);
+		virtual ~Text();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+
+		void AppendText(const std::string& textToAppend);
 
 	private:
 		float m_fontScale;

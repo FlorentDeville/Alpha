@@ -10,6 +10,7 @@
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
+#include "Widgets/Text.h"
 
 #include <filesystem>
 #include <Windows.h>
@@ -25,6 +26,7 @@ namespace Editors
 		, m_allShaders()
 		, m_pShaderListLayout(nullptr)
 		, m_selectedShader(-1)
+		, m_pLogText(nullptr)
 	{}
 
 	ShaderEditor::~ShaderEditor()
@@ -114,9 +116,9 @@ namespace Editors
 		}
 
 		//add log label
-		m_pLogLabel = new Widgets::Label(0, 0, 1, "");
-		m_pLogLabel->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pRightPanelLayout->AddWidget(m_pLogLabel);
+		m_pLogText = new Widgets::Text(1, "");
+		m_pLogText->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pRightPanelLayout->AddWidget(m_pLogText);
 	}
 
 	void ShaderEditor::Update()
@@ -191,7 +193,7 @@ namespace Editors
 		cmdline += " /nologo";
 		cmdline += " \"" + shader.m_filename + "\"";
 
-		m_pLogLabel->AppendText(cmdline + "\n");
+		m_pLogText->AppendText(cmdline + "\n");
 		{
 			const int BUFFER_LENGTH = 1024;
 			char buffer[BUFFER_LENGTH] = { '\0' };
@@ -258,7 +260,7 @@ namespace Editors
 				bool res = ReadFile(standardOutputRead, buff, BUFSIZE - 1, &dwBytesRead, 0);
 				assert(res);
 				std::string output((char*)buff, (size_t)dwBytesRead);
-				m_pLogLabel->AppendText(output);
+				m_pLogText->AppendText(output);
 				OutputDebugString(output.c_str());
 			}
 
@@ -267,7 +269,7 @@ namespace Editors
 				bool res = ReadFile(errorOutputRead, buff, BUFSIZE - 1, &dwBytesRead, 0);
 				assert(res);
 				std::string outputErr((char*)buff, (size_t)dwBytesRead);
-				m_pLogLabel->AppendText(outputErr);
+				m_pLogText->AppendText(outputErr);
 				OutputDebugString(outputErr.c_str());
 			}
 

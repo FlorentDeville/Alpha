@@ -31,6 +31,7 @@
     <ClInclude Include="SplitVertical.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="TabContainer.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetMgr.h" />
@@ -47,6 +48,7 @@
     <ClCompile Include="SplitVertical.cpp" />
     <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TabContainer.cpp" />
+    <ClCompile Include="Text.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WidgetMgr.cpp" />
