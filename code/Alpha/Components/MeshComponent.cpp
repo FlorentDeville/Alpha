@@ -43,6 +43,4 @@ void MeshComponent::Render()
 
 	const Mesh* pMesh = g_pMeshMgr->GetMesh(m_meshId);
 	renderer.RenderMesh(*pMesh);
-	//Renderable* pRenderable = g_pRenderableMgr->GetRenderable(m_renderableId);
-	//RenderModule::Get().Render(*pRenderable, wvp);
 }
