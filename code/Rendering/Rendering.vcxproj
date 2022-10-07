@@ -30,9 +30,6 @@
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
     <ClInclude Include="PipelineState\PipelineState.h" />
-    <ClInclude Include="Renderable\Renderable.h" />
-    <ClInclude Include="Renderable\RenderableId.h" />
-    <ClInclude Include="Renderable\RenderableMgr.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="RenderTargets\RenderTarget.h" />
     <ClInclude Include="RootSignature\RootSignature.h" />
@@ -54,8 +51,6 @@
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />
     <ClCompile Include="PipelineState\PipelineState.cpp" />
-    <ClCompile Include="Renderable\Renderable.cpp" />
-    <ClCompile Include="Renderable\RenderableMgr.cpp" />
     <ClCompile Include="RenderModule.cpp" />
     <ClCompile Include="RenderTargets\RenderTarget.cpp" />
     <ClCompile Include="RootSignature\RootSignature.cpp" />

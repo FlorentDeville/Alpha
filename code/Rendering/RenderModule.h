@@ -19,7 +19,7 @@
 
 #include "Rendering/DescriptorHeap.h"
 #include "Rendering/Font/Font.h"
-#include "Rendering/Renderable/Renderable.h"
+#include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "ShaderId.h"
 
@@ -30,6 +30,7 @@ struct ID3D12DescriptorHeap;
 struct ID3D12Device2;
 
 class CommandQueue;
+class Mesh;
 namespace Rendering
 {
 	class Material;
@@ -59,10 +60,6 @@ public:
 	void RenderMesh(const Mesh& mesh);
 
 	void ExecuteRenderCommand();
-
-	//Call PreRenderForRenderable, then SetConstantBuffer, then PostRenderForRenderable.
-	void PreRenderForRenderable(const Renderable& renderable);
-	void PostRenderForRenderable(const Renderable& renderable);
 
 	void SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset);
 

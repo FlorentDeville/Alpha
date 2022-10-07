@@ -97,7 +97,7 @@ void WidgetMgr::Init()
 		RenderModule::Get().InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 65535);
 	}
 
-	//Renderable for icon
+	//material for icon
 	{
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
@@ -113,7 +113,7 @@ void WidgetMgr::Init()
 		pMaterial->Init(rsId, texture_posuv_pipelineStateId);
 	}
 
-	//Renderable for viewports
+	//this should be a material
 	{
 		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\widget_viewport.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.vs.cso");

@@ -5,6 +5,8 @@
 #include "Widgets/Container.h"
 
 #include "Rendering/Material/MaterialMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
 #include "Widgets/WidgetMgr.h"

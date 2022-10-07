@@ -5,6 +5,7 @@
 #include "Widgets/Viewport.h"
 
 #include "Rendering/Mesh/Mesh.h"
+#include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"

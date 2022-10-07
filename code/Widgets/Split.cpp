@@ -8,6 +8,7 @@
 #include "Widgets/WidgetMgr.h"
 
 #include "Rendering/Material/MaterialMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
 extern LPCWSTR g_pIconName;

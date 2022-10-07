@@ -51,15 +51,6 @@
     <ClInclude Include="PipelineState\PipelineState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderable\Renderable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderable\RenderableId.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderable\RenderableMgr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RootSignature\RootSignature.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -114,12 +105,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PipelineState\PipelineState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderable\Renderable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderable\RenderableMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RootSignature\RootSignature.cpp">

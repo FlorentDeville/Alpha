@@ -36,7 +36,6 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -441,30 +440,6 @@ bool LoadContent()
 		pPlaneMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_plane.json");
 	}
 
-	//load plane
-	//{
-	//	Mesh* pMesh = nullptr;
-	//	g_pMeshMgr->CreateMesh(&pMesh, g_cubeMeshId);
-	//	pMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_cube.json");
-	//}
-
-	//Load the textured cube
-	{
-		/*Mesh* pCubeTexture = nullptr;
-		MeshId cubeTextureMeshId;
-		g_pMeshMgr->CreateMesh(&pCubeTexture, cubeTextureMeshId);
-		pCubeTexture->LoadVertexAndIndexBuffer(g_CubeTexture, _countof(g_CubeTexture), g_CubeTextureIndices, _countof(g_CubeTextureIndices));
-
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
-
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(g_texture_posuv_pipelineStateId, "texture");
-		pPipelineState->Init_PosUv(rsId, vsId, psId);
-
-		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, g_texture_posuv_pipelineStateId);*/
-	}
-
 	//Load the grid texture
 	{
 		std::string textureName = g_dataRoot + "\\textures\\grid_orange.png";
@@ -557,7 +532,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
-	g_pRenderableMgr = new RenderableMgr();
 
 	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
 	widgetMgr.Init();
@@ -615,7 +589,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	WidgetMgr::Get().Release();
 	WidgetMgr::ReleaseSingleton();
 
-	delete g_pRenderableMgr;
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;
 	delete g_pPipelineStateMgr;
