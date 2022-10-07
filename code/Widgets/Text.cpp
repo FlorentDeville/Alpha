@@ -38,7 +38,6 @@ namespace Widgets
 			
 			std::string subLine = line;
 
-			//size_t subLineStart = 0;
 			do
 			{
 				RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
