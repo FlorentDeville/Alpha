@@ -5,12 +5,13 @@
 #pragma once
 
 #include "Widgets/Widget.h"
-#include "Widgets/Split.h"
-#include "Widgets/Layout.h"
-#include "Widgets/Container.h"
 
 namespace Widgets
 {
+	class Container;
+	class Layout;
+	class Split;
+	
 	class Split2Way : public Widget
 	{
 	public:

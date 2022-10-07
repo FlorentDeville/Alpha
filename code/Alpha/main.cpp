@@ -23,6 +23,7 @@
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
+#include "Editors/ShaderEditor/ShaderEditor.h"
 
 #include "GameInputs/Inputs/InputMgr.h"
 
@@ -51,7 +52,6 @@
 #include "Widgets/Label.h"
 #include "Widgets/Message.h"
 #include "Widgets/Split.h"
-#include "Widgets/Split3Way.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Viewport.h"
@@ -119,7 +119,7 @@ static VertexPosUv g_CubeTexture[] = {
 static uint16_t g_CubeTextureIndices[] =
 {
 	0, 1, 2,
-	0, 3, 1/*,
+	0, 3, 1,
 
 	4, 5, 7,
 	4, 6, 5,
@@ -134,7 +134,7 @@ static uint16_t g_CubeTextureIndices[] =
 	18, 19, 16,
 
 	20, 21, 22,
-	22, 23, 20*/
+	22, 23, 20
 };
 
 void Update();
@@ -144,6 +144,7 @@ FontId g_comicSansMsFontId;
 
 PipelineStateId g_texture_posuv_pipelineStateId;
 
+TextureId g_gridTextureId;
 TextureId g_textureId;
 LPCWSTR g_pIconName = IDC_ARROW;
 
@@ -401,6 +402,7 @@ void Update()
 	}
 
 	Editors::MeshEditor::Get().Update();
+	Editors::ShaderEditor::Get().Update();
 	GameMgr::Get().Update();
 	WidgetMgr::Get().Update();
 }
@@ -417,26 +419,8 @@ void Render()
 
 	GameMgr::Get().Render();
 
-	renderModule.m_gameRenderTarget->EndScene();
-
-	//render the level editor
-	Editors::LevelEditor::Get().Render();
-	Editors::MeshEditor::Get().Render();
-
-	//render the back buffer
-	renderModule.BeginMainScene();
-	
-	// Render the cube
-	//if(false)
-	//{
-	//	//// Update the MVP matrix
-	//	DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(g_model, g_view);
-	//	mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, g_projection);
-	//	g_pRenderModule->Render(*g_pRenderableMgr->GetRenderable(g_CubeId), mvpMatrix);
-	//}
-
 	//Render texture cube
-	if(false)
+	if (true)
 	{
 		const Renderable* renderable = g_pRenderableMgr->GetRenderable(g_CubeTextureId);
 		RenderModule::Get().PreRenderForRenderable(*renderable);
@@ -447,20 +431,26 @@ void Render()
 
 		RenderModule::Get().SetConstantBuffer(0, sizeof(wvpMatrix), &wvpMatrix, 0);
 
-		ID3D12DescriptorHeap* pSrv = RenderModule::Get().GetTextureMgr().GetResource(g_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pSrv = RenderModule::Get().GetTextureMgr().GetResource(g_gridTextureId)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		RenderModule::Get().GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		RenderModule::Get().GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
 		RenderModule::Get().PostRenderForRenderable(*renderable);
 	}
-	
 
+	renderModule.m_gameRenderTarget->EndScene();
+
+	//render the level editor
+	Editors::LevelEditor::Get().Render();
+	Editors::MeshEditor::Get().Render();
+	Editors::ShaderEditor::Get().Render();
+
+	//So far everything was rendered onto target texture, now render to the frame buffer
+	renderModule.BeginMainScene();
+	
 	// Render the widgets
-	//if(false)
-	{
-		WidgetMgr::Get().Draw();
-	}
+	WidgetMgr::Get().Draw();
 
 	renderModule.RenderAllText();
 	renderModule.EndMainScene();
@@ -522,6 +512,13 @@ bool LoadContent()
 		g_CubeTextureId = g_pRenderableMgr->CreateRenderable(cubeTextureMeshId, g_texture_posuv_pipelineStateId);
 	}
 
+	//Load the grid texture
+	{
+		std::string textureName = g_dataRoot + "\\textures\\grid_orange.png";
+		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(g_gridTextureId, textureName);
+		pTexture->Init(textureName);
+	}
+
 	//Load the font
 	{
 		{
@@ -576,6 +573,7 @@ void CreateMainWindow()
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
 	Editors::MeshEditor::Get().CreateEditor(pMiddleTabContainer);
+	Editors::ShaderEditor::Get().CreateEditor(pMiddleTabContainer);
 
 	pMiddleTabContainer->SetSelectedTab(0);
 }
@@ -626,6 +624,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::GamePlayer::InitSingleton();
 	Editors::LevelEditor::InitSingleton();
 	Editors::MeshEditor::InitSingleton();
+	Editors::ShaderEditor::InitSingleton();
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
@@ -656,6 +655,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		GameInputs::InputMgr::Get().ClearAllStates();
 	}
 
+	Editors::ShaderEditor::ReleaseSingleton();
 	Editors::MeshEditor::ReleaseSingleton();
 	Editors::LevelEditor::ReleaseSingleton();
 	Editors::GamePlayer::ReleaseSingleton();

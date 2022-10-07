@@ -4,6 +4,9 @@
 
 #include "Widgets/Split2Way.h"
 
+#include "Widgets/Container.h"
+#include "Widgets/Layout.h"
+#include "Widgets/Split.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
