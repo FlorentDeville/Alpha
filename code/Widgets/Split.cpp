@@ -55,7 +55,7 @@ void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 	m_borderWidth = 3;
 	render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-	const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+	const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 	render.RenderMesh(*pMesh);
 
 	Widget::Draw(windowSize);

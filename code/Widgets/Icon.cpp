@@ -37,6 +37,6 @@ void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
 	renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 	renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-	const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+	const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 	renderer.RenderMesh(*pMesh);
 }

@@ -31,9 +31,8 @@ namespace Editors
 {
 	MeshEntry::MeshEntry()
 		: m_filename()
-	{
-		m_meshId.m_id = -1;
-	}
+		, m_meshId()
+	{}
 
 	MeshEditor::MeshEditor()
 		: Core::Singleton<MeshEditor>()
@@ -229,7 +228,7 @@ namespace Editors
 			const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(m_materialId);
 			renderer.BindMaterial(*pMaterial, mvpMatrix);
 
-			const Mesh* pMesh = g_pMeshMgr->GetMesh(entry.m_meshId);
+			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(entry.m_meshId);
 			renderer.RenderMesh(*pMesh);
 		}
 
@@ -245,8 +244,8 @@ namespace Editors
 	{
 		entry.m_filename = meshFilename;
 
-		Mesh* pCubeMesh = nullptr;
-		g_pMeshMgr->CreateMesh(&pCubeMesh, entry.m_meshId);
+		Rendering::Mesh* pCubeMesh = nullptr;
+		Rendering::MeshMgr::Get().CreateMesh(&pCubeMesh, entry.m_meshId);
 		pCubeMesh->Load(meshFilename);
 	}
 
@@ -268,7 +267,7 @@ namespace Editors
 		MeshEntry& entry = m_allMeshes[entryIndex];
 		
 		//load the mesh if necessary
-		if (entry.m_meshId.m_id == -1)
+		if (entry.m_meshId == Rendering::MeshId::INVALID)
 		{
 			LoadMesh(entry.m_filename, entry);
 		}

@@ -12,12 +12,12 @@
 class MeshComponent : public GameComponent
 {
 public:
-	MeshComponent(GameEntity* pParent, MeshId meshId, Rendering::MaterialId materialId);
+	MeshComponent(GameEntity* pParent, Rendering::MeshId meshId, Rendering::MaterialId materialId);
 	virtual ~MeshComponent();
 
 	void Render() override;
 
 private:
-	MeshId m_meshId;
+	Rendering::MeshId m_meshId;
 	Rendering::MaterialId m_materialId;
 };

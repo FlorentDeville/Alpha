@@ -27,9 +27,9 @@ public:
 	void Init();
 	void Release();
 
-	void CreatePlayerEntity(MeshId meshId, Rendering::MaterialId materialId);
+	void CreatePlayerEntity(Rendering::MeshId meshId, Rendering::MaterialId materialId);
 	void CreateCameraEntity(float aspectRatio);
-	void CreateBackgroundEntity(MeshId meshId, Rendering::MaterialId materialId);
+	void CreateBackgroundEntity(Rendering::MeshId meshId, Rendering::MaterialId materialId);
 
 	void Update();
 	void Render();

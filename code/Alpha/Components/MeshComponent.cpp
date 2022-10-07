@@ -13,7 +13,7 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
-MeshComponent::MeshComponent(GameEntity* pParent, MeshId meshId, Rendering::MaterialId materialId)
+MeshComponent::MeshComponent(GameEntity* pParent, Rendering::MeshId meshId, Rendering::MaterialId materialId)
 	: GameComponent(pParent)
 	, m_meshId(meshId)
 	, m_materialId(materialId)
@@ -42,6 +42,6 @@ void MeshComponent::Render()
 	const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(m_materialId);
 	renderer.BindMaterial(*pMaterial, wvp);
 
-	const Mesh* pMesh = g_pMeshMgr->GetMesh(m_meshId);
+	const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(m_meshId);
 	renderer.RenderMesh(*pMesh);
 }

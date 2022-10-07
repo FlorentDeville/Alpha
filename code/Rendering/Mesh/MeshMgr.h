@@ -7,22 +7,25 @@
 #include <cstdint>
 #include <vector>
 
+#include "Core/Singleton.h"
 #include "Rendering/Mesh/MeshId.h"
-
-class Mesh;
  
-class MeshMgr
+namespace Rendering
 {
-public:
-	MeshMgr();
-	~MeshMgr();
 
-	bool CreateMesh(Mesh** ppMesh, MeshId& id);
+	class Mesh;
 
-	const Mesh* GetMesh(MeshId id) const;
+	class MeshMgr : public Core::Singleton<MeshMgr>
+	{
+	public:
+		MeshMgr();
+		~MeshMgr();
 
-private:
-	std::vector<Mesh*> m_meshes;
-};
+		bool CreateMesh(Mesh** ppMesh, MeshId& id);
 
-extern MeshMgr* g_pMeshMgr;
+		const Mesh* GetMesh(MeshId id) const;
+
+	private:
+		std::vector<Mesh*> m_meshes;
+	};
+}

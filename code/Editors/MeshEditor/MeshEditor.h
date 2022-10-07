@@ -31,7 +31,7 @@ namespace Editors
 	{
 	public:
 		std::string m_filename;
-		MeshId m_meshId;
+		Rendering::MeshId m_meshId;
 		
 		MeshEntry();
 	};

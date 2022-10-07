@@ -45,7 +45,7 @@ void WidgetMgr::Init()
 {
 	//Simple quad used to render widgets
 	{
-		VertexPosUv vertices[4] =
+		Rendering::VertexPosUv vertices[4] =
 		{
 			{ DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f), DirectX::XMFLOAT2(0.f, 0.f) },	// top left
 			{ DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	DirectX::XMFLOAT2(1.f, 0.f) },	// top right
@@ -59,8 +59,8 @@ void WidgetMgr::Init()
 			2, 3, 0
 		};
 
-		Mesh* pSimpleQuad = nullptr;
-		g_pMeshMgr->CreateMesh(&pSimpleQuad, m_quadMeshId);
+		Rendering::Mesh* pSimpleQuad = nullptr;
+		Rendering::MeshMgr::Get().CreateMesh(&pSimpleQuad, m_quadMeshId);
 		pSimpleQuad->LoadVertexAndIndexBuffer(vertices, _countof(vertices), indices, _countof(indices));
 	}
 

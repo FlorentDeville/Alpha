@@ -49,6 +49,7 @@
     <ClCompile Include="Material\MaterialId.cpp" />
     <ClCompile Include="Material\MaterialMgr.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
+    <ClCompile Include="Mesh\MeshId.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />
     <ClCompile Include="PipelineState\PipelineState.cpp" />
     <ClCompile Include="RenderModule.cpp" />

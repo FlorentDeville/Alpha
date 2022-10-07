@@ -82,7 +82,7 @@ private:
 	//Ids of resources used to render widgets
 	Rendering::MaterialId m_materialId;
 	Rendering::MaterialId m_iconMaterialId;
-	MeshId m_quadMeshId;
+	Rendering::MeshId m_quadMeshId;
 
 	PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 	FontId m_segoeUIFontId;

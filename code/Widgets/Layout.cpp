@@ -43,7 +43,7 @@ namespace Widgets
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-			const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 			render.RenderMesh(*pMesh);
 		}
 

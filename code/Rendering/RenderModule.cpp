@@ -17,6 +17,7 @@
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/Mesh.h"
+#include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/PipelineState/PipelineState.h"
 
@@ -62,6 +63,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameResolution = gameResolution;
 	m_mainResolution = mainResolution;
 
+	Rendering::MeshMgr::InitSingleton();
 	Rendering::MaterialMgr::InitSingleton();
 	m_textureMgr.Init();
 	m_fontMgr.Init();
@@ -112,6 +114,7 @@ void RenderModule::Release()
 	m_fontMgr.Release();
 	m_textureMgr.Release();
 	Rendering::MaterialMgr::ReleaseSingleton();
+	Rendering::MeshMgr::ReleaseSingleton();
 
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
@@ -214,7 +217,7 @@ void RenderModule::BindMaterial(const Rendering::Material& material, const Direc
 	}
 }
 
-void RenderModule::RenderMesh(const Mesh& mesh)
+void RenderModule::RenderMesh(const Rendering::Mesh& mesh)
 {
 	m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -338,7 +341,7 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 	{
 		// create upload heap. We will fill this with data for our text
 		D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxCharacterCount * sizeof(VertexText));
+		D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxCharacterCount * sizeof(Rendering::VertexText));
 		HRESULT hr = RenderModule::Get().GetDevice()->CreateCommittedResource(
 			&prop, // upload heap
 			D3D12_HEAP_FLAG_NONE, // no flags
@@ -357,8 +360,8 @@ void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxC
 		ThrowIfFailed(hr);
 
 		info.m_textVertexBufferView[ii].BufferLocation = info.m_textVertexBuffer[ii]->GetGPUVirtualAddress();
-		info.m_textVertexBufferView[ii].StrideInBytes = sizeof(VertexText);
-		info.m_textVertexBufferView[ii].SizeInBytes = maxCharacterCount * sizeof(VertexText);
+		info.m_textVertexBufferView[ii].StrideInBytes = sizeof(Rendering::VertexText);
+		info.m_textVertexBufferView[ii].SizeInBytes = maxCharacterCount * sizeof(Rendering::VertexText);
 	}
 }
 
@@ -377,7 +380,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 	scissorXMax = (scissorXMax * 2 / m_mainResolution.x) - 1;
 
 	// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
-	VertexText* vert = (VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
+	Rendering::VertexText* vert = (Rendering::VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
 
 	char lastChar = -1; // no last character to start with
 
@@ -435,7 +438,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		float char_width = static_cast<float>(fc->m_width) / m_mainResolution.x * 2.f;
 		float char_height = static_cast<float>(fc->m_height) / m_mainResolution.y * 2.f;
 
-		VertexText& pVertexText = vert[info.m_characterCount];
+		Rendering::VertexText& pVertexText = vert[info.m_characterCount];
 		pVertexText.Position.x = x + ((xoffset + kerning) * scale.x);
 		pVertexText.Position.y = y - (yoffset * scale.y);
 		pVertexText.Position.z = char_width * scale.x;

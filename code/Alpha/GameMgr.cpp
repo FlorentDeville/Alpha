@@ -30,7 +30,7 @@ void GameMgr::Init()
 void GameMgr::Release()
 {}
 
-void GameMgr::CreatePlayerEntity(MeshId meshId, Rendering::MaterialId materialId)
+void GameMgr::CreatePlayerEntity(Rendering::MeshId meshId, Rendering::MaterialId materialId)
 {
 	PlayerEntity* pEntity = new PlayerEntity();
 
@@ -50,7 +50,7 @@ void GameMgr::CreateCameraEntity(float aspectRatio)
 	m_pCurrentCamera = pCamera;
 }
 
-void GameMgr::CreateBackgroundEntity(MeshId meshId, Rendering::MaterialId materialId)
+void GameMgr::CreateBackgroundEntity(Rendering::MeshId meshId, Rendering::MaterialId materialId)
 {
 	LocatorEntity* pEntity = new LocatorEntity();
 

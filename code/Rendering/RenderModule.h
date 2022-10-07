@@ -30,10 +30,11 @@ struct ID3D12DescriptorHeap;
 struct ID3D12Device2;
 
 class CommandQueue;
-class Mesh;
+
 namespace Rendering
 {
 	class Material;
+	class Mesh;
 	class RenderTarget;
 }
 
@@ -57,7 +58,7 @@ public:
 	void EndMainScene();
 
 	void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
-	void RenderMesh(const Mesh& mesh);
+	void RenderMesh(const Rendering::Mesh& mesh);
 
 	void ExecuteRenderCommand();
 

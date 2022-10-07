@@ -385,6 +385,8 @@ void Render()
 
 bool LoadContent()
 {
+	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+
 	//create the base material
 	Rendering::MaterialId baseMaterialId;
 	{
@@ -425,18 +427,18 @@ bool LoadContent()
 	}
 
 	//load torus mesh
-	MeshId torusMeshId;
+	Rendering::MeshId torusMeshId;
 	{
-		Mesh* pCubeMesh = nullptr;
-		g_pMeshMgr->CreateMesh(&pCubeMesh, torusMeshId);
+		Rendering::Mesh* pCubeMesh = nullptr;
+		meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
 		pCubeMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_torus.json");
 	}
 
 	//load plane
-	MeshId planeMeshId;
+	Rendering::MeshId planeMeshId;
 	{
-		Mesh* pPlaneMesh = nullptr;
-		g_pMeshMgr->CreateMesh(&pPlaneMesh, planeMeshId);
+		Rendering::Mesh* pPlaneMesh = nullptr;
+		meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
 		pPlaneMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_plane.json");
 	}
 
@@ -529,7 +531,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	RenderModule& render = RenderModule::InitSingleton();
 	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
-	g_pMeshMgr = new MeshMgr();
 	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
 
@@ -592,7 +593,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	delete g_pShaderMgr;
 	delete g_pRootSignatureMgr;
 	delete g_pPipelineStateMgr;
-	delete g_pMeshMgr;
 	delete g_pWindow;
 
 	render.Release();
