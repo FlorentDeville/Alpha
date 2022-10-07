@@ -92,7 +92,7 @@ void WidgetMgr::Init()
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
-		RenderModule::Get().InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 1024);
+		RenderModule::Get().InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 65535);
 	}
 
 	//Renderable for icon

@@ -12,6 +12,7 @@
 class Widget;
 namespace Widgets
 {
+	class Label;
 	class Layout;
 }
 
@@ -41,7 +42,7 @@ namespace Editors
 		std::vector<ShaderEntry> m_allShaders;
 
 		Widgets::Layout* m_pShaderListLayout;
-
+		Widgets::Label* m_pLogLabel;
 		int m_selectedShader;
 
 		bool OnShaderEntryClicked(int index);

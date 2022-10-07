@@ -384,7 +384,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 	//convert from ui coordinates to screen coordinate
 	// ui coordinate : from the top left corner in pixels
 	// screen coordinate : from the center, range [-1, 1]
-	float x = (uiPos.x * 2 / m_mainResolution.x) -1;
+	float startingX = (uiPos.x * 2 / m_mainResolution.x) -1;
 	float y = 2 - (uiPos.y * 2 / m_mainResolution.y) - 1;
 
 	float scissorXMax = static_cast<float>(scissor.x + scissor.z);
@@ -395,9 +395,27 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 
 	char lastChar = -1; // no last character to start with
 
+	float x = startingX;
+
+	bool skipUntilNextNewLine = false;
+
 	for (int i = 0; i < text.size(); ++i)
 	{
 		char c = text[i];
+
+		if (skipUntilNextNewLine && c != '\n')
+			continue;
+		else
+			skipUntilNextNewLine = false;
+
+		//new line
+		if (c == '\n')
+		{
+			x = startingX;
+			float lineHeight = static_cast<float>(pFont->m_lineHeight) / m_mainResolution.y * 2;
+			y -= (lineHeight * scale.y);
+			continue;
+		}
 
 		const FontChar* fc = pFont->GetChar(c);
 
@@ -443,16 +461,20 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		pVertexText.Color = DirectX::XMFLOAT4(1, 1, 1, 1);
 		pVertexText.Z = uiPos.z;
 
-		if (pVertexText.Position.x + pVertexText.Position.w > scissorXMax)
-			break;
-
-		info.m_characterCount++;
-
-		// remove horrizontal padding and advance to next char position
+		//still advance even if we are out of bound
 		float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
 		x += advance * scale.x;
 
 		lastChar = c;
+
+		//we are out of bounds, ignore the last character setup
+		if (pVertexText.Position.x + pVertexText.Position.w > scissorXMax)
+		{
+			skipUntilNextNewLine = true;
+			continue;
+		}
+
+		info.m_characterCount++;
 	}
 }
 

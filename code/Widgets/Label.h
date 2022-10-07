@@ -18,6 +18,8 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
+		void AppendText(const std::string& textToAppend);
+
 	private:
 		float m_fontScale;
 		std::string m_text;
