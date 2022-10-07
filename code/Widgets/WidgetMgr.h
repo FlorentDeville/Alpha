@@ -12,7 +12,6 @@
 #include "Rendering/Material/MaterialId.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/Renderable/RenderableId.h"
 #include "Rendering/RenderModule.h"
 
 #include "Core/Singleton.h"
@@ -82,10 +81,10 @@ private:
 
 	//Ids of resources used to render widgets
 	Rendering::MaterialId m_materialId;
+	Rendering::MaterialId m_iconMaterialId;
 	MeshId m_quadMeshId;
 
-	PipelineStateId m_widgetViewportPsoId;
-	RenderableId m_iconRenderableId;
+	PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 	FontId m_segoeUIFontId;
 
 	void ComputeSortedWidgetQueue();

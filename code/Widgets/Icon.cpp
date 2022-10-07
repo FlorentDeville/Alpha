@@ -4,8 +4,8 @@
 
 #include "Widgets/Icon.h"
 
+#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 
 #include "Widgets/WidgetMgr.h"
 
@@ -24,17 +24,18 @@ void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
 	DirectX::XMMATRIX wvp;
 	ComputeWVPMatrix(windowSize, wvp);
 
-	const Renderable* pRenderable = g_pRenderableMgr->GetRenderable(WidgetMgr::Get().m_iconRenderableId);
+	WidgetMgr& widgetMgr = WidgetMgr::Get();
+	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+	RenderModule& renderer = RenderModule::Get();
 
-	RenderModule& render = RenderModule::Get();
-	render.PreRenderForRenderable(*pRenderable);
+	const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_iconMaterialId);
+	renderer.BindMaterial(*pMaterial, wvp);
 
-	render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
-
-	ID3D12DescriptorHeap* pSrv = RenderModule::Get().GetTextureMgr().GetResource(m_textureId)->GetSRV();
+	ID3D12DescriptorHeap* pSrv = renderer.GetTextureMgr().GetResource(m_textureId)->GetSRV();
 	ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-	render.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-	render.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+	renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+	renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-	render.PostRenderForRenderable(*pRenderable);
+	const Mesh* pMesh = g_pMeshMgr->GetMesh(widgetMgr.m_quadMeshId);
+	renderer.RenderMesh(*pMesh);
 }

@@ -8,7 +8,6 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
-#include "Rendering/Renderable/RenderableMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
@@ -108,7 +107,10 @@ void WidgetMgr::Init()
 		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(texture_posuv_pipelineStateId, "texture");
 		pPipelineState->Init_Icon(rsId, vsId, psId);
 
-		m_iconRenderableId = g_pRenderableMgr->CreateRenderable(m_quadMeshId, texture_posuv_pipelineStateId);
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+		Rendering::Material* pMaterial = nullptr;
+		materialMgr.CreateMaterial(&pMaterial, m_iconMaterialId);
+		pMaterial->Init(rsId, texture_posuv_pipelineStateId);
 	}
 
 	//Renderable for viewports
