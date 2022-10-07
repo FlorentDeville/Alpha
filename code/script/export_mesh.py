@@ -3,7 +3,7 @@ import json
 
 def Export(outputFilename):
     out_mesh = {}
-    out_mesh["vertex_structure"] = "pos,col"
+    out_mesh["vertex_structure"] = "pos,col,uv"
 
     for obj in bpy.data.objects:
         if obj.type != "MESH":
@@ -15,6 +15,7 @@ def Export(outputFilename):
         mesh.calc_normals_split() # compute the normal in the loop
         
         vertex_colors = mesh.vertex_colors[0].data
+        vertex_uvlayers = mesh.uv_layers[0].data
 
         vertex_index_to_out_vertex_index = {}
         vertex_index = 0
@@ -22,6 +23,7 @@ def Export(outputFilename):
             vertex = mesh.vertices[loop.vertex_index]
             normal = loop.normal
             color = vertex_colors[loop.index].color
+            uv = vertex_uvlayers[loop.index].uv
             
             vertex_index_to_out_vertex_index[loop.index] = vertex_index
             vertex_index = vertex_index + 1
@@ -32,6 +34,8 @@ def Export(outputFilename):
             vertex_buffer.append(color[0])
             vertex_buffer.append(color[1])
             vertex_buffer.append(color[2])
+            vertex_buffer.append(uv[0])
+            vertex_buffer.append(uv[1])
             
         for polygon in mesh.polygons:
             loop_length = len(polygon.loop_indices)
