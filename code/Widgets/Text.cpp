@@ -33,6 +33,7 @@ namespace Widgets
 		size_t endOfLine = 0;
 		do
 		{
+			//first split by line
 			endOfLine = m_text.find_first_of('\n', startOfLine);
 			std::string line = m_text.substr(startOfLine, endOfLine - startOfLine);
 			
@@ -40,6 +41,7 @@ namespace Widgets
 
 			do
 			{
+				//then split the line by the number of characters I can rander.
 				RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
 				uiPos.y += pFont->m_lineHeight;
 
