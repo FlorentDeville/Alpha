@@ -9,6 +9,8 @@
 #include <cstdio>
 #include <string>
 
+#include <dwmapi.h>
+
 extern std::string g_dataRoot;
 
 SysWindow::SysWindow()
@@ -51,6 +53,14 @@ bool SysWindow::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTi
 		DWORD error = GetLastError();
 		printf("%d", error);
 		assert(m_hWindow && "Failed to create window");
+	}
+
+	//Dark Mode
+	BOOL dark = 1;
+	if (S_OK != DwmSetWindowAttribute(m_hWindow, 20, &dark, sizeof dark)) 
+	{
+		// this would be the call before Windows build 18362
+		DwmSetWindowAttribute(m_hWindow, 19, &dark, sizeof dark);
 	}
 
 	return true;
@@ -155,7 +165,7 @@ uint32_t SysWindow::GetHeight() const
 
 void SysWindow::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName, WndProcCallback callback)
 {
-	std::string iconPath = g_dataRoot + "\\textures\\alpha.ico";
+	std::string iconPath = g_dataRoot + "\\textures\\alpha_white.ico";
 
 	WNDCLASSEXW windowClass = { 0 };
 	windowClass.cbSize = sizeof(WNDCLASSEX);
