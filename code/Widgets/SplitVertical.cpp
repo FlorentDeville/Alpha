@@ -28,7 +28,7 @@ namespace Widgets
 		m_pLeftContainer->SetSizeStyle(Widget::VSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pLeftContainer);
 
-		m_pSplit = new Split();
+		m_pSplit = new Split(true);
 		m_pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pSplit);
 

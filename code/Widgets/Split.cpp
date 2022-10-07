@@ -15,12 +15,14 @@ extern LPCWSTR g_pIconName;
 namespace Widgets
 {
 
-Split::Split()
+Split::Split(bool isVerticalSplit)
 	: Widget()
 	, m_isDragged(false)
+	, m_isVerticalSplit(isVerticalSplit)
 {
 	SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
 	m_size.x = 10;
+	m_size.y = 10;
 }
 
 Split::~Split()
@@ -63,7 +65,11 @@ bool Split::Handle(const Message& msg)
 	{
 	case M_MouseEnter:
 	{
-		g_pIconName = IDC_SIZEWE;
+		if (m_isVerticalSplit)
+			g_pIconName = IDC_SIZEWE;
+		else
+			g_pIconName = IDC_SIZENS;
+
 		return true;
 	}
 		break;
@@ -96,7 +102,10 @@ bool Split::Handle(const Message& msg)
 		m_isDragged = true;
 		m_previousCursorPosition = WidgetMgr::Get().GetCursorPosition();
 
-		g_pIconName = IDC_SIZEWE;
+		if (m_isVerticalSplit)
+			g_pIconName = IDC_SIZEWE;
+		else
+			g_pIconName = IDC_SIZENS;
 		return true;
 	}
 	break;

@@ -11,7 +11,7 @@ namespace Widgets
 	class Split : public Widget
 	{
 	public:
-		Split();
+		Split(bool isVerticalSplit);
 		~Split();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
@@ -25,5 +25,7 @@ namespace Widgets
 	public:
 		bool m_isDragged;
 		DirectX::XMINT2 m_previousCursorPosition;
+
+		bool m_isVerticalSplit;
 	};
 }
