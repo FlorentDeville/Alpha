@@ -2,7 +2,7 @@
 /* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Widgets/Split2Way.h"
+#include "Widgets/SplitVertical.h"
 
 #include "Widgets/Container.h"
 #include "Widgets/Layout.h"

@@ -27,7 +27,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageId.h" />
     <ClInclude Include="Split.h" />
-    <ClInclude Include="Split2Way.h" />
+    <ClInclude Include="SplitVertical.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="TabContainer.h" />
     <ClInclude Include="Viewport.h" />
@@ -42,7 +42,7 @@
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layout.cpp" />
     <ClCompile Include="Split.cpp" />
-    <ClCompile Include="Split2Way.cpp" />
+    <ClCompile Include="SplitVertical.cpp" />
     <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TabContainer.cpp" />
     <ClCompile Include="Viewport.cpp" />

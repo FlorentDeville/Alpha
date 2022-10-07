@@ -7,7 +7,7 @@
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
-#include "Widgets/Split2Way.h"
+#include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 
