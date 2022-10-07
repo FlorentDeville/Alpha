@@ -37,8 +37,7 @@ bool SysWindow::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTi
 	windowRect.bottom = static_cast<LONG>(height);
 	
 	int windowStyle = WS_OVERLAPPEDWINDOW;
-	::AdjustWindowRect(&windowRect, windowStyle, FALSE);
-
+	
 	int windowWidth = windowRect.right - windowRect.left;
 	int windowHeight = windowRect.bottom - windowRect.top;
 
@@ -46,7 +45,6 @@ bool SysWindow::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTi
 	int windowY = (screenHeight - windowHeight) / 2;
 
 	m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, windowStyle, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
-	SetWindowLong(m_hWindow, GWL_STYLE, 0);
 
 	if (m_hWindow == 0)
 	{

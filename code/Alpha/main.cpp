@@ -325,11 +325,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		mouseState.m_mouseY = y;
 		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
-
+		break;
+	
 	case WM_SETCURSOR:
 	{
-		HCURSOR hCurs1 = LoadCursor(NULL, g_pIconName);
-		SetCursor(hCurs1);
+		LPCWSTR cursorResource;
+		uint16_t hitResult = LOWORD(lParam);
+		switch (hitResult)
+		{
+		case HTTOP:
+		case HTBOTTOM:
+			cursorResource = IDC_SIZENS;
+			break;
+
+		case HTLEFT:
+		case HTRIGHT:
+			cursorResource = IDC_SIZEWE;
+			break;
+
+		case HTTOPLEFT:
+		case HTBOTTOMRIGHT:
+			cursorResource = IDC_SIZENWSE;
+			break;
+
+		case HTTOPRIGHT:
+		case HTBOTTOMLEFT:
+			cursorResource = IDC_SIZENESW;
+			break;
+
+		default:
+			cursorResource = g_pIconName;
+			break;
+		}
+		
+		HCURSOR cursor = LoadCursor(NULL, cursorResource);
+		SetCursor(cursor);
 		return 1;
 	}
 		break;
@@ -557,18 +587,12 @@ bool LoadContent()
 
 void CreateMainWindow()
 {
-	Widgets::Window* pWindow = new Widgets::Window(DirectX::XMUINT2(g_pWindow->GetWidth(), g_pWindow->GetHeight()));
-	WidgetMgr::Get().SetRoot(pWindow);
-
-	//Widgets::Split3Way* pSplit = new Widgets::Split3Way();
-	//pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-	//pWindow->AddWidget(pSplit);
+	Widgets::Container* pContainer = new Widgets::Container();
+	pContainer->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+	WidgetMgr::Get().SetRoot(pContainer);
 
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
-	pWindow->AddWidget(pMiddleTabContainer);
-
-	//Widgets::Tab* pDummyTab2 = new Widgets::Tab();
-	//pMiddleTabContainer->AddTab("Dumber", pDummyTab2);
+	pContainer->AddWidget(pMiddleTabContainer);
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
@@ -633,9 +657,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	LoadTexture();
 
 	CreateMainWindow();
-
-	HCURSOR hCurs1 = LoadCursor(NULL, IDC_ARROW);
-	SetCursor(hCurs1);
 
 	g_pWindow->Show();
 
