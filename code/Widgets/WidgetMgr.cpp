@@ -9,6 +9,7 @@
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
@@ -74,7 +75,7 @@ void WidgetMgr::Init()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.ps.cso");
 
-		PipelineStateId psoId;
+		Rendering::PipelineStateId psoId;
 		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(psoId);
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
 
@@ -94,7 +95,7 @@ void WidgetMgr::Init()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
-		PipelineStateId text_pipelineStateId;
+		Rendering::PipelineStateId text_pipelineStateId;
 		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
@@ -107,7 +108,7 @@ void WidgetMgr::Init()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
 
-		PipelineStateId texture_posuv_pipelineStateId;
+		Rendering::PipelineStateId texture_posuv_pipelineStateId;
 		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(texture_posuv_pipelineStateId);
 		pPipelineState->Init_Icon(rsId, vsId, psId);
 

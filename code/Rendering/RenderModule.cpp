@@ -336,7 +336,7 @@ const DirectX::XMUINT2& RenderModule::GetGameResolution() const
 	return m_gameResolution;
 }
 
-void RenderModule::InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount)
+void RenderModule::InitialiseFont(FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	info.m_bufferSize = maxCharacterCount;

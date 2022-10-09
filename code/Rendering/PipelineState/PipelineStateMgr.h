@@ -6,7 +6,7 @@
 
 #include "Core/Singleton.h"
 
-#include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateId.h"
 
 #include <vector>
 

@@ -140,7 +140,7 @@ namespace Editors
 			ShaderId vsId = g_pShaderMgr->CreateShader(root + "texture.vs.cso");
 			ShaderId psId = g_pShaderMgr->CreateShader(root + "texture.ps.cso");
 
-			PipelineStateId pid;
+			Rendering::PipelineStateId pid;
 			PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
 			pPipelineState->Init_Generic(rsId, vsId, psId);
 

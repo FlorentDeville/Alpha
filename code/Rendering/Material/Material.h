@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Rendering/PipelineState/PipelineState.h"
-
+#include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/Texture/Texture.h"
 
 class RootSignature;

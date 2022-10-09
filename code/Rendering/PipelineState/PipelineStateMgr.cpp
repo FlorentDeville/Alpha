@@ -4,6 +4,8 @@
 
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 
+#include "Rendering/PipelineState/PipelineState.h"
+
 namespace Rendering
 {
 	PipelineStateMgr::PipelineStateMgr()
@@ -23,7 +25,7 @@ namespace Rendering
 
 	PipelineState* PipelineStateMgr::CreatePipelineState(PipelineStateId& id)
 	{
-		id = m_pipelineStates.size();
+		id = PipelineStateId(static_cast<uint32_t>(m_pipelineStates.size()));
 		PipelineState* pPipelineState = new PipelineState();
 		m_pipelineStates.push_back(pPipelineState);
 		return pPipelineState;
@@ -31,13 +33,13 @@ namespace Rendering
 
 	void PipelineStateMgr::DeletePipelineState(PipelineStateId& id)
 	{
-		PipelineState* pPipelineState = m_pipelineStates[id];
+		PipelineState* pPipelineState = m_pipelineStates[id.m_id];
 		delete pPipelineState;
-		m_pipelineStates[id] = nullptr;
+		m_pipelineStates[id.m_id] = nullptr;
 	}
 
 	PipelineState* PipelineStateMgr::GetPipelineState(const PipelineStateId& id) const
 	{
-		return m_pipelineStates[id];
+		return m_pipelineStates[id.m_id];
 	}
 }

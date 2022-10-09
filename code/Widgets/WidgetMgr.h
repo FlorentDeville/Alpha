@@ -12,6 +12,7 @@
 #include "Rendering/Material/MaterialId.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RenderModule.h"
 
 #include "Core/Singleton.h"
@@ -84,7 +85,7 @@ private:
 	Rendering::MaterialId m_iconMaterialId;
 	Rendering::MeshId m_quadMeshId;
 
-	PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
+	Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 	FontId m_segoeUIFontId;
 
 	void ComputeSortedWidgetQueue();

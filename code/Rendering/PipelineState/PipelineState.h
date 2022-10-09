@@ -6,7 +6,6 @@
 
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/ShaderId.h"
-#include "Core/Resource/ResourceMgr.h"
 
 struct ID3D12PipelineState;
 
@@ -34,5 +33,3 @@ private:
 	ShaderId m_vsId;
 	ShaderId m_psId;
 };
-
-DECLARE_RESOURCE_ID(PipelineState);

@@ -77,8 +77,6 @@ void Render();
 
 FontId g_comicSansMsFontId;
 
-PipelineStateId g_texture_posuv_pipelineStateId;
-
 TextureId g_gridTextureId;
 TextureId g_textureId;
 LPCWSTR g_pIconName = IDC_ARROW;
@@ -363,7 +361,7 @@ bool LoadContent()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
-		PipelineStateId pid;
+		Rendering::PipelineStateId pid;
 		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
 		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
@@ -380,7 +378,7 @@ bool LoadContent()
 		ShaderId vsId = g_pShaderMgr->CreateShader(root + "\\texture.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(root + "\\texture.ps.cso");
 
-		PipelineStateId pid;
+		Rendering::PipelineStateId pid;
 		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
 		pPipelineState->Init_Generic(rsId, vsId, psId);
 
@@ -430,7 +428,7 @@ bool LoadContent()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
-		PipelineStateId text_pipelineStateId;
+		Rendering::PipelineStateId text_pipelineStateId;
 		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
 		pPipelineState->Init_Text(rsId, vsId, psId);
 

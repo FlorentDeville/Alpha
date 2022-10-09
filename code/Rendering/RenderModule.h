@@ -20,6 +20,7 @@
 #include "Rendering/DescriptorHeap.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "ShaderId.h"
 
@@ -67,7 +68,7 @@ public:
 	int GetNumFrames() const;
 	const DirectX::XMUINT2& GetGameResolution() const;
 
-	void InitialiseFont(FontId fontId, PipelineStateId psoId, int maxCharacterCount);
+	void InitialiseFont(FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
 
 	//uiPos : origin : top left, range : [0, pixel screen size]
 	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
@@ -128,7 +129,7 @@ private:
 
 		int m_bufferSize;		//the size of the vertex buffer
 		int m_characterCount;	//the number of character to render
-		PipelineStateId m_psoId;
+		Rendering::PipelineStateId m_psoId;
 	};
 	std::map<FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 

@@ -78,6 +78,9 @@
     <ClInclude Include="PipelineState\PipelineStateMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PipelineState\PipelineStateId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">
@@ -135,6 +138,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PipelineState\PipelineStateMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState\PipelineStateId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
