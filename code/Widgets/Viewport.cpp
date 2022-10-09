@@ -34,7 +34,7 @@ namespace Widgets
 	void Viewport::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
-		const PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(WidgetMgr::Get().m_widgetViewportPsoId);
+		const Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(WidgetMgr::Get().m_widgetViewportPsoId);
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(pPipelineState->GetRootSignatureId());
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		Texture* pTexture = RenderModule::Get().GetTextureMgr().GetResource(m_onGetRenderTargetTexture());

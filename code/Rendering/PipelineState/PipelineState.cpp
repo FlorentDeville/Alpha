@@ -15,242 +15,245 @@
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderMgr.h"
 
-struct PipelineStateStream
+namespace Rendering
 {
-	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
-	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-};
-
-struct TextPipelineStateStream
-{
-	CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
-	CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
-	CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
-	CD3DX12_PIPELINE_STATE_STREAM_VS VS;
-	CD3DX12_PIPELINE_STATE_STREAM_PS PS;
-	CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
-	CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
-	CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendState;
-};
-
-PipelineState::PipelineState()
-	: m_pPipelineState(nullptr)
-	, m_psId()
-	, m_rsId()
-	, m_vsId()
-{}
-
-PipelineState::~PipelineState()
-{
-	if (m_pPipelineState)
-		m_pPipelineState->Release();
-}
-
-void PipelineState::Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-{
-	m_rsId = rsId;
-	m_vsId = vsId;
-	m_psId = psId;
-
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
-
-	PipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_pos, _countof(g_inputLayout_pos) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
-
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(PipelineStateStream), &pipelineStateStream
+	struct PipelineStateStream
+	{
+		CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+		CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
+		CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
+		CD3DX12_PIPELINE_STATE_STREAM_VS VS;
+		CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+		CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
+		CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
 	};
-	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
-}
 
-void PipelineState::Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-{
-	m_rsId = rsId;
-	m_vsId = vsId;
-	m_psId = psId;
-
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
-
-	PipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
-
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(PipelineStateStream), &pipelineStateStream
+	struct TextPipelineStateStream
+	{
+		CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+		CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
+		CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
+		CD3DX12_PIPELINE_STATE_STREAM_VS VS;
+		CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+		CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
+		CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
+		CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendState;
 	};
-	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
-}
 
-void PipelineState::Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-{
-	m_rsId = rsId;
-	m_vsId = vsId;
-	m_psId = psId;
+	PipelineState::PipelineState()
+		: m_pPipelineState(nullptr)
+		, m_psId()
+		, m_rsId()
+		, m_vsId()
+	{}
 
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	PipelineState::~PipelineState()
+	{
+		if (m_pPipelineState)
+			m_pPipelineState->Release();
+	}
 
-	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+	void PipelineState::Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	{
+		m_rsId = rsId;
+		m_vsId = vsId;
+		m_psId = psId;
 
-	PipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_pos_color, _countof(g_inputLayout_pos_color) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(PipelineStateStream), &pipelineStateStream
-	};
-	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
-}
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
-void PipelineState::Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-{
-	m_rsId = rsId;
-	m_vsId = vsId;
-	m_psId = psId;
+		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_pos, _countof(g_inputLayout_pos) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
 
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(PipelineStateStream), &pipelineStateStream
+		};
+		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	}
 
-	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+	void PipelineState::Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	{
+		m_rsId = rsId;
+		m_vsId = vsId;
+		m_psId = psId;
 
-	TextPipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_text, _countof(g_inputLayout_text) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	D3D12_BLEND_DESC textBlendDesc;
-	textBlendDesc.AlphaToCoverageEnable = FALSE;
-	textBlendDesc.IndependentBlendEnable = FALSE;
-	textBlendDesc.RenderTarget[0].BlendEnable = TRUE;
-	textBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
-	textBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	textBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; //D3D12_BLEND_ONE;
-	textBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	textBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
-	textBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
-	textBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	textBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
-	CD3DX12_BLEND_DESC blend(textBlendDesc);
-	pipelineStateStream.BlendState = blend;
+		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
 
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(TextPipelineStateStream), &pipelineStateStream
-	};
-	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
-}
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(PipelineStateStream), &pipelineStateStream
+		};
+		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	}
 
-void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-{
-	m_rsId = rsId;
-	m_vsId = vsId;
-	m_psId = psId;
+	void PipelineState::Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	{
+		m_rsId = rsId;
+		m_vsId = vsId;
+		m_psId = psId;
 
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
-	TextPipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
+		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_pos_color, _countof(g_inputLayout_pos_color) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
 
-	D3D12_BLEND_DESC textBlendDesc;
-	textBlendDesc.AlphaToCoverageEnable = FALSE;
-	textBlendDesc.IndependentBlendEnable = FALSE;
-	textBlendDesc.RenderTarget[0].BlendEnable = TRUE;
-	textBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
-	textBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	textBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; //D3D12_BLEND_ONE;
-	textBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	textBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
-	textBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
-	textBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	textBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(PipelineStateStream), &pipelineStateStream
+		};
+		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	}
 
-	CD3DX12_BLEND_DESC blend(textBlendDesc);
-	pipelineStateStream.BlendState = blend;
+	void PipelineState::Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	{
+		m_rsId = rsId;
+		m_vsId = vsId;
+		m_psId = psId;
 
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(TextPipelineStateStream), &pipelineStateStream
-	};
-	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
-}
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-{
-	m_rsId = rsId;
-	m_vsId = vsId;
-	m_psId = psId;
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
-	D3D12_RT_FORMAT_ARRAY rtvFormats = {};
-	rtvFormats.NumRenderTargets = 1;
-	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		TextPipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_text, _countof(g_inputLayout_text) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
 
-	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		D3D12_BLEND_DESC textBlendDesc;
+		textBlendDesc.AlphaToCoverageEnable = FALSE;
+		textBlendDesc.IndependentBlendEnable = FALSE;
+		textBlendDesc.RenderTarget[0].BlendEnable = TRUE;
+		textBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+		textBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		textBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; //D3D12_BLEND_ONE;
+		textBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		textBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+		textBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+		textBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		textBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-	PipelineStateStream pipelineStateStream;
-	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
-	pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
-	pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-	pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
-	pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-	pipelineStateStream.RTVFormats = rtvFormats;
+		CD3DX12_BLEND_DESC blend(textBlendDesc);
+		pipelineStateStream.BlendState = blend;
 
-	D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
-		sizeof(PipelineStateStream), &pipelineStateStream
-	};
-	ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
-}
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(TextPipelineStateStream), &pipelineStateStream
+		};
+		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	}
 
-ID3D12PipelineState* PipelineState::GetPipelineState() const
-{
-	return m_pPipelineState;
-}
+	void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	{
+		m_rsId = rsId;
+		m_vsId = vsId;
+		m_psId = psId;
 
-RootSignatureId PipelineState::GetRootSignatureId() const
-{
-	return m_rsId;
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+
+		TextPipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
+
+		D3D12_BLEND_DESC textBlendDesc;
+		textBlendDesc.AlphaToCoverageEnable = FALSE;
+		textBlendDesc.IndependentBlendEnable = FALSE;
+		textBlendDesc.RenderTarget[0].BlendEnable = TRUE;
+		textBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+		textBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		textBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; //D3D12_BLEND_ONE;
+		textBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		textBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+		textBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ONE;
+		textBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		textBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+		CD3DX12_BLEND_DESC blend(textBlendDesc);
+		pipelineStateStream.BlendState = blend;
+
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(TextPipelineStateStream), &pipelineStateStream
+		};
+		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	}
+
+	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	{
+		m_rsId = rsId;
+		m_vsId = vsId;
+		m_psId = psId;
+
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+
+		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
+
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(PipelineStateStream), &pipelineStateStream
+		};
+		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+	}
+
+	ID3D12PipelineState* PipelineState::GetPipelineState() const
+	{
+		return m_pPipelineState;
+	}
+
+	RootSignatureId PipelineState::GetRootSignatureId() const
+	{
+		return m_rsId;
+	}
 }

@@ -362,7 +362,7 @@ bool LoadContent()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
 		Rendering::PipelineStateId pid;
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
 		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
 		Rendering::Material* pMaterial = nullptr;
@@ -379,7 +379,7 @@ bool LoadContent()
 		ShaderId psId = g_pShaderMgr->CreateShader(root + "\\texture.ps.cso");
 
 		Rendering::PipelineStateId pid;
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
 		pPipelineState->Init_Generic(rsId, vsId, psId);
 
 		std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_blue.png";
@@ -429,7 +429,7 @@ bool LoadContent()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
 		Rendering::PipelineStateId text_pipelineStateId;
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
 		RenderModule::Get().InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);

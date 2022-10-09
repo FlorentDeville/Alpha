@@ -10,10 +10,10 @@
 
 #include <vector>
 
-class PipelineState;
-
 namespace Rendering
 {
+	class PipelineState;
+
 	class PipelineStateMgr : public Core::Singleton<PipelineStateMgr>
 	{
 	public:

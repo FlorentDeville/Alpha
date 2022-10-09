@@ -141,7 +141,7 @@ namespace Editors
 			ShaderId psId = g_pShaderMgr->CreateShader(root + "texture.ps.cso");
 
 			Rendering::PipelineStateId pid;
-			PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+			Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
 			pPipelineState->Init_Generic(rsId, vsId, psId);
 
 			std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";

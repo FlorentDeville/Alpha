@@ -483,7 +483,7 @@ void RenderModule::RenderAllText()
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
 
 		// set the text pipeline state object
-		PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(info.m_psoId);
+		Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(info.m_psoId);
 		ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
 		pCommandList->SetPipelineState(pPSO);
 

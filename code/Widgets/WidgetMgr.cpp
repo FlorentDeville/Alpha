@@ -76,7 +76,7 @@ void WidgetMgr::Init()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.ps.cso");
 
 		Rendering::PipelineStateId psoId;
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(psoId);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(psoId);
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
 
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
@@ -96,7 +96,7 @@ void WidgetMgr::Init()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
 		Rendering::PipelineStateId text_pipelineStateId;
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
 		RenderModule::Get().InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 65535);
@@ -109,7 +109,7 @@ void WidgetMgr::Init()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
 
 		Rendering::PipelineStateId texture_posuv_pipelineStateId;
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(texture_posuv_pipelineStateId);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(texture_posuv_pipelineStateId);
 		pPipelineState->Init_Icon(rsId, vsId, psId);
 
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
@@ -124,7 +124,7 @@ void WidgetMgr::Init()
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.ps.cso");
 
-		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_widgetViewportPsoId);
+		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_widgetViewportPsoId);
 		pPipelineState->Init_PosUv(rsId, vsId, psId);
 	}
 }
