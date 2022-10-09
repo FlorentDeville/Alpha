@@ -352,11 +352,12 @@ void Render()
 bool LoadContent()
 {
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
 
 	//create the base material
 	Rendering::MaterialId baseMaterialId;
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
@@ -373,7 +374,7 @@ bool LoadContent()
 	Rendering::MaterialId textureMaterialId;
 	{
 		std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(root + "\\texture.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(root + "\\texture.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(root + "\\texture.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(root + "\\texture.ps.cso");
 
@@ -423,7 +424,7 @@ bool LoadContent()
 			pFont->Init(fontFilename);
 		}
 
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
@@ -495,7 +496,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	RenderModule& render = RenderModule::InitSingleton();
 	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
-	g_pRootSignatureMgr = new RootSignatureMgr();
 	g_pShaderMgr = new ShaderMgr();
 
 	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
@@ -555,7 +555,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	WidgetMgr::ReleaseSingleton();
 
 	delete g_pShaderMgr;
-	delete g_pRootSignatureMgr;
 	delete g_pPipelineStateMgr;
 	delete g_pWindow;
 

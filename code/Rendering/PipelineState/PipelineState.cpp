@@ -62,7 +62,7 @@ void PipelineState::Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
 	PipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
@@ -89,7 +89,7 @@ void PipelineState::Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psI
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
 	PipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
@@ -116,7 +116,7 @@ void PipelineState::Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId 
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
 	PipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
@@ -143,7 +143,7 @@ void PipelineState::Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
 	TextPipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
@@ -186,7 +186,7 @@ void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
 	TextPipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
@@ -229,7 +229,7 @@ void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId p
 	rtvFormats.NumRenderTargets = 1;
 	rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(rsId);
+	RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 
 	PipelineStateStream pipelineStateStream;
 	pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();

@@ -20,7 +20,7 @@ namespace Rendering
 
 	bool Material::Init(RootSignatureId rid, PipelineStateId pid)
 	{
-		m_pRootSignature = g_pRootSignatureMgr->GetRootSignature(rid);
+		m_pRootSignature = RootSignatureMgr::Get().GetRootSignature(rid);
 		m_pPipelineState = g_pPipelineStateMgr->GetResource(pid);
 
 		return true;

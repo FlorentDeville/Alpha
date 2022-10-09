@@ -135,7 +135,7 @@ namespace Editors
 		}*/
 		{
 			std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
-			RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(root + "texture.rs.cso");
+			RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(root + "texture.rs.cso");
 			ShaderId vsId = g_pShaderMgr->CreateShader(root + "texture.vs.cso");
 			ShaderId psId = g_pShaderMgr->CreateShader(root + "texture.ps.cso");
 

@@ -63,6 +63,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameResolution = gameResolution;
 	m_mainResolution = mainResolution;
 
+	Rendering::RootSignatureMgr::InitSingleton();
 	Rendering::MeshMgr::InitSingleton();
 	Rendering::MaterialMgr::InitSingleton();
 	m_textureMgr.Init();
@@ -115,6 +116,7 @@ void RenderModule::Release()
 	m_textureMgr.Release();
 	Rendering::MaterialMgr::ReleaseSingleton();
 	Rendering::MeshMgr::ReleaseSingleton();
+	Rendering::RootSignatureMgr::ReleaseSingleton();
 
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
@@ -481,7 +483,7 @@ void RenderModule::RenderAllText()
 		ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
 		pCommandList->SetPipelineState(pPSO);
 
-		RootSignature* pRootSignature = g_pRootSignatureMgr->GetRootSignature(pPipelineState->GetRootSignatureId());
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(pPipelineState->GetRootSignatureId());
 		pCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
 
 		// this way we only need 4 vertices per quad rather than 6 if we were to use a triangle list topology

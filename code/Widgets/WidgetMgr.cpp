@@ -43,6 +43,8 @@ WidgetMgr::~WidgetMgr()
 
 void WidgetMgr::Init()
 {
+	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
+
 	//Simple quad used to render widgets
 	{
 		Rendering::VertexPosUv vertices[4] =
@@ -66,7 +68,7 @@ void WidgetMgr::Init()
 
 	//Root signature for basic widget
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\widget.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\widget.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.ps.cso");
 
@@ -86,7 +88,7 @@ void WidgetMgr::Init()
 		Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontFilename);
 		pFont->Init(fontFilename);
 
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
@@ -99,7 +101,7 @@ void WidgetMgr::Init()
 
 	//material for icon
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
 
@@ -115,7 +117,7 @@ void WidgetMgr::Init()
 
 	//this should be a material
 	{
-		RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\widget_viewport.rs.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\widget_viewport.rs.cso");
 		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.vs.cso");
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.ps.cso");
 

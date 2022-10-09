@@ -7,21 +7,24 @@
 #include <string>
 #include <vector>
 
+#include "Core/Singleton.h"
+
 struct RootSignatureId;
 class RootSignature;
 
-class RootSignatureMgr
+namespace Rendering
 {
-public:
-	RootSignatureMgr();
-	~RootSignatureMgr();
+	class RootSignatureMgr : public Core::Singleton<RootSignatureMgr>
+	{
+	public:
+		RootSignatureMgr();
+		~RootSignatureMgr();
 
-	RootSignatureId CreateRootSignature(const std::string& path);
-	
-	RootSignature* GetRootSignature(RootSignatureId id) const;
+		RootSignatureId CreateRootSignature(const std::string& path);
 
-private:
-	std::vector<RootSignature*> m_rootSignatures;
-};
+		RootSignature* GetRootSignature(RootSignatureId id) const;
 
-extern RootSignatureMgr* g_pRootSignatureMgr;
+	private:
+		std::vector<RootSignature*> m_rootSignatures;
+	};
+}
