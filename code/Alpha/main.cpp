@@ -487,8 +487,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution = windowResolution;
 	
-	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-
 	const wchar_t* pWindowClassName = L"DX12WindowClass";
 	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
 	g_pWindow = new SysWindow();

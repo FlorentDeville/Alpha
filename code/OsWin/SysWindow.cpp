@@ -63,6 +63,8 @@ bool SysWindow::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTi
 		DwmSetWindowAttribute(m_hWindow, 19, &dark, sizeof dark);
 	}
 
+	SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
 	return true;
 }
 
