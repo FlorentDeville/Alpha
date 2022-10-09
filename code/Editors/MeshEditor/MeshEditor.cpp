@@ -10,6 +10,7 @@
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/Mesh/Mesh.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -140,7 +141,7 @@ namespace Editors
 			ShaderId psId = g_pShaderMgr->CreateShader(root + "texture.ps.cso");
 
 			PipelineStateId pid;
-			PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "texture");
+			PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
 			pPipelineState->Init_Generic(rsId, vsId, psId);
 
 			std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";

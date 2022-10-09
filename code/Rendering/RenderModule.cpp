@@ -20,6 +20,7 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -66,6 +67,8 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	Rendering::RootSignatureMgr::InitSingleton();
 	Rendering::MeshMgr::InitSingleton();
 	Rendering::MaterialMgr::InitSingleton();
+	Rendering::PipelineStateMgr::InitSingleton();
+
 	m_textureMgr.Init();
 	m_fontMgr.Init();
 
@@ -117,6 +120,7 @@ void RenderModule::Release()
 	Rendering::MaterialMgr::ReleaseSingleton();
 	Rendering::MeshMgr::ReleaseSingleton();
 	Rendering::RootSignatureMgr::ReleaseSingleton();
+	Rendering::PipelineStateMgr::ReleaseSingleton();
 
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
@@ -479,7 +483,7 @@ void RenderModule::RenderAllText()
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
 
 		// set the text pipeline state object
-		PipelineState* pPipelineState = g_pPipelineStateMgr->GetResource(info.m_psoId);
+		PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(info.m_psoId);
 		ID3D12PipelineState* pPSO = pPipelineState->GetPipelineState();
 		pCommandList->SetPipelineState(pPSO);
 

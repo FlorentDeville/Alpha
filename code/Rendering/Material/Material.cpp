@@ -4,7 +4,7 @@
 
 #include "Rendering/Material/Material.h"
 
-
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 
 namespace Rendering
@@ -21,7 +21,7 @@ namespace Rendering
 	bool Material::Init(RootSignatureId rid, PipelineStateId pid)
 	{
 		m_pRootSignature = RootSignatureMgr::Get().GetRootSignature(rid);
-		m_pPipelineState = g_pPipelineStateMgr->GetResource(pid);
+		m_pPipelineState = PipelineStateMgr::Get().GetPipelineState(pid);
 
 		return true;
 	}

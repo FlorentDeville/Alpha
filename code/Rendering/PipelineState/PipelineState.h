@@ -36,4 +36,3 @@ private:
 };
 
 DECLARE_RESOURCE_ID(PipelineState);
-extern RESOURCE_MGR_PTR(PipelineState) g_pPipelineStateMgr;

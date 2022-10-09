@@ -255,5 +255,3 @@ RootSignatureId PipelineState::GetRootSignatureId() const
 {
 	return m_rsId;
 }
-
-RESOURCE_MGR_PTR(PipelineState) g_pPipelineStateMgr = nullptr;

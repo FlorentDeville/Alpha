@@ -36,6 +36,7 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -352,6 +353,7 @@ void Render()
 bool LoadContent()
 {
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
 
 	//create the base material
@@ -362,7 +364,7 @@ bool LoadContent()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
 
 		PipelineStateId pid;
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "base");
+		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
 		pPipelineState->Init_PosColor(rsId, vsId, psId);
 
 		Rendering::Material* pMaterial = nullptr;
@@ -379,7 +381,7 @@ bool LoadContent()
 		ShaderId psId = g_pShaderMgr->CreateShader(root + "\\texture.ps.cso");
 
 		PipelineStateId pid;
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "texture2");
+		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
 		pPipelineState->Init_Generic(rsId, vsId, psId);
 
 		std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_blue.png";
@@ -429,7 +431,7 @@ bool LoadContent()
 		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
 
 		PipelineStateId text_pipelineStateId;
-		PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(text_pipelineStateId, "text");
+		PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
 		pPipelineState->Init_Text(rsId, vsId, psId);
 
 		RenderModule::Get().InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
@@ -481,9 +483,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_shaderRoot = buffer;
 	size_t lastSlash = g_shaderRoot.find_last_of('\\');
 	g_shaderRoot = g_shaderRoot.substr(0, lastSlash);
-
-	g_pPipelineStateMgr = new RESOURCE_MGR(PipelineState);
-	g_pPipelineStateMgr->Init();
 
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution = windowResolution;
@@ -549,13 +548,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Release();
 	GameInputs::InputMgr::ReleaseSingleton();
 
-	g_pPipelineStateMgr->Release();
-
 	WidgetMgr::Get().Release();
 	WidgetMgr::ReleaseSingleton();
 
 	delete g_pShaderMgr;
-	delete g_pPipelineStateMgr;
 	delete g_pWindow;
 
 	render.Release();
