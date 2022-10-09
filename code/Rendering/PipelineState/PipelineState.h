@@ -8,12 +8,12 @@
 #include "Rendering/ShaderId.h"
 #include "Core/Resource/ResourceMgr.h"
 
-#include <d3d12.h>
+struct ID3D12PipelineState;
 
-class PipelineState : public Resource
+class PipelineState
 {
 public:
-	PipelineState(const std::string& name);
+	PipelineState();
 	~PipelineState();
 
 	void Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId);

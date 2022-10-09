@@ -24,7 +24,7 @@ namespace Rendering
 	PipelineState* PipelineStateMgr::CreatePipelineState(PipelineStateId& id)
 	{
 		id = m_pipelineStates.size();
-		PipelineState* pPipelineState = new PipelineState("boom");
+		PipelineState* pPipelineState = new PipelineState();
 		m_pipelineStates.push_back(pPipelineState);
 		return pPipelineState;
 	}

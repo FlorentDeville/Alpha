@@ -38,9 +38,8 @@ struct TextPipelineStateStream
 	CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendState;
 };
 
-PipelineState::PipelineState(const std::string& name)
-	: Resource(name)
-	, m_pPipelineState(nullptr)
+PipelineState::PipelineState()
+	: m_pPipelineState(nullptr)
 	, m_psId()
 	, m_rsId()
 	, m_vsId()
