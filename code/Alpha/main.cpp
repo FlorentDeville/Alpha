@@ -190,6 +190,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 		break;
 
+	case WM_MOUSEWHEEL:
+	{
+		int16_t wheelDistance = GET_WHEEL_DELTA_WPARAM(wParam);
+		uint16_t keyState = GET_KEYSTATE_WPARAM(wParam);
+		uint16_t xPos = GET_X_LPARAM(lParam);
+		uint16_t yPos = GET_Y_LPARAM(lParam);
+
+		GameInputs::InputMgr::MouseState mouseState;
+		mouseState.m_mouseWheel = wheelDistance;
+		mouseState.m_mouseX = xPos;
+		mouseState.m_mouseY = yPos;
+		if (keyState & MK_LBUTTON)
+			mouseState.m_mouseLeftButton = true;
+		if (keyState & MK_MBUTTON)
+			mouseState.m_mouseMiddleButton = true;
+		if (keyState & MK_RBUTTON)
+			mouseState.m_mouseRightButton = true;
+
+		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
+
+	}
+		break;
+
 	case WM_LBUTTONDOWN:
 	{
 		SetCapture(hWnd);
