@@ -47,7 +47,6 @@ bool SysWindow::Create(const char* pWindowClassName, const char* pWindowTitle, u
 	int windowY = (screenHeight - windowHeight) / 2;
 
 	m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, windowStyle, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
-
 	if (m_hWindow == 0)
 	{
 		DWORD error = GetLastError();
@@ -167,22 +166,29 @@ uint32_t SysWindow::GetHeight() const
 
 void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback)
 {
+	// For some reason here I need to create a unicode window class (notice the W at the end) otherwise
+	// the title bar shows garbage.
+
 	std::string iconPath = g_dataRoot + "\\textures\\alpha_white.ico";
 
-	WNDCLASSEX windowClass = { 0 };
-	windowClass.cbSize = sizeof(WNDCLASSEX);
+	const int BUFFER_SIZE = 256;
+	wchar_t buffer[BUFFER_SIZE] = { '\0' };
+	swprintf(buffer, BUFFER_SIZE, L"%S", pWindowClassName);
+
+	WNDCLASSEXW windowClass = { 0 };
+	windowClass.cbSize = sizeof(WNDCLASSEXW);
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpfnWndProc = callback;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInst;
-	windowClass.hIcon = (HICON)::LoadImageA(NULL, iconPath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	windowClass.hIcon = (HICON)::LoadImage(NULL, iconPath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 	windowClass.hCursor = ::LoadCursor(hInst, IDC_ARROW);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszMenuName = nullptr;
-	windowClass.lpszClassName = pWindowClassName;
+	windowClass.lpszClassName = buffer;
 	windowClass.hIconSm = ::LoadIcon(hInst, nullptr);
 
-	static ATOM atom = ::RegisterClassEx(&windowClass);
+	static ATOM atom = ::RegisterClassExW(&windowClass);
 	assert(atom > 0);
 }
