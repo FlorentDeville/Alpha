@@ -398,20 +398,6 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 	{
 		char c = text[i];
 
-		if (skipUntilNextNewLine && c != '\n')
-			continue;
-		else
-			skipUntilNextNewLine = false;
-
-		//new line
-		if (c == '\n')
-		{
-			x = startingX;
-			float lineHeight = static_cast<float>(pFont->m_lineHeight) / m_mainResolution.y * 2;
-			y -= (lineHeight * scale.y);
-			continue;
-		}
-
 		const FontChar* fc = pFont->GetChar(c);
 
 		// character not in font char set
@@ -461,13 +447,6 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		x += advance * scale.x;
 
 		lastChar = c;
-
-		//we are out of bounds, ignore the last character setup
-		if (pVertexText.Position.x + pVertexText.Position.w > scissorXMax)
-		{
-			skipUntilNextNewLine = true;
-			continue;
-		}
 
 		info.m_characterCount++;
 	}
