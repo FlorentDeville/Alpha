@@ -6,6 +6,8 @@
 
 #include "GameInputs/Inputs/InputMgr.h"
 
+#include "OsWin/Process.h"
+
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -17,6 +19,7 @@
 #include "Rendering/ShaderMgr.h"
 
 #include "Widgets/Button.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/SplitVertical.h"
@@ -47,7 +50,7 @@ namespace Editors
 		, m_enableViewportControl(false)
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos(0, 0)
-		, m_pMeshListLayout(nullptr)
+		, m_allEntryButton()
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -108,23 +111,40 @@ namespace Editors
 			newEntry.m_displayName = entry.path().stem().string();
 		}
 
-		//create a button and label per mesh
-		m_pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
-		m_pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		m_pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pSplit->AddLeftPanel(m_pMeshListLayout);
+		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
+		pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		pSplit->AddLeftPanel(pMeshListLayout);
 
+		const int LINE_HEIGHT = 20;
 		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
 		{
 			const MeshEntry& entry = m_allMeshes[ii];
 
+			//entry layout
+			Widgets::Layout* pEntryLayout = new Widgets::Layout(0, LINE_HEIGHT, 0, 0);
+			pEntryLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pEntryLayout->SetDirection(Widgets::Layout::Horizontal_Reverse);
+			pMeshListLayout->AddWidget(pEntryLayout);
+
+			//import button
+			Widgets::Button* pButtonImport = new Widgets::Button(LINE_HEIGHT, LINE_HEIGHT, 0, 0);
+			pButtonImport->OnClick([this, ii](int x, int y) -> bool { return OnMeshImportClicked(ii); });
+			pEntryLayout->AddWidget(pButtonImport);
+
+			Widgets::Icon* pImportIcon = new Widgets::Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(20, 20), "C:\\workspace\\Alpha\\editor\\icons\\import.png");
+			pButtonImport->AddWidget(pImportIcon);
+
+			//mesh name
 			const std::string& meshName = entry.m_displayName;
-			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
+			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
 			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			m_pMeshListLayout->AddWidget(pButton);
+			pEntryLayout->AddWidget(pButton);
+			m_allEntryButton.push_back(pButton);
 
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, meshName);
+			const int LABEL_OFFSET_X = 10;
+			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, meshName);
 			pButton->AddWidget(pLabel);
 		}
 
@@ -270,16 +290,13 @@ namespace Editors
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
 	{
 		//deselect all buttons
-		const std::vector<Widget*>& allButtons = m_pMeshListLayout->GetChildren();
-		for (Widget* pWidget : allButtons)
+		for (Widgets::Button* pButton : m_allEntryButton)
 		{
-			Widgets::Button* pButton = static_cast<Widgets::Button*>(pWidget);
 			pButton->Unselect();
 		}
 
 		//select new button
-		Widget* pWidget = allButtons[entryIndex];
-		Widgets::Button* pButton = static_cast<Widgets::Button*>(pWidget);
+		Widgets::Button* pButton = m_allEntryButton[entryIndex];
 		pButton->Select();
 
 		MeshEntry& entry = m_allMeshes[entryIndex];
@@ -291,5 +308,43 @@ namespace Editors
 		}
 
 		ShowMesh(entryIndex);
+	}
+
+	bool MeshEditor::OnMeshImportClicked(int entryIndex)
+	{
+		MeshEntry& entry = m_allMeshes[entryIndex];
+
+		//re export the json file
+		std::string blender = "C:\\Program Files\\Blender Foundation\\Blender 3.0\\blender.exe";
+		std::string importCommandline = blender;
+		importCommandline += " " + entry.m_rawFilename;
+		importCommandline += " --background";
+		importCommandline += " --python C:\\workspace\\Alpha\\code\\script\\export_mesh.py";
+
+		OutputDebugString(importCommandline.c_str());
+
+		Process importProcess(importCommandline);
+		importProcess.OnStdOut([](const std::string& msg) -> bool { OutputDebugString(msg.c_str()); return true; });
+		importProcess.OnStdErr([](const std::string& msg) -> bool { OutputDebugString(msg.c_str()); return true; });
+
+		bool started = importProcess.Run();
+		if (!started)
+		{
+			OutputDebugString("Failed to start process\n");
+		}
+
+		importProcess.Wait();
+
+		//reload the mesh
+		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+		Rendering::Mesh* pNewMesh = nullptr;
+		Rendering::MeshId newMeshId;
+
+		meshMgr.CreateMesh(&pNewMesh, newMeshId);
+		pNewMesh->Load(entry.m_binFilename);
+
+		entry.m_meshId = newMeshId;
+
+		return true;
 	}
 }

@@ -22,6 +22,7 @@ namespace Rendering
 
 namespace Widgets
 {
+	class Button;
 	class Layout;
 }
 
@@ -68,11 +69,12 @@ namespace Editors
 		DirectX::XMUINT2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
 
-		Widgets::Layout* m_pMeshListLayout;
+		std::vector<Widgets::Button*> m_allEntryButton;
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(MeshEntry& entry);
 
 		void OnMeshEntryClicked(int entryIndex);
+		bool OnMeshImportClicked(int entryIndex);
 	};
 }
