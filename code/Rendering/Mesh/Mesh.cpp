@@ -191,6 +191,9 @@ namespace Rendering
 		//Upload everything to the gpu
 		uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
 		pCopyCommandQueue->WaitForFenceValue(fenceValue);
+
+		pIntermediateVertexBuffer->Release();
+		pIntermediateIndexBuffer->Release();
 	}
 
 	void Mesh::Load(const std::string& filename)
