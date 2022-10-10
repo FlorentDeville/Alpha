@@ -116,6 +116,10 @@ public:
 	void OnGetFocus(const std::function<bool()>& callback);
 	void OnLoseFocus(const std::function<bool()>& callback);
 
+	virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
+	virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
+	void ResizeChildren();
+
 protected:
 	DirectX::XMUINT2 m_size; //width and height in pixels
 	DirectX::XMINT3 m_locPos; //local position of the top left corner in pixel
@@ -145,7 +149,4 @@ protected:
 	std::string m_name;
 
 	void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;
-
-	virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
-	virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 };

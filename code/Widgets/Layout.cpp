@@ -58,6 +58,8 @@ namespace Widgets
 		case M_MouseMove:
 			if (m_onMouseMove)
 				return m_onMouseMove(msg.m_low.m_pos[0], msg.m_low.m_pos[1], (MouseKey)msg.m_high);
+			else
+				return Widget::Handle(msg);
 			break;
 
 		default:
@@ -75,45 +77,46 @@ namespace Widgets
 		m_absPos.z = parentAbsPos.z + m_locPos.z - 1;
 
 		ReComputeSize(parentSize);
+		ReComputePosition(parentAbsPos, parentSize);
 
 		if (m_children.empty())
 			return;
 
 		int32_t pos = 0;
-		switch (m_dir)
-		{
-		case Horizontal:
-			pos = m_children.front()->GetX();
-			break;
+		//switch (m_dir)
+		//{
+		//case Horizontal:
+		//case Horizontal_Reverse:
+		//	pos = 0;//m_children.front()->GetX();
+		//	break;
 
-		case Horizontal_Reverse:
-			pos = m_size.x;
-			break;
+		//case Vertical:
+		//	pos = m_children.front()->GetY();
+		//	break;
 
-		case Vertical:
-			pos = m_children.front()->GetY();
-			break;
-
-		default:
-			assert(false);
-		}
+		//default:
+		//	assert(false);
+		//}
 
 		for (Widget* pWidget : m_children)
 		{
 			switch (m_dir)
 			{
 			case Horizontal:
-				pWidget->SetX(pos);
-				pos = pWidget->GetX() + pWidget->GetWidth() + m_space.x;
-				break;
-
 			case Horizontal_Reverse:
-				pos -= pWidget->GetWidth() - m_space.x;
+				//compute first the new position
 				pWidget->SetX(pos);
+
+				//now compute the size
+				pWidget->Resize(m_absPos, m_size);
+
+				//move the position for the next widgets
+				pos = pWidget->GetX() + pWidget->GetWidth() + m_space.x;
 				break;
 
 			case Vertical:
 				pWidget->SetY(pos);
+				pWidget->Resize(m_absPos, m_size);
 				pos = pWidget->GetY() + pWidget->GetHeight() + m_space.y;
 				break;
 
@@ -123,7 +126,23 @@ namespace Widgets
 			}
 		}
 
-		Widget::Resize(parentAbsPos, parentSize);
+		// To compute correctly the horizontal reverse, I first compute the size and location as if it was horizontal. This
+		// let's me compute the correct size of all the children widgets. Then I reverse the positions.
+		if (m_dir == Horizontal_Reverse)
+		{
+			pos = m_size.x;
+
+			for (Widget* pWidget : m_children)
+			{
+				pos -= pWidget->GetWidth() - m_space.x;
+				pWidget->SetX(pos);
+
+				// Do not call Resize because it will change the size. 
+				// I only need ReComputePosition to compute the absolute position and ResizeChildren to recursively recompute the absolute position of children.
+				pWidget->ReComputePosition(m_absPos, m_size);
+				pWidget->ResizeChildren();
+			}
+		}
 	}
 
 	void Layout::SetDirection(Direction dir)

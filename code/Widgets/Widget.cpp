@@ -101,13 +101,18 @@ void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const Direct
 	m_absPos.z = parentAbsPos.z - 1;
 }
 
+void Widget::ResizeChildren()
+{
+	for (Widget* pChild : m_children)
+		pChild->Resize(m_absPos, m_size);
+}
+
 void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 {
 	ReComputeSize(parentSize);
 	ReComputePosition(parentAbsPos, parentSize);
 
-	for (Widget* pChild : m_children)
-		pChild->Resize(m_absPos, m_size);
+	ResizeChildren();
 }
 
 bool Widget::Handle(const Message& msg)
