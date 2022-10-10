@@ -24,6 +24,7 @@ namespace Widgets
 {
 	class Button;
 	class Layout;
+	class Text;
 }
 
 namespace Editors
@@ -70,6 +71,8 @@ namespace Editors
 		bool m_firstFrameMouseDown;
 
 		std::vector<Widgets::Button*> m_allEntryButton;
+		
+		Widgets::Text* m_pLogWidget;
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(MeshEntry& entry);

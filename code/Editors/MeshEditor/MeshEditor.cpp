@@ -22,9 +22,11 @@
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/SplitHorizontal.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
+#include "Widgets/Text.h"
 #include "Widgets/Viewport.h"
 
 #include <filesystem>
@@ -51,6 +53,7 @@ namespace Editors
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos(0, 0)
 		, m_allEntryButton()
+		, m_pLogWidget(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -71,14 +74,16 @@ namespace Editors
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
-		if (pTabContainer)
 		{
-			pTabContainer->AddTab("Mesh", pViewportTab);
-		}
-		else
-		{
-			pParent->AddWidget(pViewportTab);
+			Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
+			if (pTabContainer)
+			{
+				pTabContainer->AddTab("Mesh", pViewportTab);
+			}
+			else
+			{
+				pParent->AddWidget(pViewportTab);
+			}
 		}
 
 		//create the split
@@ -94,6 +99,11 @@ namespace Editors
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pSplit->AddRightPanel(pViewport);
+
+		//split the left panel to, top for the list of meshes, bottom for the logs and materials
+		Widgets::SplitHorizontal* pLeftPanelSplit = new Widgets::SplitHorizontal();
+		pLeftPanelSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
 		const std::string binRoot = "c:\\workspace\\Alpha\\data\\mesh";
@@ -114,7 +124,7 @@ namespace Editors
 		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
 		pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pSplit->AddLeftPanel(pMeshListLayout);
+		pLeftPanelSplit->AddTopPanel(pMeshListLayout);
 
 		const int LINE_HEIGHT = 20;
 		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
@@ -147,6 +157,23 @@ namespace Editors
 			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, meshName);
 			pButton->AddWidget(pLabel);
 		}
+
+		//bottom split : tab container for materials and logs
+		Widgets::TabContainer* pTabContainer = new Widgets::TabContainer();
+		pTabContainer->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pLeftPanelSplit->AddBottomPanel(pTabContainer);
+
+		Widgets::Tab* pMaterialTab = new Widgets::Tab();
+		pTabContainer->AddTab("Material", pMaterialTab);
+
+		Widgets::Tab* pLogTab = new Widgets::Tab();
+		pTabContainer->AddTab("Log", pLogTab);
+
+		m_pLogWidget = new Widgets::Text(1, "");
+		m_pLogWidget->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pLogTab->AddWidget(m_pLogWidget);
+
+		pTabContainer->SetSelectedTab(0);
 
 		//load the material to render the mesh
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
@@ -324,8 +351,8 @@ namespace Editors
 		OutputDebugString(importCommandline.c_str());
 
 		Process importProcess(importCommandline);
-		importProcess.OnStdOut([](const std::string& msg) -> bool { OutputDebugString(msg.c_str()); return true; });
-		importProcess.OnStdErr([](const std::string& msg) -> bool { OutputDebugString(msg.c_str()); return true; });
+		importProcess.OnStdOut([this](const std::string& msg) -> bool { m_pLogWidget->AppendText(msg.c_str()); return true; });
+		importProcess.OnStdErr([this](const std::string& msg) -> bool { m_pLogWidget->AppendText(msg.c_str()); return true; });
 
 		bool started = importProcess.Run();
 		if (!started)
