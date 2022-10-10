@@ -30,7 +30,9 @@ namespace Editors
 	class MeshEntry
 	{
 	public:
-		std::string m_filename;
+		std::string m_rawFilename;		//blender filename
+		std::string m_binFilename;		//binary filename
+		std::string m_displayName;		//name of the mesh in the editor
 		Rendering::MeshId m_meshId;
 		
 		MeshEntry();
@@ -69,7 +71,7 @@ namespace Editors
 		Widgets::Layout* m_pMeshListLayout;
 
 		void ShowMesh(int entryIndex);
-		void LoadMesh(const std::string& meshFilename, MeshEntry& entry);
+		void LoadMesh(MeshEntry& entry);
 
 		void OnMeshEntryClicked(int entryIndex);
 	};

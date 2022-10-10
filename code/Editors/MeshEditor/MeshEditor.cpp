@@ -31,7 +31,9 @@ extern std::string g_shaderRoot;
 namespace Editors
 {
 	MeshEntry::MeshEntry()
-		: m_filename()
+		: m_rawFilename()
+		, m_binFilename()
+		, m_displayName()
 		, m_meshId()
 	{}
 
@@ -91,11 +93,19 @@ namespace Editors
 		pSplit->AddRightPanel(pViewport);
 
 		//create the list of meshes
-		std::string meshRoot = "c:\\workspace\\Alpha\\data\\mesh";
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(meshRoot))
+		const std::string binRoot = "c:\\workspace\\Alpha\\data\\mesh";
+		const std::string rawRoot = "c:\\workspace\\Alpha\\raw\\blender";
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(rawRoot))
 		{
+			if (entry.path().extension().string() != ".blend")
+				continue;
+
 			m_allMeshes.push_back(MeshEntry());
-			m_allMeshes.back().m_filename = entry.path().string();
+
+			MeshEntry& newEntry = m_allMeshes.back();
+			newEntry.m_rawFilename = entry.path().string();
+			newEntry.m_binFilename = binRoot + "\\" + entry.path().stem().string() + ".json";
+			newEntry.m_displayName = entry.path().stem().string();
 		}
 
 		//create a button and label per mesh
@@ -108,7 +118,7 @@ namespace Editors
 		{
 			const MeshEntry& entry = m_allMeshes[ii];
 
-			const std::string& meshName = entry.m_filename;
+			const std::string& meshName = entry.m_displayName;
 			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
 			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
@@ -250,13 +260,11 @@ namespace Editors
 		m_selectedMesh = entryIndex;
 	}
 
-	void MeshEditor::LoadMesh(const std::string& meshFilename, MeshEntry& entry)
+	void MeshEditor::LoadMesh(MeshEntry& entry)
 	{
-		entry.m_filename = meshFilename;
-
 		Rendering::Mesh* pCubeMesh = nullptr;
 		Rendering::MeshMgr::Get().CreateMesh(&pCubeMesh, entry.m_meshId);
-		pCubeMesh->Load(meshFilename);
+		pCubeMesh->Load(entry.m_binFilename);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
@@ -279,7 +287,7 @@ namespace Editors
 		//load the mesh if necessary
 		if (entry.m_meshId == Rendering::MeshId::INVALID)
 		{
-			LoadMesh(entry.m_filename, entry);
+			LoadMesh(entry);
 		}
 
 		ShowMesh(entryIndex);
