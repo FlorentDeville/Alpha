@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Process.cpp" />
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Process.h" />
     <ClInclude Include="SysWindow.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
