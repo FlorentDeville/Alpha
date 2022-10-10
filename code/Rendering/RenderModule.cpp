@@ -392,25 +392,9 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 
 	float x = startingX;
 
-	bool skipUntilNextNewLine = false;
-
 	for (int i = 0; i < text.size(); ++i)
 	{
 		char c = text[i];
-
-		if (skipUntilNextNewLine && c != '\n')
-			continue;
-		else
-			skipUntilNextNewLine = false;
-
-		//new line
-		if (c == '\n')
-		{
-			x = startingX;
-			float lineHeight = static_cast<float>(pFont->m_lineHeight) / m_mainResolution.y * 2;
-			y -= (lineHeight * scale.y);
-			continue;
-		}
 
 		const FontChar* fc = pFont->GetChar(c);
 
@@ -456,18 +440,14 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		pVertexText.Color = DirectX::XMFLOAT4(1, 1, 1, 1);
 		pVertexText.Z = uiPos.z;
 
-		//still advance even if we are out of bound
 		float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
 		x += advance * scale.x;
 
 		lastChar = c;
 
 		//we are out of bounds, ignore the last character setup
-		if (pVertexText.Position.x + pVertexText.Position.w > scissorXMax)
-		{
-			skipUntilNextNewLine = true;
-			continue;
-		}
+		if (pVertexText.Position.x + pVertexText.Position.z > scissorXMax)
+			break;
 
 		info.m_characterCount++;
 	}
