@@ -10,33 +10,36 @@
 
 #include "Widgets/WidgetMgr.h"
 
-Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
-	: Widget(size.x, size.y, pos.x, pos.y)
+namespace Widgets
 {
-	Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_textureId, path);
-	pTexture->Init(path);
-}
+	Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
+		: Widget(size.x, size.y, pos.x, pos.y)
+	{
+		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_textureId, path);
+		pTexture->Init(path);
+	}
 
-Icon::~Icon()
-{}
+	Icon::~Icon()
+	{}
 
-void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
-{
-	DirectX::XMMATRIX wvp;
-	ComputeWVPMatrix(windowSize, wvp);
+	void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
+	{
+		DirectX::XMMATRIX wvp;
+		ComputeWVPMatrix(windowSize, wvp);
 
-	WidgetMgr& widgetMgr = WidgetMgr::Get();
-	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-	RenderModule& renderer = RenderModule::Get();
+		WidgetMgr& widgetMgr = WidgetMgr::Get();
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+		RenderModule& renderer = RenderModule::Get();
 
-	const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_iconMaterialId);
-	renderer.BindMaterial(*pMaterial, wvp);
+		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_iconMaterialId);
+		renderer.BindMaterial(*pMaterial, wvp);
 
-	ID3D12DescriptorHeap* pSrv = renderer.GetTextureMgr().GetResource(m_textureId)->GetSRV();
-	ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-	renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-	renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+		ID3D12DescriptorHeap* pSrv = renderer.GetTextureMgr().GetResource(m_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+		renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-	const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
-	renderer.RenderMesh(*pMesh);
+		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
+		renderer.RenderMesh(*pMesh);
+	}
 }

@@ -10,14 +10,17 @@
 
 #include <string>
 
-class Icon : public Widget
+namespace Widgets
 {
-public:
-	Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path);
-	~Icon();
+	class Icon : public Widget
+	{
+	public:
+		Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path);
+		~Icon();
 
-	void Draw(const DirectX::XMFLOAT2& windowSize) override;
+		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
-private:
-	TextureId m_textureId;
-};
+	private:
+		TextureId m_textureId;
+	};
+}
