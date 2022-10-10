@@ -19,7 +19,7 @@ public:
 	SysWindow();
 	virtual ~SysWindow();
 
-	bool Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance);
+	bool Create(const char* pWindowClassName, const char* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance);
 
 	void SetFullscreen(bool fullscreen);
 	void ToggleFullscreen();
@@ -35,7 +35,7 @@ public:
 	uint32_t GetWidth() const;
 	uint32_t GetHeight() const;
 
-	static void RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName, WndProcCallback callback);
+	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback);
 
 private:
 	HWND m_hWindow;

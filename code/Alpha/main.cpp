@@ -508,10 +508,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution = windowResolution;
 	
-	const wchar_t* pWindowClassName = L"DX12WindowClass";
+	const char* pWindowClassName = "DX12WindowClass";
 	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
 	g_pWindow = new SysWindow();
-	g_pWindow->Create(pWindowClassName, L"Alpha", windowResolution.x, windowResolution.y, hInstance);
+	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 
 	RenderModule& render = RenderModule::InitSingleton();
 	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);

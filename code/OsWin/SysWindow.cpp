@@ -24,7 +24,7 @@ SysWindow::SysWindow()
 SysWindow::~SysWindow()
 {}
 
-bool SysWindow::Create(const wchar_t* pWindowClassName, const wchar_t* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance)
+bool SysWindow::Create(const char* pWindowClassName, const char* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance)
 {
 	m_width = width;
 	m_height = height;
@@ -165,11 +165,11 @@ uint32_t SysWindow::GetHeight() const
 	return m_height;
 }
 
-void SysWindow::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClassName, WndProcCallback callback)
+void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback)
 {
 	std::string iconPath = g_dataRoot + "\\textures\\alpha_white.ico";
 
-	WNDCLASSEXW windowClass = { 0 };
+	WNDCLASSEX windowClass = { 0 };
 	windowClass.cbSize = sizeof(WNDCLASSEX);
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpfnWndProc = callback;
@@ -183,6 +183,6 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const wchar_t* pWindowClass
 	windowClass.lpszClassName = pWindowClassName;
 	windowClass.hIconSm = ::LoadIcon(hInst, nullptr);
 
-	static ATOM atom = ::RegisterClassExW(&windowClass);
+	static ATOM atom = ::RegisterClassEx(&windowClass);
 	assert(atom > 0);
 }
