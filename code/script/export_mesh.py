@@ -2,6 +2,10 @@ import bpy
 import json
 
 def Export(outputFilename):
+    
+    #switch to vertex paint mode otherwise the vertex color are not applied to the vertices.
+    bpy.ops.object.mode_set(mode='VERTEX_PAINT')
+    
     out_mesh = {}
     out_mesh["vertex_structure"] = "pos,col,uv"
 
