@@ -184,6 +184,15 @@ namespace Editors
 			{
 				m_firstFrameMouseDown = true;
 			}
+
+			int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+			const float CAMERA_DISTANCE_SPEED = 0.05f;
+			const float MIN_DISTANCE = 2;
+			if (mouseWheelDistance != 0)
+				m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+
+			if (m_cameraDistance < MIN_DISTANCE)
+				m_cameraDistance = MIN_DISTANCE;
 		}
 	}
 
