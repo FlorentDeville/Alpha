@@ -79,7 +79,7 @@ FontId g_comicSansMsFontId;
 
 TextureId g_gridTextureId;
 TextureId g_textureId;
-LPCWSTR g_pIconName = IDC_ARROW;
+LPCSTR g_pIconName = IDC_ARROW;
 
 std::string g_dataRoot;
 std::string g_shaderRoot;
@@ -259,7 +259,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 	case WM_SETCURSOR:
 	{
-		LPCWSTR cursorResource;
+		LPCSTR cursorResource;
 		uint16_t hitResult = LOWORD(lParam);
 		switch (hitResult)
 		{

@@ -88,7 +88,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton1 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton1->OnClick([](int, int) -> bool {
-		OutputDebugString(L"Click on File button\n");
+		OutputDebugString("Click on File button\n");
 		return true;
 		});
 
@@ -101,7 +101,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton2 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton2->OnClick([](int, int) -> bool {
-		OutputDebugString(L"Click on Edit button\n");
+		OutputDebugString("Click on Edit button\n");
 		return true;
 		});
 	Label* pLabel2 = new Label(labelPadding, 0, labelScale, fileText);
@@ -112,7 +112,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pFont->ComputeRect(fileText, textSize);
 	Button* pButton3 = new Button(textSize.x + buttonSize, buttonHeight, 0, buttonY);
 	pButton3->OnClick([](int, int) -> bool {
-		OutputDebugString(L"Click on Window button\n");
+		OutputDebugString("Click on Window button\n");
 		return true;
 		});
 	Label* pLabel3 = new Label(labelPadding, 0, labelScale, fileText);
@@ -130,7 +130,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pCloseIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pCloseButton->AddWidget(pCloseIcon);
 	pCloseButton->OnClick([](int, int)-> bool {
-		OutputDebugString(L"Click on close button\n");
+		OutputDebugString("Click on close button\n");
 		SendMessage(g_pWindow->GetWindowHandle(), WM_DESTROY, 0, 0);
 		return true;
 		});
@@ -144,7 +144,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pRestoreIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pMaxButton->AddWidget(pMaxIcon);
 	pMaxButton->OnClick([this, pMaxButton, pMaxIcon, pRestoreIcon](int, int)-> bool {
-		OutputDebugString(L"Click on maximize/restore button\n");
+		OutputDebugString("Click on maximize/restore button\n");
 		if (m_isMaximized)
 		{
 			pMaxButton->RemoveWidget(pRestoreIcon);
@@ -169,7 +169,7 @@ Window::Window(DirectX::XMUINT2 size)
 	pMinIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 	pMinButton->AddWidget(pMinIcon);
 	pMinButton->OnClick([](int, int)-> bool {
-		OutputDebugString(L"Click on minimize button\n");
+		OutputDebugString("Click on minimize button\n");
 		ShowWindow(g_pWindow->GetWindowHandle(), SW_SHOWMINIMIZED);
 		return true;
 		});

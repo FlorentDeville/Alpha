@@ -77,7 +77,7 @@ void Font::ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const
         // character not in font char set
         if (fc == nullptr)
         {
-            OutputDebugString(L"WARNING : Character not found in the font");
+            OutputDebugString("WARNING : Character not found in the font");
             break;
         }
         // end of string
@@ -103,7 +103,7 @@ size_t Font::ComputeCharacterCountFitting(const std::string& text, int length) c
         // character not in font char set
         if (fc == nullptr)
         {
-            OutputDebugString(L"WARNING : Character not found in the font");
+            OutputDebugString("WARNING : Character not found in the font");
             break;
         }
         // end of string

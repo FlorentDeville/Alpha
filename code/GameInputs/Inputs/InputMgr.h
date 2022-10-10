@@ -20,7 +20,7 @@ namespace GameInputs
 			bool m_mouseLeftButton;
 			bool m_mouseMiddleButton;
 			bool m_mouseRightButton;
-			float m_mouseWheel;
+			int16_t m_mouseWheel;
 			uint32_t m_mouseX;
 			uint32_t m_mouseY;
 

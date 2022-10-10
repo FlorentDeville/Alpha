@@ -281,8 +281,8 @@ void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 
 	m_mainViewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
-	wchar_t buffer[500];
-	swprintf_s(buffer, 500, L"Resized swap chain %d %d\n", width, height);
+	char buffer[500];
+	sprintf_s(buffer, 500, "Resized swap chain %d %d\n", width, height);
 	OutputDebugString(buffer);
 }
 
@@ -320,8 +320,8 @@ void RenderModule::ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Reso
 
 	m_pDevice->CreateDepthStencilView(*pResource, &dsvDesc, dsv);
 
-	wchar_t buffer[500];
-	swprintf_s(buffer, 500, L"Resized depth buffer %d %d\n", width, height);
+	char buffer[500];
+	sprintf_s(buffer, 500, "Resized depth buffer %d %d\n", width, height);
 	OutputDebugString(buffer);
 
 }
@@ -401,7 +401,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		// character not in font char set
 		if (fc == nullptr)
 		{
-			OutputDebugString(L"WARNING : Character not found in the font");
+			OutputDebugString("WARNING : Character not found in the font");
 			break;
 		}
 
@@ -412,7 +412,7 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 		// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
 		if (info.m_characterCount >= info.m_bufferSize)
 		{
-			OutputDebugString(L"WARNING : Too many characters rendered");
+			OutputDebugString("WARNING : Too many characters rendered");
 		}
 
 		float kerning = 0.0f;

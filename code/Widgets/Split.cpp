@@ -11,7 +11,7 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
-extern LPCWSTR g_pIconName;
+extern LPCSTR g_pIconName;
 
 namespace Widgets
 {
