@@ -20,6 +20,7 @@ namespace GameInputs
 			bool m_mouseLeftButton;
 			bool m_mouseMiddleButton;
 			bool m_mouseRightButton;
+			float m_mouseWheel;
 			uint32_t m_mouseX;
 			uint32_t m_mouseY;
 
@@ -29,6 +30,7 @@ namespace GameInputs
 				, m_mouseRightButton(false)
 				, m_mouseX(0)
 				, m_mouseY(0)
+				, m_mouseWheel(0)
 			{}
 		};
 
@@ -52,6 +54,7 @@ namespace GameInputs
 		bool IsKeyPressed(char key) const;
 		bool IsMouseLeftButtonDown() const;
 		void GetMousePosition(uint32_t& x, uint32_t& y) const;
+		int16_t GetMouseWheelDistance() const;
 
 	private:
 		//game command

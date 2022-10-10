@@ -99,4 +99,9 @@ namespace GameInputs
 		x = m_mouseState.m_mouseX;
 		y = m_mouseState.m_mouseY;
 	}
+
+	int16_t InputMgr::GetMouseWheelDistance() const
+	{
+		return m_mouseState.m_mouseWheel;
+	}
 }
