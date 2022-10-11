@@ -432,7 +432,7 @@ bool LoadContent()
 	return true;
 }
 
-void CreateMainWindow()
+void CreateMainWindow(const Configuration& configuration)
 {
 	Widgets::Container* pContainer = new Widgets::Container();
 	pContainer->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
@@ -443,7 +443,15 @@ void CreateMainWindow()
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
-	Editors::MeshEditor::Get().CreateEditor(pMiddleTabContainer);
+
+	Editors::MeshEditorParameter meshEditorParameter;
+	meshEditorParameter.pParent = pMiddleTabContainer;
+	meshEditorParameter.m_dataMaterialPath = configuration.m_dataMaterialsPath;
+	meshEditorParameter.m_dataMeshPath = configuration.m_dataMeshPath;
+	meshEditorParameter.m_editorIconsPath = configuration.m_editorsIconsPath;
+	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
+
+	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
 	Editors::ShaderEditor::Get().CreateEditor(pMiddleTabContainer);
 
 	pMiddleTabContainer->SetSelectedTab(0);
@@ -506,7 +514,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_contentLoaded = false;
 	LoadContent();
 
-	CreateMainWindow();
+	CreateMainWindow(configuration);
 
 	g_pWindow->Show();
 

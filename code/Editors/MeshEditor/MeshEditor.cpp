@@ -72,7 +72,7 @@ namespace Editors
 		delete m_pRenderTarget;
 	}
 
-	void MeshEditor::CreateEditor(Widget* pParent)
+	void MeshEditor::CreateEditor(const MeshEditorParameter& parameter)
 	{
 		//create the render target
 		const int width = 1280;
@@ -83,14 +83,14 @@ namespace Editors
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
 		{
-			Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
+			Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(parameter.pParent);
 			if (pTabContainer)
 			{
 				pTabContainer->AddTab("Mesh", pViewportTab);
 			}
 			else
 			{
-				pParent->AddWidget(pViewportTab);
+				parameter.pParent->AddWidget(pViewportTab);
 			}
 		}
 
@@ -114,9 +114,7 @@ namespace Editors
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
-		const std::string binRoot = "c:\\workspace\\Alpha\\data\\mesh";
-		const std::string rawRoot = "c:\\workspace\\Alpha\\raw\\blender";
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(rawRoot))
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(parameter.m_rawBlenderPath))
 		{
 			if (entry.path().extension().string() != ".blend")
 				continue;
@@ -125,7 +123,7 @@ namespace Editors
 
 			MeshEntry& newEntry = m_allMeshes.back();
 			newEntry.m_rawFilename = entry.path().string();
-			newEntry.m_binFilename = binRoot + "\\" + entry.path().stem().string() + ".json";
+			newEntry.m_binFilename = parameter.m_dataMeshPath + "\\" + entry.path().stem().string() + ".json";
 			newEntry.m_displayName = entry.path().stem().string();
 		}
 
@@ -150,7 +148,8 @@ namespace Editors
 			pButtonImport->OnClick([this, ii](int x, int y) -> bool { return OnMeshImportClicked(ii); });
 			pEntryLayout->AddWidget(pButtonImport);
 
-			Widgets::Icon* pImportIcon = new Widgets::Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(20, 20), "C:\\workspace\\Alpha\\editor\\icons\\import.png");
+			std::string importIconFilename = parameter.m_editorIconsPath + "\\import.png";
+			Widgets::Icon* pImportIcon = new Widgets::Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(20, 20), importIconFilename);
 			pButtonImport->AddWidget(pImportIcon);
 
 			//mesh name
@@ -189,8 +188,7 @@ namespace Editors
 		pTabContainer->SetSelectedTab(0);
 
 		//load al material
-		const std::string materialRoot = "c:\\workspace\\Alpha\\data\\materials";
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(materialRoot))
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(parameter.m_dataMaterialPath))
 		{
 			//load material
 			std::string path = entry.path().string();

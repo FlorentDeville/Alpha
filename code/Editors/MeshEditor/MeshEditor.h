@@ -49,13 +49,23 @@ namespace Editors
 		MaterialEntry();
 	};
 
+	class MeshEditorParameter
+	{
+	public:
+		Widget* pParent;
+		std::string m_dataMeshPath;
+		std::string m_dataMaterialPath;
+		std::string m_rawBlenderPath;
+		std::string m_editorIconsPath;
+	};
+
 	class MeshEditor : public Core::Singleton<MeshEditor>
 	{
 	public:
 		MeshEditor();
 		~MeshEditor();
 
-		void CreateEditor(Widget* pParent);
+		void CreateEditor(const MeshEditorParameter& parameter);
 
 		void Update();
 		void Render();
