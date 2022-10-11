@@ -33,18 +33,20 @@ namespace Editors
 	ShaderEditor::~ShaderEditor()
 	{}
 
-	void ShaderEditor::CreateEditor(Widget* pParent)
+	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
 	{
+		m_dataShaderPath = parameter.m_dataShaderPath;
+
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
+		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(parameter.m_pParent);
 		if (pTabContainer)
 		{
 			pTabContainer->AddTab("Shader", pViewportTab);
 		}
 		else
 		{
-			pParent->AddWidget(pViewportTab);
+			parameter.m_pParent->AddWidget(pViewportTab);
 		}
 
 		//create the split
@@ -55,8 +57,7 @@ namespace Editors
 		pViewportTab->AddWidget(pSplit);
 
 		//create the list of shaders
-		std::string meshRoot = "c:\\workspace\\Alpha\\raw\\shaders";
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(meshRoot))
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(parameter.m_rawShaderPath))
 		{
 			m_allShaders.push_back(ShaderEntry());
 			m_allShaders.back().m_filename = entry.path().string();
@@ -165,7 +166,7 @@ namespace Editors
 		size_t nameStartPos = shader.m_filename.find_last_of('\\');
 		std::string shaderName = shader.m_filename.substr(nameStartPos + 1, shader.m_filename.size() - extensionSize - nameStartPos - 1);
 		std::string shaderTypeExtension = extension.substr(1, 2);
-		std::string outputName = "C:\\workspace\\Alpha\\data\\shaders\\" + shaderName + "." + shaderTypeExtension + ".cso";
+		std::string outputName = m_dataShaderPath + "\\" + shaderName + "." + shaderTypeExtension + ".cso";
 
 		//create the command line
 		std::string cmdline = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x86\\fxc.exe";

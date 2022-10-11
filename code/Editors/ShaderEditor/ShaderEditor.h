@@ -26,13 +26,21 @@ namespace Editors
 		ShaderEntry();
 	};
 
+	class ShaderEditorParameter
+	{
+	public:
+		Widget* m_pParent;
+		std::string m_rawShaderPath;
+		std::string m_dataShaderPath;
+	};
+
 	class ShaderEditor : public Core::Singleton<ShaderEditor>
 	{
 	public:
 		ShaderEditor();
 		~ShaderEditor();
 
-		void CreateEditor(Widget* pParent);
+		void CreateEditor(const ShaderEditorParameter& parameter);
 
 		void Update();
 		void Render();
@@ -44,6 +52,8 @@ namespace Editors
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;
 		int m_selectedShader;
+
+		std::string m_dataShaderPath;
 
 		bool OnShaderEntryClicked(int index);
 		bool OnCompileClicked();

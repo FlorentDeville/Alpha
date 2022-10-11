@@ -450,9 +450,13 @@ void CreateMainWindow(const Configuration& configuration)
 	meshEditorParameter.m_dataMeshPath = configuration.m_dataMeshPath;
 	meshEditorParameter.m_editorIconsPath = configuration.m_editorsIconsPath;
 	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
-
 	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
-	Editors::ShaderEditor::Get().CreateEditor(pMiddleTabContainer);
+
+	Editors::ShaderEditorParameter shaderEditorParameter;
+	shaderEditorParameter.m_pParent = pMiddleTabContainer;
+	shaderEditorParameter.m_dataShaderPath = configuration.m_dataShadersPath;
+	shaderEditorParameter.m_rawShaderPath = configuration.m_rawShadersPath;
+	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
 
 	pMiddleTabContainer->SetSelectedTab(0);
 }
