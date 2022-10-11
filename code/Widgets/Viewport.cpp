@@ -16,12 +16,6 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-extern TextureId g_textureId;
-
-extern DirectX::XMVECTOR g_eyePosition;
-extern DirectX::XMVECTOR g_euler;
-extern DirectX::XMVECTOR g_direction;
-
 namespace Widgets
 {
 	Viewport::Viewport()

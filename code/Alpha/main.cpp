@@ -75,21 +75,10 @@ bool g_perspectiveRendering = true;
 void Update();
 void Render();
 
-TextureId g_gridTextureId;
-TextureId g_textureId;
 LPCSTR g_pIconName = IDC_ARROW;
 
 std::string g_dataRoot;
 std::string g_shaderRoot;
-
-void LoadTexture()
-{
-	//std::string textureName = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
-	std::string textureName = g_dataRoot + "\\fonts\\arial_0.tga";
-
-	Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(g_textureId, textureName);
-	pTexture->Init(textureName);
-}
 
 DirectX::XMVECTOR g_eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
 DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(0, 0, 1, 1);
@@ -430,13 +419,6 @@ bool LoadContent()
 		pPlaneMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_plane.json");
 	}
 
-	//Load the grid texture
-	{
-		std::string textureName = g_dataRoot + "\\textures\\grid_orange.png";
-		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(g_gridTextureId, textureName);
-		pTexture->Init(textureName);
-	}
-
 	//Load the entities
 	GameMgr& gameMgr = GameMgr::Get();
 	gameMgr.CreatePlayerEntity(torusMeshId, baseMaterialId);
@@ -512,8 +494,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_IsInitialized = true;
 	g_contentLoaded = false;
 	LoadContent();
-
-	LoadTexture();
 
 	CreateMainWindow();
 
