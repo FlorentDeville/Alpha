@@ -57,6 +57,8 @@ namespace Editors
 		std::string m_dataMaterialPath;
 		std::string m_rawBlenderPath;
 		std::string m_editorIconsPath;
+		std::string m_editorScriptsPath;
+		std::string m_blender;
 	};
 
 	class MeshEditor : public Core::Singleton<MeshEditor>
@@ -93,6 +95,9 @@ namespace Editors
 		std::vector<Widgets::Button*> m_allEntryButton;
 		
 		Widgets::Text* m_pLogWidget;
+
+		std::string m_editorScriptsPath;
+		std::string m_blender;
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(MeshEntry& entry);

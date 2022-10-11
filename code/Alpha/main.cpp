@@ -450,6 +450,8 @@ void CreateMainWindow(const Configuration& configuration)
 	meshEditorParameter.m_dataMeshPath = configuration.m_dataMeshPath;
 	meshEditorParameter.m_editorIconsPath = configuration.m_editorsIconsPath;
 	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
+	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
+	meshEditorParameter.m_blender = configuration.m_blender;
 	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
 
 	Editors::ShaderEditorParameter shaderEditorParameter;

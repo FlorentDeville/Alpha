@@ -74,6 +74,9 @@ namespace Editors
 
 	void MeshEditor::CreateEditor(const MeshEditorParameter& parameter)
 	{
+		m_blender = parameter.m_blender;
+		m_editorScriptsPath = parameter.m_editorScriptsPath;
+
 		//create the render target
 		const int width = 1280;
 		const int height = 720;
@@ -354,11 +357,10 @@ namespace Editors
 		MeshEntry& entry = m_allMeshes[entryIndex];
 
 		//re export the json file
-		std::string blender = "C:\\Program Files\\Blender Foundation\\Blender 3.0\\blender.exe";
-		std::string importCommandline = blender;
+		std::string importCommandline = m_blender;
 		importCommandline += " " + entry.m_rawFilename;
 		importCommandline += " --background";
-		importCommandline += " --python C:\\workspace\\Alpha\\code\\script\\export_mesh.py";
+		importCommandline += " --python " + m_editorScriptsPath + "\\export_mesh.py";
 
 		OutputDebugString(importCommandline.c_str());
 

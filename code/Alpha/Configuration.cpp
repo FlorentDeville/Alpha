@@ -51,8 +51,14 @@ bool Configuration::Load(const std::string& filename)
 	GetPrivateProfileString("editors", "icons", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_editorsIconsPath = buffer;
 
+	GetPrivateProfileString("editors", "scripts", "NULL", buffer, BUFFER_SIZE, filename.c_str());
+	m_editorsScriptsPath = buffer;
+
 	GetPrivateProfileString("shader_editor", "shader_compiler", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_shaderCompiler = buffer;
+
+	GetPrivateProfileString("mesh_editor", "blender", "NULL", buffer, BUFFER_SIZE, filename.c_str());
+	m_blender = buffer;
 
 	GetPrivateProfileInt("game", "resolution_width", m_gameResolutionWidth, filename.c_str());
 	GetPrivateProfileInt("game", "resolution_height", m_gameResolutionHeight, filename.c_str());
