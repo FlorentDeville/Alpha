@@ -452,7 +452,7 @@ int RenderModule::PrepareRenderText(const std::string& text, FontId fontId, cons
 		info.m_characterCount++;
 	}
 
-	return text.size();
+	return static_cast<int>(text.size());
 }
 
 void RenderModule::RenderAllText()
