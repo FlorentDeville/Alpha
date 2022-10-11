@@ -26,6 +26,9 @@ namespace Widgets
 
 		void SetSelectedTab(int index);
 
+		void Enable() override;
+		void Disable() override;
+
 	private:
 		int m_selectedTab;
 

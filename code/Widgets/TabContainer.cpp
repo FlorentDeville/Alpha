@@ -110,4 +110,25 @@ namespace Widgets
 		//Update the selected index
 		m_selectedTab = index;
 	}
+
+	void TabContainer::Enable()
+	{
+		Widget::Enable();
+
+		//Widget::Enable enabled all the tab so I need to hide all unselected tab.
+		for (int ii = 0; ii < m_tabContent.size(); ++ii)
+		{
+			if (ii == m_selectedTab)
+				continue;
+
+			m_tabHeaders[ii]->SetBackgroundColor(m_defaultHeaderColor);
+			m_tabContent[ii]->Disable();
+		}
+		
+	}
+
+	void TabContainer::Disable()
+	{
+		Widget::Disable();
+	}
 }
