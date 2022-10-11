@@ -75,8 +75,6 @@ bool g_perspectiveRendering = true;
 void Update();
 void Render();
 
-FontId g_comicSansMsFontId;
-
 TextureId g_gridTextureId;
 TextureId g_textureId;
 LPCSTR g_pIconName = IDC_ARROW;
@@ -438,27 +436,6 @@ bool LoadContent()
 		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(g_gridTextureId, textureName);
 		pTexture->Init(textureName);
 	}
-
-	//Load the font
-	{
-		{
-			std::string fontFilename = g_dataRoot + "\\fonts\\comicSansMs.fnt";
-			Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(g_comicSansMsFontId, fontFilename);
-			pFont->Init(fontFilename);
-		}
-
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
-
-		Rendering::PipelineStateId text_pipelineStateId;
-		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
-		pPipelineState->Init_Text(rsId, vsId, psId);
-
-		RenderModule::Get().InitialiseFont(g_comicSansMsFontId, text_pipelineStateId, 1024);
-
-	}
-
 
 	//Load the entities
 	GameMgr& gameMgr = GameMgr::Get();
