@@ -40,6 +40,15 @@ namespace Editors
 		MeshEntry();
 	};
 
+	class MaterialEntry
+	{
+	public:
+		std::string m_name;
+		Rendering::MaterialId m_materialId;
+
+		MaterialEntry();
+	};
+
 	class MeshEditor : public Core::Singleton<MeshEditor>
 	{
 	public:
@@ -61,6 +70,7 @@ namespace Editors
 		Rendering::RenderTarget* m_pRenderTarget;
 
 		std::vector<MeshEntry> m_allMeshes;
+		std::vector<MaterialEntry> m_allMaterials;
 
 		int m_selectedMesh; //id in m_allMeshes, -1 if nothing selected
 
@@ -79,5 +89,6 @@ namespace Editors
 
 		void OnMeshEntryClicked(int entryIndex);
 		bool OnMeshImportClicked(int entryIndex);
+		bool OnMaterialClicked(int entryIndex);
 	};
 }

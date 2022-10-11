@@ -42,6 +42,11 @@ namespace Editors
 		, m_meshId()
 	{}
 
+	MaterialEntry::MaterialEntry()
+		: m_name()
+		, m_materialId()
+	{}
+
 	MeshEditor::MeshEditor()
 		: Core::Singleton<MeshEditor>()
 		, m_pRenderTarget(nullptr)
@@ -54,6 +59,7 @@ namespace Editors
 		, m_mousePreviousPos(0, 0)
 		, m_allEntryButton()
 		, m_pLogWidget(nullptr)
+		, m_allMaterials()
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -166,6 +172,11 @@ namespace Editors
 		Widgets::Tab* pMaterialTab = new Widgets::Tab();
 		pTabContainer->AddTab("Material", pMaterialTab);
 
+		Widgets::Layout* pMaterialLayout = new Widgets::Layout(0, 0, 0, 0);
+		pMaterialLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pMaterialLayout->SetDirection(Widgets::Layout::Vertical);
+		pMaterialTab->AddWidget(pMaterialLayout);
+
 		Widgets::Tab* pLogTab = new Widgets::Tab();
 		pTabContainer->AddTab("Log", pLogTab);
 
@@ -175,23 +186,12 @@ namespace Editors
 
 		pTabContainer->SetSelectedTab(0);
 
-		//load the material to render the mesh
-		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-		Rendering::Material* pMaterial = nullptr;
-		materialMgr.CreateMaterial(&pMaterial, m_materialId);
-
-		/*{
-			RootSignatureId rsId = g_pRootSignatureMgr->CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
-			ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
-			ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
-			
-			PipelineStateId pid;
-			PipelineState* pPipelineState = g_pPipelineStateMgr->CreateResource(pid, "base");
-			pPipelineState->Init_PosColor(rsId, vsId, psId);
-
-			pMaterial->Init(rsId, pid);
-		}*/
+		//load the grid orange materials
 		{
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+			Rendering::Material* pMaterial = nullptr;
+			materialMgr.CreateMaterial(&pMaterial, m_materialId);
+
 			std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
 			RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(root + "texture.rs.cso");
 			ShaderId vsId = g_pShaderMgr->CreateShader(root + "texture.vs.cso");
@@ -208,6 +208,56 @@ namespace Editors
 
 			pMaterial->Init(rsId, pid);
 			pMaterial->SetTexture(tid);
+
+			//material name
+			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
+			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pButton->OnClick([this](int x, int y) -> bool { return OnMaterialClicked(0); });
+			pMaterialLayout->AddWidget(pButton);
+
+			const int LABEL_OFFSET_X = 10;
+			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, "grid_orange");
+			pButton->AddWidget(pLabel);
+
+			//material entry
+			m_allMaterials.push_back(MaterialEntry());
+			MaterialEntry& materialEntry = m_allMaterials.back();
+			materialEntry.m_materialId = m_materialId;
+			materialEntry.m_name = "grid_orange";
+		}
+
+		//load the vertex color material
+		{
+			std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
+			RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(root + "\\vertex_color.rs.cso");
+			ShaderId vsId = g_pShaderMgr->CreateShader(root + "\\vertex_color.vs.cso");
+			ShaderId psId = g_pShaderMgr->CreateShader(root + "\\vertex_color.ps.cso");
+			
+			Rendering::PipelineStateId pid;
+			Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+			pPipelineState->Init_Generic(rsId, vsId, psId);
+
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+			Rendering::Material* pMaterial = nullptr;
+			Rendering::MaterialId materialId;
+			materialMgr.CreateMaterial(&pMaterial, materialId);
+			pMaterial->Init(rsId, pid);
+
+			//material name
+			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
+			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pButton->OnClick([this](int x, int y) -> bool { return OnMaterialClicked(1); });
+			pMaterialLayout->AddWidget(pButton);
+
+			const int LABEL_OFFSET_X = 10;
+			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, "vertex_color");
+			pButton->AddWidget(pLabel);
+
+			//material entry
+			m_allMaterials.push_back(MaterialEntry());
+			MaterialEntry& materialEntry = m_allMaterials.back();
+			materialEntry.m_materialId = materialId;
+			materialEntry.m_name = "grid_orange";
 		}
 	}
 
@@ -371,6 +421,14 @@ namespace Editors
 		pNewMesh->Load(entry.m_binFilename);
 
 		entry.m_meshId = newMeshId;
+
+		return true;
+	}
+
+	bool MeshEditor::OnMaterialClicked(int entryIndex)
+	{
+		const MaterialEntry& materialEntry = m_allMaterials[entryIndex];
+		m_materialId = materialEntry.m_materialId;
 
 		return true;
 	}
