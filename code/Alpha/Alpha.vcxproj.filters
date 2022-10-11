@@ -43,6 +43,9 @@
     <ClCompile Include="Entities\PlayerEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Configuration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -74,5 +77,9 @@
     <ClInclude Include="Components\MeshComponent.h" />
     <ClInclude Include="Entities\CameraEntity.h" />
     <ClInclude Include="Entities\PlayerEntity.h" />
+    <ClInclude Include="Configuration.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="config.ini" />
   </ItemGroup>
 </Project>

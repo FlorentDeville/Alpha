@@ -10,12 +10,7 @@
 #include <chrono>
 #include <windowsx.h>
 
-
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#include <d3dcompiler.h>
 #include <DirectXMath.h>
-#include <d3dx12.h>
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
@@ -27,6 +22,7 @@
 
 #include "GameInputs/Inputs/InputMgr.h"
 
+#include "Configuration.h"
 #include "GameMgr.h"
 
 #include "Rendering/CommandQueue.h"
@@ -460,12 +456,17 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	const int size = 256;
 	char buffer[size];
 	GetModuleFileNameA(NULL, buffer, size);
-	g_shaderRoot = buffer;
-	size_t lastSlash = g_shaderRoot.find_last_of('\\');
-	g_shaderRoot = g_shaderRoot.substr(0, lastSlash);
+	std::string currentDirectory = buffer;
+	size_t lastSlash = currentDirectory.find_last_of('\\');
+	currentDirectory = currentDirectory.substr(0, lastSlash);
+	g_shaderRoot = currentDirectory;
+
+	Configuration configuration;
+	std::string configurationFilename = currentDirectory + "\\config.ini";
+	configuration.Load(configurationFilename);
 
 	DirectX::XMUINT2 windowResolution(1080, 789);
-	DirectX::XMUINT2 gameResolution = windowResolution;
+	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
 	const char* pWindowClassName = "DX12WindowClass";
 	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
