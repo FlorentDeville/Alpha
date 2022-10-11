@@ -1,0 +1,34 @@
+ ____________________________________________
+|					Alpha					 |
+|____________________________________________|
+ ____________________________________________
+|					Editors					 |
+|____________________________________________|
+ ____________________________________________
+|					Widgets					 |
+|____________________________________________|
+ ____________________________________________
+|					Systems					 |
+|____________________________________________|
+ ____________	  ____________	  ___________
+|	OsWin	 |   |	Rendering |	 |   Inputs  |
+|____________|   |____________|  |___________|
+ ____________________________________________
+|					Core					 |
+|____________________________________________|
+
+Core : Low level library containing basic structures like math, singleton, container, etc
+
+OsWin : Wrapper for everything Os specific like UI.
+
+Rendering : DirectX12 renderer.
+
+Inputs : Wrapper for every inputs : keyboard, mouse, controllers
+
+Systems : Library for game systems like loaders, base entities and components.
+
+Widgets : Widgets library used to render all the editors.
+
+Editors : Tools to edit the data making the game
+
+Alpha : The game. Contains code specific to this game. Generic things should be moved down to Systems.

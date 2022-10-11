@@ -82,4 +82,7 @@
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="library_stack.txt" />
+  </ItemGroup>
 </Project>
