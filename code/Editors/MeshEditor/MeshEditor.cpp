@@ -225,7 +225,7 @@ namespace Editors
 	{
 		if (m_enableViewportControl)
 		{
-			GameInputs::InputMgr& inputs = GameInputs::InputMgr::Get();
+			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 			if (inputs.IsMouseLeftButtonDown())
 			{
 				DirectX::XMUINT2 mousePosition;

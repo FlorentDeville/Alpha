@@ -10,7 +10,7 @@
 
 #include <map>
 
-namespace GameInputs
+namespace Inputs
 {
 	class InputMgr : public Core::Singleton<InputMgr>
 	{

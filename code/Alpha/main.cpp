@@ -104,7 +104,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				msg.m_high = wParam;
 				WidgetMgr::Get().HandleMsg(msg);
 
-				GameInputs::InputMgr::Get().UpdateKeyboard(wParam);
+				Inputs::InputMgr::Get().UpdateKeyboard(wParam);
 			}
 			break;
 			}
@@ -145,7 +145,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		GameInputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr::MouseState mouseState;
 
 		Message msg;
 		msg.m_id = M_MouseMove;
@@ -169,7 +169,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
-		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 		break;
 
@@ -180,7 +180,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		uint16_t xPos = GET_X_LPARAM(lParam);
 		uint16_t yPos = GET_Y_LPARAM(lParam);
 
-		GameInputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr::MouseState mouseState;
 		mouseState.m_mouseWheel = wheelDistance;
 		mouseState.m_mouseX = xPos;
 		mouseState.m_mouseY = yPos;
@@ -191,7 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (keyState & MK_RBUTTON)
 			mouseState.m_mouseRightButton = true;
 
-		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 
 	}
 		break;
@@ -211,11 +211,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		WidgetMgr::Get().HandleMsg(msg);
 
 
-		GameInputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr::MouseState mouseState;
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
 		mouseState.m_mouseLeftButton = true;
-		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 	break;
 
@@ -233,10 +233,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		WidgetMgr::Get().HandleMsg(msg);
 
-		GameInputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr::MouseState mouseState;
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
-		GameInputs::InputMgr::Get().UpdateMouseState(mouseState);
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 		break;
 	
@@ -484,7 +484,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	GameMgr& gameMgr = GameMgr::InitSingleton();
 	gameMgr.Init();
 
-	GameInputs::InputMgr& inputMgr = GameInputs::InputMgr::InitSingleton();
+	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
 	inputMgr.Init();
 
 	Editors::GamePlayer::InitSingleton();
@@ -513,7 +513,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 		Update();
 		Render();
-		GameInputs::InputMgr::Get().ClearAllStates();
+		Inputs::InputMgr::Get().ClearAllStates();
 	}
 
 	Editors::ShaderEditor::ReleaseSingleton();
@@ -525,7 +525,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	GameMgr::ReleaseSingleton();
 
 	inputMgr.Release();
-	GameInputs::InputMgr::ReleaseSingleton();
+	Inputs::InputMgr::ReleaseSingleton();
 
 	WidgetMgr::Get().Release();
 	WidgetMgr::ReleaseSingleton();

@@ -6,7 +6,7 @@
 
 //#pragma optimize("", off)
 
-namespace GameInputs
+namespace Inputs
 {
 	InputMgr::InputMgr()
 		: m_enabled(false)

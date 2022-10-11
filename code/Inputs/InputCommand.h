@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace GameInputs
+namespace Inputs
 {
 	enum class InputCommand
 	{

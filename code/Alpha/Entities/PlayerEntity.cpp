@@ -22,19 +22,19 @@ void PlayerEntity::Update()
 {
 	LocatorEntity::Update();
 
-	const GameInputs::InputMgr& inputMgr = GameInputs::InputMgr::Get();
+	const Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 
 	float speed = 1.f;
-	if (inputMgr.GetState(GameInputs::InputCommand::MoveForward))
+	if (inputMgr.GetState(Inputs::InputCommand::MoveForward))
 		m_position = DirectX::XMVectorAdd(m_position, DirectX::XMVectorSet(0, 0, speed, 0));
 
-	if (inputMgr.GetState(GameInputs::InputCommand::MoveBackward))
+	if (inputMgr.GetState(Inputs::InputCommand::MoveBackward))
 		m_position = DirectX::XMVectorAdd(m_position, DirectX::XMVectorSet(0, 0, -speed, 0));
 
-	if (inputMgr.GetState(GameInputs::InputCommand::MoveLeft))
+	if (inputMgr.GetState(Inputs::InputCommand::MoveLeft))
 		m_position = DirectX::XMVectorAdd(m_position, DirectX::XMVectorSet(-speed, 0, 0, 0));
 
-	if (inputMgr.GetState(GameInputs::InputCommand::MoveRight))
+	if (inputMgr.GetState(Inputs::InputCommand::MoveRight))
 		m_position = DirectX::XMVectorAdd(m_position, DirectX::XMVectorSet(speed, 0, 0, 0));
 
 	SetTransform(DirectX::XMMatrixTranslationFromVector(m_position));
