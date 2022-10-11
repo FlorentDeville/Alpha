@@ -92,36 +92,36 @@ void Font::ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const
     }
 }
 
-size_t Font::ComputeCharacterCountFitting(const std::string& text, int length) const
-{
-    int currentLength = 0;
-    char lastChar = -1;
-    for (size_t ii = 0; ii < text.size(); ++ii)
-    {
-        char c = text[ii];
-        const FontChar* fc = GetChar(c);
-        // character not in font char set
-        if (fc == nullptr)
-        {
-            OutputDebugString("WARNING : Character not found in the font");
-            break;
-        }
-        // end of string
-        if (c == '\0')
-            break;
-        int kerning = 0;
-        if (ii > 0)
-            kerning = GetKerning(lastChar, c);
-        currentLength += fc->m_xoffset + kerning + fc->m_xadvance;
-
-        if (currentLength > length)
-            return ii - 1;
-
-        lastChar = c;
-    }
-
-    return text.size();
-}
+//size_t Font::ComputeCharacterCountFitting(const std::string& text, int length) const
+//{
+//    int currentLength = 0;
+//    char lastChar = -1;
+//    for (size_t ii = 0; ii < text.size(); ++ii)
+//    {
+//        char c = text[ii];
+//        const FontChar* fc = GetChar(c);
+//        // character not in font char set
+//        if (fc == nullptr)
+//        {
+//            OutputDebugString("WARNING : Character not found in the font");
+//            break;
+//        }
+//        // end of string
+//        if (c == '\0')
+//            break;
+//        int kerning = 0;
+//        if (ii > 0)
+//            kerning = GetKerning(lastChar, c);
+//        currentLength += fc->m_xoffset + kerning + fc->m_xadvance;
+//
+//        if (currentLength > length)
+//            return ii - 1;
+//
+//        lastChar = c;
+//    }
+//
+//    return text.size();
+//}
 
 void Font::LoadFntFile(const std::string& fntName)
 {

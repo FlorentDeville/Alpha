@@ -371,7 +371,7 @@ void RenderModule::InitialiseFont(FontId fontId, Rendering::PipelineStateId psoI
 	}
 }
 
-void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
+int RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	const Font* pFont = m_fontMgr.GetResource(fontId);
@@ -447,10 +447,12 @@ void RenderModule::PrepareRenderText(const std::string& text, FontId fontId, con
 
 		//we are out of bounds, ignore the last character setup
 		if (pVertexText.Position.x + pVertexText.Position.z > scissorXMax)
-			break;
+			return i - 1;
 
 		info.m_characterCount++;
 	}
+
+	return text.size();
 }
 
 void RenderModule::RenderAllText()

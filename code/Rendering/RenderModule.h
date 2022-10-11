@@ -71,7 +71,8 @@ public:
 	void InitialiseFont(FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
 
 	//uiPos : origin : top left, range : [0, pixel screen size]
-	void PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
+	//return the number of character written
+	int PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
 	void RenderAllText();
 
 	TextureId GetGameRenderTargetTextureId() const;

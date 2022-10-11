@@ -39,17 +39,15 @@ namespace Widgets
 			
 			std::string subLine = line;
 
-			do
-			{
-				//then split the line by the number of characters I can rander.
-				RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
+			//then split the line by the number of characters I can rander.
+			int n = RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
+			uiPos.y += pFont->m_lineHeight;
+			while(n < subLine.size())
+			{	
+				subLine = subLine.substr(n + 1);
+				n = RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
 				uiPos.y += pFont->m_lineHeight;
-
-				size_t subLineEnd = pFont->ComputeCharacterCountFitting(subLine, m_size.x);
-				
-				subLine = subLine.substr(subLineEnd);
-
-			} while (!subLine.empty());
+			} 
 
 			startOfLine = endOfLine + 1;
 		} while (endOfLine != std::string::npos);

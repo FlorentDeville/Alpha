@@ -58,7 +58,7 @@ public:
 
     // Compute the rectangle in pixels containing the text
     void ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const;
-    size_t ComputeCharacterCountFitting(const std::string& text, int length) const;
+    //size_t ComputeCharacterCountFitting(const std::string& text, int length) const;
 
     std::string m_fontImage;
     int m_size; // size of font, lineheight and baseheight will be based on this as if this is a single unit (1.0)
