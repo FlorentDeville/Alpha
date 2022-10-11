@@ -18,18 +18,30 @@ namespace Rendering
 
 namespace Systems
 {
+	class LoaderParameter
+	{
+	public:
+		std::string m_dataMeshPath;
+		std::string m_dataMaterialPath;
+		std::string m_dataShaderPath;
+		std::string m_dataTexturePath;
+	};
+
 	class Loader : public Core::Singleton<Loader>
 	{
 	public:
 		Loader();
 		~Loader();
 
-		bool Init(const std::string& dataMeshPath);
+		bool Init(const LoaderParameter& parameter);
 
 		bool LoadMesh(const std::string& name, Rendering::Mesh& mesh);
 		bool LoadMaterial(const std::string& name, Rendering::Material& material);
 
 	private:
 		std::string m_dataMeshPath;
+		std::string m_dataMaterialPath;
+		std::string m_dataShaderPath;
+		std::string m_dataTexturePath;
 	};
 }

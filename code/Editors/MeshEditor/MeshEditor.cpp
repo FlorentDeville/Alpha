@@ -194,18 +194,20 @@ namespace Editors
 		{
 			//load material
 			std::string path = entry.path().string();
+			std::string name = entry.path().stem().string();
+
 			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 			Rendering::Material* pMaterial = nullptr;
 			Rendering::MaterialId materialId;
 			materialMgr.CreateMaterial(&pMaterial, materialId);
-			pMaterial->Load(path);
+			Systems::Loader::Get().LoadMaterial(name, *pMaterial);
 
 			//create entry
 			int materialIndex = static_cast<int>(m_allMaterials.size());
 			m_allMaterials.push_back(MaterialEntry());
 			MaterialEntry& materialEntry = m_allMaterials.back();
 			materialEntry.m_materialId = materialId;
-			materialEntry.m_name = entry.path().stem().string();
+			materialEntry.m_name = name;
 
 			
 			//material widget

@@ -468,7 +468,12 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	configuration.Load(configurationFilename);
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
-	loader.Init(configuration.m_dataMeshPath);
+	Systems::LoaderParameter loaderParameter;
+	loaderParameter.m_dataMaterialPath = configuration.m_dataMaterialsPath;
+	loaderParameter.m_dataMeshPath = configuration.m_dataMeshPath;
+	loaderParameter.m_dataShaderPath = configuration.m_dataShadersPath;
+	loaderParameter.m_dataTexturePath = configuration.m_dataTexturesPath;
+	loader.Init(loaderParameter);
 
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);

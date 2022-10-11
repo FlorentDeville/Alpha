@@ -9,21 +9,35 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
+#include "Rendering/Material/Material.h"
 #include "Rendering/Mesh/Mesh.h"
+#include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateId.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
+#include "Rendering/RenderModule.h"
+#include "Rendering/RootSignature/RootSignatureId.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/ShaderMgr.h"
 
 namespace Systems
 {
 	Loader::Loader()
 		: Core::Singleton<Loader>()
 		, m_dataMeshPath()
+		, m_dataMaterialPath()
+		, m_dataShaderPath()
+		, m_dataTexturePath()
 	{}
 
 	Loader::~Loader()
 	{}
 
-	bool Loader::Init(const std::string& dataMeshPath)
+	bool Loader::Init(const LoaderParameter& parameter)
 	{
-		m_dataMeshPath = dataMeshPath;
+		m_dataMeshPath = parameter.m_dataMeshPath;
+		m_dataMaterialPath = parameter.m_dataMaterialPath;
+		m_dataShaderPath = parameter.m_dataShaderPath;
+		m_dataTexturePath = parameter.m_dataTexturePath;
 
 		return true;
 	}
@@ -111,6 +125,49 @@ namespace Systems
 
 	bool Loader::LoadMaterial(const std::string& name, Rendering::Material& material)
 	{
+		std::string materialFilename = m_dataMaterialPath + "\\" + name + ".json";
+		FILE* pFile = nullptr;;
+		fopen_s(&pFile, materialFilename.c_str(), "rb");
+		assert(pFile);
+
+		const int BUFFER_SIZE = 655536;
+		char readBuffer[BUFFER_SIZE];
+		rapidjson::FileReadStream stream(pFile, readBuffer, BUFFER_SIZE);
+
+		rapidjson::Document jsonDocument;
+		jsonDocument.ParseStream(stream);
+
+		const rapidjson::Value& shaderNameValue = jsonDocument["shader"];
+		const char* shaderName = shaderNameValue.GetString();
+
+		//std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
+		std::string rootSignatureFilename = m_dataShaderPath + "\\" + shaderName + ".rs.cso";
+		std::string vertexShaderFilename = m_dataShaderPath + "\\" + shaderName + ".vs.cso";
+		std::string textureShaderFilename = m_dataShaderPath + "\\" + shaderName + ".ps.cso";
+
+		RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(rootSignatureFilename);
+		ShaderId vsId = g_pShaderMgr->CreateShader(vertexShaderFilename);
+		ShaderId psId = g_pShaderMgr->CreateShader(textureShaderFilename);
+
+		Rendering::PipelineStateId pid;
+		Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+		pPipelineState->Init_Generic(rsId, vsId, psId);
+
+		material.Init(rsId, pid);
+
+		rapidjson::Value::MemberIterator it = jsonDocument.FindMember("texture");
+		if (it != jsonDocument.MemberEnd())
+		{
+			const char* textureName = it->value.GetString();
+			std::string textureFilename = m_dataTexturePath + "\\" + textureName;
+
+			TextureId tid;
+			Texture* pTexture = ::RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
+			pTexture->Init(textureFilename);
+
+			material.SetTexture(tid);
+		}
+
 		return true;
 	}
 }

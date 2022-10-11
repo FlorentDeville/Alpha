@@ -26,8 +26,6 @@ namespace Rendering
 
 		void SetTexture(TextureId id);
 
-		bool Load(const std::string& filename);
-
 	private:
 		RootSignature* m_pRootSignature;
 		PipelineState* m_pPipelineState;
