@@ -456,6 +456,7 @@ void CreateMainWindow(const Configuration& configuration)
 	shaderEditorParameter.m_pParent = pMiddleTabContainer;
 	shaderEditorParameter.m_dataShaderPath = configuration.m_dataShadersPath;
 	shaderEditorParameter.m_rawShaderPath = configuration.m_rawShadersPath;
+	shaderEditorParameter.m_shaderCompilerPath = configuration.m_shaderCompiler;
 	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
 
 	pMiddleTabContainer->SetSelectedTab(0);

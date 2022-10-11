@@ -36,6 +36,7 @@ namespace Editors
 	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
 	{
 		m_dataShaderPath = parameter.m_dataShaderPath;
+		m_shaderCompilerPath = parameter.m_shaderCompilerPath;
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -169,7 +170,7 @@ namespace Editors
 		std::string outputName = m_dataShaderPath + "\\" + shaderName + "." + shaderTypeExtension + ".cso";
 
 		//create the command line
-		std::string cmdline = "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x86\\fxc.exe";
+		std::string cmdline = m_shaderCompilerPath;
 
 		if (strcmp(RS_EXT, extension.c_str()) == 0) //root signature
 		{

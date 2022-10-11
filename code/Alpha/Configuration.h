@@ -25,6 +25,8 @@ public:
 
 	std::string m_editorsIconsPath;
 
+	std::string m_shaderCompiler;
+
 	int m_gameResolutionWidth;
 	int m_gameResolutionHeight;
 };
