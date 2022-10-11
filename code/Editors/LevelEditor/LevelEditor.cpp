@@ -4,7 +4,7 @@
 
 #include "Editors/LevelEditor/LevelEditor.h"
 
-#include "GameInputs/Inputs/InputMgr.h"
+#include "Inputs/InputMgr.h"
 
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"

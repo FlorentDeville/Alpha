@@ -294,7 +294,7 @@
     <ProjectReference Include="..\Editors\Editors.vcxproj">
       <Project>{e4c43edc-88b3-4687-9e69-33b02c08403a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\GameInputs\GameInputs.vcxproj">
+    <ProjectReference Include="..\Inputs\Inputs.vcxproj">
       <Project>{7103a061-0369-4b24-bd99-9c3129816d83}</Project>
     </ProjectReference>
     <ProjectReference Include="..\OsWin\OsWin.vcxproj">

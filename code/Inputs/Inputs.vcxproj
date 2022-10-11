@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Inputs\InputCommand.h" />
-    <ClInclude Include="Inputs\InputMgr.h" />
+    <ClInclude Include="InputCommand.h" />
+    <ClInclude Include="InputMgr.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Inputs\InputMgr.cpp" />
+    <ClCompile Include="InputMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
@@ -36,6 +36,7 @@
     <ProjectGuid>{7103a061-0369-4b24-bd99-9c3129816d83}</ProjectGuid>
     <RootNamespace>GameInputs</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Inputs</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

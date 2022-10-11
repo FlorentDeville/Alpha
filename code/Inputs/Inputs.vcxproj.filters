@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Inputs\InputCommand.h">
+    <ClInclude Include="InputCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inputs\InputMgr.h">
+    <ClInclude Include="InputMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Inputs\InputMgr.cpp">
+    <ClCompile Include="InputMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

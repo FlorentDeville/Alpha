@@ -5,6 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Alpha", "Alpha\Alpha.vcxproj", "{DE088C60-F0FA-43B1-96D7-449B9D8E13A5}"
 	ProjectSection(ProjectDependencies) = postProject
+		{7103A061-0369-4B24-BD99-9C3129816D83} = {7103A061-0369-4B24-BD99-9C3129816D83}
 		{F6D68A90-3996-495A-977C-DB2E9121805E} = {F6D68A90-3996-495A-977C-DB2E9121805E}
 	EndProjectSection
 EndProject
@@ -21,7 +22,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Widgets", "Widgets\Widgets.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editors", "Editors\Editors.vcxproj", "{E4C43EDC-88B3-4687-9E69-33B02C08403A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameInputs", "GameInputs\GameInputs.vcxproj", "{7103A061-0369-4B24-BD99-9C3129816D83}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Inputs", "Inputs\Inputs.vcxproj", "{7103A061-0369-4B24-BD99-9C3129816D83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

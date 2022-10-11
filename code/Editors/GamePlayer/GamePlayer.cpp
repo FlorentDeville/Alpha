@@ -4,7 +4,7 @@
 
 #include "Editors/GamePlayer/GamePlayer.h"
 
-#include "GameInputs/Inputs/InputMgr.h"
+#include "Inputs/InputMgr.h"
 
 #include "Rendering/RenderModule.h"
 

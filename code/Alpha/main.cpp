@@ -20,7 +20,7 @@
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/ShaderEditor/ShaderEditor.h"
 
-#include "GameInputs/Inputs/InputMgr.h"
+#include "Inputs/InputMgr.h"
 
 #include "Configuration.h"
 #include "GameMgr.h"

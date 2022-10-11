@@ -4,7 +4,7 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
-#include "GameInputs/Inputs/InputMgr.h"
+#include "Inputs/InputMgr.h"
 
 #include "OsWin/Process.h"
 

@@ -4,7 +4,7 @@
 
 #include "Entities/PlayerEntity.h"
 
-#include "GameInputs/Inputs/InputMgr.h"
+#include "Inputs/InputMgr.h"
 
 PlayerEntity::PlayerEntity()
 	: LocatorEntity()
