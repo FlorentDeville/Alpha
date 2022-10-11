@@ -3,7 +3,7 @@
 /********************************************************************/
 
 #pragma once
-
+#define NOMINMAX
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/Texture/Texture.h"
@@ -25,6 +25,8 @@ namespace Rendering
 		bool Init(RootSignatureId rid, PipelineStateId pid);
 
 		void SetTexture(TextureId id);
+
+		bool Load(const std::string& filename);
 
 	private:
 		RootSignature* m_pRootSignature;

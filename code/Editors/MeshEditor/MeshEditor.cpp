@@ -186,79 +186,39 @@ namespace Editors
 
 		pTabContainer->SetSelectedTab(0);
 
-		//load the grid orange materials
+		//load al material
+		const std::string materialRoot = "c:\\workspace\\Alpha\\data\\materials";
+		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(materialRoot))
 		{
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-			Rendering::Material* pMaterial = nullptr;
-			materialMgr.CreateMaterial(&pMaterial, m_materialId);
-
-			std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
-			RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(root + "texture.rs.cso");
-			ShaderId vsId = g_pShaderMgr->CreateShader(root + "texture.vs.cso");
-			ShaderId psId = g_pShaderMgr->CreateShader(root + "texture.ps.cso");
-
-			Rendering::PipelineStateId pid;
-			Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-			pPipelineState->Init_Generic(rsId, vsId, psId);
-
-			std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_orange.png";
-			TextureId tid;
-			Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
-			pTexture->Init(textureFilename);
-
-			pMaterial->Init(rsId, pid);
-			pMaterial->SetTexture(tid);
-
-			//material name
-			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this](int x, int y) -> bool { return OnMaterialClicked(0); });
-			pMaterialLayout->AddWidget(pButton);
-
-			const int LABEL_OFFSET_X = 10;
-			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, "grid_orange");
-			pButton->AddWidget(pLabel);
-
-			//material entry
-			m_allMaterials.push_back(MaterialEntry());
-			MaterialEntry& materialEntry = m_allMaterials.back();
-			materialEntry.m_materialId = m_materialId;
-			materialEntry.m_name = "grid_orange";
-		}
-
-		//load the vertex color material
-		{
-			std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
-			RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(root + "\\vertex_color.rs.cso");
-			ShaderId vsId = g_pShaderMgr->CreateShader(root + "\\vertex_color.vs.cso");
-			ShaderId psId = g_pShaderMgr->CreateShader(root + "\\vertex_color.ps.cso");
-			
-			Rendering::PipelineStateId pid;
-			Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-			pPipelineState->Init_Generic(rsId, vsId, psId);
-
+			//load material
+			std::string path = entry.path().string();
 			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 			Rendering::Material* pMaterial = nullptr;
 			Rendering::MaterialId materialId;
 			materialMgr.CreateMaterial(&pMaterial, materialId);
-			pMaterial->Init(rsId, pid);
+			pMaterial->Load(path);
 
-			//material name
-			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this](int x, int y) -> bool { return OnMaterialClicked(1); });
-			pMaterialLayout->AddWidget(pButton);
-
-			const int LABEL_OFFSET_X = 10;
-			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, "vertex_color");
-			pButton->AddWidget(pLabel);
-
-			//material entry
+			//create entry
+			int materialIndex = static_cast<int>(m_allMaterials.size());
 			m_allMaterials.push_back(MaterialEntry());
 			MaterialEntry& materialEntry = m_allMaterials.back();
 			materialEntry.m_materialId = materialId;
-			materialEntry.m_name = "grid_orange";
+			materialEntry.m_name = entry.path().stem().string();
+
+			
+			//material widget
+			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
+			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pButton->OnClick([this, materialIndex](int x, int y) -> bool { return OnMaterialClicked(materialIndex); });
+			pMaterialLayout->AddWidget(pButton);
+
+			const int LABEL_OFFSET_X = 10;
+			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, materialEntry.m_name);
+			pButton->AddWidget(pLabel);
 		}
+
+		//by default use the first material
+		m_materialId = m_allMaterials.front().m_materialId;
 	}
 
 	void MeshEditor::Update()
