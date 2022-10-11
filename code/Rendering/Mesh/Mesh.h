@@ -55,8 +55,6 @@ namespace Rendering
 		void LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 		void LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 
-		void Load(const std::string& filename);
-
 		const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
 		const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
 

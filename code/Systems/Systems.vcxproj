@@ -19,33 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GamePlayer\GamePlayer.h" />
-    <ClInclude Include="LevelEditor\LevelEditor.h" />
-    <ClInclude Include="MeshEditor\MeshEditor.h" />
-    <ClInclude Include="ShaderEditor\ShaderEditor.h" />
+    <ClInclude Include="Loader.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GamePlayer\GamePlayer.cpp" />
-    <ClCompile Include="LevelEditor\LevelEditor.cpp" />
-    <ClCompile Include="MeshEditor\MeshEditor.cpp" />
-    <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
+    <ClCompile Include="Loader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{4586120c-fb2d-4271-bb5d-7e160dfd6437}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Systems\Systems.vcxproj">
-      <Project>{fe92b2b8-ee64-4c06-89fe-eb3bad9a470b}</Project>
+    <ProjectReference Include="..\OsWin\OsWin.vcxproj">
+      <Project>{e1515c2c-417c-4022-a379-4c67bf9c7fbc}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Widgets\Widgets.vcxproj">
-      <Project>{79e85242-424c-4b35-829b-b2afa0e0b255}</Project>
+    <ProjectReference Include="..\Rendering\Rendering.vcxproj">
+      <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e4c43edc-88b3-4687-9e69-33b02c08403a}</ProjectGuid>
-    <RootNamespace>Editors</RootNamespace>
+    <ProjectGuid>{fe92b2b8-ee64-4c06-89fe-eb3bad9a470b}</ProjectGuid>
+    <RootNamespace>Systems</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -66,14 +60,14 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>NotSet</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -93,18 +87,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)intermediate\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -148,10 +134,8 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;C:\workspace\Alpha\code\3rdparty\rapidjson-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -168,10 +152,8 @@
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>
-      </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;C:\workspace\Alpha\code\3rdparty\rapidjson-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

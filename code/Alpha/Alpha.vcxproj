@@ -303,6 +303,9 @@
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">
       <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Systems\Systems.vcxproj">
+      <Project>{fe92b2b8-ee64-4c06-89fe-eb3bad9a470b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Widgets\Widgets.vcxproj">
       <Project>{79e85242-424c-4b35-829b-b2afa0e0b255}</Project>
     </ProjectReference>

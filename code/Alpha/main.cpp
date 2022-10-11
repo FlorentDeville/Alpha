@@ -40,6 +40,8 @@
 #include "Rendering/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
+#include "Systems/Loader.h"
+
 #include "OsWin/SysWindow.h"
 #include "Widgets/Button.h"
 #include "Widgets/Container.h"
@@ -404,7 +406,7 @@ bool LoadContent()
 	{
 		Rendering::Mesh* pCubeMesh = nullptr;
 		meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
-		pCubeMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_torus.json");
+		Systems::Loader::Get().LoadMesh("base_torus", *pCubeMesh);
 	}
 
 	//load plane
@@ -412,7 +414,7 @@ bool LoadContent()
 	{
 		Rendering::Mesh* pPlaneMesh = nullptr;
 		meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
-		pPlaneMesh->Load("c:\\workspace\\Alpha\\data\\mesh\\base_plane.json");
+		Systems::Loader::Get().LoadMesh("base_plane", *pPlaneMesh);
 	}
 
 	//Load the entities
@@ -464,6 +466,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Configuration configuration;
 	std::string configurationFilename = currentDirectory + "\\config.ini";
 	configuration.Load(configurationFilename);
+
+	Systems::Loader& loader = Systems::Loader::InitSingleton();
+	loader.Init(configuration.m_dataMeshPath);
 
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
@@ -532,6 +537,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	delete g_pShaderMgr;
 	delete g_pWindow;
+
+	Systems::Loader::ReleaseSingleton();
 
 	render.Release();
 	RenderModule::ReleaseSingleton();

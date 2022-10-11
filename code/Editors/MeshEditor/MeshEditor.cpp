@@ -18,6 +18,8 @@
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/ShaderMgr.h"
 
+#include "Systems/Loader.h"
+
 #include "Widgets/Button.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
@@ -321,7 +323,7 @@ namespace Editors
 	{
 		Rendering::Mesh* pCubeMesh = nullptr;
 		Rendering::MeshMgr::Get().CreateMesh(&pCubeMesh, entry.m_meshId);
-		pCubeMesh->Load(entry.m_binFilename);
+		Systems::Loader::Get().LoadMesh(entry.m_displayName, *pCubeMesh);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
@@ -378,7 +380,7 @@ namespace Editors
 		Rendering::MeshId newMeshId;
 
 		meshMgr.CreateMesh(&pNewMesh, newMeshId);
-		pNewMesh->Load(entry.m_binFilename);
+		Systems::Loader::Get().LoadMesh(entry.m_displayName, *pNewMesh);
 
 		entry.m_meshId = newMeshId;
 
