@@ -59,15 +59,7 @@
 
 SysWindow* g_pWindow = nullptr;
 
-void Update();
-void Render();
-
 LPCSTR g_pIconName = IDC_ARROW;
-
-DirectX::XMVECTOR g_eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
-DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(0, 0, 1, 1);
-DirectX::XMVECTOR g_upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
-DirectX::XMVECTOR g_euler = DirectX::XMVectorSet(0, 0, 0, 1);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
