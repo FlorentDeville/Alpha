@@ -30,6 +30,13 @@ namespace Widgets
 	class Viewport;
 }
 
+class WidgetMgrParameter
+{
+public:
+	std::string m_gameShaderPath;
+	std::string m_dataFontsPath;
+};
+
 class WidgetMgr : public Core::Singleton<WidgetMgr>
 {
 	friend class Widgets::Button;
@@ -44,7 +51,7 @@ public:
 	WidgetMgr();
 	~WidgetMgr();
 
-	void Init();
+	void Init(const WidgetMgrParameter& parameter);
 
 	void Release();
 

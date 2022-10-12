@@ -25,9 +25,6 @@
 
 extern SysWindow* g_pWindow;
 
-extern std::string g_dataRoot;
-extern std::string g_shaderRoot;
-
 WidgetMgr::WidgetMgr()
 	: m_pRoot(nullptr)
 	, m_prevMouseX(0)
@@ -43,8 +40,10 @@ WidgetMgr::~WidgetMgr()
 		delete m_pRoot;
 }
 
-void WidgetMgr::Init()
+void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 {
+	//m_dataFontsPath = parameter.m_dataFontsPath;
+
 	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
 	
@@ -71,9 +70,9 @@ void WidgetMgr::Init()
 
 	//Root signature for basic widget
 	{
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\widget.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget.ps.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\widget.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\widget.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\widget.ps.cso");
 
 		Rendering::PipelineStateId psoId;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(psoId);
@@ -87,13 +86,13 @@ void WidgetMgr::Init()
 
 	//Font for label
 	{
-		std::string fontFilename = g_dataRoot + "\\fonts\\segoeUI.fnt";
-		Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontFilename);
-		pFont->Init(fontFilename);
+		std::string fontName = "segoeUI";
+		Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontName);
+		pFont->Init(parameter.m_dataFontsPath, fontName);
 
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\text.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\text.ps.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\text.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\text.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\text.ps.cso");
 
 		Rendering::PipelineStateId text_pipelineStateId;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
@@ -104,9 +103,9 @@ void WidgetMgr::Init()
 
 	//material for icon
 	{
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\texture.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\texture.ps.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\texture.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\texture.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\texture.ps.cso");
 
 		Rendering::PipelineStateId texture_posuv_pipelineStateId;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(texture_posuv_pipelineStateId);
@@ -120,9 +119,9 @@ void WidgetMgr::Init()
 
 	//this should be a material
 	{
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\widget_viewport.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\widget_viewport.ps.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\widget_viewport.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.ps.cso");
 
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_widgetViewportPsoId);
 		pPipelineState->Init_PosUv(rsId, vsId, psId);

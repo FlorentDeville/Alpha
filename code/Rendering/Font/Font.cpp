@@ -9,8 +9,6 @@
 
 #include <fstream>
 
-extern std::string g_dataRoot;
-
 Font::Font(const std::string& name)
     : Resource(name)
     , m_CharList(nullptr)
@@ -20,13 +18,14 @@ Font::Font(const std::string& name)
 Font::~Font()
 {}
 
-void Font::Init(const std::string& fntName)
+void Font::Init(const std::string& fontPath, const std::string& fontName)
 {
-    LoadFntFile(fntName);
+    std::string fontFilename = fontPath + "\\" + fontName + ".fnt";
+    LoadFntFile(fontFilename);
 
-    std::string textureFilename = g_dataRoot + "\\fonts\\" + m_fontImage;
+    std::string textureFilename = fontPath + "\\" + m_fontImage;
     
-    Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_texture, m_fontImage);
+    Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_texture, textureFilename);
     pTexture->Init(textureFilename);
 }
 

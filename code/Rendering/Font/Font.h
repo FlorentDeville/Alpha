@@ -50,7 +50,7 @@ public:
     Font(const std::string& name);
     ~Font();
 
-    void Init(const std::string& fntName);
+    void Init(const std::string& fontPath, const std::string& fontName);
     void Release() override;
 
     int GetKerning(char first, char second) const;

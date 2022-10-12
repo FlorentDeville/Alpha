@@ -33,8 +33,6 @@
 
 #include <filesystem>
 
-extern std::string g_shaderRoot;
-
 namespace Editors
 {
 	MeshEntry::MeshEntry()

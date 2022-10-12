@@ -76,7 +76,6 @@ void Render();
 LPCSTR g_pIconName = IDC_ARROW;
 
 std::string g_dataRoot;
-std::string g_shaderRoot;
 
 DirectX::XMVECTOR g_eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
 DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(0, 0, 1, 1);
@@ -356,7 +355,7 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-bool LoadContent()
+bool LoadContent(const std::string& binPath)
 {
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
 	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
@@ -365,9 +364,9 @@ bool LoadContent()
 	//create the base material
 	Rendering::MaterialId baseMaterialId;
 	{
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(g_shaderRoot + "\\base.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(g_shaderRoot + "\\base.ps.cso");
+		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(binPath + "\\base.rs.cso");
+		ShaderId vsId = g_pShaderMgr->CreateShader(binPath + "\\base.vs.cso");
+		ShaderId psId = g_pShaderMgr->CreateShader(binPath + "\\base.ps.cso");
 
 		Rendering::PipelineStateId pid;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
@@ -473,13 +472,12 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	const int size = 256;
 	char buffer[size];
 	GetModuleFileNameA(NULL, buffer, size);
-	std::string currentDirectory = buffer;
-	size_t lastSlash = currentDirectory.find_last_of('\\');
-	currentDirectory = currentDirectory.substr(0, lastSlash);
-	g_shaderRoot = currentDirectory;
+	std::string binPath = buffer;
+	size_t lastSlash = binPath.find_last_of('\\');
+	binPath = binPath.substr(0, lastSlash);
 
 	Configuration configuration;
-	std::string configurationFilename = currentDirectory + "\\config.ini";
+	std::string configurationFilename = binPath + "\\config.ini";
 	configuration.Load(configurationFilename);
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
@@ -504,7 +502,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pShaderMgr = new ShaderMgr();
 
 	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
-	widgetMgr.Init();
+	WidgetMgrParameter widgetMgrParameter;
+	widgetMgrParameter.m_dataFontsPath = configuration.m_dataFontsPath;
+	widgetMgrParameter.m_gameShaderPath = binPath;
+	widgetMgr.Init(widgetMgrParameter);
 
 	GameMgr& gameMgr = GameMgr::InitSingleton();
 	gameMgr.Init();
@@ -519,7 +520,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	g_IsInitialized = true;
 	g_contentLoaded = false;
-	LoadContent();
+	LoadContent(binPath);
 
 	CreateMainWindow(configuration);
 
