@@ -45,6 +45,9 @@ bool CommandLine::Parse(const char* pCommandLine)
 		std::string argument;
 		stream >> argument;
 
+		if (argument.empty())
+			continue;
+
 		std::vector<Argument>::const_iterator it = std::find_if(m_arguments.cbegin(), m_arguments.cend(), [&argument](const Argument& arg) {
 			if (std::find(arg.m_flags.cbegin(), arg.m_flags.cend(), argument) == arg.m_flags.cend())
 				return false;
