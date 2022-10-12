@@ -23,8 +23,6 @@
 
 //#pragma optimize("", off)
 
-extern SysWindow* g_pWindow;
-
 WidgetMgr::WidgetMgr()
 	: m_pRoot(nullptr)
 	, m_prevMouseX(0)
@@ -32,6 +30,7 @@ WidgetMgr::WidgetMgr()
 	, m_pFocusedWidget(nullptr)
 	, m_pCapturedWidget(nullptr)
 	, m_widgetViewportPsoId()
+	, m_segoeUIFontId()
 {}
 
 WidgetMgr::~WidgetMgr()
@@ -42,7 +41,7 @@ WidgetMgr::~WidgetMgr()
 
 void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 {
-	//m_dataFontsPath = parameter.m_dataFontsPath;
+	m_pMainSysWindow = parameter.m_pMainWindow;
 
 	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
@@ -167,7 +166,7 @@ void WidgetMgr::Resize()
 		return;
 
 	DirectX::XMINT3 absPos(0, 0, 100);
-	DirectX::XMUINT2 size(g_pWindow->GetWidth(), g_pWindow->GetHeight());
+	DirectX::XMUINT2 size(m_pMainSysWindow->GetWidth(), m_pMainSysWindow->GetHeight());
 	m_pRoot->Resize(absPos, size);
 
 	ComputeSortedWidgetQueue();

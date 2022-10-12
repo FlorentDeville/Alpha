@@ -54,7 +54,6 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
-#include "Widgets/Window.h"
 
 #include "Core/Resource/ResourceMgr.h"
 
@@ -489,6 +488,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	WidgetMgrParameter widgetMgrParameter;
 	widgetMgrParameter.m_dataFontsPath = configuration.m_dataFontsPath;
 	widgetMgrParameter.m_gameShaderPath = binPath;
+	widgetMgrParameter.m_pMainWindow = g_pWindow;
 	widgetMgr.Init(widgetMgrParameter);
 
 	GameMgr& gameMgr = GameMgr::InitSingleton();

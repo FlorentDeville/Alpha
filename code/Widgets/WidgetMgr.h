@@ -18,6 +18,7 @@
 #include "Core/Singleton.h"
 
 struct Message;
+class SysWindow;
 class Widget;
 
 namespace Widgets
@@ -35,6 +36,7 @@ class WidgetMgrParameter
 public:
 	std::string m_gameShaderPath;
 	std::string m_dataFontsPath;
+	SysWindow* m_pMainWindow;
 };
 
 class WidgetMgr : public Core::Singleton<WidgetMgr>
@@ -95,6 +97,8 @@ private:
 
 	Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 	FontId m_segoeUIFontId;
+	
+	SysWindow* m_pMainSysWindow;
 
 	void ComputeSortedWidgetQueue();
 
