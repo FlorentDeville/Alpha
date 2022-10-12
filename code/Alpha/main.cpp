@@ -75,8 +75,6 @@ void Render();
 
 LPCSTR g_pIconName = IDC_ARROW;
 
-std::string g_dataRoot;
-
 DirectX::XMVECTOR g_eyePosition = DirectX::XMVectorSet(0, 0, -10, 1);
 DirectX::XMVECTOR g_direction = DirectX::XMVectorSet(0, 0, 1, 1);
 DirectX::XMVECTOR g_upDirection = DirectX::XMVectorSet(0, 1, 0, 0);
@@ -463,11 +461,11 @@ void CreateMainWindow(const Configuration& configuration)
 	pMiddleTabContainer->SetSelectedTab(0);
 }
 
-int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR lpCmdLine, _In_ int /*nCmdShow*/)
+int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
-	CommandLine cmd;
-	cmd.AddArgument("-dataroot", "", CommandLine::ARG_TYPE::STRING, CommandLine::ARG_ACTION::STORE, &g_dataRoot, "Path of the data folder.");
-	cmd.Parse(lpCmdLine);
+	//CommandLine cmd;
+	//cmd.AddArgument("-dataroot", "", CommandLine::ARG_TYPE::STRING, CommandLine::ARG_ACTION::STORE, &g_dataRoot, "Path of the data folder.");
+	//cmd.Parse(lpCmdLine);
 
 	const int size = 256;
 	char buffer[size];
@@ -491,8 +489,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
+	std::string iconPath = configuration.m_editorsIconsPath + "\\alpha_white.ico";
 	const char* pWindowClassName = "DX12WindowClass";
-	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc);
+	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, iconPath);
 	g_pWindow = new SysWindow();
 	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 

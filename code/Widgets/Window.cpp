@@ -16,7 +16,6 @@
 
 #include "OsWin/SysWindow.h"
 
-extern std::string g_dataRoot;
 extern SysWindow* g_pWindow;
 
 namespace Widgets
@@ -69,9 +68,9 @@ Window::Window(DirectX::XMUINT2 size)
 	pLayout->AddWidget(pButtonLayout);
 
 	//alpha icon
-	int iconSize = 20;
-	int iconY = (menuBarHeight - iconSize) / 2;
-	Icon* pIcon = new Icon(DirectX::XMINT2(0, iconY), DirectX::XMUINT2(iconSize, iconSize), g_dataRoot + "\\textures\\alpha_64.png");
+	//int iconSize = 20;
+	//int iconY = (menuBarHeight - iconSize) / 2;
+	//Icon* pIcon = new Icon(DirectX::XMINT2(0, iconY), DirectX::XMUINT2(iconSize, iconSize), g_dataRoot + "\\textures\\alpha_64.png");
 
 	int buttonHeight = 20;
 	//int buttonWidth = 50;
@@ -118,7 +117,7 @@ Window::Window(DirectX::XMUINT2 size)
 	Label* pLabel3 = new Label(labelPadding, 0, labelScale, fileText);
 	pButton3->AddWidget(pLabel3);
 
-	pMenuBarLayout->AddWidget(pIcon);
+	//pMenuBarLayout->AddWidget(pIcon);
 	pMenuBarLayout->AddWidget(pButton1);
 	pMenuBarLayout->AddWidget(pButton2);
 	pMenuBarLayout->AddWidget(pButton3);
@@ -126,9 +125,9 @@ Window::Window(DirectX::XMUINT2 size)
 	//Close button
 	Button* pCloseButton = new Button(20, 0, 0, 0);
 	pCloseButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
-	Icon* pCloseIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_close_16.png");
-	pCloseIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-	pCloseButton->AddWidget(pCloseIcon);
+	//Icon* pCloseIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_close_16.png");
+	//pCloseIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	//pCloseButton->AddWidget(pCloseIcon);
 	pCloseButton->OnClick([](int, int)-> bool {
 		OutputDebugString("Click on close button\n");
 		SendMessage(g_pWindow->GetWindowHandle(), WM_DESTROY, 0, 0);
@@ -138,12 +137,12 @@ Window::Window(DirectX::XMUINT2 size)
 	//Max button
 	Button* pMaxButton = new Button(20, 0, 0, 0);
 	pMaxButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
-	Icon* pMaxIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_maximize_16.png");
-	pMaxIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-	Icon* pRestoreIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_restore_16.png");
-	pRestoreIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-	pMaxButton->AddWidget(pMaxIcon);
-	pMaxButton->OnClick([this, pMaxButton, pMaxIcon, pRestoreIcon](int, int)-> bool {
+	//Icon* pMaxIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_maximize_16.png");
+	//pMaxIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	//Icon* pRestoreIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_restore_16.png");
+	//pRestoreIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	//pMaxButton->AddWidget(pMaxIcon);
+	/*pMaxButton->OnClick([this, pMaxButton, pMaxIcon, pRestoreIcon](int, int)-> bool {
 		OutputDebugString("Click on maximize/restore button\n");
 		if (m_isMaximized)
 		{
@@ -160,19 +159,19 @@ Window::Window(DirectX::XMUINT2 size)
 		}
 		m_isMaximized = !m_isMaximized;
 		return true;
-		});
+		});*/
 
 	//Min button
 	Button* pMinButton = new Button(20, 0, 0, 0);
 	pMinButton->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
-	Icon* pMinIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_minimize_16.png");
-	pMinIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-	pMinButton->AddWidget(pMinIcon);
-	pMinButton->OnClick([](int, int)-> bool {
+	//Icon* pMinIcon = new Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(16, 16), g_dataRoot + "\\textures\\icon_minimize_16.png");
+	//pMinIcon->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+	//pMinButton->AddWidget(pMinIcon);
+	/*pMinButton->OnClick([](int, int)-> bool {
 		OutputDebugString("Click on minimize button\n");
 		ShowWindow(g_pWindow->GetWindowHandle(), SW_SHOWMINIMIZED);
 		return true;
-		});
+		});*/
 
 	pButtonLayout->AddWidget(pCloseButton);
 	pButtonLayout->AddWidget(pMaxButton);

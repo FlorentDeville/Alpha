@@ -11,8 +11,6 @@
 
 #include <dwmapi.h>
 
-extern std::string g_dataRoot;
-
 SysWindow::SysWindow()
 	: m_hWindow(nullptr)
 	, m_fullscreen(false)
@@ -164,12 +162,10 @@ uint32_t SysWindow::GetHeight() const
 	return m_height;
 }
 
-void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback)
+void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename)
 {
 	// For some reason here I need to create a unicode window class (notice the W at the end) otherwise
 	// the title bar shows garbage.
-
-	std::string iconPath = g_dataRoot + "\\textures\\alpha_white.ico";
 
 	const int BUFFER_SIZE = 256;
 	wchar_t buffer[BUFFER_SIZE] = { '\0' };
@@ -182,7 +178,7 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassNam
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInst;
-	windowClass.hIcon = (HICON)::LoadImage(NULL, iconPath.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	windowClass.hIcon = (HICON)::LoadImage(NULL, iconFilename.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 	windowClass.hCursor = ::LoadCursor(hInst, IDC_ARROW);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszMenuName = nullptr;

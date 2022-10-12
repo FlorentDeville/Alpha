@@ -10,6 +10,7 @@
 #include <Windows.h>
 
 #include <cstdint>
+#include <string>
 
 typedef LRESULT (*WndProcCallback)(HWND, UINT, WPARAM, LPARAM);
 
@@ -35,7 +36,7 @@ public:
 	uint32_t GetWidth() const;
 	uint32_t GetHeight() const;
 
-	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback);
+	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename);
 
 private:
 	HWND m_hWindow;
