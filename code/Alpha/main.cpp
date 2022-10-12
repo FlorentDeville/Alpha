@@ -58,17 +58,7 @@
 
 #include "Core/Resource/ResourceMgr.h"
 
-bool g_VSync;
-
-bool g_IsInitialized = false;
-
 SysWindow* g_pWindow = nullptr;
-
-float g_FoV;
-
-bool g_contentLoaded;
-
-bool g_perspectiveRendering = true;
 
 void Update();
 void Render();
@@ -82,9 +72,6 @@ DirectX::XMVECTOR g_euler = DirectX::XMVectorSet(0, 0, 0, 1);
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	if (!g_IsInitialized)
-		return ::DefWindowProcW(hWnd, message, wParam, lParam);
-
 	switch (message)
 	{
 
@@ -424,8 +411,6 @@ bool LoadContent(const std::string& binPath)
 
 	gameMgr.CreateBackgroundEntity(planeMeshId, textureMaterialId);
 
-	g_contentLoaded = true;
-
 	return true;
 }
 
@@ -517,15 +502,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MeshEditor::InitSingleton();
 	Editors::ShaderEditor::InitSingleton();
 
-	g_IsInitialized = true;
-	g_contentLoaded = false;
 	LoadContent(binPath);
 
 	CreateMainWindow(configuration);
 
 	g_pWindow->Show();
-
-	g_FoV = 45.f;
 
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
