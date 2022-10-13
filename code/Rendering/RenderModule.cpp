@@ -64,6 +64,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	m_gameResolution = gameResolution;
 	m_mainResolution = mainResolution;
 
+	ShaderMgr::InitSingleton();
 	Rendering::RootSignatureMgr::InitSingleton();
 	Rendering::MeshMgr::InitSingleton();
 	Rendering::MaterialMgr::InitSingleton();
@@ -121,6 +122,7 @@ void RenderModule::Release()
 	Rendering::MeshMgr::ReleaseSingleton();
 	Rendering::RootSignatureMgr::ReleaseSingleton();
 	Rendering::PipelineStateMgr::ReleaseSingleton();
+	ShaderMgr::ReleaseSingleton();
 
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();

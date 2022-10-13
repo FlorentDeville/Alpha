@@ -4,13 +4,15 @@
 
 #pragma once
 
+#include "Core/Singleton.h"
 #include "ShaderId.h"
+
 #include <string>
 #include <vector>
 
 class Shader;
 
-class ShaderMgr
+class ShaderMgr : public Core::Singleton<ShaderMgr>
 {
 public:
 	ShaderMgr();
@@ -23,5 +25,3 @@ public:
 private:
 	std::vector<Shader*> m_shaders;
 };
-
-extern ShaderMgr* g_pShaderMgr;

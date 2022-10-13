@@ -336,13 +336,14 @@ bool LoadContent(const std::string& binPath)
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
 	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
+	ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 	//create the base material
 	Rendering::MaterialId baseMaterialId;
 	{
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(binPath + "\\base.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(binPath + "\\base.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(binPath + "\\base.ps.cso");
+		ShaderId vsId = shaderMgr.CreateShader(binPath + "\\base.vs.cso");
+		ShaderId psId = shaderMgr.CreateShader(binPath + "\\base.ps.cso");
 
 		Rendering::PipelineStateId pid;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
@@ -358,8 +359,8 @@ bool LoadContent(const std::string& binPath)
 	{
 		std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(root + "\\texture.rs.cso");
-		ShaderId vsId = g_pShaderMgr->CreateShader(root + "\\texture.vs.cso");
-		ShaderId psId = g_pShaderMgr->CreateShader(root + "\\texture.ps.cso");
+		ShaderId vsId = shaderMgr.CreateShader(root + "\\texture.vs.cso");
+		ShaderId psId = shaderMgr.CreateShader(root + "\\texture.ps.cso");
 
 		Rendering::PipelineStateId pid;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
@@ -474,8 +475,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	RenderModule& render = RenderModule::InitSingleton();
 	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
-	g_pShaderMgr = new ShaderMgr();
-
 	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
 	WidgetMgrParameter widgetMgrParameter;
 	widgetMgrParameter.m_dataFontsPath = configuration.m_dataFontsPath;
@@ -528,7 +527,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	WidgetMgr::Get().Release();
 	WidgetMgr::ReleaseSingleton();
 
-	delete g_pShaderMgr;
 	delete g_pWindow;
 
 	Systems::Loader::ReleaseSingleton();

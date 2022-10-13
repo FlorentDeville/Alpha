@@ -64,13 +64,14 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_pos, _countof(g_inputLayout_pos) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -91,13 +92,14 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -118,13 +120,14 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_pos_color, _countof(g_inputLayout_pos_color) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -145,13 +148,14 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 		TextPipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_text, _countof(g_inputLayout_text) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -188,13 +192,14 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 		TextPipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -231,13 +236,14 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(g_pShaderMgr->GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 

@@ -15,6 +15,8 @@ ShaderMgr::~ShaderMgr()
 {
 	for (Shader* pShader : m_shaders)
 		delete pShader;
+
+	m_shaders.clear();
 }
 
 ShaderId ShaderMgr::CreateShader(const std::string& path)
@@ -29,5 +31,3 @@ Shader* ShaderMgr::GetShader(ShaderId id) const
 	assert(id.m_id < m_shaders.size());
 	return m_shaders[id.m_id];
 }
-
-ShaderMgr* g_pShaderMgr = nullptr;
