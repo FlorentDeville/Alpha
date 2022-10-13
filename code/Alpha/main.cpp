@@ -37,7 +37,7 @@
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/RootSignature/RootSignature.h"
-#include "Rendering/ShaderMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
 #include "Systems/Loader.h"

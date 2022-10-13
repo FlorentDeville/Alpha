@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Rendering/RootSignature/RootSignatureId.h"
-#include "Rendering/ShaderId.h"
+#include "Rendering/Shaders/ShaderId.h"
 
 struct ID3D12PipelineState;
 

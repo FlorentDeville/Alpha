@@ -12,8 +12,8 @@
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/Shader.h"
-#include "Rendering/ShaderMgr.h"
+#include "Rendering/Shaders/Shader.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 
 namespace Rendering
 {

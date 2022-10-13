@@ -17,7 +17,7 @@
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/ShaderMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 
 namespace Systems
 {

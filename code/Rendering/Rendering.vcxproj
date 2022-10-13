@@ -29,9 +29,9 @@
     <ClInclude Include="RootSignature\RootSignature.h" />
     <ClInclude Include="RootSignature\RootSignatureId.h" />
     <ClInclude Include="RootSignature\RootSignatureMgr.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderId.h" />
-    <ClInclude Include="ShaderMgr.h" />
+    <ClInclude Include="Shaders\Shader.h" />
+    <ClInclude Include="Shaders\ShaderId.h" />
+    <ClInclude Include="Shaders\ShaderMgr.h" />
     <ClInclude Include="Texture\Texture.h" />
   </ItemGroup>
   <ItemGroup>
@@ -52,8 +52,8 @@
     <ClCompile Include="RenderTargets\RenderTarget.cpp" />
     <ClCompile Include="RootSignature\RootSignature.cpp" />
     <ClCompile Include="RootSignature\RootSignatureMgr.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderMgr.cpp" />
+    <ClCompile Include="Shaders\Shader.cpp" />
+    <ClCompile Include="Shaders\ShaderMgr.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

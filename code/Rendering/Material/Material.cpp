@@ -7,7 +7,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/ShaderMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 
 #include <assert.h>
 

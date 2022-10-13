@@ -12,7 +12,7 @@
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/ShaderMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 
 #include "OsWin/SysWindow.h"
 

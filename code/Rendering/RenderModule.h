@@ -22,7 +22,7 @@
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
-#include "ShaderId.h"
+#include "Rendering/Shaders/ShaderId.h"
 
 struct IDXGIAdapter4;
 struct IDXGISwapChain4;

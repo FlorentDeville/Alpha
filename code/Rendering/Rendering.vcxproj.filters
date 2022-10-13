@@ -24,13 +24,13 @@
     <ClInclude Include="RenderModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="Shaders\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderId.h">
+    <ClInclude Include="Shaders\ShaderId.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderMgr.h">
+    <ClInclude Include="Shaders\ShaderMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Font\Font.h">
@@ -92,10 +92,10 @@
     <ClCompile Include="RenderModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="Shaders\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderMgr.cpp">
+    <ClCompile Include="Shaders\ShaderMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Font\Font.cpp">
