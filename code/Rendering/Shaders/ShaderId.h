@@ -4,7 +4,21 @@
 
 #pragma once
 
-struct ShaderId
+#include <cstdint>
+
+class ShaderId
 {
-	size_t m_id;
+	friend class ShaderMgr;
+
+public:
+	ShaderId();
+	explicit ShaderId(uint32_t id);
+	explicit ShaderId(size_t id);
+
+	bool operator==(const ShaderId id);
+
+	static const ShaderId INVALID;
+
+private:
+	uint32_t m_id;
 };

@@ -143,5 +143,8 @@
     <ClCompile Include="PipelineState\PipelineStateId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shaders\ShaderId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

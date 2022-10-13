@@ -53,6 +53,7 @@
     <ClCompile Include="RootSignature\RootSignature.cpp" />
     <ClCompile Include="RootSignature\RootSignatureMgr.cpp" />
     <ClCompile Include="Shaders\Shader.cpp" />
+    <ClCompile Include="Shaders\ShaderId.cpp" />
     <ClCompile Include="Shaders\ShaderMgr.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
   </ItemGroup>

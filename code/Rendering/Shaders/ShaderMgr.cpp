@@ -19,8 +19,7 @@ ShaderMgr::~ShaderMgr()
 
 ShaderId ShaderMgr::CreateShader(const std::string& path)
 {
-	ShaderId id;
-	id.m_id = m_shaders.size();
+	ShaderId id(m_shaders.size());
 	m_shaders.push_back(new Shader(path));
 	return id;
 }
