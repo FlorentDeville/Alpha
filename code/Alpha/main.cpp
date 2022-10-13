@@ -331,50 +331,24 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-bool LoadContent(const std::string& binPath)
+bool LoadContent()
 {
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
-	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
-	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
-	ShaderMgr& shaderMgr = ShaderMgr::Get();
 
 	//create the base material
 	Rendering::MaterialId baseMaterialId;
 	{
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(binPath + "\\base.rs.cso");
-		ShaderId vsId = shaderMgr.CreateShader(binPath + "\\base.vs.cso");
-		ShaderId psId = shaderMgr.CreateShader(binPath + "\\base.ps.cso");
-
-		Rendering::PipelineStateId pid;
-		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
-		pPipelineState->Init_PosColor(rsId, vsId, psId);
-
 		Rendering::Material* pMaterial = nullptr;
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
-		pMaterial->Init(rsId, pid);
+		Systems::Loader::Get().LoadMaterial("vertex_color", *pMaterial);
 	}
 
 	//create the texture material
 	Rendering::MaterialId textureMaterialId;
 	{
-		std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
-		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(root + "\\texture.rs.cso");
-		ShaderId vsId = shaderMgr.CreateShader(root + "\\texture.vs.cso");
-		ShaderId psId = shaderMgr.CreateShader(root + "\\texture.ps.cso");
-
-		Rendering::PipelineStateId pid;
-		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(pid);
-		pPipelineState->Init_Generic(rsId, vsId, psId);
-
-		std::string textureFilename = "C:\\workspace\\Alpha\\data\\textures\\grid_blue.png";
-		TextureId tid;
-		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
-		pTexture->Init(textureFilename);
-
 		Rendering::Material* pMaterial = nullptr;
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
-		pMaterial->Init(rsId, pid);
-		pMaterial->SetTexture(tid);
+		Systems::Loader::Get().LoadMaterial("grid_blue", *pMaterial);
 	}
 
 	//load torus mesh
@@ -493,7 +467,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MeshEditor::InitSingleton();
 	Editors::ShaderEditor::InitSingleton();
 
-	LoadContent(binPath);
+	LoadContent();
 
 	CreateMainWindow(configuration);
 
