@@ -7,27 +7,30 @@
 #include "Shader.h"
 #include <assert.h>
 
-ShaderMgr::ShaderMgr()
-	: m_shaders()
-{}
-
-ShaderMgr::~ShaderMgr()
+namespace Rendering
 {
-	for (Shader* pShader : m_shaders)
-		delete pShader;
+	ShaderMgr::ShaderMgr()
+		: m_shaders()
+	{}
 
-	m_shaders.clear();
-}
+	ShaderMgr::~ShaderMgr()
+	{
+		for (Shader* pShader : m_shaders)
+			delete pShader;
 
-ShaderId ShaderMgr::CreateShader(const std::string& path)
-{
-	ShaderId id(m_shaders.size());
-	m_shaders.push_back(new Shader(path));
-	return id;
-}
+		m_shaders.clear();
+	}
 
-Shader* ShaderMgr::GetShader(ShaderId id) const
-{
-	assert(id.m_id < m_shaders.size());
-	return m_shaders[id.m_id];
+	ShaderId ShaderMgr::CreateShader(const std::string& path)
+	{
+		ShaderId id(m_shaders.size());
+		m_shaders.push_back(new Shader(path));
+		return id;
+	}
+
+	Shader* ShaderMgr::GetShader(ShaderId id) const
+	{
+		assert(id.m_id < m_shaders.size());
+		return m_shaders[id.m_id];
+	}
 }

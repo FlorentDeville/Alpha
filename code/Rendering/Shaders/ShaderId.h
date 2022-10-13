@@ -6,19 +6,22 @@
 
 #include <cstdint>
 
-class ShaderId
+namespace Rendering
 {
-	friend class ShaderMgr;
+	class ShaderId
+	{
+		friend class ShaderMgr;
 
-public:
-	ShaderId();
-	explicit ShaderId(uint32_t id);
-	explicit ShaderId(size_t id);
+	public:
+		ShaderId();
+		explicit ShaderId(uint32_t id);
+		explicit ShaderId(size_t id);
 
-	bool operator==(const ShaderId id);
+		bool operator==(const ShaderId id);
 
-	static const ShaderId INVALID;
+		static const ShaderId INVALID;
 
-private:
-	uint32_t m_id;
-};
+	private:
+		uint32_t m_id;
+	};
+}

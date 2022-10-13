@@ -125,7 +125,7 @@ namespace Systems
 
 	bool Loader::LoadMaterial(const std::string& name, Rendering::Material& material)
 	{
-		ShaderMgr& shaderMgr = ShaderMgr::Get();
+		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
 
 		std::string materialFilename = m_dataMaterialPath + "\\" + name + ".json";
 		FILE* pFile = nullptr;;
@@ -148,8 +148,8 @@ namespace Systems
 		std::string textureShaderFilename = m_dataShaderPath + "\\" + shaderName + ".ps.cso";
 
 		RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(rootSignatureFilename);
-		ShaderId vsId = shaderMgr.CreateShader(vertexShaderFilename);
-		ShaderId psId = shaderMgr.CreateShader(textureShaderFilename);
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(vertexShaderFilename);
+		Rendering::ShaderId psId = shaderMgr.CreateShader(textureShaderFilename);
 
 		Rendering::PipelineStateId pid;
 		Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);

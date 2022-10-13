@@ -7,15 +7,18 @@
 #include <string>
 #include <d3d12.h>
 
-class Shader
+namespace Rendering
 {
-public:
-	Shader(const std::string& path);
-	~Shader();
+	class Shader
+	{
+	public:
+		Shader(const std::string& path);
+		~Shader();
 
-	ID3DBlob* GetBlob() const;
+		ID3DBlob* GetBlob() const;
 
-private:
-	std::string m_path;
-	ID3DBlob* m_pBlob;
-};
+	private:
+		std::string m_path;
+		ID3DBlob* m_pBlob;
+	};
+}

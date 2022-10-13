@@ -45,7 +45,7 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 
 	Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 	Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
-	ShaderMgr& shaderMgr = ShaderMgr::Get();
+	Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
 
 	//Simple quad used to render widgets
 	{
@@ -71,8 +71,8 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	//Root signature for basic widget
 	{
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\widget.rs.cso");
-		ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget.vs.cso");
-		ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget.ps.cso");
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget.vs.cso");
+		Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget.ps.cso");
 
 		Rendering::PipelineStateId psoId;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(psoId);
@@ -91,8 +91,8 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 		pFont->Init(parameter.m_dataFontsPath, fontName);
 
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\text.rs.cso");
-		ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\text.vs.cso");
-		ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\text.ps.cso");
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\text.vs.cso");
+		Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\text.ps.cso");
 
 		Rendering::PipelineStateId text_pipelineStateId;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
@@ -104,8 +104,8 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	//material for icon
 	{
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\texture.rs.cso");
-		ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.vs.cso");
-		ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.ps.cso");
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.vs.cso");
+		Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.ps.cso");
 
 		Rendering::PipelineStateId texture_posuv_pipelineStateId;
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(texture_posuv_pipelineStateId);
@@ -120,8 +120,8 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	//this should be a material
 	{
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\widget_viewport.rs.cso");
-		ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.vs.cso");
-		ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.ps.cso");
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.vs.cso");
+		Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.ps.cso");
 
 		Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_widgetViewportPsoId);
 		pPipelineState->Init_PosUv(rsId, vsId, psId);

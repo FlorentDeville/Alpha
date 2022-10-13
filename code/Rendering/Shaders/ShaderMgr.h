@@ -10,18 +10,21 @@
 #include <string>
 #include <vector>
 
-class Shader;
-
-class ShaderMgr : public Core::Singleton<ShaderMgr>
+namespace Rendering
 {
-public:
-	ShaderMgr();
-	~ShaderMgr();
+	class Shader;
 
-	ShaderId CreateShader(const std::string& path);
+	class ShaderMgr : public Core::Singleton<ShaderMgr>
+	{
+	public:
+		ShaderMgr();
+		~ShaderMgr();
 
-	Shader* GetShader(ShaderId id) const;
+		ShaderId CreateShader(const std::string& path);
 
-private:
-	std::vector<Shader*> m_shaders;
-};
+		Shader* GetShader(ShaderId id) const;
+
+	private:
+		std::vector<Shader*> m_shaders;
+	};
+}
