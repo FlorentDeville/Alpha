@@ -10,12 +10,12 @@
 #include <Windows.h>
 #include <cstdint>
 #include <map>
+#include <string>
 
 #include <d3d12.h>
 #include <DirectXMath.h>
 
 #include "Core/Singleton.h"
-#include "Core/Resource/ResourceMgr.h"
 
 #include "Rendering/Font/FontId.h"
 #include "Rendering/DescriptorHeap.h"
@@ -23,7 +23,6 @@
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/Shaders/ShaderId.h"
-//#include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureId.h"
 
 struct IDXGIAdapter4;

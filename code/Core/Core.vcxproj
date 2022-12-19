@@ -92,13 +92,10 @@
   <ItemGroup>
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Helper.cpp" />
-    <ClCompile Include="Resource\Resource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
-    <ClInclude Include="Resource\Resource.h" />
-    <ClInclude Include="Resource\ResourceMgr.h" />
     <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

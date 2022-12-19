@@ -55,8 +55,6 @@
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 
-#include "Core/Resource/ResourceMgr.h"
-
 SysWindow* g_pWindow = nullptr;
 
 LPCSTR g_pIconName = IDC_ARROW;
