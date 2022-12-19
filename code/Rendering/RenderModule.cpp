@@ -376,7 +376,7 @@ void RenderModule::InitialiseFont(FontId fontId, Rendering::PipelineStateId psoI
 int RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
-	const Font* pFont = m_fontMgr.GetResource(fontId);
+	const Rendering::Font* pFont = m_fontMgr.GetResource(fontId);
 
 	//convert from ui coordinates to screen coordinate
 	// ui coordinate : from the top left corner in pixels
@@ -398,7 +398,7 @@ int RenderModule::PrepareRenderText(const std::string& text, FontId fontId, cons
 	{
 		char c = text[i];
 
-		const FontChar* fc = pFont->GetChar(c);
+		const Rendering::FontChar* fc = pFont->GetChar(c);
 
 		// character not in font char set
 		if (fc == nullptr)
@@ -462,7 +462,7 @@ void RenderModule::RenderAllText()
 	for (auto& fontPair : m_fontVertexBuffers)
 	{
 		FontRenderInfo& info = fontPair.second;
-		const Font* pFont = m_fontMgr.GetResource(fontPair.first);
+		const Rendering::Font* pFont = m_fontMgr.GetResource(fontPair.first);
 
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
 
@@ -567,7 +567,7 @@ RenderModule::TextureMgr& RenderModule::GetTextureMgr()
 	return m_textureMgr;
 }
 
-ResourceMgr<Font, FontId>& RenderModule::GetFontMgr()
+ResourceMgr<Rendering::Font, FontId>& RenderModule::GetFontMgr()
 {
 	return m_fontMgr;
 }

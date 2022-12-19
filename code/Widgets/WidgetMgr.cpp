@@ -87,7 +87,7 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	//Font for label
 	{
 		std::string fontName = "segoeUI";
-		Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontName);
+		Rendering::Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontName);
 		pFont->Init(parameter.m_dataFontsPath, fontName);
 
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\text.rs.cso");

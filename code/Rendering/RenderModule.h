@@ -94,7 +94,7 @@ public:
 	static void ReportLiveObject();
 
 	TextureMgr& GetTextureMgr();
-	ResourceMgr<Font, FontId>& GetFontMgr();
+	ResourceMgr<Rendering::Font, FontId>& GetFontMgr();
 
 private:
 	DirectX::XMUINT2 m_gameResolution;
@@ -137,7 +137,7 @@ private:
 	float m_clearColor[4];
 
 	TextureMgr m_textureMgr;
-	ResourceMgr<Font, FontId> m_fontMgr;
+	ResourceMgr<Rendering::Font, FontId> m_fontMgr;
 
 public:
 	UINT m_currentBackBufferIndex;

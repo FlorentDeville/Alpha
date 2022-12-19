@@ -27,7 +27,7 @@ namespace Widgets
 		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
 
 		FontId fontId = WidgetMgr::Get().GetUIFontId();
-		const Font* pFont = renderer.GetFontMgr().GetResource(fontId);
+		const Rendering::Font* pFont = renderer.GetFontMgr().GetResource(fontId);
 
 		size_t startOfLine = 0;
 		size_t endOfLine = 0;
