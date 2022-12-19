@@ -7,6 +7,8 @@
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureMgr.h"
 
 #include "Widgets/WidgetMgr.h"
 
@@ -15,7 +17,9 @@ namespace Widgets
 	Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
 		: Widget(size.x, size.y, pos.x, pos.y)
 	{
-		Rendering::Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_textureId, path);
+		Rendering::Texture* pTexture = nullptr;
+		Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_textureId);
+
 		pTexture->Init(path);
 	}
 
@@ -34,7 +38,7 @@ namespace Widgets
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_iconMaterialId);
 		renderer.BindMaterial(*pMaterial, wvp);
 
-		ID3D12DescriptorHeap* pSrv = renderer.GetTextureMgr().GetResource(m_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pSrv = Rendering::TextureMgr::Get().GetTexture(m_textureId)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());

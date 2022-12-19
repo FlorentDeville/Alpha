@@ -18,6 +18,8 @@
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shaders/ShaderMgr.h"
+#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureMgr.h"
 
 namespace Systems
 {
@@ -163,8 +165,10 @@ namespace Systems
 			const char* textureName = it->value.GetString();
 			std::string textureFilename = m_dataTexturePath + "\\" + textureName;
 
-			TextureId tid;
-			Rendering::Texture* pTexture = ::RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
+			Rendering::TextureId tid;
+			Rendering::Texture* pTexture = nullptr;
+
+			Rendering::TextureMgr::Get().CreateTexture(&pTexture, tid);
 			pTexture->Init(textureFilename);
 
 			material.SetTexture(tid);

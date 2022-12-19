@@ -7,18 +7,14 @@
 #include <string>
 #include <d3d12.h>
 
-#include "Core/Resource/Resource.h"
-
 struct ID3D12Resource;
-
-using TextureId = size_t;
 
 namespace Rendering
 {
-	class Texture : public Resource
+	class Texture
 	{
 	public:
-		Texture(const std::string& name);
+		Texture();
 		~Texture();
 
 		void Init(const std::string& path);

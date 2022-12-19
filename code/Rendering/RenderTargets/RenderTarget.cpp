@@ -7,10 +7,13 @@
 #include "Core/Helper.h"
 
 #include "Rendering/CommandQueue.h"
+#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureMgr.h"
 #include "Rendering/RenderModule.h"
 
 #include "d3dx12.h"
-#pragma optimize("", off)
+
+//#pragma optimize("", off)
 
 namespace Rendering
 {
@@ -27,11 +30,11 @@ namespace Rendering
 		m_pRTVHeap = renderModule.CreateRTVHeap();
 		m_pDSVHeap = renderModule.CreateDSVHeap();
 
-		RenderModule::TextureMgr& textureMgr = renderModule.GetTextureMgr();
+		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
 		ID3D12Device2* pDevice = renderModule.GetDevice();
 
 		//Create render texture and rtv
-		m_texture = textureMgr.CreateResource(m_textureId, "render texture");
+		textureMgr.CreateTexture(&m_texture, m_textureId);
 		m_texture->Init_RenderTarget(width, height);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
@@ -47,8 +50,8 @@ namespace Rendering
 	RenderTarget::~RenderTarget()
 	{
 		RenderModule& renderModule = RenderModule::Get();
-		RenderModule::TextureMgr& textureMgr = renderModule.GetTextureMgr();
-		textureMgr.ReleaseResource(m_textureId);
+		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
+		textureMgr.DeleteTexture(m_textureId);
 
 		m_pDepthBuffer->Release();
 

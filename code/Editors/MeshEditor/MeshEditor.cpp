@@ -104,7 +104,7 @@ namespace Editors
 		//create left viewport
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
 		pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pViewport->OnGetRenderTargetTexture([this]() -> TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
+		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pSplit->AddRightPanel(pViewport);

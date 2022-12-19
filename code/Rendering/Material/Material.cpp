@@ -14,8 +14,6 @@
 #include "rapidjson/document.h"
 #include "rapidjson/filereadstream.h"
 
-
-
 namespace Rendering
 {
 	Material::Material()

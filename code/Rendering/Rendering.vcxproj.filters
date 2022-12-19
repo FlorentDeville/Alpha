@@ -87,6 +87,12 @@
     <ClInclude Include="Font\FontId.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Texture\TextureId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture\TextureMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">
@@ -156,6 +162,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Font\FontId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture\TextureId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture\TextureMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

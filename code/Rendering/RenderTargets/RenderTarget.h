@@ -4,13 +4,16 @@
 
 #pragma once
 
-#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureId.h"
+
+#include <d3d12.h>
 
 class RenderModule;
 
 namespace Rendering
 {
 	class DescriptorHeap;
+	class Texture;
 
 	class RenderTarget
 	{
@@ -29,8 +32,8 @@ namespace Rendering
 		DescriptorHeap* m_pRTVHeap;				// memory heap for the render target view
 		DescriptorHeap* m_pDSVHeap;				// memory heap for the depth stencil view
 
-		TextureId m_textureId;					// Id of the texture used as render targets
-		Texture* m_texture;						// texture used as render target
+		Rendering::TextureId m_textureId;		// Id of the texture used as render targets
+		Rendering::Texture* m_texture;			// texture used as render target
 		D3D12_CPU_DESCRIPTOR_HANDLE m_rtv;		// render target view
 		ID3D12Resource* m_pDepthBuffer;			// Depth buffer for this render target
 		D3D12_CPU_DESCRIPTOR_HANDLE m_dsv;		// Depth stencil view

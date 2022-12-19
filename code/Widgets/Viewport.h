@@ -6,7 +6,7 @@
 
 #include "Widgets/Widget.h"
 
-#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureId.h"
 
 namespace Widgets
 {
@@ -18,9 +18,9 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
-		void OnGetRenderTargetTexture(const std::function<TextureId ()>& callback);
+		void OnGetRenderTargetTexture(const std::function<Rendering::TextureId ()>& callback);
 
 	private:
-		std::function<TextureId ()> m_onGetRenderTargetTexture;		//callback to retrieve the texture to show in the viewport
+		std::function<Rendering::TextureId ()> m_onGetRenderTargetTexture;		//callback to retrieve the texture to show in the viewport
 	};
 }

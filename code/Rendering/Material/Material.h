@@ -6,7 +6,7 @@
 #define NOMINMAX
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
-#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureId.h"
 
 class RootSignature;
 
@@ -24,13 +24,13 @@ namespace Rendering
 
 		bool Init(RootSignatureId rid, PipelineStateId pid);
 
-		void SetTexture(TextureId id);
+		void SetTexture(Rendering::TextureId id);
 
 	private:
 		RootSignature* m_pRootSignature;
 		PipelineState* m_pPipelineState;
 
-		TextureId m_textureId;
+		Rendering::TextureId m_textureId;
 		//constant buffer
 	};
 }

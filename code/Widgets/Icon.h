@@ -6,7 +6,7 @@
 
 #include "Widgets/Widget.h"
 
-#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureId.h"
 
 #include <string>
 
@@ -21,6 +21,6 @@ namespace Widgets
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 	private:
-		TextureId m_textureId;
+		Rendering::TextureId m_textureId;
 	};
 }

@@ -35,6 +35,8 @@
     <ClInclude Include="Shaders\ShaderId.h" />
     <ClInclude Include="Shaders\ShaderMgr.h" />
     <ClInclude Include="Texture\Texture.h" />
+    <ClInclude Include="Texture\TextureId.h" />
+    <ClInclude Include="Texture\TextureMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandQueue.cpp" />
@@ -60,6 +62,8 @@
     <ClCompile Include="Shaders\ShaderId.cpp" />
     <ClCompile Include="Shaders\ShaderMgr.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
+    <ClCompile Include="Texture\TextureId.cpp" />
+    <ClCompile Include="Texture\TextureMgr.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

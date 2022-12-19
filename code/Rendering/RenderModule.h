@@ -23,7 +23,8 @@
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/Shaders/ShaderId.h"
-#include "Rendering/Texture/Texture.h"
+//#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureId.h"
 
 struct IDXGIAdapter4;
 struct IDXGISwapChain4;
@@ -43,8 +44,6 @@ namespace Rendering
 class RenderModule : public Core::Singleton<RenderModule>
 {
 public:
-	using TextureMgr = ResourceMgr<Rendering::Texture, TextureId>;
-
 	RenderModule();
 	~RenderModule();
 
@@ -74,7 +73,7 @@ public:
 	int PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
 	void RenderAllText();
 
-	TextureId GetGameRenderTargetTextureId() const;
+	Rendering::TextureId GetGameRenderTargetTextureId() const;
 
 	void ChangeMainResolution(const DirectX::XMUINT2& size);
 
@@ -82,7 +81,7 @@ public:
 	Rendering::DescriptorHeap* CreateRTVHeap();
 	Rendering::DescriptorHeap* CreateDSVHeap();
 
-	TextureId GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const;
+	Rendering::TextureId GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const;
 
 	//Temp functions
 	CommandQueue* GetRenderCommandQueue();
@@ -91,8 +90,6 @@ public:
 	ID3D12Device2* GetDevice();
 
 	static void ReportLiveObject();
-
-	TextureMgr& GetTextureMgr();
 
 private:
 	DirectX::XMUINT2 m_gameResolution;
@@ -133,8 +130,6 @@ private:
 	std::map<Rendering::FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 
 	float m_clearColor[4];
-
-	TextureMgr m_textureMgr;
 
 public:
 	UINT m_currentBackBufferIndex;

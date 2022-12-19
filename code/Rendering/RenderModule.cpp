@@ -20,15 +20,16 @@
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
-
+#include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 
 #include "Rendering/Shaders/Shader.h"
 #include "Rendering/Shaders/ShaderMgr.h"
+#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureMgr.h"
 
 #include "InputLayout/InputLayout.h"
 
@@ -72,8 +73,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	Rendering::MaterialMgr::InitSingleton();
 	Rendering::PipelineStateMgr::InitSingleton();
 	Rendering::FontMgr::InitSingleton();
-
-	m_textureMgr.Init();
+	Rendering::TextureMgr::InitSingleton();
 
 	EnableDebugLayer();
 
@@ -118,20 +118,22 @@ void RenderModule::Release()
 		}
 	}
 
-	m_textureMgr.Release();
+	delete m_gameRenderTarget;
+
 	Rendering::FontMgr::ReleaseSingleton();
 	Rendering::MaterialMgr::ReleaseSingleton();
 	Rendering::MeshMgr::ReleaseSingleton();
 	Rendering::RootSignatureMgr::ReleaseSingleton();
 	Rendering::PipelineStateMgr::ReleaseSingleton();
 	Rendering::ShaderMgr::ReleaseSingleton();
+	Rendering::TextureMgr::ReleaseSingleton();
 
 	m_pRenderCommandQueue->Flush();
 	m_pCopyCommandQueue->Flush();
 
 	delete m_pRenderCommandQueue;
 	delete m_pCopyCommandQueue;
-	delete m_gameRenderTarget;
+	
 	
 #if defined(_DEBUG)
 	m_pDebugInterface->Release();
@@ -218,9 +220,10 @@ void RenderModule::BindMaterial(const Rendering::Material& material, const Direc
 
 	m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
 
-	if (material.m_textureId != -1)
+	if (material.m_textureId != Rendering::TextureId::INVALID)
 	{
-		ID3D12DescriptorHeap* pSrv = m_textureMgr.GetResource(material.m_textureId)->GetSRV();
+		Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(material.m_textureId);
+		ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		m_pRenderCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		m_pRenderCommandList->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
@@ -461,6 +464,8 @@ int RenderModule::PrepareRenderText(const std::string& text, Rendering::FontId f
 
 void RenderModule::RenderAllText()
 {
+	Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
+
 	for (auto& fontPair : m_fontVertexBuffers)
 	{
 		FontRenderInfo& info = fontPair.second;
@@ -483,7 +488,7 @@ void RenderModule::RenderAllText()
 		pCommandList->IASetVertexBuffers(0, 1, &info.m_textVertexBufferView[m_currentBackBufferIndex]);
 
 		// bind the text srv.
-		ID3D12DescriptorHeap* pSrv = m_textureMgr.GetResource(pFont->m_texture)->GetSRV();
+		ID3D12DescriptorHeap* pSrv = textureMgr.GetTexture(pFont->m_texture)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		pCommandList->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
@@ -496,7 +501,7 @@ void RenderModule::RenderAllText()
 	}
 }
 
-TextureId RenderModule::GetGameRenderTargetTextureId() const
+Rendering::TextureId RenderModule::GetGameRenderTargetTextureId() const
 {
 	return GetRenderTargetTextureId(m_gameRenderTarget);
 }
@@ -526,7 +531,7 @@ Rendering::DescriptorHeap* RenderModule::CreateDSVHeap()
 	return heap;
 }
 
-TextureId RenderModule::GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const
+Rendering::TextureId RenderModule::GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const
 {
 	return pRenderTarget->m_textureId;
 }
@@ -562,11 +567,6 @@ void RenderModule::ReportLiveObject()
 		pDxgiDebug->Release();
 	}
 #endif
-}
-
-RenderModule::TextureMgr& RenderModule::GetTextureMgr()
-{
-	return m_textureMgr;
 }
 
 void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)

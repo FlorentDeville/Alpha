@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureId.h"
 
 #include <DirectXMath.h>
 
@@ -71,7 +71,7 @@ namespace Rendering
         int m_numKernings; // the number of kernings
         FontKerning* m_KerningsList; // list to hold kerning values
 
-        TextureId m_texture;
+        Rendering::TextureId m_texture;
 
         // these are how much the character is padded in the texture. We
         // add padding to give sampling a little space so it does not accidentally

@@ -4,7 +4,8 @@
 
 #include "Rendering/Font/Font.h"
 
-#include "Rendering/RenderModule.h"
+#include "Rendering/Texture/TextureMgr.h"
+#include "Rendering/Texture/Texture.h"
 #include "Core/Helper.h"
 
 #include <fstream>
@@ -27,7 +28,8 @@ namespace Rendering
 
         std::string textureFilename = fontPath + "\\" + m_fontImage;
 
-        Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_texture, textureFilename);
+        Texture* pTexture = nullptr;
+        Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_texture);
         pTexture->Init(textureFilename);
     }
 

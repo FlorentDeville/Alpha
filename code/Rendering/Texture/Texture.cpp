@@ -16,9 +16,8 @@
 
 namespace Rendering
 {
-	Texture::Texture(const std::string& name)
-		: Resource(name)
-		, m_pResource(nullptr)
+	Texture::Texture()
+		: m_pResource(nullptr)
 		, m_resourceDesc()
 		, m_pSrvDescriptorHeap(nullptr)
 	{}
