@@ -15,7 +15,7 @@ namespace Widgets
 	Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
 		: Widget(size.x, size.y, pos.x, pos.y)
 	{
-		Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_textureId, path);
+		Rendering::Texture* pTexture = RenderModule::Get().GetTextureMgr().CreateResource(m_textureId, path);
 		pTexture->Init(path);
 	}
 

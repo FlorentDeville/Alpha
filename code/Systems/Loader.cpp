@@ -164,7 +164,7 @@ namespace Systems
 			std::string textureFilename = m_dataTexturePath + "\\" + textureName;
 
 			TextureId tid;
-			Texture* pTexture = ::RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
+			Rendering::Texture* pTexture = ::RenderModule::Get().GetTextureMgr().CreateResource(tid, textureFilename);
 			pTexture->Init(textureFilename);
 
 			material.SetTexture(tid);

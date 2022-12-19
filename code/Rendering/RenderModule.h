@@ -43,7 +43,7 @@ namespace Rendering
 class RenderModule : public Core::Singleton<RenderModule>
 {
 public:
-	using TextureMgr = ResourceMgr<Texture, TextureId>;
+	using TextureMgr = ResourceMgr<Rendering::Texture, TextureId>;
 
 	RenderModule();
 	~RenderModule();
