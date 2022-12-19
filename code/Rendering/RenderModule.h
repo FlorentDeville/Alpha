@@ -17,12 +17,13 @@
 #include "Core/Singleton.h"
 #include "Core/Resource/ResourceMgr.h"
 
+#include "Rendering/Font/FontId.h"
 #include "Rendering/DescriptorHeap.h"
-#include "Rendering/Font/Font.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/Shaders/ShaderId.h"
+#include "Rendering/Texture/Texture.h"
 
 struct IDXGIAdapter4;
 struct IDXGISwapChain4;
@@ -38,8 +39,6 @@ namespace Rendering
 	class Mesh;
 	class RenderTarget;
 }
-
-using FontId = size_t;
 
 class RenderModule : public Core::Singleton<RenderModule>
 {
@@ -68,11 +67,11 @@ public:
 	int GetNumFrames() const;
 	const DirectX::XMUINT2& GetGameResolution() const;
 
-	void InitialiseFont(FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
+	void InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
 
 	//uiPos : origin : top left, range : [0, pixel screen size]
 	//return the number of character written
-	int PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
+	int PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
 	void RenderAllText();
 
 	TextureId GetGameRenderTargetTextureId() const;
@@ -94,7 +93,6 @@ public:
 	static void ReportLiveObject();
 
 	TextureMgr& GetTextureMgr();
-	ResourceMgr<Rendering::Font, FontId>& GetFontMgr();
 
 private:
 	DirectX::XMUINT2 m_gameResolution;
@@ -132,12 +130,11 @@ private:
 		int m_characterCount;	//the number of character to render
 		Rendering::PipelineStateId m_psoId;
 	};
-	std::map<FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
+	std::map<Rendering::FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 
 	float m_clearColor[4];
 
 	TextureMgr m_textureMgr;
-	ResourceMgr<Rendering::Font, FontId> m_fontMgr;
 
 public:
 	UINT m_currentBackBufferIndex;

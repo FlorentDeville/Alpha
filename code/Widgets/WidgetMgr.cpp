@@ -4,6 +4,7 @@
 
 #include "Widgets/WidgetMgr.h"
 
+#include "Rendering/Font/FontMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/Material/Material.h"
@@ -87,7 +88,8 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	//Font for label
 	{
 		std::string fontName = "segoeUI";
-		Rendering::Font* pFont = RenderModule::Get().GetFontMgr().CreateResource(m_segoeUIFontId, fontName);
+		Rendering::Font* pFont = nullptr;
+		Rendering::FontMgr::Get().CreateFont(&pFont, m_segoeUIFontId);
 		pFont->Init(parameter.m_dataFontsPath, fontName);
 
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\text.rs.cso");
@@ -262,7 +264,7 @@ void WidgetMgr::HandleMsg(const Message& msg)
 	}
 }
 
-FontId WidgetMgr::GetUIFontId() const
+Rendering::FontId WidgetMgr::GetUIFontId() const
 {
 	return m_segoeUIFontId;
 }

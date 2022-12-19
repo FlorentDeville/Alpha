@@ -43,14 +43,14 @@ namespace Rendering
         int m_amount; // the amount to add/subtract to second characters x
     };
 
-    class Font : public Resource
+    class Font
     {
     public:
-        Font(const std::string& name);
+        Font();
         ~Font();
 
         void Init(const std::string& fontPath, const std::string& fontName);
-        void Release() override;
+        void Release();
 
         int GetKerning(char first, char second) const;
         FontChar* GetChar(char c) const;
@@ -59,6 +59,7 @@ namespace Rendering
         void ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const;
         //size_t ComputeCharacterCountFitting(const std::string& text, int length) const;
 
+        std::string m_name;
         std::string m_fontImage;
         int m_size; // size of font, lineheight and baseheight will be based on this as if this is a single unit (1.0)
         uint32_t m_lineHeight; // how far to move down to next line, will be normalized

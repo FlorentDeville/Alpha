@@ -69,7 +69,7 @@ public:
 
 	void HandleMsg(const Message& msg);
 
-	FontId GetUIFontId() const;
+	Rendering::FontId GetUIFontId() const;
 
 	//Return the position of the cursor in the entire screen.
 	DirectX::XMINT2 GetCursorPosition() const;
@@ -96,7 +96,7 @@ private:
 	Rendering::MeshId m_quadMeshId;
 
 	Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
-	FontId m_segoeUIFontId;
+	Rendering::FontId m_segoeUIFontId;
 	
 	SysWindow* m_pMainSysWindow;
 

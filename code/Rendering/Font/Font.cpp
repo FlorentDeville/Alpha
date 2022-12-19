@@ -11,8 +11,8 @@
 
 namespace Rendering
 {
-    Font::Font(const std::string& name)
-        : Resource(name)
+    Font::Font()
+        : m_name()
         , m_CharList(nullptr)
         , m_KerningsList(nullptr)
     {}

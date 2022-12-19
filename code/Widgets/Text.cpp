@@ -4,6 +4,7 @@
 
 #include "Widgets/Text.h"
 
+#include "Rendering/Font/FontMgr.h"
 #include "Rendering/RenderModule.h"
 
 #include "Widgets/WidgetMgr.h"
@@ -26,8 +27,8 @@ namespace Widgets
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
 		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
 
-		FontId fontId = WidgetMgr::Get().GetUIFontId();
-		const Rendering::Font* pFont = renderer.GetFontMgr().GetResource(fontId);
+		Rendering::FontId fontId = WidgetMgr::Get().GetUIFontId();
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);
 
 		size_t startOfLine = 0;
 		size_t endOfLine = 0;

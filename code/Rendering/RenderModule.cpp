@@ -14,6 +14,8 @@
 #include "CommandQueue.h"
 #include "Core/Helper.h"
 
+#include "Rendering/Font/Font.h"
+#include "Rendering/Font/FontMgr.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/Mesh.h"
@@ -69,9 +71,9 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 	Rendering::MeshMgr::InitSingleton();
 	Rendering::MaterialMgr::InitSingleton();
 	Rendering::PipelineStateMgr::InitSingleton();
+	Rendering::FontMgr::InitSingleton();
 
 	m_textureMgr.Init();
-	m_fontMgr.Init();
 
 	EnableDebugLayer();
 
@@ -106,7 +108,7 @@ void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, co
 
 void RenderModule::Release()
 {
-	for (std::pair<FontId, FontRenderInfo> it : m_fontVertexBuffers)
+	for (std::pair<Rendering::FontId, FontRenderInfo> it : m_fontVertexBuffers)
 	{
 		for (int ii = 0; ii < 3; ++ii)
 		{
@@ -116,8 +118,8 @@ void RenderModule::Release()
 		}
 	}
 
-	m_fontMgr.Release();
 	m_textureMgr.Release();
+	Rendering::FontMgr::ReleaseSingleton();
 	Rendering::MaterialMgr::ReleaseSingleton();
 	Rendering::MeshMgr::ReleaseSingleton();
 	Rendering::RootSignatureMgr::ReleaseSingleton();
@@ -338,7 +340,7 @@ const DirectX::XMUINT2& RenderModule::GetGameResolution() const
 	return m_gameResolution;
 }
 
-void RenderModule::InitialiseFont(FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount)
+void RenderModule::InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	info.m_bufferSize = maxCharacterCount;
@@ -373,10 +375,10 @@ void RenderModule::InitialiseFont(FontId fontId, Rendering::PipelineStateId psoI
 	}
 }
 
-int RenderModule::PrepareRenderText(const std::string& text, FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
+int RenderModule::PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
-	const Rendering::Font* pFont = m_fontMgr.GetResource(fontId);
+	const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);// m_fontMgr.GetResource(fontId);
 
 	//convert from ui coordinates to screen coordinate
 	// ui coordinate : from the top left corner in pixels
@@ -462,7 +464,7 @@ void RenderModule::RenderAllText()
 	for (auto& fontPair : m_fontVertexBuffers)
 	{
 		FontRenderInfo& info = fontPair.second;
-		const Rendering::Font* pFont = m_fontMgr.GetResource(fontPair.first);
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontPair.first);
 
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
 
@@ -565,11 +567,6 @@ void RenderModule::ReportLiveObject()
 RenderModule::TextureMgr& RenderModule::GetTextureMgr()
 {
 	return m_textureMgr;
-}
-
-ResourceMgr<Rendering::Font, FontId>& RenderModule::GetFontMgr()
-{
-	return m_fontMgr;
 }
 
 void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)

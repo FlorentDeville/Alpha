@@ -10,7 +10,7 @@
 #include "Widgets/Tab.h"
 #include "Widgets/WidgetMgr.h"
 
-#include "Rendering/RenderModule.h"
+#include "Rendering/Font/FontMgr.h"
 
 namespace Widgets
 {
@@ -53,7 +53,7 @@ namespace Widgets
 
 	Container* TabContainer::AddTab(const std::string& header, Tab* pTab)
 	{
-		const Rendering::Font* pFont = RenderModule::Get().GetFontMgr().GetResource(WidgetMgr::Get().GetUIFontId());
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
 
 		const int DEFAULT_WIDTH = 50;
 		const int DEFAULT_HEIGHT = 17;

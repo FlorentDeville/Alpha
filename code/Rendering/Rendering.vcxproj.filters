@@ -81,6 +81,12 @@
     <ClInclude Include="PipelineState\PipelineStateId.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Font\FontMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Font\FontId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">
@@ -144,6 +150,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shaders\ShaderId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\FontMgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Font\FontId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
