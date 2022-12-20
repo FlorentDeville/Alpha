@@ -190,26 +190,25 @@ namespace Editors
 
 		pTabContainer->SetSelectedTab(0);
 
-		//load al material
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(parameter.m_dataMaterialPath))
+		//load all material
+		const std::map<Systems::AssetId, Systems::Asset*>& allMaterials = Systems::AssetMgr::Get().GetMaterials();
+		for(const std::pair<Systems::AssetId, Systems::Asset*>& it : allMaterials)
 		{
-			//load material
-			std::string path = entry.path().string();
-			std::string name = entry.path().stem().string();
+			Systems::Asset* pAssetMaterial = it.second;
 
+			//load material
 			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 			Rendering::Material* pMaterial = nullptr;
 			Rendering::MaterialId materialId;
 			materialMgr.CreateMaterial(&pMaterial, materialId);
-			Systems::Loader::Get().LoadMaterial(name, *pMaterial);
+			Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
 
 			//create entry
 			int materialIndex = static_cast<int>(m_allMaterials.size());
 			m_allMaterials.push_back(MaterialEntry());
 			MaterialEntry& materialEntry = m_allMaterials.back();
 			materialEntry.m_materialId = materialId;
-			materialEntry.m_name = name;
-
+			materialEntry.m_name = pAssetMaterial->GetVirtualName();
 			
 			//material widget
 			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);

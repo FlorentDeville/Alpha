@@ -29,11 +29,15 @@ namespace Systems
 
 		const std::map<AssetId, Asset*>& GetMeshes() const;
 		const Asset* GetMesh(AssetId id) const;
+		
+		const std::map<AssetId, Asset*>& GetMaterials() const;
+		const Asset* GetMaterial(AssetId id) const;
 
 	private:
 		std::string m_root; //location of toc.txt
 
-		std::map<AssetId,Asset*> m_meshes;
+		std::map<AssetId, Asset*> m_meshes;
+		std::map<AssetId, Asset*> m_materials;
 	};
 
 }

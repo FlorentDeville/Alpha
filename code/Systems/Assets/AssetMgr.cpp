@@ -17,6 +17,7 @@ namespace Systems
 	AssetMgr::AssetMgr()
 		: m_root()
 		, m_meshes()
+		, m_materials()
 	{}
 
 	AssetMgr::~AssetMgr()
@@ -25,8 +26,13 @@ namespace Systems
 		{
 			delete it.second;
 		}
+		for (std::pair<AssetId, Asset*> it : m_materials)
+		{
+			delete it.second;
+		}
 
 		m_meshes.clear();
+		m_materials.clear();
 	}
 
 	bool AssetMgr::Init(const std::string& root)
@@ -68,6 +74,10 @@ namespace Systems
 				m_meshes[pNewAsset->GetId()] = pNewAsset;
 				break;
 
+			case kMaterial:
+				m_materials[pNewAsset->GetId()] = pNewAsset;
+				break;
+
 			default:
 				assert(false);
 				break;
@@ -86,6 +96,20 @@ namespace Systems
 	{
 		std::map<AssetId, Asset*>::const_iterator it = m_meshes.find(id);
 		if (it == m_meshes.cend())
+			return nullptr;
+
+		return it->second;
+	}
+
+	const std::map<AssetId, Asset*>& AssetMgr::GetMaterials() const
+	{
+		return m_materials;
+	}
+
+	const Asset* AssetMgr::GetMaterial(AssetId id) const
+	{
+		std::map<AssetId, Asset*>::const_iterator it = m_materials.find(id);
+		if (it == m_materials.cend())
 			return nullptr;
 
 		return it->second;

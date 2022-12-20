@@ -342,7 +342,8 @@ bool LoadContent()
 	{
 		Rendering::Material* pMaterial = nullptr;
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
-		Systems::Loader::Get().LoadMaterial("vertex_color", *pMaterial);
+		const Systems::Asset* pAssetMaterial = assetMgr.GetMaterial(Systems::AssetId(6));//vertex_color
+		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
 	}
 
 	//create the texture material
@@ -350,7 +351,8 @@ bool LoadContent()
 	{
 		Rendering::Material* pMaterial = nullptr;
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
-		Systems::Loader::Get().LoadMaterial("grid_blue", *pMaterial);
+		const Systems::Asset* pAssetMaterial = assetMgr.GetMaterial(Systems::AssetId(4));//grid_blue
+		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
 	}
 
 	//load torus mesh

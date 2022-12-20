@@ -127,11 +127,11 @@ namespace Systems
 		return true;
 	}
 
-	bool Loader::LoadMaterial(const std::string& name, Rendering::Material& material)
+	bool Loader::LoadMaterial(const std::string& absFilename, Rendering::Material& material)
 	{
 		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
 
-		std::string materialFilename = m_dataMaterialPath + "\\" + name + ".json";
+		std::string materialFilename = absFilename;
 		FILE* pFile = nullptr;;
 		fopen_s(&pFile, materialFilename.c_str(), "rb");
 		assert(pFile);

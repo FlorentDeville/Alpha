@@ -10,6 +10,8 @@ namespace Systems
 	{
 		if (type == "MESH")
 			return kMesh;
+		else if (type == "MATERIAL")
+			return kMaterial;
 		else
 			return kInvalid;
 	}
@@ -20,6 +22,10 @@ namespace Systems
 		{
 		case kMesh:
 			return "mesh";
+			break;
+
+		case kMaterial:
+			return "materials";
 			break;
 
 		default:

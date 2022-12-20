@@ -36,7 +36,7 @@ namespace Systems
 		bool Init(const LoaderParameter& parameter);
 
 		bool LoadMesh(const std::string& absFilename, Rendering::Mesh& mesh);
-		bool LoadMaterial(const std::string& name, Rendering::Material& material);
+		bool LoadMaterial(const std::string& absFilename, Rendering::Material& material);
 
 	private:
 		std::string m_dataMeshPath;
