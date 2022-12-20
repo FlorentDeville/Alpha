@@ -90,7 +90,7 @@ void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 		std::string fontName = "segoeUI";
 		Rendering::Font* pFont = nullptr;
 		Rendering::FontMgr::Get().CreateFont(&pFont, m_segoeUIFontId);
-		pFont->Init(parameter.m_dataFontsPath, fontName);
+		pFont->Init(parameter.m_editorFontsPath, fontName);
 
 		RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\text.rs.cso");
 		Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\text.vs.cso");

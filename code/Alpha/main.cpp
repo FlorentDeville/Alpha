@@ -461,7 +461,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
 	WidgetMgrParameter widgetMgrParameter;
-	widgetMgrParameter.m_dataFontsPath = configuration.m_dataFontsPath;
+	widgetMgrParameter.m_editorFontsPath = configuration.m_editorsFontsPath;
 	widgetMgrParameter.m_gameShaderPath = binPath;
 	widgetMgrParameter.m_pMainWindow = g_pWindow;
 	widgetMgr.Init(widgetMgrParameter);

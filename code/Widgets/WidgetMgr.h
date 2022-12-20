@@ -35,7 +35,7 @@ class WidgetMgrParameter
 {
 public:
 	std::string m_gameShaderPath;
-	std::string m_dataFontsPath;
+	std::string m_editorFontsPath;
 	SysWindow* m_pMainWindow;
 };
 

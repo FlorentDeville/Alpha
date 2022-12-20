@@ -25,6 +25,7 @@ public:
 	std::string m_rawShadersPath;
 
 	std::string m_editorsIconsPath;
+	std::string m_editorsFontsPath;
 	std::string m_editorsScriptsPath;
 
 	std::string m_shaderCompiler;
