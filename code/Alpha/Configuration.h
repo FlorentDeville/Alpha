@@ -19,6 +19,7 @@ public:
 	std::string m_dataMeshPath;
 	std::string m_dataShadersPath;
 	std::string m_dataTexturesPath;
+	std::string m_dataRoot;
 
 	std::string m_rawBlenderPath;
 	std::string m_rawShadersPath;

@@ -12,6 +12,7 @@ Configuration::Configuration()
 	, m_dataMeshPath()
 	, m_dataShadersPath()
 	, m_dataTexturesPath()
+	, m_dataRoot()
 	, m_rawBlenderPath()
 	, m_rawShadersPath()
 	, m_editorsIconsPath()
@@ -41,6 +42,9 @@ bool Configuration::Load(const std::string& filename)
 
 	GetPrivateProfileString("data", "textures", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_dataTexturesPath = buffer;
+
+	GetPrivateProfileString("data", "root", "NULL", buffer, BUFFER_SIZE, filename.c_str());
+	m_dataRoot = buffer;
 
 	GetPrivateProfileString("raw", "blender", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_rawBlenderPath = buffer;
