@@ -78,6 +78,10 @@ namespace Systems
 				m_materials.push_back(pNewAsset);
 				break;
 
+			case kTexture:
+				m_textures.push_back(pNewAsset);
+				break;
+
 			default:
 				assert(false);
 				break;
@@ -104,5 +108,10 @@ namespace Systems
 	const std::vector<Asset*>& AssetMgr::GetMaterials() const
 	{
 		return m_materials;
+	}
+
+	const std::vector<Asset*>& AssetMgr::GetTextures() const
+	{
+		return m_textures;
 	}
 }

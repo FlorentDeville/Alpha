@@ -32,6 +32,7 @@ namespace Systems
 
 		const std::vector<Asset*>& GetMeshes() const;
 		const std::vector<Asset*>& GetMaterials() const;
+		const std::vector<Asset*>& GetTextures() const;
 
 	private:
 		std::string m_root; //location of toc.txt
@@ -41,6 +42,7 @@ namespace Systems
 		//use those vectors to iterate through a given type of asset.
 		std::vector<Asset*> m_meshes;
 		std::vector<Asset*> m_materials;
+		std::vector<Asset*> m_textures;
 	};
 
 }

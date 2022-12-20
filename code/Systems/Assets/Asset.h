@@ -11,6 +11,8 @@
 
 namespace Systems
 {
+	// An asset only contains the metadata for a resource loaded by the game. When you load an asset, you don't load any content usable by the game,
+	// you only load information about the asset.
 	class Asset
 	{
 	public:

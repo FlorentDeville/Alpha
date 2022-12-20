@@ -21,6 +21,10 @@
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 
+#include "Systems/Assets/Asset.h"
+#include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/AssetMgr.h"
+
 //#pragma optimize("", off)
 
 namespace Systems
@@ -161,17 +165,20 @@ namespace Systems
 
 		material.Init(rsId, pid);
 
-		rapidjson::Value::MemberIterator it = jsonDocument.FindMember("texture");
+		rapidjson::Value::MemberIterator it = jsonDocument.FindMember("texture_AID");
 		if (it != jsonDocument.MemberEnd())
 		{
-			const char* textureName = it->value.GetString();
-			std::string textureFilename = m_dataTexturePath + "\\" + textureName;
+			//get the texture asset
+			Systems::AssetId textureAid(it->value.GetInt64());
+			const Systems::Asset* pTextureAsset = Systems::AssetMgr::Get().GetAsset(textureAid);
+			assert(pTextureAsset);
 
+			//load the texture resource
 			Rendering::TextureId tid;
 			Rendering::Texture* pTexture = nullptr;
 
 			Rendering::TextureMgr::Get().CreateTexture(&pTexture, tid);
-			pTexture->Init(textureFilename);
+			pTexture->Init(pTextureAsset->GetPath());
 
 			material.SetTexture(tid);
 		}

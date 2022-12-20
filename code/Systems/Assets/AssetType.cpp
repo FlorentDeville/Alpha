@@ -12,6 +12,8 @@ namespace Systems
 			return kMesh;
 		else if (type == "MATERIAL")
 			return kMaterial;
+		else if (type == "TEXTURE")
+			return kTexture;
 		else
 			return kInvalid;
 	}
@@ -26,6 +28,10 @@ namespace Systems
 
 		case kMaterial:
 			return "materials";
+			break;
+
+		case kTexture:
+			return "textures";
 			break;
 
 		default:
