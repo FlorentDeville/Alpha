@@ -134,6 +134,7 @@ namespace Systems
 	bool Loader::LoadMaterial(const std::string& absFilename, Rendering::Material& material)
 	{
 		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
 		std::string materialFilename = absFilename;
 		FILE* pFile = nullptr;;
@@ -147,17 +148,21 @@ namespace Systems
 		rapidjson::Document jsonDocument;
 		jsonDocument.ParseStream(stream);
 
-		const rapidjson::Value& shaderNameValue = jsonDocument["shader"];
-		const char* shaderName = shaderNameValue.GetString();
+		const rapidjson::Value& shaderRSValue = jsonDocument["shader_rs_AID"];
+		Systems::AssetId rsAid(shaderRSValue.GetInt64());
+		const Systems::Asset* assetRS = assetMgr.GetAsset(rsAid);
 
-		//std::string root = "C:\\workspace\\Alpha\\data\\shaders\\";
-		std::string rootSignatureFilename = m_dataShaderPath + "\\" + shaderName + ".rs.cso";
-		std::string vertexShaderFilename = m_dataShaderPath + "\\" + shaderName + ".vs.cso";
-		std::string textureShaderFilename = m_dataShaderPath + "\\" + shaderName + ".ps.cso";
+		const rapidjson::Value& shaderVSValue = jsonDocument["shader_vs_AID"];
+		Systems::AssetId vsAid(shaderVSValue.GetInt64());
+		const Systems::Asset* assetVS = assetMgr.GetAsset(vsAid);
 
-		RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(rootSignatureFilename);
-		Rendering::ShaderId vsId = shaderMgr.CreateShader(vertexShaderFilename);
-		Rendering::ShaderId psId = shaderMgr.CreateShader(textureShaderFilename);
+		const rapidjson::Value& shaderPSValue = jsonDocument["shader_ps_AID"];
+		Systems::AssetId psAid(shaderPSValue.GetInt64());
+		const Systems::Asset* assetPS = assetMgr.GetAsset(psAid);
+
+		RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(assetRS->GetPath());
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(assetVS->GetPath());
+		Rendering::ShaderId psId = shaderMgr.CreateShader(assetPS->GetPath());
 
 		Rendering::PipelineStateId pid;
 		Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
@@ -170,7 +175,7 @@ namespace Systems
 		{
 			//get the texture asset
 			Systems::AssetId textureAid(it->value.GetInt64());
-			const Systems::Asset* pTextureAsset = Systems::AssetMgr::Get().GetAsset(textureAid);
+			const Systems::Asset* pTextureAsset = assetMgr.GetAsset(textureAid);
 			assert(pTextureAsset);
 
 			//load the texture resource

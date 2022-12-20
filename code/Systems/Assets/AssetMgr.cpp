@@ -82,6 +82,10 @@ namespace Systems
 				m_textures.push_back(pNewAsset);
 				break;
 
+			case kShader:
+				m_shaders.push_back(pNewAsset);
+				break;
+
 			default:
 				assert(false);
 				break;
@@ -113,5 +117,10 @@ namespace Systems
 	const std::vector<Asset*>& AssetMgr::GetTextures() const
 	{
 		return m_textures;
+	}
+
+	const std::vector<Asset*>& AssetMgr::GetShaders() const
+	{
+		return m_shaders;
 	}
 }

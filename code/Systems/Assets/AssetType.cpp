@@ -14,6 +14,8 @@ namespace Systems
 			return kMaterial;
 		else if (type == "TEXTURE")
 			return kTexture;
+		else if (type == "SHADER")
+			return kShader;
 		else
 			return kInvalid;
 	}
@@ -32,6 +34,10 @@ namespace Systems
 
 		case kTexture:
 			return "textures";
+			break;
+
+		case kShader:
+			return "shaders";
 			break;
 
 		default:
