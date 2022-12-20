@@ -40,6 +40,8 @@
 #include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
+#include "Systems/Assets/Asset.h"
+#include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
 
 #include "OsWin/SysWindow.h"
@@ -331,6 +333,8 @@ void Render()
 
 bool LoadContent()
 {
+	const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
 
 	//create the base material
@@ -354,7 +358,8 @@ bool LoadContent()
 	{
 		Rendering::Mesh* pCubeMesh = nullptr;
 		meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
-		Systems::Loader::Get().LoadMesh("base_torus", *pCubeMesh);
+		const Systems::Asset* pAsset = assetMgr.GetMesh(Systems::AssetId(3));
+		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pCubeMesh);
 	}
 
 	//load plane
@@ -362,7 +367,8 @@ bool LoadContent()
 	{
 		Rendering::Mesh* pPlaneMesh = nullptr;
 		meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
-		Systems::Loader::Get().LoadMesh("base_plane", *pPlaneMesh);
+		const Systems::Asset* pAsset = assetMgr.GetMesh(Systems::AssetId(2));
+		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pPlaneMesh);
 	}
 
 	//Load the entities
@@ -435,6 +441,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	loaderParameter.m_dataTexturePath = configuration.m_dataTexturesPath;
 	loader.Init(loaderParameter);
 
+	Systems::AssetMgr& assetMgr = Systems::AssetMgr::InitSingleton();
+	assetMgr.Init(configuration.m_dataRoot);
+	assetMgr.LoadAllAssets();
+
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
@@ -502,6 +512,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	delete g_pWindow;
 
 	Systems::Loader::ReleaseSingleton();
+	Systems::AssetMgr::ReleaseSingleton();
 
 	render.Release();
 	RenderModule::ReleaseSingleton();

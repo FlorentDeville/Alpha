@@ -21,6 +21,8 @@
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 
+//#pragma optimize("", off)
+
 namespace Systems
 {
 	Loader::Loader()
@@ -44,9 +46,9 @@ namespace Systems
 		return true;
 	}
 
-	bool Loader::LoadMesh(const std::string& name, Rendering::Mesh& mesh)
+	bool Loader::LoadMesh(const std::string& absFilename, Rendering::Mesh& mesh)
 	{
-		std::string filename = m_dataMeshPath + "\\" + name + ".json";
+		std::string filename = absFilename;
 
 		FILE* pFile = nullptr;
 		fopen_s(&pFile, filename.c_str(), "rb");

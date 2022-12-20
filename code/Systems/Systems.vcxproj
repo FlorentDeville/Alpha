@@ -11,9 +11,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Assets\Asset.h" />
+    <ClInclude Include="Assets\AssetId.h" />
+    <ClInclude Include="Assets\AssetMgr.h" />
+    <ClInclude Include="Assets\AssetType.h" />
     <ClInclude Include="Loader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Assets\Asset.cpp" />
+    <ClCompile Include="Assets\AssetId.cpp" />
+    <ClCompile Include="Assets\AssetMgr.cpp" />
+    <ClCompile Include="Assets\AssetType.cpp" />
     <ClCompile Include="Loader.cpp" />
   </ItemGroup>
   <ItemGroup>

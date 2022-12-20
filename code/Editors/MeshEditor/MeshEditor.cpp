@@ -18,6 +18,8 @@
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shaders/ShaderMgr.h"
 
+#include "Systems/Assets/Asset.h"
+#include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
 
 #include "Widgets/Button.h"
@@ -115,17 +117,17 @@ namespace Editors
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(parameter.m_rawBlenderPath))
+		const std::map<Systems::AssetId, Systems::Asset*>& allMeshes = Systems::AssetMgr::Get().GetMeshes();
+		for(std::pair<Systems::AssetId, Systems::Asset*> it : allMeshes)
 		{
-			if (entry.path().extension().string() != ".blend")
-				continue;
-
 			m_allMeshes.push_back(MeshEntry());
 
+			Systems::Asset* pAsset = it.second;
+
 			MeshEntry& newEntry = m_allMeshes.back();
-			newEntry.m_rawFilename = entry.path().string();
-			newEntry.m_binFilename = parameter.m_dataMeshPath + "\\" + entry.path().stem().string() + ".json";
-			newEntry.m_displayName = entry.path().stem().string();
+			newEntry.m_rawFilename = pAsset->GetPath();
+			newEntry.m_binFilename = pAsset->GetPath();
+			newEntry.m_displayName = pAsset->GetVirtualName();
 		}
 
 		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -324,7 +326,7 @@ namespace Editors
 	{
 		Rendering::Mesh* pCubeMesh = nullptr;
 		Rendering::MeshMgr::Get().CreateMesh(&pCubeMesh, entry.m_meshId);
-		Systems::Loader::Get().LoadMesh(entry.m_displayName, *pCubeMesh);
+		Systems::Loader::Get().LoadMesh(entry.m_rawFilename, *pCubeMesh);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
