@@ -117,12 +117,10 @@ namespace Editors
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
-		const std::map<Systems::AssetId, Systems::Asset*>& allMeshes = Systems::AssetMgr::Get().GetMeshes();
-		for(std::pair<Systems::AssetId, Systems::Asset*> it : allMeshes)
+		const std::vector<Systems::Asset*>& allMeshes = Systems::AssetMgr::Get().GetMeshes();
+		for(const Systems::Asset* pAsset : allMeshes)
 		{
 			m_allMeshes.push_back(MeshEntry());
-
-			Systems::Asset* pAsset = it.second;
 
 			MeshEntry& newEntry = m_allMeshes.back();
 			newEntry.m_rawFilename = pAsset->GetPath();
@@ -191,11 +189,9 @@ namespace Editors
 		pTabContainer->SetSelectedTab(0);
 
 		//load all material
-		const std::map<Systems::AssetId, Systems::Asset*>& allMaterials = Systems::AssetMgr::Get().GetMaterials();
-		for(const std::pair<Systems::AssetId, Systems::Asset*>& it : allMaterials)
+		const std::vector<Systems::Asset*>& allMaterials = Systems::AssetMgr::Get().GetMaterials();
+		for(const Systems::Asset* pAssetMaterial : allMaterials)
 		{
-			Systems::Asset* pAssetMaterial = it.second;
-
 			//load material
 			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 			Rendering::Material* pMaterial = nullptr;

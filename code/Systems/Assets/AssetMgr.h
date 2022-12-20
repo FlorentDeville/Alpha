@@ -9,6 +9,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Systems
 {
@@ -27,17 +28,19 @@ namespace Systems
 
 		bool LoadAllAssets();
 
-		const std::map<AssetId, Asset*>& GetMeshes() const;
-		const Asset* GetMesh(AssetId id) const;
-		
-		const std::map<AssetId, Asset*>& GetMaterials() const;
-		const Asset* GetMaterial(AssetId id) const;
+		const Asset* GetAsset(AssetId id) const;
+
+		const std::vector<Asset*>& GetMeshes() const;
+		const std::vector<Asset*>& GetMaterials() const;
 
 	private:
 		std::string m_root; //location of toc.txt
 
-		std::map<AssetId, Asset*> m_meshes;
-		std::map<AssetId, Asset*> m_materials;
+		std::map<AssetId, Asset*> m_assets; //use this structure to retrieve an asset from its id
+
+		//use those vectors to iterate through a given type of asset.
+		std::vector<Asset*> m_meshes;
+		std::vector<Asset*> m_materials;
 	};
 
 }

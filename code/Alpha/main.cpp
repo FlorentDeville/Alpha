@@ -342,7 +342,7 @@ bool LoadContent()
 	{
 		Rendering::Material* pMaterial = nullptr;
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
-		const Systems::Asset* pAssetMaterial = assetMgr.GetMaterial(Systems::AssetId(6));//vertex_color
+		const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(6));//vertex_color
 		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
 	}
 
@@ -351,7 +351,7 @@ bool LoadContent()
 	{
 		Rendering::Material* pMaterial = nullptr;
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
-		const Systems::Asset* pAssetMaterial = assetMgr.GetMaterial(Systems::AssetId(4));//grid_blue
+		const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(4));//grid_blue
 		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
 	}
 
@@ -360,7 +360,7 @@ bool LoadContent()
 	{
 		Rendering::Mesh* pCubeMesh = nullptr;
 		meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
-		const Systems::Asset* pAsset = assetMgr.GetMesh(Systems::AssetId(3));
+		const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(3)); //basic_cube
 		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pCubeMesh);
 	}
 
@@ -369,7 +369,7 @@ bool LoadContent()
 	{
 		Rendering::Mesh* pPlaneMesh = nullptr;
 		meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
-		const Systems::Asset* pAsset = assetMgr.GetMesh(Systems::AssetId(2));
+		const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(2)); //basic_plane
 		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pPlaneMesh);
 	}
 

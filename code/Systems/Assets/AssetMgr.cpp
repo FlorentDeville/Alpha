@@ -16,21 +16,19 @@ namespace Systems
 {
 	AssetMgr::AssetMgr()
 		: m_root()
+		, m_assets()
 		, m_meshes()
 		, m_materials()
 	{}
 
 	AssetMgr::~AssetMgr()
 	{
-		for (std::pair<AssetId, Asset*> it : m_meshes)
-		{
-			delete it.second;
-		}
-		for (std::pair<AssetId, Asset*> it : m_materials)
+		for (std::pair<AssetId, Asset*> it : m_assets)
 		{
 			delete it.second;
 		}
 
+		m_assets.clear();
 		m_meshes.clear();
 		m_materials.clear();
 	}
@@ -68,14 +66,16 @@ namespace Systems
 			snprintf(path, PATH_MAX_LENGTH, "%s\\%s\\%08zu", m_root.c_str(), subFolder.c_str(), id);
 			Asset* pNewAsset = new Asset(AssetId(id), virtualName, path, type);
 			
+			m_assets[pNewAsset->GetId()] = pNewAsset;
+
 			switch (type)
 			{
 			case kMesh:
-				m_meshes[pNewAsset->GetId()] = pNewAsset;
+				m_meshes.push_back(pNewAsset);
 				break;
 
 			case kMaterial:
-				m_materials[pNewAsset->GetId()] = pNewAsset;
+				m_materials.push_back(pNewAsset);
 				break;
 
 			default:
@@ -87,31 +87,22 @@ namespace Systems
 		return true;
 	}
 
-	const std::map<AssetId, Asset*>& AssetMgr::GetMeshes() const
+	const Asset* AssetMgr::GetAsset(AssetId id) const
+	{
+		std::map<AssetId, Asset*>::const_iterator it = m_assets.find(id);
+		if (it == m_assets.cend())
+			return nullptr;
+
+		return it->second;
+	}
+
+	const std::vector<Asset*>& AssetMgr::GetMeshes() const
 	{
 		return m_meshes;
 	}
 	
-	const Asset* AssetMgr::GetMesh(AssetId id) const
-	{
-		std::map<AssetId, Asset*>::const_iterator it = m_meshes.find(id);
-		if (it == m_meshes.cend())
-			return nullptr;
-
-		return it->second;
-	}
-
-	const std::map<AssetId, Asset*>& AssetMgr::GetMaterials() const
+	const std::vector<Asset*>& AssetMgr::GetMaterials() const
 	{
 		return m_materials;
-	}
-
-	const Asset* AssetMgr::GetMaterial(AssetId id) const
-	{
-		std::map<AssetId, Asset*>::const_iterator it = m_materials.find(id);
-		if (it == m_materials.cend())
-			return nullptr;
-
-		return it->second;
 	}
 }
