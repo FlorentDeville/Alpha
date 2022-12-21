@@ -1,5 +1,7 @@
+import argparse
 import bpy
 import json
+import sys
 
 def Export(outputFilename):
     
@@ -64,10 +66,20 @@ def Export(outputFilename):
         with open(outputFilename, 'w') as out_file:
             json.dump(out_mesh, out_file, indent = 2)
 
-current_filename = bpy.data.filepath
-filename = bpy.path.basename(current_filename)
-filename = filename.split('.')[0]
+#parse arguments after --. Arguments before -- are for blender, after are for the python script.
+argv = sys.argv
+argv = argv[argv.index("--") + 1:]  # get all args after "--"
+
+parser = argparse.ArgumentParser(description="Convert a mesh into a json file.")
+parser.add_argument("--id", dest="assetId", action="store", help="Id of the asset where to export this mesh.")
+
+args = parser.parse_args(argv)
+
+#create the export filename
+filename = str(args.assetId).zfill(8)
 output_root = "C:/workspace/Alpha/data/mesh"
-output = output_root + "/" + filename + ".json"
+output = output_root + "/" + filename
+
+#export mesh
 Export(output)
 print ("%s export over" % output)

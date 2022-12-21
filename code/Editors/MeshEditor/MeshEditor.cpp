@@ -33,15 +33,34 @@
 #include "Widgets/Text.h"
 #include "Widgets/Viewport.h"
 
-#include <filesystem>
+#include <fstream>
 
 namespace Editors
 {
+	void LoadRawMeshDb(const std::string& rawMeshDbFilename, std::map<Systems::AssetId, std::string>& rawMeshDb)
+	{
+		std::ifstream file(rawMeshDbFilename);
+
+		std::string line;
+		while (std::getline(file, line))
+		{
+			//parse a single line
+			size_t id;
+			const int REL_PATH_MAX_LENGTH = 255;
+			char relPath[REL_PATH_MAX_LENGTH] = { '\0' };
+			sscanf_s(line.c_str(), "%[^,],%zu", relPath, REL_PATH_MAX_LENGTH, &id);
+
+			//convert type to AssetType
+			rawMeshDb[Systems::AssetId(id)] = relPath;
+		}
+	}
+
 	MeshEntry::MeshEntry()
 		: m_rawFilename()
 		, m_binFilename()
 		, m_displayName()
 		, m_meshId()
+		, m_assetId()
 	{}
 
 	MaterialEntry::MaterialEntry()
@@ -62,6 +81,7 @@ namespace Editors
 		, m_allEntryButton()
 		, m_pLogWidget(nullptr)
 		, m_allMaterials()
+		, m_rawMeshDb()
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -76,6 +96,8 @@ namespace Editors
 	{
 		m_blender = parameter.m_blender;
 		m_editorScriptsPath = parameter.m_editorScriptsPath;
+
+		LoadRawMeshDb(parameter.m_rawBlenderPath + "\\db.txt", m_rawMeshDb);
 
 		//create the render target
 		const int width = 1280;
@@ -123,9 +145,12 @@ namespace Editors
 			m_allMeshes.push_back(MeshEntry());
 
 			MeshEntry& newEntry = m_allMeshes.back();
-			newEntry.m_rawFilename = pAsset->GetPath();
+
+			const std::string& rawPath = parameter.m_rawBlenderPath + "\\" + m_rawMeshDb[pAsset->GetId()];
+			newEntry.m_rawFilename = rawPath;
 			newEntry.m_binFilename = pAsset->GetPath();
 			newEntry.m_displayName = pAsset->GetVirtualName();
+			newEntry.m_assetId = pAsset->GetId();
 		}
 
 		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -321,7 +346,7 @@ namespace Editors
 	{
 		Rendering::Mesh* pCubeMesh = nullptr;
 		Rendering::MeshMgr::Get().CreateMesh(&pCubeMesh, entry.m_meshId);
-		Systems::Loader::Get().LoadMesh(entry.m_rawFilename, *pCubeMesh);
+		Systems::Loader::Get().LoadMesh(entry.m_binFilename, *pCubeMesh);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
@@ -356,6 +381,7 @@ namespace Editors
 		importCommandline += " " + entry.m_rawFilename;
 		importCommandline += " --background";
 		importCommandline += " --python " + m_editorScriptsPath + "\\export_mesh.py";
+		importCommandline += " -- --id " + entry.m_assetId.ToString();
 
 		OutputDebugString(importCommandline.c_str());
 
@@ -377,7 +403,7 @@ namespace Editors
 		Rendering::MeshId newMeshId;
 
 		meshMgr.CreateMesh(&pNewMesh, newMeshId);
-		Systems::Loader::Get().LoadMesh(entry.m_displayName, *pNewMesh);
+		Systems::Loader::Get().LoadMesh(entry.m_binFilename, *pNewMesh);
 
 		entry.m_meshId = newMeshId;
 

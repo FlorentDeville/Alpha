@@ -32,5 +32,10 @@ namespace Systems
 		return m_id < id.m_id;
 	}
 
+	std::string AssetId::ToString() const
+	{
+		return std::to_string(m_id);
+	}
+
 	const AssetId AssetId::INVALID = AssetId(); //the default is -1
 }

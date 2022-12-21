@@ -8,9 +8,11 @@
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Material/MaterialId.h"
+#include "Systems/Assets/AssetId.h"
 
 #include "DirectXMath.h"
 
+#include <map>
 #include <vector>
 #include <string>
 
@@ -36,6 +38,7 @@ namespace Editors
 		std::string m_binFilename;		//binary filename
 		std::string m_displayName;		//name of the mesh in the editor
 		Rendering::MeshId m_meshId;
+		Systems::AssetId m_assetId;
 		
 		MeshEntry();
 	};
@@ -98,6 +101,8 @@ namespace Editors
 
 		std::string m_editorScriptsPath;
 		std::string m_blender;
+
+		std::map<Systems::AssetId, std::string> m_rawMeshDb; //map between the asset id and the blender file
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(MeshEntry& entry);

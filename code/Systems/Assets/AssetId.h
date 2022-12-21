@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <string>
+
 namespace Systems
 {
 	class AssetId
@@ -19,6 +21,8 @@ namespace Systems
 		bool operator==(const AssetId id) const;
 		bool operator!=(const AssetId id) const;
 		bool operator<(const AssetId id) const;
+
+		std::string ToString() const;
 
 	private:
 		size_t m_id;
