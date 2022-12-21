@@ -14,12 +14,14 @@
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\LevelEditor.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
+    <ClInclude Include="RawDb.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\LevelEditor.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
+    <ClCompile Include="RawDb.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
   </ItemGroup>
   <ItemGroup>

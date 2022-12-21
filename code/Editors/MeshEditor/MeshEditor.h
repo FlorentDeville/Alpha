@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Singleton.h"
+#include "Editors/RawDb.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Material/MaterialId.h"
@@ -102,7 +103,7 @@ namespace Editors
 		std::string m_editorScriptsPath;
 		std::string m_blender;
 
-		std::map<Systems::AssetId, std::string> m_rawMeshDb; //map between the asset id and the blender file
+		RawDb m_meshRawDb; //map between the asset id and the blender file
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(MeshEntry& entry);
