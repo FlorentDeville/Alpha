@@ -34,7 +34,10 @@ namespace Systems
 
 	std::string AssetId::ToString() const
 	{
-		return std::to_string(m_id);
+		const int MAX_SIZE = 9; //8 characters plus \0.
+		char buffer[MAX_SIZE] = { '\0' };
+		snprintf(buffer, MAX_SIZE, "%08zu", m_id);
+		return std::string(buffer);
 	}
 
 	const AssetId AssetId::INVALID = AssetId(); //the default is -1

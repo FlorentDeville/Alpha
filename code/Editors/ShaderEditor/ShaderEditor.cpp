@@ -19,7 +19,8 @@
 namespace Editors
 {
 	ShaderEntry::ShaderEntry()
-		: m_filename()
+		: m_rawFilename()
+		, m_assetId()
 	{}
 
 	ShaderEditor::ShaderEditor()
@@ -28,6 +29,7 @@ namespace Editors
 		, m_pShaderListLayout(nullptr)
 		, m_selectedShader(-1)
 		, m_pLogText(nullptr)
+		, m_shaderRawDb()
 	{}
 
 	ShaderEditor::~ShaderEditor()
@@ -37,6 +39,9 @@ namespace Editors
 	{
 		m_dataShaderPath = parameter.m_dataShaderPath;
 		m_shaderCompilerPath = parameter.m_shaderCompilerPath;
+		m_rawShaderPath = parameter.m_rawShaderPath;
+
+		LoadRawDb(parameter.m_rawShaderPath + "\\db.txt", m_shaderRawDb);
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -58,10 +63,11 @@ namespace Editors
 		pViewportTab->AddWidget(pSplit);
 
 		//create the list of shaders
-		for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(parameter.m_rawShaderPath))
+		for(const std::pair<Systems::AssetId, std::string>& it : m_shaderRawDb)
 		{
 			m_allShaders.push_back(ShaderEntry());
-			m_allShaders.back().m_filename = entry.path().string();
+			m_allShaders.back().m_rawFilename = it.second;
+			m_allShaders.back().m_assetId = Systems::AssetId(it.first);
 		}
 
 		//create a button and label per shader
@@ -74,7 +80,7 @@ namespace Editors
 		{
 			const ShaderEntry& entry = m_allShaders[ii];
 
-			const std::string& shaderName = entry.m_filename;
+			const std::string& shaderName = entry.m_rawFilename;
 			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
 			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { return OnShaderEntryClicked(ii); });
@@ -163,11 +169,14 @@ namespace Editors
 
 		size_t extensionSize = strlen(PS_EXT);
 
-		std::string extension = shader.m_filename.substr(shader.m_filename.size() - extensionSize);
-		size_t nameStartPos = shader.m_filename.find_last_of('\\');
-		std::string shaderName = shader.m_filename.substr(nameStartPos + 1, shader.m_filename.size() - extensionSize - nameStartPos - 1);
+		std::string extension = shader.m_rawFilename.substr(shader.m_rawFilename.size() - extensionSize);
+		size_t nameStartPos = shader.m_rawFilename.find_last_of('\\');
+		std::string shaderName = shader.m_rawFilename.substr(nameStartPos + 1, shader.m_rawFilename.size() - extensionSize - nameStartPos - 1);
 		std::string shaderTypeExtension = extension.substr(1, 2);
-		std::string outputName = m_dataShaderPath + "\\" + shaderName + "." + shaderTypeExtension + ".cso";
+		std::string outputName = m_dataShaderPath + "\\" + shader.m_assetId.ToString();
+
+
+		std::string input = m_rawShaderPath + "\\" + shader.m_rawFilename;
 
 		//create the command line
 		std::string cmdline = m_shaderCompilerPath;
@@ -194,7 +203,7 @@ namespace Editors
 
 		cmdline += " /Fo\"" + outputName + "\"";
 		cmdline += " /nologo";
-		cmdline += " \"" + shader.m_filename + "\"";
+		cmdline += " \"" + input + "\"";
 
 		m_pLogText->AppendText(cmdline + "\n");
 		{

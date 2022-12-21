@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Singleton.h"
+#include "Editors/RawDb.h"
 
 #include <string>
 #include <vector>
@@ -21,7 +22,8 @@ namespace Editors
 	class ShaderEntry
 	{
 	public:
-		std::string m_filename;
+		std::string m_rawFilename;
+		Systems::AssetId m_assetId;
 
 		ShaderEntry();
 	};
@@ -54,8 +56,11 @@ namespace Editors
 		Widgets::Text* m_pLogText;
 		int m_selectedShader;
 
+		std::string m_rawShaderPath;
 		std::string m_dataShaderPath;
 		std::string m_shaderCompilerPath;
+
+		RawDb m_shaderRawDb;
 
 		bool OnShaderEntryClicked(int index);
 		bool OnCompileClicked();
