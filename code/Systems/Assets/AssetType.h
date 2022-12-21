@@ -10,7 +10,7 @@ namespace Systems
 {
 	enum AssetType
 	{
-		kInvalid = 0,
+		kInvalid = -1,
 		kMesh,
 		kShader,
 		kTexture,
