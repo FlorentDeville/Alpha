@@ -12,18 +12,18 @@ namespace Core
 	template <class T> class TreeNode
 	{
 	public:
-		TreeNode(TreeNode* pParent, T* content);
+		TreeNode(TreeNode* pParent, const T& content);
 		~TreeNode();
 
-		T* GetContent();
-		const T* GetContent() const;
+		T& GetContent();
+		const T& GetContent() const;
 
 		const std::vector<TreeNode*>& GetChildren() const;
 
-		void AddChildren(T* child);
+		void AddChildren(T& child);
 
 	private:
-		T* m_pContent;
+		T m_content;
 
 		TreeNode* m_pParent;
 		std::vector<TreeNode*> m_children;
@@ -42,9 +42,9 @@ namespace Core
 
 	};
 
-	template<class T> TreeNode<T>::TreeNode(TreeNode* pParent, T* pContent)
+	template<class T> TreeNode<T>::TreeNode(TreeNode* pParent, const T& content)
 		: m_pParent(pParent)
-		, m_pContent(pContent)
+		, m_content(content)
 	{}
 
 	template<class T> TreeNode<T>::~TreeNode()
@@ -55,14 +55,14 @@ namespace Core
 		m_children.clear();
 	}
 
-	template<class T> T* TreeNode<T>::GetContent()
+	template<class T> T& TreeNode<T>::GetContent()
 	{
-		return m_pContent;
+		return m_content;
 	}
 
-	template<class T> const T* TreeNode<T>::GetContent() const
+	template<class T> const T& TreeNode<T>::GetContent() const
 	{
-		return m_pContent;
+		return m_content;
 	}
 
 	template<class T> const std::vector<TreeNode<T>*>& TreeNode<T>::GetChildren() const
@@ -70,7 +70,7 @@ namespace Core
 		return m_children;
 	}
 
-	template<class T> void TreeNode<T>::AddChildren(T* child)
+	template<class T> void TreeNode<T>::AddChildren(T& child)
 	{
 		TreeNode<T>* pNewNode = new TreeNode<T>(this, child);
 		m_children.push_back(pNewNode);
