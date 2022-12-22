@@ -37,6 +37,8 @@ namespace Core
 
 		TreeNode<T>* GetRoot() const;
 
+		void clear();
+
 	private:
 		TreeNode<T>* m_pRoot;
 
@@ -88,5 +90,11 @@ namespace Core
 	template<class T> TreeNode<T>* Tree<T>::GetRoot() const
 	{
 		return m_pRoot;
+	}
+
+	template<class T> void Tree<T>::clear()
+	{
+		delete m_pRoot;
+		m_pRoot = new TreeNode<T>(nullptr, nullptr);
 	}
 }
