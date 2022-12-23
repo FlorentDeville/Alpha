@@ -57,7 +57,7 @@ namespace Editors
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
-		pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(500);
 
 		pViewportTab->AddWidget(pSplit);
@@ -72,7 +72,7 @@ namespace Editors
 
 		//create a button and label per shader
 		m_pShaderListLayout = new Widgets::Layout(0, 0, 0, 0);
-		m_pShaderListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		m_pShaderListLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		m_pShaderListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pSplit->AddLeftPanel(m_pShaderListLayout);
 
@@ -82,7 +82,7 @@ namespace Editors
 
 			const std::string& shaderName = entry.m_rawFilename;
 			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { return OnShaderEntryClicked(ii); });
 			m_pShaderListLayout->AddWidget(pButton);
 
@@ -92,20 +92,20 @@ namespace Editors
 
 		//right panel : add option layout
 		Widgets::Layout* pRightPanelLayout = new Widgets::Layout(0, 0, 0, 0);
-		pRightPanelLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pRightPanelLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pRightPanelLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pSplit->AddRightPanel(pRightPanelLayout);
 
 		//horizontal layout for buttons
 		Widgets::Layout* pButtonLayout = new Widgets::Layout(0, 20, 0, 0);
-		pButtonLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+		pButtonLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pButtonLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
 		pRightPanelLayout->AddWidget(pButtonLayout);
 
 		//add compile button
 		{
 			Widgets::Button* pButton = new Widgets::Button(60, 0, 0, 0);
-			pButton->SetSizeStyle(Widget::VSIZE_STRETCH);
+			pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
 			pButton->OnClick([this](int x, int y) -> bool { return OnCompileClicked(); });
 			pButtonLayout->AddWidget(pButton);
 
@@ -116,7 +116,7 @@ namespace Editors
 		//add open button
 		{
 			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			pButton->SetSizeStyle(Widget::VSIZE_STRETCH);
+			pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
 			//pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
 			pButtonLayout->AddWidget(pButton);
 
@@ -126,7 +126,7 @@ namespace Editors
 
 		//add log label
 		m_pLogText = new Widgets::Text(1, "");
-		m_pLogText->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pRightPanelLayout->AddWidget(m_pLogText);
 	}
 
@@ -139,15 +139,15 @@ namespace Editors
 	bool ShaderEditor::OnShaderEntryClicked(int index)
 	{
 		//deselect all buttons
-		const std::vector<Widget*>& allButtons = m_pShaderListLayout->GetChildren();
-		for (Widget* pWidget : allButtons)
+		const std::vector<Widgets::Widget*>& allButtons = m_pShaderListLayout->GetChildren();
+		for (Widgets::Widget* pWidget : allButtons)
 		{
 			Widgets::Button* pButton = static_cast<Widgets::Button*>(pWidget);
 			pButton->Unselect();
 		}
 
 		//select newly clicked button
-		Widget* pSelectedButton = allButtons[index];
+		Widgets::Widget* pSelectedButton = allButtons[index];
 		Widgets::Button* pButton = static_cast<Widgets::Button*>(pSelectedButton);
 		pButton->Select();
 

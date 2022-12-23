@@ -79,7 +79,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				Message msg;
 				msg.m_id = M_KeyDown;
 				msg.m_high = wParam;
-				WidgetMgr::Get().HandleMsg(msg);
+				Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 				Inputs::InputMgr::Get().UpdateKeyboard(wParam);
 			}
@@ -110,7 +110,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DirectX::XMUINT2 size(uwidth, uheight);
 			g_pWindow->Resize(uwidth, uheight);
 			RenderModule::Get().ChangeMainResolution(size);
-			WidgetMgr::Get().Resize();
+			Widgets::WidgetMgr::Get().Resize();
 		}
 
 		return ::DefWindowProcW(hWnd, message, wParam, lParam);
@@ -141,7 +141,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 		}
 		
-		WidgetMgr::Get().HandleMsg(msg);
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 		
 		mouseState.m_mouseX = x;
@@ -185,7 +185,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[0] = x;
 		msg.m_low.m_pos[1] = y;
 
-		WidgetMgr::Get().HandleMsg(msg);
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 
 		Inputs::InputMgr::MouseState mouseState;
@@ -208,7 +208,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_low.m_pos[0] = x;
 		msg.m_low.m_pos[1] = y;
 
-		WidgetMgr::Get().HandleMsg(msg);
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 		Inputs::InputMgr::MouseState mouseState;
 		mouseState.m_mouseX = x;
@@ -295,7 +295,7 @@ void Update()
 	Editors::ShaderEditor::Get().Update();
 	Editors::LevelEditor::Get().Update();
 	GameMgr::Get().Update();
-	WidgetMgr::Get().Update();
+	Widgets::WidgetMgr::Get().Update();
 }
 
 void Render()
@@ -321,7 +321,7 @@ void Render()
 	renderModule.BeginMainScene();
 	
 	// Render the widgets
-	WidgetMgr::Get().Draw();
+	Widgets::WidgetMgr::Get().Draw();
 
 	renderModule.RenderAllText();
 	renderModule.EndMainScene();
@@ -390,8 +390,8 @@ bool LoadContent()
 void CreateMainWindow(const Configuration& configuration)
 {
 	Widgets::Container* pContainer = new Widgets::Container();
-	pContainer->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-	WidgetMgr::Get().SetRoot(pContainer);
+	pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+	Widgets::WidgetMgr::Get().SetRoot(pContainer);
 
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
 	pContainer->AddWidget(pMiddleTabContainer);
@@ -460,8 +460,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	RenderModule& render = RenderModule::InitSingleton();
 	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
-	WidgetMgr& widgetMgr = WidgetMgr::InitSingleton();
-	WidgetMgrParameter widgetMgrParameter;
+	Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::InitSingleton();
+	Widgets::WidgetMgrParameter widgetMgrParameter;
 	widgetMgrParameter.m_editorFontsPath = configuration.m_editorsFontsPath;
 	widgetMgrParameter.m_gameShaderPath = binPath;
 	widgetMgrParameter.m_pMainWindow = g_pWindow;
@@ -509,8 +509,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Release();
 	Inputs::InputMgr::ReleaseSingleton();
 
-	WidgetMgr::Get().Release();
-	WidgetMgr::ReleaseSingleton();
+	Widgets::WidgetMgr::Get().Release();
+	Widgets::WidgetMgr::ReleaseSingleton();
 
 	delete g_pWindow;
 

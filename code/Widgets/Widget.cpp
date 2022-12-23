@@ -7,348 +7,353 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Message.h"
 
-Widget::Widget()
-	: m_children()
-	, m_size(0, 0)
-	, m_locPos(0, 0, 0)
-	, m_absPos(0, 0, 0)
-	, m_hover(false)
-	, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
-	, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
-	, m_showBorder(false)
-	, m_borderWidth(1)
-	, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
-	, m_hPositionStyle(HPOSITION_STYLE::NONE)
-	, m_vPositionStyle(VPOSITION_STYLE::NONE)
-	, m_name()
-	, m_enabled(true)
-{}
-
-Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
-	: Widget()
+namespace Widgets
 {
-	m_size.x = w;
-	m_size.y = h;
-	m_locPos = DirectX::XMINT3(x, y, 0);
-}
 
-Widget::~Widget()
-{
-	for (const Widget* pWidget : m_children)
-		delete pWidget;
-}
+	Widget::Widget()
+		: m_children()
+		, m_size(0, 0)
+		, m_locPos(0, 0, 0)
+		, m_absPos(0, 0, 0)
+		, m_hover(false)
+		, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
+		, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
+		, m_showBorder(false)
+		, m_borderWidth(1)
+		, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
+		, m_hPositionStyle(HPOSITION_STYLE::NONE)
+		, m_vPositionStyle(VPOSITION_STYLE::NONE)
+		, m_name()
+		, m_enabled(true)
+	{}
 
-void Widget::Update()
-{}
-
-void Widget::Draw(const DirectX::XMFLOAT2& windowSize)
-{
-	if (!IsEnabled())
-		return;
-
-	for (Widget* pChild : m_children)
-		pChild->Draw(windowSize);
-}
-
-void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
-{
-	if ((m_sizeStyle & HSIZE_STRETCH) != 0)
-		m_size.x = parentSize.x - m_locPos.x;
-	if ((m_sizeStyle & VSIZE_STRETCH) != 0)
-		m_size.y = parentSize.y - m_locPos.y;
-}
-
-void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
-{
-	switch (m_hPositionStyle)
+	Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
+		: Widget()
 	{
-	case HPOSITION_STYLE::NONE:
-		m_absPos.x = parentAbsPos.x + m_locPos.x;
-		break;
-
-	case HPOSITION_STYLE::LEFT:
-		m_absPos.x = parentAbsPos.x;
-		break;
-
-	case HPOSITION_STYLE::CENTER:
-		m_absPos.x = parentAbsPos.x + (parentSize.x / 2) - (m_size.x / 2);
-		break;
-
-	case HPOSITION_STYLE::RIGHT:
-		m_absPos.x = parentAbsPos.x + parentSize.x - m_size.x;
-		break;
+		m_size.x = w;
+		m_size.y = h;
+		m_locPos = DirectX::XMINT3(x, y, 0);
 	}
 
-	switch (m_vPositionStyle)
+	Widget::~Widget()
 	{
-	case VPOSITION_STYLE::NONE:
-		m_absPos.y = parentAbsPos.y + m_locPos.y;
-		break;
-
-	case VPOSITION_STYLE::TOP:
-		m_absPos.y = parentAbsPos.y;
-		break;
-
-	case VPOSITION_STYLE::MIDDLE:
-		m_absPos.y = parentAbsPos.y + (parentSize.y / 2) - (m_size.y / 2);
-		break;
-
-	case VPOSITION_STYLE::BOTTOM:
-		m_absPos.y = parentAbsPos.y + parentSize.y - m_size.y;
-		break;
+		for (const Widget* pWidget : m_children)
+			delete pWidget;
 	}
 
-	m_absPos.z = parentAbsPos.z - 1;
-}
+	void Widget::Update()
+	{}
 
-void Widget::ResizeChildren()
-{
-	for (Widget* pChild : m_children)
-		pChild->Resize(m_absPos, m_size);
-}
-
-void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
-{
-	ReComputeSize(parentSize);
-	ReComputePosition(parentAbsPos, parentSize);
-
-	ResizeChildren();
-}
-
-bool Widget::Handle(const Message& msg)
-{
-	switch(msg.m_id)
+	void Widget::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-	case M_MouseLDown:
-		if (m_onClick)
-			return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
-		break;
+		if (!IsEnabled())
+			return;
 
-	case M_MouseLUp:
-		if (m_onLeftMouseUp)
-			return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
-		break;
-
-	case M_MouseEnter:
-		if (m_onMouseEnter)
-			return m_onMouseEnter();
-		break;
-
-	case M_MouseExit:
-		if (m_onMouseExit)
-			return m_onMouseExit();
-		break;
-
-	default:
-		break;
-	}
-	return false;
-}
-
-void Widget::AddWidget(Widget* pWidget)
-{
-	m_children.push_back(pWidget);
-	WidgetMgr::Get().RegisterWidget(pWidget);
-}
-
-void Widget::RemoveWidget(const Widget* pWidget)
-{
-	std::vector<Widget*>::const_iterator it = std::find(m_children.cbegin(), m_children.cend(), pWidget);
-	if (it == m_children.cend())
-		return;
-
-	m_children.erase(it);
-}
-
-void Widget::RemoveAllWidgets()
-{
-	m_children.clear();
-}
-
-void Widget::Enable()
-{
-	m_enabled = true;
-	for (Widget* pWidget : m_children)
-		pWidget->Enable();
-}
-
-void Widget::Disable()
-{
-	m_enabled = false;
-	for (Widget* pWidget : m_children)
-		pWidget->Disable();
-}
-
-void Widget::SetX(int32_t x)
-{
-	m_locPos.x = x;
-}
-
-void Widget::SetY(int32_t y)
-{
-	m_locPos.y = y;
-}
-
-void Widget::SetSize(const DirectX::XMUINT2& size)
-{
-	m_size = size;
-}
-
-void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
-{
-	m_backgroundColor = color;
-}
-
-void Widget::SetSizeStyle(int sizeStyle)
-{
-	m_sizeStyle = sizeStyle;
-}
-
-void Widget::SetPositionStyle(Widget::HPOSITION_STYLE hStyle, Widget::VPOSITION_STYLE vStyle)
-{
-	m_hPositionStyle = hStyle;
-	m_vPositionStyle = vStyle;
-}
-
-void Widget::SetName(const std::string& name)
-{
-	m_name = name;
-}
-
-int32_t Widget::GetX() const
-{
-	return m_locPos.x;
-}
-
-int32_t Widget::GetY() const
-{
-	return m_locPos.y;
-}
-
-DirectX::XMINT2 Widget::GetPosition() const
-{
-	DirectX::XMINT2 pos;
-	pos.x = m_locPos.x;
-	pos.y = m_locPos.y;
-	return pos;
-}
-
-DirectX::XMUINT2 Widget::GetSize() const
-{
-	return m_size;
-}
-
-int32_t Widget::GetScreenX() const
-{
-	return m_absPos.x;
-}
-
-int32_t Widget::GetScreenY() const
-{
-	return m_absPos.y;
-}
-
-uint32_t Widget::GetWidth() const
-{
-	return m_size.x;
-}
-
-uint32_t Widget::GetHeight() const
-{
-	return m_size.y;
-}
-
-const std::vector<Widget*>& Widget::GetChildren() const
-{
-	return m_children;
-}
-
-bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
-{
-	if (screenX > (uint32_t)GetScreenX() && screenX < GetScreenX() + GetWidth() &&
-		screenY > (uint32_t)GetScreenY() && screenY < GetScreenY() + GetHeight())
-	{
-		return true;
+		for (Widget* pChild : m_children)
+			pChild->Draw(windowSize);
 	}
 
-	return false;
-}
+	void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
+	{
+		if ((m_sizeStyle & HSIZE_STRETCH) != 0)
+			m_size.x = parentSize.x - m_locPos.x;
+		if ((m_sizeStyle & VSIZE_STRETCH) != 0)
+			m_size.y = parentSize.y - m_locPos.y;
+	}
 
-bool Widget::IsEnabled() const
-{
-	return m_enabled;
-}
+	void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	{
+		switch (m_hPositionStyle)
+		{
+		case HPOSITION_STYLE::NONE:
+			m_absPos.x = parentAbsPos.x + m_locPos.x;
+			break;
 
-void Widget::CaptureMouse()
-{
-	WidgetMgr::Get().CaptureMouse(this);
-}
+		case HPOSITION_STYLE::LEFT:
+			m_absPos.x = parentAbsPos.x;
+			break;
 
-void Widget::ReleaseMouse()
-{
-	WidgetMgr::Get().CaptureMouse(nullptr);
-}
+		case HPOSITION_STYLE::CENTER:
+			m_absPos.x = parentAbsPos.x + (parentSize.x / 2) - (m_size.x / 2);
+			break;
 
-void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)
-{
-	m_onMouseMove = callback;
-}
+		case HPOSITION_STYLE::RIGHT:
+			m_absPos.x = parentAbsPos.x + parentSize.x - m_size.x;
+			break;
+		}
 
-void Widget::OnLeftMouseUp(const std::function<bool(int, int)>& callback)
-{
-	m_onLeftMouseUp = callback;
-}
+		switch (m_vPositionStyle)
+		{
+		case VPOSITION_STYLE::NONE:
+			m_absPos.y = parentAbsPos.y + m_locPos.y;
+			break;
 
-void Widget::OnMouseEnter(const std::function<bool()>& callback)
-{
-	m_onMouseEnter = callback;
-}
+		case VPOSITION_STYLE::TOP:
+			m_absPos.y = parentAbsPos.y;
+			break;
 
-void Widget::OnMouseExit(const std::function<bool()>& callback)
-{
-	m_onMouseExit = callback;
-}
+		case VPOSITION_STYLE::MIDDLE:
+			m_absPos.y = parentAbsPos.y + (parentSize.y / 2) - (m_size.y / 2);
+			break;
 
-void Widget::OnClick(const std::function<bool(int, int)>& callback)
-{
-	m_onClick = callback;
-}
+		case VPOSITION_STYLE::BOTTOM:
+			m_absPos.y = parentAbsPos.y + parentSize.y - m_size.y;
+			break;
+		}
 
-void Widget::OnGetFocus(const std::function<bool()>& callback)
-{
-	m_onGetFocus = callback;
-}
+		m_absPos.z = parentAbsPos.z - 1;
+	}
 
-void Widget::OnLoseFocus(const std::function<bool()>& callback)
-{
-	m_onLoseFocus = callback;
-}
+	void Widget::ResizeChildren()
+	{
+		for (Widget* pChild : m_children)
+			pChild->Resize(m_absPos, m_size);
+	}
 
-void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
-{
-	float width = static_cast<float>(m_size.x);
-	float height = static_cast<float>(m_size.y);
-	DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
+	void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	{
+		ReComputeSize(parentSize);
+		ReComputePosition(parentAbsPos, parentSize);
 
-	//position : top left corner
-	float windowWidth = windowSize.x;
-	float windowHeight = windowSize.y;
+		ResizeChildren();
+	}
 
-	//compute the position on the screen.
-	//this is in screen space coordinate but the unit is a pixel
-	//so the origin is the center of the screen and it goes from [-window size / 2; window size / 2]
-	float x = (float)m_absPos.x + (width * 0.5f) - (windowWidth * 0.5f);
-	float y = - m_absPos.y - (height * 0.5f) + (windowHeight * 0.5f);
-	float z = (float)m_absPos.z;
-	DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, z);
+	bool Widget::Handle(const Message& msg)
+	{
+		switch (msg.m_id)
+		{
+		case M_MouseLDown:
+			if (m_onClick)
+				return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+			break;
 
-	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
+		case M_MouseLUp:
+			if (m_onLeftMouseUp)
+				return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+			break;
 
-	float projWidth = static_cast<float>(windowWidth);
-	float projHeight = static_cast<float>(windowHeight);
-	DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, 0.1f, 100.f);
+		case M_MouseEnter:
+			if (m_onMouseEnter)
+				return m_onMouseEnter();
+			break;
 
-	wvp = DirectX::XMMatrixMultiply(scale, position);
-	wvp = DirectX::XMMatrixMultiply(wvp, view);
-	wvp = DirectX::XMMatrixMultiply(wvp, projection);
+		case M_MouseExit:
+			if (m_onMouseExit)
+				return m_onMouseExit();
+			break;
+
+		default:
+			break;
+		}
+		return false;
+	}
+
+	void Widget::AddWidget(Widget* pWidget)
+	{
+		m_children.push_back(pWidget);
+		WidgetMgr::Get().RegisterWidget(pWidget);
+	}
+
+	void Widget::RemoveWidget(const Widget* pWidget)
+	{
+		std::vector<Widget*>::const_iterator it = std::find(m_children.cbegin(), m_children.cend(), pWidget);
+		if (it == m_children.cend())
+			return;
+
+		m_children.erase(it);
+	}
+
+	void Widget::RemoveAllWidgets()
+	{
+		m_children.clear();
+	}
+
+	void Widget::Enable()
+	{
+		m_enabled = true;
+		for (Widget* pWidget : m_children)
+			pWidget->Enable();
+	}
+
+	void Widget::Disable()
+	{
+		m_enabled = false;
+		for (Widget* pWidget : m_children)
+			pWidget->Disable();
+	}
+
+	void Widget::SetX(int32_t x)
+	{
+		m_locPos.x = x;
+	}
+
+	void Widget::SetY(int32_t y)
+	{
+		m_locPos.y = y;
+	}
+
+	void Widget::SetSize(const DirectX::XMUINT2& size)
+	{
+		m_size = size;
+	}
+
+	void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
+	{
+		m_backgroundColor = color;
+	}
+
+	void Widget::SetSizeStyle(int sizeStyle)
+	{
+		m_sizeStyle = sizeStyle;
+	}
+
+	void Widget::SetPositionStyle(Widget::HPOSITION_STYLE hStyle, Widget::VPOSITION_STYLE vStyle)
+	{
+		m_hPositionStyle = hStyle;
+		m_vPositionStyle = vStyle;
+	}
+
+	void Widget::SetName(const std::string& name)
+	{
+		m_name = name;
+	}
+
+	int32_t Widget::GetX() const
+	{
+		return m_locPos.x;
+	}
+
+	int32_t Widget::GetY() const
+	{
+		return m_locPos.y;
+	}
+
+	DirectX::XMINT2 Widget::GetPosition() const
+	{
+		DirectX::XMINT2 pos;
+		pos.x = m_locPos.x;
+		pos.y = m_locPos.y;
+		return pos;
+	}
+
+	DirectX::XMUINT2 Widget::GetSize() const
+	{
+		return m_size;
+	}
+
+	int32_t Widget::GetScreenX() const
+	{
+		return m_absPos.x;
+	}
+
+	int32_t Widget::GetScreenY() const
+	{
+		return m_absPos.y;
+	}
+
+	uint32_t Widget::GetWidth() const
+	{
+		return m_size.x;
+	}
+
+	uint32_t Widget::GetHeight() const
+	{
+		return m_size.y;
+	}
+
+	const std::vector<Widget*>& Widget::GetChildren() const
+	{
+		return m_children;
+	}
+
+	bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
+	{
+		if (screenX > (uint32_t)GetScreenX() && screenX < GetScreenX() + GetWidth() &&
+			screenY >(uint32_t)GetScreenY() && screenY < GetScreenY() + GetHeight())
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	bool Widget::IsEnabled() const
+	{
+		return m_enabled;
+	}
+
+	void Widget::CaptureMouse()
+	{
+		WidgetMgr::Get().CaptureMouse(this);
+	}
+
+	void Widget::ReleaseMouse()
+	{
+		WidgetMgr::Get().CaptureMouse(nullptr);
+	}
+
+	void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)
+	{
+		m_onMouseMove = callback;
+	}
+
+	void Widget::OnLeftMouseUp(const std::function<bool(int, int)>& callback)
+	{
+		m_onLeftMouseUp = callback;
+	}
+
+	void Widget::OnMouseEnter(const std::function<bool()>& callback)
+	{
+		m_onMouseEnter = callback;
+	}
+
+	void Widget::OnMouseExit(const std::function<bool()>& callback)
+	{
+		m_onMouseExit = callback;
+	}
+
+	void Widget::OnClick(const std::function<bool(int, int)>& callback)
+	{
+		m_onClick = callback;
+	}
+
+	void Widget::OnGetFocus(const std::function<bool()>& callback)
+	{
+		m_onGetFocus = callback;
+	}
+
+	void Widget::OnLoseFocus(const std::function<bool()>& callback)
+	{
+		m_onLoseFocus = callback;
+	}
+
+	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
+	{
+		float width = static_cast<float>(m_size.x);
+		float height = static_cast<float>(m_size.y);
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
+
+		//position : top left corner
+		float windowWidth = windowSize.x;
+		float windowHeight = windowSize.y;
+
+		//compute the position on the screen.
+		//this is in screen space coordinate but the unit is a pixel
+		//so the origin is the center of the screen and it goes from [-window size / 2; window size / 2]
+		float x = (float)m_absPos.x + (width * 0.5f) - (windowWidth * 0.5f);
+		float y = -m_absPos.y - (height * 0.5f) + (windowHeight * 0.5f);
+		float z = (float)m_absPos.z;
+		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, z);
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
+
+		float projWidth = static_cast<float>(windowWidth);
+		float projHeight = static_cast<float>(windowHeight);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, 0.1f, 100.f);
+
+		wvp = DirectX::XMMatrixMultiply(scale, position);
+		wvp = DirectX::XMMatrixMultiply(wvp, view);
+		wvp = DirectX::XMMatrixMultiply(wvp, projection);
+	}
+
 }

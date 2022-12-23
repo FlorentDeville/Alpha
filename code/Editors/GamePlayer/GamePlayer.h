@@ -6,7 +6,10 @@
 
 #include "Core/Singleton.h"
 
-class Widget;
+namespace Widgets
+{
+	class Widget;
+}
 
 namespace Editors
 {
@@ -16,6 +19,6 @@ namespace Editors
 		GamePlayer();
 		~GamePlayer();
 
-		void CreateEditor(Widget* pParent);
+		void CreateEditor(Widgets::Widget* pParent);
 	};
 }

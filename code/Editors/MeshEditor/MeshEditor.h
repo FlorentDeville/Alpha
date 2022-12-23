@@ -17,7 +17,6 @@
 #include <vector>
 #include <string>
 
-class Widget;
 namespace Rendering
 {
 	class RenderTarget;
@@ -28,6 +27,7 @@ namespace Widgets
 	class Button;
 	class Layout;
 	class Text;
+	class Widget;
 }
 
 namespace Editors
@@ -56,7 +56,7 @@ namespace Editors
 	class MeshEditorParameter
 	{
 	public:
-		Widget* pParent;
+		Widgets::Widget* pParent;
 		std::string m_dataMeshPath;
 		std::string m_dataMaterialPath;
 		std::string m_rawBlenderPath;

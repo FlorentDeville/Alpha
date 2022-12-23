@@ -103,13 +103,13 @@ namespace Editors
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
-		pSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(400);
 		pViewportTab->AddWidget(pSplit);
 
 		//create left viewport
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
-		pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
@@ -117,7 +117,7 @@ namespace Editors
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials
 		Widgets::SplitHorizontal* pLeftPanelSplit = new Widgets::SplitHorizontal();
-		pLeftPanelSplit->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pLeftPanelSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
@@ -136,7 +136,7 @@ namespace Editors
 		}
 
 		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
-		pMeshListLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pMeshListLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pLeftPanelSplit->AddTopPanel(pMeshListLayout);
 
@@ -147,7 +147,7 @@ namespace Editors
 
 			//entry layout
 			Widgets::Layout* pEntryLayout = new Widgets::Layout(0, LINE_HEIGHT, 0, 0);
-			pEntryLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pEntryLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			pEntryLayout->SetDirection(Widgets::Layout::Horizontal_Reverse);
 			pMeshListLayout->AddWidget(pEntryLayout);
 
@@ -163,7 +163,7 @@ namespace Editors
 			//mesh name
 			const std::string& meshName = entry.m_displayName;
 			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
 			pEntryLayout->AddWidget(pButton);
 			m_allEntryButton.push_back(pButton);
@@ -175,14 +175,14 @@ namespace Editors
 
 		//bottom split : tab container for materials and logs
 		Widgets::TabContainer* pTabContainer = new Widgets::TabContainer();
-		pTabContainer->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pTabContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pLeftPanelSplit->AddBottomPanel(pTabContainer);
 
 		Widgets::Tab* pMaterialTab = new Widgets::Tab();
 		pTabContainer->AddTab("Material", pMaterialTab);
 
 		Widgets::Layout* pMaterialLayout = new Widgets::Layout(0, 0, 0, 0);
-		pMaterialLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pMaterialLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pMaterialLayout->SetDirection(Widgets::Layout::Vertical);
 		pMaterialTab->AddWidget(pMaterialLayout);
 
@@ -190,7 +190,7 @@ namespace Editors
 		pTabContainer->AddTab("Log", pLogTab);
 
 		m_pLogWidget = new Widgets::Text(1, "");
-		m_pLogWidget->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		m_pLogWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pLogTab->AddWidget(m_pLogWidget);
 
 		pTabContainer->SetSelectedTab(0);
@@ -215,7 +215,7 @@ namespace Editors
 			
 			//material widget
 			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			pButton->OnClick([this, materialIndex](int x, int y) -> bool { return OnMaterialClicked(materialIndex); });
 			pMaterialLayout->AddWidget(pButton);
 

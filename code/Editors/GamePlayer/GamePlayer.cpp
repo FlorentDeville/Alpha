@@ -20,12 +20,12 @@ namespace Editors
 	GamePlayer::~GamePlayer()
 	{}
 
-	void GamePlayer::CreateEditor(Widget* pParent)
+	void GamePlayer::CreateEditor(Widgets::Widget* pParent)
 	{
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
-		pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnGetFocus([]() -> bool { Inputs::InputMgr::Get().Enable(); return true; });
 		pViewport->OnLoseFocus([]() -> bool { Inputs::InputMgr::Get().Disable(); return true; });
 		pViewport->OnGetRenderTargetTexture([]() -> Rendering::TextureId { return RenderModule::Get().GetGameRenderTargetTextureId(); });

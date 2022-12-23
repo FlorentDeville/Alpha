@@ -19,7 +19,6 @@
 
 struct Message;
 class SysWindow;
-class Widget;
 
 namespace Widgets
 {
@@ -29,78 +28,79 @@ namespace Widgets
 	class Layout;
 	class Split;
 	class Viewport;
+	class Widget;
+
+	class WidgetMgrParameter
+	{
+	public:
+		std::string m_gameShaderPath;
+		std::string m_editorFontsPath;
+		SysWindow* m_pMainWindow;
+	};
+
+	class WidgetMgr : public Core::Singleton<WidgetMgr>
+	{
+		friend class Widgets::Button;
+		friend class Widgets::Container;
+		friend class Widgets::Icon;
+		friend class Widgets::Layout;
+		friend class Widgets::Split;
+		friend class Widgets::Viewport;
+		friend class Widgets::Widget;
+
+	public:
+		WidgetMgr();
+		~WidgetMgr();
+
+		void Init(const WidgetMgrParameter& parameter);
+
+		void Release();
+
+		void RegisterWidget(Widget* pWidget);
+
+		void SetRoot(Widget* pRoot);
+
+		void Update();
+
+		void Draw();
+
+		void Resize();
+
+		void HandleMsg(const Message& msg);
+
+		Rendering::FontId GetUIFontId() const;
+
+		//Return the position of the cursor in the entire screen.
+		DirectX::XMINT2 GetCursorPosition() const;
+
+		void SetFocus(Widget* pWidget);
+		void CaptureMouse(Widget* pWidget);
+
+	private:
+
+		std::set<Widget*> m_widgets;
+		std::deque<Widget*> m_sortedWidgets; //sorted from the deepest to the highest.
+
+		Widget* m_pFocusedWidget;	//Widget currently getting the focus. It will receive the keyboard event
+		Widget* m_pCapturedWidget;	//Widget current requesting to capture the mouse event.
+
+		Widget* m_pRoot;
+
+		int32_t m_prevMouseX;
+		int32_t m_prevMouseY;
+
+		//Ids of resources used to render widgets
+		Rendering::MaterialId m_materialId;
+		Rendering::MaterialId m_iconMaterialId;
+		Rendering::MeshId m_quadMeshId;
+
+		Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
+		Rendering::FontId m_segoeUIFontId;
+
+		SysWindow* m_pMainSysWindow;
+
+		void ComputeSortedWidgetQueue();
+
+		const Widget* GetFocusedWidget() const;
+	};
 }
-
-class WidgetMgrParameter
-{
-public:
-	std::string m_gameShaderPath;
-	std::string m_editorFontsPath;
-	SysWindow* m_pMainWindow;
-};
-
-class WidgetMgr : public Core::Singleton<WidgetMgr>
-{
-	friend class Widgets::Button;
-	friend class Widgets::Container;
-	friend class Widgets::Split;
-	friend class Widgets::Viewport;
-	friend class Widgets::Icon;
-	friend class Widget;
-	friend class Widgets::Layout;
-
-public:
-	WidgetMgr();
-	~WidgetMgr();
-
-	void Init(const WidgetMgrParameter& parameter);
-
-	void Release();
-
-	void RegisterWidget(Widget* pWidget);
-
-	void SetRoot(Widget* pRoot);
-
-	void Update();
-
-	void Draw();
-
-	void Resize();
-
-	void HandleMsg(const Message& msg);
-
-	Rendering::FontId GetUIFontId() const;
-
-	//Return the position of the cursor in the entire screen.
-	DirectX::XMINT2 GetCursorPosition() const;
-
-	void SetFocus(Widget* pWidget);
-	void CaptureMouse(Widget* pWidget);
-
-private:
-
-	std::set<Widget*> m_widgets;
-	std::deque<Widget*> m_sortedWidgets; //sorted from the deepest to the highest.
-
-	Widget* m_pFocusedWidget;	//Widget currently getting the focus. It will receive the keyboard event
-	Widget* m_pCapturedWidget;	//Widget current requesting to capture the mouse event.
-
- 	Widget* m_pRoot;
-	
-	int32_t m_prevMouseX;
-	int32_t m_prevMouseY;
-
-	//Ids of resources used to render widgets
-	Rendering::MaterialId m_materialId;
-	Rendering::MaterialId m_iconMaterialId;
-	Rendering::MeshId m_quadMeshId;
-
-	Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
-	Rendering::FontId m_segoeUIFontId;
-	
-	SysWindow* m_pMainSysWindow;
-
-	void ComputeSortedWidgetQueue();
-
-	const Widget* GetFocusedWidget() const;
-};

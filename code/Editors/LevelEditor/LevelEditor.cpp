@@ -227,7 +227,7 @@ namespace Editors
 		delete m_pRenderTarget;
 	}
 
-	void LevelEditor::CreateEditor(Widget* pParent)
+	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
 	{
 		CreateLevel(m_level, m_assetIdToMeshId, m_assetIdToMaterialId);
 
@@ -241,7 +241,7 @@ namespace Editors
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
-		pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });

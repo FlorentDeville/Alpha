@@ -16,10 +16,14 @@
 #include <map>
 #include <DirectXMath.h>
 
-class Widget;
 namespace Rendering
 {
 	class RenderTarget;
+}
+
+namespace Widgets
+{
+	class Widget;
 }
 
 namespace Editors
@@ -30,7 +34,7 @@ namespace Editors
 		LevelEditor();
 		~LevelEditor();
 
-		void CreateEditor(Widget* pParent);
+		void CreateEditor(Widgets::Widget* pParent);
 
 		void Update();
 		void Render();

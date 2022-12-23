@@ -10,11 +10,11 @@
 #include <string>
 #include <vector>
 
-class Widget;
 namespace Widgets
 {
 	class Layout;
 	class Text;
+	class Widget;
 }
 
 namespace Editors
@@ -31,7 +31,7 @@ namespace Editors
 	class ShaderEditorParameter
 	{
 	public:
-		Widget* m_pParent;
+		Widgets::Widget* m_pParent;
 		std::string m_rawShaderPath;
 		std::string m_dataShaderPath;
 		std::string m_shaderCompilerPath;
