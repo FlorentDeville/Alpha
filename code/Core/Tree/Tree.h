@@ -20,7 +20,7 @@ namespace Core
 
 		const std::vector<TreeNode*>& GetChildren() const;
 
-		void AddChildren(T& child);
+		TreeNode<T>* AddChildren(T& child);
 
 	private:
 		T m_content;
@@ -72,10 +72,12 @@ namespace Core
 		return m_children;
 	}
 
-	template<class T> void TreeNode<T>::AddChildren(T& child)
+	template<class T> TreeNode<T>* TreeNode<T>::AddChildren(T& child)
 	{
 		TreeNode<T>* pNewNode = new TreeNode<T>(this, child);
 		m_children.push_back(pNewNode);
+
+		return pNewNode;
 	}
 
 	template<class T> Tree<T>::Tree()

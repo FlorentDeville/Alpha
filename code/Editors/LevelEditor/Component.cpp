@@ -1,0 +1,87 @@
+/********************************************************************/
+/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#include "Editors/LevelEditor/Component.h"
+
+#include <assert.h>
+
+namespace Editors
+{
+	Component::Component(const std::string& name)
+		: m_name(name)
+		, m_properties()
+	{}
+
+	Component::~Component()
+	{
+		for (const std::pair<std::string, Property*>& pair : m_properties)
+			delete pair.second;
+
+		m_properties.clear();
+	}
+
+	const std::string& Component::GetName() const
+	{
+		return m_name;
+	}
+
+	void Component::AddProperty(Property* property)
+	{
+		m_properties[property->GetName()] = property;
+	}
+
+	Property* Component::GetProperty(const std::string& name)
+	{
+		std::map<std::string, Property*>::iterator it = m_properties.find(name);
+		if (it == m_properties.end())
+			return nullptr;
+
+		return it->second;
+	}
+
+	const Property* Component::GetProperty(const std::string& name) const
+	{
+		std::map<std::string, Property*>::const_iterator it = m_properties.find(name);
+		if (it == m_properties.end())
+			return nullptr;
+
+		return it->second;
+	}
+
+	void Component::GetPropertyValue(const std::string& name, Systems::AssetId& id) const
+	{
+		const Property* pProperty = GetProperty(name);
+		assert(pProperty);
+
+		const PropertyValueAssetId& value = dynamic_cast<const PropertyValueAssetId&>(pProperty->GetValue());
+		id = value.Get();
+	}
+
+	void Component::GetPropertyValue(const std::string& name, Core::Mat44f& m) const
+	{
+		const Property* pProperty = GetProperty(name);
+		assert(pProperty);
+
+		const PropertyValueMat44f& value = dynamic_cast<const PropertyValueMat44f&>(pProperty->GetValue());
+		m = value.Get();
+	}
+
+	void Component::SetPropertyValue(const std::string& name, Systems::AssetId id)
+	{
+		Property* pProperty = GetProperty(name);
+		assert(pProperty);
+
+		PropertyValueAssetId& value = dynamic_cast<PropertyValueAssetId&>(pProperty->GetValue());
+		value.Set(id);
+	}
+
+	void Component::SetPropertyValue(const std::string& name, const Core::Mat44f& m)
+	{
+		Property* pProperty = GetProperty(name);
+		assert(pProperty);
+
+		PropertyValueMat44f& value = dynamic_cast<PropertyValueMat44f&>(pProperty->GetValue());
+		value.Set(m);
+	}
+}

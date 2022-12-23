@@ -60,7 +60,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\workspace\Alpha\code\Core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -92,10 +92,14 @@
   <ItemGroup>
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Math\Mat44f.cpp" />
+    <ClCompile Include="Math\Vec4f.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Math\Mat44f.h" />
+    <ClInclude Include="Math\Vec4f.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Tree\Tree.h" />
   </ItemGroup>
