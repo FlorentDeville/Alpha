@@ -14,6 +14,7 @@
 #include "Systems/Assets/AssetId.h"
 
 #include <map>
+#include <DirectXMath.h>
 
 class Widget;
 namespace Rendering
@@ -37,6 +38,14 @@ namespace Editors
 	private:
 		Rendering::RenderTarget* m_pRenderTarget;
 		float m_aspectRatio;
+
+		char m_padding[4];
+
+		//mouse controls
+		DirectX::XMUINT2 m_mousePreviousPos;
+		DirectX::XMMATRIX m_cameraTransform;
+		bool m_firstFrameMouseDown;
+		bool m_enableViewportControl;
 
 		Level m_level;
 

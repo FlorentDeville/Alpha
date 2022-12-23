@@ -293,6 +293,7 @@ void Update()
 
 	Editors::MeshEditor::Get().Update();
 	Editors::ShaderEditor::Get().Update();
+	Editors::LevelEditor::Get().Update();
 	GameMgr::Get().Update();
 	WidgetMgr::Get().Update();
 }

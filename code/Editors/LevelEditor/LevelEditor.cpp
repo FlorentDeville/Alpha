@@ -25,6 +25,9 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/Viewport.h"
 
+//needed for the operator* between vectors and floats.
+using namespace DirectX;
+
 namespace Editors
 {
 	void RenderTreeNodeRecursive(const Core::TreeNode<Entity*>* pNode, const DirectX::XMMATRIX& parent, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& proj,
@@ -166,7 +169,7 @@ namespace Editors
 
 		Entity* pPlan = new Entity();
 		Component* pPlanTransform = CreateComponentTransform();
-		float scale = 1;
+		float scale = 100;
 		pPlanTransform->SetPropertyValue("Local", Core::Mat44f(
 			Core::Vec4f(scale, 0, 0, 0),
 			Core::Vec4f(0, scale, 0, 0),
@@ -192,7 +195,7 @@ namespace Editors
 
 		pCube->AddComponent(pCubeTransform);
 		pCube->AddComponent(pCubeRendering);
-		level.AddEntity(pCube, planNode);
+		level.AddEntity(pCube, root);
 
 		//second child, the torus
 		Entity* pTorus = new Entity();
@@ -205,13 +208,18 @@ namespace Editors
 
 		pTorus->AddComponent(pTorusTransform);
 		pTorus->AddComponent(pTorusRendering);
-		level.AddEntity(pTorus, planNode);
+		level.AddEntity(pTorus, root);
 	}
 
 	LevelEditor::LevelEditor()
 		: m_pRenderTarget(nullptr)
 		, m_aspectRatio(0.f)
 		, m_level()
+		, m_enableViewportControl(false)
+		, m_firstFrameMouseDown(true)
+		, m_mousePreviousPos()
+		, m_padding()
+		, m_cameraTransform(DirectX::XMMatrixIdentity())
 	{}
 
 	LevelEditor::~LevelEditor()
@@ -234,8 +242,8 @@ namespace Editors
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
 		pViewport->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
-		pViewport->OnGetFocus([]() -> bool { Inputs::InputMgr::Get().Enable(); return true; });
-		pViewport->OnLoseFocus([]() -> bool { Inputs::InputMgr::Get().Disable(); return true; });
+		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
+		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
 
 		pViewportTab->AddWidget(pViewport);
@@ -252,7 +260,75 @@ namespace Editors
 	}
 
 	void LevelEditor::Update()
-	{}
+	{
+		if (!m_enableViewportControl)
+			return;
+
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseLeftButtonDown())
+		{
+			DirectX::XMUINT2 mousePosition;
+			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+			if (m_firstFrameMouseDown)
+			{
+				m_mousePreviousPos = mousePosition;
+				m_firstFrameMouseDown = false;
+			}
+
+			DirectX::XMINT2 delta;
+			delta.x = m_mousePreviousPos.x - mousePosition.x;
+			delta.y = m_mousePreviousPos.y - mousePosition.y;
+
+			const float ROTATION_SPEED = 0.001f;
+			DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(-static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+			DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(eulerRotation);
+			m_cameraTransform = DirectX::XMMatrixMultiply(orientation, m_cameraTransform);
+			m_mousePreviousPos = mousePosition;
+		}
+		else if (!m_firstFrameMouseDown)
+		{
+			m_firstFrameMouseDown = true;
+		}
+
+		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();	
+		if (mouseWheelDistance != 0)
+		{
+			const float CAMERA_DISTANCE_SPEED = 0.05f;
+			const float MIN_DISTANCE = 2;
+			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0, 0, 1, 1) * mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(translation);
+			m_cameraTransform = DirectX::XMMatrixMultiply(translationMatrix, m_cameraTransform);
+		}
+
+		DirectX::XMVECTOR translation = DirectX::XMVectorSet(0, 0, 0, 1);
+		const float TRANSLATION_SPEED = 0.5f;
+		if (inputs.IsKeyPressed('W')) //forward
+		{
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, TRANSLATION_SPEED, 1));
+		}
+		if (inputs.IsKeyPressed('S')) //backward
+		{
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, -TRANSLATION_SPEED, 1));
+		}
+		if (inputs.IsKeyPressed('A')) //left
+		{
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(-TRANSLATION_SPEED, 0, 0, 1));
+		}
+		if (inputs.IsKeyPressed('D')) //right
+		{
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(TRANSLATION_SPEED, 0, 0, 1));
+		}
+		if (inputs.IsKeyPressed('Q')) //up
+		{
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, TRANSLATION_SPEED, 0, 1));
+		}
+		if (inputs.IsKeyPressed('E')) //up
+		{
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, -TRANSLATION_SPEED, 0, 1));
+		}
+		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(translation);
+		m_cameraTransform = DirectX::XMMatrixMultiply(translationMatrix, m_cameraTransform);
+	}
 
 	void LevelEditor::Render()
 	{
@@ -260,14 +336,11 @@ namespace Editors
 
 		//view
 		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
 
-		//calculate the camera position
-		//DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
-		//DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 10, -10, 1));
-		//DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1); //DirectX::XMVector3Transform(m_cameraTarget, txPos);
+		DirectX::XMVECTOR targetOffset = DirectX::XMVectorSet(0, 0, 1, 1);
+		DirectX::XMVECTOR cameraLookAt = DirectX::XMVector4Transform(targetOffset, m_cameraTransform);
 
+		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
 
 		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
 		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
@@ -278,7 +351,7 @@ namespace Editors
 		const float fov = 45.f;
 		float nearDistance = 0.1f;
 		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 1000.0f);
 
 		//loop through the tree
 		const Core::TreeNode<Entity*>& root = m_level.GetRoot();
