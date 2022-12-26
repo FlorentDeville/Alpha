@@ -7,21 +7,24 @@
 namespace Core
 {
 	Vec4f::Vec4f()
-		: m_x(0)
-		, m_y(0)
-		, m_z(0)
-		, m_w(0)
+		: m_values()
 	{}
 
 	Vec4f::Vec4f(float x, float y, float z, float w)
-		: m_x(x)
-		, m_y(y)
-		, m_z(z)
-		, m_w(w)
-	{}
+	{
+		m_values[0] = x;
+		m_values[1] = y;
+		m_values[2] = z;
+		m_values[3] = w;
+	}
 
-	float Vec4f::GetX() const { return m_x; }
-	float Vec4f::GetY() const { return m_y; }
-	float Vec4f::GetZ() const { return m_z; }
-	float Vec4f::GetW() const { return m_w; }
+	float Vec4f::GetX() const { return m_values[0]; }
+	float Vec4f::GetY() const { return m_values[1]; }
+	float Vec4f::GetZ() const { return m_values[2]; }
+	float Vec4f::GetW() const { return m_values[3]; }
+
+	float Vec4f::Get(int index) const
+	{
+		return m_values[index];
+	}
 }

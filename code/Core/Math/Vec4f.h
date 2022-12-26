@@ -17,10 +17,9 @@ namespace Core
 		float GetZ() const;
 		float GetW() const;
 
+		float Get(int index) const;
+
 	private:
-		float m_x;
-		float m_y;
-		float m_z;
-		float m_w; //0 for a vector, 1 for a point
+		float m_values[4];
 	};
 }

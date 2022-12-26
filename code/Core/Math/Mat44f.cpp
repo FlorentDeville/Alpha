@@ -26,4 +26,9 @@ namespace Core
 	const Vec4f& Mat44f::GetY() const { return m_rows[1]; }
 	const Vec4f& Mat44f::GetZ() const { return m_rows[2]; }
 	const Vec4f& Mat44f::GetT() const { return m_rows[3]; }
+
+	float Mat44f::Get(int row, int column) const
+	{
+		return m_rows[row].Get(column);
+	}
 }

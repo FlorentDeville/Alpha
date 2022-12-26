@@ -19,6 +19,8 @@ namespace Core
 		const Vec4f& GetZ() const;
 		const Vec4f& GetT() const;
 
+		float Get(int row, int column) const;
+
 	private:
 		Vec4f m_rows[4];
 	};
