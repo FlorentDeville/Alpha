@@ -20,7 +20,9 @@
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
-    <ClInclude Include="Widgets\AssetIdWidget.h" />
+    <ClInclude Include="Widgets\AssetId\AssetIdModel.h" />
+    <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
+    <ClInclude Include="Widgets\BaseModel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
@@ -32,7 +34,8 @@
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="RawDb.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
-    <ClCompile Include="Widgets\AssetIdWidget.cpp" />
+    <ClCompile Include="Widgets\AssetId\AssetIdModel.cpp" />
+    <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

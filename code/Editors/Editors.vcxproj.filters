@@ -42,7 +42,13 @@
     <ClInclude Include="LevelEditor\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Widgets\AssetIdWidget.h">
+    <ClInclude Include="Widgets\AssetId\AssetIdWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\BaseModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\AssetId\AssetIdModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,7 +80,10 @@
     <ClCompile Include="LevelEditor\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\AssetIdWidget.cpp">
+    <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\AssetId\AssetIdModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -9,7 +9,8 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/Entity.h"
-#include "Editors/Widgets/AssetIdWidget.h"
+#include "Editors/Widgets/AssetId/AssetIdModel.h"
+#include "Editors/Widgets/AssetId/AssetIdWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -134,7 +135,10 @@ namespace Editors
 					pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
 					pLabel->SetSizeStyle(0);
 					pItemLayout->AddWidget(pLabel);
-					pItemLayout->AddWidget(new Editors::AssetIdWidget(0, 0, 1, meshAssetId));
+
+					AssetIdWidget* pAssetIdWidget = new AssetIdWidget(0, 0, 1);
+					pAssetIdWidget->SetModel(new AssetIdModel(meshAssetId));
+					pItemLayout->AddWidget(pAssetIdWidget);
 					pLayout->AddWidget(pItemLayout);
 				}
 				{
@@ -147,7 +151,10 @@ namespace Editors
 					pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
 					pLabel->SetSizeStyle(0);
 					pItemLayout->AddWidget(pLabel);
-					pItemLayout->AddWidget(new Editors::AssetIdWidget(0, 0, 1, materialAssetId));
+					
+					AssetIdWidget* pAssetIdWidget = new AssetIdWidget(0, 0, 1);
+					pAssetIdWidget->SetModel(new AssetIdModel(materialAssetId));
+					pItemLayout->AddWidget(pAssetIdWidget);
 					pLayout->AddWidget(pItemLayout);
 				}
 			}
