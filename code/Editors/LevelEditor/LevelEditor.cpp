@@ -11,6 +11,8 @@
 #include "Editors/LevelEditor/Entity.h"
 #include "Editors/Widgets/AssetId/AssetIdModel.h"
 #include "Editors/Widgets/AssetId/AssetIdWidget.h"
+#include "Editors/Widgets/Matrix/MatrixModel.h"
+#include "Editors/Widgets/Matrix/MatrixWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -113,18 +115,27 @@ namespace Editors
 
 	void AddAssetIdWidgetRecursive(Widgets::Layout* pLayout, const Core::TreeNode<Entity*>* pNode)
 	{
+		int ITEM_HEIGHT = 15;
+
 		const Editors::Entity* pEntity = pNode->GetContent();
 		if (pEntity)
 		{
+			Widgets::Label* pEntityLabel = new Widgets::Label(0, 0, 1, "Entity XXX");
+			pEntityLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
+			pLayout->AddWidget(pEntityLabel);
+
 			const Editors::Component* pComponent = pEntity->GetComponent("Rendering");
 			if (pComponent)
 			{
+				Widgets::Label* pComponentLabel = new Widgets::Label(0, 0, 1, "---Rendering");
+				pComponentLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
+				pLayout->AddWidget(pComponentLabel);
+				
 				Systems::AssetId meshAssetId;
 				Systems::AssetId materialAssetId;
 				pComponent->GetPropertyValue("Mesh", meshAssetId);
 				pComponent->GetPropertyValue("Material", materialAssetId);
-
-				int ITEM_HEIGHT = 15;
+			
 				{
 					Widgets::Layout* pItemLayout = new Widgets::Layout(0, ITEM_HEIGHT, 0, 0);
 					pItemLayout->SetDirection(Widgets::Layout::Horizontal);
@@ -158,6 +169,34 @@ namespace Editors
 					pLayout->AddWidget(pItemLayout);
 				}
 			}
+
+			const Editors::Component* pTransformComponent = pEntity->GetComponent("Transform");
+			if (pTransformComponent)
+			{
+				Widgets::Label* pComponentLabel = new Widgets::Label(0, 0, 1, "---Transform");
+				pComponentLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
+				pLayout->AddWidget(pComponentLabel);
+
+				const Editors::Property* pProperty = pTransformComponent->GetProperty("Local");
+				const Editors::PropertyValueMat44f& propertyValue = static_cast<const Editors::PropertyValueMat44f&>(pProperty->GetValue());
+				const Core::Mat44f& local = propertyValue.Get();
+
+				Widgets::Layout* pItemLayout = new Widgets::Layout(0, 4 * ITEM_HEIGHT, 0, 0);
+				pItemLayout->SetDirection(Widgets::Layout::Horizontal);
+				pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+
+				Widgets::Label* pLabel = new Widgets::Label();
+				pLabel->SetText("Local");
+				pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
+				pLabel->SetSizeStyle(0);
+				pItemLayout->AddWidget(pLabel);
+
+				MatrixWidget* pWidget = new MatrixWidget();
+				pWidget->SetModel(new MatrixModel(&local));
+				pItemLayout->AddWidget(pWidget);
+				pLayout->AddWidget(pItemLayout);
+			}
+
 		}
 
 		const std::vector<Core::TreeNode<Entity*>*>& children = pNode->GetChildren();
