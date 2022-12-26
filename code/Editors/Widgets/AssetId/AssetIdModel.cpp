@@ -18,7 +18,17 @@ namespace Editors
 	AssetIdModel::~AssetIdModel()
 	{}
 
-	const std::string& AssetIdModel::GetData() const
+	int AssetIdModel::GetRowCount() const
+	{
+		return 1;
+	}
+
+	int AssetIdModel::GetColumnCount() const
+	{
+		return 1;
+	}
+
+	const std::string& AssetIdModel::GetData(int rowId, int columnId) const
 	{
 		if (!m_cachedValue.empty())
 			return m_cachedValue;

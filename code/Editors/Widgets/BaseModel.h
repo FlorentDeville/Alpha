@@ -24,6 +24,9 @@ namespace Editors
 		{}
 		virtual ~BaseModel() {}
 
-		virtual const std::string& GetData() const = 0;
+		virtual int GetRowCount() const = 0;
+		virtual int GetColumnCount() const = 0;
+
+		virtual const std::string& GetData(int rowId = 0, int columnId = 0) const = 0;
 	};
 }

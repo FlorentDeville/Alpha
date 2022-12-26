@@ -5,24 +5,28 @@
 #pragma once
 
 #include "Editors/Widgets/BaseModel.h"
-#include "Systems/Assets/AssetId.h"
 
+namespace Core
+{
+	class Mat44f;
+}
 namespace Editors
 {
-	class AssetIdModel : public BaseModel
+	class MatrixModel : public BaseModel
 	{
 	public:
-		AssetIdModel(Systems::AssetId id);
-		~AssetIdModel();
+		MatrixModel(const Core::Mat44f* pMatrix);
+		~MatrixModel();
 
 		int GetRowCount() const override;
 		int GetColumnCount() const override;
 
-		const std::string& GetData(int rowId=0, int columnId=0) const override;
+		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
 
 	private:
-		Systems::AssetId m_id;
+		const Core::Mat44f* m_pMatrix;
 
-		mutable std::string m_cachedValue;
+		mutable std::string m_cache[4][3];
+		mutable bool m_isDirty;
 	};
 }
