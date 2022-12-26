@@ -21,6 +21,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
 
+#include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Viewport.h"
@@ -220,7 +221,14 @@ namespace Editors
 		, m_mousePreviousPos()
 		, m_padding()
 		, m_cameraTransform(DirectX::XMMatrixIdentity())
-	{}
+	{
+		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
+		DirectX::XMMATRIX cameraView = DirectX::XMMatrixLookAtLH(cameraPosition, DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0));
+		cameraView.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+
+		m_cameraTransform = DirectX::XMMatrixTranspose(cameraView);
+		m_cameraTransform.r[3] = cameraPosition;
+	}
 
 	LevelEditor::~LevelEditor()
 	{
@@ -240,13 +248,19 @@ namespace Editors
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
 
+		//create the split between viewport and right panel
+		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
+		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pSplit->SetLeftPanelWidth(800);
+		pViewportTab->AddWidget(pSplit);
+
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
 
-		pViewportTab->AddWidget(pViewport);
+		pSplit->AddLeftPanel(pViewport);
 
 		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
 		if (pTabContainer)
