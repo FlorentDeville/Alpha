@@ -9,6 +9,7 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/Entity.h"
+#include "Editors/Widgets/AssetIdWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -21,6 +22,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
 
+#include "Widgets/Layout.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
@@ -106,6 +108,68 @@ namespace Editors
 		pRendering->AddProperty(pMaterialProperty);
 
 		return pRendering;
+	}
+
+	void AddAssetIdWidgetRecursive(Widgets::Layout* pLayout, const Core::TreeNode<Entity*>* pNode)
+	{
+		const Editors::Entity* pEntity = pNode->GetContent();
+		if (pEntity)
+		{
+			const Editors::Component* pComponent = pEntity->GetComponent("Rendering");
+			if (pComponent)
+			{
+				Systems::AssetId meshAssetId;
+				Systems::AssetId materialAssetId;
+				pComponent->GetPropertyValue("Mesh", meshAssetId);
+				pComponent->GetPropertyValue("Material", materialAssetId);
+
+				int ITEM_HEIGHT = 15;
+				{
+					Widgets::Layout* pItemLayout = new Widgets::Layout(0, ITEM_HEIGHT, 0, 0);
+					pItemLayout->SetDirection(Widgets::Layout::Horizontal);
+					pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+
+					Widgets::Label* pLabel = new Widgets::Label();
+					pLabel->SetText("Mesh Id");
+					pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
+					pLabel->SetSizeStyle(0);
+					pItemLayout->AddWidget(pLabel);
+					pItemLayout->AddWidget(new Editors::AssetIdWidget(0, 0, 1, meshAssetId));
+					pLayout->AddWidget(pItemLayout);
+				}
+				{
+					Widgets::Layout* pItemLayout = new Widgets::Layout(0, ITEM_HEIGHT, 0, 0);
+					pItemLayout->SetDirection(Widgets::Layout::Horizontal);
+					pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+
+					Widgets::Label* pLabel = new Widgets::Label();
+					pLabel->SetText("Material Id");
+					pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
+					pLabel->SetSizeStyle(0);
+					pItemLayout->AddWidget(pLabel);
+					pItemLayout->AddWidget(new Editors::AssetIdWidget(0, 0, 1, materialAssetId));
+					pLayout->AddWidget(pItemLayout);
+				}
+			}
+		}
+
+		const std::vector<Core::TreeNode<Entity*>*>& children = pNode->GetChildren();
+		for (const Core::TreeNode<Entity*>* pChild : children)
+		{
+			AddAssetIdWidgetRecursive(pLayout, pChild);
+		}
+	}
+
+	void CreateLeftPanel(const Core::TreeNode<Entity*>* pNode, Widgets::SplitVertical* pSplit)
+	{
+		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
+		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_STRETCH);
+		pLayout->SetDirection(Widgets::Layout::Vertical);
+
+		pSplit->AddRightPanel(pLayout);
+
+		AddAssetIdWidgetRecursive(pLayout, pNode);
+		//pLayout->AddWidget(new Widgets::Label(0, 0, 1, "Test"));
 	}
 
 	void CreateLevel(Level& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
@@ -271,6 +335,8 @@ namespace Editors
 		{
 			pParent->AddWidget(pViewportTab);
 		}
+
+		CreateLeftPanel(&m_level.GetRoot(), pSplit);
 	}
 
 	void LevelEditor::Update()
