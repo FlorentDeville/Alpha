@@ -10,6 +10,14 @@
 
 namespace Widgets
 {
+	Label::Label()
+		: Widget(0, 0, 0, 0)
+		, m_fontScale(1)
+		, m_text()
+	{
+		SetSizeStyle(Widget::HSIZE_STRETCH);
+	}
+
 	Label::Label(int32_t locX, int32_t locY, float scale, const std::string& text)
 		: Widget(0, 0, locX, locY)
 		, m_fontScale(scale)
@@ -26,5 +34,15 @@ namespace Widgets
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
 		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
 		RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor);
+	}
+
+	void Label::SetFontScale(float scale)
+	{
+		m_fontScale = scale;
+	}
+
+	void Label::SetText(const std::string& text)
+	{
+		m_text = text;
 	}
 }
