@@ -22,12 +22,12 @@ namespace Editors
 		MatrixWidget();
 		~MatrixWidget();
 
-		void SetModel(BaseModel* pModel);
+		void SetModel(const BaseModel* pModel);
 
 		void Update() override;
 
 	private:
-		BaseModel* m_pModel;
+		const BaseModel* m_pModel;
 
 		Widgets::Layout* m_pLayout;
 		Widgets::Label* m_pLabel[4][3];

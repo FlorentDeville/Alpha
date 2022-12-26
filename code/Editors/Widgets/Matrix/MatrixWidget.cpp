@@ -41,7 +41,7 @@ namespace Editors
 	MatrixWidget::~MatrixWidget()
 	{}
 
-	void MatrixWidget::SetModel(BaseModel* pModel)
+	void MatrixWidget::SetModel(const BaseModel* pModel)
 	{
 		m_pModel = pModel;
 	}

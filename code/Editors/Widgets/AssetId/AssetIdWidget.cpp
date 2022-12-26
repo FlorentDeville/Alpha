@@ -21,7 +21,7 @@ namespace Editors
 	AssetIdWidget::~AssetIdWidget()
 	{}
 
-	void AssetIdWidget::SetModel(const AssetIdModel* pModel)
+	void AssetIdWidget::SetModel(const BaseModel* pModel)
 	{
 		m_pModel = pModel;
 	}

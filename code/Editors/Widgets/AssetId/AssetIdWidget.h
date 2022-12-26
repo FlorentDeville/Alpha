@@ -13,7 +13,7 @@ namespace Systems
 
 namespace Editors
 {
-	class AssetIdModel;
+	class BaseModel;
 
 	class AssetIdWidget : public Widgets::Label
 	{
@@ -21,11 +21,11 @@ namespace Editors
 		AssetIdWidget(int32_t locX, int32_t locY, float scale);
 		~AssetIdWidget();
 
-		void SetModel(const AssetIdModel* pModel);
+		void SetModel(const BaseModel* pModel);
 
 		void Update() override;
 
 	private:
-		const AssetIdModel* m_pModel;
+		const BaseModel* m_pModel;
 	};
 }
