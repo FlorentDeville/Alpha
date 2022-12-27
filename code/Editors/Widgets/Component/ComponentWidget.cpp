@@ -93,9 +93,4 @@ namespace Editors
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
-
-	void ComponentWidget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
-	{
-		Widgets::Widget::Resize(parentAbsPos, parentSize);
-	}
 }
