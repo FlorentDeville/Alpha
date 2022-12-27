@@ -230,7 +230,7 @@ namespace Editors
 		//create a base plan with a scale as a root
 		Core::TreeNode<Entity*>& root = level.GetRoot();
 
-		Entity* pPlan = new Entity();
+		Entity* pPlan = new Entity("plan");
 		Component* pPlanTransform = CreateComponentTransform();
 		float scale = 100;
 		pPlanTransform->SetPropertyValue("Local", Core::Mat44f(
@@ -248,7 +248,7 @@ namespace Editors
 		Core::TreeNode<Entity*>& planNode = level.AddEntity(pPlan, root);
 
 		//first child is a cube
-		Entity* pCube = new Entity();
+		Entity* pCube = new Entity("cube");
 		Component* pCubeTransform = CreateComponentTransform();
 		pCubeTransform->SetPropertyValue("Local", Core::Mat44f(Core::Vec4f(1, 0, 0, 0), Core::Vec4f(0, 1, 0, 0), Core::Vec4f(0, 0, 1, 0), Core::Vec4f(-5, 0, 0, 1)));
 
@@ -261,7 +261,7 @@ namespace Editors
 		level.AddEntity(pCube, root);
 
 		//second child, the torus
-		Entity* pTorus = new Entity();
+		Entity* pTorus = new Entity("torus");
 		Component* pTorusTransform = CreateComponentTransform();
 		pTorusTransform->SetPropertyValue("Local", Core::Mat44f(Core::Vec4f(1, 0, 0, 0), Core::Vec4f(0, 1, 0, 0), Core::Vec4f(0, 0, 1, 0), Core::Vec4f(5, 0, 0, 1)));
 

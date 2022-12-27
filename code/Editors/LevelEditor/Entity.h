@@ -14,7 +14,7 @@ namespace Editors
 	class Entity
 	{
 	public:
-		Entity();
+		Entity(const std::string& name);
 		~Entity();
 
 		void AddComponent(Component* component);
@@ -22,6 +22,7 @@ namespace Editors
 		const Component* GetComponent(const std::string& name) const;
 
 	private:
+		std::string m_name;
 		std::map<std::string, Component*> m_components;
 	};
 }

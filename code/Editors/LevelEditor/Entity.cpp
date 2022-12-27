@@ -8,8 +8,9 @@
 
 namespace Editors
 {
-	Entity::Entity()
+	Entity::Entity(const std::string& name)
 		: m_components()
+		, m_name(name)
 	{}
 
 	Entity::~Entity()
