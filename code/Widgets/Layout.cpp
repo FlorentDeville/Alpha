@@ -12,6 +12,13 @@
 
 namespace Widgets
 {
+	Layout::Layout()
+		: Widget()
+		, m_space(0, 0)
+		, m_previousMousePosition(0, 0)
+		, m_dir(Layout::Direction::Horizontal)
+	{}
+
 	Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 		: Widget(w, h, x, y)
 		, m_space(0, 0)
