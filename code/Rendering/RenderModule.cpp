@@ -425,8 +425,9 @@ int RenderModule::PrepareRenderText(const std::string& text, Rendering::FontId f
 		float kerning = 0.0f;
 		if (i > 0)
 		{
+			//the kerning is in pixel but I need to convert it to screen unit [-1; 1]
 			kerning = static_cast<float>(pFont->GetKerning(lastChar, c));
-			kerning = kerning * m_mainResolution.x * 2;
+			kerning = kerning / (m_mainResolution.x * 2);
 		}
 
 		float xoffset = static_cast<float>(fc->m_xoffset) / m_mainResolution.x * 2;
