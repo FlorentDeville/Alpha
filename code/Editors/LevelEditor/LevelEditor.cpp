@@ -9,10 +9,8 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/Entity.h"
-#include "Editors/Widgets/AssetId/AssetIdModel.h"
-#include "Editors/Widgets/AssetId/AssetIdWidget.h"
-#include "Editors/Widgets/Matrix/MatrixModel.h"
-#include "Editors/Widgets/Matrix/MatrixWidget.h"
+#include "Editors/Widgets/Component/ComponentModel.h"
+#include "Editors/Widgets/Component/ComponentWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -25,6 +23,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
 
+#include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
@@ -130,44 +129,11 @@ namespace Editors
 				Widgets::Label* pComponentLabel = new Widgets::Label(0, 0, 1, "---Rendering");
 				pComponentLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
 				pLayout->AddWidget(pComponentLabel);
-				
-				Systems::AssetId meshAssetId;
-				Systems::AssetId materialAssetId;
-				pComponent->GetPropertyValue("Mesh", meshAssetId);
-				pComponent->GetPropertyValue("Material", materialAssetId);
-			
-				{
-					Widgets::Layout* pItemLayout = new Widgets::Layout(0, ITEM_HEIGHT, 0, 0);
-					pItemLayout->SetDirection(Widgets::Layout::Horizontal);
-					pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 
-					Widgets::Label* pLabel = new Widgets::Label();
-					pLabel->SetText("Mesh Id");
-					pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
-					pLabel->SetSizeStyle(0);
-					pItemLayout->AddWidget(pLabel);
-
-					AssetIdWidget* pAssetIdWidget = new AssetIdWidget(0, 0, 1);
-					pAssetIdWidget->SetModel(new AssetIdModel(meshAssetId));
-					pItemLayout->AddWidget(pAssetIdWidget);
-					pLayout->AddWidget(pItemLayout);
-				}
-				{
-					Widgets::Layout* pItemLayout = new Widgets::Layout(0, ITEM_HEIGHT, 0, 0);
-					pItemLayout->SetDirection(Widgets::Layout::Horizontal);
-					pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
-
-					Widgets::Label* pLabel = new Widgets::Label();
-					pLabel->SetText("Material Id");
-					pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
-					pLabel->SetSizeStyle(0);
-					pItemLayout->AddWidget(pLabel);
-					
-					AssetIdWidget* pAssetIdWidget = new AssetIdWidget(0, 0, 1);
-					pAssetIdWidget->SetModel(new AssetIdModel(materialAssetId));
-					pItemLayout->AddWidget(pAssetIdWidget);
-					pLayout->AddWidget(pItemLayout);
-				}
+				ComponentWidget* pNewWidget = new ComponentWidget();
+				pNewWidget->SetModel(new ComponentModel(pComponent));
+				pNewWidget->SetSize(DirectX::XMUINT2(500, 3 * ITEM_HEIGHT));
+				pLayout->AddWidget(pNewWidget);
 			}
 
 			const Editors::Component* pTransformComponent = pEntity->GetComponent("Transform");
@@ -177,24 +143,10 @@ namespace Editors
 				pComponentLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
 				pLayout->AddWidget(pComponentLabel);
 
-				const Editors::Property* pProperty = pTransformComponent->GetProperty("Local");
-				const Editors::PropertyValueMat44f& propertyValue = static_cast<const Editors::PropertyValueMat44f&>(pProperty->GetValue());
-				const Core::Mat44f& local = propertyValue.Get();
-
-				Widgets::Layout* pItemLayout = new Widgets::Layout(0, 4 * ITEM_HEIGHT, 0, 0);
-				pItemLayout->SetDirection(Widgets::Layout::Horizontal);
-				pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
-
-				Widgets::Label* pLabel = new Widgets::Label();
-				pLabel->SetText("Local");
-				pLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
-				pLabel->SetSizeStyle(0);
-				pItemLayout->AddWidget(pLabel);
-
-				MatrixWidget* pWidget = new MatrixWidget();
-				pWidget->SetModel(new MatrixModel(&local));
-				pItemLayout->AddWidget(pWidget);
-				pLayout->AddWidget(pItemLayout);
+				ComponentWidget* pNewWidget = new ComponentWidget();
+				pNewWidget->SetModel(new ComponentModel(pTransformComponent));
+				pNewWidget->SetSize(DirectX::XMUINT2(500, 5 * ITEM_HEIGHT));
+				pLayout->AddWidget(pNewWidget);
 			}
 
 		}

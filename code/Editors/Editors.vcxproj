@@ -23,6 +23,8 @@
     <ClInclude Include="Widgets\AssetId\AssetIdModel.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
+    <ClInclude Include="Widgets\Component\ComponentModel.h" />
+    <ClInclude Include="Widgets\Component\ComponentWidget.h" />
     <ClInclude Include="Widgets\Matrix\MatrixModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
   </ItemGroup>
@@ -38,6 +40,8 @@
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdModel.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
+    <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
+    <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixModel.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
   </ItemGroup>

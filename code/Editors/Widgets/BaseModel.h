@@ -7,6 +7,8 @@
 #include <assert.h>
 #include <string>
 
+#include "Editors/Property.h"
+
 namespace Editors
 {
 	// This is the base class for a model in a model view pattern.
@@ -28,5 +30,8 @@ namespace Editors
 		virtual int GetColumnCount() const = 0;
 
 		virtual const std::string& GetData(int rowId = 0, int columnId = 0) const = 0;
+		virtual PropertyType GetDataType(int rowId = 0, int columnId = 0) const { return PropertyType::kUnknown; }
+
+		virtual const BaseModel* GetSubModel(int rowId = 0, int columnId = 0) const { return nullptr; }
 	};
 }

@@ -31,6 +31,11 @@ namespace Editors
 		m_properties[property->GetName()] = property;
 	}
 
+	int Component::GetPropertyCount() const
+	{
+		return static_cast<int>(m_properties.size());
+	}
+
 	Property* Component::GetProperty(const std::string& name)
 	{
 		std::map<std::string, Property*>::iterator it = m_properties.find(name);
@@ -45,6 +50,15 @@ namespace Editors
 		std::map<std::string, Property*>::const_iterator it = m_properties.find(name);
 		if (it == m_properties.end())
 			return nullptr;
+
+		return it->second;
+	}
+
+	const Property* Component::GetProperty(int index) const
+	{
+		std::map<std::string, Property*>::const_iterator it = m_properties.begin();
+		for (int ii = 0; ii < index; ++ii)
+			++it;
 
 		return it->second;
 	}

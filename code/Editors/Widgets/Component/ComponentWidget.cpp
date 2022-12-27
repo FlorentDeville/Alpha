@@ -1,0 +1,88 @@
+/********************************************************************/
+/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#include "Editors/Widgets/Component/ComponentWidget.h"
+
+#include "Editors/Widgets/BaseModel.h"
+#include "Editors/Widgets/AssetId/AssetIdWidget.h"
+#include "Editors/Widgets/Matrix/MatrixWidget.h"
+
+#include "Widgets/Label.h"
+#include "Widgets/Layout.h"
+
+namespace Editors
+{
+	ComponentWidget::ComponentWidget()
+		: Widget()
+		, m_pModel(nullptr)
+		, m_isDirtyWidget(true)
+	{}
+
+	ComponentWidget::~ComponentWidget()
+	{}
+
+	void ComponentWidget::Update()
+	{
+		if (m_isDirtyWidget)
+		{
+			CreateWidgets();
+			m_isDirtyWidget = false;
+		}
+	}
+
+	void ComponentWidget::SetModel(const BaseModel* pModel)
+	{
+		m_pModel = pModel;
+	}
+
+	void ComponentWidget::CreateWidgets()
+	{
+		Widgets::Layout* pGridLayout = new Widgets::Layout(0, 0, 0, 0);
+		pGridLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pGridLayout->SetDirection(Widgets::Layout::Vertical);
+		AddWidget(pGridLayout);
+
+		const int propertyCount = m_pModel->GetRowCount();
+		for (int ii = 0; ii < propertyCount; ++ii)
+		{
+			Widgets::Layout* pItemLayout = new Widgets::Layout(0, 15, 0, 0);
+			pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+			pItemLayout->SetDirection(Widgets::Layout::Horizontal);
+			pGridLayout->AddWidget(pItemLayout);
+
+			//add property name
+			Widgets::Label* pNameLabel = new Widgets::Label(0, 0, 1, m_pModel->GetData(ii, 0));
+			pNameLabel->SetSize(DirectX::XMUINT2(100, 15));
+			pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_DEFAULT);
+			pItemLayout->AddWidget(pNameLabel);
+
+			PropertyType type = m_pModel->GetDataType(ii, 1);
+			switch (type)
+			{
+			case PropertyType::kAssetMaterial:
+			case PropertyType::kAssetMesh:
+			{
+				AssetIdWidget* pNewWidget = new AssetIdWidget(0, 0, 1);
+				pNewWidget->SetModel(m_pModel->GetSubModel(ii));
+				pItemLayout->AddWidget(pNewWidget);
+			}
+			break;
+
+			case PropertyType::kMat44f:
+			{
+				MatrixWidget* pNewWidget = new MatrixWidget();
+				pNewWidget->SetModel(m_pModel->GetSubModel(ii));
+				pItemLayout->AddWidget(pNewWidget);
+			}
+			break;
+
+			default:
+				assert(false);
+				break;
+			}
+		}
+
+		ResizeChildren();
+	}
+}
