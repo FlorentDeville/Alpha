@@ -20,6 +20,7 @@ namespace Editors
 
 		void SetModel(const BaseModel* pModel);
 
+		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 	private:
 		const BaseModel* m_pModel;
 

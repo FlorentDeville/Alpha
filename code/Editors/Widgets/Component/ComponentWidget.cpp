@@ -10,6 +10,7 @@
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Editors
 {
@@ -17,7 +18,10 @@ namespace Editors
 		: Widget()
 		, m_pModel(nullptr)
 		, m_isDirtyWidget(true)
-	{}
+	{
+		SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
+		SetSize(DirectX::XMUINT2(500, 0));
+	}
 
 	ComponentWidget::~ComponentWidget()
 	{}
@@ -38,23 +42,25 @@ namespace Editors
 
 	void ComponentWidget::CreateWidgets()
 	{
-		Widgets::Layout* pGridLayout = new Widgets::Layout(0, 0, 0, 0);
-		pGridLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		Widgets::Layout* pGridLayout = new Widgets::Layout();
+		pGridLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 		pGridLayout->SetDirection(Widgets::Layout::Vertical);
 		AddWidget(pGridLayout);
 
+		const int FIELD_HEIGHT = 15;
+		const int NAME_WIDTH = 100;
 		const int propertyCount = m_pModel->GetRowCount();
 		for (int ii = 0; ii < propertyCount; ++ii)
 		{
-			Widgets::Layout* pItemLayout = new Widgets::Layout(0, 15, 0, 0);
-			pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+			Widgets::Layout* pItemLayout = new Widgets::Layout(0, FIELD_HEIGHT, 0, 0);
+			pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pItemLayout->SetDirection(Widgets::Layout::Horizontal);
 			pGridLayout->AddWidget(pItemLayout);
 
 			//add property name
 			Widgets::Label* pNameLabel = new Widgets::Label(0, 0, 1, m_pModel->GetData(ii, 0));
-			pNameLabel->SetSize(DirectX::XMUINT2(100, 15));
-			pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_DEFAULT);
+			pNameLabel->SetSize(DirectX::XMUINT2(NAME_WIDTH, FIELD_HEIGHT));
+			pNameLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pItemLayout->AddWidget(pNameLabel);
 
 			PropertyType type = m_pModel->GetDataType(ii, 1);
@@ -65,6 +71,8 @@ namespace Editors
 			{
 				AssetIdWidget* pNewWidget = new AssetIdWidget(0, 0, 1);
 				pNewWidget->SetModel(m_pModel->GetSubModel(ii));
+				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
+				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 				pItemLayout->AddWidget(pNewWidget);
 			}
 			break;
@@ -83,6 +91,11 @@ namespace Editors
 			}
 		}
 
-		ResizeChildren();
+		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	void ComponentWidget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	{
+		Widgets::Widget::Resize(parentAbsPos, parentSize);
 	}
 }

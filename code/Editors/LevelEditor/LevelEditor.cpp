@@ -122,7 +122,6 @@ namespace Editors
 		{
 			EntityWidget* pWidget = new EntityWidget();
 			pWidget->SetModel(new EntityModel(pEntity));
-			pWidget->SetSize(DirectX::XMUINT2(500, 12 * ITEM_HEIGHT));
 			pLayout->AddWidget(pWidget);
 		}
 

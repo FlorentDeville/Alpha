@@ -37,15 +37,24 @@ namespace Widgets
 
 	public:
 
+		// Defines how to compute the size of a widget:
+		// DEFAULT	: fixed size.
+		// STRETCH	: stretch the widget to take all its parent's space.
+		// FIT		: take the size of its content.
 		enum SIZE_STYLE
 		{
-			HSIZE_DEFAULT = 0x0001,
-			HSIZE_STRETCH = 0x0010,
-			VSIZE_DEFAULT = 0x0100,
-			VSIZE_STRETCH = 0x1000,
+			HSIZE_DEFAULT	= 0x00000001,
+			VSIZE_DEFAULT	= 0x00000010,
+
+			HSIZE_STRETCH	= 0x00000100,
+			VSIZE_STRETCH	= 0x00001000,
+
+			HSIZE_FIT		= 0x00010000,
+			VSIZE_FIT		= 0x00100000,
 
 			DEFAULT = HSIZE_DEFAULT | VSIZE_DEFAULT,
 			STRETCH = HSIZE_STRETCH | VSIZE_STRETCH,
+			FIT = HSIZE_FIT | VSIZE_FIT
 		};
 
 		enum class HPOSITION_STYLE
@@ -122,6 +131,7 @@ namespace Widgets
 		void OnLoseFocus(const std::function<bool()>& callback);
 
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
+		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
 		virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 		void ResizeChildren();
 

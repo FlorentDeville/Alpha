@@ -90,20 +90,6 @@ namespace Widgets
 			return;
 
 		int32_t pos = 0;
-		//switch (m_dir)
-		//{
-		//case Horizontal:
-		//case Horizontal_Reverse:
-		//	pos = 0;//m_children.front()->GetX();
-		//	break;
-
-		//case Vertical:
-		//	pos = m_children.front()->GetY();
-		//	break;
-
-		//default:
-		//	assert(false);
-		//}
 
 		for (Widget* pWidget : m_children)
 		{
@@ -150,6 +136,8 @@ namespace Widgets
 				pWidget->ResizeChildren();
 			}
 		}
+
+		ReComputeSize_PostChildren();
 	}
 
 	void Layout::SetDirection(Direction dir)

@@ -61,6 +61,36 @@ namespace Widgets
 			m_size.y = parentSize.y - m_locPos.y;
 	}
 
+	void Widget::ReComputeSize_PostChildren()
+	{
+		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
+		{
+			int maxSize = 0;
+			for (const Widget* pChild : m_children)
+			{
+				int max = pChild->GetWidth() + pChild->GetX();
+				if (max > maxSize) maxSize = max;
+			}
+
+			DirectX::XMUINT2 size = GetSize();
+			size.x = maxSize;
+			SetSize(size);
+		}
+		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
+		{
+			int maxSize = 0;
+			for (const Widget* pChild : m_children)
+			{
+				int max = pChild->GetHeight() + pChild->GetY();
+				if (max > maxSize) maxSize = max;
+			}
+
+			DirectX::XMUINT2 size = GetSize();
+			size.y = maxSize;
+			SetSize(size);
+		}
+	}
+
 	void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		switch (m_hPositionStyle)
@@ -116,6 +146,8 @@ namespace Widgets
 		ReComputePosition(parentAbsPos, parentSize);
 
 		ResizeChildren();
+
+		ReComputeSize_PostChildren();
 	}
 
 	bool Widget::Handle(const Message& msg)
