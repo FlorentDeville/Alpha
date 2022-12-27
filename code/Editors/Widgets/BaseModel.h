@@ -22,8 +22,7 @@ namespace Editors
 	class BaseModel
 	{
 	public:
-		BaseModel() 
-		{}
+		BaseModel() {}
 		virtual ~BaseModel() {}
 
 		virtual int GetRowCount() const = 0;

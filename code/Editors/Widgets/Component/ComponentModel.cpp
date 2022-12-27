@@ -49,7 +49,12 @@ namespace Editors
 	}
 
 	ComponentModel::~ComponentModel()
-	{}
+	{
+		for (const BaseModel* pModel : m_models)
+			delete pModel;
+
+		m_models.clear();
+	}
 
 	int ComponentModel::GetRowCount() const
 	{
