@@ -76,6 +76,8 @@ namespace Widgets
 		void SetFocus(Widget* pWidget);
 		void CaptureMouse(Widget* pWidget);
 
+		void RequestResize();
+
 	private:
 
 		std::set<Widget*> m_widgets;
@@ -96,6 +98,8 @@ namespace Widgets
 
 		Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 		Rendering::FontId m_segoeUIFontId;
+
+		bool m_resizeRequest;
 
 		SysWindow* m_pMainSysWindow;
 

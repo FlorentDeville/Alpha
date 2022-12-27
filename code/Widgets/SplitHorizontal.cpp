@@ -77,9 +77,8 @@ namespace Widgets
 				return;
 
 			m_pTopContainer->SetSize(topContainerSize);
-			//m_pBottomContainer->SetSize(rightContainerSize);
 
-			WidgetMgr::Get().Resize();
+			WidgetMgr::Get().RequestResize();
 
 			m_pSplit->SetPreviousCursorPosition(currentMousePosition);
 		}
@@ -92,31 +91,11 @@ namespace Widgets
 
 	void SplitHorizontal::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
-		/*const DirectX::XMUINT2 oldSize = m_size;
-
-		float topContainerRatio = 1;
-		float bottomContainerRatio = 1;
-		if (oldSize.y != 0)
-		{
-			leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(oldSize.x);
-			middleContainerRatio = m_pRightContainer->GetSize().x / static_cast<float>(oldSize.x);
-		}
-		else
-		{
-			leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(parentSize.x);
-			middleContainerRatio = m_pRightContainer->GetSize().x / static_cast<float>(parentSize.x);
-		}*/
-
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
 
-		/*DirectX::XMUINT2 leftcontainerNewSize = m_pLeftContainer->GetSize();
-		leftcontainerNewSize.x = static_cast<uint32_t>(leftContainerRatio * m_size.x);
-		m_pLeftContainer->SetSize(leftcontainerNewSize);*/
-
 		for (Widget* pChild : m_children)
 			pChild->Resize(m_absPos, m_size);
-
 	}
 
 	void SplitHorizontal::AddWidget(Widget* pWidget)

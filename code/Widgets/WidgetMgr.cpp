@@ -26,7 +26,6 @@
 
 namespace Widgets
 {
-
 	WidgetMgr::WidgetMgr()
 		: m_pRoot(nullptr)
 		, m_prevMouseX(0)
@@ -35,6 +34,7 @@ namespace Widgets
 		, m_pCapturedWidget(nullptr)
 		, m_widgetViewportPsoId()
 		, m_segoeUIFontId()
+		, m_resizeRequest(false)
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -151,6 +151,12 @@ namespace Widgets
 
 	void WidgetMgr::Update()
 	{
+		if (m_resizeRequest)
+		{
+			Resize();
+			m_resizeRequest = false;
+		}
+
 		for (Widget* pWidget : m_widgets)
 			pWidget->Update();
 	}
@@ -303,6 +309,11 @@ namespace Widgets
 		}
 
 		m_pCapturedWidget = pWidget;
+	}
+
+	void WidgetMgr::RequestResize()
+	{
+		m_resizeRequest = true;
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()

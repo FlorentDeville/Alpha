@@ -79,7 +79,7 @@ namespace Widgets
 			m_pLeftContainer->SetSize(leftContainerSize);
 			m_pRightContainer->SetSize(rightContainerSize);
 
-			WidgetMgr::Get().Resize();
+			WidgetMgr::Get().RequestResize();
 
 			m_pSplit->SetPreviousCursorPosition(currentMousePosition);
 		}
