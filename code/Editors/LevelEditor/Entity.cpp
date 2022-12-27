@@ -34,4 +34,19 @@ namespace Editors
 
 		return it->second;
 	}
+
+	const Component* Entity::GetComponent(int index) const
+	{
+		std::map<std::string, Component*>::const_iterator it = m_components.begin();
+		for (int ii = 0; ii < index; ++ii)
+			++it;
+
+		return it->second;
+
+	}
+
+	int Entity::GetComponentCount() const
+	{
+		return static_cast<int>(m_components.size());
+	}
 }

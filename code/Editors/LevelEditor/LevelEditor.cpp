@@ -9,8 +9,9 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/Entity.h"
-#include "Editors/Widgets/Component/ComponentModel.h"
-#include "Editors/Widgets/Component/ComponentWidget.h"
+
+#include "Editors/Widgets/Entity/EntityModel.h"
+#include "Editors/Widgets/Entity/EntityWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -119,36 +120,10 @@ namespace Editors
 		const Editors::Entity* pEntity = pNode->GetContent();
 		if (pEntity)
 		{
-			Widgets::Label* pEntityLabel = new Widgets::Label(0, 0, 1, "Entity XXX");
-			pEntityLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
-			pLayout->AddWidget(pEntityLabel);
-
-			const Editors::Component* pComponent = pEntity->GetComponent("Rendering");
-			if (pComponent)
-			{
-				Widgets::Label* pComponentLabel = new Widgets::Label(0, 0, 1, "---Rendering");
-				pComponentLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
-				pLayout->AddWidget(pComponentLabel);
-
-				ComponentWidget* pNewWidget = new ComponentWidget();
-				pNewWidget->SetModel(new ComponentModel(pComponent));
-				pNewWidget->SetSize(DirectX::XMUINT2(500, 3 * ITEM_HEIGHT));
-				pLayout->AddWidget(pNewWidget);
-			}
-
-			const Editors::Component* pTransformComponent = pEntity->GetComponent("Transform");
-			if (pTransformComponent)
-			{
-				Widgets::Label* pComponentLabel = new Widgets::Label(0, 0, 1, "---Transform");
-				pComponentLabel->SetSize(DirectX::XMUINT2(100, ITEM_HEIGHT));
-				pLayout->AddWidget(pComponentLabel);
-
-				ComponentWidget* pNewWidget = new ComponentWidget();
-				pNewWidget->SetModel(new ComponentModel(pTransformComponent));
-				pNewWidget->SetSize(DirectX::XMUINT2(500, 5 * ITEM_HEIGHT));
-				pLayout->AddWidget(pNewWidget);
-			}
-
+			EntityWidget* pWidget = new EntityWidget();
+			pWidget->SetModel(new EntityModel(pEntity));
+			pWidget->SetSize(DirectX::XMUINT2(500, 12 * ITEM_HEIGHT));
+			pLayout->AddWidget(pWidget);
 		}
 
 		const std::vector<Core::TreeNode<Entity*>*>& children = pNode->GetChildren();
@@ -167,7 +142,6 @@ namespace Editors
 		pSplit->AddRightPanel(pLayout);
 
 		AddAssetIdWidgetRecursive(pLayout, pNode);
-		//pLayout->AddWidget(new Widgets::Label(0, 0, 1, "Test"));
 	}
 
 	void CreateLevel(Level& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)

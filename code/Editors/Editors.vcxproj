@@ -25,6 +25,8 @@
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Component\ComponentModel.h" />
     <ClInclude Include="Widgets\Component\ComponentWidget.h" />
+    <ClInclude Include="Widgets\Entity\EntityModel.h" />
+    <ClInclude Include="Widgets\Entity\EntityWidget.h" />
     <ClInclude Include="Widgets\Matrix\MatrixModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
   </ItemGroup>
@@ -42,6 +44,8 @@
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
     <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />
+    <ClCompile Include="Widgets\Entity\EntityModel.cpp" />
+    <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixModel.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
   </ItemGroup>

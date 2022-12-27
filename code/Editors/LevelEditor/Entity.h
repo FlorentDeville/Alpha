@@ -20,6 +20,9 @@ namespace Editors
 		void AddComponent(Component* component);
 
 		const Component* GetComponent(const std::string& name) const;
+		const Component* GetComponent(int index) const;
+		
+		int GetComponentCount() const;
 
 	private:
 		std::string m_name;
