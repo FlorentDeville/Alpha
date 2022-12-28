@@ -24,6 +24,8 @@ namespace Editors
 		
 		int GetComponentCount() const;
 
+		const std::string& GetName() const;
+
 	private:
 		std::string m_name;
 		std::map<std::string, Component*> m_components;

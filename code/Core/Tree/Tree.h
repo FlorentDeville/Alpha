@@ -18,6 +18,8 @@ namespace Core
 		T& GetContent();
 		const T& GetContent() const;
 
+		void SetContent(T& content);
+
 		const std::vector<TreeNode*>& GetChildren() const;
 
 		TreeNode<T>* AddChildren(T& child);
@@ -66,6 +68,12 @@ namespace Core
 	{
 		return m_content;
 	}
+
+	template<class T> void TreeNode<T>::SetContent(T& content)
+	{
+		m_content = content;
+	}
+
 
 	template<class T> const std::vector<TreeNode<T>*>& TreeNode<T>::GetChildren() const
 	{

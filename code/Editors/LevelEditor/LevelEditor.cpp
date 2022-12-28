@@ -12,6 +12,8 @@
 
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
+#include "Editors/Widgets/Tree/LevelTreeModel.h"
+#include "Editors/Widgets/Tree/TreeWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -132,7 +134,7 @@ namespace Editors
 		}
 	}
 
-	void CreateLeftPanel(const Core::TreeNode<Entity*>* pNode, Widgets::SplitVertical* pSplit)
+	void CreateRightPanel(const Core::TreeNode<Entity*>* pNode, Widgets::SplitVertical* pSplit)
 	{
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
 		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_STRETCH);
@@ -141,6 +143,14 @@ namespace Editors
 		pSplit->AddRightPanel(pLayout);
 
 		AddAssetIdWidgetRecursive(pLayout, pNode);
+	}
+
+	void CreateLeftPanel(const Core::TreeNode<Entity*>* pNode, Widgets::SplitVertical* pSplit)
+	{
+		TreeWidget* pTreeWidget = new TreeWidget();
+		pTreeWidget->SetModel(new LevelTreeModel(pNode));
+
+		pSplit->AddLeftPanel(pTreeWidget);
 	}
 
 	void CreateLevel(Level& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
@@ -202,6 +212,8 @@ namespace Editors
 
 		//create a base plan with a scale as a root
 		Core::TreeNode<Entity*>& root = level.GetRoot();
+		Entity* pRootEntity = new Entity("/");
+		root.SetContent(pRootEntity);
 
 		Entity* pPlan = new Entity("plan");
 		Component* pPlanTransform = CreateComponentTransform();
@@ -285,17 +297,24 @@ namespace Editors
 
 		//create the split between viewport and right panel
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
-		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
 		pSplit->SetLeftPanelWidth(800);
 		pViewportTab->AddWidget(pSplit);
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
-		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
 		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
 
-		pSplit->AddLeftPanel(pViewport);
+		//create split between viewport and left panel
+		Widgets::SplitVertical* pLeftSplit = new Widgets::SplitVertical();
+		pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		pLeftSplit->SetLeftPanelWidth(200);
+		pLeftSplit->AddRightPanel(pViewport);
+		
+
+		pSplit->AddLeftPanel(pLeftSplit);
 
 		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
 		if (pTabContainer)
@@ -307,7 +326,8 @@ namespace Editors
 			pParent->AddWidget(pViewportTab);
 		}
 
-		CreateLeftPanel(&m_level.GetRoot(), pSplit);
+		CreateRightPanel(&m_level.GetRoot(), pSplit);
+		CreateLeftPanel(&m_level.GetRoot(), pLeftSplit);
 	}
 
 	void LevelEditor::Update()

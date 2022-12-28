@@ -29,6 +29,8 @@
     <ClInclude Include="Widgets\Entity\EntityWidget.h" />
     <ClInclude Include="Widgets\Matrix\MatrixModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
+    <ClInclude Include="Widgets\Tree\LevelTreeModel.h" />
+    <ClInclude Include="Widgets\Tree\TreeWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
@@ -48,6 +50,8 @@
     <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixModel.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
+    <ClCompile Include="Widgets\Tree\LevelTreeModel.cpp" />
+    <ClCompile Include="Widgets\Tree\TreeWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

@@ -49,4 +49,9 @@ namespace Editors
 	{
 		return static_cast<int>(m_components.size());
 	}
+
+	const std::string& Entity::GetName() const
+	{
+		return m_name;
+	}
 }
