@@ -134,6 +134,7 @@ namespace Editors
 
 		Widgets::Button* pButton = new Widgets::Button(0, ITEM_HEIGHT, 0, 0);
 		pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pButton->GetHoverStyle().ShowBorder(false);
 		pButton->OnClick([this, pModel](int x, int y) -> bool
 			{
 				if (m_onItemClicked)

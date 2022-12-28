@@ -21,6 +21,8 @@
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
     <ClInclude Include="SplitVertical.h" />
+    <ClInclude Include="Style\BaseStyle.h" />
+    <ClInclude Include="Style\Button\ButtonStyle.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="TabContainer.h" />
     <ClInclude Include="Text.h" />
@@ -37,6 +39,7 @@
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="SplitHorizontal.cpp" />
     <ClCompile Include="SplitVertical.cpp" />
+    <ClCompile Include="Style\Button\ButtonStyle.cpp" />
     <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TabContainer.cpp" />
     <ClCompile Include="Text.cpp" />

@@ -16,19 +16,29 @@ namespace Widgets
 	Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
 		: Widget(w, h, x, y)
 		, m_isSelected(false)
-	{}
+		, m_defaultStyle()
+		, m_hoverStyle()
+		, m_selectedStyle()
+	{
+		m_hoverStyle.ShowBorder(true);
+		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+
+		m_selectedStyle.SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+	}
 
 	Button::~Button()
 	{}
 
 	void Button::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
+		ButtonStyle* pCurrentStyle = &m_defaultStyle;
+		if (m_hover)
+			pCurrentStyle = &m_hoverStyle;
+		if (m_isSelected)
+			pCurrentStyle = &m_selectedStyle;
+
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
-
-		DirectX::XMVECTOR color = m_backgroundColor;
-		if (m_hover || m_isSelected)
-			color = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
 
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		RenderModule& render = RenderModule::Get();
@@ -37,16 +47,16 @@ namespace Widgets
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 		render.BindMaterial(*pMaterial, mvpMatrix);
 
-		render.SetConstantBuffer(1, sizeof(color), &color, 0);
+		render.SetConstantBuffer(1, sizeof(pCurrentStyle->m_backgroundColor), &(pCurrentStyle->m_backgroundColor), 0);
 
-		int value = m_showBorder ? 1 : 0;
+		int value = pCurrentStyle->m_showBorder ? 1 : 0;
 		render.SetConstantBuffer(2, sizeof(value), &value, 0);
-		render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+		render.SetConstantBuffer(3, sizeof(pCurrentStyle->m_borderColor), &pCurrentStyle->m_borderColor, 0);
 
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 		render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-		render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+		render.SetConstantBuffer(5, sizeof(pCurrentStyle->m_borderSize), &pCurrentStyle->m_borderSize, 0);
 
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		render.RenderMesh(*pMesh);
@@ -88,5 +98,10 @@ namespace Widgets
 	void Button::Unselect()
 	{
 		m_isSelected = false;
+	}
+
+	ButtonStyle& Button::GetHoverStyle()
+	{
+		return m_hoverStyle;
 	}
 }

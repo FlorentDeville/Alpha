@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "Widget.h"
+#include "Widgets/Widget.h"
+#include "Widgets/Style/Button/ButtonStyle.h"
 
 #include <functional>
 
@@ -23,8 +24,15 @@ namespace Widgets
 		void Select();
 		void Unselect();
 
+		ButtonStyle& GetHoverStyle();
+
 	private:
 		//if the button is selected, it keeps the hover color until Unselect is called.
 		bool m_isSelected;
+
+		//one style per state
+		ButtonStyle m_defaultStyle;
+		ButtonStyle m_hoverStyle;
+		ButtonStyle m_selectedStyle;
 	};
 }
