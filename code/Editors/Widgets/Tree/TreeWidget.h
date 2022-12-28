@@ -6,6 +6,13 @@
 
 #include "Widgets/Widget.h"
 
+#include "Rendering/Texture/TextureId.h"
+
+namespace Widgets
+{
+	class Layout;
+}
+
 namespace Editors
 {
 	class BaseModel;
@@ -25,6 +32,11 @@ namespace Editors
 
 		bool m_isDirtyWidget;
 
+		Rendering::TextureId m_expandedIcon;
+		Rendering::TextureId m_collapsedIcon;
+
 		void CreateWidgets();
+
+		void CreateRecursiveWidgets(Widgets::Layout* pParentLayout, const BaseModel* pModel, int offsetX);
 	};
 }
