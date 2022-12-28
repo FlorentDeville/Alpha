@@ -14,6 +14,11 @@
 
 namespace Widgets
 {
+	Icon::Icon()
+		: Widget()
+		, m_textureId(Rendering::TextureId::INVALID)
+	{}
+
 	Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
 		: Widget(size.x, size.y, pos.x, pos.y)
 	{
@@ -45,5 +50,10 @@ namespace Widgets
 
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		renderer.RenderMesh(*pMesh);
+	}
+
+	void Icon::SetTextureId(Rendering::TextureId tid)
+	{
+		m_textureId = tid;
 	}
 }

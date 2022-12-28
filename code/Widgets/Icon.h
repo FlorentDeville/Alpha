@@ -15,10 +15,13 @@ namespace Widgets
 	class Icon : public Widget
 	{
 	public:
+		Icon();
 		Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path);
 		~Icon();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+
+		void SetTextureId(Rendering::TextureId tid);
 
 	private:
 		Rendering::TextureId m_textureId;
