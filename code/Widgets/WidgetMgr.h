@@ -35,6 +35,7 @@ namespace Widgets
 	public:
 		std::string m_gameShaderPath;
 		std::string m_editorFontsPath;
+		std::string m_editorIconsPath;
 		SysWindow* m_pMainWindow;
 	};
 
@@ -78,6 +79,8 @@ namespace Widgets
 
 		void RequestResize();
 
+		const std::string& GetEditorIconsPath() const;
+
 	private:
 
 		std::set<Widget*> m_widgets;
@@ -102,6 +105,8 @@ namespace Widgets
 		bool m_resizeRequest;
 
 		SysWindow* m_pMainSysWindow;
+
+		std::string m_editorIconsPath;
 
 		void ComputeSortedWidgetQueue();
 

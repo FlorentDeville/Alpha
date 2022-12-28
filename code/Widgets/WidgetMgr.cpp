@@ -35,6 +35,8 @@ namespace Widgets
 		, m_widgetViewportPsoId()
 		, m_segoeUIFontId()
 		, m_resizeRequest(false)
+		, m_editorIconsPath()
+		, m_pMainSysWindow(nullptr)
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -46,6 +48,7 @@ namespace Widgets
 	void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	{
 		m_pMainSysWindow = parameter.m_pMainWindow;
+		m_editorIconsPath = parameter.m_editorIconsPath;
 
 		Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 		Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
@@ -314,6 +317,11 @@ namespace Widgets
 	void WidgetMgr::RequestResize()
 	{
 		m_resizeRequest = true;
+	}
+
+	const std::string& WidgetMgr::GetEditorIconsPath() const
+	{
+		return m_editorIconsPath;
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()
