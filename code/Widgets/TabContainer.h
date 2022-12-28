@@ -26,8 +26,8 @@ namespace Widgets
 
 		void SetSelectedTab(int index);
 
-		void Enable() override;
-		void Disable() override;
+		void Enable(bool recursive = true) override;
+		void Disable(bool recursive = true) override;
 
 	private:
 		int m_selectedTab;

@@ -55,7 +55,12 @@ namespace Widgets
 		}
 
 		for (Widget* pWidget : m_children)
+		{
+			if (!pWidget->IsEnabled())
+				continue;
+
 			pWidget->Draw(windowSize);
+		}
 	}
 
 	bool Layout::Handle(const Message& msg)
@@ -93,6 +98,9 @@ namespace Widgets
 
 		for (Widget* pWidget : m_children)
 		{
+			if (!pWidget->IsEnabled())
+				continue;
+
 			switch (m_dir)
 			{
 			case Horizontal:
@@ -127,6 +135,9 @@ namespace Widgets
 
 			for (Widget* pWidget : m_children)
 			{
+				if (!pWidget->IsEnabled())
+					continue;
+
 				pos -= pWidget->GetWidth() - m_space.x;
 				pWidget->SetX(pos);
 

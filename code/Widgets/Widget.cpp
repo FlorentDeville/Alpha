@@ -68,6 +68,9 @@ namespace Widgets
 			int maxSize = 0;
 			for (const Widget* pChild : m_children)
 			{
+				if (!pChild->IsEnabled())
+					continue;
+
 				int max = pChild->GetWidth() + pChild->GetX();
 				if (max > maxSize) maxSize = max;
 			}
@@ -81,6 +84,9 @@ namespace Widgets
 			int maxSize = 0;
 			for (const Widget* pChild : m_children)
 			{
+				if (!pChild->IsEnabled())
+					continue;
+
 				int max = pChild->GetHeight() + pChild->GetY();
 				if (max > maxSize) maxSize = max;
 			}
@@ -137,7 +143,11 @@ namespace Widgets
 	void Widget::ResizeChildren()
 	{
 		for (Widget* pChild : m_children)
+		{
+			if (!pChild->IsEnabled())
+				continue;
 			pChild->Resize(m_absPos, m_size);
+		}
 	}
 
 	void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
@@ -200,18 +210,26 @@ namespace Widgets
 		m_children.clear();
 	}
 
-	void Widget::Enable()
+	void Widget::Enable(bool recursive)
 	{
 		m_enabled = true;
-		for (Widget* pWidget : m_children)
-			pWidget->Enable();
+
+		if (recursive)
+		{
+			for (Widget* pWidget : m_children)
+				pWidget->Enable(recursive);
+		}
 	}
 
-	void Widget::Disable()
+	void Widget::Disable(bool recursive)
 	{
 		m_enabled = false;
-		for (Widget* pWidget : m_children)
-			pWidget->Disable();
+
+		if (recursive)
+		{
+			for (Widget* pWidget : m_children)
+				pWidget->Disable(recursive);
+		}
 	}
 
 	void Widget::SetX(int32_t x)

@@ -67,6 +67,7 @@ namespace Widgets
 		pTitleContainer->AddWidget(pTitleLabel);
 		pTitleContainer->OnClick([this, tabIndex](int, int) -> bool {
 			SetSelectedTab(tabIndex);
+			Widgets::WidgetMgr::Get().RequestResize();
 			return true;
 			});
 
@@ -111,9 +112,9 @@ namespace Widgets
 		m_selectedTab = index;
 	}
 
-	void TabContainer::Enable()
+	void TabContainer::Enable(bool recursive)
 	{
-		Widget::Enable();
+		Widget::Enable(recursive);
 
 		//Widget::Enable enabled all the tab so I need to hide all unselected tab.
 		for (int ii = 0; ii < m_tabContent.size(); ++ii)
@@ -122,13 +123,13 @@ namespace Widgets
 				continue;
 
 			m_tabHeaders[ii]->SetBackgroundColor(m_defaultHeaderColor);
-			m_tabContent[ii]->Disable();
+			m_tabContent[ii]->Disable(recursive);
 		}
 		
 	}
 
-	void TabContainer::Disable()
+	void TabContainer::Disable(bool recursive)
 	{
-		Widget::Disable();
+		Widget::Disable(recursive);
 	}
 }

@@ -88,8 +88,8 @@ namespace Widgets
 		virtual void RemoveWidget(const Widget* pWidget);
 		virtual void RemoveAllWidgets();
 
-		virtual void Enable();
-		virtual void Disable();
+		virtual void Enable(bool recursive = true);
+		virtual void Disable(bool recursive = true);
 
 		void SetX(int32_t x);
 		void SetY(int32_t y);
