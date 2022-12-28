@@ -58,6 +58,8 @@ namespace Widgets
 		void Release();
 
 		void RegisterWidget(Widget* pWidget);
+		
+		void UnregisterWidget(Widget* pWidget);
 
 		void SetRoot(Widget* pRoot);
 

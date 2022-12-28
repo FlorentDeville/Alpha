@@ -85,8 +85,8 @@ namespace Widgets
 		virtual bool Handle(const Message& msg);
 
 		virtual void AddWidget(Widget* pWidget);
-		virtual void RemoveWidget(const Widget* pWidget);
-		virtual void RemoveAllWidgets();
+		virtual void DeleteChild(Widget* pWidget);
+		virtual void DeleteAllChildren();
 
 		virtual void Enable(bool recursive = true);
 		virtual void Disable(bool recursive = true);

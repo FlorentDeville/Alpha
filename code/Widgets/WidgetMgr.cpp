@@ -146,6 +146,11 @@ namespace Widgets
 		m_widgets.insert(pWidget);
 	}
 
+	void WidgetMgr::UnregisterWidget(Widget* pWidget)
+	{
+		m_widgets.erase(pWidget);
+	}
+
 	void WidgetMgr::SetRoot(Widget* pRoot)
 	{
 		m_pRoot = pRoot;

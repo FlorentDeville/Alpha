@@ -196,17 +196,29 @@ namespace Widgets
 		WidgetMgr::Get().RegisterWidget(pWidget);
 	}
 
-	void Widget::RemoveWidget(const Widget* pWidget)
+	void Widget::DeleteChild(Widget* pWidget)
 	{
+		WidgetMgr::Get().UnregisterWidget(pWidget);
+
 		std::vector<Widget*>::const_iterator it = std::find(m_children.cbegin(), m_children.cend(), pWidget);
 		if (it == m_children.cend())
 			return;
 
 		m_children.erase(it);
+		
+		(*it)->DeleteAllChildren();
+		delete pWidget;
 	}
 
-	void Widget::RemoveAllWidgets()
+	void Widget::DeleteAllChildren()
 	{
+		for (Widget* pChild : m_children)
+		{
+			WidgetMgr::Get().UnregisterWidget(pChild);
+			pChild->DeleteAllChildren();
+			delete pChild;
+		}
+
 		m_children.clear();
 	}
 
