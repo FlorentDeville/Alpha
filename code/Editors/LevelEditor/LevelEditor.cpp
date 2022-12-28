@@ -232,6 +232,15 @@ namespace Editors
 
 		Core::TreeNode<Entity*>& planNode = level.AddEntity(pPlan, root);
 
+		{
+			Entity* pCube = new Entity("dummy1");
+			level.AddEntity(pCube, planNode);
+		}
+		{
+			Entity* pCube = new Entity("dummy2");
+			level.AddEntity(pCube, planNode);
+		}
+
 		//first child is a cube
 		Entity* pCube = new Entity("cube");
 		Component* pCubeTransform = CreateComponentTransform();

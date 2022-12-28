@@ -7,6 +7,7 @@
 #include "Editors/Widgets/BaseModel.h"
 
 #include "Widgets/Container.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/WidgetMgr.h"
@@ -15,11 +16,16 @@ namespace Editors
 {
 	void CreateRecursiveWidgets(Widgets::Layout* pParentLayout, const BaseModel* pModel, int offsetX)
 	{
-		//label
-		Widgets::Label* pItemLabel = new Widgets::Label(0, 0, 1, pModel->GetData(0));
-		pItemLabel->SetSize(DirectX::XMUINT2(0, 15));
-		pParentLayout->AddWidget(pItemLabel);
+		const int ITEM_HEIGHT = 15;
 
+		//current item
+		Widgets::Layout* pItemLayout = new Widgets::Layout();
+		pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pItemLayout->SetDirection(Widgets::Layout::Horizontal);
+		pItemLayout->SetSize(DirectX::XMUINT2(0, ITEM_HEIGHT));
+		pParentLayout->AddWidget(pItemLayout);
+
+		//children layout
 		offsetX = offsetX + 10;
 		Widgets::Layout* pChildrenLayout = new Widgets::Layout();
 		pChildrenLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
@@ -28,9 +34,33 @@ namespace Editors
 		pParentLayout->AddWidget(pChildrenLayout);
 
 		int count = pModel->GetSubRowCount(0);
+		if (count > 0)
+		{
+			std::string expandIcon = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "/expand.png";
+			Widgets::Icon* pIcon = new Widgets::Icon(DirectX::XMINT2(0, 4), DirectX::XMUINT2(12, 12), expandIcon);
+			pIcon->OnClick([pChildrenLayout](int, int) -> bool 
+				{ 
+					pChildrenLayout->IsEnabled() ? pChildrenLayout->Disable(false) : pChildrenLayout->Enable(false); 
+					Widgets::WidgetMgr::Get().RequestResize();
+					return true; 
+				});
+			pItemLayout->AddWidget(pIcon);
+			
+		}
+		else
+		{
+			Widgets::Container* pEmptyContainer = new Widgets::Container(12, 12);
+			pItemLayout->AddWidget(pEmptyContainer);
+		}
+
+		Widgets::Label* pItemLabel = new Widgets::Label(0, 0, 1, pModel->GetData(0));
+		pItemLabel->SetSize(DirectX::XMUINT2(0, ITEM_HEIGHT));
+		pItemLayout->AddWidget(pItemLabel);
+
+		//recursively create widgets for children
 		for (int rowId = 0; rowId < count; ++rowId)
 		{
-			//recursively create widgets for children	
+				
 			CreateRecursiveWidgets(pChildrenLayout, pModel->GetSubModel(rowId), offsetX);
 		}
 	}
