@@ -23,11 +23,16 @@ namespace Rendering
 
 namespace Widgets
 {
+	class SplitVertical;
 	class Widget;
 }
 
 namespace Editors
 {
+	class BaseModel;
+	class EntityModel;
+	class EntityWidget;
+
 	class LevelEditor : public Core::Singleton<LevelEditor>
 	{
 	public:
@@ -53,8 +58,17 @@ namespace Editors
 
 		Level m_level;
 
+		//entity viewer
+		EntityModel* m_pEntityModel;
+		EntityWidget* m_pEntityWidget;
+
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
+
+		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
+		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
+
+		bool callback(const BaseModel* pModel, int rowId);
 	};
 }

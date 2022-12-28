@@ -36,7 +36,9 @@ namespace Editors
 
 	void EntityWidget::SetModel(const BaseModel* pModel)
 	{
+		DeleteAllChildren();
 		m_pModel = pModel;
+		m_isDirtyWidget = true;
 	}
 
 	void EntityWidget::CreateWidgets()

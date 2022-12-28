@@ -22,6 +22,7 @@ namespace Editors
 		: Widget()
 		, m_pModel(nullptr)
 		, m_isDirtyWidget(true)
+		, m_onItemClicked()
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
@@ -58,6 +59,11 @@ namespace Editors
 			CreateWidgets();
 			m_isDirtyWidget = false;
 		}
+	}
+
+	void TreeWidget::OnItemClicked(const OnItemClickedCallback& callback)
+	{
+		m_onItemClicked = callback;
 	}
 
 	void TreeWidget::CreateWidgets()
@@ -128,7 +134,12 @@ namespace Editors
 
 		Widgets::Button* pButton = new Widgets::Button(0, ITEM_HEIGHT, 0, 0);
 		pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		//pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
+		pButton->OnClick([this, pModel](int x, int y) -> bool
+			{
+				if (m_onItemClicked)
+					m_onItemClicked(pModel, 0);
+				return true;
+			});
 		pItemLayout->AddWidget(pButton);
 
 		Widgets::Label* pItemLabel = new Widgets::Label(0, 0, 1, pModel->GetData(0));

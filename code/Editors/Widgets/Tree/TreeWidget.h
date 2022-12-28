@@ -20,12 +20,16 @@ namespace Editors
 	class TreeWidget : public Widgets::Widget
 	{
 	public:
+		using OnItemClickedCallback = std::function<bool(const BaseModel* pModel, int rowId)>;
+
 		TreeWidget();
 		~TreeWidget();
 
 		void SetModel(const BaseModel* pModel);
 
 		void Update() override;
+
+		void OnItemClicked(const OnItemClickedCallback& callback);
 
 	private:
 		const BaseModel* m_pModel;
@@ -34,6 +38,8 @@ namespace Editors
 
 		Rendering::TextureId m_expandedIcon;
 		Rendering::TextureId m_collapsedIcon;
+
+		OnItemClickedCallback m_onItemClicked;
 
 		void CreateWidgets();
 

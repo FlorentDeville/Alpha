@@ -31,7 +31,6 @@ namespace Editors
 
 	int LevelTreeModel::GetRowCount() const
 	{
-		//return static_cast<int>(m_pRoot->GetChildren().size());
 		return 1;
 	}
 
@@ -57,5 +56,10 @@ namespace Editors
 	const BaseModel* LevelTreeModel::GetSubModel(int rowId, int columnId) const
 	{
 		return m_subModels[rowId];
+	}
+
+	const Core::TreeNode<Entity*>* LevelTreeModel::GetSource() const
+	{
+		return m_pRoot;
 	}
 }

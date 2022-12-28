@@ -35,6 +35,8 @@ namespace Editors
 
 		const BaseModel* GetSubModel(int rowId = 0, int columnId = 0) const override;
 
+		const Core::TreeNode<Entity*>* GetSource() const;
+
 	private:
 		const Core::TreeNode<Entity*>* m_pRoot;
 

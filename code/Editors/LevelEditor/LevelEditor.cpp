@@ -32,6 +32,7 @@
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Viewport.h"
+#include "Widgets/WidgetMgr.h"
 
 //needed for the operator* between vectors and floats.
 using namespace DirectX;
@@ -113,44 +114,6 @@ namespace Editors
 		pRendering->AddProperty(pMaterialProperty);
 
 		return pRendering;
-	}
-
-	void AddAssetIdWidgetRecursive(Widgets::Layout* pLayout, const Core::TreeNode<Entity*>* pNode)
-	{
-		int ITEM_HEIGHT = 15;
-
-		const Editors::Entity* pEntity = pNode->GetContent();
-		if (pEntity)
-		{
-			EntityWidget* pWidget = new EntityWidget();
-			pWidget->SetModel(new EntityModel(pEntity));
-			pLayout->AddWidget(pWidget);
-		}
-
-		const std::vector<Core::TreeNode<Entity*>*>& children = pNode->GetChildren();
-		for (const Core::TreeNode<Entity*>* pChild : children)
-		{
-			AddAssetIdWidgetRecursive(pLayout, pChild);
-		}
-	}
-
-	void CreateRightPanel(const Core::TreeNode<Entity*>* pNode, Widgets::SplitVertical* pSplit)
-	{
-		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
-		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_STRETCH);
-		pLayout->SetDirection(Widgets::Layout::Vertical);
-
-		pSplit->AddRightPanel(pLayout);
-
-		AddAssetIdWidgetRecursive(pLayout, pNode);
-	}
-
-	void CreateLeftPanel(const Core::TreeNode<Entity*>* pNode, Widgets::SplitVertical* pSplit)
-	{
-		TreeWidget* pTreeWidget = new TreeWidget();
-		pTreeWidget->SetModel(new LevelTreeModel(pNode));
-
-		pSplit->AddLeftPanel(pTreeWidget);
 	}
 
 	void CreateLevel(Level& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
@@ -277,6 +240,8 @@ namespace Editors
 		, m_mousePreviousPos()
 		, m_padding()
 		, m_cameraTransform(DirectX::XMMatrixIdentity())
+		, m_pEntityModel(nullptr)
+		, m_pEntityWidget(nullptr)
 	{
 		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
 		DirectX::XMMATRIX cameraView = DirectX::XMMatrixLookAtLH(cameraPosition, DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0));
@@ -289,6 +254,7 @@ namespace Editors
 	LevelEditor::~LevelEditor()
 	{
 		delete m_pRenderTarget;
+		delete m_pEntityModel;
 	}
 
 	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
@@ -335,8 +301,8 @@ namespace Editors
 			pParent->AddWidget(pViewportTab);
 		}
 
-		CreateRightPanel(&m_level.GetRoot(), pSplit);
-		CreateLeftPanel(&m_level.GetRoot(), pLeftSplit);
+		CreateEntityPropertyGrid(pSplit);
+		CreateSceneTreeViewer(pLeftSplit);
 	}
 
 	void LevelEditor::Update()
@@ -445,5 +411,43 @@ namespace Editors
 		}
 		
 		m_pRenderTarget->EndScene();
+	}
+
+	void LevelEditor::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
+	{
+		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
+		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_STRETCH);
+		pLayout->SetDirection(Widgets::Layout::Vertical);
+
+		pSplit->AddRightPanel(pLayout);
+
+		m_pEntityModel = new EntityModel(new Entity(""));
+		m_pEntityWidget = new EntityWidget();
+		m_pEntityWidget->SetModel(m_pEntityModel);
+		pLayout->AddWidget(m_pEntityWidget);
+	}
+
+	bool LevelEditor::callback(const BaseModel* pModel, int rowId)
+	{
+		const LevelTreeModel* pLevelTreeModel = static_cast<const LevelTreeModel*>(pModel);
+		const Core::TreeNode<Entity*>* pNode = pLevelTreeModel->GetSource();
+		const Entity* pEntity = pNode->GetContent();
+
+		delete m_pEntityModel;
+		m_pEntityModel = new EntityModel(pEntity);
+		m_pEntityWidget->SetModel(m_pEntityModel);
+		Widgets::WidgetMgr::Get().RequestResize();
+
+		return true;
+	}
+
+	void LevelEditor::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
+	{
+		TreeWidget* pTreeWidget = new TreeWidget();
+		pTreeWidget->SetModel(new LevelTreeModel(&m_level.GetRoot()));
+
+		pSplit->AddLeftPanel(pTreeWidget);
+
+		pTreeWidget->OnItemClicked(std::bind(&LevelEditor::callback, this, std::placeholders::_1, std::placeholders::_2));
 	}
 }
