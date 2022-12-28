@@ -10,6 +10,7 @@
 #include "Rendering/Texture/Texture.h"
 
 #include "Widgets/Container.h"
+#include "Widgets/Button.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -76,7 +77,7 @@ namespace Editors
 
 	void TreeWidget::CreateRecursiveWidgets(Widgets::Layout* pParentLayout, const BaseModel* pModel, int offsetX)
 	{
-		const int ITEM_HEIGHT = 15;
+		const int ITEM_HEIGHT = 20;
 
 		//current item
 		Widgets::Layout* pItemLayout = new Widgets::Layout();
@@ -125,9 +126,14 @@ namespace Editors
 			pItemLayout->AddWidget(pEmptyContainer);
 		}
 
+		Widgets::Button* pButton = new Widgets::Button(0, ITEM_HEIGHT, 0, 0);
+		pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		//pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
+		pItemLayout->AddWidget(pButton);
+
 		Widgets::Label* pItemLabel = new Widgets::Label(0, 0, 1, pModel->GetData(0));
 		pItemLabel->SetSize(DirectX::XMUINT2(0, ITEM_HEIGHT));
-		pItemLayout->AddWidget(pItemLabel);
+		pButton->AddWidget(pItemLabel);
 
 		//recursively create widgets for children
 		for (int rowId = 0; rowId < count; ++rowId)
