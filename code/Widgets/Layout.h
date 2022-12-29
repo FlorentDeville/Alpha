@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "Widget.h"
+#include "Widgets/Widget.h"
+#include "Widgets/Style/Layout/LayoutStyle.h"
 
 namespace Widgets
 {
@@ -32,11 +33,15 @@ namespace Widgets
 		void SetDirection(Direction dir);
 		void SetSpace(const DirectX::XMINT2& space);
 
+		LayoutStyle& GetDefaultStyle();
+
 	private:
 		Direction m_dir;
 
 		DirectX::XMUINT2 m_previousMousePosition;
 
 		DirectX::XMINT2 m_space; //space to add between widgets
+
+		LayoutStyle m_defaultStyle;
 	};
 }

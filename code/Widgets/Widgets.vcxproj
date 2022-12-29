@@ -23,6 +23,7 @@
     <ClInclude Include="SplitVertical.h" />
     <ClInclude Include="Style\BaseStyle.h" />
     <ClInclude Include="Style\Button\ButtonStyle.h" />
+    <ClInclude Include="Style\Layout\LayoutStyle.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="TabContainer.h" />
     <ClInclude Include="Text.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="SplitHorizontal.cpp" />
     <ClCompile Include="SplitVertical.cpp" />
     <ClCompile Include="Style\Button\ButtonStyle.cpp" />
+    <ClCompile Include="Style\Layout\LayoutStyle.cpp" />
     <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TabContainer.cpp" />
     <ClCompile Include="Text.cpp" />

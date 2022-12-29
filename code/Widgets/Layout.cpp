@@ -17,6 +17,7 @@ namespace Widgets
 		, m_space(0, 0)
 		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
+		, m_defaultStyle()
 	{}
 
 	Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -24,6 +25,7 @@ namespace Widgets
 		, m_space(0, 0)
 		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
+		, m_defaultStyle()
 	{}
 
 	Layout::~Layout()
@@ -33,7 +35,7 @@ namespace Widgets
 	{
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);
-		int valueShowBorder = m_showBorder ? 1 : 0;
+		int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 
 		{
@@ -44,11 +46,11 @@ namespace Widgets
 			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 			render.BindMaterial(*pMaterial, wvp);
 
-			render.SetConstantBuffer(1, sizeof(m_backgroundColor), &m_backgroundColor, 0);
+			render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
 			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-			render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+			render.SetConstantBuffer(3, sizeof(m_defaultStyle.m_borderColor), &m_defaultStyle.m_borderColor, 0);
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
-			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+			render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
 
 			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 			render.RenderMesh(*pMesh);
@@ -93,8 +95,10 @@ namespace Widgets
 
 		if (m_children.empty())
 			return;
-
+		
 		int32_t pos = 0;
+		if (m_defaultStyle.m_showBorder)
+			pos = m_defaultStyle.m_borderSize;
 
 		for (Widget* pWidget : m_children)
 		{
@@ -117,6 +121,9 @@ namespace Widgets
 
 			case Vertical:
 				pWidget->SetY(pos);
+				if (m_defaultStyle.m_showBorder)
+					pWidget->SetX(m_defaultStyle.m_borderSize);
+
 				pWidget->Resize(m_absPos, m_size);
 				pos = pWidget->GetY() + pWidget->GetHeight() + m_space.y;
 				break;
@@ -149,6 +156,13 @@ namespace Widgets
 		}
 
 		ReComputeSize_PostChildren();
+
+		if (m_defaultStyle.m_showBorder)
+		{
+			m_size.x += 2 * m_defaultStyle.m_borderSize;
+			m_size.y += 2 * m_defaultStyle.m_borderSize;
+		}
+		
 	}
 
 	void Layout::SetDirection(Direction dir)
@@ -159,5 +173,10 @@ namespace Widgets
 	void Layout::SetSpace(const DirectX::XMINT2& space)
 	{
 		m_space = space;
+	}
+
+	LayoutStyle& Layout::GetDefaultStyle()
+	{
+		return m_defaultStyle;
 	}
 }

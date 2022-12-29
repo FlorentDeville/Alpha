@@ -7,6 +7,8 @@
 #include "Editors/Widgets/BaseModel.h"
 #include "Editors/Widgets/Component/ComponentWidget.h"
 
+#include "Widgets/Container.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/WidgetMgr.h"
@@ -53,15 +55,46 @@ namespace Editors
 		int rowCount = m_pModel->GetRowCount();
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
+			Widgets::Layout* pComponentLayout = new Widgets::Layout();
+			pComponentLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+			pComponentLayout->SetDirection(Widgets::Layout::Vertical);
+			pComponentLayout->GetDefaultStyle().ShowBorder(true);
+			pComponentLayout->GetDefaultStyle().SetBorderSize(1);
+			pLayout->AddWidget(pComponentLayout);
+
+			Widgets::Layout* pNameLayout = new Widgets::Layout();
+			pNameLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+			pNameLayout->SetDirection(Widgets::Layout::Horizontal);
+
+			std::string iconPath = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "\\collapsed.png";
+			Widgets::Icon* pIcon = new Widgets::Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(12, 12), iconPath);
+			pIcon->SetY(3);
+			
+			pNameLayout->AddWidget(pIcon);
+
 			Widgets::Label* pNameLabel = new Widgets::Label();
+
 			pNameLabel->SetText(m_pModel->GetData(ii, 0));
 			pNameLabel->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
 			pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
-			pLayout->AddWidget(pNameLabel);
+			pNameLayout->AddWidget(pNameLabel);
+			
+			pComponentLayout->AddWidget(pNameLayout);
 
 			ComponentWidget* pComponentWidget = new ComponentWidget();
 			pComponentWidget->SetModel(m_pModel->GetSubModel(ii, 1));
-			pLayout->AddWidget(pComponentWidget);
+
+			pComponentLayout->AddWidget(pComponentWidget);
+
+			Widgets::Container* pContainer = new Widgets::Container(10, 5);
+
+			pLayout->AddWidget(pContainer);
+
+			pIcon->OnClick([pComponentWidget](int, int) -> bool {
+				pComponentWidget->IsEnabled() ? pComponentWidget->Disable() : pComponentWidget->Enable();
+				Widgets::WidgetMgr::Get().RequestResize();
+				return true;
+				});
 		}
 
 		Widgets::WidgetMgr::Get().RequestResize();
