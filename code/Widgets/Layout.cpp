@@ -96,10 +96,16 @@ namespace Widgets
 		if (m_children.empty())
 			return;
 		
+		DirectX::XMUINT2 contentSize = m_size;
 		int32_t pos = 0;
 		if (m_defaultStyle.m_showBorder)
+		{
 			pos = m_defaultStyle.m_borderSize;
 
+			contentSize.x -= 2 * m_defaultStyle.m_borderSize;
+			contentSize.y -= 2 * m_defaultStyle.m_borderSize;
+		}
+		
 		for (Widget* pWidget : m_children)
 		{
 			if (!pWidget->IsEnabled())
@@ -113,7 +119,7 @@ namespace Widgets
 				pWidget->SetX(pos);
 
 				//now compute the size
-				pWidget->Resize(m_absPos, m_size);
+				pWidget->Resize(m_absPos, contentSize);
 
 				//move the position for the next widgets
 				pos = pWidget->GetX() + pWidget->GetWidth() + m_space.x;
@@ -124,7 +130,7 @@ namespace Widgets
 				if (m_defaultStyle.m_showBorder)
 					pWidget->SetX(m_defaultStyle.m_borderSize);
 
-				pWidget->Resize(m_absPos, m_size);
+				pWidget->Resize(m_absPos, contentSize);
 				pos = pWidget->GetY() + pWidget->GetHeight() + m_space.y;
 				break;
 
@@ -138,7 +144,7 @@ namespace Widgets
 		// let's me compute the correct size of all the children widgets. Then I reverse the positions.
 		if (m_dir == Horizontal_Reverse)
 		{
-			pos = m_size.x;
+			pos = contentSize.x;
 
 			for (Widget* pWidget : m_children)
 			{
@@ -150,19 +156,37 @@ namespace Widgets
 
 				// Do not call Resize because it will change the size. 
 				// I only need ReComputePosition to compute the absolute position and ResizeChildren to recursively recompute the absolute position of children.
-				pWidget->ReComputePosition(m_absPos, m_size);
+				pWidget->ReComputePosition(m_absPos, contentSize);
 				pWidget->ResizeChildren();
 			}
 		}
 
-		ReComputeSize_PostChildren();
+		ReComputeSize_PostChildren();	
+	}
 
-		if (m_defaultStyle.m_showBorder)
+	void Layout::ReComputeSize_PostChildren()
+	{
+		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
 		{
-			m_size.x += 2 * m_defaultStyle.m_borderSize;
-			m_size.y += 2 * m_defaultStyle.m_borderSize;
+			const Widgets::Widget* pLast = m_children.back();
+			DirectX::XMUINT2 size = GetSize();
+			size.x = pLast->GetX() + pLast->GetWidth();
+			if (m_defaultStyle.m_showBorder)
+				size.x += m_defaultStyle.m_borderSize;
+
+			SetSize(size);
 		}
-		
+
+		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
+		{
+			const Widgets::Widget* pLast = m_children.back();
+			DirectX::XMUINT2 size = GetSize();
+			size.y = pLast->GetY() + pLast->GetHeight();
+			if (m_defaultStyle.m_showBorder)
+				size.y += m_defaultStyle.m_borderSize;
+
+			SetSize(size);
+		}
 	}
 
 	void Layout::SetDirection(Direction dir)

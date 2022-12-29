@@ -26,6 +26,8 @@ namespace Widgets
 
 		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
+		void ReComputeSize_PostChildren() override;
+
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 		bool Handle(const Message& msg) override;
