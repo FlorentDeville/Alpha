@@ -15,6 +15,13 @@ namespace Widgets
 	class SplitVertical : public Widget
 	{
 	public:
+		enum ResizePolicy
+		{
+			KeepRatio,		//each panel keeps the same percentage of the total space
+			KeepLeftSize,	//left panel keeps constant size
+			KeepRightSize	//right panel keeps constant size
+		};
+
 		SplitVertical();
 		~SplitVertical();
 
@@ -28,6 +35,9 @@ namespace Widgets
 		void AddRightPanel(Widget* pWidget);
 
 		void SetLeftPanelWidth(int width);
+		void SetRightPanelWidth(int width);
+
+		void SetResizePolicy(ResizePolicy policy);
 
 	private:
 		Layout* m_pLayout;
@@ -36,5 +46,7 @@ namespace Widgets
 		Container* m_pRightContainer;
 
 		bool m_splitDragged;
+
+		ResizePolicy m_resizePolicy;
 	};
 }

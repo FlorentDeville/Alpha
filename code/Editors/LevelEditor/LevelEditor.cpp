@@ -274,7 +274,8 @@ namespace Editors
 		//create the split between viewport and right panel
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
-		pSplit->SetLeftPanelWidth(800);
+		pSplit->SetRightPanelWidth(300);
+		pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
 		pViewportTab->AddWidget(pSplit);
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
@@ -287,6 +288,7 @@ namespace Editors
 		Widgets::SplitVertical* pLeftSplit = new Widgets::SplitVertical();
 		pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
 		pLeftSplit->SetLeftPanelWidth(200);
+		pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
 		pLeftSplit->AddRightPanel(pViewport);
 		
 

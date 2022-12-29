@@ -18,6 +18,7 @@ namespace Widgets
 		, m_pSplit(nullptr)
 		, m_pLayout(nullptr)
 		, m_splitDragged(false)
+		, m_resizePolicy(KeepRatio)
 	{
 		m_pLayout = new Layout(0, 0, 0, 0);
 		m_pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
@@ -93,30 +94,40 @@ namespace Widgets
 	void SplitVertical::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		const DirectX::XMUINT2 oldSize = m_size;
-
-		float leftContainerRatio = 1;
-		float middleContainerRatio = 1;
-		if (oldSize.x != 0)
-		{
-			leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(oldSize.x);
-			middleContainerRatio = m_pRightContainer->GetSize().x / static_cast<float>(oldSize.x);
-		}
-		else
-		{
-			leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(parentSize.x);
-			middleContainerRatio = m_pRightContainer->GetSize().x / static_cast<float>(parentSize.x);
-		}
-
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
 
-		DirectX::XMUINT2 leftcontainerNewSize = m_pLeftContainer->GetSize();
-		leftcontainerNewSize.x = static_cast<uint32_t>(leftContainerRatio * m_size.x);
-		m_pLeftContainer->SetSize(leftcontainerNewSize);
+		//old ratio
+		switch (m_resizePolicy)
+		{
+		case KeepRatio:
+		{
+			float leftContainerRatio = 1;
+			if (oldSize.x != 0)
+				leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(oldSize.x);
+			else
+				leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(parentSize.x);
 
-		/*DirectX::XMUINT2 middlecontainerNewSize = m_pMiddleContainer->GetSize();
-		middlecontainerNewSize.x = static_cast<uint32_t>(middleContainerRatio * m_size.x);
-		m_pMiddleContainer->SetSize(middlecontainerNewSize);*/
+			DirectX::XMUINT2 leftcontainerNewSize = m_pLeftContainer->GetSize();
+			leftcontainerNewSize.x = static_cast<uint32_t>(leftContainerRatio * m_size.x);
+			m_pLeftContainer->SetSize(leftcontainerNewSize);
+		}
+		break;
+
+		case KeepLeftSize:
+		{
+			//nothig to do
+		}
+		break;
+
+		case KeepRightSize:
+		{
+			DirectX::XMUINT2 oldRightContainerSize = m_pRightContainer->GetSize();
+			int leftContainerWidth = m_size.x - oldRightContainerSize.x - m_pSplit->GetWidth();
+			m_pLeftContainer->SetSize(DirectX::XMUINT2(leftContainerWidth, 0));
+		}
+		break;
+		}
 
 		for (Widget* pChild : m_children)
 			pChild->Resize(m_absPos, m_size);
@@ -143,5 +154,17 @@ namespace Widgets
 		DirectX::XMUINT2 size = m_pLeftContainer->GetSize();
 		size.x = width;
 		m_pLeftContainer->SetSize(size);
+	}
+
+	void SplitVertical::SetRightPanelWidth(int width)
+	{
+		DirectX::XMUINT2 size = m_pRightContainer->GetSize();
+		size.x = width;
+		m_pRightContainer->SetSize(size);
+	}
+
+	void SplitVertical::SetResizePolicy(ResizePolicy policy)
+	{
+		m_resizePolicy = policy;
 	}
 }
