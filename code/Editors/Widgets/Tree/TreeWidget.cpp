@@ -23,6 +23,7 @@ namespace Editors
 		, m_pModel(nullptr)
 		, m_isDirtyWidget(true)
 		, m_onItemClicked()
+		, m_pSelectedButton(nullptr)
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
@@ -135,10 +136,17 @@ namespace Editors
 		Widgets::Button* pButton = new Widgets::Button(0, ITEM_HEIGHT, 0, 0);
 		pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pButton->GetHoverStyle().ShowBorder(false);
-		pButton->OnClick([this, pModel](int x, int y) -> bool
+		pButton->OnClick([this, pModel, pButton](int x, int y) -> bool
 			{
+				if (m_pSelectedButton)
+					m_pSelectedButton->Unselect();
+
+				pButton->Select();
+				m_pSelectedButton = pButton;
+
 				if (m_onItemClicked)
 					m_onItemClicked(pModel, 0);
+
 				return true;
 			});
 		pItemLayout->AddWidget(pButton);

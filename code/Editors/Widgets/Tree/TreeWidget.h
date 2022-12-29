@@ -10,6 +10,7 @@
 
 namespace Widgets
 {
+	class Button;
 	class Layout;
 }
 
@@ -40,6 +41,8 @@ namespace Editors
 		Rendering::TextureId m_collapsedIcon;
 
 		OnItemClickedCallback m_onItemClicked;
+
+		Widgets::Button* m_pSelectedButton;
 
 		void CreateWidgets();
 
