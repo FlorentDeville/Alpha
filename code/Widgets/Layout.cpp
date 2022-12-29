@@ -168,25 +168,42 @@ namespace Widgets
 	{
 		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
 		{
-			const Widgets::Widget* pLast = m_children.back();
-			DirectX::XMUINT2 size = GetSize();
-			size.x = pLast->GetX() + pLast->GetWidth();
+			int maxSize = 0;
+			for (const Widget* pChild : m_children)
+			{
+				if (!pChild->IsEnabled())
+					continue;
+
+				int max = pChild->GetWidth() + pChild->GetX();
+				if (max > maxSize) maxSize = max;
+			}
+
+			m_size.x = maxSize;
 			if (m_defaultStyle.m_showBorder)
-				size.x += m_defaultStyle.m_borderSize;
-
-			SetSize(size);
+			{
+				m_size.x += m_defaultStyle.m_borderSize;
+			}
 		}
-
 		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
 		{
-			const Widgets::Widget* pLast = m_children.back();
-			DirectX::XMUINT2 size = GetSize();
-			size.y = pLast->GetY() + pLast->GetHeight();
-			if (m_defaultStyle.m_showBorder)
-				size.y += m_defaultStyle.m_borderSize;
+			int maxSize = 0;
+			for (const Widget* pChild : m_children)
+			{
+				if (!pChild->IsEnabled())
+					continue;
 
-			SetSize(size);
+				int max = pChild->GetHeight() + pChild->GetY();
+				if (max > maxSize) maxSize = max;
+			}
+
+			m_size.y = maxSize;
+			if (m_defaultStyle.m_showBorder)
+			{
+				m_size.y += m_defaultStyle.m_borderSize;
+			}
 		}
+
+		
 	}
 
 	void Layout::SetDirection(Direction dir)

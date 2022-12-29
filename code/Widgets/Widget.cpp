@@ -83,9 +83,7 @@ namespace Widgets
 				if (max > maxSize) maxSize = max;
 			}
 
-			DirectX::XMUINT2 size = GetSize();
-			size.x = maxSize;
-			SetSize(size);
+			m_size.x = maxSize;
 		}
 		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
 		{
@@ -99,9 +97,7 @@ namespace Widgets
 				if (max > maxSize) maxSize = max;
 			}
 
-			DirectX::XMUINT2 size = GetSize();
-			size.y = maxSize;
-			SetSize(size);
+			m_size.y = maxSize;
 		}
 	}
 
