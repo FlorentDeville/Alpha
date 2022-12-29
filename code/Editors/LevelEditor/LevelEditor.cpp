@@ -417,7 +417,7 @@ namespace Editors
 	void LevelEditor::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
-		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_STRETCH);
+		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
 		pLayout->SetDirection(Widgets::Layout::Vertical);
 
 		pSplit->AddRightPanel(pLayout);

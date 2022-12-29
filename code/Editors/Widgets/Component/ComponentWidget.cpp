@@ -19,8 +19,7 @@ namespace Editors
 		, m_pModel(nullptr)
 		, m_isDirtyWidget(true)
 	{
-		SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
-		SetSize(DirectX::XMUINT2(500, 0));
+		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 	}
 
 	ComponentWidget::~ComponentWidget()
