@@ -136,12 +136,10 @@ namespace Widgets
 		void ResizeChildren();
 
 	protected:
-		DirectX::XMUINT2 m_size; //current size in pixels
-		DirectX::XMUINT2 m_defaultSize; // size provided by the client and used when style is default
+		DirectX::XMUINT2 m_size; //width and height in pixels
 		DirectX::XMINT3 m_locPos; //local position of the top left corner in pixel
 		DirectX::XMINT3 m_absPos; //absolute position (from the top left corner)
 
-		char m_padding[8];
 		DirectX::XMVECTOR m_backgroundColor;
 		DirectX::XMVECTOR m_borderColor;
 		bool m_showBorder;
