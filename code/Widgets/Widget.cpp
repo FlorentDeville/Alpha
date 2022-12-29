@@ -13,6 +13,7 @@ namespace Widgets
 	Widget::Widget()
 		: m_children()
 		, m_size(0, 0)
+		, m_defaultSize(0, 0)
 		, m_locPos(0, 0, 0)
 		, m_absPos(0, 0, 0)
 		, m_hover(false)
@@ -32,6 +33,7 @@ namespace Widgets
 	{
 		m_size.x = w;
 		m_size.y = h;
+		m_defaultSize = m_size;
 		m_locPos = DirectX::XMINT3(x, y, 0);
 	}
 
@@ -58,6 +60,12 @@ namespace Widgets
 		if ((m_sizeStyle & HSIZE_STRETCH) != 0)
 			m_size.x = parentSize.x - m_locPos.x;
 		if ((m_sizeStyle & VSIZE_STRETCH) != 0)
+			m_size.y = parentSize.y - m_locPos.y;
+
+		//crop the size to the parent if the style is default
+		if ((m_sizeStyle & HSIZE_DEFAULT) != 0 && m_defaultSize.x > parentSize.x - m_locPos.x)
+			m_size.x = parentSize.x - m_locPos.x;
+		if ((m_sizeStyle & VSIZE_STRETCH) != 0 && m_defaultSize.y > parentSize.y - m_locPos.y)
 			m_size.y = parentSize.y - m_locPos.y;
 	}
 
@@ -256,6 +264,7 @@ namespace Widgets
 
 	void Widget::SetSize(const DirectX::XMUINT2& size)
 	{
+		m_defaultSize = size;
 		m_size = size;
 	}
 
