@@ -416,6 +416,17 @@ void CreateMainWindow(const Configuration& configuration)
 	shaderEditorParameter.m_shaderCompilerPath = configuration.m_shaderCompiler;
 	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
 
+	{
+		Widgets::Tab* pTab = new Widgets::Tab();
+		Widgets::Layout* pLayout = new Widgets::Layout();
+		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pLayout->GetDefaultStyle().ShowBorder(true);
+		pLayout->GetDefaultStyle().SetBorderSize(1);
+
+		pTab->AddWidget(pLayout);
+		pMiddleTabContainer->AddTab("Widgets", pTab);
+	}
+
 	pMiddleTabContainer->SetSelectedTab(0);
 }
 
