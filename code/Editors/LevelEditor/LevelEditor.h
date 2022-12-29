@@ -23,6 +23,7 @@ namespace Rendering
 
 namespace Widgets
 {
+	class Label;
 	class SplitVertical;
 	class Widget;
 }
@@ -61,6 +62,8 @@ namespace Editors
 		//entity viewer
 		EntityModel* m_pEntityModel;
 		EntityWidget* m_pEntityWidget;
+
+		Widgets::Label* m_pEntityNameLabel;
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;

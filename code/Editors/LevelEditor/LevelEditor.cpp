@@ -242,6 +242,7 @@ namespace Editors
 		, m_cameraTransform(DirectX::XMMatrixIdentity())
 		, m_pEntityModel(nullptr)
 		, m_pEntityWidget(nullptr)
+		, m_pEntityNameLabel(nullptr)
 	{
 		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
 		DirectX::XMMATRIX cameraView = DirectX::XMMatrixLookAtLH(cameraPosition, DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0));
@@ -421,6 +422,10 @@ namespace Editors
 
 		pSplit->AddRightPanel(pLayout);
 
+		m_pEntityNameLabel = new Widgets::Label();
+		m_pEntityNameLabel->SetSize(DirectX::XMUINT2(0, 20));
+		pLayout->AddWidget(m_pEntityNameLabel);
+
 		m_pEntityModel = new EntityModel(new Entity(""));
 		m_pEntityWidget = new EntityWidget();
 		m_pEntityWidget->SetModel(m_pEntityModel);
@@ -437,6 +442,8 @@ namespace Editors
 		m_pEntityModel = new EntityModel(pEntity);
 		m_pEntityWidget->SetModel(m_pEntityModel);
 		Widgets::WidgetMgr::Get().RequestResize();
+
+		m_pEntityNameLabel->SetText(pEntity->GetName());
 
 		return true;
 	}
