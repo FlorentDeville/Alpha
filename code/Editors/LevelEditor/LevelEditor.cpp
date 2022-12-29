@@ -427,7 +427,7 @@ namespace Editors
 		pLayout->AddWidget(m_pEntityWidget);
 	}
 
-	bool LevelEditor::callback(const BaseModel* pModel, int rowId)
+	bool LevelEditor::OnTreeItemClicked(const BaseModel* pModel, int rowId)
 	{
 		const LevelTreeModel* pLevelTreeModel = static_cast<const LevelTreeModel*>(pModel);
 		const Core::TreeNode<Entity*>* pNode = pLevelTreeModel->GetSource();
@@ -448,6 +448,6 @@ namespace Editors
 
 		pSplit->AddLeftPanel(pTreeWidget);
 
-		pTreeWidget->OnItemClicked(std::bind(&LevelEditor::callback, this, std::placeholders::_1, std::placeholders::_2));
+		pTreeWidget->OnItemClicked(std::bind(&LevelEditor::OnTreeItemClicked, this, std::placeholders::_1, std::placeholders::_2));
 	}
 }
