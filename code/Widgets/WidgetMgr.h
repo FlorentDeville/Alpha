@@ -27,6 +27,7 @@ namespace Widgets
 	class Container;
 	class Layout;
 	class Split;
+	class TextBox;
 	class Viewport;
 	class Widget;
 
@@ -46,6 +47,7 @@ namespace Widgets
 		friend class Widgets::Icon;
 		friend class Widgets::Layout;
 		friend class Widgets::Split;
+		friend class Widgets::TextBox;
 		friend class Widgets::Viewport;
 		friend class Widgets::Widget;
 

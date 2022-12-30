@@ -24,9 +24,11 @@
     <ClInclude Include="Style\BaseStyle.h" />
     <ClInclude Include="Style\Button\ButtonStyle.h" />
     <ClInclude Include="Style\Layout\LayoutStyle.h" />
+    <ClInclude Include="Style\TextBox\TextBoxStyle.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="TabContainer.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetMgr.h" />
@@ -42,9 +44,11 @@
     <ClCompile Include="SplitVertical.cpp" />
     <ClCompile Include="Style\Button\ButtonStyle.cpp" />
     <ClCompile Include="Style\Layout\LayoutStyle.cpp" />
+    <ClCompile Include="Style\TextBox\TextBoxStyle.cpp" />
     <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TabContainer.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WidgetMgr.cpp" />

@@ -54,6 +54,7 @@
 #include "Widgets/Split.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
+#include "Widgets/TextBox.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -65,10 +66,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
+	case WM_CHAR:
+	{
+		Message msg;
+		msg.m_id = M_CharKeyDown;
+		msg.m_high = wParam;
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+	}
+	break;
 
 	case WM_KEYDOWN:
 		{
-			switch (wParam)
+			switch (wParam) //wParam is a virtual key code
 			{
 			case VK_ESCAPE:
 				::PostQuitMessage(0);
@@ -77,10 +86,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			default:
 			{
 				Message msg;
-				msg.m_id = M_KeyDown;
-				msg.m_high = wParam;
+				msg.m_id = M_VirtualKeyDown;
+				msg.m_high = wParam; 
 				Widgets::WidgetMgr::Get().HandleMsg(msg);
-
 				Inputs::InputMgr::Get().UpdateKeyboard(wParam);
 			}
 			break;
@@ -288,8 +296,6 @@ void Update()
 	}
 
 	auto dt = clock.now() - start;
-	double totalTimeElasped = dt.count() * 1e-9;
-	totalTimeElasped;
 
 	Editors::MeshEditor::Get().Update();
 	Editors::ShaderEditor::Get().Update();
@@ -425,6 +431,23 @@ void CreateMainWindow(const Configuration& configuration)
 
 		pTab->AddWidget(pLayout);
 		pMiddleTabContainer->AddTab("Widgets", pTab);
+
+		Widgets::Container* pOffsetContainer = new Widgets::Container(10, 20);
+		pLayout->AddWidget(pOffsetContainer);
+
+		Widgets::Layout* pVLayout = new Widgets::Layout();
+		pVLayout->SetDirection(Widgets::Layout::Vertical);
+		pVLayout->SetSizeStyle(Widgets::Layout::HSIZE_STRETCH | Widgets::Layout::VSIZE_FIT);
+		pLayout->AddWidget(pVLayout);
+
+		Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
+		pVLayout->AddWidget(pTopOffsetContainer);
+
+		Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
+		pNewTextBox->SetSize(DirectX::XMUINT2(100, 20));
+		pNewTextBox->SetText("This is a dummy text");
+
+		pVLayout->AddWidget(pNewTextBox);
 	}
 
 	pMiddleTabContainer->SetSelectedTab(0);

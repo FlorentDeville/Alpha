@@ -72,6 +72,12 @@
     <ClInclude Include="Style\Layout\LayoutStyle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Style\TextBox\TextBoxStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">
@@ -120,6 +126,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Style\Layout\LayoutStyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Style\TextBox\TextBoxStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

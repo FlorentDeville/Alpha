@@ -52,7 +52,10 @@ namespace Widgets
 			return;
 
 		for (Widget* pChild : m_children)
-			pChild->Draw(windowSize);
+		{
+			if(pChild->IsEnabled())
+				pChild->Draw(windowSize);
+		}
 	}
 
 	void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)

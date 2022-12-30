@@ -274,10 +274,17 @@ namespace Widgets
 		}
 		break;
 
-		case M_KeyDown:
+		case M_VirtualKeyDown:
 			if (m_pFocusedWidget)
 				m_pFocusedWidget->Handle(msg);
 			break;
+
+		case M_CharKeyDown:
+		{
+			if (m_pFocusedWidget)
+				m_pFocusedWidget->Handle(msg);
+		}
+		break;
 		}
 	}
 

@@ -133,7 +133,7 @@ namespace Widgets
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
 		virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
-		void ResizeChildren();
+		virtual void ResizeChildren();
 
 	protected:
 		DirectX::XMUINT2 m_size; //current size in pixels
