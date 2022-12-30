@@ -118,6 +118,9 @@ namespace Widgets
 				//compute first the new position
 				pWidget->SetX(pos);
 
+				if (m_defaultStyle.m_showBorder)
+					pWidget->SetY(m_defaultStyle.m_borderSize);
+
 				//now compute the size
 				pWidget->Resize(m_absPos, contentSize);
 
