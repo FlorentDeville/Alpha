@@ -118,7 +118,7 @@ namespace Rendering
 		pUploadResource->Release();
 	}
 
-	void Texture::Init_RenderTarget(int width, int height)
+	void Texture::Init_RenderTarget(int width, int height, float* clearColor)
 	{
 		DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
@@ -129,10 +129,10 @@ namespace Rendering
 		//Create the texture
 		D3D12_CLEAR_VALUE clear;
 		clear.Format = format;
-		clear.Color[0] = 0.4f;
-		clear.Color[1] = 0.6f;
-		clear.Color[2] = 0.9f;
-		clear.Color[3] = 1.f;
+		clear.Color[0] = clearColor[0];
+		clear.Color[1] = clearColor[1];
+		clear.Color[2] = clearColor[2];
+		clear.Color[3] = clearColor[3];
 
 		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 		pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &m_resourceDesc,

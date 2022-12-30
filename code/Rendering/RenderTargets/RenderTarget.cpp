@@ -24,6 +24,9 @@ namespace Rendering
 		, m_dsv()
 		, m_currentState(D3D12_RESOURCE_STATE_RENDER_TARGET)
 	{
+		m_clearColor[0] = m_clearColor[1] = m_clearColor[2] = 0.27f;
+		m_clearColor[3] = 1.f;
+
 		RenderModule& renderModule = RenderModule::Get();
 
 		//create the rtv and dsv heap
@@ -35,7 +38,7 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_texture, m_textureId);
-		m_texture->Init_RenderTarget(width, height);
+		m_texture->Init_RenderTarget(width, height, m_clearColor);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_texture->GetResource(), nullptr, m_rtv);
@@ -85,8 +88,7 @@ namespace Rendering
 		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
 
 		// Clear the render target.
-		float clearColor[4] = { 0.4f, 0.6f, 0.9f, 1.0f };
-		commandList->ClearRenderTargetView(m_rtv, clearColor, 0, nullptr);
+		commandList->ClearRenderTargetView(m_rtv, m_clearColor, 0, nullptr);
 
 		// Clear the depth buffer
 		float depthValue = 1.f;

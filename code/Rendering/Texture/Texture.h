@@ -18,7 +18,7 @@ namespace Rendering
 		~Texture();
 
 		void Init(const std::string& path);
-		void Init_RenderTarget(int width, int height);
+		void Init_RenderTarget(int width, int height, float* clearColor);
 
 		const ID3D12DescriptorHeap* GetSRV() const;
 		ID3D12DescriptorHeap* GetSRV();

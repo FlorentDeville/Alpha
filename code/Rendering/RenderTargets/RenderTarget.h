@@ -42,6 +42,8 @@ namespace Rendering
 
 		D3D12_RESOURCE_STATES m_currentState;	// Current state
 
+		float m_clearColor[4];
+
 		void CreateDepthBuffer(int width, int height);
 	};
 }
