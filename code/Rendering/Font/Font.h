@@ -57,7 +57,6 @@ namespace Rendering
 
         // Compute the rectangle in pixels containing the text
         void ComputeRect(const std::string& text, DirectX::XMUINT2& rect) const;
-        //size_t ComputeCharacterCountFitting(const std::string& text, int length) const;
 
         std::string m_name;
         std::string m_fontImage;
