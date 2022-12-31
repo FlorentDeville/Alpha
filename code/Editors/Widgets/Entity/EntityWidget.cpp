@@ -35,7 +35,7 @@ namespace Editors
 		}
 	}
 
-	void EntityWidget::SetModel(const BaseModel* pModel)
+	void EntityWidget::SetModel(BaseModel* pModel)
 	{
 		DeleteAllChildren();
 		m_pModel = pModel;

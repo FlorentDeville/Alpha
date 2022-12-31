@@ -6,9 +6,11 @@
 
 #include "Core/Math/Mat44f.h"
 
+#include <sstream>
+
 namespace Editors
 {
-	MatrixModel::MatrixModel(const Core::Mat44f* pMatrix)
+	MatrixModel::MatrixModel(Core::Mat44f* pMatrix)
 		: BaseModel()
 		, m_pMatrix(pMatrix)
 		, m_cache()
@@ -47,5 +49,20 @@ namespace Editors
 		}
 
 		return m_cache[rowId][columnId];
+	}
+
+	void MatrixModel::SetData(int rowId, int columnId, const std::string& value)
+	{
+		//first check if the string is a float
+		std::istringstream iss(value);
+
+		float f;
+		iss >> f;
+		if (!iss.eof() || iss.fail())
+		{
+			f = 0; // an error occured
+		}
+
+		m_pMatrix->Set(rowId, columnId, f);
 	}
 }

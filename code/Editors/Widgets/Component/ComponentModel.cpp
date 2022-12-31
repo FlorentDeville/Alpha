@@ -13,7 +13,7 @@ namespace Editors
 {
 	std::string ComponentModel::s_defaultValue = "DEADMEAT";
 
-	ComponentModel::ComponentModel(const Component* pComponent)
+	ComponentModel::ComponentModel(Component* pComponent)
 		: BaseModel()
 		, m_pComponent(pComponent)
 	{
@@ -21,7 +21,7 @@ namespace Editors
 		for (int ii = 0; ii < propertyCount; ++ii)
 		{
 			BaseModel* pNewModel = nullptr;
-			const Property* pProperty = m_pComponent->GetProperty(ii);
+			Property* pProperty = m_pComponent->GetProperty(ii);
 			switch (pProperty->GetType())
 			{
 			case PropertyType::kAssetMaterial:
@@ -34,7 +34,7 @@ namespace Editors
 
 			case PropertyType::kMat44f:
 			{
-				const PropertyValueMat44f& propertyAssetId = static_cast<const PropertyValueMat44f&>(pProperty->GetValue());
+				PropertyValueMat44f& propertyAssetId = static_cast<PropertyValueMat44f&>(pProperty->GetValue());
 				pNewModel = new MatrixModel(&propertyAssetId.Get());
 			}
 			break;
@@ -89,7 +89,7 @@ namespace Editors
 		return m_pComponent->GetProperty(rowId)->GetType();
 	}
 
-	const BaseModel* ComponentModel::GetSubModel(int rowId, int columnId) const
+	BaseModel* ComponentModel::GetSubModel(int rowId, int columnId)
 	{
 		return m_models[rowId];
 	}

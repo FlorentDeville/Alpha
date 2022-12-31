@@ -15,7 +15,7 @@ namespace Editors
 	class ComponentModel : public BaseModel
 	{
 	public:
-		ComponentModel(const Component* pComponent);
+		ComponentModel(Component* pComponent);
 		~ComponentModel();
 
 		int GetRowCount() const override;
@@ -24,10 +24,10 @@ namespace Editors
 		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
 		PropertyType GetDataType(int rowId = 0, int columnId = 0) const override;
 
-		const BaseModel* GetSubModel(int rowId = 0, int columnId = 0) const override;
+		BaseModel* GetSubModel(int rowId = 0, int columnId = 0) override;
 
 	private:
-		const Component* m_pComponent;
+		Component* m_pComponent;
 
 		std::vector<BaseModel*> m_models;
 

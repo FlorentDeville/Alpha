@@ -26,6 +26,7 @@ namespace Editors
 		Property* GetProperty(const std::string& name);
 		const Property* GetProperty(const std::string& name) const;
 		const Property* GetProperty(int index) const;
+		Property* GetProperty(int index);
 
 		void GetPropertyValue(const std::string& name, Systems::AssetId& id) const;
 		void GetPropertyValue(const std::string& name, Core::Mat44f& m) const;

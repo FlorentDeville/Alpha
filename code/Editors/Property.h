@@ -57,6 +57,7 @@ namespace Editors
 		{}
 
 		const Core::Mat44f& Get() const { return m_matrix; }
+		Core::Mat44f& Get() { return m_matrix; }
 		void Set(const Core::Mat44f& m) { m_matrix = m; }
 
 	private:

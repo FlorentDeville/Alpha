@@ -34,7 +34,7 @@ namespace Editors
 		}
 	}
 
-	void ComponentWidget::SetModel(const BaseModel* pModel)
+	void ComponentWidget::SetModel(BaseModel* pModel)
 	{
 		m_pModel = pModel;
 	}

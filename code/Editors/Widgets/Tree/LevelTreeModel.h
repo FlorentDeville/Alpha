@@ -24,7 +24,7 @@ namespace Editors
 	class LevelTreeModel : public BaseModel
 	{
 	public:
-		LevelTreeModel(const Core::TreeNode<Entity*>* pRoot);
+		LevelTreeModel(Core::TreeNode<Entity*>* pRoot);
 		~LevelTreeModel();
 
 		int GetRowCount() const override;
@@ -33,12 +33,12 @@ namespace Editors
 
 		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
 
-		const BaseModel* GetSubModel(int rowId = 0, int columnId = 0) const override;
+		BaseModel* GetSubModel(int rowId = 0, int columnId = 0) override;
 
-		const Core::TreeNode<Entity*>* GetSource() const;
+		Core::TreeNode<Entity*>* GetSource();
 
 	private:
-		const Core::TreeNode<Entity*>* m_pRoot;
+		Core::TreeNode<Entity*>* m_pRoot;
 
 		static std::string s_default;
 

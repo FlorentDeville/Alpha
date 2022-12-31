@@ -6,16 +6,18 @@
 
 #include "Editors/Widgets/BaseModel.h"
 
-#include "Widgets/Label.h"
+//#include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/TextBox.h"
 
 namespace Editors
 {
 	MatrixWidget::MatrixWidget()
 		: Widget()
 		, m_pModel(nullptr)
+		, m_isDirtyValue(false)
 	{
-		const int FIELD_HEIGHT = 15;
+		const int FIELD_HEIGHT = 20;
 		const int FIELD_WIDTH = 50;
 
 		SetSize(DirectX::XMUINT2(3 * FIELD_WIDTH, 4 * FIELD_HEIGHT));
@@ -33,11 +35,11 @@ namespace Editors
 
 			for (int jj = 0; jj < 3; ++jj)
 			{
-				Widgets::Label* pNewLabel = new Widgets::Label();
-				pNewLabel->SetSize(DirectX::XMUINT2(FIELD_WIDTH, FIELD_HEIGHT));
-				pNewLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				m_pLabel[ii][jj] = pNewLabel;
-				pRowLayout->AddWidget(pNewLabel);
+				Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
+				pNewTextBox->SetSize(DirectX::XMUINT2(FIELD_WIDTH, FIELD_HEIGHT));
+				pNewTextBox->OnValidate([this, ii, jj](const std::string& value) -> bool { m_pModel->SetData(ii, jj, value); return true; });
+				m_pTextBox[ii][jj] = pNewTextBox;
+				pRowLayout->AddWidget(pNewTextBox);
 			}
 		}
 	}
@@ -45,19 +47,24 @@ namespace Editors
 	MatrixWidget::~MatrixWidget()
 	{}
 
-	void MatrixWidget::SetModel(const BaseModel* pModel)
+	void MatrixWidget::SetModel(BaseModel* pModel)
 	{
 		m_pModel = pModel;
+		m_isDirtyValue = true;
 	}
 
 	void MatrixWidget::Update()
 	{
-		for (int ii = 0; ii < 4; ++ii)
+		if (m_isDirtyValue)
 		{
-			for (int jj = 0; jj < 3; ++jj)
+			for (int ii = 0; ii < 4; ++ii)
 			{
-				m_pLabel[ii][jj]->SetText(m_pModel->GetData(ii, jj));
+				for (int jj = 0; jj < 3; ++jj)
+				{
+					m_pTextBox[ii][jj]->SetText(m_pModel->GetData(ii, jj));
+				}
 			}
+			m_isDirtyValue = false;
 		}
 	}
 }

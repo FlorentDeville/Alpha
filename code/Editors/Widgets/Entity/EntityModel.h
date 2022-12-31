@@ -15,7 +15,7 @@ namespace Editors
 	class EntityModel : public BaseModel
 	{
 	public:
-		EntityModel(const Entity* pEntity);
+		EntityModel(Entity* pEntity);
 		~EntityModel();
 
 		int GetRowCount() const override;
@@ -23,12 +23,12 @@ namespace Editors
 
 		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
 
-		const BaseModel* GetSubModel(int rowId = 0, int columnId = 0) const override;
+		BaseModel* GetSubModel(int rowId = 0, int columnId = 0) override;
 
 	private:
-		std::vector<const BaseModel*> m_subModels;
+		std::vector<BaseModel*> m_subModels;
 
-		const Entity* m_pEntity;
+		Entity* m_pEntity;
 
 		static std::string s_default;
 	};

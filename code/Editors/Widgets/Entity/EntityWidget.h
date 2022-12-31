@@ -18,10 +18,10 @@ namespace Editors
 
 		void Update() override;
 
-		void SetModel(const BaseModel* pModel);
+		void SetModel(BaseModel* pModel);
 
 	private:
-		const BaseModel* m_pModel;
+		BaseModel* m_pModel;
 
 		bool m_isDirtyWidget;
 

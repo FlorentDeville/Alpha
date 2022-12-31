@@ -434,11 +434,11 @@ namespace Editors
 		pLayout->AddWidget(m_pEntityWidget);
 	}
 
-	bool LevelEditor::OnTreeItemClicked(const BaseModel* pModel, int rowId)
+	bool LevelEditor::OnTreeItemClicked(BaseModel* pModel, int rowId)
 	{
-		const LevelTreeModel* pLevelTreeModel = static_cast<const LevelTreeModel*>(pModel);
-		const Core::TreeNode<Entity*>* pNode = pLevelTreeModel->GetSource();
-		const Entity* pEntity = pNode->GetContent();
+		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
+		Core::TreeNode<Entity*>* pNode = pLevelTreeModel->GetSource();
+		Entity* pEntity = pNode->GetContent();
 
 		delete m_pEntityModel;
 		m_pEntityModel = new EntityModel(pEntity);

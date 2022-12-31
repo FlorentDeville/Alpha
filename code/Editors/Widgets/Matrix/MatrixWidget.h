@@ -9,7 +9,7 @@
 namespace Widgets
 {
 	class Layout;
-	class Label;
+	class TextBox;
 }
 
 namespace Editors
@@ -22,14 +22,16 @@ namespace Editors
 		MatrixWidget();
 		~MatrixWidget();
 
-		void SetModel(const BaseModel* pModel);
+		void SetModel(BaseModel* pModel);
 
 		void Update() override;
 
 	private:
-		const BaseModel* m_pModel;
+		BaseModel* m_pModel;
 
 		Widgets::Layout* m_pLayout;
-		Widgets::Label* m_pLabel[4][3];
+		Widgets::TextBox* m_pTextBox[4][3];
+
+		bool m_isDirtyValue;
 	};
 }

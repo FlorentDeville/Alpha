@@ -15,7 +15,7 @@ namespace Editors
 	class MatrixModel : public BaseModel
 	{
 	public:
-		MatrixModel(const Core::Mat44f* pMatrix);
+		MatrixModel(Core::Mat44f* pMatrix);
 		~MatrixModel();
 
 		int GetRowCount() const override;
@@ -23,8 +23,10 @@ namespace Editors
 
 		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
 
+		void SetData(int rowId, int columnId, const std::string& value) override;
+
 	private:
-		const Core::Mat44f* m_pMatrix;
+		Core::Mat44f* m_pMatrix;
 
 		mutable std::string m_cache[4][3];
 		mutable bool m_isDirty;

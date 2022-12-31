@@ -72,6 +72,6 @@ namespace Editors
 		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
 
-		bool OnTreeItemClicked(const BaseModel* pModel, int rowId);
+		bool OnTreeItemClicked(BaseModel* pModel, int rowId);
 	};
 }

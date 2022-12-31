@@ -34,6 +34,8 @@ namespace Editors
 		virtual const std::string& GetData(int rowId = 0, int columnId = 0) const = 0;
 		virtual PropertyType GetDataType(int rowId = 0, int columnId = 0) const { return PropertyType::kUnknown; }
 
-		virtual const BaseModel* GetSubModel(int rowId = 0, int columnId = 0) const { return nullptr; }
+		virtual BaseModel* GetSubModel(int rowId = 0, int columnId = 0) { return nullptr; }
+
+		virtual void SetData(int rowId, int columnId, const std::string& value) {};
 	};
 }

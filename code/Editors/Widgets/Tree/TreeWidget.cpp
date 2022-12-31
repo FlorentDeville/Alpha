@@ -48,7 +48,7 @@ namespace Editors
 		Rendering::TextureMgr::Get().DeleteTexture(m_expandedIcon);
 	}
 
-	void TreeWidget::SetModel(const BaseModel* pModel)
+	void TreeWidget::SetModel(BaseModel* pModel)
 	{
 		m_pModel = pModel;
 	}
@@ -82,7 +82,7 @@ namespace Editors
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
-	void TreeWidget::CreateRecursiveWidgets(Widgets::Layout* pParentLayout, const BaseModel* pModel, int offsetX)
+	void TreeWidget::CreateRecursiveWidgets(Widgets::Layout* pParentLayout, BaseModel* pModel, int offsetX)
 	{
 		const int ITEM_HEIGHT = 20;
 

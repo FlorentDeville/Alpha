@@ -21,7 +21,8 @@ namespace Editors
 
 		const Component* GetComponent(const std::string& name) const;
 		const Component* GetComponent(int index) const;
-		
+		Component* GetComponent(int index);
+
 		int GetComponentCount() const;
 
 		const std::string& GetName() const;

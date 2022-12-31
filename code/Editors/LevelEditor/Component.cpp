@@ -63,6 +63,15 @@ namespace Editors
 		return it->second;
 	}
 
+	Property* Component::GetProperty(int index)
+	{
+		std::map<std::string, Property*>::const_iterator it = m_properties.begin();
+		for (int ii = 0; ii < index; ++ii)
+			++it;
+
+		return it->second;
+	}
+
 	void Component::GetPropertyValue(const std::string& name, Systems::AssetId& id) const
 	{
 		const Property* pProperty = GetProperty(name);

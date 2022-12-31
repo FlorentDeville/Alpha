@@ -13,7 +13,7 @@ namespace Editors
 {
 	std::string EntityModel::s_default = "Unknown Value";
 
-	EntityModel::EntityModel(const Entity* pEntity)
+	EntityModel::EntityModel(Entity* pEntity)
 		: BaseModel()
 		, m_pEntity(pEntity)
 	{
@@ -21,7 +21,7 @@ namespace Editors
 		m_subModels.reserve(count);
 		for (int ii = 0; ii < count; ++ii)
 		{
-			const Component* pComponent = m_pEntity->GetComponent(ii);
+			Component* pComponent = m_pEntity->GetComponent(ii);
 			ComponentModel* pNewModel = new ComponentModel(pComponent);
 			m_subModels.push_back(pNewModel);
 		}
@@ -55,7 +55,7 @@ namespace Editors
 		return pComponent->GetName();
 	}
 
-	const BaseModel* EntityModel::GetSubModel(int rowId, int columnId) const
+	BaseModel* EntityModel::GetSubModel(int rowId, int columnId)
 	{
 		assert(columnId == 1);
 		return m_subModels[rowId];

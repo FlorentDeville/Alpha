@@ -21,19 +21,19 @@ namespace Editors
 	class TreeWidget : public Widgets::Widget
 	{
 	public:
-		using OnItemClickedCallback = std::function<bool(const BaseModel* pModel, int rowId)>;
+		using OnItemClickedCallback = std::function<bool(BaseModel* pModel, int rowId)>;
 
 		TreeWidget();
 		~TreeWidget();
 
-		void SetModel(const BaseModel* pModel);
+		void SetModel(BaseModel* pModel);
 
 		void Update() override;
 
 		void OnItemClicked(const OnItemClickedCallback& callback);
 
 	private:
-		const BaseModel* m_pModel;
+		BaseModel* m_pModel;
 
 		bool m_isDirtyWidget;
 
@@ -46,6 +46,6 @@ namespace Editors
 
 		void CreateWidgets();
 
-		void CreateRecursiveWidgets(Widgets::Layout* pParentLayout, const BaseModel* pModel, int offsetX);
+		void CreateRecursiveWidgets(Widgets::Layout* pParentLayout, BaseModel* pModel, int offsetX);
 	};
 }

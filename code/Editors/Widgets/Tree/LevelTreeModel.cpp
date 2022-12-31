@@ -12,12 +12,12 @@ namespace Editors
 {
 	std::string LevelTreeModel::s_default = "Unknown";
 
-	LevelTreeModel::LevelTreeModel(const Core::TreeNode<Entity*>* pRoot)
+	LevelTreeModel::LevelTreeModel(Core::TreeNode<Entity*>* pRoot)
 		: BaseModel()
 		, m_pRoot(pRoot)
 	{
 		const std::vector<Core::TreeNode<Entity*>*>& children = pRoot->GetChildren();
-		for (const Core::TreeNode<Entity*>* pNode : children)
+		for (Core::TreeNode<Entity*>* pNode : children)
 			m_subModels.push_back(new LevelTreeModel(pNode));
 	}
 
@@ -53,12 +53,12 @@ namespace Editors
 		return s_default;
 	}
 
-	const BaseModel* LevelTreeModel::GetSubModel(int rowId, int columnId) const
+	BaseModel* LevelTreeModel::GetSubModel(int rowId, int columnId)
 	{
 		return m_subModels[rowId];
 	}
 
-	const Core::TreeNode<Entity*>* LevelTreeModel::GetSource() const
+	Core::TreeNode<Entity*>* LevelTreeModel::GetSource()
 	{
 		return m_pRoot;
 	}
