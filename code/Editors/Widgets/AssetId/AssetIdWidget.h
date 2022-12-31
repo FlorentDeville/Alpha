@@ -4,21 +4,28 @@
 
 #pragma once
 
-#include "Widgets/Label.h"
+#include "Widgets/Layout.h"
 
 namespace Systems
 {
 	class AssetId;
 }
 
+namespace Widgets
+{
+	class Button;
+	class Container;
+	class Label;
+}
+
 namespace Editors
 {
 	class BaseModel;
 
-	class AssetIdWidget : public Widgets::Label
+	class AssetIdWidget : public Widgets::Layout
 	{
 	public:
-		AssetIdWidget(int32_t locX, int32_t locY, float scale);
+		AssetIdWidget();
 		~AssetIdWidget();
 
 		void SetModel(const BaseModel* pModel);
@@ -27,5 +34,9 @@ namespace Editors
 
 	private:
 		const BaseModel* m_pModel;
+
+		Widgets::Container* m_pLabelContainer;
+		Widgets::Label* m_pLabel;
+		Widgets::Button* m_pButton;
 	};
 }

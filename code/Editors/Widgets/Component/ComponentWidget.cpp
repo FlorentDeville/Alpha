@@ -46,7 +46,7 @@ namespace Editors
 		pGridLayout->SetDirection(Widgets::Layout::Vertical);
 		AddWidget(pGridLayout);
 
-		const int FIELD_HEIGHT = 15;
+		const int FIELD_HEIGHT = 20;
 		const int NAME_WIDTH = 100;
 		const int propertyCount = m_pModel->GetRowCount();
 		for (int ii = 0; ii < propertyCount; ++ii)
@@ -68,7 +68,7 @@ namespace Editors
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
 			{
-				AssetIdWidget* pNewWidget = new AssetIdWidget(0, 0, 1);
+				AssetIdWidget* pNewWidget = new AssetIdWidget();
 				pNewWidget->SetModel(m_pModel->GetSubModel(ii));
 				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
 				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
