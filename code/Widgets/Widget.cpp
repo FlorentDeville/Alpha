@@ -9,6 +9,8 @@
 
 namespace Widgets
 {
+	const float Widget::NEAR_CAMERA_PLANE = 0.1f;
+	const float Widget::FAR_CAMERA_PLANE = 100;
 
 	Widget::Widget()
 		: m_children()
@@ -419,7 +421,7 @@ namespace Widgets
 
 		float projWidth = static_cast<float>(windowWidth);
 		float projHeight = static_cast<float>(windowHeight);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, 0.1f, 100.f);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, NEAR_CAMERA_PLANE, FAR_CAMERA_PLANE);
 
 		wvp = DirectX::XMMatrixMultiply(scale, position);
 		wvp = DirectX::XMMatrixMultiply(wvp, view);

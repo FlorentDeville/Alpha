@@ -378,7 +378,8 @@ void RenderModule::InitialiseFont(Rendering::FontId fontId, Rendering::PipelineS
 	}
 }
 
-int RenderModule::PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor)
+int RenderModule::PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor, 
+	float nearCameraPlane, float farCameraPlane)
 {
 	FontRenderInfo& info = m_fontVertexBuffers[fontId];
 	const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);// m_fontMgr.GetResource(fontId);
@@ -446,7 +447,7 @@ int RenderModule::PrepareRenderText(const std::string& text, Rendering::FontId f
 		pVertexText.Uv.z = fc->m_twidth;
 		pVertexText.Uv.w = fc->m_theight;
 		pVertexText.Color = DirectX::XMFLOAT4(1, 1, 1, 1);
-		pVertexText.Z = uiPos.z;
+		pVertexText.Z = uiPos.z / (farCameraPlane - nearCameraPlane);
 
 		float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
 		x += advance * scale.x;

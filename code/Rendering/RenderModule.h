@@ -69,7 +69,7 @@ public:
 
 	//uiPos : origin : top left, range : [0, pixel screen size]
 	//return the number of character written
-	int PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor);
+	int PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor, float nearCameraPlane, float farCameraPlane);
 	void RenderAllText();
 
 	Rendering::TextureId GetGameRenderTargetTextureId() const;

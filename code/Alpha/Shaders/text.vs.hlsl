@@ -9,7 +9,7 @@ struct VS_Input
 	float4 pos : POSITION;  // (x, y) : top left position of the quad, (z, w) : width, height of the quad
 	float4 texCoord : UV;   // (x, y) uv of the top left of the character in the texture, (z, w) width, height of the character in the texture
 	float4 color : COLOR;   // color of the character
-    float  z : DEPTH;       // depth of the quad
+    float  z : DEPTH;       // depth of the quad in screen space (-1, 1) with the camera being at 0.
 };
 
 struct VS_Output
@@ -32,7 +32,7 @@ VS_Output main(VS_Input input, uint vertexID : SV_VertexID)
 
     // set the position for the vertex based on which vertex it is (uv)
     //screen space position [-1, 1]
-    output.pos = float4(input.pos.x + (input.pos.z * uv.x), input.pos.y - (input.pos.w * uv.y), 0, 1);
+    output.pos = float4(input.pos.x + (input.pos.z * uv.x), input.pos.y - (input.pos.w * uv.y), input.z, 1);
     output.color = input.color;
 
     // set the texture coordinate based on which vertex it is (uv)

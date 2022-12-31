@@ -37,6 +37,10 @@ namespace Widgets
 
 	public:
 
+		//All the widgets (including the text) are between the near and far plane. The distances are in world space.
+		static const float NEAR_CAMERA_PLANE;
+		static const float FAR_CAMERA_PLANE;
+
 		// Defines how to compute the size of a widget:
 		// DEFAULT	: fixed size.
 		// STRETCH	: stretch the widget to take all its parent's space.
