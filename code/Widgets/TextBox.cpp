@@ -130,18 +130,20 @@ namespace Widgets
 			{
 				if (msg.m_high == 39) //right
 				{
-					if (m_cursorPosition < m_text.size() - 1)
+					if (m_cursorPosition < m_text.size())
+					{
 						++m_cursorPosition;
-
-					ComputeCursorPosition();
+						ComputeCursorPosition();
+					}
 					return true;
 				}
 				else if (msg.m_high == 37) // left
 				{
 					if (m_cursorPosition > 0)
+					{
 						--m_cursorPosition;
-
-					ComputeCursorPosition();
+						ComputeCursorPosition();
+					}
 					return true;
 				}
 				else if (msg.m_high == 0x08) // backspace
