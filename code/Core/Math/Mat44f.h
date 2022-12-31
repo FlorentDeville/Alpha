@@ -21,6 +21,7 @@ namespace Core
 
 		float Get(int row, int column) const;
 
+		void Set(int row, int column, float f);
 	private:
 		Vec4f m_rows[4];
 	};

@@ -31,4 +31,9 @@ namespace Core
 	{
 		return m_rows[row].Get(column);
 	}
+
+	void Mat44f::Set(int row, int column, float f)
+	{
+		m_rows[row].Set(column, f);
+	}
 }

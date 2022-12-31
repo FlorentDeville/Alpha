@@ -27,4 +27,9 @@ namespace Core
 	{
 		return m_values[index];
 	}
+
+	void Vec4f::Set(int index, float f)
+	{
+		m_values[index] = f;
+	}
 }

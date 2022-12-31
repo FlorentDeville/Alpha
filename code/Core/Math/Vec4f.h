@@ -19,6 +19,8 @@ namespace Core
 
 		float Get(int index) const;
 
+		void Set(int index, float f);
+
 	private:
 		float m_values[4];
 	};
