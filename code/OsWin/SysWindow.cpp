@@ -168,10 +168,10 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassNam
 	// the title bar shows garbage.
 
 	const int BUFFER_SIZE = 256;
-	wchar_t buffer[BUFFER_SIZE] = { '\0' };
-	swprintf(buffer, BUFFER_SIZE, L"%S", pWindowClassName);
+	char buffer[BUFFER_SIZE] = { '\0' };
+	sprintf_s(buffer, BUFFER_SIZE, "%s", pWindowClassName);
 
-	WNDCLASSEXW windowClass = { 0 };
+	WNDCLASSEX windowClass = { 0 };
 	windowClass.cbSize = sizeof(WNDCLASSEXW);
 	windowClass.style = CS_HREDRAW | CS_VREDRAW;
 	windowClass.lpfnWndProc = callback;
@@ -185,6 +185,6 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassNam
 	windowClass.lpszClassName = buffer;
 	windowClass.hIconSm = ::LoadIcon(hInst, nullptr);
 
-	static ATOM atom = ::RegisterClassExW(&windowClass);
+	static ATOM atom = ::RegisterClassEx(&windowClass);
 	assert(atom > 0);
 }
