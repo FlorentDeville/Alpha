@@ -26,7 +26,7 @@ namespace Editors
 		m_pModel = pModel;
 	}
 
-	void AssetIdWidget::Update()
+	void AssetIdWidget::Update(uint64_t dt)
 	{
 		SetText(m_pModel->GetData());
 	}

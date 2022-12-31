@@ -41,7 +41,7 @@ namespace Widgets
 	SplitVertical::~SplitVertical()
 	{}
 
-	void SplitVertical::Update()
+	void SplitVertical::Update(uint64_t dt)
 	{
 		const int MIN_SIZE = 50;
 

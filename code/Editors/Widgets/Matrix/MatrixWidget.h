@@ -24,7 +24,7 @@ namespace Editors
 
 		void SetModel(BaseModel* pModel);
 
-		void Update() override;
+		void Update(uint64_t dt) override;
 
 	private:
 		BaseModel* m_pModel;

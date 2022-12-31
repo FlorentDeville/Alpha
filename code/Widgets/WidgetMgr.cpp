@@ -157,7 +157,7 @@ namespace Widgets
 		RegisterWidget(pRoot);
 	}
 
-	void WidgetMgr::Update()
+	void WidgetMgr::Update(uint64_t dt)
 	{
 		if (m_resizeRequest)
 		{
@@ -166,7 +166,7 @@ namespace Widgets
 		}
 
 		for (Widget* pWidget : m_widgets)
-			pWidget->Update();
+			pWidget->Update(dt);
 	}
 
 	void WidgetMgr::Draw()

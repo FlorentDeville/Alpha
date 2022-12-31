@@ -43,7 +43,7 @@ namespace Widgets
 			delete pWidget;
 	}
 
-	void Widget::Update()
+	void Widget::Update(uint64_t dt)
 	{}
 
 	void Widget::Draw(const DirectX::XMFLOAT2& windowSize)

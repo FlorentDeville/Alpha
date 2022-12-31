@@ -18,7 +18,7 @@ namespace Widgets
 		SplitHorizontal();
 		~SplitHorizontal();
 
-		void Update() override;
+		void Update(uint64_t dt) override;
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 

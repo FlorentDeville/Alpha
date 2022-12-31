@@ -16,7 +16,7 @@ namespace Editors
 		ComponentWidget();
 		~ComponentWidget();
 
-		void Update() override;
+		void Update(uint64_t dt) override;
 
 		void SetModel(BaseModel* pModel);
 

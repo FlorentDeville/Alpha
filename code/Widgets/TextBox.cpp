@@ -23,6 +23,7 @@ namespace Widgets
 		, m_hoverStyle()
 		, m_currentState(DEFAULT)
 		, m_cursorPosition(0)
+		, m_cursorLastBlinkChange(0)
 	{
 		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1));
 		m_hoverStyle.SetBorderColor(DirectX::XMVectorSet(0.6f, 0.6f, 0.6f, 1));
@@ -43,12 +44,23 @@ namespace Widgets
 	TextBox::~TextBox()
 	{}
 
-	void TextBox::Update()
+	void TextBox::Update(uint64_t dt)
 	{
-		//set the cursor position
-		
-
 		//make the cursor blink here
+		if (m_currentState == EDIT)
+		{
+			const uint64_t PERIOD = 500;
+			m_cursorLastBlinkChange += dt;
+			if (m_cursorLastBlinkChange >= PERIOD)
+			{
+				if (m_pCursorIcon->IsEnabled())
+					m_pCursorIcon->Disable();
+				else
+					m_pCursorIcon->Enable();
+
+				m_cursorLastBlinkChange = 0;
+			}
+		}
 	}
 
 	void TextBox::Draw(const DirectX::XMFLOAT2& windowSize)
@@ -219,7 +231,8 @@ namespace Widgets
 	{
 		m_pCursorIcon->Disable(); 
 		m_currentState = DEFAULT;
-		
+		m_cursorLastBlinkChange = 0;
+
 		if (m_onValidateCallback)
 			m_onValidateCallback(m_text);
 

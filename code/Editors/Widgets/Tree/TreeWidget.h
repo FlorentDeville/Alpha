@@ -28,7 +28,7 @@ namespace Editors
 
 		void SetModel(BaseModel* pModel);
 
-		void Update() override;
+		void Update(uint64_t dt) override;
 
 		void OnItemClicked(const OnItemClickedCallback& callback);
 

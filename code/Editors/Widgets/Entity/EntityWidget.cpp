@@ -26,7 +26,7 @@ namespace Editors
 	EntityWidget::~EntityWidget()
 	{}
 
-	void EntityWidget::Update()
+	void EntityWidget::Update(uint64_t dt)
 	{
 		if (m_isDirtyWidget)
 		{

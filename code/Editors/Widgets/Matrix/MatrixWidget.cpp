@@ -53,7 +53,7 @@ namespace Editors
 		m_isDirtyValue = true;
 	}
 
-	void MatrixWidget::Update()
+	void MatrixWidget::Update(uint64_t dt)
 	{
 		if (m_isDirtyValue)
 		{

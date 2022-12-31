@@ -53,7 +53,7 @@ namespace Editors
 		m_pModel = pModel;
 	}
 
-	void TreeWidget::Update()
+	void TreeWidget::Update(uint64_t dt)
 	{
 		if (m_isDirtyWidget)
 		{

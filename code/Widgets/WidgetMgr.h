@@ -65,7 +65,7 @@ namespace Widgets
 
 		void SetRoot(Widget* pRoot);
 
-		void Update();
+		void Update(uint64_t dt);
 
 		void Draw();
 

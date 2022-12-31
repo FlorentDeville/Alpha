@@ -40,7 +40,7 @@ namespace Widgets
 	SplitHorizontal::~SplitHorizontal()
 	{}
 
-	void SplitHorizontal::Update()
+	void SplitHorizontal::Update(uint64_t dt)
 	{
 		const int MIN_SIZE = 50;
 

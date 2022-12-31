@@ -272,41 +272,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Update()
 {
-	static uint64_t frameCounter = 0;
-	static double elapsedSeconds = 0.0;
 	static std::chrono::high_resolution_clock clock;
-	static auto t0 = clock.now();
 	static auto start = clock.now();
 
-	frameCounter++;
-	auto t1 = clock.now();
-	auto deltaTime = t1 - t0;
-	t0 = t1;
-
-	elapsedSeconds += deltaTime.count() * 1e-9;
-	if (elapsedSeconds > 1.0)
-	{
-		wchar_t buffer[500];
-		auto fps = frameCounter / elapsedSeconds;
-		swprintf_s(buffer, 500, L"FPS: %f\n", fps);
-		//OutputDebugString(buffer);
-
-		frameCounter = 0;
-		elapsedSeconds = 0.0;
-	}
-
-	auto dt = clock.now() - start;
+	std::chrono::nanoseconds dt = clock.now() - start;
+	start = clock.now();
+	std::chrono::milliseconds dtMs = std::chrono::duration_cast<std::chrono::milliseconds>(dt);
 
 	Editors::MeshEditor::Get().Update();
 	Editors::ShaderEditor::Get().Update();
 	Editors::LevelEditor::Get().Update();
 	GameMgr::Get().Update();
-	Widgets::WidgetMgr::Get().Update();
+	Widgets::WidgetMgr::Get().Update(dtMs.count());
 }
 
 void Render()
 {
-
 	RenderModule& renderModule = RenderModule::Get();
 
 	renderModule.PreRender();

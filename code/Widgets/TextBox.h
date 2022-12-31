@@ -20,7 +20,7 @@ namespace Widgets
 		TextBox();
 		~TextBox();
 
-		void Update() override;
+		void Update(uint64_t dt) override;
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 		void ResizeChildren() override;
 
@@ -53,6 +53,8 @@ namespace Widgets
 		int m_cursorPosition;
 
 		OnValidateCallback m_onValidateCallback;
+		
+		uint64_t m_cursorLastBlinkChange;
 
 		bool OnGetFocusCallback();
 		bool OnLoseFocusCallback();

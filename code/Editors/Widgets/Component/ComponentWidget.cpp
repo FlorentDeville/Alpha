@@ -25,7 +25,7 @@ namespace Editors
 	ComponentWidget::~ComponentWidget()
 	{}
 
-	void ComponentWidget::Update()
+	void ComponentWidget::Update(uint64_t dt)
 	{
 		if (m_isDirtyWidget)
 		{
