@@ -15,12 +15,14 @@ namespace Widgets
 {
 	Container::Container()
 		: Widget()
+		, m_defaultStyle()
 	{
 		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	}
 
 	Container::Container(int width, int height)
 		: Widget(width, height, 0, 0)
+		, m_defaultStyle()
 	{}
 
 	Container::~Container()
@@ -31,7 +33,7 @@ namespace Widgets
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
 
-		DirectX::XMVECTOR color = m_backgroundColor;
+		//DirectX::XMVECTOR color = m_backgroundColor;
 
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		RenderModule& render = RenderModule::Get();
@@ -40,21 +42,26 @@ namespace Widgets
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 		render.BindMaterial(*pMaterial, mvpMatrix);
 
-		render.SetConstantBuffer(1, sizeof(color), &color, 0);
+		render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
 
-		int value = 0;
-		render.SetConstantBuffer(2, sizeof(value), &value, 0);
-		render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+		int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;
+		render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+		render.SetConstantBuffer(3, sizeof(m_defaultStyle.m_borderColor), &m_defaultStyle.m_borderColor, 0);
 
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 		render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-		m_borderWidth = 3;
-		render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+		//m_borderWidth = 3;
+		render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
 
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		render.RenderMesh(*pMesh);
 
 		Widget::Draw(windowSize);
+	}
+
+	ContainerStyle& Container::GetDefaultStyle()
+	{
+		return m_defaultStyle;
 	}
 }

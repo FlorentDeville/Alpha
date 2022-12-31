@@ -6,6 +6,8 @@
 
 #include "Widgets/Widget.h"
 
+#include "Widgets/Style/Container/ContainerStyle.h"
+
 namespace Widgets
 {
 
@@ -17,6 +19,11 @@ namespace Widgets
 		~Container();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+
+		ContainerStyle& GetDefaultStyle();
+
+	private:
+		ContainerStyle m_defaultStyle;
 	};
 
 }

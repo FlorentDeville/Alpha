@@ -36,7 +36,7 @@ namespace Widgets
 		Layout* m_pHeaderLayout;
 		Container* m_pContentContainer;
 
-		std::vector<Widget*> m_tabHeaders;
+		std::vector<Container*> m_tabHeaders;
 		std::vector<Widget*> m_tabContent;
 
 		DirectX::XMVECTOR m_defaultHeaderColor;

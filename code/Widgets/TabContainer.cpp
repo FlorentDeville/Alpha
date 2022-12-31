@@ -62,7 +62,7 @@ namespace Widgets
 		int tabIndex = static_cast<int>(m_tabHeaders.size());
 
 		Widgets::Container* pTitleContainer = new Widgets::Container(textRect.x, textRect.y);
-		pTitleContainer->SetBackgroundColor(m_defaultHeaderColor);
+		//pTitleContainer->SetBackgroundColor(m_defaultHeaderColor);
 		Label* pTitleLabel = new Label(0, 0, 1, header);
 		pTitleContainer->AddWidget(pTitleLabel);
 		pTitleContainer->OnClick([this, tabIndex](int, int) -> bool {
@@ -98,12 +98,12 @@ namespace Widgets
 			if (ii == index)
 				continue;
 
-			m_tabHeaders[ii]->SetBackgroundColor(m_defaultHeaderColor);
+			m_tabHeaders[ii]->GetDefaultStyle().SetBackgroundColor(m_defaultHeaderColor);
 			m_tabContent[ii]->Disable();
 		}
 
 		//Change the header color
-		m_tabHeaders[index]->SetBackgroundColor(m_selectedHeaderColor);
+		m_tabHeaders[index]->GetDefaultStyle().SetBackgroundColor(m_selectedHeaderColor);
 
 		//Show the new content
 		m_tabContent[index]->Enable();
@@ -122,7 +122,7 @@ namespace Widgets
 			if (ii == m_selectedTab)
 				continue;
 
-			m_tabHeaders[ii]->SetBackgroundColor(m_defaultHeaderColor);
+			m_tabHeaders[ii]->GetDefaultStyle().SetBackgroundColor(m_defaultHeaderColor);
 			m_tabContent[ii]->Disable(recursive);
 		}
 		
