@@ -48,7 +48,7 @@ namespace Editors
 
 				//list
 				Editors::ListWidget* pList = new Editors::ListWidget();
-				pList->SetSize(DirectX::XMUINT2(500, 450));
+				pList->SetSize(DirectX::XMUINT2(500, 460));
 				pList->SetColumnSize(0, 75);
 
 				PropertyType type = m_pModel->GetDataType(0, 0);
@@ -65,13 +65,21 @@ namespace Editors
 				pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 				pVLayout->AddWidget(pHLayout);
 
-				Widgets::Button* pOkButton = new Widgets::Button(100, 50, 0, 0);
-				pOkButton->AddWidget(new Widgets::Label(0, 0, 1, "OK"));
+				Widgets::Button* pOkButton = new Widgets::Button(250, 50, 0, 0);
+				Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
+				pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+				pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+				pOkButton->AddWidget(pOkLabel);
+				pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 				pOkButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
 				pHLayout->AddWidget(pOkButton);
 
-				Widgets::Button* pCancelButton = new Widgets::Button(100, 50, 0, 0);
-				pCancelButton->AddWidget(new Widgets::Label(0, 0, 1, "CANCEL"));
+				Widgets::Button* pCancelButton = new Widgets::Button(250, 50, 0, 0);
+				Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
+				pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+				pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+				pCancelButton->AddWidget(pCancelLabel);
+				pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 				pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
 				pHLayout->AddWidget(pCancelButton);
 

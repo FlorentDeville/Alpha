@@ -19,6 +19,9 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
+		void ReComputeSize(const DirectX::XMUINT2& parentSize) override;
+		void ReComputeSize_PostChildren() override;
+
 		void SetFontScale(float scale);
 		void SetText(const std::string& text);
 
