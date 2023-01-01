@@ -361,8 +361,9 @@ namespace Widgets
 	{
 		SetFocus(m_pRoot);
 		m_pRoot->DeleteChild(m_pModalWindow);
-		
 		m_pModalWindow = nullptr;
+
+		RequestResize();
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()
