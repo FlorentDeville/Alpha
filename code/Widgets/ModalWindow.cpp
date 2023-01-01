@@ -23,7 +23,7 @@ namespace Widgets
 
 	void ModalWindow::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
-		Widgets::Widget::ReComputePosition(parentAbsPos, parentSize);
+		Widgets::Container::ReComputePosition(parentAbsPos, parentSize);
 		m_absPos.z = 10;
 	}
 
