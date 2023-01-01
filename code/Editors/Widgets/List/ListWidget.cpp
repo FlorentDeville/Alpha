@@ -9,6 +9,7 @@
 //#include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Editors
 {
@@ -104,6 +105,7 @@ namespace Editors
 			}
 
 			m_isDirtyWidget = false;
+			Widgets::WidgetMgr::Get().RequestResize();
 		}
 	}
 
