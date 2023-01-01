@@ -59,6 +59,8 @@ namespace Editors
 			pComponentLayout->SetDirection(Widgets::Layout::Vertical);
 			pComponentLayout->GetDefaultStyle().ShowBorder(true);
 			pComponentLayout->GetDefaultStyle().SetBorderSize(1);
+			pComponentLayout->GetHoverStyle().ShowBorder(true);
+			pComponentLayout->GetHoverStyle().SetBorderSize(1);
 			pLayout->AddWidget(pComponentLayout);
 
 			Widgets::Layout* pNameLayout = new Widgets::Layout();

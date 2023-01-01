@@ -18,6 +18,7 @@ namespace Widgets
 		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
+		, m_hoverStyle()
 	{}
 
 	Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -33,9 +34,13 @@ namespace Widgets
 
 	void Layout::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
+		LayoutStyle* pCurrentStyle = &m_defaultStyle;
+		if (m_hover)
+			pCurrentStyle = &m_hoverStyle;
+
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);
-		int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;
+		int valueShowBorder = pCurrentStyle->m_showBorder ? 1 : 0;
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 
 		{
@@ -46,11 +51,11 @@ namespace Widgets
 			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 			render.BindMaterial(*pMaterial, wvp);
 
-			render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
+			render.SetConstantBuffer(1, sizeof(pCurrentStyle->m_backgroundColor), &pCurrentStyle->m_backgroundColor, 0);
 			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-			render.SetConstantBuffer(3, sizeof(m_defaultStyle.m_borderColor), &m_defaultStyle.m_borderColor, 0);
+			render.SetConstantBuffer(3, sizeof(pCurrentStyle->m_borderColor), &pCurrentStyle->m_borderColor, 0);
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
-			render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
+			render.SetConstantBuffer(5, sizeof(pCurrentStyle->m_borderSize), &pCurrentStyle->m_borderSize, 0);
 
 			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 			render.RenderMesh(*pMesh);
@@ -75,6 +80,20 @@ namespace Widgets
 			else
 				return Widget::Handle(msg);
 			break;
+
+		case M_MouseEnter:
+		{
+			m_hover = true;
+			return true;
+		}
+		break;
+
+		case M_MouseExit:
+		{
+			m_hover = false;
+			return true;
+		}
+		break;
 
 		default:
 			return Widget::Handle(msg);
@@ -222,5 +241,10 @@ namespace Widgets
 	LayoutStyle& Layout::GetDefaultStyle()
 	{
 		return m_defaultStyle;
+	}
+
+	LayoutStyle& Layout::GetHoverStyle()
+	{
+		return m_hoverStyle;
 	}
 }

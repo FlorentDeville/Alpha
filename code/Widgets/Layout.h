@@ -36,6 +36,7 @@ namespace Widgets
 		void SetSpace(const DirectX::XMINT2& space);
 
 		LayoutStyle& GetDefaultStyle();
+		LayoutStyle& GetHoverStyle();
 
 	private:
 		Direction m_dir;
@@ -45,5 +46,6 @@ namespace Widgets
 		DirectX::XMINT2 m_space; //space to add between widgets
 
 		LayoutStyle m_defaultStyle;
+		LayoutStyle m_hoverStyle;
 	};
 }

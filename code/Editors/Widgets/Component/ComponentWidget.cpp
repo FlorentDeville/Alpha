@@ -69,7 +69,7 @@ namespace Editors
 			case PropertyType::kAssetMesh:
 			{
 				AssetIdWidget* pNewWidget = new AssetIdWidget();
-				pNewWidget->SetModel(m_pModel->GetSubModel(ii));
+				pNewWidget->SetModel(m_pModel->GetSubModel(ii, 0));
 				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
 				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 				pItemLayout->AddWidget(pNewWidget);
@@ -79,7 +79,7 @@ namespace Editors
 			case PropertyType::kMat44f:
 			{
 				MatrixWidget* pNewWidget = new MatrixWidget();
-				pNewWidget->SetModel(m_pModel->GetSubModel(ii));
+				pNewWidget->SetModel(m_pModel->GetSubModel(ii, 0));
 				pItemLayout->AddWidget(pNewWidget);
 			}
 			break;

@@ -29,13 +29,13 @@ namespace Editors
 
 		virtual int GetRowCount() const = 0;
 		virtual int GetColumnCount() const = 0;
-		virtual int GetSubRowCount(int rowId) const { return 0; }
+		virtual int GetSubRowCount(int /*rowId*/) const { return 0; }
 
 		virtual const std::string& GetData(int rowId = 0, int columnId = 0) const = 0;
-		virtual PropertyType GetDataType(int rowId = 0, int columnId = 0) const { return PropertyType::kUnknown; }
+		virtual PropertyType GetDataType(int /*rowId = 0*/, int /*columnId = 0*/) const { return PropertyType::kUnknown; }
 
-		virtual BaseModel* GetSubModel(int rowId = 0, int columnId = 0) { return nullptr; }
+		virtual BaseModel* GetSubModel(int /*rowId*/, int /*columnId*/) { return nullptr; }
 
-		virtual void SetData(int rowId, int columnId, const std::string& value) {};
+		virtual void SetData(int /*rowId*/, int /*columnId*/, const std::string& /*value*/) {};
 	};
 }

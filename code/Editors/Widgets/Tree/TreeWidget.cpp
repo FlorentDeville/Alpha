@@ -159,7 +159,7 @@ namespace Editors
 		for (int rowId = 0; rowId < count; ++rowId)
 		{
 
-			CreateRecursiveWidgets(pChildrenLayout, pModel->GetSubModel(rowId), offsetX);
+			CreateRecursiveWidgets(pChildrenLayout, pModel->GetSubModel(rowId, 0), offsetX);
 		}
 	}
 }

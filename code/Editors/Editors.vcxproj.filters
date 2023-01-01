@@ -75,6 +75,12 @@
     <ClInclude Include="Widgets\Tree\LevelTreeModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\List\ListWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\List\Models\AssetListModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -132,6 +138,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Tree\LevelTreeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\List\ListWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\List\Models\AssetListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
