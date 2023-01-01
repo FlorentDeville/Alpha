@@ -20,6 +20,8 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
+		void ResizeChildren() override;
+
 		ContainerStyle& GetDefaultStyle();
 
 	private:

@@ -60,6 +60,26 @@ namespace Widgets
 		Widget::Draw(windowSize);
 	}
 
+	void Container::ResizeChildren()
+	{
+		if (!m_defaultStyle.m_showBorder)
+		{
+			Widgets::Widget::ResizeChildren();
+			return;
+		}
+
+		DirectX::XMINT3 absPos = m_absPos;
+		absPos.x += m_defaultStyle.m_borderSize;
+		absPos.y += m_defaultStyle.m_borderSize;
+
+		DirectX::XMUINT2 size = m_size;
+		size.x -= 2 * m_defaultStyle.m_borderSize;
+		size.y -= 2 * m_defaultStyle.m_borderSize;
+
+		for (Widget* pChild : m_children)
+			pChild->Resize(absPos, size);
+	}
+
 	ContainerStyle& Container::GetDefaultStyle()
 	{
 		return m_defaultStyle;
