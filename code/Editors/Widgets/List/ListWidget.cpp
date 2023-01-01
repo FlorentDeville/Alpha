@@ -16,6 +16,10 @@ namespace Editors
 		: Widgets::Widget()
 		, m_isDirtyWidget(false)
 		, m_pModel(nullptr)
+		, m_selectedRow(-1)
+		, m_oddRowBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1))
+		, m_evenRowBackgroundColor(DirectX::XMVectorSet(0.16f, 0.16f, 0.16f, 1))
+		, m_hoverBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1))
 	{
 		SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
 
@@ -44,11 +48,35 @@ namespace Editors
 				pItemLayout->SetSize(DirectX::XMUINT2(0, 20));
 				pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 				pItemLayout->SetDirection(Widgets::Layout::Horizontal);
-				pItemLayout->GetHoverStyle().SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+				pItemLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+				pItemLayout->OnClick([this, ii](int, int) -> bool 
+					{ 
+						if (m_selectedRow != -1)
+						{
+							Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pArrayLayout->GetChildren()[m_selectedRow]);
+							if (m_selectedRow % 2 == 0)
+								pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
+							else
+								pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
+
+							pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+							pLayout->GetHoverStyle().ShowBorder(false);
+							pLayout->GetDefaultStyle().ShowBorder(false);
+
+						}
+						
+						m_selectedRow = ii;
+						Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pArrayLayout->GetChildren()[ii]);
+						pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
+						pLayout->GetDefaultStyle().ShowBorder(true);
+						pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+						pLayout->GetHoverStyle().ShowBorder(true);
+						return true; 
+					});
 
 				if (ii % 2 == 0)
 				{
-					pItemLayout->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.16f, 0.16f, 0.16f, 1.f));
+					pItemLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
 				}
 
 				m_pArrayLayout->AddWidget(pItemLayout);
@@ -91,5 +119,10 @@ namespace Editors
 			m_columnSize.resize(columnIndex + 1);
 
 		m_columnSize[columnIndex] = size;
+	}
+
+	int ListWidget::GetSelectedItem() const
+	{
+		return m_selectedRow;
 	}
 }

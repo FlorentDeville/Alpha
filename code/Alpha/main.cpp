@@ -19,6 +19,8 @@
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/ShaderEditor/ShaderEditor.h"
+#include "Editors/Widgets/List/ListWidget.h"
+#include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -45,6 +47,7 @@
 #include "Systems/Loader.h"
 
 #include "OsWin/SysWindow.h"
+
 #include "Widgets/Button.h"
 #include "Widgets/Container.h"
 #include "Widgets/Layout.h"
@@ -399,6 +402,8 @@ void CreateMainWindow(const Configuration& configuration)
 		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		pLayout->GetDefaultStyle().ShowBorder(true);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
+		pLayout->GetHoverStyle().ShowBorder(true);
+		pLayout->GetHoverStyle().SetBorderSize(1);
 
 		pTab->AddWidget(pLayout);
 		pMiddleTabContainer->AddTab("Widgets", pTab);
@@ -414,11 +419,18 @@ void CreateMainWindow(const Configuration& configuration)
 		Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
 		pVLayout->AddWidget(pTopOffsetContainer);
 
-		Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
-		pNewTextBox->SetSize(DirectX::XMUINT2(100, 20));
-		pNewTextBox->SetText("This is a dummy text");
+		Editors::ListWidget* pList = new Editors::ListWidget();
+		pList->SetSize(DirectX::XMUINT2(300, 700));
+		pList->SetColumnSize(0, 75);
 
-		pVLayout->AddWidget(pNewTextBox);
+		Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
+		pList->SetModel(pModel);
+		/*Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
+		pNewTextBox->SetSize(DirectX::XMUINT2(100, 20));
+		pNewTextBox->SetText("This is a dummy text");*/
+
+		//pVLayout->AddWidget(pNewTextBox);
+		pVLayout->AddWidget(pList);
 	}
 
 	pMiddleTabContainer->SetSelectedTab(0);
