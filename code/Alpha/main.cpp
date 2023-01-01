@@ -77,22 +77,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYDOWN:
 		{
-			switch (wParam) //wParam is a virtual key code
-			{
-			case VK_ESCAPE:
-				::PostQuitMessage(0);
-				break;
-
-			default:
-			{
-				Message msg;
-				msg.m_id = M_VirtualKeyDown;
-				msg.m_high = wParam; 
-				Widgets::WidgetMgr::Get().HandleMsg(msg);
-				Inputs::InputMgr::Get().UpdateKeyboard(wParam);
-			}
-			break;
-			}
+			//wParam is a virtual key code
+			Message msg;
+			msg.m_id = M_VirtualKeyDown;
+			msg.m_high = wParam; 
+			Widgets::WidgetMgr::Get().HandleMsg(msg);
+			Inputs::InputMgr::Get().UpdateKeyboard(wParam);
 		}
 		break;
 
