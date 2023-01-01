@@ -4,6 +4,10 @@
 
 #include "Widgets/ModalWindow.h"
 
+#include "Widgets/Message.h"
+#include "Widgets/MessageId.h"
+#include "Widgets/WidgetMgr.h"
+
 namespace Widgets
 {
 	ModalWindow::ModalWindow()
@@ -22,4 +26,18 @@ namespace Widgets
 		Widgets::Widget::ReComputePosition(parentAbsPos, parentSize);
 		m_absPos.z = 10;
 	}
+
+	bool ModalWindow::Handle(const Message& msg)
+	{
+		if (msg.m_id == MessageId::M_VirtualKeyDown)
+		{
+			if(msg.m_high == 0x1B)//escape	
+			{
+				Widgets::WidgetMgr::Get().CloseModalWindow();
+			}
+		}
+
+		return true;
+	}
+
 }

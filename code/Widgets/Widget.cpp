@@ -214,8 +214,8 @@ namespace Widgets
 			return;
 
 		m_children.erase(it);
+		pWidget->DeleteAllChildren();
 		
-		(*it)->DeleteAllChildren();
 		delete pWidget;
 	}
 

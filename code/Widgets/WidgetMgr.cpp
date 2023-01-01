@@ -26,6 +26,13 @@
 
 namespace Widgets
 {
+	void CreateRecursiveWidgetsDeque(Widget* pWidget, std::deque<Widget*>& widgetsDeque)
+	{
+		widgetsDeque.push_back(pWidget);
+		for (Widget* pChild : pWidget->GetChildren())
+			CreateRecursiveWidgetsDeque(pChild, widgetsDeque);
+	}
+
 	WidgetMgr::WidgetMgr()
 		: m_pRoot(nullptr)
 		, m_prevMouseX(0)
@@ -37,6 +44,7 @@ namespace Widgets
 		, m_resizeRequest(false)
 		, m_editorIconsPath()
 		, m_pMainSysWindow(nullptr)
+		, m_pModalWindow(nullptr)
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -202,11 +210,15 @@ namespace Widgets
 				return;
 		}
 
+		std::deque<Widget*>* widgetsSortedQueue = &m_sortedWidgets;
+		if (m_pModalWindow)
+			widgetsSortedQueue = &m_sortedWidgetsModal;
+
 		switch (msg.m_id)
 		{
 		case M_MouseMove:
 		{
-			for (std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
+			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
 			{
 				Widget* pWidget = *it;
 				if (!pWidget->IsEnabled())
@@ -252,7 +264,7 @@ namespace Widgets
 		case M_MouseLUp:
 		{
 			bool setFocus = false;
-			for (std::deque<Widget*>::reverse_iterator it = m_sortedWidgets.rbegin(); it != m_sortedWidgets.rend(); ++it)
+			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
 			{
 				Widget* pWidget = *it;
 				if (!pWidget->IsEnabled())
@@ -336,6 +348,23 @@ namespace Widgets
 		return m_editorIconsPath;
 	}
 
+	void WidgetMgr::OpenModalWindow(Widget* pModalWindow)
+	{
+		m_pModalWindow = pModalWindow;
+
+		m_pRoot->AddWidget(m_pModalWindow);
+		Widgets::WidgetMgr::Get().RequestResize();
+		SetFocus(m_pModalWindow);
+	}
+
+	void WidgetMgr::CloseModalWindow()
+	{
+		SetFocus(m_pRoot);
+		m_pRoot->DeleteChild(m_pModalWindow);
+		
+		m_pModalWindow = nullptr;
+	}
+
 	void WidgetMgr::ComputeSortedWidgetQueue()
 	{
 		m_sortedWidgets.clear();
@@ -344,6 +373,14 @@ namespace Widgets
 			m_sortedWidgets.push_back(pWidget);
 
 		std::sort(m_sortedWidgets.begin(), m_sortedWidgets.end(), [](Widget* pA, Widget* pB) { return pA->m_absPos.z > pB->m_absPos.z; });
+
+		if (m_pModalWindow)
+		{
+			m_sortedWidgetsModal.clear();
+			CreateRecursiveWidgetsDeque(m_pModalWindow, m_sortedWidgetsModal);
+			
+			std::sort(m_sortedWidgetsModal.begin(), m_sortedWidgetsModal.end(), [](Widget* pA, Widget* pB) { return pA->m_absPos.z > pB->m_absPos.z; });
+		}
 	}
 
 	const Widget* WidgetMgr::GetFocusedWidget() const

@@ -85,15 +85,20 @@ namespace Widgets
 
 		const std::string& GetEditorIconsPath() const;
 
+		void OpenModalWindow(Widget* pModalWindow);
+		void CloseModalWindow();
+
 	private:
 
 		std::set<Widget*> m_widgets;
 		std::deque<Widget*> m_sortedWidgets; //sorted from the deepest to the highest.
+		std::deque<Widget*> m_sortedWidgetsModal; //sorted from the deepest to the highest.
 
 		Widget* m_pFocusedWidget;	//Widget currently getting the focus. It will receive the keyboard event
 		Widget* m_pCapturedWidget;	//Widget current requesting to capture the mouse event.
 
 		Widget* m_pRoot;
+		Widget* m_pModalWindow;
 
 		int32_t m_prevMouseX;
 		int32_t m_prevMouseY;

@@ -16,6 +16,8 @@ namespace Widgets
 
 		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
+		bool Handle(const Message& msg) override;
+
 	private:
 
 	};
