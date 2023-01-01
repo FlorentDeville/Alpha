@@ -9,10 +9,11 @@
 
 namespace Editors
 {
-	AssetIdModel::AssetIdModel(Systems::AssetId id)
+	AssetIdModel::AssetIdModel(Systems::AssetId id, PropertyType type)
 		: BaseModel()
 		, m_id(id)
 		, m_cachedValue()
+		, m_type(type)
 	{}
 
 	AssetIdModel::~AssetIdModel()
@@ -41,5 +42,10 @@ namespace Editors
 			m_cachedValue = pAsset->GetVirtualName() + " (" + m_id.ToString() + ")";
 
 		return m_cachedValue;
+	}
+
+	PropertyType AssetIdModel::GetDataType(int /*rowId*/, int /*columnId*/) const
+	{
+		return m_type;
 	}
 }

@@ -22,13 +22,14 @@ namespace Editors
 		{
 			BaseModel* pNewModel = nullptr;
 			Property* pProperty = m_pComponent->GetProperty(ii);
-			switch (pProperty->GetType())
+			PropertyType type = pProperty->GetType();
+			switch (type)
 			{
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
 			{
 				const PropertyValueAssetId& propertyAssetId = static_cast<const PropertyValueAssetId&>(pProperty->GetValue());
-				pNewModel = new AssetIdModel(propertyAssetId.Get());
+				pNewModel = new AssetIdModel(propertyAssetId.Get(), type);
 			}
 			break;
 

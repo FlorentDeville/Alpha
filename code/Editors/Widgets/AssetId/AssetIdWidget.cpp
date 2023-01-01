@@ -5,12 +5,16 @@
 #include "Editors/Widgets/AssetId/AssetIdWidget.h"
 
 #include "Editors/Widgets/AssetId/AssetIdModel.h"
+#include "Editors/Widgets/List/ListWidget.h"
+#include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Systems/Assets/AssetId.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Container.h"
 #include "Widgets/Label.h"
+#include "Widgets/ModalWindow.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Editors
 {
@@ -29,6 +33,51 @@ namespace Editors
 		pButtonLabel->SetX(6);
 		pButtonLabel->SetY(-3);
 		m_pButton->AddWidget(pButtonLabel);
+		m_pButton->OnClick([this](int, int)->bool
+			{
+				Widgets::ModalWindow* pWindow = new Widgets::ModalWindow();
+				pWindow->SetSize(DirectX::XMUINT2(500, 500));
+				pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+				pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+				//vlayout
+				Widgets::Layout* pVLayout = new Widgets::Layout();
+				pVLayout->SetDirection(Widgets::Layout::Vertical);
+				pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+				pWindow->AddWidget(pVLayout);
+
+				//list
+				Editors::ListWidget* pList = new Editors::ListWidget();
+				pList->SetSize(DirectX::XMUINT2(500, 450));
+				pList->SetColumnSize(0, 75);
+
+				PropertyType type = m_pModel->GetDataType(0, 0);
+				Systems::AssetType assetType = Systems::kMesh;
+				if (type == PropertyType::kAssetMaterial)
+					assetType = Systems::kMaterial;
+				Editors::AssetListModel* pModel = new Editors::AssetListModel(assetType);
+				pList->SetModel(pModel);
+				pVLayout->AddWidget(pList);
+
+				//button ok escape
+				Widgets::Layout* pHLayout = new Widgets::Layout();
+				pHLayout->SetDirection(Widgets::Layout::Horizontal);
+				pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+				pVLayout->AddWidget(pHLayout);
+
+				Widgets::Button* pOkButton = new Widgets::Button(100, 50, 0, 0);
+				pOkButton->AddWidget(new Widgets::Label(0, 0, 1, "OK"));
+				pOkButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+				pHLayout->AddWidget(pOkButton);
+
+				Widgets::Button* pCancelButton = new Widgets::Button(100, 50, 0, 0);
+				pCancelButton->AddWidget(new Widgets::Label(0, 0, 1, "CANCEL"));
+				pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+				pHLayout->AddWidget(pCancelButton);
+
+				Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
+				return true;
+			});
 		
 		m_pLabelContainer = new Widgets::Container();
 		m_pLabelContainer->SetSizeStyle(Widgets::Widget::STRETCH);
