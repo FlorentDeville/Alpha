@@ -71,7 +71,8 @@ namespace Editors
 			: m_id(id)
 		{}
 
-		Systems::AssetId Get() const { return m_id; }
+		const Systems::AssetId& Get() const { return m_id; }
+		Systems::AssetId& Get() { return m_id; }
 		void Set(Systems::AssetId id) { m_id = id; }
 
 	private:

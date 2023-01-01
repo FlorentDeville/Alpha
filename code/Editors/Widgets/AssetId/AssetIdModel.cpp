@@ -9,7 +9,7 @@
 
 namespace Editors
 {
-	AssetIdModel::AssetIdModel(Systems::AssetId id, PropertyType type)
+	AssetIdModel::AssetIdModel(Systems::AssetId& id, PropertyType type)
 		: BaseModel()
 		, m_id(id)
 		, m_cachedValue()
@@ -47,5 +47,12 @@ namespace Editors
 	PropertyType AssetIdModel::GetDataType(int /*rowId*/, int /*columnId*/) const
 	{
 		return m_type;
+	}
+
+	void AssetIdModel::SetData(int rowId, int columnId, const std::string& value)
+	{
+		int id = std::stoi(value);
+		m_id = Systems::AssetId(id);
+		m_cachedValue.clear();
 	}
 }

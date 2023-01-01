@@ -28,7 +28,7 @@ namespace Editors
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
 			{
-				const PropertyValueAssetId& propertyAssetId = static_cast<const PropertyValueAssetId&>(pProperty->GetValue());
+				PropertyValueAssetId& propertyAssetId = static_cast<PropertyValueAssetId&>(pProperty->GetValue());
 				pNewModel = new AssetIdModel(propertyAssetId.Get(), type);
 			}
 			break;

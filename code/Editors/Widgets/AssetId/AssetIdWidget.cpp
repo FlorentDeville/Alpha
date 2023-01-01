@@ -71,7 +71,17 @@ namespace Editors
 				pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 				pOkButton->AddWidget(pOkLabel);
 				pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-				pOkButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+				pOkButton->OnClick([this, pList, pModel](int, int) -> bool
+					{
+						int selectedItem = pList->GetSelectedItem();
+						if (selectedItem != -1)
+						{
+							const std::string& selectedValue = pModel->GetData(selectedItem);
+							m_pModel->SetData(0, 0, selectedValue);
+						}
+						Widgets::WidgetMgr::Get().CloseModalWindow(); 
+						return true; 
+					});
 				pHLayout->AddWidget(pOkButton);
 
 				Widgets::Button* pCancelButton = new Widgets::Button(250, 50, 0, 0);
@@ -103,7 +113,7 @@ namespace Editors
 	AssetIdWidget::~AssetIdWidget()
 	{}
 
-	void AssetIdWidget::SetModel(const BaseModel* pModel)
+	void AssetIdWidget::SetModel(BaseModel* pModel)
 	{
 		m_pModel = pModel;
 	}

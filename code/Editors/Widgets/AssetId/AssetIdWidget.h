@@ -28,12 +28,12 @@ namespace Editors
 		AssetIdWidget();
 		~AssetIdWidget();
 
-		void SetModel(const BaseModel* pModel);
+		void SetModel(BaseModel* pModel);
 
 		void Update(uint64_t dt) override;
 
 	private:
-		const BaseModel* m_pModel;
+		BaseModel* m_pModel;
 
 		Widgets::Container* m_pLabelContainer;
 		Widgets::Label* m_pLabel;

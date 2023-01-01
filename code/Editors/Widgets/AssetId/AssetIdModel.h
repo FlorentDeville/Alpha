@@ -12,7 +12,7 @@ namespace Editors
 	class AssetIdModel : public BaseModel
 	{
 	public:
-		AssetIdModel(Systems::AssetId id, PropertyType type);
+		AssetIdModel(Systems::AssetId& id, PropertyType type);
 		~AssetIdModel();
 
 		int GetRowCount() const override;
@@ -22,8 +22,10 @@ namespace Editors
 
 		PropertyType GetDataType(int rowId = 0, int columnId = 0) const override;
 
+		void SetData(int rowId, int columnId, const std::string& value) override;
+
 	private:
-		Systems::AssetId m_id;
+		Systems::AssetId& m_id;
 		PropertyType m_type;
 
 		mutable std::string m_cachedValue;
