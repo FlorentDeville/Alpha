@@ -26,11 +26,15 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
 
+#include "Widgets/Container.h"
+#include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/ModalWindow.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
+#include "Widgets/TextBox.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -69,20 +73,22 @@ namespace Editors
 			pRenderingComponent->GetPropertyValue("Mesh", meshAssetId);
 			pRenderingComponent->GetPropertyValue("Material", materialAssetId);
 			
-			Rendering::MeshId meshId = assetIdToMeshId.find(meshAssetId)->second;
-			Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
+			if (meshAssetId != Systems::AssetId::INVALID && materialAssetId != Systems::AssetId::INVALID)
+			{
+				Rendering::MeshId meshId = assetIdToMeshId.find(meshAssetId)->second;
+				Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
 
-			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
-			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, proj);
+				DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
+				mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, proj);
 
-			RenderModule& renderer = RenderModule::Get();
+				RenderModule& renderer = RenderModule::Get();
 
-			const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
-			renderer.BindMaterial(*pMaterial, mvpMatrix);
+				const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
+				renderer.BindMaterial(*pMaterial, mvpMatrix);
 
-			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(meshId);
-			renderer.RenderMesh(*pMesh);
-
+				const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(meshId);
+				renderer.RenderMesh(*pMesh);
+			}
 		}
 
 		//recursive call to children
@@ -452,11 +458,145 @@ namespace Editors
 
 	void LevelEditor::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
 	{
-		TreeWidget* pTreeWidget = new TreeWidget();
-		pTreeWidget->SetModel(new LevelTreeModel(&m_level.GetRoot()));
+		Widgets::Layout* pLayout = new Widgets::Layout();
+		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pLayout->SetDirection(Widgets::Layout::Vertical);
+		pSplit->AddLeftPanel(pLayout);
 
-		pSplit->AddLeftPanel(pTreeWidget);
+		Widgets::Layout* pMenuLayout = new Widgets::Layout();
+		pMenuLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pMenuLayout->SetSize(DirectX::XMUINT2(0, 20));
+		pMenuLayout->SetDirection(Widgets::Layout::Horizontal);
+		pLayout->AddWidget(pMenuLayout);
 
-		pTreeWidget->OnItemClicked(std::bind(&LevelEditor::OnTreeItemClicked, this, std::placeholders::_1, std::placeholders::_2));
+		const int BUTTON_SIZE = 20;
+		//add entity button
+		{
+			Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
+			pMenuLayout->AddWidget(pButton);
+			Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "+");
+			pButtonLabel->SetX(5);
+			pButton->AddWidget(pButtonLabel);
+			pButton->OnClick(std::bind(&LevelEditor::OnAddEntityClicked, this));
+		}
+
+		//remove entity
+		//{
+		//	Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
+		//	pMenuLayout->AddWidget(pButton);
+		//	Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "-");
+		//	pButtonLabel->SetX(7);
+		//	pButton->AddWidget(pButtonLabel);
+		//}
+
+		////rename entity
+		//{
+		//	Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
+		//	pMenuLayout->AddWidget(pButton);
+		//	Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "RENAME");
+		//	pButtonLabel->SetX(2);
+		//	pButton->AddWidget(pButtonLabel);
+		//}
+
+		//separator
+		Widgets::Container* pSeparator = new Widgets::Container(0, 2);
+		pSeparator->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pSeparator->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1));
+		pLayout->AddWidget(pSeparator);
+
+		m_pTreeWidget = new TreeWidget();
+		m_pTreeWidget->SetModel(new LevelTreeModel(&m_level.GetRoot()));
+
+		pLayout->AddWidget(m_pTreeWidget);
+
+		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditor::OnTreeItemClicked, this, std::placeholders::_1, std::placeholders::_2));
+	}
+
+	bool LevelEditor::OnAddEntityClicked()
+	{
+		//show a modal window to enter the entity name
+		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Entity Name");
+		pWindow->SetSize(DirectX::XMUINT2(500, 70));
+		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+		//vlayout
+		Widgets::Layout* pVLayout = new Widgets::Layout();
+		pVLayout->SetDirection(Widgets::Layout::Vertical);
+		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pWindow->AddWidget(pVLayout);
+
+		//text box for the name of the entity
+		Widgets::TextBox* pNameTextBox = new Widgets::TextBox();
+		pNameTextBox->SetSize(DirectX::XMUINT2(0, 20));
+		pNameTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		/*pNameTextBox->OnValidate([this](const std::string& value) -> bool 
+			{ 
+				AddNewEntity(value);
+				Widgets::WidgetMgr::Get().CloseModalWindow();
+				return true; 
+			});*/
+		pVLayout->AddWidget(pNameTextBox);
+		
+		//button ok escape
+		Widgets::Layout* pHLayout = new Widgets::Layout();
+		pHLayout->SetDirection(Widgets::Layout::Horizontal);
+		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pVLayout->AddWidget(pHLayout);
+
+		Widgets::Button* pOkButton = new Widgets::Button(250, 25, 0, 0);
+		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
+		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pOkButton->AddWidget(pOkLabel);
+		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pOkButton->OnClick([this, pNameTextBox](int, int) -> bool
+			{
+				const std::string& text = pNameTextBox->GetText();
+				AddNewEntity(text);
+				Widgets::WidgetMgr::Get().CloseModalWindow();
+				return true;
+			});
+		pHLayout->AddWidget(pOkButton);
+
+		Widgets::Button* pCancelButton = new Widgets::Button(250, 25, 0, 0);
+		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
+		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pCancelButton->AddWidget(pCancelLabel);
+		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+		pHLayout->AddWidget(pCancelButton);
+
+		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
+
+		return true;
+	}
+
+	void LevelEditor::AddNewEntity(const std::string& name)
+	{
+		Core::TreeNode<Entity*>& parent = m_level.GetRoot();
+
+		std::string entityName = "DEFAULT";
+		if (!name.empty())
+			entityName = name;
+
+		Entity* pPlan = new Entity(entityName);
+		Component* pPlanTransform = CreateComponentTransform();
+		pPlanTransform->SetPropertyValue("Local", Core::Mat44f(
+			Core::Vec4f(1, 0, 0, 0),
+			Core::Vec4f(0, 1, 0, 0),
+			Core::Vec4f(0, 0, 1, 0),
+			Core::Vec4f(0, 0, 0, 1)));
+
+		Component* pPlanRendering = CreateComponentRendering();
+		/*pPlanRendering->SetPropertyValue("Mesh", meshPlane);
+		pPlanRendering->SetPropertyValue("Material", materialBlue);*/
+		pPlan->AddComponent(pPlanTransform);
+		pPlan->AddComponent(pPlanRendering);
+
+		Core::TreeNode<Entity*>& planNode = m_level.AddEntity(pPlan, parent);
+
+		m_pTreeWidget->SetModel(new LevelTreeModel(&m_level.GetRoot()));
 	}
 }

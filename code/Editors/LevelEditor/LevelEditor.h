@@ -33,6 +33,7 @@ namespace Editors
 	class BaseModel;
 	class EntityModel;
 	class EntityWidget;
+	class TreeWidget;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
 	{
@@ -62,6 +63,7 @@ namespace Editors
 		//entity viewer
 		EntityModel* m_pEntityModel;
 		EntityWidget* m_pEntityWidget;
+		TreeWidget* m_pTreeWidget;
 
 		Widgets::Label* m_pEntityNameLabel;
 
@@ -73,5 +75,8 @@ namespace Editors
 		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
 
 		bool OnTreeItemClicked(BaseModel* pModel, int rowId);
+		bool OnAddEntityClicked();
+
+		void AddNewEntity(const std::string& name);
 	};
 }
