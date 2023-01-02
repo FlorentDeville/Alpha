@@ -4,18 +4,42 @@
 
 #include "Widgets/ModalWindow.h"
 
+#include "Widgets/Label.h"
+#include "Widgets/Layout.h"
 #include "Widgets/Message.h"
 #include "Widgets/MessageId.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
-	ModalWindow::ModalWindow()
+	ModalWindow::ModalWindow(const std::string& title)
 		: Container()
 	{
 		Widgets::ContainerStyle& style = GetDefaultStyle();
 		style.SetBorderColor(DirectX::XMVectorSet(0.44f, 0.37f, 0.91f, 1.f));
 		style.ShowBorder(true);
+
+		m_pInnerLayout = new Widgets::Layout();
+		m_pInnerLayout->SetDirection(Widgets::Layout::Vertical);
+		m_pInnerLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		
+		Container::AddWidget(m_pInnerLayout);
+
+		const int TITLE_HEIGHT = 20;
+		Container* pLabelContainer = new Container(0, TITLE_HEIGHT);
+		pLabelContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pLabelContainer->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0, 0, 0, 1.f));
+		m_pInnerLayout->AddWidget(pLabelContainer);
+
+		m_pTitleLabel = new Widgets::Label(0, 0, 1, title);
+		m_pTitleLabel->SetSize(DirectX::XMUINT2(0, TITLE_HEIGHT));
+		
+
+		pLabelContainer->AddWidget(m_pTitleLabel);
+
+		m_pContent = new Widgets::Container();
+		m_pContent->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pInnerLayout->AddWidget(m_pContent);
 	}
 
 	ModalWindow::~ModalWindow()
@@ -38,6 +62,16 @@ namespace Widgets
 		}
 
 		return true;
+	}
+
+	void ModalWindow::AddWidget(Widget* pWidget)
+	{
+		m_pContent->AddWidget(pWidget);
+	}
+
+	void ModalWindow::DeleteChild(Widget* pWidget)
+	{
+		m_pContent->DeleteChild(pWidget);
 	}
 
 }

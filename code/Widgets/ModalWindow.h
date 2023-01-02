@@ -8,17 +8,25 @@
 
 namespace Widgets
 {
+	class Label;
+	class Layout;
+
 	class ModalWindow : public Container
 	{
 	public:
-		ModalWindow();
+		ModalWindow(const std::string& title);
 		~ModalWindow();
 
 		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		bool Handle(const Message& msg) override;
 
-	private:
+		void AddWidget(Widget* pWidget) override;
+		void DeleteChild(Widget* pWidget) override;
 
+	private:
+		Widgets::Layout* m_pInnerLayout;
+		Widgets::Label* m_pTitleLabel;
+		Widgets::Container* m_pContent;
 	};
 }

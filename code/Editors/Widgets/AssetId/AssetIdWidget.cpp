@@ -35,7 +35,7 @@ namespace Editors
 		m_pButton->AddWidget(pButtonLabel);
 		m_pButton->OnClick([this](int, int)->bool
 			{
-				Widgets::ModalWindow* pWindow = new Widgets::ModalWindow();
+				Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Select Asset");
 				pWindow->SetSize(DirectX::XMUINT2(500, 500));
 				pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
 				pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
@@ -48,7 +48,7 @@ namespace Editors
 
 				//list
 				Editors::ListWidget* pList = new Editors::ListWidget();
-				pList->SetSize(DirectX::XMUINT2(500, 460));
+				pList->SetSize(DirectX::XMUINT2(500, 450));
 				pList->SetColumnSize(0, 75);
 
 				PropertyType type = m_pModel->GetDataType(0, 0);
