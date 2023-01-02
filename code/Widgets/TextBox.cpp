@@ -218,6 +218,11 @@ namespace Widgets
 		m_onValidateCallback = callback;
 	}
 
+	const std::string& TextBox::GetText() const
+	{
+		return m_text;
+	}
+
 	bool TextBox::OnGetFocusCallback()
 	{
 		m_pCursorIcon->Enable(); 

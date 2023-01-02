@@ -32,6 +32,8 @@ namespace Widgets
 
 		void OnValidate(const OnValidateCallback& callback);
 
+		const std::string& GetText() const;
+
 	private:
 		enum State
 		{
