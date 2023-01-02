@@ -7,6 +7,9 @@
 #include "Editors/Widgets/BaseModel.h"
 #include "Editors/Widgets/Component/ComponentWidget.h"
 
+#include "Rendering/Texture/TextureMgr.h"
+#include "Rendering/Texture/Texture.h"
+
 #include "Widgets/Container.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
@@ -21,6 +24,20 @@ namespace Editors
 		, m_isDirtyWidget(true)
 	{
 		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+
+		{
+			Rendering::Texture* pTexture = nullptr;
+			Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_collapsedIcon);
+			std::string collapsedIconPath = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "/collapsed.png";
+			pTexture->Init(collapsedIconPath);
+		}
+
+		{
+			Rendering::Texture* pTexture = nullptr;
+			Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_expandedIcon);
+			std::string expandedIconPath = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "/expanded.png";
+			pTexture->Init(expandedIconPath);
+		}
 	}
 
 	EntityWidget::~EntityWidget()
@@ -67,8 +84,9 @@ namespace Editors
 			pNameLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pNameLayout->SetDirection(Widgets::Layout::Horizontal);
 
-			std::string iconPath = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "\\collapsed.png";
-			Widgets::Icon* pIcon = new Widgets::Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(12, 12), iconPath);
+			Widgets::Icon* pIcon = new Widgets::Icon();
+			pIcon->SetSize(DirectX::XMUINT2(12, 12));
+			pIcon->SetTextureId(m_expandedIcon);
 			pIcon->SetY(3);
 			
 			pNameLayout->AddWidget(pIcon);
@@ -76,7 +94,7 @@ namespace Editors
 			Widgets::Label* pNameLabel = new Widgets::Label();
 
 			pNameLabel->SetText(m_pModel->GetData(ii, 0));
-			pNameLabel->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
+			pNameLabel->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT + 3));
 			pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 			pNameLayout->AddWidget(pNameLabel);
 			
@@ -91,8 +109,18 @@ namespace Editors
 
 			pLayout->AddWidget(pContainer);
 
-			pIcon->OnClick([pComponentWidget](int, int) -> bool {
-				pComponentWidget->IsEnabled() ? pComponentWidget->Disable() : pComponentWidget->Enable();
+			pIcon->OnClick([this, pComponentWidget, pIcon](int, int) -> bool {
+				if (pComponentWidget->IsEnabled())
+				{
+					pComponentWidget->Disable();
+					pIcon->SetTextureId(m_collapsedIcon);
+
+				}
+				else
+				{
+					pComponentWidget->Enable();
+					pIcon->SetTextureId(m_expandedIcon);
+				} 
 				Widgets::WidgetMgr::Get().RequestResize();
 				return true;
 				});

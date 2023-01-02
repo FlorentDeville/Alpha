@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Rendering/Texture/TextureId.h"
+
 #include "Widgets/Widget.h"
 
 namespace Editors
@@ -22,6 +24,9 @@ namespace Editors
 
 	private:
 		BaseModel* m_pModel;
+
+		Rendering::TextureId m_collapsedIcon;
+		Rendering::TextureId m_expandedIcon;
 
 		bool m_isDirtyWidget;
 
