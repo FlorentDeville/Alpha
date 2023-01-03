@@ -20,6 +20,8 @@ namespace Editors
 
 		Core::TreeNode<Entity*>& AddEntity(Entity* pNewEntity, Core::TreeNode<Entity*>& parent);
 
+		void DeleteEntity(Core::TreeNode<Entity*>& node);
+
 		Core::TreeNode<Entity*>& GetRoot();
 
 	private:
