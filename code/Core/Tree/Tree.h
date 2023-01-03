@@ -22,7 +22,11 @@ namespace Core
 
 		const std::vector<TreeNode*>& GetChildren() const;
 
+		const TreeNode<T>* GetParent() const;
+		TreeNode<T>* GetParent();
+
 		TreeNode<T>* AddChildren(T& child);
+		void DeleteChild(T& child);
 
 	private:
 		T m_content;
@@ -80,12 +84,35 @@ namespace Core
 		return m_children;
 	}
 
+	template<class T> const TreeNode<T>* TreeNode<T>::GetParent() const
+	{
+		return m_pParent;
+	}
+
+	template<class T> TreeNode<T>* TreeNode<T>::GetParent()
+	{
+		return m_pParent;
+	}
+
 	template<class T> TreeNode<T>* TreeNode<T>::AddChildren(T& child)
 	{
 		TreeNode<T>* pNewNode = new TreeNode<T>(this, child);
 		m_children.push_back(pNewNode);
 
 		return pNewNode;
+	}
+
+	template<class T> void TreeNode<T>::DeleteChild(T& child)
+	{
+		typename std::vector<TreeNode<T>*>::const_iterator it = std::find_if(m_children.begin(), m_children.end(), [child](TreeNode<T>* pNode) { return pNode->GetContent() == child; });
+
+		if (it == m_children.end())
+			return;
+
+		TreeNode<T>* pEntity = (*it);
+		delete pEntity;
+
+		m_children.erase(it);	
 	}
 
 	template<class T> Tree<T>::Tree()
