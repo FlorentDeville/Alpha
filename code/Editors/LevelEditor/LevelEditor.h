@@ -78,7 +78,9 @@ namespace Editors
 
 		bool OnTreeItemClicked(BaseModel* pModel, int rowId);
 		bool OnAddEntityClicked();
+		bool OnRemoveEntityClicked();
 
 		void AddNewEntity(const std::string& name);
+		void DeleteEntity(Core::TreeNode<Entity*>* pNode);
 	};
 }

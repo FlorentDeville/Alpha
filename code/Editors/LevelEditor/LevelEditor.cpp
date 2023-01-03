@@ -483,13 +483,14 @@ namespace Editors
 		}
 
 		//remove entity
-		//{
-		//	Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
-		//	pMenuLayout->AddWidget(pButton);
-		//	Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "-");
-		//	pButtonLabel->SetX(7);
-		//	pButton->AddWidget(pButtonLabel);
-		//}
+		{
+			Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
+			pMenuLayout->AddWidget(pButton);
+			Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "-");
+			pButtonLabel->SetX(7);
+			pButton->AddWidget(pButtonLabel);
+			pButton->OnClick(std::bind(&LevelEditor::OnRemoveEntityClicked, this));
+		}
 
 		////rename entity
 		//{
@@ -558,6 +559,10 @@ namespace Editors
 			{
 				const std::string& text = pNameTextBox->GetText();
 				AddNewEntity(text);
+
+				delete m_pLevelTreeModel;
+				m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
+				m_pTreeWidget->SetModel(m_pLevelTreeModel);
 				Widgets::WidgetMgr::Get().CloseModalWindow();
 				return true;
 			});
@@ -574,6 +579,66 @@ namespace Editors
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
+
+		return true;
+	}
+
+	bool LevelEditor::OnRemoveEntityClicked()
+	{
+		//find the currently selected entity
+		BaseModel* pBaseModel = m_pTreeWidget->GetSelectedItemModel();
+		if (!pBaseModel)
+			return false;
+
+		LevelTreeModel* pTreeModel = static_cast<LevelTreeModel*>(pBaseModel);
+		Core::TreeNode<Entity*>* pNode = pTreeModel->GetSource();
+		if (!pNode)
+			return false;
+
+		const Entity* pSelectedEntity = pNode->GetContent();
+		if (!pSelectedEntity)
+			return false;
+
+		//show a modal window to enter the entity name
+		std::string title = "Do you really want to delete entity " + pSelectedEntity->GetName() + " ?";
+		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow(title);
+		pWindow->SetSize(DirectX::XMUINT2(500, 50));
+		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+		//button ok escape
+		Widgets::Layout* pHLayout = new Widgets::Layout();
+		pHLayout->SetDirection(Widgets::Layout::Horizontal);
+		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pWindow->AddWidget(pHLayout);
+
+		Widgets::Button* pOkButton = new Widgets::Button(250, 25, 0, 0);
+		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
+		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pOkButton->AddWidget(pOkLabel);
+		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pOkButton->OnClick([this, pNode](int, int) -> bool
+			{
+				DeleteEntity(pNode);
+				delete m_pLevelTreeModel;
+				m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
+				m_pTreeWidget->SetModel(m_pLevelTreeModel);
+				Widgets::WidgetMgr::Get().CloseModalWindow();
+				return true;
+			});
+		pHLayout->AddWidget(pOkButton);
+
+		Widgets::Button* pCancelButton = new Widgets::Button(250, 25, 0, 0);
+		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
+		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pCancelButton->AddWidget(pCancelLabel);
+		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+		pHLayout->AddWidget(pCancelButton);
+
+		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 
 		return true;
 	}
@@ -601,9 +666,13 @@ namespace Editors
 		pPlan->AddComponent(pPlanRendering);
 
 		Core::TreeNode<Entity*>& planNode = m_level.AddEntity(pPlan, parent);
+	}
 
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	void LevelEditor::DeleteEntity(Core::TreeNode<Entity*>* pNode)
+	{
+		Core::TreeNode<Entity*>* pParent = pNode->GetParent();
+		assert(pParent);
+
+		m_level.DeleteEntity(*pNode);
 	}
 }
