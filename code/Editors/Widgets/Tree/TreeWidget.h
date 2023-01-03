@@ -32,6 +32,8 @@ namespace Editors
 
 		void OnItemClicked(const OnItemClickedCallback& callback);
 
+		BaseModel* GetSelectedItemModel();
+
 	private:
 		BaseModel* m_pModel;
 
@@ -43,6 +45,7 @@ namespace Editors
 		OnItemClickedCallback m_onItemClicked;
 
 		Widgets::Button* m_pSelectedButton;
+		BaseModel* m_pSelectedItemModel;
 
 		void CreateWidgets();
 

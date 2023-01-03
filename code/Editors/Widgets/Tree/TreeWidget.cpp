@@ -24,6 +24,7 @@ namespace Editors
 		, m_isDirtyWidget(true)
 		, m_onItemClicked()
 		, m_pSelectedButton(nullptr)
+		, m_pSelectedItemModel(nullptr)
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
@@ -53,6 +54,7 @@ namespace Editors
 		m_pModel = pModel;
 		m_isDirtyWidget = true;
 		m_pSelectedButton = nullptr;
+		m_pSelectedItemModel = nullptr;
 	}
 
 	void TreeWidget::Update(uint64_t dt)
@@ -68,6 +70,11 @@ namespace Editors
 	void TreeWidget::OnItemClicked(const OnItemClickedCallback& callback)
 	{
 		m_onItemClicked = callback;
+	}
+
+	BaseModel* TreeWidget::GetSelectedItemModel()
+	{
+		return m_pSelectedItemModel;
 	}
 
 	void TreeWidget::CreateWidgets()
@@ -146,6 +153,7 @@ namespace Editors
 
 				pButton->Select();
 				m_pSelectedButton = pButton;
+				m_pSelectedItemModel = pModel;
 
 				if (m_onItemClicked)
 					m_onItemClicked(pModel, 0);
