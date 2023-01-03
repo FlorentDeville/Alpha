@@ -533,6 +533,7 @@ namespace Editors
 		Widgets::TextBox* pNameTextBox = new Widgets::TextBox();
 		pNameTextBox->SetSize(DirectX::XMUINT2(0, 20));
 		pNameTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+
 		/*pNameTextBox->OnValidate([this](const std::string& value) -> bool 
 			{ 
 				AddNewEntity(value);
@@ -572,6 +573,7 @@ namespace Editors
 		pHLayout->AddWidget(pCancelButton);
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
+		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
 
 		return true;
 	}
