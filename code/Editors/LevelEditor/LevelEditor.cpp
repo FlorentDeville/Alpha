@@ -249,6 +249,8 @@ namespace Editors
 		, m_pEntityModel(nullptr)
 		, m_pEntityWidget(nullptr)
 		, m_pEntityNameLabel(nullptr)
+		, m_pTreeWidget(nullptr)
+		, m_pLevelTreeModel(nullptr)
 	{
 		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
 		DirectX::XMMATRIX cameraView = DirectX::XMMatrixLookAtLH(cameraPosition, DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0));
@@ -504,8 +506,9 @@ namespace Editors
 		pSeparator->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1));
 		pLayout->AddWidget(pSeparator);
 
+		m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
 		m_pTreeWidget = new TreeWidget();
-		m_pTreeWidget->SetModel(new LevelTreeModel(&m_level.GetRoot()));
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 
 		pLayout->AddWidget(m_pTreeWidget);
 
@@ -597,6 +600,8 @@ namespace Editors
 
 		Core::TreeNode<Entity*>& planNode = m_level.AddEntity(pPlan, parent);
 
-		m_pTreeWidget->SetModel(new LevelTreeModel(&m_level.GetRoot()));
+		delete m_pLevelTreeModel;
+		m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 }

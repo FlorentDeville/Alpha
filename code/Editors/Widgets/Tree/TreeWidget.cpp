@@ -50,7 +50,6 @@ namespace Editors
 
 	void TreeWidget::SetModel(BaseModel* pModel)
 	{
-		delete m_pModel;
 		m_pModel = pModel;
 		m_isDirtyWidget = true;
 		m_pSelectedButton = nullptr;

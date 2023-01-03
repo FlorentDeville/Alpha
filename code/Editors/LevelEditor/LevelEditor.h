@@ -33,6 +33,7 @@ namespace Editors
 	class BaseModel;
 	class EntityModel;
 	class EntityWidget;
+	class LevelTreeModel;
 	class TreeWidget;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
@@ -64,6 +65,7 @@ namespace Editors
 		EntityModel* m_pEntityModel;
 		EntityWidget* m_pEntityWidget;
 		TreeWidget* m_pTreeWidget;
+		LevelTreeModel* m_pLevelTreeModel;
 
 		Widgets::Label* m_pEntityNameLabel;
 
