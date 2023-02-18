@@ -38,6 +38,8 @@
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 
+#pragma optimize("", off)
+
 //needed for the operator* between vectors and floats.
 using namespace DirectX;
 
@@ -336,11 +338,20 @@ namespace Editors
 			delta.x = m_mousePreviousPos.x - mousePosition.x;
 			delta.y = m_mousePreviousPos.y - mousePosition.y;
 
-			const float ROTATION_SPEED = 0.001f;
-			DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(-static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
-			DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(eulerRotation);
-			m_cameraTransform = DirectX::XMMatrixMultiply(orientation, m_cameraTransform);
-			m_mousePreviousPos = mousePosition;
+			if (delta.x != 0 || delta.y != 0)
+			{
+				const float ROTATION_SPEED = 0.003f;
+				DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(-static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+				DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(eulerRotation);
+				m_cameraTransform = DirectX::XMMatrixMultiply(orientation, m_cameraTransform);
+				m_mousePreviousPos = mousePosition;
+
+				//const int BUFFER_SIZE = 256;
+				//char buffer[BUFFER_SIZE] = { '\0' };
+				//snprintf(buffer, BUFFER_SIZE, "x : %f %f %f %f\n", m_cameraTransform.r[0].m128_f32[0], m_cameraTransform.r[0].m128_f32[1], 
+				//	m_cameraTransform.r[0].m128_f32[2], m_cameraTransform.r[0].m128_f32[3]);
+				//OutputDebugString(buffer);
+			}
 		}
 		else if (!m_firstFrameMouseDown)
 		{
@@ -357,31 +368,31 @@ namespace Editors
 			m_cameraTransform = DirectX::XMMatrixMultiply(translationMatrix, m_cameraTransform);
 		}
 
-		DirectX::XMVECTOR translation = DirectX::XMVectorSet(0, 0, 0, 1);
+		DirectX::XMVECTOR translation = DirectX::XMVectorSet(0, 0, 0, 0);
 		const float TRANSLATION_SPEED = 0.5f;
 		if (inputs.IsKeyPressed('W')) //forward
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, TRANSLATION_SPEED, 1));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, TRANSLATION_SPEED, 0));
 		}
 		if (inputs.IsKeyPressed('S')) //backward
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, -TRANSLATION_SPEED, 1));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, -TRANSLATION_SPEED, 0));
 		}
 		if (inputs.IsKeyPressed('A')) //left
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(-TRANSLATION_SPEED, 0, 0, 1));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(-TRANSLATION_SPEED, 0, 0, 0));
 		}
 		if (inputs.IsKeyPressed('D')) //right
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(TRANSLATION_SPEED, 0, 0, 1));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(TRANSLATION_SPEED, 0, 0, 0));
 		}
 		if (inputs.IsKeyPressed('Q')) //up
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, TRANSLATION_SPEED, 0, 1));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, TRANSLATION_SPEED, 0, 0));
 		}
 		if (inputs.IsKeyPressed('E')) //up
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, -TRANSLATION_SPEED, 0, 1));
+			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, -TRANSLATION_SPEED, 0, 0));
 		}
 		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(translation);
 		m_cameraTransform = DirectX::XMMatrixMultiply(translationMatrix, m_cameraTransform);
