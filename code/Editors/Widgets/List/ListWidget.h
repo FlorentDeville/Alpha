@@ -41,8 +41,9 @@ namespace Editors
 		bool m_isDirtyWidget;
 		int m_selectedRow;
 
+#ifdef _DEBUG
 		char m_padding[8];
-
+#endif
 		DirectX::XMVECTOR m_evenRowBackgroundColor;
 		DirectX::XMVECTOR m_oddRowBackgroundColor;
 		DirectX::XMVECTOR m_hoverBackgroundColor;
