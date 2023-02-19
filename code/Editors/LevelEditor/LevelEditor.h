@@ -76,6 +76,8 @@ namespace Editors
 
 		Widgets::Label* m_pEntityNameLabel;
 
+		bool m_isPanning; //when the user is panning the camera
+
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
