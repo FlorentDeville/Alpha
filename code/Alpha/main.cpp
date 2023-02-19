@@ -500,7 +500,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	CreateMainWindow(configuration);
 
-	g_pWindow->Show();
+	g_pWindow->ShowMaximized();
 
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)

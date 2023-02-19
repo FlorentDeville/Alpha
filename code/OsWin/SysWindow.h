@@ -28,6 +28,7 @@ public:
 	void Resize(uint32_t width, uint32_t height);
 
 	void Show() const;
+	void ShowMaximized() const;
 
 	HWND GetWindowHandle() const;
 	RECT GetWindowRectangle() const;

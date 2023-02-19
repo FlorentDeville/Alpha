@@ -133,6 +133,11 @@ void SysWindow::Show() const
 	::ShowWindow(m_hWindow, SW_SHOW);
 }
 
+void SysWindow::ShowMaximized() const
+{
+	::ShowWindow(m_hWindow, SW_MAXIMIZE);
+}
+
 HWND SysWindow::GetWindowHandle() const
 {
 	return m_hWindow;
