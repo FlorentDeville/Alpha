@@ -137,6 +137,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				mouseState.m_mouseLeftButton = true;
 				break;
 
+			case MK_MBUTTON:
+				msg.m_high = M_MButton;
+				mouseState.m_mouseMiddleButton = true;
+				break;
+
 			default:
 				msg.m_high = M_None;
 				break;
@@ -173,6 +178,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	}
 		break;
+
+	case WM_MBUTTONDOWN:
+	{
+		uint16_t xPos = GET_X_LPARAM(lParam);
+		uint16_t yPos = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseMDown;
+		msg.m_low.m_pos[0] = xPos;
+		msg.m_low.m_pos[1] = yPos;
+
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+
+		Inputs::InputMgr::MouseState mouseState;
+		mouseState.m_mouseX = xPos;
+		mouseState.m_mouseY = yPos;
+		mouseState.m_mouseMiddleButton = true;
+
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
+	}
+	break;
+
+	case WM_MBUTTONUP:
+	{
+		uint16_t xPos = GET_X_LPARAM(lParam);
+		uint16_t yPos = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseMUp;
+		msg.m_low.m_pos[0] = xPos;
+		msg.m_low.m_pos[1] = yPos;
+
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+
+		Inputs::InputMgr::MouseState mouseState;
+		mouseState.m_mouseX = xPos;
+		mouseState.m_mouseY = yPos;
+
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
+	}
+	break;
 
 	case WM_LBUTTONDOWN:
 	{

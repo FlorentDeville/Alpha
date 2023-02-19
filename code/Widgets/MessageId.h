@@ -11,6 +11,8 @@ enum MessageId
 	M_MouseExit,	//The mouse exited the area of a widget
 	M_MouseLDown,	//The mouse left button is down
 	M_MouseLUp,		//The mouse left button is up
+	M_MouseMDown,
+	M_MouseMUp,
 	M_VirtualKeyDown,	//Virtual Key : the messgae is the virtual key code
 	M_CharKeyDown,		//Character key : the message is the character
 	M_Count
@@ -21,5 +23,6 @@ enum MouseKey
 {
 	M_None	  = 0x00,
 	M_Control = 0x01,
-	M_LButton = 0x02
+	M_LButton = 0x02,
+	M_MButton = 0x03
 };

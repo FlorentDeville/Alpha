@@ -94,6 +94,11 @@ namespace Inputs
 		return m_mouseState.m_mouseLeftButton;
 	}
 
+	bool InputMgr::IsMouseMiddleButtonDown() const
+	{
+		return m_mouseState.m_mouseMiddleButton;
+	}
+
 	void InputMgr::GetMousePosition(uint32_t& x, uint32_t& y) const
 	{
 		x = m_mouseState.m_mouseX;

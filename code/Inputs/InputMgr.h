@@ -53,6 +53,7 @@ namespace Inputs
 		//use only in editor, not in game, game should use commands
 		bool IsKeyPressed(char key) const;
 		bool IsMouseLeftButtonDown() const;
+		bool IsMouseMiddleButtonDown() const;
 		void GetMousePosition(uint32_t& x, uint32_t& y) const;
 		int16_t GetMouseWheelDistance() const;
 
