@@ -54,10 +54,17 @@ namespace Editors
 		char m_padding[4];
 
 		//mouse controls
-		DirectX::XMUINT2 m_mousePreviousPos;
-		DirectX::XMMATRIX m_cameraTransform;
+		DirectX::XMUINT2 m_mousePreviousPos;	
 		bool m_firstFrameMouseDown;
 		bool m_enableViewportControl;
+
+		char m_padding2[14];
+
+		//camera transform
+		DirectX::XMMATRIX m_cameraRotation;		//matrix for the orientation of the camera (same as m_cameraEulerAngle)
+		DirectX::XMVECTOR m_cameraEulerAngle;	//euler angle of the camera (sme as m_cameraRotation)
+		DirectX::XMVECTOR m_cameraPosition;		//position of the camera in world space
+		DirectX::XMMATRIX m_cameraTransform;	//transform of the camera in world space
 
 		Level m_level;
 

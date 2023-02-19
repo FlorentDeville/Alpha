@@ -254,12 +254,15 @@ namespace Editors
 		, m_pTreeWidget(nullptr)
 		, m_pLevelTreeModel(nullptr)
 	{
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
-		DirectX::XMMATRIX cameraView = DirectX::XMMatrixLookAtLH(cameraPosition, DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0));
-		cameraView.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+		m_cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
+		m_cameraEulerAngle = DirectX::XMVectorSet(3.14f / 4.f, 0, 0, 0);
+		
+		DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
+		DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
+		m_cameraRotation = DirectX::XMMatrixMultiply(XRotation, YRotation);
 
-		m_cameraTransform = DirectX::XMMatrixTranspose(cameraView);
-		m_cameraTransform.r[3] = cameraPosition;
+		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
+		m_cameraTransform = DirectX::XMMatrixMultiply(m_cameraRotation, translationMatrix);
 	}
 
 	LevelEditor::~LevelEditor()
@@ -323,6 +326,7 @@ namespace Editors
 		if (!m_enableViewportControl)
 			return;
 
+		bool updateCameraTransform = false;
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 		if (inputs.IsMouseLeftButtonDown())
 		{
@@ -342,15 +346,14 @@ namespace Editors
 			{
 				const float ROTATION_SPEED = 0.003f;
 				DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(-static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
-				DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(eulerRotation);
-				m_cameraTransform = DirectX::XMMatrixMultiply(orientation, m_cameraTransform);
-				m_mousePreviousPos = mousePosition;
+				m_cameraEulerAngle += eulerRotation;
 
-				//const int BUFFER_SIZE = 256;
-				//char buffer[BUFFER_SIZE] = { '\0' };
-				//snprintf(buffer, BUFFER_SIZE, "x : %f %f %f %f\n", m_cameraTransform.r[0].m128_f32[0], m_cameraTransform.r[0].m128_f32[1], 
-				//	m_cameraTransform.r[0].m128_f32[2], m_cameraTransform.r[0].m128_f32[3]);
-				//OutputDebugString(buffer);
+				DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
+				DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
+
+				m_cameraRotation = DirectX::XMMatrixMultiply(XRotation, YRotation);
+				m_mousePreviousPos = mousePosition;
+				updateCameraTransform = true;
 			}
 		}
 		else if (!m_firstFrameMouseDown)
@@ -363,39 +366,54 @@ namespace Editors
 		{
 			const float CAMERA_DISTANCE_SPEED = 0.05f;
 			const float MIN_DISTANCE = 2;
-			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0, 0, 1, 1) * mouseWheelDistance * CAMERA_DISTANCE_SPEED;
-			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(translation);
-			m_cameraTransform = DirectX::XMMatrixMultiply(translationMatrix, m_cameraTransform);
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * mouseWheelDistance * CAMERA_DISTANCE_SPEED);
+			updateCameraTransform = true;
 		}
 
-		DirectX::XMVECTOR translation = DirectX::XMVectorSet(0, 0, 0, 0);
 		const float TRANSLATION_SPEED = 0.5f;
 		if (inputs.IsKeyPressed('W')) //forward
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, TRANSLATION_SPEED, 0));
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * TRANSLATION_SPEED);
+			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('S')) //backward
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, 0, -TRANSLATION_SPEED, 0));
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * TRANSLATION_SPEED);
+			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('A')) //left
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(-TRANSLATION_SPEED, 0, 0, 0));
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * TRANSLATION_SPEED);
+			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('D')) //right
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(TRANSLATION_SPEED, 0, 0, 0));
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * TRANSLATION_SPEED);
+			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('Q')) //up
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, TRANSLATION_SPEED, 0, 0));
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * TRANSLATION_SPEED);
+			updateCameraTransform = true;
 		}
-		if (inputs.IsKeyPressed('E')) //up
+		if (inputs.IsKeyPressed('E')) //down
 		{
-			translation = DirectX::XMVectorAdd(translation, DirectX::XMVectorSet(0, -TRANSLATION_SPEED, 0, 0));
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * TRANSLATION_SPEED);
+			updateCameraTransform = true;
 		}
-		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(translation);
-		m_cameraTransform = DirectX::XMMatrixMultiply(translationMatrix, m_cameraTransform);
+
+		if (updateCameraTransform)
+		{
+			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
+			m_cameraTransform = DirectX::XMMatrixMultiply(m_cameraRotation, translationMatrix);
+		}
 	}
 
 	void LevelEditor::Render()
