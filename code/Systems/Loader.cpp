@@ -160,7 +160,7 @@ namespace Systems
 		Systems::AssetId psAid(shaderPSValue.GetInt64());
 		const Systems::Asset* assetPS = assetMgr.GetAsset(psAid);
 
-		RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(assetRS->GetPath());
+		Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(assetRS->GetPath());
 		Rendering::ShaderId vsId = shaderMgr.CreateShader(assetVS->GetPath());
 		Rendering::ShaderId psId = shaderMgr.CreateShader(assetPS->GetPath());
 

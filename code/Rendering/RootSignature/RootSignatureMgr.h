@@ -9,11 +9,11 @@
 
 #include "Core/Singleton.h"
 
-struct RootSignatureId;
-class RootSignature;
-
 namespace Rendering
 {
+	struct RootSignatureId;
+	class RootSignature;
+
 	class RootSignatureMgr : public Core::Singleton<RootSignatureMgr>
 	{
 	public:

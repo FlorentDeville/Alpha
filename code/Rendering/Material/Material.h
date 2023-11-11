@@ -8,12 +8,11 @@
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/Texture/TextureId.h"
 
-class RootSignature;
-
-struct RootSignatureId;
-
 namespace Rendering
 {
+	class RootSignature;
+	struct RootSignatureId;
+
 	class Material
 	{
 		friend class RenderModule;

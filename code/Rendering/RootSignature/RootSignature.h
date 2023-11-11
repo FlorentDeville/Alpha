@@ -8,15 +8,18 @@
 
 #include <d3d12.h>
 
-class RootSignature
+namespace Rendering
 {
-public:
-	RootSignature(const std::string& path);
-	~RootSignature();
+	class RootSignature
+	{
+	public:
+		RootSignature(const std::string& path);
+		~RootSignature();
 
-	ID3D12RootSignature* GetRootSignature() const;
+		ID3D12RootSignature* GetRootSignature() const;
 
-private:
-	std::string m_path;
-	ID3D12RootSignature* m_pRootSignature;
-};
+	private:
+		std::string m_path;
+		ID3D12RootSignature* m_pRootSignature;
+	};
+}

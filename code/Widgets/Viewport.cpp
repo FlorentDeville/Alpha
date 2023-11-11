@@ -31,7 +31,7 @@ namespace Widgets
 	{
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		const Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(WidgetMgr::Get().m_widgetViewportPsoId);
-		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(pPipelineState->GetRootSignatureId());
+		const Rendering::RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(pPipelineState->GetRootSignatureId());
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(m_onGetRenderTargetTexture());
 		ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();

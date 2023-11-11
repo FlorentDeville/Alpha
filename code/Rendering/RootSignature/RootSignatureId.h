@@ -4,7 +4,10 @@
 
 #pragma once
 
-struct RootSignatureId
+namespace Rendering
 {
-	size_t m_id;
-};
+	struct RootSignatureId
+	{
+		size_t m_id;
+	};
+}
