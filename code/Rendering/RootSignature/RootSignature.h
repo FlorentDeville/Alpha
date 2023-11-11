@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include <d3d12.h>
+struct ID3D12RootSignature;
 
 namespace Rendering
 {
