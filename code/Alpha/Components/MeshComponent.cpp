@@ -24,7 +24,7 @@ MeshComponent::~MeshComponent()
 
 void MeshComponent::Render()
 {
-	RenderModule& renderer = RenderModule::Get();
+	Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 	LocatorEntity* pLocatorParent = static_cast<LocatorEntity*>(m_pParent);
 	const DirectX::XMMATRIX& transform = pLocatorParent->GetTransform();

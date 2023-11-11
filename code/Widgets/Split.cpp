@@ -37,7 +37,7 @@ void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 	DirectX::XMVECTOR color = DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1);
 
 	WidgetMgr& widgetMgr = WidgetMgr::Get();
-	RenderModule& render = RenderModule::Get();
+	Rendering::RenderModule& render = Rendering::RenderModule::Get();
 	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
 	const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);

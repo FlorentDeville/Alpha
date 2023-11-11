@@ -83,7 +83,7 @@ namespace Editors
 				DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
 				mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, proj);
 
-				RenderModule& renderer = RenderModule::Get();
+				Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 				const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
 				renderer.BindMaterial(*pMaterial, mvpMatrix);
@@ -280,7 +280,7 @@ namespace Editors
 		int width = 1280;
 		int height = 720;
 		m_aspectRatio = width / static_cast<float>(height);
-		m_pRenderTarget = RenderModule::Get().CreateRenderTarget(width, height);
+		m_pRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -296,7 +296,7 @@ namespace Editors
 		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
 		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
 		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
-		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
+		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return Rendering::RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
 
 		//create split between viewport and left panel
 		Widgets::SplitVertical* pLeftSplit = new Widgets::SplitVertical();

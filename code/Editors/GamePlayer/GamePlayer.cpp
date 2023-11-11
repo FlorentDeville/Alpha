@@ -28,7 +28,7 @@ namespace Editors
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnGetFocus([]() -> bool { Inputs::InputMgr::Get().Enable(); return true; });
 		pViewport->OnLoseFocus([]() -> bool { Inputs::InputMgr::Get().Disable(); return true; });
-		pViewport->OnGetRenderTargetTexture([]() -> Rendering::TextureId { return RenderModule::Get().GetGameRenderTargetTextureId(); });
+		pViewport->OnGetRenderTargetTexture([]() -> Rendering::TextureId { return Rendering::RenderModule::Get().GetGameRenderTargetTextureId(); });
 		pViewportTab->AddWidget(pViewport);
 
 		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);

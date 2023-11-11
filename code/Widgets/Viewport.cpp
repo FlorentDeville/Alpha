@@ -36,7 +36,7 @@ namespace Widgets
 		Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(m_onGetRenderTargetTexture());
 		ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();
 
-		ID3D12GraphicsCommandList2* pCommandList = RenderModule::Get().GetRenderCommandList();
+		ID3D12GraphicsCommandList2* pCommandList = Rendering::RenderModule::Get().GetRenderCommandList();
 
 		pCommandList->SetPipelineState(pPipelineState->GetPipelineState());
 		pCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());

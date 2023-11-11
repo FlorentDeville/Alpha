@@ -22,7 +22,7 @@ namespace Widgets
 
 	void Text::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-		RenderModule& renderer = RenderModule::Get();
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
 		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
@@ -41,12 +41,12 @@ namespace Widgets
 			std::string subLine = line;
 
 			//then split the line by the number of characters I can rander.
-			int n = RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+			int n = Rendering::RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 			uiPos.y += pFont->m_lineHeight;
 			while(n < subLine.size())
 			{	
 				subLine = subLine.substr(n + 1);
-				n = RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+				n = Rendering::RenderModule::Get().PrepareRenderText(subLine, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 				uiPos.y += pFont->m_lineHeight;
 			} 
 

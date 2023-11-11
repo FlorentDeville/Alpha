@@ -110,7 +110,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			DirectX::XMUINT2 size(uwidth, uheight);
 			g_pWindow->Resize(uwidth, uheight);
-			RenderModule::Get().ChangeMainResolution(size);
+			Rendering::RenderModule::Get().ChangeMainResolution(size);
 			Widgets::WidgetMgr::Get().Resize();
 		}
 
@@ -327,7 +327,7 @@ void Update()
 
 void Render()
 {
-	RenderModule& renderModule = RenderModule::Get();
+	Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 	renderModule.PreRender();
 
@@ -404,7 +404,7 @@ bool LoadContent()
 	GameMgr& gameMgr = GameMgr::Get();
 	gameMgr.CreatePlayerEntity(torusMeshId, baseMaterialId);
 
-	const DirectX::XMUINT2 gameResolution = RenderModule::Get().GetGameResolution();
+	const DirectX::XMUINT2 gameResolution = Rendering::RenderModule::Get().GetGameResolution();
 	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
 	gameMgr.CreateCameraEntity(aspectRatio);
 
@@ -520,7 +520,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pWindow = new SysWindow();
 	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 
-	RenderModule& render = RenderModule::InitSingleton();
+	Rendering::RenderModule& render = Rendering::RenderModule::InitSingleton();
 	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
 
 	Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::InitSingleton();
@@ -582,7 +582,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Systems::AssetMgr::ReleaseSingleton();
 
 	render.Release();
-	RenderModule::ReleaseSingleton();
+	Rendering::RenderModule::ReleaseSingleton();
 
 	return 0;
 }

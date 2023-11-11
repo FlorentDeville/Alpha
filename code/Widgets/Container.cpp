@@ -36,7 +36,7 @@ namespace Widgets
 		//DirectX::XMVECTOR color = m_backgroundColor;
 
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
-		RenderModule& render = RenderModule::Get();
+		Rendering::RenderModule& render = Rendering::RenderModule::Get();
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);

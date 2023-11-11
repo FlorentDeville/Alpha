@@ -38,7 +38,7 @@ namespace Widgets
 
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-		RenderModule& renderer = RenderModule::Get();
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_iconMaterialId);
 		renderer.BindMaterial(*pMaterial, wvp);

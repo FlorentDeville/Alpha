@@ -8,11 +8,10 @@
 
 #include <d3d12.h>
 
-class RenderModule;
-
 namespace Rendering
 {
 	class DescriptorHeap;
+	class RenderModule;
 	class Texture;
 
 	class RenderTarget

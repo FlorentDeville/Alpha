@@ -114,7 +114,7 @@ namespace Widgets
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(text_pipelineStateId);
 			pPipelineState->Init_Text(rsId, vsId, psId);
 
-			RenderModule::Get().InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 65535);
+			Rendering::RenderModule::Get().InitialiseFont(m_segoeUIFontId, text_pipelineStateId, 65535);
 		}
 
 		//material for icon
