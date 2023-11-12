@@ -58,6 +58,8 @@ namespace Rendering
 		void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
 		void RenderMesh(const Rendering::Mesh& mesh);
 
+		void RenderPrimitiveCircle(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
+
 		void ExecuteRenderCommand();
 
 		void SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset);
@@ -138,6 +140,11 @@ namespace Rendering
 	public:
 		UINT m_currentBackBufferIndex;
 		Rendering::RenderTarget* m_gameRenderTarget;
+
+		Rendering::Mesh* m_pCircleMesh;
+		Rendering::Material* m_pCircleMaterial;
+
+		Rendering::Mesh* m_pBaseQuadMesh;
 
 	private:
 		ID3D12Resource* m_pBackBuffers[m_numFrames];

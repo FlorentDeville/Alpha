@@ -5,6 +5,7 @@
 #define NOMINMAX
 
 #include <assert.h>
+#include <cmath>
 #include <cstdint>
 #include <exception>
 #include <chrono>
@@ -398,6 +399,83 @@ bool LoadContent()
 		meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
 		const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(2)); //basic_plane
 		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pPlaneMesh);
+	}
+
+	//basic shape material
+	{
+		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+		const std::string shaderPath = "C:\\workspace\\Alpha\\code\\x64\\Release\\"; //"c:\\workspace\\Alpha\\data\\shaders\\";
+
+		Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
+		Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
+		Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
+
+		Rendering::PipelineStateId pid;
+		Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+		pPipelineState->Init_Generic(rsId, vsId, psId);
+
+		Rendering::Material* pMaterial = nullptr;
+		Rendering::MaterialId materialId;
+		materialMgr.CreateMaterial(&pMaterial, materialId);
+		pMaterial->Init(rsId, pid);
+
+		Rendering::RenderModule::Get().m_pCircleMaterial = pMaterial;
+	}
+
+	//basic shape circle
+	{
+		Rendering::Mesh* pCircleMesh = nullptr;
+		Rendering::MeshId circleMeshId;
+		meshMgr.CreateMesh(&pCircleMesh, circleMeshId);
+
+		const int CIRCLE_RESOLUTION = 40; //number of vertices
+		const int VERTEX_COUNT = CIRCLE_RESOLUTION + 1;
+		const float THETA = 2 * 3.14f / CIRCLE_RESOLUTION;
+		Rendering::VertexPosColor vertices[VERTEX_COUNT];
+		for (int ii = 0; ii < VERTEX_COUNT; ++ii)
+		{
+			float currentTheta = ii * THETA;
+			float x = std::cos(currentTheta);
+			float z = std::sin(currentTheta);
+
+			vertices[ii].Position = DirectX::XMFLOAT3(x, 0, z);
+			vertices[ii].Color = DirectX::XMFLOAT3(1, 0, 0);
+		}
+
+		pCircleMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, nullptr, 0);
+		Rendering::RenderModule::Get().m_pCircleMesh = pCircleMesh;
+	}
+
+	//basic shape quad
+	{
+		Rendering::Mesh* pBasicQuadMesh = nullptr;
+		Rendering::MeshId basicQuadMeshId;
+		meshMgr.CreateMesh(&pBasicQuadMesh, basicQuadMeshId);
+
+		const int VERTEX_COUNT = 4;
+		Rendering::VertexPosColor vertices[VERTEX_COUNT];
+		vertices[0].Position = DirectX::XMFLOAT3(-0.5, 0.5, 0);
+		vertices[1].Position = DirectX::XMFLOAT3(0.5, 0.5, 0);
+		vertices[2].Position = DirectX::XMFLOAT3(0.5, -0.5, 0);
+		vertices[3].Position = DirectX::XMFLOAT3(-0.5, -0.5, 0);
+
+		vertices[0].Color = DirectX::XMFLOAT3(1, 0, 0);
+		vertices[1].Color = DirectX::XMFLOAT3(1, 0, 0);
+		vertices[2].Color = DirectX::XMFLOAT3(1, 0, 0);
+		vertices[3].Color = DirectX::XMFLOAT3(1, 0, 0);
+
+		const int INDEX_COUNT = 6;
+		uint16_t indices[INDEX_COUNT];
+		indices[0] = 0;
+		indices[1] = 1;
+		indices[2] = 2;
+		indices[3] = 2;
+		indices[4] = 3;
+		indices[5] = 0;
+		pBasicQuadMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
+		Rendering::RenderModule::Get().m_pBaseQuadMesh = pBasicQuadMesh;
 	}
 
 	//Load the entities

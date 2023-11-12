@@ -246,6 +246,21 @@ namespace Rendering
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 	}
 
+	void RenderModule::RenderPrimitiveCircle(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	{
+		m_pRenderCommandList->SetPipelineState(m_pCircleMaterial->m_pPipelineState->GetPipelineState());
+		m_pRenderCommandList->SetGraphicsRootSignature(m_pCircleMaterial->m_pRootSignature->GetRootSignature());
+
+		DirectX::XMMATRIX wvp = world * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
+
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		m_pRenderCommandList->IASetVertexBuffers(0, 1, &m_pCircleMesh->GetVertexBufferView());
+
+		m_pRenderCommandList->DrawInstanced(m_pCircleMesh->GetVerticesCount(), 1, 0, 0);
+	}
+
 	void RenderModule::ExecuteRenderCommand()
 	{
 		//run the command list

@@ -67,6 +67,9 @@
     <FxCompile Include="Shaders\widget_viewport.ps.hlsl" />
     <FxCompile Include="Shaders\widget_viewport.vs.hlsl" />
     <FxCompile Include="Shaders\widget_viewport.rs.hlsl" />
+    <FxCompile Include="Shaders\base-shape.ps.hlsl" />
+    <FxCompile Include="Shaders\base-shape.rs.hlsl" />
+    <FxCompile Include="Shaders\base-shape.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMgr.h" />
