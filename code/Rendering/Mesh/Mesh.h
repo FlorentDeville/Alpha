@@ -59,6 +59,7 @@ namespace Rendering
 		const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
 
 		int GetIndicesCount() const;
+		int GetVerticesCount() const;
 
 	private:
 		//Vertex buffer
@@ -70,5 +71,6 @@ namespace Rendering
 		D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
 
 		int m_indicesCount;
+		int m_verticesCount;
 	};
 }

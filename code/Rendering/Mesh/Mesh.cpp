@@ -60,6 +60,7 @@ namespace Rendering
 		, m_pIndexBuffer(nullptr)
 		, m_indexBufferView()
 		, m_indicesCount(0)
+		, m_verticesCount(0)
 	{}
 
 	Mesh::~Mesh()
@@ -74,6 +75,7 @@ namespace Rendering
 	void Mesh::LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 	{
 		m_indicesCount = indicesCount;
+		m_verticesCount = verticesCount;
 
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
@@ -102,6 +104,7 @@ namespace Rendering
 	void Mesh::LoadVertexAndIndexBuffer(const VertexPosColor* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 	{
 		m_indicesCount = indicesCount;
+		m_verticesCount = verticesCount;
 
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
@@ -114,25 +117,31 @@ namespace Rendering
 		m_vertexBufferView.SizeInBytes = sizeof(VertexPosColor) * verticesCount;
 		m_vertexBufferView.StrideInBytes = sizeof(VertexPosColor);
 
-		ID3D12Resource* pIntermediateIndexBuffer;
-		UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+		ID3D12Resource* pIntermediateIndexBuffer = nullptr;
+		if (indicesCount > 0)
+		{
+			UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
 
-		// Create index buffer view.
-		m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-		m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+			// Create index buffer view.
+			m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
+			m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
+			m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+		}
 
 		//Upload everything to the gpu
 		uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
 		pCopyCommandQueue->WaitForFenceValue(fenceValue);
 
 		pIntermediateVertexBuffer->Release();
-		pIntermediateIndexBuffer->Release();
+
+		if(pIntermediateIndexBuffer)
+			pIntermediateIndexBuffer->Release();
 	}
 
 	void Mesh::LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 	{
 		m_indicesCount = indicesCount;
+		m_verticesCount = verticesCount;
 
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
@@ -164,6 +173,7 @@ namespace Rendering
 	void Mesh::LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 	{
 		m_indicesCount = indicesCount;
+		m_verticesCount = verticesCount;
 
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
@@ -205,5 +215,10 @@ namespace Rendering
 	int Mesh::GetIndicesCount() const
 	{
 		return m_indicesCount;
+	}
+
+	int Mesh::GetVerticesCount() const
+	{
+		return m_verticesCount;
 	}
 }
