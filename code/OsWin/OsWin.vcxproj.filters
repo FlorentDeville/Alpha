@@ -3,9 +3,11 @@
   <ItemGroup>
     <ClCompile Include="SysWindow.cpp" />
     <ClCompile Include="Process.cpp" />
+    <ClCompile Include="Guid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SysWindow.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="Guid.h" />
   </ItemGroup>
 </Project>

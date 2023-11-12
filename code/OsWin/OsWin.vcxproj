@@ -11,10 +11,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Guid.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Guid.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="SysWindow.h" />
   </ItemGroup>
@@ -69,6 +71,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -88,6 +91,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
