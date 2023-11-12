@@ -9,6 +9,7 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/Entity.h"
+#include "Editors/LevelEditor/GizmoWidget.h"
 
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
@@ -245,6 +246,7 @@ namespace Editors
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
 		, m_padding()
+		, m_padding2()
 		, m_cameraTransform(DirectX::XMMatrixIdentity())
 		, m_pEntityModel(nullptr)
 		, m_pEntityWidget(nullptr)
@@ -262,6 +264,8 @@ namespace Editors
 
 		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
 		m_cameraTransform = DirectX::XMMatrixMultiply(m_cameraRotation, translationMatrix);
+
+		m_pGizmoWidget = new GizmoWidget();
 	}
 
 	LevelEditor::~LevelEditor()
@@ -464,7 +468,7 @@ namespace Editors
 		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
 		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
 			
-		float fovRad = DirectX::XMConvertToRadians(45.f);
+		constexpr float fovRad = DirectX::XMConvertToRadians(45.f);
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
 		pCamera->SetProjection(fovRad, m_aspectRatio, nearDistance, farDistance);
@@ -480,6 +484,8 @@ namespace Editors
 			RenderTreeNodeRecursive(pNode, currentWVP, m_assetIdToMeshId, m_assetIdToMaterialId);
 		}
 		
+		m_pGizmoWidget->Render();
+
 		m_pRenderTarget->EndScene();
 	}
 

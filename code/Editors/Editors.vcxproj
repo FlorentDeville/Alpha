@@ -22,6 +22,7 @@
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdModel.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
+    <ClInclude Include="LevelEditor\GizmoWidget.h" />
     <ClInclude Include="Widgets\List\ListWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Component\ComponentModel.h" />
@@ -46,6 +47,7 @@
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdModel.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
+    <ClCompile Include="LevelEditor\GizmoWidget.cpp" />
     <ClCompile Include="Widgets\List\ListWidget.cpp" />
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
     <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />

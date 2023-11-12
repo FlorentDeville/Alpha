@@ -33,6 +33,7 @@ namespace Editors
 	class BaseModel;
 	class EntityModel;
 	class EntityWidget;
+	class GizmoWidget;
 	class LevelTreeModel;
 	class TreeWidget;
 
@@ -77,6 +78,8 @@ namespace Editors
 		Widgets::Label* m_pEntityNameLabel;
 
 		bool m_isPanning; //when the user is panning the camera
+
+		GizmoWidget* m_pGizmoWidget;
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;

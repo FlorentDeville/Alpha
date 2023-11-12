@@ -81,6 +81,9 @@
     <ClInclude Include="Widgets\List\Models\AssetListModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelEditor\GizmoWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\List\Models\AssetListModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\GizmoWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
