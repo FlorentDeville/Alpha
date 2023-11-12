@@ -4,48 +4,55 @@
 
 #include "Editors/LevelEditor/Level.h"
 
-#include "Editors/LevelEditor/Entity.h"
+#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 
 namespace Editors
 {
 	Level::Level()
-		: m_entities()
-		, m_sceneTree()
-	{}
+		: m_name()
+	{
+		m_pSceneTree = new SceneTree();
+	}
 
 	Level::~Level()
 	{
-		for (Entity* pEntity : m_entities)
-			delete pEntity;
-
-		m_entities.clear();
-		m_sceneTree.clear();
+		delete m_pSceneTree;
 	}
 
-	Core::TreeNode<Entity*>& Level::AddEntity(Entity* pNewEntity, Core::TreeNode<Entity*>& parent)
+	const SceneTree* Level::GetConstSceneTree() const
 	{
-		m_entities.push_back(pNewEntity);
-		Core::TreeNode<Entity*>* pNewNode = parent.AddChildren(pNewEntity);
-		return *pNewNode;
+		return m_pSceneTree;
 	}
 
-	void Level::DeleteEntity(Core::TreeNode<Entity*>& node)
+	SceneTree* Level::GetSceneTree()
 	{
-		Entity* pEntity = node.GetContent();
-
-		std::vector<Entity*>::const_iterator it = std::find(m_entities.cbegin(), m_entities.cend(), pEntity);
-		if (it == m_entities.cend())
-			return;
-
-		m_entities.erase(it);
-		node.GetParent()->DeleteChild(pEntity);
-
-		delete pEntity;
+		return m_pSceneTree;
 	}
 
+	//Core::TreeNode<Entity*>& Level::AddEntity(Entity* pNewEntity, Core::TreeNode<Entity*>& parent)
+	//{
+	//	m_entities.push_back(pNewEntity);
+	//	Core::TreeNode<Entity*>* pNewNode = parent.AddChildren(pNewEntity);
+	//	return *pNewNode;
+	//}
 
-	Core::TreeNode<Entity*>& Level::GetRoot()
-	{
-		return *m_sceneTree.GetRoot();
-	}
+	//void Level::DeleteEntity(Core::TreeNode<Entity*>& node)
+	//{
+	//	Entity* pEntity = node.GetContent();
+
+	//	std::vector<Entity*>::const_iterator it = std::find(m_entities.cbegin(), m_entities.cend(), pEntity);
+	//	if (it == m_entities.cend())
+	//		return;
+
+	//	m_entities.erase(it);
+	//	node.GetParent()->DeleteChild(pEntity);
+
+	//	delete pEntity;
+	//}
+
+
+	//Core::TreeNode<Entity*>& Level::GetRoot()
+	//{
+	//	return *m_sceneTree.GetRoot();
+	//}
 }

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Editors/LevelEditor/SceneTree/Node.h"
+
 #include <map>
 #include <string>
 
@@ -11,11 +13,14 @@ namespace Editors
 {
 	class Component;
 
-	class Entity
+	class Entity : public Node
 	{
 	public:
 		Entity(const std::string& name);
 		~Entity();
+
+		Entity* ToEntity() override;
+		const Entity* ToConstEntity() const override;
 
 		void AddComponent(Component* component);
 

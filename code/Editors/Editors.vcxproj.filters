@@ -36,7 +36,7 @@
     <ClInclude Include="Property.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\Entity.h">
+    <ClInclude Include="LevelEditor\SceneTree\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\Level.h">
@@ -84,6 +84,12 @@
     <ClInclude Include="LevelEditor\GizmoWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelEditor\SceneTree\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelEditor\SceneTree\SceneTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -110,7 +116,7 @@
     <ClCompile Include="LevelEditor\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\Entity.cpp">
+    <ClCompile Include="LevelEditor\SceneTree\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp">
@@ -150,6 +156,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\GizmoWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\SceneTree\Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

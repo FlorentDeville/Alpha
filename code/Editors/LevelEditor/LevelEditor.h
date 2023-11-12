@@ -35,6 +35,7 @@ namespace Editors
 	class EntityWidget;
 	class GizmoWidget;
 	class LevelTreeModel;
+	class Node;
 	class TreeWidget;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
@@ -93,6 +94,6 @@ namespace Editors
 		bool OnRemoveEntityClicked();
 
 		void AddNewEntity(const std::string& name);
-		void DeleteEntity(Core::TreeNode<Entity*>* pNode);
+		void DeleteEntity(Node* pNode);
 	};
 }

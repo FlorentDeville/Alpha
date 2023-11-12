@@ -2,14 +2,15 @@
 /* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/Entity.h"
+#include "Editors/LevelEditor/SceneTree/Entity.h"
 
 #include "Editors/LevelEditor/Component.h"
 
 namespace Editors
 {
 	Entity::Entity(const std::string& name)
-		: m_components()
+		: Node()
+		, m_components()
 		, m_name(name)
 	{}
 
@@ -19,6 +20,16 @@ namespace Editors
 			delete pair.second;
 
 		m_components.clear();
+	}
+
+	Entity* Entity::ToEntity()
+	{
+		return this;
+	}
+
+	const Entity* Entity::ToConstEntity() const
+	{
+		return this;
 	}
 
 	void Entity::AddComponent(Component* pComponent)

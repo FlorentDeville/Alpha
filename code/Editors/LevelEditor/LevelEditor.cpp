@@ -8,8 +8,9 @@
 #include "Core/Tree/Tree.h"
 
 #include "Editors/LevelEditor/Component.h"
-#include "Editors/LevelEditor/Entity.h"
 #include "Editors/LevelEditor/GizmoWidget.h"
+#include "Editors/LevelEditor/SceneTree/Entity.h"
+#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
@@ -47,12 +48,15 @@ using namespace DirectX;
 
 namespace Editors
 {
-	void RenderTreeNodeRecursive(const Core::TreeNode<Entity*>* pNode, const DirectX::XMMATRIX& parentWVP, const std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, 
+	void RenderTreeNodeRecursive(const Node* pNode, const DirectX::XMMATRIX& parentWVP, const std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, 
 		const std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
 	{
 		DirectX::XMMATRIX currentWVP = parentWVP;
 
-		const Entity* pEntity = pNode->GetContent();
+		const Entity* pEntity = pNode->ToConstEntity();
+		if (!pEntity)
+			return;
+
 		const Component* pTransformComponent = pEntity->GetComponent("Transform");
 		if (pTransformComponent)
 		{
@@ -93,8 +97,8 @@ namespace Editors
 		}
 
 		//recursive call to children
-		const std::vector<Core::TreeNode<Entity*>*>& children = pNode->GetChildren();
-		for (const Core::TreeNode<Entity*>* pChild : children)
+		const std::vector<Node*>& children = pNode->GetConstChildren();
+		for (const Node* pChild : children)
 		{
 			RenderTreeNodeRecursive(pChild, currentWVP, assetIdToMeshId, assetIdToMaterialId);
 		}
@@ -181,9 +185,9 @@ namespace Editors
 		}
 
 		//create a base plan with a scale as a root
-		Core::TreeNode<Entity*>& root = level.GetRoot();
+		SceneTree* pSceneTree = level.GetSceneTree();
 		Entity* pRootEntity = new Entity("/");
-		root.SetContent(pRootEntity);
+		pSceneTree->AddNode(pRootEntity, Os::Guid());
 
 		Entity* pPlan = new Entity("plan");
 		Component* pPlanTransform = CreateComponentTransform();
@@ -200,15 +204,15 @@ namespace Editors
 		pPlan->AddComponent(pPlanTransform);
 		pPlan->AddComponent(pPlanRendering);
 
-		Core::TreeNode<Entity*>& planNode = level.AddEntity(pPlan, root);
+		pSceneTree->AddNode(pPlan, pRootEntity->GetConstGuid());
 
 		{
 			Entity* pCube = new Entity("dummy1");
-			level.AddEntity(pCube, planNode);
+			pSceneTree->AddNode(pCube, pPlan->GetConstGuid());
 		}
 		{
 			Entity* pCube = new Entity("dummy2");
-			level.AddEntity(pCube, planNode);
+			pSceneTree->AddNode(pCube, pPlan->GetConstGuid());
 		}
 
 		//first child is a cube
@@ -222,7 +226,7 @@ namespace Editors
 
 		pCube->AddComponent(pCubeTransform);
 		pCube->AddComponent(pCubeRendering);
-		level.AddEntity(pCube, root);
+		pSceneTree->AddNode(pCube, pRootEntity->GetConstGuid());
 
 		//second child, the torus
 		Entity* pTorus = new Entity("torus");
@@ -235,7 +239,7 @@ namespace Editors
 
 		pTorus->AddComponent(pTorusTransform);
 		pTorus->AddComponent(pTorusRendering);
-		level.AddEntity(pTorus, root);
+		pSceneTree->AddNode(pTorus, pRootEntity->GetConstGuid());
 	}
 
 	LevelEditor::LevelEditor()
@@ -474,12 +478,12 @@ namespace Editors
 		pCamera->SetProjection(fovRad, m_aspectRatio, nearDistance, farDistance);
 
 		//loop through the tree
-		const Core::TreeNode<Entity*>& root = m_level.GetRoot();
+		const Node* pRoot = m_level.GetConstSceneTree()->GetConstRoot();
 
 		DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
 
-		const std::vector<Core::TreeNode<Entity*>*>& children = root.GetChildren();
-		for (const Core::TreeNode<Entity*>* pNode : children)
+		const std::vector<Node*>& children = pRoot->GetConstChildren();
+		for (const Node* pNode : children)
 		{
 			RenderTreeNodeRecursive(pNode, currentWVP, m_assetIdToMeshId, m_assetIdToMaterialId);
 		}
@@ -510,8 +514,8 @@ namespace Editors
 	bool LevelEditor::OnTreeItemClicked(BaseModel* pModel, int rowId)
 	{
 		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
-		Core::TreeNode<Entity*>* pNode = pLevelTreeModel->GetSource();
-		Entity* pEntity = pNode->GetContent();
+		Node* pNode = pLevelTreeModel->GetSource();
+		Entity* pEntity = pNode->ToEntity();
 
 		delete m_pEntityModel;
 		m_pEntityModel = new EntityModel(pEntity);
@@ -572,7 +576,7 @@ namespace Editors
 		pSeparator->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1));
 		pLayout->AddWidget(pSeparator);
 
-		m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
+		m_pLevelTreeModel = new LevelTreeModel(m_level.GetSceneTree()->GetRoot());
 		m_pTreeWidget = new TreeWidget();
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 
@@ -626,7 +630,7 @@ namespace Editors
 				AddNewEntity(text);
 
 				delete m_pLevelTreeModel;
-				m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
+				m_pLevelTreeModel = new LevelTreeModel(m_level.GetSceneTree()->GetRoot());
 				m_pTreeWidget->SetModel(m_pLevelTreeModel);
 				Widgets::WidgetMgr::Get().CloseModalWindow();
 				return true;
@@ -656,11 +660,11 @@ namespace Editors
 			return false;
 
 		LevelTreeModel* pTreeModel = static_cast<LevelTreeModel*>(pBaseModel);
-		Core::TreeNode<Entity*>* pNode = pTreeModel->GetSource();
+		Node* pNode = pTreeModel->GetSource();
 		if (!pNode)
 			return false;
 
-		const Entity* pSelectedEntity = pNode->GetContent();
+		const Entity* pSelectedEntity = pNode->ToConstEntity();
 		if (!pSelectedEntity)
 			return false;
 
@@ -687,7 +691,7 @@ namespace Editors
 			{
 				DeleteEntity(pNode);
 				delete m_pLevelTreeModel;
-				m_pLevelTreeModel = new LevelTreeModel(&m_level.GetRoot());
+				m_pLevelTreeModel = new LevelTreeModel(m_level.GetSceneTree()->GetRoot());
 				m_pTreeWidget->SetModel(m_pLevelTreeModel);
 				Widgets::WidgetMgr::Get().CloseModalWindow();
 				return true;
@@ -710,7 +714,9 @@ namespace Editors
 
 	void LevelEditor::AddNewEntity(const std::string& name)
 	{
-		Core::TreeNode<Entity*>& parent = m_level.GetRoot();
+		SceneTree* pSceneTree = m_level.GetSceneTree();
+
+		Node* pParent = pSceneTree->GetRoot();
 
 		std::string entityName = "DEFAULT";
 		if (!name.empty())
@@ -730,14 +736,11 @@ namespace Editors
 		pPlan->AddComponent(pPlanTransform);
 		pPlan->AddComponent(pPlanRendering);
 
-		Core::TreeNode<Entity*>& planNode = m_level.AddEntity(pPlan, parent);
+		pSceneTree->AddNode(pPlan, pParent->GetConstGuid());
 	}
 
-	void LevelEditor::DeleteEntity(Core::TreeNode<Entity*>* pNode)
+	void LevelEditor::DeleteEntity(Node* pNode)
 	{
-		Core::TreeNode<Entity*>* pParent = pNode->GetParent();
-		assert(pParent);
-
-		m_level.DeleteEntity(*pNode);
+		m_level.GetSceneTree()->DeleteNode(pNode->GetConstGuid());
 	}
 }
