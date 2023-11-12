@@ -17,6 +17,7 @@
 
 #include "Inputs/InputMgr.h"
 
+#include "Rendering/Camera.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
@@ -38,17 +39,17 @@
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 
-#pragma optimize("", off)
+//#pragma optimize("", off)
 
 //needed for the operator* between vectors and floats.
 using namespace DirectX;
 
 namespace Editors
 {
-	void RenderTreeNodeRecursive(const Core::TreeNode<Entity*>* pNode, const DirectX::XMMATRIX& parent, const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& proj,
-		const std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, const std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
+	void RenderTreeNodeRecursive(const Core::TreeNode<Entity*>* pNode, const DirectX::XMMATRIX& parentWVP, const std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, 
+		const std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
 	{
-		DirectX::XMMATRIX world = parent;
+		DirectX::XMMATRIX currentWVP = parentWVP;
 
 		const Entity* pEntity = pNode->GetContent();
 		const Component* pTransformComponent = pEntity->GetComponent("Transform");
@@ -64,7 +65,7 @@ namespace Editors
 				local.GetT().GetX(), local.GetT().GetY(), local.GetT().GetZ(), local.GetT().GetW()
 			);
 
-			world = dxLocal * world;
+			currentWVP = dxLocal * currentWVP;
 		}
 
 		const Component* pRenderingComponent = pEntity->GetComponent("Rendering");
@@ -80,13 +81,10 @@ namespace Editors
 				Rendering::MeshId meshId = assetIdToMeshId.find(meshAssetId)->second;
 				Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
 
-				DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
-				mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, proj);
-
 				Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 				const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
-				renderer.BindMaterial(*pMaterial, mvpMatrix);
+				renderer.BindMaterial(*pMaterial, currentWVP);
 
 				const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(meshId);
 				renderer.RenderMesh(*pMesh);
@@ -97,7 +95,7 @@ namespace Editors
 		const std::vector<Core::TreeNode<Entity*>*>& children = pNode->GetChildren();
 		for (const Core::TreeNode<Entity*>* pChild : children)
 		{
-			RenderTreeNodeRecursive(pChild, world, view, proj, assetIdToMeshId, assetIdToMaterialId);
+			RenderTreeNodeRecursive(pChild, currentWVP, assetIdToMeshId, assetIdToMaterialId);
 		}
 	}
 
@@ -458,34 +456,28 @@ namespace Editors
 	{
 		m_pRenderTarget->BeginScene();
 
-		//view
-		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
+		Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetCamera();
 
+		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
 		DirectX::XMVECTOR targetOffset = DirectX::XMVectorSet(0, 0, 1, 1);
 		DirectX::XMVECTOR cameraLookAt = DirectX::XMVector4Transform(targetOffset, m_cameraTransform);
-
 		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
-
-		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
-		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
-
-		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
-
-		//projection
-		const float fov = 45.f;
-		float nearDistance = 0.1f;
-		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 1000.0f);
+		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
+			
+		float fovRad = DirectX::XMConvertToRadians(45.f);
+		const float nearDistance = 0.1f;
+		const float farDistance = 1000.f;
+		pCamera->SetProjection(fovRad, m_aspectRatio, nearDistance, farDistance);
 
 		//loop through the tree
 		const Core::TreeNode<Entity*>& root = m_level.GetRoot();
 
-		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+		DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
 
 		const std::vector<Core::TreeNode<Entity*>*>& children = root.GetChildren();
 		for (const Core::TreeNode<Entity*>* pNode : children)
 		{
-			RenderTreeNodeRecursive(pNode, world, view, projection, m_assetIdToMeshId, m_assetIdToMaterialId);
+			RenderTreeNodeRecursive(pNode, currentWVP, m_assetIdToMeshId, m_assetIdToMaterialId);
 		}
 		
 		m_pRenderTarget->EndScene();

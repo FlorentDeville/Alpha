@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CommandQueue.h" />
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="Font\Font.h" />
@@ -39,6 +40,7 @@
     <ClInclude Include="Texture\TextureMgr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="Font\Font.cpp" />

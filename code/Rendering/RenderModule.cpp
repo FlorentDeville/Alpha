@@ -14,6 +14,7 @@
 #include "CommandQueue.h"
 #include "Core/Helper.h"
 
+#include "Rendering/Camera.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Material/Material.h"
@@ -54,6 +55,7 @@ namespace Rendering
 		, m_pDebugInterface(nullptr)
 #endif
 		, m_pRenderCommandList(nullptr)
+		, m_pCamera(nullptr)
 	{
 		m_clearColor[0] = 0.4f;
 		m_clearColor[1] = 0.6f;
@@ -106,6 +108,8 @@ namespace Rendering
 
 		//Render target for the game
 		m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
+
+		m_pCamera = new Camera();
 	}
 
 	void RenderModule::Release()
@@ -135,7 +139,7 @@ namespace Rendering
 
 		delete m_pRenderCommandQueue;
 		delete m_pCopyCommandQueue;
-
+		delete m_pCamera;
 
 #if defined(_DEBUG)
 		m_pDebugInterface->Release();
@@ -343,6 +347,16 @@ namespace Rendering
 	const DirectX::XMUINT2& RenderModule::GetGameResolution() const
 	{
 		return m_gameResolution;
+	}
+
+	Camera* RenderModule::GetCamera()
+	{
+		return m_pCamera;
+	}
+
+	const Camera* RenderModule::GetConstCamera() const
+	{
+		return m_pCamera;
 	}
 
 	void RenderModule::InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount)

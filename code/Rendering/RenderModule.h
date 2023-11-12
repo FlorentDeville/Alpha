@@ -35,6 +35,7 @@ class CommandQueue;
 
 namespace Rendering
 {
+	class Camera;
 	class Material;
 	class Mesh;
 	class RenderTarget;
@@ -63,6 +64,9 @@ namespace Rendering
 
 		int GetNumFrames() const;
 		const DirectX::XMUINT2& GetGameResolution() const;
+
+		Camera* GetCamera();
+		const Camera* GetConstCamera() const;
 
 		void InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
 
@@ -128,6 +132,8 @@ namespace Rendering
 		std::map<Rendering::FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 
 		float m_clearColor[4];
+
+		Camera* m_pCamera;
 
 	public:
 		UINT m_currentBackBufferIndex;
