@@ -31,6 +31,39 @@ namespace Os
 		return !(*this == other);
 	}
 
+	bool Guid::operator<(const Guid& other) const
+	{
+		if (m_data1 < other.m_data1)
+			return true;
+		else if (m_data1 > other.m_data2)
+			return false;
+
+		if (m_data2 < other.m_data2)
+			return true;
+		else if (m_data2 > other.m_data2)
+			return false;
+
+		if (m_data3 < other.m_data3)
+			return true;
+		else if (m_data3 > other.m_data3)
+			return false;
+
+		if (m_data4 < other.m_data4)
+			return true;
+		else if (m_data4 > other.m_data4)
+			return false;
+
+		return false;
+	}
+
+	bool Guid::IsValid() const
+	{
+		if (m_data1 != 0 || m_data2 != 0 || m_data3 != 0 || m_data4 != 0)
+			return true;
+
+		return false;
+	}
+
 	Guid Guid::GenerateNewGuid()
 	{
 		Guid guid;

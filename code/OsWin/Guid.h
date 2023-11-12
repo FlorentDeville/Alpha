@@ -16,6 +16,10 @@ namespace Os
 
 		bool operator==(const Guid& other) const;
 		bool operator!=(const Guid& other) const;
+		
+		bool operator<(const Guid& other) const;
+
+		bool IsValid() const;
 
 		static Guid GenerateNewGuid();
 
