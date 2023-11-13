@@ -17,6 +17,9 @@ namespace Editors
 		: BaseModel()
 		, m_pEntity(pEntity)
 	{
+		if (!pEntity)
+			return;
+
 		int count = m_pEntity->GetComponentCount();
 		m_subModels.reserve(count);
 		for (int ii = 0; ii < count; ++ii)
@@ -37,6 +40,9 @@ namespace Editors
 
 	int EntityModel::GetRowCount() const
 	{
+		if (!m_pEntity)
+			return 0;
+
 		return m_pEntity->GetComponentCount();
 	}
 
@@ -47,6 +53,9 @@ namespace Editors
 
 	const std::string& EntityModel::GetData(int rowId, int columnId) const
 	{
+		if (!m_pEntity)
+			return s_default;
+
 		assert(columnId == 0);
 	
 		const Component* pComponent = m_pEntity->GetComponent(rowId);
@@ -57,6 +66,9 @@ namespace Editors
 
 	BaseModel* EntityModel::GetSubModel(int rowId, int columnId)
 	{
+		if (!m_pEntity)
+			return nullptr;
+
 		assert(columnId == 1);
 		return m_subModels[rowId];
 	}
