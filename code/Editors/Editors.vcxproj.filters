@@ -91,6 +91,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\LevelEditorViewportWidget.h">
+	  <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelEditor\LevelEditorTab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -168,6 +171,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\LevelEditorViewportWidget.cpp">
+	  <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\LevelEditorTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
