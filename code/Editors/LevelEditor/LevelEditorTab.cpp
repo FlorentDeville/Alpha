@@ -41,8 +41,6 @@ namespace Editors
 		//create the render target
 		int width = 1280;
 		int height = 720;
-		m_aspectRatio = width / static_cast<float>(height);
-		m_pRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
 
 		//create the split between viewport and right panel
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();

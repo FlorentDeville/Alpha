@@ -32,9 +32,6 @@ namespace Editors
 		virtual ~LevelEditorTab();
 
 	private:
-		Rendering::RenderTarget* m_pRenderTarget;
-		float m_aspectRatio;
-
 		bool m_enableViewportControl;
 
 		Widgets::Label* m_pEntityNameLabel;

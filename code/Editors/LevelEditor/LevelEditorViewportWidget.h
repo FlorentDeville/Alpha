@@ -10,6 +10,8 @@
 
 namespace Editors
 {
+	class GizmoWidget;
+
 	class LevelEditorViewportWidget : public Widgets::Viewport_v2
 	{
 	public:
@@ -22,6 +24,7 @@ namespace Editors
 		void SetEnableViewportControl(bool enable);
 
 	private:
+		GizmoWidget* m_pGizmoWidget;
 
 		//camera transform
 		DirectX::XMMATRIX m_cameraRotation;		//matrix for the orientation of the camera (same as m_cameraEulerAngle)

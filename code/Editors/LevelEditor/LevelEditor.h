@@ -54,7 +54,5 @@ namespace Editors
 
 	private:
 		Level m_level;
-
-		GizmoWidget* m_pGizmoWidget;
 	};
 }

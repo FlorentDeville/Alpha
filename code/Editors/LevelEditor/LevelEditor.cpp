@@ -5,7 +5,6 @@
 #include "Editors/LevelEditor/LevelEditor.h"
 
 #include "Editors/LevelEditor/Component.h"
-#include "Editors/LevelEditor/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditorTab.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
@@ -161,9 +160,7 @@ namespace Editors
 
 	LevelEditor::LevelEditor()
 		: m_level()
-	{
-		m_pGizmoWidget = new GizmoWidget();
-	}
+	{}
 
 	LevelEditor::~LevelEditor()
 	{}

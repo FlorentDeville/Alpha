@@ -7,6 +7,7 @@
 #include "Core/Math/Mat44f.h"
 
 #include "Editors/LevelEditor/Component.h"
+#include "Editors/LevelEditor/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
@@ -96,6 +97,8 @@ namespace Editors
 
 		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
 		m_cameraTransform = m_cameraRotation * translationMatrix;
+
+		m_pGizmoWidget = new GizmoWidget();
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -128,6 +131,8 @@ namespace Editors
 		{
 			RenderTreeNodeRecursive(pNode, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
 		}
+
+		m_pGizmoWidget->Render();
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
