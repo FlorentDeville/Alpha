@@ -90,6 +90,9 @@
     <ClInclude Include="LevelEditor\SceneTree\SceneTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelEditor\LevelEditorViewportWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -162,6 +165,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\LevelEditorViewportWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

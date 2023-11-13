@@ -49,25 +49,14 @@ namespace Editors
 		void Update();
 		void Render();
 
+		const Level& GetConstLevel() const;
+		Level& GetLevel();
+
+		//temp
+		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
+		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
+
 	private:
-		Rendering::RenderTarget* m_pRenderTarget;
-		float m_aspectRatio;
-
-		char m_padding[4];
-
-		//mouse controls
-		DirectX::XMUINT2 m_mousePreviousPos;	
-		bool m_firstFrameMouseDown;
-		bool m_enableViewportControl;
-
-		char m_padding2[14];
-
-		//camera transform
-		DirectX::XMMATRIX m_cameraRotation;		//matrix for the orientation of the camera (same as m_cameraEulerAngle)
-		DirectX::XMVECTOR m_cameraEulerAngle;	//euler angle of the camera (sme as m_cameraRotation)
-		DirectX::XMVECTOR m_cameraPosition;		//position of the camera in world space
-		DirectX::XMMATRIX m_cameraTransform;	//transform of the camera in world space
-
 		Level m_level;
 
 		//entity viewer
@@ -78,13 +67,8 @@ namespace Editors
 
 		Widgets::Label* m_pEntityNameLabel;
 
-		bool m_isPanning; //when the user is panning the camera
 
 		GizmoWidget* m_pGizmoWidget;
-
-		//temp
-		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
-		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
 
 		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
