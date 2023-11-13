@@ -40,6 +40,9 @@ namespace Widgets
 		SysWindow* m_pMainWindow;
 	};
 
+	//Manager for all the widgets.
+	//The order of execution in each frame is HandleMsg, Update and finally Render.
+	//HandleMsg converts inputs to widgets callbacks (onclick, onmove, etc).
 	class WidgetMgr : public Core::Singleton<WidgetMgr>
 	{
 		friend class Widgets::Button;
@@ -71,6 +74,7 @@ namespace Widgets
 
 		void Resize();
 
+		//Handle messages coming from windows
 		void HandleMsg(const Message& msg);
 
 		Rendering::FontId GetUIFontId() const;
