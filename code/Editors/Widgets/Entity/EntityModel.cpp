@@ -5,7 +5,7 @@
 #include "Editors/Widgets/Entity/EntityModel.h"
 
 #include "Editors/LevelEditor/Component.h"
-#include "Editors/LevelEditor/Entity.h"
+#include "Editors/LevelEditor/SceneTree/Entity.h"
 
 #include "Editors/Widgets/Component/ComponentModel.h"
 
