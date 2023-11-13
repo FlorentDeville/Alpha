@@ -428,4 +428,6 @@ namespace Widgets
 		wvp = DirectX::XMMatrixMultiply(wvp, projection);
 	}
 
+	void Widget::Internal_Render()
+	{}
 }

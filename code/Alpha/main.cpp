@@ -329,6 +329,7 @@ void Update()
 void Render()
 {
 	Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+	Widgets::WidgetMgr& widgetsModule = Widgets::WidgetMgr::Get();
 
 	renderModule.PreRender();
 
@@ -344,11 +345,13 @@ void Render()
 	Editors::MeshEditor::Get().Render();
 	Editors::ShaderEditor::Get().Render();
 
+	widgetsModule.Render(); //render all the viewports
+
 	//So far everything was rendered onto target texture, now render to the frame buffer
 	renderModule.BeginMainScene();
 	
 	// Render the widgets
-	Widgets::WidgetMgr::Get().Draw();
+	widgetsModule.Draw();
 
 	renderModule.RenderAllText();
 	renderModule.EndMainScene();

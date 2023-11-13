@@ -84,6 +84,9 @@
     <ClInclude Include="ModalWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Viewport_v2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModalWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport_v2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

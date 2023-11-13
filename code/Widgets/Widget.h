@@ -170,6 +170,10 @@ namespace Widgets
 		std::string m_name;
 
 		void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;
+
+	private:
+		virtual void Internal_Render(); //only used by widgets rendering 3d like a viewport
+
 	};
 
 }

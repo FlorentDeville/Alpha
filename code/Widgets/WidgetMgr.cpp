@@ -177,6 +177,12 @@ namespace Widgets
 			pWidget->Update(dt);
 	}
 
+	void WidgetMgr::Render()
+	{
+		for (Widget* pWidget : m_widgets)
+			pWidget->Internal_Render();
+	}
+
 	void WidgetMgr::Draw()
 	{
 		if (m_pRoot && m_pRoot->IsEnabled())

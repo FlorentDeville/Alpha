@@ -29,6 +29,7 @@ namespace Widgets
 	class Split;
 	class TextBox;
 	class Viewport;
+	class Viewport_v2;
 	class Widget;
 
 	class WidgetMgrParameter
@@ -52,6 +53,7 @@ namespace Widgets
 		friend class Widgets::Split;
 		friend class Widgets::TextBox;
 		friend class Widgets::Viewport;
+		friend class Widgets::Viewport_v2;
 		friend class Widgets::Widget;
 
 	public:
@@ -69,6 +71,8 @@ namespace Widgets
 		void SetRoot(Widget* pRoot);
 
 		void Update(uint64_t dt);
+
+		void Render();
 
 		void Draw();
 
