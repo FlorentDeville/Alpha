@@ -14,6 +14,7 @@
 #include "CommandQueue.h"
 #include "Core/Helper.h"
 
+#include "Rendering/BaseShape.h"
 #include "Rendering/Camera.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
@@ -110,6 +111,16 @@ namespace Rendering
 		m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
 
 		m_pCamera = new Camera();
+
+		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+
+		Rendering::MeshId circleMeshId;
+		meshMgr.CreateMesh(&m_pCircleMesh, circleMeshId);
+		BaseShape::CreateCircle(m_pCircleMesh, 40);
+
+		Rendering::MeshId cylinderMeshId;
+		meshMgr.CreateMesh(&m_pCylinderMesh, cylinderMeshId);
+		BaseShape::CreateCylinder(m_pCylinderMesh, 1, 1, 40);
 	}
 
 	void RenderModule::Release()
@@ -259,6 +270,23 @@ namespace Rendering
 		m_pRenderCommandList->IASetVertexBuffers(0, 1, &m_pCircleMesh->GetVertexBufferView());
 
 		m_pRenderCommandList->DrawInstanced(m_pCircleMesh->GetVerticesCount(), 1, 0, 0);
+	}
+
+	void RenderModule::RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	{
+		m_pRenderCommandList->SetPipelineState(m_pVertexColorMaterial->m_pPipelineState->GetPipelineState());
+		m_pRenderCommandList->SetGraphicsRootSignature(m_pVertexColorMaterial->m_pRootSignature->GetRootSignature());
+
+		DirectX::XMMATRIX wvp = world * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+		//m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
+
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		m_pRenderCommandList->IASetVertexBuffers(0, 1, &m_pCylinderMesh->GetVertexBufferView());
+		m_pRenderCommandList->IASetIndexBuffer(&m_pCylinderMesh->GetIndexBufferView());
+
+		m_pRenderCommandList->DrawIndexedInstanced(m_pCylinderMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
 
 	void RenderModule::ExecuteRenderCommand()

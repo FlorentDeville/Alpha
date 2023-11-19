@@ -4,23 +4,14 @@
 
 #pragma once
 
-#include <DirectXMath.h>
-
-namespace Editors
+namespace Rendering
 {
-	class GizmoWidget
+	class Mesh;
+
+	class BaseShape
 	{
 	public:
-		GizmoWidget();
-		~GizmoWidget();
-
-		void Update();
-		void Render();
-
-	private:
-		void RenderRotationManipulator();
-		void RenderTranslationManipulator();
-
-		DirectX::XMMATRIX m_txWs;
+		static void CreateCircle(Rendering::Mesh* pMesh, int resolution);
+		static void CreateCylinder(Rendering::Mesh* pMesh, float height, float diameter, int tessellation);
 	};
 }

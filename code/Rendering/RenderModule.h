@@ -59,6 +59,7 @@ namespace Rendering
 		void RenderMesh(const Rendering::Mesh& mesh);
 
 		void RenderPrimitiveCircle(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
+		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 
 		void ExecuteRenderCommand();
 
@@ -141,8 +142,11 @@ namespace Rendering
 		UINT m_currentBackBufferIndex;
 		Rendering::RenderTarget* m_gameRenderTarget;
 
+		Rendering::Mesh* m_pCylinderMesh;
 		Rendering::Mesh* m_pCircleMesh;
+
 		Rendering::Material* m_pCircleMaterial;
+		Rendering::Material* m_pVertexColorMaterial;
 
 		Rendering::Mesh* m_pBaseQuadMesh;
 

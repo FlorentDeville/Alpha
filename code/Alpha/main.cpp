@@ -367,6 +367,7 @@ bool LoadContent()
 	const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
 	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+	Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 	//create the base material
 	Rendering::MaterialId baseMaterialId;
@@ -375,6 +376,7 @@ bool LoadContent()
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
 		const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(6));//vertex_color
 		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
+		renderingMgr.m_pVertexColorMaterial = pMaterial;
 	}
 
 	//create the texture material
@@ -425,30 +427,6 @@ bool LoadContent()
 		pMaterial->Init(rsId, pid);
 
 		Rendering::RenderModule::Get().m_pCircleMaterial = pMaterial;
-	}
-
-	//basic shape circle
-	{
-		Rendering::Mesh* pCircleMesh = nullptr;
-		Rendering::MeshId circleMeshId;
-		meshMgr.CreateMesh(&pCircleMesh, circleMeshId);
-
-		const int CIRCLE_RESOLUTION = 40; //number of vertices
-		const int VERTEX_COUNT = CIRCLE_RESOLUTION + 1;
-		const float THETA = 2 * 3.14f / CIRCLE_RESOLUTION;
-		Rendering::VertexPosColor vertices[VERTEX_COUNT];
-		for (int ii = 0; ii < VERTEX_COUNT; ++ii)
-		{
-			float currentTheta = ii * THETA;
-			float x = std::cos(currentTheta);
-			float z = std::sin(currentTheta);
-
-			vertices[ii].Position = DirectX::XMFLOAT3(x, 0, z);
-			vertices[ii].Color = DirectX::XMFLOAT3(1, 0, 0);
-		}
-
-		pCircleMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, nullptr, 0);
-		Rendering::RenderModule::Get().m_pCircleMesh = pCircleMesh;
 	}
 
 	//basic shape quad
