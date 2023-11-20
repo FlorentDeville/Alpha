@@ -60,6 +60,7 @@ namespace Editors
 
 		//x axis
 		{
+			//DirectX::XMMATRIX scale = DirectX::XMMatrixIdentity();
 			DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(0.05f, 2, 0.05f);
 			renderingMgr.RenderPrimitiveCylinder(scale, DirectX::XMFLOAT4(1, 0, 0, 0));
 		}

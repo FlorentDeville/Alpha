@@ -7,6 +7,7 @@
 #include "Rendering/Mesh/Mesh.h"
 
 #include <cmath>
+#include <vector>
 
 namespace Rendering
 {
@@ -20,6 +21,52 @@ namespace Rendering
 
         const DirectX::XMVECTORF32 v = { { { dx, 0, dz, 0 } } };
         return v;
+    }
+
+    // Helper creates a triangle fan to close the end of a cylinder / cone
+    void CreateCylinderCap(std::vector<Rendering::VertexPosColor>& vertices, std::vector<uint16_t>& indices, size_t tessellation, float height, float radius, bool isTop)
+    {
+        // Create cap indices.
+        for (uint16_t i = 0; i < tessellation - 2; i++)
+        {
+            uint16_t i1 = (i + 1) % tessellation;
+            uint16_t i2 = (i + 2) % tessellation;
+
+            if (isTop)
+            {
+                std::swap(i1, i2);
+            }
+
+            const uint16_t vbase = static_cast<uint16_t>(vertices.size());
+            indices.push_back(vbase);
+            indices.push_back(vbase + i2);
+            indices.push_back(vbase + i1);
+        }
+
+        // Which end of the cylinder is this?
+        DirectX::XMVECTOR normal = DirectX::g_XMIdentityR1;
+        DirectX::XMVECTOR textureScale = DirectX::g_XMNegativeOneHalf;
+
+        if (!isTop)
+        {
+            normal = DirectX::XMVectorNegate(normal);
+            textureScale = DirectX::XMVectorMultiply(textureScale, DirectX::g_XMNegateX);
+        }
+
+        // Create cap vertices.
+        for (size_t i = 0; i < tessellation; i++)
+        {
+            const DirectX::XMVECTOR circleVector = GetCircleVector(i, tessellation);
+
+            const DirectX::XMVECTOR position = DirectX::XMVectorAdd(DirectX::XMVectorScale(circleVector, radius), DirectX::XMVectorScale(normal, height));
+
+            const DirectX::XMVECTOR textureCoordinate = DirectX::XMVectorMultiplyAdd(DirectX::XMVectorSwizzle<0, 2, 3, 3>(circleVector), textureScale, DirectX::g_XMOneHalf);
+
+            vertices.push_back(Rendering::VertexPosColor());
+            Rendering::VertexPosColor& vertex = vertices.back();
+            vertex.Position = DirectX::XMFLOAT3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
+            vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
+        }
     }
 
 	void BaseShape::CreateCircle(Rendering::Mesh* pMesh, int resolution)
@@ -47,13 +94,8 @@ namespace Rendering
         if (tessellation < 3)
             return;
 
-        int vertexCount = (tessellation + 1) * 2;
-        Rendering::VertexPosColor* pVertices = new Rendering::VertexPosColor[vertexCount];
-        int vertexSize = 0;
-
-        int indicesCount = (tessellation + 1) * 6;
-        uint16_t* pIndices = new uint16_t[indicesCount];
-        int indicesSize = 0;
+        std::vector<Rendering::VertexPosColor> vertices;
+        std::vector<uint16_t> indices;
 
         height /= 2;
 
@@ -73,40 +115,37 @@ namespace Rendering
 
             const DirectX::XMVECTOR textureCoordinate = DirectX::XMLoadFloat(&u);
 
-            DirectX::XMVECTOR pos = DirectX::XMVectorAdd(sideOffset, topOffset);
-            pVertices[vertexSize].Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
-            pVertices[vertexSize].Color = DirectX::XMFLOAT3(1, 0, 0);
-            ++vertexSize;
+            {
+                vertices.push_back(Rendering::VertexPosColor());
+                Rendering::VertexPosColor& vertex = vertices.back();
 
-            pos = DirectX::XMVectorSubtract(sideOffset, topOffset);
-            pVertices[vertexSize].Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
-            pVertices[vertexSize].Color = DirectX::XMFLOAT3(1, 0, 0);
-            ++vertexSize;
-            
-            pIndices[indicesSize++] = i * 2;
-            pIndices[indicesSize++] = i * 2 + 1;
-            pIndices[indicesSize++] = (i * 2 + 2) % (stride * 2);
+                DirectX::XMVECTOR pos = DirectX::XMVectorAdd(sideOffset, topOffset);
+                vertex.Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
+                vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
+            }
 
-            pIndices[indicesSize++] = i * 2 + 1;
-            pIndices[indicesSize++] = (i * 2 + 3) % (stride * 2);
-            pIndices[indicesSize++] = (i * 2 + 2) % (stride * 2);
+            {
+                vertices.push_back(Rendering::VertexPosColor());
+                Rendering::VertexPosColor& vertex = vertices.back();
 
-            //index_push_back(indices, i * 2);
-            //index_push_back(indices, (i * 2 + 2) % (stride * 2));
-            //index_push_back(indices, i * 2 + 1);
+                DirectX::XMVECTOR pos = DirectX::XMVectorSubtract(sideOffset, topOffset);
+                vertex.Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
+                vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
+            }
 
-            //index_push_back(indices, i * 2 + 1);
-            //index_push_back(indices, (i * 2 + 2) % (stride * 2));
-            //index_push_back(indices, (i * 2 + 3) % (stride * 2));
+            indices.push_back(i * 2);
+            indices.push_back(i * 2 + 1);
+            indices.push_back((i * 2 + 2) % (stride * 2));
+
+            indices.push_back(i * 2 + 1);
+            indices.push_back((i * 2 + 3) % (stride * 2));
+            indices.push_back((i * 2 + 2) % (stride * 2));
         }
 
         // Create flat triangle fan caps to seal the top and bottom.
-        //CreateCylinderCap(vertices, indices, tessellation, height, radius, true);
-        //CreateCylinderCap(vertices, indices, tessellation, height, radius, false);
+        CreateCylinderCap(vertices, indices, tessellation, height, radius, true);
+        CreateCylinderCap(vertices, indices, tessellation, height, radius, false);
 
-        pMesh->LoadVertexAndIndexBuffer(pVertices, vertexCount, pIndices, indicesCount);
-
-        delete[] pVertices;
-        delete[] pIndices;
+        pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
 	}
 }
