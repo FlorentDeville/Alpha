@@ -9,12 +9,25 @@
 #include <cmath>
 #include <vector>
 
+//#pragma optimize("", off)
+
 namespace Rendering
 {
     // Helper computes a point on a unit circle, aligned to the x/z plane and centered on the origin.
     DirectX::XMVECTOR GetCircleVector(size_t i, size_t tessellation) noexcept
     {
         const float angle = float(i) * DirectX::XM_2PI / float(tessellation);
+        float dx, dz;
+
+        DirectX::XMScalarSinCos(&dx, &dz, angle);
+
+        const DirectX::XMVECTORF32 v = { { { dx, 0, dz, 0 } } };
+        return v;
+    }
+
+    DirectX::XMVECTOR GetCircleTangent(size_t i, size_t tessellation) noexcept
+    {
+        const float angle = (float(i) * DirectX::XM_2PI / float(tessellation)) + DirectX::XM_PIDIV2;
         float dx, dz;
 
         DirectX::XMScalarSinCos(&dx, &dz, angle);
@@ -148,4 +161,55 @@ namespace Rendering
 
         pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
 	}
+
+    void BaseShape::CreateCone(Rendering::Mesh* pMesh, float diameter, float height, size_t tessellation)
+    {
+        std::vector<Rendering::VertexPosColor> vertices;
+        std::vector<uint16_t> indices;
+
+        height /= 2;
+
+        const DirectX::XMVECTOR topOffset = DirectX::XMVectorScale(DirectX::g_XMIdentityR1, height);
+
+        const float radius = diameter / 2;
+        const size_t stride = tessellation + 1;
+
+        // Create a ring of triangles around the outside of the cone.
+        for (uint16_t i = 0; i <= tessellation; i++)
+        {
+            const DirectX::XMVECTOR circlevec = GetCircleVector(i, tessellation);
+
+            const DirectX::XMVECTOR sideOffset = DirectX::XMVectorScale(circlevec, radius);
+
+            //const float u = float(i) / float(tessellation);
+
+            //const DirectX::XMVECTOR textureCoordinate = DirectX::XMLoadFloat(&u);
+
+            const DirectX::XMVECTOR pt = DirectX::XMVectorSubtract(sideOffset, topOffset);
+
+           /* DirectX::XMVECTOR normal = DirectX::XMVector3Cross(
+                GetCircleTangent(i, tessellation),
+                DirectX::XMVectorSubtract(topOffset, pt));
+            normal = DirectX::XMVector3Normalize(normal);*/
+
+            // Duplicate the top vertex for distinct normals
+            Rendering::VertexPosColor v1;
+            v1.Position = DirectX::XMFLOAT3(topOffset.m128_f32[0], topOffset.m128_f32[1], topOffset.m128_f32[2]);
+            vertices.push_back(v1);
+
+            Rendering::VertexPosColor v2;
+            v2.Position = DirectX::XMFLOAT3(pt.m128_f32[0], pt.m128_f32[1], pt.m128_f32[2]);
+            vertices.push_back(v2);
+
+            indices.push_back(i * 2);
+            indices.push_back((i * 2 + 1) % (stride * 2));
+            indices.push_back((i * 2 + 3) % (stride * 2));
+        }
+
+        // Create flat triangle fan caps to seal the bottom.
+        CreateCylinderCap(vertices, indices, tessellation, height, radius, false);
+
+        pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
+    }
+
 }
