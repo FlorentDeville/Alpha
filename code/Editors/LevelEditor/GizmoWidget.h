@@ -17,9 +17,13 @@ namespace Editors
 		void Update();
 		void Render();
 
+		void SetWs(const DirectX::XMMATRIX& txWs);
+
 	private:
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();
+
+		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color);
 
 		DirectX::XMMATRIX m_txWs;
 	};

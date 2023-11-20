@@ -99,6 +99,7 @@ namespace Editors
 		m_cameraTransform = m_cameraRotation * translationMatrix;
 
 		m_pGizmoWidget = new GizmoWidget();
+		m_pGizmoWidget->SetWs(DirectX::XMMatrixTranslation(0, 2, 0));
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
