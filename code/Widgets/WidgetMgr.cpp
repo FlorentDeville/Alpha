@@ -270,6 +270,8 @@ namespace Widgets
 		case M_MouseLUp:
 		case M_MouseMDown:
 		case M_MouseMUp:
+		case M_MouseRDown:
+		case M_MouseRUp:
 		{
 			bool setFocus = false;
 			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
@@ -305,6 +307,10 @@ namespace Widgets
 				m_pFocusedWidget->Handle(msg);
 		}
 		break;
+
+		default:
+			assert(false);
+			break;
 		}
 	}
 

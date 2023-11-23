@@ -40,7 +40,7 @@ namespace Inputs
 		void Init();
 		void Release();
 
-		void UpdateKeyboard(uint64_t virtualKey);
+		void UpdateKeyboardState(uint64_t virtualKey, bool down);
 		void UpdateMouseState(const MouseState& mouseState);
 
 		bool GetState(InputCommand command) const;
@@ -51,9 +51,11 @@ namespace Inputs
 		void Disable();
 
 		//use only in editor, not in game, game should use commands
+		const MouseState& GetMouseState() const;
 		bool IsKeyPressed(char key) const;
 		bool IsMouseLeftButtonDown() const;
 		bool IsMouseMiddleButtonDown() const;
+		bool IsMouseRightButtonDown() const;
 		void GetMousePosition(uint32_t& x, uint32_t& y) const;
 		int16_t GetMouseWheelDistance() const;
 

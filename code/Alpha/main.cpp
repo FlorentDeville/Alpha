@@ -62,6 +62,8 @@
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 
+//#pragma optimize("", off)
+
 SysWindow* g_pWindow = nullptr;
 
 LPCSTR g_pIconName = IDC_ARROW;
@@ -80,15 +82,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 
 	case WM_KEYDOWN:
-		{
-			//wParam is a virtual key code
-			Message msg;
-			msg.m_id = M_VirtualKeyDown;
-			msg.m_high = wParam; 
-			Widgets::WidgetMgr::Get().HandleMsg(msg);
-			Inputs::InputMgr::Get().UpdateKeyboard(wParam);
-		}
-		break;
+	{
+		//wParam is a virtual key code
+		Message msg;
+		msg.m_id = M_VirtualKeyDown;
+		msg.m_high = wParam; 
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+		Inputs::InputMgr::Get().UpdateKeyboardState(wParam, true);
+	}
+	break;
+
+	case WM_KEYUP:
+	{
+		//wParam is a virtual key code
+		Message msg;
+		msg.m_id = M_VirtualKeyUp;
+		msg.m_high = wParam;
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+		Inputs::InputMgr::Get().UpdateKeyboardState(wParam, false);
+	}
+	break;
 
 	case WM_DESTROY:
 		::PostQuitMessage(0);
@@ -124,57 +137,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Inputs::InputMgr::MouseState mouseState;
-
 		Message msg;
 		msg.m_id = M_MouseMove;
 		msg.m_low.m_pos[0] = x;
 		msg.m_low.m_pos[1] = y;
-
-		switch (wParam)
-		{
-			case MK_LBUTTON:
-				msg.m_high = M_LButton;
-				mouseState.m_mouseLeftButton = true;
-				break;
-
-			case MK_MBUTTON:
-				msg.m_high = M_MButton;
-				mouseState.m_mouseMiddleButton = true;
-				break;
-
-			default:
-				msg.m_high = M_None;
-				break;
-		}
-		
+	
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
-		
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
-		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
+		inputMgr.UpdateMouseState(mouseState);
 	}
 		break;
 
 	case WM_MOUSEWHEEL:
 	{
 		int16_t wheelDistance = GET_WHEEL_DELTA_WPARAM(wParam);
-		uint16_t keyState = GET_KEYSTATE_WPARAM(wParam);
-		uint16_t xPos = GET_X_LPARAM(lParam);
-		uint16_t yPos = GET_Y_LPARAM(lParam);
 
-		Inputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
+
 		mouseState.m_mouseWheel = wheelDistance;
-		mouseState.m_mouseX = xPos;
-		mouseState.m_mouseY = yPos;
-		if (keyState & MK_LBUTTON)
-			mouseState.m_mouseLeftButton = true;
-		if (keyState & MK_MBUTTON)
-			mouseState.m_mouseMiddleButton = true;
-		if (keyState & MK_RBUTTON)
-			mouseState.m_mouseRightButton = true;
-
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 
 	}
@@ -192,7 +177,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
-		Inputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
 		mouseState.m_mouseX = xPos;
 		mouseState.m_mouseY = yPos;
 		mouseState.m_mouseMiddleButton = true;
@@ -213,10 +199,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
-		Inputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
 		mouseState.m_mouseX = xPos;
 		mouseState.m_mouseY = yPos;
-
+		mouseState.m_mouseMiddleButton = false;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 	break;
@@ -236,7 +223,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 
-		Inputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
 		mouseState.m_mouseLeftButton = true;
@@ -258,12 +246,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
-		Inputs::InputMgr::MouseState mouseState;
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
+		mouseState.m_mouseLeftButton = false;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
 		break;
+
+	case WM_RBUTTONDOWN:
+	{
+		SetCapture(hWnd);
+
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseRDown;
+		msg.m_low.m_pos[0] = x;
+		msg.m_low.m_pos[1] = y;
+
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+
+
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
+		mouseState.m_mouseX = x;
+		mouseState.m_mouseY = y;
+		mouseState.m_mouseRightButton = true;
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
+	}
+	break;
+
+	case WM_RBUTTONUP:
+	{
+		ReleaseCapture();
+
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseRUp;
+		msg.m_low.m_pos[0] = x;
+		msg.m_low.m_pos[1] = y;
+
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
+		mouseState.m_mouseX = x;
+		mouseState.m_mouseY = y;
+		mouseState.m_mouseRightButton = false;
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
+	}
+	break;
 	
 	case WM_SETCURSOR:
 	{

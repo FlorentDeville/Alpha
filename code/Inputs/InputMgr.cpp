@@ -31,18 +31,9 @@ namespace Inputs
 	void InputMgr::Release()
 	{}
 
-	void InputMgr::UpdateKeyboard(uint64_t virtualKey)
+	void InputMgr::UpdateKeyboardState(uint64_t virtualKey, bool down)
 	{
-		m_keyboardState[virtualKey] = true;
-
-		if (!m_enabled)
-			return;
-
-		std::map<uint64_t, InputCommand>::const_iterator it = m_keyToCommand.find(virtualKey);
-		if (it == m_keyToCommand.cend())
-			return;
-
-		m_commandState[it->second] = true;
+		m_keyboardState[virtualKey] = down;
 	}
 
 	void InputMgr::UpdateMouseState(const MouseState& mouseState)
@@ -64,10 +55,7 @@ namespace Inputs
 		for (std::map<InputCommand, bool>::iterator it = m_commandState.begin(); it != m_commandState.end(); ++it)
 			it->second = false;
 
-		for (std::map<uint64_t, bool>::iterator it = m_keyboardState.begin(); it != m_keyboardState.end(); ++it)
-			it->second = false;
-
-		m_mouseState = MouseState();
+		m_mouseState.m_mouseWheel = 0; //reset the mouse wheel distance
 	}
 
 	void InputMgr::Enable()
@@ -78,6 +66,11 @@ namespace Inputs
 	void InputMgr::Disable()
 	{
 		m_enabled = false;
+	}
+
+	const InputMgr::MouseState& InputMgr::GetMouseState() const
+	{
+		return m_mouseState;
 	}
 
 	bool InputMgr::IsKeyPressed(char key) const
@@ -97,6 +90,11 @@ namespace Inputs
 	bool InputMgr::IsMouseMiddleButtonDown() const
 	{
 		return m_mouseState.m_mouseMiddleButton;
+	}
+
+	bool InputMgr::IsMouseRightButtonDown() const
+	{
+		return m_mouseState.m_mouseRightButton;
 	}
 
 	void InputMgr::GetMousePosition(uint32_t& x, uint32_t& y) const
