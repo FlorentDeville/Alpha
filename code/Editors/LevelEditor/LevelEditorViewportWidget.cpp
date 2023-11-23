@@ -23,6 +23,8 @@
 //needed for the operator* between vectors and floats.
 using namespace DirectX;
 
+//#pragma optimize("", off)
+
 namespace Editors
 {
 	void RenderTreeNodeRecursive(const Node* pNode, const DirectX::XMMATRIX& parentWVP, const std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId,
@@ -87,6 +89,9 @@ namespace Editors
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
 		, m_isPanning(false)
+		, m_cameraState(CameraState::None)
+		, m_translationSpeed(10.f)
+		, m_rotationSpeed(0.3f)
 	{
 		m_cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
 		m_cameraEulerAngle = DirectX::XMVectorSet(3.14f / 4.f, 0, 0, 0);
@@ -141,12 +146,152 @@ namespace Editors
 		if (!m_enableViewportControl)
 			return;
 
-		const float TRANSLATION_SPEED = 0.5f;
-		const float PAN_SPEED = 0.1f;
+		float dtInSeconds = dt / 1000.f;
+
+		UpdateCamera(dtInSeconds);
+
+		//const float TRANSLATION_SPEED = 0.5f;
+		//const float PAN_SPEED = 0.1f;
+
+		//if (inputs.IsMouseMiddleButtonDown())
+		//{
+		//	OutputDebugString("pan\n");
+		//	DirectX::XMUINT2 mousePosition;
+		//	inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+		//	if (!m_isPanning)
+		//	{
+		//		m_mousePreviousPos = mousePosition;
+		//		m_isPanning = true;
+		//	}
+
+		//	DirectX::XMINT2 delta;
+		//	delta.x = m_mousePreviousPos.x - mousePosition.x;
+		//	delta.y = m_mousePreviousPos.y - mousePosition.y;
+
+		//	if (delta.x != 0)
+		//	{
+		//		DirectX::XMVECTOR xAxis = m_cameraRotation.r[0];
+		//		m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, xAxis * static_cast<float>(delta.x) * PAN_SPEED);
+		//		updateCameraTransform = true;
+		//	}
+		//	if (delta.y != 0)
+		//	{
+		//		DirectX::XMVECTOR yAxis = m_cameraRotation.r[1];
+		//		m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, yAxis * static_cast<float>(-delta.y) * PAN_SPEED);
+		//		updateCameraTransform = true;
+		//	}
+
+		//	m_mousePreviousPos = mousePosition;
+		//}
+		//else if (m_isPanning)
+		//{
+		//	m_isPanning = false;
+		//}
+
+		//int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+		//if (mouseWheelDistance != 0)
+		//{
+		//	const float CAMERA_DISTANCE_SPEED = 0.05f;
+		//	const float MIN_DISTANCE = 2;
+		//	DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+		//	m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * mouseWheelDistance * CAMERA_DISTANCE_SPEED);
+		//	updateCameraTransform = true;
+		//}
+	}
+
+	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
+	{
+		m_enableViewportControl = enable;
+	}
+
+	void LevelEditorViewportWidget::UpdateCamera(float dtInSeconds)
+	{
+		switch (m_cameraState)
+		{
+		case Editors::LevelEditorViewportWidget::None:
+			UpdateCamera_None(dtInSeconds);
+			break;
+
+		case Editors::LevelEditorViewportWidget::FPS:
+			UpdateCamera_FPS(dtInSeconds);
+			break;
+
+		default:
+			assert(false);
+			break;
+		}
+	}
+
+	void LevelEditorViewportWidget::UpdateCamera_None(float dtInSeconds)
+	{
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseRightButtonDown())
+			m_cameraState = CameraState::FPS;
+	}
+
+	void LevelEditorViewportWidget::UpdateCamera_FPS(float dtInSeconds)
+	{
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (!inputs.IsMouseRightButtonDown())
+		{
+			m_firstFrameMouseDown = true;
+			m_cameraState = CameraState::None;
+			return;
+		}
+
+		//speed up/down
+		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+		if (mouseWheelDistance != 0)
+		{
+			m_translationSpeed += mouseWheelDistance * 0.05f;
+			//m_rotationSpeed += mouseWheelDistance * 0.0001f;
+
+			if (m_translationSpeed < 1) m_translationSpeed = 1.f;
+			//if (m_rotationSpeed < 0.003f) m_rotationSpeed = 0.003f;
+		}
 
 		bool updateCameraTransform = false;
-		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
-		if (inputs.IsMouseLeftButtonDown())
+
+		if (inputs.IsKeyPressed('W')) //forward
+		{
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			updateCameraTransform = true;
+		}
+		if (inputs.IsKeyPressed('S')) //backward
+		{
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			updateCameraTransform = true;
+		}
+		if (inputs.IsKeyPressed('A')) //left
+		{
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			updateCameraTransform = true;
+			printf("key D pressed");
+		}
+		if (inputs.IsKeyPressed('D')) //right
+		{
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			updateCameraTransform = true;
+			printf("key D pressed");
+		}
+		if (inputs.IsKeyPressed('Q')) //up
+		{
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			updateCameraTransform = true;
+		}
+		if (inputs.IsKeyPressed('E')) //down
+		{
+			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
+			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			updateCameraTransform = true;
+		}
+
+		//camera rotation
 		{
 			DirectX::XMUINT2 mousePosition;
 			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
@@ -162,8 +307,7 @@ namespace Editors
 
 			if (delta.x != 0 || delta.y != 0)
 			{
-				const float ROTATION_SPEED = 0.003f;
-				DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(-static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+				DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(-static_cast<float>(delta.y) * m_rotationSpeed * dtInSeconds, -static_cast<float>(delta.x) * m_rotationSpeed * dtInSeconds, 0, 0);
 				m_cameraEulerAngle += eulerRotation;
 
 				DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
@@ -174,102 +318,11 @@ namespace Editors
 				updateCameraTransform = true;
 			}
 		}
-		else if (!m_firstFrameMouseDown)
-		{
-			m_firstFrameMouseDown = true;
-		}
-
-		if (inputs.IsMouseMiddleButtonDown())
-		{
-			OutputDebugString("pan\n");
-			DirectX::XMUINT2 mousePosition;
-			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
-			if (!m_isPanning)
-			{
-				m_mousePreviousPos = mousePosition;
-				m_isPanning = true;
-			}
-
-			DirectX::XMINT2 delta;
-			delta.x = m_mousePreviousPos.x - mousePosition.x;
-			delta.y = m_mousePreviousPos.y - mousePosition.y;
-
-			if (delta.x != 0)
-			{
-				DirectX::XMVECTOR xAxis = m_cameraRotation.r[0];
-				m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, xAxis * static_cast<float>(delta.x) * PAN_SPEED);
-				updateCameraTransform = true;
-			}
-			if (delta.y != 0)
-			{
-				DirectX::XMVECTOR yAxis = m_cameraRotation.r[1];
-				m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, yAxis * static_cast<float>(-delta.y) * PAN_SPEED);
-				updateCameraTransform = true;
-			}
-
-			m_mousePreviousPos = mousePosition;
-		}
-		else if (m_isPanning)
-		{
-			m_isPanning = false;
-		}
-
-		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
-		if (mouseWheelDistance != 0)
-		{
-			const float CAMERA_DISTANCE_SPEED = 0.05f;
-			const float MIN_DISTANCE = 2;
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * mouseWheelDistance * CAMERA_DISTANCE_SPEED);
-			updateCameraTransform = true;
-		}
-
-		if (inputs.IsKeyPressed('W')) //forward
-		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * TRANSLATION_SPEED);
-			updateCameraTransform = true;
-		}
-		if (inputs.IsKeyPressed('S')) //backward
-		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * TRANSLATION_SPEED);
-			updateCameraTransform = true;
-		}
-		if (inputs.IsKeyPressed('A')) //left
-		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * TRANSLATION_SPEED);
-			updateCameraTransform = true;
-		}
-		if (inputs.IsKeyPressed('D')) //right
-		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * TRANSLATION_SPEED);
-			updateCameraTransform = true;
-		}
-		if (inputs.IsKeyPressed('Q')) //up
-		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * TRANSLATION_SPEED);
-			updateCameraTransform = true;
-		}
-		if (inputs.IsKeyPressed('E')) //down
-		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * TRANSLATION_SPEED);
-			updateCameraTransform = true;
-		}
 
 		if (updateCameraTransform)
 		{
 			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
 			m_cameraTransform = DirectX::XMMatrixMultiply(m_cameraRotation, translationMatrix);
 		}
-	}
-
-	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
-	{
-		m_enableViewportControl = enable;
 	}
 }
