@@ -6,6 +6,7 @@
 
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
+#include "Widgets/MenuItem.h"
 #include "Widgets/Message.h"
 
 namespace Widgets
@@ -43,14 +44,11 @@ namespace Widgets
 		m_absPos.z = 10;
 	}
 
-	void Menu::AddMenuItem(const std::string& itemName)
+	MenuItem* Menu::AddMenuItem(const std::string& itemName)
 	{
-		Button* pNewButton = new Button(itemName);
-		pNewButton->Unselect();
-		DirectX::XMUINT2 size = pNewButton->GetSize();
-		size.x = 100;
-		pNewButton->SetSize(size);
+		MenuItem* pNewItem = new MenuItem(itemName);
+		m_pLayout->AddWidget(pNewItem);
 
-		m_pLayout->AddWidget(pNewButton);
+		return pNewItem;
 	}
 }

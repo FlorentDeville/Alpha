@@ -9,6 +9,7 @@
 namespace Widgets
 {
 	class Layout;
+	class MenuItem;
 
 	class Menu : public Container
 	{
@@ -19,7 +20,7 @@ namespace Widgets
 		bool Handle(const Message& msg) override;
 		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
-		void AddMenuItem(const std::string& itemName);
+		MenuItem* AddMenuItem(const std::string& itemName);
 
 	private:
 		Layout* m_pLayout;
