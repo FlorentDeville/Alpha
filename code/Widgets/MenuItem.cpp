@@ -4,39 +4,43 @@
 
 #include "Widgets/MenuItem.h"
 
+#include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 
 namespace Widgets
 {
 	MenuItem::MenuItem(const std::string& name)
-		: Container()
+		: Button(0, 0, 0, 0)
 	{
 		SetSizeStyle(Widget::SIZE_STYLE::FIT);
+		const int HEIGHT = 20;
 
-		m_pLayout = new Layout();
-		m_pLayout->SetDirection(Layout::Direction::Horizontal);
-		m_pLayout->SetSizeStyle(Widget::SIZE_STYLE::FIT);
-		AddWidget(m_pLayout);
-		
 		{
 			m_pLabel = new Label(name);
-			m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
+			m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::DEFAULT);
 			DirectX::XMUINT2 size = m_pLabel->GetSize();
 			size.x = 100;
+			size.y = HEIGHT;
 			m_pLabel->SetSize(size);
 
-			m_pLayout->AddWidget(m_pLabel);
+			m_pLabel->SetX(5);
+			m_pLabel->SetY(1);
+			AddWidget(m_pLabel);
 		}
 
 		{
 			m_pShortcut = new Label();
 			m_pShortcut->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
 			DirectX::XMUINT2 size = m_pShortcut->GetSize();
-			size.x = 30;
+			size.x = 50;
+			size.y = HEIGHT;
 			m_pShortcut->SetSize(size);
 
-			m_pLayout->AddWidget(m_pShortcut);
+			m_pShortcut->SetX(101);
+			m_pShortcut->SetY(1);
+
+			AddWidget(m_pShortcut);
 		}
 	}
 

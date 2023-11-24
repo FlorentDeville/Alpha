@@ -4,14 +4,15 @@
 
 #pragma once
 
-#include "Widgets/Container.h"
+#include "Widgets/Button.h"
+
+#include <string>
 
 namespace Widgets
 {
 	class Label;
-	class Layout;
 
-	class MenuItem : public Container
+	class MenuItem : public Button
 	{
 	public:
 		MenuItem(const std::string& name);
@@ -20,7 +21,6 @@ namespace Widgets
 		void AddShortcut(const std::string& shortcut);
 
 	private:
-		Layout* m_pLayout;
 		Label* m_pLabel;
 		Label* m_pShortcut;
 	};
