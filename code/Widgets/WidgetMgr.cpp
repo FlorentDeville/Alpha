@@ -297,6 +297,7 @@ namespace Widgets
 		break;
 
 		case M_VirtualKeyDown:
+		case M_VirtualKeyUp:
 			if (m_pFocusedWidget)
 				m_pFocusedWidget->Handle(msg);
 			break;
