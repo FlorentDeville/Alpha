@@ -15,6 +15,8 @@ namespace Widgets
 	{
 	public:
 		Button(uint32_t w, uint32_t h, int32_t x, int32_t y);
+		Button(const std::string& textLabel);
+
 		virtual ~Button();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;

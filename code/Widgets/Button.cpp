@@ -8,6 +8,7 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
+#include "Widgets/Label.h"
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -24,6 +25,22 @@ namespace Widgets
 		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
 
 		m_selectedStyle.SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+	}
+
+	Button::Button(const std::string& textLabel)
+		: Button(0, 0, 0, 0)
+	{
+		const int HMARGIN = 10;
+		const int VMARGIN = 3;
+		Label* pLabel = new Label(textLabel);
+		pLabel->SetX(HMARGIN);
+		pLabel->SetY(VMARGIN);
+
+		DirectX::XMUINT2 size = pLabel->GetSize();
+		size.x += (2 * HMARGIN);
+		size.y += (2 * VMARGIN);
+		SetSize(size);
+		AddWidget(pLabel);
 	}
 
 	Button::~Button()

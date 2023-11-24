@@ -14,6 +14,7 @@ namespace Widgets
 	{
 	public:
 		Label();
+		Label(const std::string& text);
 		Label(int32_t locX, int32_t locY, float scale, const std::string& text);
 		virtual ~Label();
 

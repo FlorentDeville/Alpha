@@ -19,6 +19,17 @@ namespace Widgets
 		SetSizeStyle(Widget::HSIZE_STRETCH);
 	}
 
+	Label::Label(const std::string& text)
+		: Label(0, 0, 1, text)
+	{
+		Rendering::FontId fontId = WidgetMgr::Get().GetUIFontId();
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);
+		DirectX::XMUINT2 size;
+		pFont->ComputeRect(text, size);
+		SetSize(size);
+		SetSizeStyle(Widget::HSIZE_STRETCH);
+	}
+
 	Label::Label(int32_t locX, int32_t locY, float scale, const std::string& text)
 		: Widget(0, 0, locX, locY)
 		, m_fontScale(scale)
