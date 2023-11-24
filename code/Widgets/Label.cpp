@@ -52,7 +52,15 @@ namespace Widgets
 
 	void Label::ReComputeSize(const DirectX::XMUINT2& parentSize)
 	{
-		if ((m_sizeStyle & Widget::HSIZE_FIT) || (m_sizeStyle & Widget::VSIZE_FIT))
+		bool anyNotFit = ((m_sizeStyle & Widget::HSIZE_FIT) == 0) && ((m_sizeStyle & Widget::VSIZE_FIT) == 0);
+		bool anyFit = (m_sizeStyle & Widget::HSIZE_FIT) || (m_sizeStyle & Widget::VSIZE_FIT);
+
+		if (anyNotFit)
+		{
+			Widget::ReComputeSize(parentSize);
+		}
+
+		if (anyFit)
 		{
 			Rendering::FontId fid = WidgetMgr::Get().GetUIFontId();
 			const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fid);
@@ -60,20 +68,15 @@ namespace Widgets
 			DirectX::XMUINT2 textSize;
 			pFont->ComputeRect(m_text, textSize);
 
-			if (textSize.x > parentSize.x - m_locPos.x)
+			if ((m_sizeStyle & Widget::HSIZE_FIT) != 0)
 			{
-				textSize.x = parentSize.x - m_locPos.x;
-			}
-			if (textSize.y > parentSize.y - m_locPos.y)
-			{
-				textSize.y = parentSize.y - m_locPos.y;
+				m_size.x = textSize.x;
 			}
 
-			m_size = textSize;
-		}
-		else
-		{
-			Widgets::Widget::ReComputeSize(parentSize);
+			if ((m_sizeStyle & Widget::VSIZE_FIT) != 0)
+			{
+				m_size.y = textSize.y;
+			}
 		}
 	}
 
