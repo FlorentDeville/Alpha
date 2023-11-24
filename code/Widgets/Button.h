@@ -28,6 +28,8 @@ namespace Widgets
 
 		ButtonStyle& GetHoverStyle();
 
+		bool IsSelected() const;
+
 	private:
 		//if the button is selected, it keeps the hover color until Unselect is called.
 		bool m_isSelected;

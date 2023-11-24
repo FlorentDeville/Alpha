@@ -17,6 +17,11 @@ namespace Widgets
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(Widget::FIT);
 		m_pLayout->GetDefaultStyle().ShowBorder(true);
+		m_pLayout->GetDefaultStyle().SetBorderColor(DirectX::XMVectorSet(0.44f, 0.44f, 0.44f, 1.f));
+		m_pLayout->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+		m_pLayout->GetHoverStyle().ShowBorder(true);
+		m_pLayout->GetHoverStyle().SetBorderColor(DirectX::XMVectorSet(0.44f, 0.44f, 0.44f, 1.f));
+		m_pLayout->GetHoverStyle().SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
 		m_pLayout->SetDirection(Layout::Direction::Vertical);
 		AddWidget(m_pLayout);
 	}
@@ -33,6 +38,11 @@ namespace Widgets
 	void Menu::AddMenuItem(const std::string& itemName)
 	{
 		Button* pNewButton = new Button(itemName);
+		pNewButton->Unselect();
+		DirectX::XMUINT2 size = pNewButton->GetSize();
+		size.x = 100;
+		pNewButton->SetSize(size);
+
 		m_pLayout->AddWidget(pNewButton);
 	}
 }

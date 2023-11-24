@@ -330,6 +330,9 @@ namespace Widgets
 
 	void WidgetMgr::SetFocus(Widget* pWidget)
 	{
+		while (pWidget->GetFocusPolicy() == Widget::FOCUS_POLICY::NO_FOCUS)
+			pWidget = pWidget->GetParent();
+
 		if (pWidget == m_pFocusedWidget)
 			return;
 

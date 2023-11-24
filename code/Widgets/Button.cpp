@@ -121,4 +121,9 @@ namespace Widgets
 	{
 		return m_hoverStyle;
 	}
+
+	bool Button::IsSelected() const
+	{
+		return m_isSelected;
+	}
 }

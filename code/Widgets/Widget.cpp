@@ -28,6 +28,8 @@ namespace Widgets
 		, m_vPositionStyle(VPOSITION_STYLE::NONE)
 		, m_name()
 		, m_enabled(true)
+		, m_focusPolicy(FOCUS_POLICY::DEFAULT)
+		, m_pParent(nullptr)
 	{}
 
 	Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -206,6 +208,7 @@ namespace Widgets
 	{
 		m_children.push_back(pWidget);
 		WidgetMgr::Get().RegisterWidget(pWidget);
+		pWidget->m_pParent = this;
 	}
 
 	void Widget::DeleteChild(Widget* pWidget)
@@ -342,9 +345,19 @@ namespace Widgets
 		return m_size.y;
 	}
 
+	Widget::FOCUS_POLICY Widget::GetFocusPolicy() const
+	{
+		return m_focusPolicy;
+	}
+
 	const std::vector<Widget*>& Widget::GetChildren() const
 	{
 		return m_children;
+	}
+
+	Widget* Widget::GetParent()
+	{
+		return m_pParent;
 	}
 
 	bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const

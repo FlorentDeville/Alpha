@@ -77,6 +77,12 @@ namespace Widgets
 			NONE		//Use the provided position
 		};
 
+		enum class FOCUS_POLICY
+		{
+			DEFAULT,
+			NO_FOCUS
+		};
+
 		Widget();
 		Widget(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		virtual ~Widget();
@@ -123,7 +129,10 @@ namespace Widgets
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 
+		FOCUS_POLICY GetFocusPolicy() const;
+
 		const std::vector<Widget*>& GetChildren() const;
+		Widget* GetParent();
 
 		bool IsInside(uint32_t screenX, uint32_t screenY) const;
 		bool IsEnabled() const;
@@ -160,10 +169,13 @@ namespace Widgets
 		bool m_enabled;	//If a widget is disabled, it is not rendered and doesn't receive messages
 
 		std::vector<Widget*> m_children;
+		Widget* m_pParent;
 
 		int m_sizeStyle;
 		HPOSITION_STYLE m_hPositionStyle;
 		VPOSITION_STYLE m_vPositionStyle;
+
+		FOCUS_POLICY m_focusPolicy;
 
 		std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
 		std::function<bool(int x, int y)>			m_onLeftMouseUp;

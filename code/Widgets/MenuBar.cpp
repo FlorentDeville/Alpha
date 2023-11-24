@@ -8,6 +8,7 @@
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
+#include "Widgets/WidgetMgr.h"
 
 //#pragma optimize("", off)
 
@@ -39,18 +40,11 @@ namespace Widgets
 
 		//now create the real menu
 		Menu* pNewMenu = new Menu();
-		pNewMenu->Disable(false);
-		pNewMenu->OnLoseFocus([pNewMenu]() -> bool {
-			pNewMenu->Disable(false); 
-			return true; 
-			});
+		pNewMenu->Disable();
 		m_menusArray.push_back(pNewMenu);
 
-		pNewButton->OnClick([pNewMenu](int, int) -> bool {
-			pNewMenu->Enable();
-			pNewMenu->SetFocus();
-			return true;
-			});
+		pNewButton->OnClick([this, pNewButton, pNewMenu](int, int) -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
+		pNewButton->OnLoseFocus([this, pNewButton, pNewMenu]() -> bool { return OnLoseFocus_MenuButton(pNewButton, pNewMenu); });
 
 		return pNewMenu;
 	}
@@ -86,5 +80,30 @@ namespace Widgets
 
 			pMenu->Draw(windowSize);
 		}
+	}
+
+	bool MenuBar::OnClick_MenuButton(Button* pButton, Menu* pMenu)
+	{
+		if (!pMenu->IsEnabled())
+		{
+			Widgets::WidgetMgr::Get().RequestResize();
+			pMenu->Enable();
+			pButton->SetFocus();
+			pButton->Select();
+		}
+		else
+		{
+			pMenu->Disable();
+			pButton->Unselect();
+		}
+		
+		return true;
+	}
+
+	bool MenuBar::OnLoseFocus_MenuButton(Button* pButton, Menu* pMenu)
+	{
+		pMenu->Disable();
+		pButton->Unselect();
+		return true;
 	}
 }

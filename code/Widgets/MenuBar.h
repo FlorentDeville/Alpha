@@ -28,5 +28,8 @@ namespace Widgets
 		Layout* m_pLayout;
 		std::vector<Button*> m_buttonsArray;
 		std::vector<Menu*> m_menusArray;
+
+		bool OnClick_MenuButton(Button* pButton, Menu* pMenu);
+		bool OnLoseFocus_MenuButton(Button* pButton, Menu* pMenu);
 	};
 }

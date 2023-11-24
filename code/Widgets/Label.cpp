@@ -17,6 +17,7 @@ namespace Widgets
 		, m_text()
 	{
 		SetSizeStyle(Widget::HSIZE_STRETCH);
+		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
 
 	Label::Label(const std::string& text)
@@ -36,6 +37,7 @@ namespace Widgets
 		, m_text(text)
 	{
 		SetSizeStyle(Widget::HSIZE_STRETCH);
+		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
 
 	Label::~Label()
