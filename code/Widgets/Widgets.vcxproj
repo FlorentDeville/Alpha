@@ -16,6 +16,7 @@
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Layout.h" />
+    <ClInclude Include="MenuBar.h" />
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageId.h" />
     <ClInclude Include="ModalWindow.h" />
@@ -42,6 +43,7 @@
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layout.cpp" />
+    <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="ModalWindow.cpp" />
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="SplitHorizontal.cpp" />
