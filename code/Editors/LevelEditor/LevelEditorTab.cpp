@@ -23,6 +23,7 @@
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
+#include "Widgets/MenuItem.h"
 #include "Widgets/ModalWindow.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/TabContainer.h"
@@ -51,7 +52,8 @@ namespace Editors
 
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 		Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
-		pFileMenu->AddMenuItem("New...");
+		Widgets::MenuItem* pItemNew = pFileMenu->AddMenuItem("New...");
+		pItemNew->AddShortcut("Ctrl+N");
 		pFileMenu->AddMenuItem("Open...");
 		pFileMenu->AddMenuItem("Save...");
 
