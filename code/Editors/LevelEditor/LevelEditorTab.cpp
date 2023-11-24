@@ -21,6 +21,8 @@
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Menu.h"
+#include "Widgets/MenuBar.h"
 #include "Widgets/ModalWindow.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/TabContainer.h"
@@ -42,12 +44,29 @@ namespace Editors
 		int width = 1280;
 		int height = 720;
 
+		Widgets::Layout* pInternalLayout = new Widgets::Layout();
+		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
+		AddWidget(pInternalLayout);
+
+		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
+		Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
+		pFileMenu->AddMenuItem("New...");
+		pFileMenu->AddMenuItem("Open...");
+		pFileMenu->AddMenuItem("Save...");
+
+		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
+		pEditMenu->AddMenuItem("Add");
+		pEditMenu->AddMenuItem("Remove");
+
+		pInternalLayout->AddWidget(pMenuBar);
+
 		//create the split between viewport and right panel
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
 		pSplit->SetRightPanelWidth(400);
 		pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
-		AddWidget(pSplit);
+		pInternalLayout->AddWidget(pSplit);
 
 		LevelEditorViewportWidget* pViewport = new LevelEditorViewportWidget(width, height);
 		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);

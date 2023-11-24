@@ -20,8 +20,13 @@ namespace Widgets
 
 		Menu* AddMenu(const std::string& name);
 
+		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+	
+		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
+
 	private:
 		Layout* m_pLayout;
-		std::vector<Button*> m_buttons;
+		std::vector<Button*> m_buttonsArray;
+		std::vector<Menu*> m_menusArray;
 	};
 }

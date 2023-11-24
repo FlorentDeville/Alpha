@@ -173,14 +173,17 @@ namespace Widgets
 	{
 		switch (msg.m_id)
 		{
-		case M_MouseLDown:
+		case M_MouseLDown:/*
 			if (m_onClick)
-				return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+				return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);*/
+			return true;
 			break;
 
 		case M_MouseLUp:
 			if (m_onLeftMouseUp)
 				return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+			if (m_onClick)
+				return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
 			break;
 
 		case M_MouseEnter:
@@ -267,6 +270,12 @@ namespace Widgets
 	{
 		m_defaultSize = size;
 		m_size = size;
+	}
+
+	void Widget::SetFocus()
+	{
+		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		widgetMgr.SetFocus(this);
 	}
 
 	void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)

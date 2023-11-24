@@ -95,10 +95,15 @@ namespace Widgets
 		virtual void Enable(bool recursive = true);
 		virtual void Disable(bool recursive = true);
 
+		// Set local x coordinate from the top left corner of the parent widget
 		void SetX(int32_t x);
+
+		// Set local y coordinate from the top left corner of the parent widget
 		void SetY(int32_t y);
 
 		void SetSize(const DirectX::XMUINT2& size);
+
+		void SetFocus();
 
 		void SetBackgroundColor(const DirectX::XMVECTOR& color);
 		void SetSizeStyle(int sizeStyle);
