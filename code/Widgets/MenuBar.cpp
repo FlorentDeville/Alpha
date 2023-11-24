@@ -63,7 +63,6 @@ namespace Widgets
 			position.x = pButton->GetScreenX();
 			position.y = pButton->GetScreenY() + pButton->GetHeight();
 			position.z = 10;
-			//pMenu->SetAbsPosition(position.x, position.y);
 
 			pMenu->Resize(position, parentSize);
 		}
