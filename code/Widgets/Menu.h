@@ -16,6 +16,7 @@ namespace Widgets
 		Menu();
 		~Menu();
 
+		bool Handle(const Message& msg) override;
 		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		void AddMenuItem(const std::string& itemName);

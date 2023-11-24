@@ -6,6 +6,7 @@
 
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Message.h"
 
 namespace Widgets
 {
@@ -28,6 +29,13 @@ namespace Widgets
 
 	Menu::~Menu()
 	{}
+
+	bool Menu::Handle(const Message& msg)
+	{
+		//return true so the widgets behind the menu don't get any event.
+		Widget::Handle(msg);
+		return true;
+	}
 
 	void Menu::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{

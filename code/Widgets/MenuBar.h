@@ -23,6 +23,11 @@ namespace Widgets
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 	
 		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
+		void ResizeChildren() override;
+		void ReComputeSize_PostChildren() override;
+
+		void Enable(bool recursive = true) override;
+		void Disable(bool recursive = true) override;
 
 	private:
 		Layout* m_pLayout;

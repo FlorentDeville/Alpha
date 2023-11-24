@@ -42,6 +42,7 @@ namespace Widgets
 		Menu* pNewMenu = new Menu();
 		pNewMenu->Disable();
 		m_menusArray.push_back(pNewMenu);
+		AddWidget(pNewMenu);
 
 		pNewButton->OnClick([this, pNewButton, pNewMenu](int, int) -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
 		pNewButton->OnLoseFocus([this, pNewButton, pNewMenu]() -> bool { return OnLoseFocus_MenuButton(pNewButton, pNewMenu); });
@@ -68,9 +69,46 @@ namespace Widgets
 		}
 	}
 
+	void MenuBar::ResizeChildren()
+	{
+		m_pLayout->Resize(m_absPos, m_size);
+	}
+
+	void MenuBar::ReComputeSize_PostChildren()
+	{
+		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
+		{
+			int max = m_pLayout->GetWidth() + m_pLayout->GetX();
+			m_size.x = max;
+		}
+
+		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
+		{
+			int max = m_pLayout->GetHeight() + m_pLayout->GetY();
+			m_size.y = max;
+		}
+	}
+
+	void MenuBar::Enable(bool recursive)
+	{
+		Widget::Enable(false);
+		m_pLayout->Enable(recursive);
+	}
+
+	void MenuBar::Disable(bool recursive)
+	{
+		Widget::Disable(false);
+		for (Menu* pMenu : m_menusArray)
+			pMenu->Disable();
+
+		m_pLayout->Disable(recursive);
+
+	}
+
 	void MenuBar::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-		Widget::Draw(windowSize);
+		//Widget::Draw(windowSize);
+		m_pLayout->Draw(windowSize);
 
 		for (Menu* pMenu : m_menusArray)
 		{

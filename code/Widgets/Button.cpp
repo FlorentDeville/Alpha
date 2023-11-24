@@ -101,6 +101,14 @@ namespace Widgets
 		}
 		break;
 
+		case M_MouseMove:
+		{
+			m_hover = true;
+			m_showBorder = true;
+			return true;
+		}
+		break;
+
 		default:
 			return Widget::Handle(msg);
 			break;

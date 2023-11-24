@@ -231,9 +231,12 @@ namespace Widgets
 					continue;
 
 				bool handled = false;
-				if (pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
+
+				bool isInside = pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+				if (isInside)
 				{
-					if (!pWidget->IsInside(m_prevMouseX, m_prevMouseY)) //if the previous position was outside, send a Entering message
+					bool wasOutside = !pWidget->IsInside(m_prevMouseX, m_prevMouseY);
+					if (wasOutside) //if the previous position was outside, send a Entering message
 					{
 						Message enteringMsg;
 						enteringMsg.m_id = M_MouseEnter;
@@ -246,19 +249,36 @@ namespace Widgets
 						handled = pWidget->Handle(msg);
 					}
 				}
-				else if (pWidget->IsInside(m_prevMouseX, m_prevMouseY)) //if the previous pos was inside, send a exit message
-				{
-					Message exitMsg;
-					exitMsg.m_id = M_MouseExit;
-					exitMsg.m_low.m_raw = msg.m_low.m_raw;
 
-					handled = pWidget->Handle(exitMsg);
+				if (handled)
+					break;
+			}
+
+			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
+			{
+				Widget* pWidget = *it;
+				if (!pWidget->IsEnabled())
+					continue;
+
+				bool handled = false;
+
+				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
+				
+				if (wasInside) //if the previous pos was inside, send a exit message
+				{
+					bool isOutside = !pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+					if (isOutside)
+					{
+						Message exitMsg;
+						exitMsg.m_id = M_MouseExit;
+						exitMsg.m_low.m_raw = msg.m_low.m_raw;
+
+						handled = pWidget->Handle(exitMsg);
+					}
 				}
 
-				//I can't break here, if I entered a widget, I exited another so I need to loop through everything
-				//Once I have a proper way of checking what widget are where, I won't need to iterate like this.
-				/*if (handled)
-					break;*/
+				if (handled)
+					break;
 			}
 
 			m_prevMouseX = msg.m_low.m_pos[0];
