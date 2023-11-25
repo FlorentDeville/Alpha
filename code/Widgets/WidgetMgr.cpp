@@ -294,34 +294,36 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				if (!pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
-					continue;
+				Message ev = ConvertMessageToEvent(pWidget, msg);
 
-				if (!setFocus)
+				if (ev.m_id != MessageId::M_Invalid)
 				{
-					SetFocus(pWidget);
-					setFocus = true;
-				}
+					if (!setFocus)
+					{
+						SetFocus(pWidget);
+						setFocus = true;
+					}
 
-				bool handled = pWidget->Handle(msg);
-				if (handled)
-					break;
+					bool handled = pWidget->Handle(msg);
+					if (handled)
+						break;
+				}
 			}
 		}
 		break;
 
 		case M_VirtualKeyDown:
 		case M_VirtualKeyUp:
-			if (m_pFocusedWidget)
-				m_pFocusedWidget->Handle(msg);
-			break;
-
 		case M_CharKeyDown:
 		{
 			if (m_pFocusedWidget)
-				m_pFocusedWidget->Handle(msg);
+			{
+				Message ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
+				if (ev.m_id != MessageId::M_Invalid)
+					m_pFocusedWidget->Handle(ev);
+			}
 		}
-		break;
+			break;
 
 		default:
 			assert(false);
