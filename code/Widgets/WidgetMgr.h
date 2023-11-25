@@ -130,9 +130,14 @@ namespace Widgets
 		std::string m_editorIconsPath;
 
 		//internal event storage
-		BaseEvent m_baseEvent;
-		KeyboardEvent m_keyboardEvent;
-		MouseEvent m_mouseEvent;
+		union EventStorage
+		{
+			BaseEvent m_baseEvent;
+			KeyboardEvent m_keyboardEvent;
+			MouseEvent m_mouseEvent;
+		};
+		
+		EventStorage m_internalEvent;
 
 		void ComputeSortedWidgetQueue();
 

@@ -434,36 +434,36 @@ namespace Widgets
 				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
 				if (!wasInside && isInside)
 				{
-					m_mouseEvent.m_id = EventId::kMouseEnter;
-					m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_mouseEvent.m_y = msg.m_low.m_pos[1];
-					return m_mouseEvent;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseEnter;
+					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_internalEvent.m_mouseEvent;
 				}
 				else if (wasInside && !isInside)
 				{
-					m_mouseEvent.m_id = EventId::kMouseExit;
-					m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_mouseEvent.m_y = msg.m_low.m_pos[1];
-					return m_mouseEvent;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseExit;
+					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_internalEvent.m_mouseEvent;
 				}
 				else if (isInside)
 				{
-					m_mouseEvent.m_id = EventId::kMouseMove;
-					m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_mouseEvent.m_y = msg.m_low.m_pos[1];
-					return m_mouseEvent;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMove;
+					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_internalEvent.m_mouseEvent;
 				}
 				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make an event if we captured the mouse
 				{
-					m_mouseEvent.m_id = EventId::kMouseMove;
-					m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_mouseEvent.m_y = msg.m_low.m_pos[1];
-					return m_mouseEvent;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMove;
+					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_internalEvent.m_mouseEvent;
 				}
 				else //this message doesn't concern this widget
 				{
-					m_baseEvent.m_id = EventId::kUnknown;
-					return m_baseEvent;
+					m_internalEvent.m_baseEvent.m_id = EventId::kUnknown;
+					return m_internalEvent.m_baseEvent;
 				}
 		}
 		break;
@@ -480,42 +480,42 @@ namespace Widgets
 
 			if (isInside || isCaptured)
 			{
-				m_mouseEvent.m_x = msg.m_low.m_pos[0];
-				m_mouseEvent.m_y = msg.m_low.m_pos[1];
+				m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
+				m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
 
 				switch (msg.m_id)
 				{
 				case M_MouseLDown:
-					m_mouseEvent.m_id = EventId::kMouseLDown;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseLDown;
 					break;
 
 				case M_MouseLUp:
-					m_mouseEvent.m_id = EventId::kMouseLUp;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseLUp;
 					break;
 
 				case M_MouseMDown:
-					m_mouseEvent.m_id = EventId::kMouseMDown;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMDown;
 					break;
 
 				case M_MouseMUp:
-					m_mouseEvent.m_id = EventId::kMouseMUp;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMUp;
 					break;
 
 				case M_MouseRDown:
-					m_mouseEvent.m_id = EventId::kMouseRDown;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseRDown;
 					break;
 
 				case M_MouseRUp:
-					m_mouseEvent.m_id = EventId::kMouseRUp;
+					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseRUp;
 					break;
 				}				
 				
-				return m_mouseEvent;
+				return m_internalEvent.m_mouseEvent;
 			}
 			else
 			{
-				m_baseEvent.m_id = EventId::kUnknown;
-				return m_baseEvent;
+				m_internalEvent.m_baseEvent.m_id = EventId::kUnknown;
+				return m_internalEvent.m_baseEvent;
 			}
 		}
 		break;
@@ -526,28 +526,28 @@ namespace Widgets
 		{
 			if (m_pFocusedWidget == pWidget)
 			{
-				m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high);
+				m_internalEvent.m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high);
 
 				switch (msg.m_id)
 				{
 				case M_VirtualKeyDown:
-					m_keyboardEvent.m_id = EventId::kVKeyDown;
+					m_internalEvent.m_keyboardEvent.m_id = EventId::kVKeyDown;
 					break;
 
 				case M_VirtualKeyUp:
-					m_keyboardEvent.m_id = EventId::kVKeyUp;
+					m_internalEvent.m_keyboardEvent.m_id = EventId::kVKeyUp;
 					break;
 
 				case M_CharKeyDown:
-					m_keyboardEvent.m_id = EventId::kCharKeyDown;
+					m_internalEvent.m_keyboardEvent.m_id = EventId::kCharKeyDown;
 					break;
 				}
-				return m_keyboardEvent;
+				return m_internalEvent.m_keyboardEvent;
 			}
 			else
 			{
-				m_baseEvent.m_id = EventId::kUnknown;
-				return m_baseEvent;
+				m_internalEvent.m_baseEvent.m_id = EventId::kUnknown;
+				return m_internalEvent.m_baseEvent;
 			}
 		}
 		break;
@@ -557,7 +557,7 @@ namespace Widgets
 		break;
 		}
 
-		m_baseEvent.m_id = EventId::kUnknown;
-		return m_baseEvent;
+		m_internalEvent.m_baseEvent.m_id = EventId::kUnknown;
+		return m_internalEvent.m_baseEvent;
 	}
 }
