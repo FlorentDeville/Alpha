@@ -72,8 +72,8 @@ namespace Editors
 
 		LevelEditorViewportWidget* pViewport = new LevelEditorViewportWidget(width, height);
 		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
-		pViewport->OnGetFocus([pViewport]() -> bool { pViewport->SetEnableViewportControl(true); return true; });
-		pViewport->OnLoseFocus([pViewport]() -> bool { pViewport->SetEnableViewportControl(false); return true; });
+		pViewport->OnFocusGained([pViewport](const Widgets::FocusEvent&) { pViewport->SetEnableViewportControl(true); });
+		pViewport->OnFocusLost([pViewport](const Widgets::FocusEvent&) { pViewport->SetEnableViewportControl(false); });
 
 		//create split between viewport and left panel
 		Widgets::SplitVertical* pLeftSplit = new Widgets::SplitVertical();

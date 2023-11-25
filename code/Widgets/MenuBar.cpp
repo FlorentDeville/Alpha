@@ -45,7 +45,7 @@ namespace Widgets
 		AddWidget(pNewMenu);
 
 		pNewButton->OnClick([this, pNewButton, pNewMenu]() -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
-		pNewMenu->OnLoseFocus([this, pNewButton, pNewMenu]() -> bool { return OnLoseFocus_Menu(pNewButton, pNewMenu); });
+		pNewMenu->OnFocusLost([this, pNewButton, pNewMenu](const FocusEvent& ev) -> bool { return OnLoseFocus_Menu(pNewButton, pNewMenu); });
 
 		return pNewMenu;
 	}
@@ -139,6 +139,7 @@ namespace Widgets
 
 	bool MenuBar::OnLoseFocus_Menu(Button* pButton, Menu* pMenu)
 	{
+		//if(pButton->focu)
 		pMenu->Disable();
 		pButton->Unselect();
 		return true;

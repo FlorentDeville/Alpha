@@ -17,6 +17,7 @@
 
 #include "OsWin/SysWindow.h"
 
+#include "Widgets/Events/FocusEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
@@ -353,11 +354,13 @@ namespace Widgets
 		if (pWidget == m_pFocusedWidget)
 			return;
 
+		FocusEvent ev(m_pFocusedWidget, pWidget);
+
 		if (m_pFocusedWidget && m_pFocusedWidget->m_onLoseFocus)
-			m_pFocusedWidget->m_onLoseFocus();
+			m_pFocusedWidget->m_onLoseFocus(ev);
 
 		if (pWidget && pWidget->m_onGetFocus)
-			pWidget->m_onGetFocus();
+			pWidget->m_onGetFocus(ev);
 
 		m_pFocusedWidget = pWidget;
 	}

@@ -34,6 +34,7 @@ struct Message;
 namespace Widgets
 {
 	class BaseEvent;
+	class FocusEvent;
 
 	class Widget
 	{
@@ -87,7 +88,9 @@ namespace Widgets
 			NO_FOCUS
 		};
 
-		using OnClickCallbackList = Core::CallbackList<void()>;
+		using OnClickEvent = Core::CallbackList<void()>;
+		using OnFocusLostEvent = Core::CallbackList<void(const FocusEvent&)>;
+		using OnFocusGainedEvent = Core::CallbackList<void(const FocusEvent&)>;
 
 		Widget();
 		Widget(uint32_t w, uint32_t h, int32_t x, int32_t y);
@@ -138,6 +141,7 @@ namespace Widgets
 		uint32_t GetHeight() const;
 
 		FOCUS_POLICY GetFocusPolicy() const;
+		bool HasFocus() const;
 
 		const std::vector<Widget*>& GetChildren() const;
 		Widget* GetParent();
@@ -152,9 +156,9 @@ namespace Widgets
 		void OnLeftMouseUp(const std::function<bool()>& callback);
 		void OnMouseEnter(const std::function<bool()>& callback);
 		void OnMouseExit(const std::function<bool()>& callback);
-		Core::CallbackId OnClick(const OnClickCallbackList::Callback& callback);
-		void OnGetFocus(const std::function<bool()>& callback);
-		void OnLoseFocus(const std::function<bool()>& callback);
+		Core::CallbackId OnClick(const OnClickEvent::Callback& callback);
+		Core::CallbackId OnFocusGained(const OnFocusGainedEvent::Callback& callback);
+		Core::CallbackId OnFocusLost(const OnFocusLostEvent::Callback& callback);
 
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
@@ -189,9 +193,9 @@ namespace Widgets
 		std::function<bool()>						m_onLeftMouseUp;
 		std::function<bool()>						m_onMouseEnter;
 		std::function<bool()>						m_onMouseExit;
-		OnClickCallbackList							m_onClick;
-		std::function<bool()>						m_onGetFocus;
-		std::function<bool()>						m_onLoseFocus;
+		OnClickEvent								m_onClick;
+		OnFocusGainedEvent							m_onGetFocus;
+		OnFocusLostEvent							m_onLoseFocus;
 		std::string m_name;
 
 		void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;

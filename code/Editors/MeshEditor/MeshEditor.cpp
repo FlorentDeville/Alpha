@@ -111,8 +111,8 @@ namespace Editors
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return Rendering::RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
-		pViewport->OnGetFocus([this]() -> bool { m_enableViewportControl = true; return true; });
-		pViewport->OnLoseFocus([this]() -> bool { m_enableViewportControl = false; return true; });
+		pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_enableViewportControl = true; });
+		pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_enableViewportControl = false; });
 		pSplit->AddRightPanel(pViewport);
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials

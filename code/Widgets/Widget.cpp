@@ -356,6 +356,11 @@ namespace Widgets
 		return m_focusPolicy;
 	}
 
+	bool Widget::HasFocus() const
+	{
+		return Widgets::WidgetMgr::Get().GetFocusedWidget() == this;
+	}
+
 	const std::vector<Widget*>& Widget::GetChildren() const
 	{
 		return m_children;
@@ -412,19 +417,19 @@ namespace Widgets
 		m_onMouseExit = callback;
 	}
 
-	Core::CallbackId Widget::OnClick(const OnClickCallbackList::Callback& callback)
+	Core::CallbackId Widget::OnClick(const OnClickEvent::Callback& callback)
 	{
 		return m_onClick.Connect(callback);
 	}
 
-	void Widget::OnGetFocus(const std::function<bool()>& callback)
+	Core::CallbackId Widget::OnFocusGained(const OnFocusGainedEvent::Callback& callback)
 	{
-		m_onGetFocus = callback;
+		return m_onGetFocus.Connect(callback);
 	}
 
-	void Widget::OnLoseFocus(const std::function<bool()>& callback)
+	Core::CallbackId Widget::OnFocusLost(const OnFocusLostEvent::Callback& callback)
 	{
-		m_onLoseFocus = callback;
+		return m_onLoseFocus.Connect(callback);
 	}
 
 	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const

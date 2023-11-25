@@ -39,8 +39,8 @@ namespace Widgets
 		m_pCursorIcon->Disable();
 		AddWidget(m_pCursorIcon);
 
-		OnGetFocus(std::bind(&TextBox::OnGetFocusCallback, this));
-		OnLoseFocus(std::bind(&TextBox::OnLoseFocusCallback, this));
+		OnFocusGained([this](const FocusEvent& ev) { OnGetFocusCallback(); });
+		OnFocusLost([this](const FocusEvent& ev) { OnLoseFocusCallback(); });
 	}
 
 	TextBox::~TextBox()

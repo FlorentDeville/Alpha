@@ -32,6 +32,8 @@ namespace Widgets
 
 		kCharKeyDown,
 
+		kFocusChanged,
+
 		kCount
 
 	};
