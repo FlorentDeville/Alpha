@@ -23,8 +23,8 @@ namespace Editors
 
 	void GizmoWidget::Render()
 	{
-		RenderTranslationManipulator();
-		RenderRotationManipulator();
+	//	RenderTranslationManipulator();
+		//RenderRotationManipulator();
 	}
 
 	void GizmoWidget::SetWs(const DirectX::XMMATRIX& txWs)
