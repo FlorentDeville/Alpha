@@ -6,6 +6,8 @@
 
 #include "Widgets/Container.h"
 
+#include "Core/Callbacks/CallbackList.h"
+
 namespace Widgets
 {
 	class BaseEvent;
@@ -25,7 +27,21 @@ namespace Widgets
 
 		MenuItem* AddMenuItem(const std::string& itemName);
 
+		void OpenMenu();
+		void CloseMenu();
+
+		using OnOpenEvent = Core::CallbackList<void()>;
+		using OnCloseEvent = Core::CallbackList<void()>;
+
+		Core::CallbackId OnOpen(const OnOpenEvent::Callback& callback);
+		Core::CallbackId OnClose(const OnCloseEvent::Callback& callback);
+
 	private:
 		Layout* m_pLayout;
+
+		OnOpenEvent m_onOpen;
+		OnClickEvent m_onClose;
+
+		void OnClickMenuItem();
 	};
 }

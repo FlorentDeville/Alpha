@@ -48,8 +48,39 @@ namespace Widgets
 	MenuItem* Menu::AddMenuItem(const std::string& itemName)
 	{
 		MenuItem* pNewItem = new MenuItem(itemName);
+		pNewItem->OnClick([this]() { OnClickMenuItem(); });
 		m_pLayout->AddWidget(pNewItem);
 
 		return pNewItem;
+	}
+
+	void Menu::OpenMenu()
+	{
+		Enable();
+		SetFocus();
+		if (m_onOpen)
+			m_onOpen();
+	}
+
+	void Menu::CloseMenu()
+	{
+		Disable();
+		if (m_onClose)
+			m_onClose();
+	}
+
+	Core::CallbackId Menu::OnOpen(const OnOpenEvent::Callback& callback)
+	{
+		return m_onOpen.Connect(callback);
+	}
+
+	Core::CallbackId Menu::OnClose(const OnCloseEvent::Callback& callback)
+	{
+		return m_onClose.Connect(callback);
+	}
+
+	void Menu::OnClickMenuItem()
+	{
+		CloseMenu();
 	}
 }
