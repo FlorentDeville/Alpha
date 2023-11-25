@@ -17,6 +17,7 @@ namespace Widgets
 		SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 		SetSizeStyle(Widget::SIZE_STYLE::FIT);
 		const int HEIGHT = 20;
+		GetHoverStyle().SetBorderColor(DirectX::XMVectorSet(0.48f, 0.48f, 0.48f, 1.f));
 
 		{
 			m_pLabel = new Label(name);
