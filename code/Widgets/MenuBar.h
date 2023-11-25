@@ -21,7 +21,7 @@ namespace Widgets
 		Menu* AddMenu(const std::string& name);
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
-	
+
 		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 		void ResizeChildren() override;
 		void ReComputeSize_PostChildren() override;
@@ -35,6 +35,8 @@ namespace Widgets
 		std::vector<Menu*> m_menusArray;
 
 		bool OnClick_MenuButton(Button* pButton, Menu* pMenu);
-		bool OnLoseFocus_Menu(Button* pButton, Menu* pMenu);
+		void OnLoseFocus_Menu(const FocusEvent& ev, Button* pButton, Menu* pMenu);
+		void OnOpen_Menu(Button* pButton);
+		void OnClose_Menu(Button* pButton);
 	};
 }

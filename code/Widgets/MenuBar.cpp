@@ -5,6 +5,7 @@
 #include "Widgets/MenuBar.h"
 
 #include "Widgets/Button.h"
+#include "Widgets/Events/FocusEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
@@ -45,8 +46,9 @@ namespace Widgets
 		AddWidget(pNewMenu);
 
 		pNewButton->OnClick([this, pNewButton, pNewMenu]() -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
-		pNewMenu->OnFocusLost([this, pNewButton, pNewMenu](const FocusEvent& ev) -> bool { return OnLoseFocus_Menu(pNewButton, pNewMenu); });
-
+		pNewMenu->OnFocusLost([this, pNewButton, pNewMenu](const FocusEvent& ev) { OnLoseFocus_Menu(ev, pNewButton, pNewMenu); });
+		pNewMenu->OnOpen([this, pNewButton]() { OnOpen_Menu(pNewButton); });
+		pNewMenu->OnClose([this, pNewButton]() { OnClose_Menu(pNewButton); });
 		return pNewMenu;
 	}
 
@@ -124,24 +126,32 @@ namespace Widgets
 		if (!pMenu->IsEnabled())
 		{
 			Widgets::WidgetMgr::Get().RequestResize();
-			pMenu->Enable();
-			pMenu->SetFocus();
+			pMenu->OpenMenu();
 			pButton->Select();
 		}
 		else
 		{
-			pMenu->Disable();
-			pButton->Unselect();
+			pMenu->CloseMenu();
 		}
 		
 		return true;
 	}
 
-	bool MenuBar::OnLoseFocus_Menu(Button* pButton, Menu* pMenu)
+	void MenuBar::OnLoseFocus_Menu(const FocusEvent& ev, Button* pButton, Menu* pMenu)
 	{
-		//if(pButton->focu)
-		pMenu->Disable();
+		if (ev.m_pFocusGained == pButton)
+			return;
+
+		pMenu->CloseMenu();
+	}
+
+	void MenuBar::OnOpen_Menu(Button* pButton)
+	{
+		pButton->Select();
+	}
+
+	void MenuBar::OnClose_Menu(Button* pButton)
+	{
 		pButton->Unselect();
-		return true;
 	}
 }
