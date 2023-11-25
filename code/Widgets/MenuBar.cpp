@@ -33,7 +33,7 @@ namespace Widgets
 	{
 		//create the menu button
 		Button* pNewButton = new Button(name);
-		pNewButton->GetHoverStyle().SetBorderColor(DirectX::XMVectorSet(0.44f, 0.44f, 0.44f, 1.f));
+		pNewButton->GetHoverStyle().SetBorderColor(Color(0.44f, 0.44f, 0.44f, 1.f));
 
 		m_pLayout->AddWidget(pNewButton);
 

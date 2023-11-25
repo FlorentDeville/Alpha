@@ -23,9 +23,9 @@ namespace Widgets
 		, m_selectedStyle()
 	{
 		m_hoverStyle.ShowBorder(true);
-		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+		m_hoverStyle.SetBackgroundColor(Color(0.24f, 0.24f, 0.24f, 1.f));
 
-		m_selectedStyle.SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+		m_selectedStyle.SetBackgroundColor(Color(0.24f, 0.24f, 0.24f, 1.f));
 	}
 
 	Button::Button(const std::string& textLabel)
