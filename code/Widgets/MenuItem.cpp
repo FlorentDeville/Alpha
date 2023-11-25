@@ -5,6 +5,7 @@
 #include "Widgets/MenuItem.h"
 
 #include "Widgets/Button.h"
+#include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 
@@ -49,6 +50,29 @@ namespace Widgets
 
 	MenuItem::~MenuItem()
 	{}
+
+	bool MenuItem::Handle(const BaseEvent& ev)
+	{
+		switch (ev.m_id)
+		{
+		case EventId::kMouseLUp:
+		{
+			if (m_onClick)
+				m_onClick();
+
+			m_hover = false;
+			return true;
+			//shut down parent menu
+		}
+		break;
+
+		default:
+			return Button::Handle(ev);
+			break;
+		}
+
+		return false;
+	}
 
 	void MenuItem::AddShortcut(const std::string& shortcut)
 	{

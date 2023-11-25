@@ -18,6 +18,8 @@ namespace Widgets
 		MenuItem(const std::string& name);
 		~MenuItem();
 
+		bool Handle(const BaseEvent& ev) override;
+
 		void AddShortcut(const std::string& shortcut);
 
 	private:
