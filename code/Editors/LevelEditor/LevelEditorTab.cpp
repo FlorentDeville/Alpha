@@ -221,7 +221,7 @@ namespace Editors
 		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pOkButton->AddWidget(pOkLabel);
 		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pOkButton->OnClick([this, pNameTextBox](int, int) -> bool
+		pOkButton->OnClick([this, pNameTextBox]() -> bool
 			{
 				Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();
 
@@ -242,7 +242,7 @@ namespace Editors
 		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pCancelButton->AddWidget(pCancelLabel);
 		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+		pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
 		pHLayout->AddWidget(pCancelButton);
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
@@ -286,7 +286,7 @@ namespace Editors
 		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pOkButton->AddWidget(pOkLabel);
 		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pOkButton->OnClick([this, pNode](int, int) -> bool
+		pOkButton->OnClick([this, pNode]() -> bool
 			{
 				Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();
 
@@ -305,7 +305,7 @@ namespace Editors
 		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pCancelButton->AddWidget(pCancelLabel);
 		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+		pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
 		pHLayout->AddWidget(pCancelButton);
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);

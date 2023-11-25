@@ -153,7 +153,7 @@ namespace Editors
 
 			//import button
 			Widgets::Button* pButtonImport = new Widgets::Button(LINE_HEIGHT, LINE_HEIGHT, 0, 0);
-			pButtonImport->OnClick([this, ii](int x, int y) -> bool { return OnMeshImportClicked(ii); });
+			pButtonImport->OnClick([this, ii]() -> bool { return OnMeshImportClicked(ii); });
 			pEntryLayout->AddWidget(pButtonImport);
 
 			std::string importIconFilename = parameter.m_editorIconsPath + "\\import.png";
@@ -164,7 +164,7 @@ namespace Editors
 			const std::string& meshName = entry.m_displayName;
 			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
+			pButton->OnClick([this, ii]() -> bool { OnMeshEntryClicked(ii); return true; });
 			pEntryLayout->AddWidget(pButton);
 			m_allEntryButton.push_back(pButton);
 
@@ -216,7 +216,7 @@ namespace Editors
 			//material widget
 			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, materialIndex](int x, int y) -> bool { return OnMaterialClicked(materialIndex); });
+			pButton->OnClick([this, materialIndex]() -> bool { return OnMaterialClicked(materialIndex); });
 			pMaterialLayout->AddWidget(pButton);
 
 			const int LABEL_OFFSET_X = 10;

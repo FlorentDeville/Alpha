@@ -62,10 +62,9 @@ namespace Widgets
 		int tabIndex = static_cast<int>(m_tabHeaders.size());
 
 		Widgets::Container* pTitleContainer = new Widgets::Container(textRect.x, textRect.y);
-		//pTitleContainer->SetBackgroundColor(m_defaultHeaderColor);
 		Label* pTitleLabel = new Label(0, 0, 1, header);
 		pTitleContainer->AddWidget(pTitleLabel);
-		pTitleContainer->OnClick([this, tabIndex](int, int) -> bool {
+		pTitleContainer->OnClick([this, tabIndex]() -> bool {
 			SetSelectedTab(tabIndex);
 			Widgets::WidgetMgr::Get().RequestResize();
 			return true;

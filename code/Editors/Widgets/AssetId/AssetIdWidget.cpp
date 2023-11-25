@@ -33,7 +33,7 @@ namespace Editors
 		pButtonLabel->SetX(6);
 		pButtonLabel->SetY(-3);
 		m_pButton->AddWidget(pButtonLabel);
-		m_pButton->OnClick([this](int, int)->bool
+		m_pButton->OnClick([this]()->bool
 			{
 				Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Select Asset");
 				pWindow->SetSize(DirectX::XMUINT2(500, 500));
@@ -71,7 +71,7 @@ namespace Editors
 				pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 				pOkButton->AddWidget(pOkLabel);
 				pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-				pOkButton->OnClick([this, pList, pModel](int, int) -> bool
+				pOkButton->OnClick([this, pList, pModel]() -> bool
 					{
 						int selectedItem = pList->GetSelectedItem();
 						if (selectedItem != -1)
@@ -90,7 +90,7 @@ namespace Editors
 				pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 				pCancelButton->AddWidget(pCancelLabel);
 				pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-				pCancelButton->OnClick([](int, int) -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+				pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
 				pHLayout->AddWidget(pCancelButton);
 
 				Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);

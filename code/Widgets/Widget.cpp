@@ -185,7 +185,7 @@ namespace Widgets
 			if (m_onLeftMouseUp)
 				return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
 			if (m_onClick)
-				return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+				return m_onClick();
 			break;
 
 		case M_MouseEnter:
@@ -406,7 +406,7 @@ namespace Widgets
 		m_onMouseExit = callback;
 	}
 
-	void Widget::OnClick(const std::function<bool(int, int)>& callback)
+	void Widget::OnClick(const std::function<bool()>& callback)
 	{
 		m_onClick = callback;
 	}

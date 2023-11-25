@@ -50,7 +50,7 @@ namespace Editors
 				pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 				pItemLayout->SetDirection(Widgets::Layout::Horizontal);
 				pItemLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-				pItemLayout->OnClick([this, ii](int, int) -> bool 
+				pItemLayout->OnClick([this, ii]() -> bool 
 					{ 
 						if (m_selectedRow != -1)
 						{

@@ -109,7 +109,7 @@ namespace Editors
 
 			pLayout->AddWidget(pContainer);
 
-			pIcon->OnClick([this, pComponentWidget, pIcon](int, int) -> bool {
+			pIcon->OnClick([this, pComponentWidget, pIcon]() -> bool {
 				if (pComponentWidget->IsEnabled())
 				{
 					pComponentWidget->Disable();

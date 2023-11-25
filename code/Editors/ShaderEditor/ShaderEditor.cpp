@@ -83,7 +83,7 @@ namespace Editors
 			const std::string& shaderName = entry.m_rawFilename;
 			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, ii](int x, int y) -> bool { return OnShaderEntryClicked(ii); });
+			pButton->OnClick([this, ii]() -> bool { return OnShaderEntryClicked(ii); });
 			m_pShaderListLayout->AddWidget(pButton);
 
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, shaderName);
@@ -106,7 +106,7 @@ namespace Editors
 		{
 			Widgets::Button* pButton = new Widgets::Button(60, 0, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
-			pButton->OnClick([this](int x, int y) -> bool { return OnCompileClicked(); });
+			pButton->OnClick([this]() -> bool { return OnCompileClicked(); });
 			pButtonLayout->AddWidget(pButton);
 
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Compile");

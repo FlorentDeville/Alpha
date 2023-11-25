@@ -144,7 +144,7 @@ namespace Widgets
 		void OnLeftMouseUp(const std::function<bool(int, int)>& callback);
 		void OnMouseEnter(const std::function<bool()>& callback);
 		void OnMouseExit(const std::function<bool()>& callback);
-		void OnClick(const std::function<bool(int, int)>& callback);
+		void OnClick(const std::function<bool()>& callback);
 		void OnGetFocus(const std::function<bool()>& callback);
 		void OnLoseFocus(const std::function<bool()>& callback);
 
@@ -181,7 +181,7 @@ namespace Widgets
 		std::function<bool(int x, int y)>			m_onLeftMouseUp;
 		std::function<bool()>						m_onMouseEnter;
 		std::function<bool()>						m_onMouseExit;
-		std::function<bool(int x, int y)>			m_onClick;
+		std::function<bool()>						m_onClick;
 		std::function<bool()>						m_onGetFocus;
 		std::function<bool()>						m_onLoseFocus;
 		std::string m_name;

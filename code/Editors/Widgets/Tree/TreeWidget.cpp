@@ -118,7 +118,7 @@ namespace Editors
 			pIcon->SetY(4);
 			pIcon->SetSize(DirectX::XMUINT2(12, 12));
 			pIcon->SetTextureId(m_expandedIcon);
-			pIcon->OnClick([this, pChildrenLayout, pIcon](int, int) -> bool
+			pIcon->OnClick([this, pChildrenLayout, pIcon]() -> bool
 				{
 					if (pChildrenLayout->IsEnabled())
 					{
@@ -146,7 +146,7 @@ namespace Editors
 		Widgets::Button* pButton = new Widgets::Button(0, ITEM_HEIGHT, 0, 0);
 		pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pButton->GetHoverStyle().ShowBorder(false);
-		pButton->OnClick([this, pModel, pButton](int x, int y) -> bool
+		pButton->OnClick([this, pModel, pButton]() -> bool
 			{
 				if (m_pSelectedButton)
 					m_pSelectedButton->Unselect();

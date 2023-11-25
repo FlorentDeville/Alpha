@@ -44,7 +44,7 @@ namespace Widgets
 		m_menusArray.push_back(pNewMenu);
 		AddWidget(pNewMenu);
 
-		pNewButton->OnClick([this, pNewButton, pNewMenu](int, int) -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
+		pNewButton->OnClick([this, pNewButton, pNewMenu]() -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
 		pNewButton->OnLoseFocus([this, pNewButton, pNewMenu]() -> bool { return OnLoseFocus_MenuButton(pNewButton, pNewMenu); });
 
 		return pNewMenu;
