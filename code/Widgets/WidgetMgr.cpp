@@ -208,18 +208,18 @@ namespace Widgets
 
 	void WidgetMgr::HandleMsg(const Message& msg)
 	{
-		//Send first to the control who requested to capture events.
-		if (m_pCapturedWidget)
-		{
-			bool handled = m_pCapturedWidget->Handle(msg);
-			if (handled)
-				return;
-		}
-
 		std::deque<Widget*>* widgetsSortedQueue = &m_sortedWidgets;
-		if (m_pModalWindow)
-			widgetsSortedQueue = &m_sortedWidgetsModal;
 
+		std::deque<Widget*> capturedQueue;
+		if (m_pCapturedWidget) //Send first to the control who requested to capture events.
+		{
+			capturedQueue.push_back(m_pCapturedWidget);
+			widgetsSortedQueue = &capturedQueue;
+		}
+		else if (m_pModalWindow)
+		{
+			widgetsSortedQueue = &m_sortedWidgetsModal;
+		}
 		switch (msg.m_id)
 		{
 		case M_MouseMove:
