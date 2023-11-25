@@ -128,5 +128,7 @@ namespace Widgets
 		void ComputeSortedWidgetQueue();
 
 		const Widget* GetFocusedWidget() const;
+
+		Message ConvertMessageToEvent(const Widget* pWidget, const Message& msg) const;
 	};
 }

@@ -224,63 +224,57 @@ namespace Widgets
 		{
 		case M_MouseMove:
 		{
+			bool hasExited = false;
+			bool hasMoved = false; //you can only move or enter in a single frame. So I use the same flag here.
+
 			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
 			{
 				Widget* pWidget = *it;
 				if (!pWidget->IsEnabled())
 					continue;
 
-				bool handled = false;
+				Message ev = ConvertMessageToEvent(pWidget, msg);
 
-				bool isInside = pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
-				if (isInside)
+				switch (ev.m_id)
 				{
-					bool wasOutside = !pWidget->IsInside(m_prevMouseX, m_prevMouseY);
-					if (wasOutside) //if the previous position was outside, send a Entering message
+				case MessageId::M_MouseEnter:
+				case MessageId::M_MouseMove:
+				{
+					if (hasMoved)
 					{
-						Message enteringMsg;
-						enteringMsg.m_id = M_MouseEnter;
-						enteringMsg.m_low.m_raw = msg.m_low.m_raw;
-
-						handled = pWidget->Handle(enteringMsg);
+						continue;
 					}
 					else
 					{
-						handled = pWidget->Handle(msg);
+						hasMoved = pWidget->Handle(ev);
 					}
 				}
+				break;
 
-				if (handled)
-					break;
-			}
-
-			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
-			{
-				Widget* pWidget = *it;
-				if (!pWidget->IsEnabled())
-					continue;
-
-				bool handled = false;
-
-				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
-				
-				if (wasInside) //if the previous pos was inside, send a exit message
+				case MessageId::M_MouseExit:
 				{
-					bool isOutside = !pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
-					if (isOutside)
+					if (hasExited)
 					{
-						Message exitMsg;
-						exitMsg.m_id = M_MouseExit;
-						exitMsg.m_low.m_raw = msg.m_low.m_raw;
-
-						handled = pWidget->Handle(exitMsg);
+						continue;
+					}
+					else
+					{
+						hasExited = pWidget->Handle(ev);
 					}
 				}
+				break;
+				
+				case MessageId::M_Invalid:
+					break;
 
-				if (handled)
+				default:
+					assert(false);
+					break;
+				}
+				
+				if (hasExited && hasMoved)
 					break;
 			}
-
 			m_prevMouseX = msg.m_low.m_pos[0];
 			m_prevMouseY = msg.m_low.m_pos[1];
 		}
@@ -427,4 +421,92 @@ namespace Widgets
 		return m_pFocusedWidget;
 	}
 
+	Message WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Message& msg) const
+	{
+		switch (msg.m_id)
+		{
+		case M_MouseMove:
+		{
+				bool isInside = pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
+				if (!wasInside && isInside)
+				{
+					Message ret;
+					ret.m_id = MessageId::M_MouseEnter;
+					ret.m_low = msg.m_low;
+					return ret;
+				}
+				else if (wasInside && !isInside)
+				{
+					Message ret;
+					ret.m_id = MessageId::M_MouseExit;
+					ret.m_low = msg.m_low;
+					return ret;
+				}
+				else if (isInside)
+				{
+					return msg;
+				}
+				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make anevnet if we captured the mouse
+				{
+					return msg;
+				}
+				else //this message doesn't concern this widget
+				{
+					Message ret;
+					ret.m_id = MessageId::M_Invalid;
+					return ret;
+				}
+		}
+		break;
+
+		case M_MouseLDown:
+		case M_MouseLUp:
+		case M_MouseMDown:
+		case M_MouseMUp:
+		case M_MouseRDown:
+		case M_MouseRUp:
+		{
+			bool isInside = pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+			bool isCaptured = m_pCapturedWidget == pWidget;
+
+			if (isInside || isCaptured)
+			{
+				return msg;
+			}
+			else
+			{
+				Message ret;
+				ret.m_id = MessageId::M_Invalid;
+				return ret;
+			}
+		}
+		break;
+
+		case M_VirtualKeyDown:
+		case M_VirtualKeyUp:
+		case M_CharKeyDown:
+		{
+			if (m_pFocusedWidget == pWidget)
+			{
+				return msg;
+			}
+			else
+			{
+				Message ret;
+				ret.m_id = MessageId::M_Invalid;
+				return ret;
+			}
+		}
+		break;
+
+		default:
+			assert(false);
+		break;
+		}
+
+		Message ret;
+		ret.m_id = MessageId::M_Invalid;
+		return ret;
+	}
 }
