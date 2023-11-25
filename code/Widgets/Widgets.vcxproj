@@ -15,6 +15,8 @@
     <ClInclude Include="Container.h" />
     <ClInclude Include="Events\BaseEvent.h" />
     <ClInclude Include="Events\EventId.h" />
+    <ClInclude Include="Events\KeyboardEvent.h" />
+    <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Layout.h" />
@@ -45,7 +47,6 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Container.cpp" />
-    <ClCompile Include="Events\BaseEvent.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layout.cpp" />

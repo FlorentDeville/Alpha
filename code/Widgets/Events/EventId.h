@@ -26,6 +26,12 @@ namespace Widgets
 		//Mouse click
 		kMouseLeftClick,
 
+		//key
+		kVKeyDown,
+		kVKeyUp,
+
+		kCharKeyDown,
+
 		kCount
 
 	};
