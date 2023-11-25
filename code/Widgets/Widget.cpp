@@ -183,7 +183,7 @@ namespace Widgets
 
 		case M_MouseLUp:
 			if (m_onLeftMouseUp)
-				return m_onLeftMouseUp(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
+				return m_onLeftMouseUp();
 			if (m_onClick)
 				return m_onClick();
 			break;
@@ -391,7 +391,7 @@ namespace Widgets
 		m_onMouseMove = callback;
 	}
 
-	void Widget::OnLeftMouseUp(const std::function<bool(int, int)>& callback)
+	void Widget::OnLeftMouseUp(const std::function<bool()>& callback)
 	{
 		m_onLeftMouseUp = callback;
 	}

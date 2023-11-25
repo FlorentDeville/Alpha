@@ -141,7 +141,7 @@ namespace Widgets
 		void ReleaseMouse();	//Stop receiving the mouse events
 
 		void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
-		void OnLeftMouseUp(const std::function<bool(int, int)>& callback);
+		void OnLeftMouseUp(const std::function<bool()>& callback);
 		void OnMouseEnter(const std::function<bool()>& callback);
 		void OnMouseExit(const std::function<bool()>& callback);
 		void OnClick(const std::function<bool()>& callback);
@@ -178,7 +178,7 @@ namespace Widgets
 		FOCUS_POLICY m_focusPolicy;
 
 		std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
-		std::function<bool(int x, int y)>			m_onLeftMouseUp;
+		std::function<bool()>						m_onLeftMouseUp;
 		std::function<bool()>						m_onMouseEnter;
 		std::function<bool()>						m_onMouseExit;
 		std::function<bool()>						m_onClick;
