@@ -20,7 +20,7 @@ namespace Widgets
 	Tab::~Tab()
 	{}
 
-	bool Tab::Handle(const Message& /*msg*/)
+	bool Tab::Handle(const BaseEvent& /*ev*/)
 	{
 		//If the message reached the tab then handled it no matter what so lower tab won't receive it.
 		return true;

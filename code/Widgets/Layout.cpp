@@ -7,8 +7,10 @@
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Widgets/WidgetMgr.h"
+
+#include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Message.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
@@ -70,25 +72,25 @@ namespace Widgets
 		}
 	}
 
-	bool Layout::Handle(const Message& msg)
+	bool Layout::Handle(const BaseEvent& ev)
 	{
-		switch (msg.m_id)
+		switch (ev.m_id)
 		{
-		case M_MouseMove:
+		/*case M_MouseMove:
 			if (m_onMouseMove)
 				return m_onMouseMove(msg.m_low.m_pos[0], msg.m_low.m_pos[1], (MouseKey)msg.m_high);
 			else
 				return Widget::Handle(msg);
-			break;
+			break;*/
 
-		case M_MouseEnter:
+		case EventId::kMouseEnter:
 		{
 			m_hover = true;
 			return true;
 		}
 		break;
 
-		case M_MouseExit:
+		case EventId::kMouseExit:
 		{
 			m_hover = false;
 			return true;
@@ -96,7 +98,7 @@ namespace Widgets
 		break;
 
 		default:
-			return Widget::Handle(msg);
+			return Widget::Handle(ev);
 			break;
 		}
 

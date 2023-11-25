@@ -8,6 +8,8 @@
 
 namespace Widgets
 {
+	class BaseEvent;
+
 	class Split : public Widget
 	{
 	public:
@@ -15,7 +17,7 @@ namespace Widgets
 		~Split();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
-		bool Handle(const Message& msg) override;
+		bool Handle(const BaseEvent& ev) override;
 
 		bool IsDragged();
 		DirectX::XMINT2 GetPreviousCursorPosition() const;

@@ -31,6 +31,8 @@ struct Message;
 /********************************************************************/
 namespace Widgets
 {
+	class BaseEvent;
+
 	class Widget
 	{
 		friend class WidgetMgr;
@@ -92,7 +94,7 @@ namespace Widgets
 
 		virtual void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 
-		virtual bool Handle(const Message& msg);
+		virtual bool Handle(const BaseEvent& event);
 
 		virtual void AddWidget(Widget* pWidget);
 		virtual void DeleteChild(Widget* pWidget);

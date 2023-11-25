@@ -26,7 +26,7 @@ namespace Widgets
 
 		void Enable(bool recursive = true) override;
 
-		bool Handle(const Message& msg) override;
+		bool Handle(const BaseEvent& ev) override;
 
 		void SetText(const std::string& text);
 

@@ -8,6 +8,7 @@
 
 namespace Widgets
 {
+	class BaseEvent;
 	class Label;
 	class Layout;
 
@@ -19,7 +20,7 @@ namespace Widgets
 
 		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
-		bool Handle(const Message& msg) override;
+		bool Handle(const BaseEvent& ev) override;
 
 		void AddWidget(Widget* pWidget) override;
 		void DeleteChild(Widget* pWidget) override;

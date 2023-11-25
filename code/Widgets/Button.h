@@ -21,7 +21,7 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
-		bool Handle(const Message& msg) override;
+		bool Handle(const BaseEvent& event) override;
 
 		void Select();
 		void Unselect();

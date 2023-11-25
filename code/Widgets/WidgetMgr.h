@@ -17,6 +17,10 @@
 
 #include "Core/Singleton.h"
 
+#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/KeyboardEvent.h"
+#include "Widgets/Events/MouseEvent.h"
+
 struct Message;
 class SysWindow;
 
@@ -125,10 +129,15 @@ namespace Widgets
 
 		std::string m_editorIconsPath;
 
+		//internal event storage
+		BaseEvent m_baseEvent;
+		KeyboardEvent m_keyboardEvent;
+		MouseEvent m_mouseEvent;
+
 		void ComputeSortedWidgetQueue();
 
 		const Widget* GetFocusedWidget() const;
 
-		Message ConvertMessageToEvent(const Widget* pWidget, const Message& msg) const;
+		const BaseEvent& ConvertMessageToEvent(const Widget* pWidget, const Message& msg);
 	};
 }

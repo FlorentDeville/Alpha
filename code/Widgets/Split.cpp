@@ -3,8 +3,10 @@
 /********************************************************************/
 
 #include "Widgets/Split.h"
-#include "Widgets/Message.h"
 
+#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/MouseEvent.h"
+#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
 #include "Rendering/Material/MaterialMgr.h"
@@ -61,11 +63,11 @@ void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 	Widget::Draw(windowSize);
 }
 
-bool Split::Handle(const Message& msg)
+bool Split::Handle(const BaseEvent& ev)
 {
-	switch (msg.m_id)
+	switch (ev.m_id)
 	{
-	case M_MouseEnter:
+	case EventId::kMouseEnter://M_MouseEnter:
 	{
 		if (m_isVerticalSplit)
 			g_pIconName = IDC_SIZEWE;
@@ -76,7 +78,7 @@ bool Split::Handle(const Message& msg)
 	}
 		break;
 
-	case M_MouseExit:
+	case EventId::kMouseExit: //M_MouseExit:
 	{
 		if (!m_isDragged)
 			g_pIconName = IDC_ARROW;
@@ -85,11 +87,12 @@ bool Split::Handle(const Message& msg)
 	}
 		break;
 
-	case M_MouseLUp:
+	case EventId::kMouseLUp://M_MouseLUp:
 	{
 		ReleaseMouse();
+		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
 
-		if(!IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]))
+		if(!IsInside(mouseEvent.m_x, mouseEvent.m_y))
 			g_pIconName = IDC_ARROW;
 
 		m_isDragged = false;
@@ -97,7 +100,7 @@ bool Split::Handle(const Message& msg)
 	}
 	break;
 
-	case M_MouseLDown:
+	case EventId::kMouseLDown://M_MouseLDown:
 	{
 		CaptureMouse();
 
@@ -114,7 +117,7 @@ bool Split::Handle(const Message& msg)
 
 	}
 
-	return Widget::Handle(msg);
+	return Widget::Handle(ev);
 }
 
 bool Split::IsDragged()

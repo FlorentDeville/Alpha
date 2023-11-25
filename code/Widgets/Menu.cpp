@@ -31,10 +31,10 @@ namespace Widgets
 	Menu::~Menu()
 	{}
 
-	bool Menu::Handle(const Message& msg)
+	bool Menu::Handle(const BaseEvent& ev)
 	{
 		//return true so the widgets behind the menu don't get any event.
-		Widget::Handle(msg);
+		Widget::Handle(ev);
 		return true;
 	}
 

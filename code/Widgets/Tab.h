@@ -19,7 +19,7 @@ namespace Widgets
 		Tab();
 		~Tab();
 
-		bool Handle(const Message& msg) override;
+		bool Handle(const BaseEvent& ev) override;
 
 	};
 }

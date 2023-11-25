@@ -17,6 +17,7 @@
 
 #include "OsWin/SysWindow.h"
 
+#include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Message.h"
 #include "Widgets/Widget.h"
 
@@ -233,12 +234,12 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				Message ev = ConvertMessageToEvent(pWidget, msg);
+				const BaseEvent& ev = ConvertMessageToEvent(pWidget, msg);
 
 				switch (ev.m_id)
 				{
-				case MessageId::M_MouseEnter:
-				case MessageId::M_MouseMove:
+				case EventId::kMouseEnter:
+				case EventId::kMouseMove:
 				{
 					if (hasMoved)
 					{
@@ -251,7 +252,7 @@ namespace Widgets
 				}
 				break;
 
-				case MessageId::M_MouseExit:
+				case EventId::kMouseExit:
 				{
 					if (hasExited)
 					{
@@ -264,7 +265,7 @@ namespace Widgets
 				}
 				break;
 				
-				case MessageId::M_Invalid:
+				case EventId::kUnknown:
 					break;
 
 				default:
@@ -294,9 +295,9 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				Message ev = ConvertMessageToEvent(pWidget, msg);
+				const BaseEvent& ev = ConvertMessageToEvent(pWidget, msg);
 
-				if (ev.m_id != MessageId::M_Invalid)
+				if (ev.m_id != EventId::kUnknown)
 				{
 					if (!setFocus)
 					{
@@ -304,7 +305,7 @@ namespace Widgets
 						setFocus = true;
 					}
 
-					bool handled = pWidget->Handle(msg);
+					bool handled = pWidget->Handle(ev);
 					if (handled)
 						break;
 				}
@@ -318,7 +319,7 @@ namespace Widgets
 		{
 			if (m_pFocusedWidget)
 			{
-				Message ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
+				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
 				if (ev.m_id != MessageId::M_Invalid)
 					m_pFocusedWidget->Handle(ev);
 			}
@@ -423,7 +424,7 @@ namespace Widgets
 		return m_pFocusedWidget;
 	}
 
-	Message WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Message& msg) const
+	const BaseEvent& WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Message& msg)
 	{
 		switch (msg.m_id)
 		{
@@ -433,31 +434,36 @@ namespace Widgets
 				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
 				if (!wasInside && isInside)
 				{
-					Message ret;
-					ret.m_id = MessageId::M_MouseEnter;
-					ret.m_low = msg.m_low;
-					return ret;
+					m_mouseEvent.m_id = EventId::kMouseEnter;
+					m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_mouseEvent;
 				}
 				else if (wasInside && !isInside)
 				{
-					Message ret;
-					ret.m_id = MessageId::M_MouseExit;
-					ret.m_low = msg.m_low;
-					return ret;
+					m_mouseEvent.m_id = EventId::kMouseExit;
+					m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_mouseEvent;
 				}
 				else if (isInside)
 				{
-					return msg;
+					m_mouseEvent.m_id = EventId::kMouseMove;
+					m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_mouseEvent;
 				}
-				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make anevnet if we captured the mouse
+				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make an event if we captured the mouse
 				{
-					return msg;
+					m_mouseEvent.m_id = EventId::kMouseMove;
+					m_mouseEvent.m_x = msg.m_low.m_pos[0];
+					m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					return m_mouseEvent;
 				}
 				else //this message doesn't concern this widget
 				{
-					Message ret;
-					ret.m_id = MessageId::M_Invalid;
-					return ret;
+					m_baseEvent.m_id = EventId::kUnknown;
+					return m_baseEvent;
 				}
 		}
 		break;
@@ -474,13 +480,42 @@ namespace Widgets
 
 			if (isInside || isCaptured)
 			{
-				return msg;
+				m_mouseEvent.m_x = msg.m_low.m_pos[0];
+				m_mouseEvent.m_y = msg.m_low.m_pos[1];
+
+				switch (msg.m_id)
+				{
+				case M_MouseLDown:
+					m_mouseEvent.m_id = EventId::kMouseLDown;
+					break;
+
+				case M_MouseLUp:
+					m_mouseEvent.m_id = EventId::kMouseLUp;
+					break;
+
+				case M_MouseMDown:
+					m_mouseEvent.m_id = EventId::kMouseMDown;
+					break;
+
+				case M_MouseMUp:
+					m_mouseEvent.m_id = EventId::kMouseMUp;
+					break;
+
+				case M_MouseRDown:
+					m_mouseEvent.m_id = EventId::kMouseRDown;
+					break;
+
+				case M_MouseRUp:
+					m_mouseEvent.m_id = EventId::kMouseRUp;
+					break;
+				}				
+				
+				return m_mouseEvent;
 			}
 			else
 			{
-				Message ret;
-				ret.m_id = MessageId::M_Invalid;
-				return ret;
+				m_baseEvent.m_id = EventId::kUnknown;
+				return m_baseEvent;
 			}
 		}
 		break;
@@ -491,13 +526,28 @@ namespace Widgets
 		{
 			if (m_pFocusedWidget == pWidget)
 			{
-				return msg;
+				m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high);
+
+				switch (msg.m_id)
+				{
+				case M_VirtualKeyDown:
+					m_keyboardEvent.m_id = EventId::kVKeyDown;
+					break;
+
+				case M_VirtualKeyUp:
+					m_keyboardEvent.m_id = EventId::kVKeyUp;
+					break;
+
+				case M_CharKeyDown:
+					m_keyboardEvent.m_id = EventId::kCharKeyDown;
+					break;
+				}
+				return m_keyboardEvent;
 			}
 			else
 			{
-				Message ret;
-				ret.m_id = MessageId::M_Invalid;
-				return ret;
+				m_baseEvent.m_id = EventId::kUnknown;
+				return m_baseEvent;
 			}
 		}
 		break;
@@ -507,8 +557,7 @@ namespace Widgets
 		break;
 		}
 
-		Message ret;
-		ret.m_id = MessageId::M_Invalid;
-		return ret;
+		m_baseEvent.m_id = EventId::kUnknown;
+		return m_baseEvent;
 	}
 }

@@ -4,8 +4,9 @@
 
 #include "Widget.h"
 
-#include "Widgets/WidgetMgr.h"
+#include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Message.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
@@ -171,31 +172,25 @@ namespace Widgets
 		ReComputeSize_PostChildren();
 	}
 
-	bool Widget::Handle(const Message& msg)
+	bool Widget::Handle(const BaseEvent& event)
 	{
-		switch (msg.m_id)
+		switch (event.m_id)
 		{
-		case M_MouseLDown:/*
-			if (m_onClick)
-				return m_onClick(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);*/
-			return true;
-			break;
-
-		case M_MouseLUp:
-			if (m_onLeftMouseUp)
-				return m_onLeftMouseUp();
-			if (m_onClick)
-				return m_onClick();
-			break;
-
-		case M_MouseEnter:
+		case EventId::kMouseEnter:
 			if (m_onMouseEnter)
 				return m_onMouseEnter();
 			break;
 
-		case M_MouseExit:
+		case EventId::kMouseExit:
 			if (m_onMouseExit)
 				return m_onMouseExit();
+			break;
+
+		case EventId::kMouseLUp:
+			if (m_onLeftMouseUp)
+				return m_onLeftMouseUp();
+			if (m_onClick)
+				return m_onClick();
 			break;
 
 		default:

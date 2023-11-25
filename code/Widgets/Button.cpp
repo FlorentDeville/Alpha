@@ -8,6 +8,7 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
+#include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
@@ -81,11 +82,11 @@ namespace Widgets
 		Widget::Draw(windowSize);
 	}
 
-	bool Button::Handle(const Message& msg)
+	bool Button::Handle(const BaseEvent& event)
 	{
-		switch (msg.m_id)
+		switch (event.m_id)
 		{
-		case M_MouseEnter:
+		case EventId::kMouseEnter:
 		{
 			m_hover = true;
 			m_showBorder = true;
@@ -93,7 +94,7 @@ namespace Widgets
 		}
 		break;
 
-		case M_MouseExit:
+		case EventId::kMouseExit:
 		{
 			m_hover = false;
 			m_showBorder = false;
@@ -101,7 +102,7 @@ namespace Widgets
 		}
 		break;
 
-		case M_MouseMove:
+		case EventId::kMouseMove:
 		{
 			m_hover = true;
 			m_showBorder = true;
@@ -110,7 +111,7 @@ namespace Widgets
 		break;
 
 		default:
-			return Widget::Handle(msg);
+			return Widget::Handle(event);
 			break;
 		}
 	}

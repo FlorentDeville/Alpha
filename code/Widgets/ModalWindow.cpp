@@ -4,6 +4,8 @@
 
 #include "Widgets/ModalWindow.h"
 
+#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Message.h"
@@ -51,11 +53,12 @@ namespace Widgets
 		m_absPos.z = 10;
 	}
 
-	bool ModalWindow::Handle(const Message& msg)
+	bool ModalWindow::Handle(const BaseEvent& ev)
 	{
-		if (msg.m_id == MessageId::M_VirtualKeyDown)
+		if (ev.m_id == EventId::kVKeyDown)
 		{
-			if(msg.m_high == 0x1B)//escape	
+			const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
+			if(keyboardEvent.m_virtualKey == 0x1B)//escape	
 			{
 				Widgets::WidgetMgr::Get().CloseModalWindow();
 			}

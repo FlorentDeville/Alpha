@@ -4,6 +4,8 @@
 
 #include "Widgets/TextBox.h"
 
+#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
@@ -116,11 +118,11 @@ namespace Widgets
 		m_enabled = true;
 	}
 
-	bool TextBox::Handle(const Message& msg)
+	bool TextBox::Handle(const BaseEvent& ev)
 	{
-		switch (msg.m_id)
+		switch (ev.m_id)
 		{
-		case M_MouseEnter:
+		case EventId::kMouseEnter: //M_MouseEnter:
 		{
 			if(m_currentState == DEFAULT)
 				m_currentState = HOVER;
@@ -128,7 +130,7 @@ namespace Widgets
 		}
 		break;
 
-		case M_MouseExit:
+		case EventId::kMouseExit://M_MouseExit:
 		{
 			if(m_currentState == HOVER)
 				m_currentState = DEFAULT;
@@ -136,11 +138,12 @@ namespace Widgets
 		}
 		break;
 
-		case M_VirtualKeyDown:
+		case EventId::kVKeyDown: //M_VirtualKeyDown:
 		{
 			if (m_currentState == EDIT)
 			{
-				if (msg.m_high == 39) //right
+				const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
+				if (keyboardEvent.m_virtualKey == 39) //right
 				{
 					if (m_cursorPosition < m_text.size())
 					{
@@ -149,7 +152,7 @@ namespace Widgets
 					}
 					return true;
 				}
-				else if (msg.m_high == 37) // left
+				else if (keyboardEvent.m_virtualKey == 37) // left
 				{
 					if (m_cursorPosition > 0)
 					{
@@ -158,7 +161,7 @@ namespace Widgets
 					}
 					return true;
 				}
-				else if (msg.m_high == 0x08) // backspace
+				else if (keyboardEvent.m_virtualKey == 0x08) // backspace
 				{
 					if (m_cursorPosition > 0)
 					{
@@ -167,14 +170,14 @@ namespace Widgets
 						ComputeCursorPosition();
 					}
 				}
-				else if (msg.m_high == 0x2E) //delete
+				else if (keyboardEvent.m_virtualKey == 0x2E) //delete
 				{
 					if (m_cursorPosition < m_text.size())
 					{
 						m_text.erase(m_cursorPosition, 1);
 					}
 				}
-				else if (msg.m_high == 0x0D) // enter
+				else if (keyboardEvent.m_virtualKey == 0x0D) // enter
 				{
 					if (m_onValidateCallback)
 						m_onValidateCallback(m_text);
@@ -184,11 +187,12 @@ namespace Widgets
 		}
 		break;
 
-		case M_CharKeyDown:
+		case EventId::kCharKeyDown: //M_CharKeyDown:
 		{
 			if(m_currentState == EDIT)
 			{
-				char newChar = static_cast<char>(msg.m_high);
+				const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
+				char newChar = static_cast<char>(keyboardEvent.m_virtualKey);
 				if (newChar == '\b' || newChar == '\t' || newChar == '\r' || newChar == '\n')
 					return true;
 
@@ -201,7 +205,7 @@ namespace Widgets
 		break;
 
 		default:
-			return Widget::Handle(msg);
+			return Widget::Handle(ev);
 			break;
 		}
 
