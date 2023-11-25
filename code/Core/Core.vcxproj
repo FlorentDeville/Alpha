@@ -90,12 +90,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Callbacks\CallbackId.cpp" />
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Math\Mat44f.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Callbacks\CallbackId.h" />
+    <ClInclude Include="Callbacks\CallbackList.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Math\Mat44f.h" />
