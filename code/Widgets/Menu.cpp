@@ -25,6 +25,7 @@ namespace Widgets
 		m_pLayout->GetHoverStyle().SetBorderColor(DirectX::XMVectorSet(0.44f, 0.44f, 0.44f, 1.f));
 		m_pLayout->GetHoverStyle().SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
 		m_pLayout->SetDirection(Layout::Direction::Vertical);
+		m_pLayout->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 		AddWidget(m_pLayout);
 	}
 

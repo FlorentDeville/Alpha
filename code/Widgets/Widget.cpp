@@ -297,6 +297,11 @@ namespace Widgets
 		m_name = name;
 	}
 
+	void Widget::SetFocusPolicy(FOCUS_POLICY policy)
+	{
+		m_focusPolicy = policy;
+	}
+
 	int32_t Widget::GetX() const
 	{
 		return m_locPos.x;

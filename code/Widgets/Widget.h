@@ -119,6 +119,8 @@ namespace Widgets
 
 		void SetName(const std::string& name);
 
+		void SetFocusPolicy(FOCUS_POLICY policy);
+
 		int32_t GetX() const; //Get the local x coordinate from the top left corner
 		int32_t GetY() const; //Get the local y coordinate from the top left corner
 

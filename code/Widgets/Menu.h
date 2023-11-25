@@ -12,6 +12,8 @@ namespace Widgets
 	class Layout;
 	class MenuItem;
 
+	//Menu display a list of MenuItems. The menu stays visible as long as it has the focus so everything inside of it must be
+	// in focus policy NO_FOCUS, including the MenuItems.
 	class Menu : public Container
 	{
 	public:

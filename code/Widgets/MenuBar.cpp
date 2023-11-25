@@ -45,7 +45,7 @@ namespace Widgets
 		AddWidget(pNewMenu);
 
 		pNewButton->OnClick([this, pNewButton, pNewMenu]() -> bool { return OnClick_MenuButton(pNewButton, pNewMenu); });
-		pNewButton->OnLoseFocus([this, pNewButton, pNewMenu]() -> bool { return OnLoseFocus_MenuButton(pNewButton, pNewMenu); });
+		pNewMenu->OnLoseFocus([this, pNewButton, pNewMenu]() -> bool { return OnLoseFocus_Menu(pNewButton, pNewMenu); });
 
 		return pNewMenu;
 	}
@@ -125,7 +125,7 @@ namespace Widgets
 		{
 			Widgets::WidgetMgr::Get().RequestResize();
 			pMenu->Enable();
-			pButton->SetFocus();
+			pMenu->SetFocus();
 			pButton->Select();
 		}
 		else
@@ -137,7 +137,7 @@ namespace Widgets
 		return true;
 	}
 
-	bool MenuBar::OnLoseFocus_MenuButton(Button* pButton, Menu* pMenu)
+	bool MenuBar::OnLoseFocus_Menu(Button* pButton, Menu* pMenu)
 	{
 		pMenu->Disable();
 		pButton->Unselect();

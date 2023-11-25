@@ -13,12 +13,14 @@ namespace Widgets
 	MenuItem::MenuItem(const std::string& name)
 		: Button(0, 0, 0, 0)
 	{
+		SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 		SetSizeStyle(Widget::SIZE_STYLE::FIT);
 		const int HEIGHT = 20;
 
 		{
 			m_pLabel = new Label(name);
 			m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::DEFAULT);
+			m_pLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 			DirectX::XMUINT2 size = m_pLabel->GetSize();
 			size.x = 100;
 			size.y = HEIGHT;
@@ -32,6 +34,7 @@ namespace Widgets
 		{
 			m_pShortcut = new Label();
 			m_pShortcut->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
+			m_pShortcut->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 			DirectX::XMUINT2 size = m_pShortcut->GetSize();
 			size.x = 50;
 			size.y = HEIGHT;

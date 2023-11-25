@@ -35,6 +35,6 @@ namespace Widgets
 		std::vector<Menu*> m_menusArray;
 
 		bool OnClick_MenuButton(Button* pButton, Menu* pMenu);
-		bool OnLoseFocus_MenuButton(Button* pButton, Menu* pMenu);
+		bool OnLoseFocus_Menu(Button* pButton, Menu* pMenu);
 	};
 }
