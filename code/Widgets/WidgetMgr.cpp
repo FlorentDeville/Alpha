@@ -321,7 +321,7 @@ namespace Widgets
 			if (m_pFocusedWidget)
 			{
 				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
-				if (ev.m_id != MessageId::M_Invalid)
+				if (ev.m_id != EventId::kUnknown)
 					m_pFocusedWidget->Handle(ev);
 			}
 		}
