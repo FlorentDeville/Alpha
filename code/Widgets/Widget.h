@@ -11,6 +11,8 @@
 #include <functional>
 #include "MessageId.h"
 
+#include "Core/Callbacks/CallbackList.h"
+
 struct Message;
 
 /********************************************************************/
@@ -85,6 +87,8 @@ namespace Widgets
 			NO_FOCUS
 		};
 
+		using OnClickCallbackList = Core::CallbackList<void()>;
+
 		Widget();
 		Widget(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		virtual ~Widget();
@@ -148,7 +152,7 @@ namespace Widgets
 		void OnLeftMouseUp(const std::function<bool()>& callback);
 		void OnMouseEnter(const std::function<bool()>& callback);
 		void OnMouseExit(const std::function<bool()>& callback);
-		void OnClick(const std::function<bool()>& callback);
+		Core::CallbackId OnClick(const OnClickCallbackList::Callback& callback);
 		void OnGetFocus(const std::function<bool()>& callback);
 		void OnLoseFocus(const std::function<bool()>& callback);
 
@@ -185,7 +189,7 @@ namespace Widgets
 		std::function<bool()>						m_onLeftMouseUp;
 		std::function<bool()>						m_onMouseEnter;
 		std::function<bool()>						m_onMouseExit;
-		std::function<bool()>						m_onClick;
+		OnClickCallbackList							m_onClick;
 		std::function<bool()>						m_onGetFocus;
 		std::function<bool()>						m_onLoseFocus;
 		std::string m_name;

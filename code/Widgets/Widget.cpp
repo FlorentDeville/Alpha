@@ -174,29 +174,35 @@ namespace Widgets
 
 	bool Widget::Handle(const BaseEvent& event)
 	{
+		bool handled = false;
+
 		switch (event.m_id)
 		{
 		case EventId::kMouseEnter:
 			if (m_onMouseEnter)
-				return m_onMouseEnter();
+				handled = m_onMouseEnter();
 			break;
 
 		case EventId::kMouseExit:
 			if (m_onMouseExit)
-				return m_onMouseExit();
+				handled = m_onMouseExit();
 			break;
 
 		case EventId::kMouseLUp:
 			if (m_onLeftMouseUp)
-				return m_onLeftMouseUp();
+				handled = m_onLeftMouseUp();
 			if (m_onClick)
-				return m_onClick();
+			{
+				m_onClick();
+				handled = true;
+			}
 			break;
 
 		default:
 			break;
 		}
-		return false;
+
+		return handled;
 	}
 
 	void Widget::AddWidget(Widget* pWidget)
@@ -406,9 +412,9 @@ namespace Widgets
 		m_onMouseExit = callback;
 	}
 
-	void Widget::OnClick(const std::function<bool()>& callback)
+	Core::CallbackId Widget::OnClick(const OnClickCallbackList::Callback& callback)
 	{
-		m_onClick = callback;
+		return m_onClick.Connect(callback);
 	}
 
 	void Widget::OnGetFocus(const std::function<bool()>& callback)
