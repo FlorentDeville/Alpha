@@ -4,10 +4,13 @@
 
 #include "Widgets/Widgets/Frame.h"
 
+#include "Widgets/Button.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 
 #include "Widgets/Tools/DefaultColors.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
@@ -35,7 +38,31 @@ namespace Widgets
 		m_pTitleLayout->AddWidget(new Container(5, 0));
 
 		m_pTitleLabel = new Label(title);
+		m_pTitleLabel->SetSizeStyle(Widget::FIT);
 		m_pTitleLayout->AddWidget(m_pTitleLabel);
+
+		Layout* pIconLayout = new Layout();
+		pIconLayout->SetDirection(Layout::Horizontal_Reverse);
+		pIconLayout->SetSizeStyle(Widget::STRETCH);
+		m_pTitleLayout->AddWidget(pIconLayout);
+
+		std::string closeIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/close.png";
+		m_pCloseIcon = new Icon(closeIconPath);
+
+		std::string closeHoverIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/close_hover.png";
+		m_pCloseHoverIcon = new Icon(closeHoverIconPath);
+		m_pCloseHoverIcon->Disable();
+
+		Container* pCloseButton = new Container(m_pCloseIcon->GetWidth(), m_pCloseIcon->GetHeight());
+		pCloseButton->AddWidget(m_pCloseIcon);
+		pCloseButton->AddWidget(m_pCloseHoverIcon);
+		pCloseButton->SetY(5);
+
+		pCloseButton->OnMouseEnter([this]() -> bool { return OnMouseEnter_CloseButton(); });
+		pCloseButton->OnMouseExit([this]() -> bool { return OnMouseExit_CloseButton(); });
+		pCloseButton->OnClick([this]() { OnClick_CloseButton(); });
+
+		pIconLayout->AddWidget(pCloseButton);
 	}
 
 	Frame::~Frame()
@@ -44,5 +71,36 @@ namespace Widgets
 	void Frame::AddWidget(Widget* pWidget)
 	{
 		m_pInternalContainer->AddWidget(pWidget);
+	}
+
+	void Frame::Close()
+	{
+		if (m_onClose)
+			m_onClose();
+		Widgets::WidgetMgr::Get().RequestWidgetDeletion(this); // the widget will be deleted next frame
+	}
+
+	Core::CallbackId Frame::OnClose(const OnCloseEvent::Callback& callback)
+	{
+		return m_onClose.Connect(callback);
+	}
+
+	void Frame::OnClick_CloseButton()
+	{
+		Close();
+	}
+
+	bool Frame::OnMouseEnter_CloseButton()
+	{
+		m_pCloseIcon->Disable();
+		m_pCloseHoverIcon->Enable();
+		return true;
+	}
+
+	bool Frame::OnMouseExit_CloseButton()
+	{
+		m_pCloseIcon->Enable();
+		m_pCloseHoverIcon->Disable();
+		return true;
 	}
 }
