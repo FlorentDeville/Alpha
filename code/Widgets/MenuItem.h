@@ -11,6 +11,7 @@
 namespace Widgets
 {
 	class Label;
+	class Shortcut;
 
 	class MenuItem : public Button
 	{
@@ -20,10 +21,12 @@ namespace Widgets
 
 		bool Handle(const BaseEvent& ev) override;
 
-		void AddShortcut(const std::string& shortcut);
+		void SetShortcut(const std::string& shortcut);
 
 	private:
 		Label* m_pLabel;
-		Label* m_pShortcut;
+		Label* m_pShortcutLabel;
+
+		Shortcut* m_pShortcut;
 	};
 }

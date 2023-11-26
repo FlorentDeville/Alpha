@@ -8,11 +8,14 @@
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Shortcuts/Shortcut.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
 	MenuItem::MenuItem(const std::string& name)
 		: Button(0, 0, 0, 0)
+		, m_pShortcut(nullptr)
 	{
 		SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 		SetSizeStyle(Widget::SIZE_STYLE::FIT);
@@ -34,23 +37,30 @@ namespace Widgets
 		}
 
 		{
-			m_pShortcut = new Label();
-			m_pShortcut->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
-			m_pShortcut->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
-			DirectX::XMUINT2 size = m_pShortcut->GetSize();
+			m_pShortcutLabel = new Label();
+			m_pShortcutLabel->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
+			m_pShortcutLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
+			DirectX::XMUINT2 size = m_pShortcutLabel->GetSize();
 			size.x = 50;
 			size.y = HEIGHT;
-			m_pShortcut->SetSize(size);
+			m_pShortcutLabel->SetSize(size);
 
-			m_pShortcut->SetX(101);
-			m_pShortcut->SetY(1);
+			m_pShortcutLabel->SetX(101);
+			m_pShortcutLabel->SetY(1);
 
-			AddWidget(m_pShortcut);
+			AddWidget(m_pShortcutLabel);
 		}
 	}
 
 	MenuItem::~MenuItem()
-	{}
+	{
+		if (m_pShortcut)
+		{
+			Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+			widgetMgr.UnregisterShortcut(m_pShortcut);
+			delete m_pShortcut;
+		}
+	}
 
 	bool MenuItem::Handle(const BaseEvent& ev)
 	{
@@ -75,8 +85,20 @@ namespace Widgets
 		return false;
 	}
 
-	void MenuItem::AddShortcut(const std::string& shortcut)
+	void MenuItem::SetShortcut(const std::string& shortcut)
 	{
-		m_pShortcut->SetText(shortcut);
+		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+
+		if (m_pShortcut)
+		{
+			widgetMgr.UnregisterShortcut(m_pShortcut);
+			delete m_pShortcut;
+		}
+
+		m_pShortcutLabel->SetText(shortcut);
+
+		m_pShortcut = new Shortcut(shortcut);
+		m_pShortcut->OnActivated([this]() { m_onClick(); });
+		widgetMgr.RegisterShortcut(m_pShortcut);
 	}
 }

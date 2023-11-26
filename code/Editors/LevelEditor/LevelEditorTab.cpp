@@ -53,7 +53,10 @@ namespace Editors
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 		Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 		Widgets::MenuItem* pItemNew = pFileMenu->AddMenuItem("New...");
-		pItemNew->AddShortcut("Ctrl+N");
+		pItemNew->SetShortcut("Ctrl+N");
+		pItemNew->OnClick([]() {
+			OutputDebugString("Ctrl+N \n");
+			});
 		pFileMenu->AddMenuItem("Open...");
 		pFileMenu->AddMenuItem("Save...");
 
