@@ -126,11 +126,15 @@ namespace Editors
 
 		Widgets::MenuItem* pSceneTreeItem = pMenu->AddMenuItem("Scene Tree");
 		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftSplit); });
+
+		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Entity Properties");
+		pEntityItem->OnClick([this]() { CreateEntityPropertyGrid(m_pSplit); });
 	}
 
 	void LevelEditorTab::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
-		Widgets::Frame* pFrame = new Widgets::Frame("Properties");
+		Widgets::Frame* pFrame = new Widgets::Frame("Entity Properties");
+		pFrame->OnClose([this]() { m_pEntityWidget = nullptr; delete m_pEntityModel; m_pEntityModel = nullptr; });
 		pSplit->AddRightPanel(pFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -349,6 +353,9 @@ namespace Editors
 
 	bool LevelEditorTab::OnClick_TreeItem(BaseModel* pModel, int rowId)
 	{
+		if (!m_pEntityWidget)
+			return true;
+
 		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
 		Node* pNode = pLevelTreeModel->GetSource();
 		Entity* pEntity = pNode->ToEntity();
