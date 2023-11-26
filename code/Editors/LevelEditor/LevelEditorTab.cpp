@@ -42,6 +42,8 @@ namespace Editors
 		, m_pEntityModel(nullptr)
 		, m_pEntityWidget(nullptr)
 		, m_pLevelTreeModel(nullptr)
+		, m_pSceneTreeFrame(nullptr)
+		, m_pLeftSplit(nullptr)
 	{
 		//create the render target
 		int width = 1280;
@@ -53,40 +55,18 @@ namespace Editors
 		AddWidget(pInternalLayout);
 
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
-		Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
-		Widgets::MenuItem* pItemNew = pFileMenu->AddMenuItem("New...");
-		pItemNew->SetShortcut("Ctrl+N");
-		pFileMenu->AddMenuItem("Open...");
-		pFileMenu->AddMenuItem("Save...");
 
-		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
-		pEditMenu->AddMenuItem("Add");
-		pEditMenu->AddMenuItem("Remove");
-
-		{
-			Widgets::Menu* pTransformMenu = pMenuBar->AddMenu("Transformation");
-			
-			Widgets::MenuItem* pTranslateItem = pTransformMenu->AddMenuItem("Translate");
-			pTranslateItem->SetShortcut("W");
-			pTranslateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kTranslation); });
-
-			Widgets::MenuItem* pRotateItem = pTransformMenu->AddMenuItem("Rotate");
-			pRotateItem->SetShortcut("E");
-			pRotateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation); });
-
-			Widgets::MenuItem* pScaleItem = pTransformMenu->AddMenuItem("Scale");
-			pScaleItem->SetShortcut("R");
-			pScaleItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kScale); });
-		}
+		CreateMenuTransformation(pMenuBar);
+		CreateMenuWindows(pMenuBar);
 
 		pInternalLayout->AddWidget(pMenuBar);
 
 		//create the split between viewport and right panel
-		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
-		pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
-		pSplit->SetRightPanelWidth(400);
-		pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
-		pInternalLayout->AddWidget(pSplit);
+		m_pSplit = new Widgets::SplitVertical();
+		m_pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pSplit->SetRightPanelWidth(400);
+		m_pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
+		pInternalLayout->AddWidget(m_pSplit);
 
 		m_pViewport = new LevelEditorViewportWidget(width, height);
 		m_pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
@@ -94,14 +74,14 @@ namespace Editors
 		m_pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(false); });
 
 		//create split between viewport and left panel
-		Widgets::SplitVertical* pLeftSplit = new Widgets::SplitVertical();
-		pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
-		pLeftSplit->SetLeftPanelWidth(200);
-		pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
-		pLeftSplit->AddRightPanel(m_pViewport);
+		m_pLeftSplit = new Widgets::SplitVertical();
+		m_pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pLeftSplit->SetLeftPanelWidth(200);
+		m_pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
+		m_pLeftSplit->AddRightPanel(m_pViewport);
 
 
-		pSplit->AddLeftPanel(pLeftSplit);
+		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
 		if (pParent)
 		{
@@ -116,12 +96,37 @@ namespace Editors
 			}
 		}
 
-		CreateEntityPropertyGrid(pSplit);
-		CreateSceneTreeViewer(pLeftSplit);
+		CreateEntityPropertyGrid(m_pSplit);
+		CreateSceneTreeViewer(m_pLeftSplit);
 	}
 
 	LevelEditorTab::~LevelEditorTab()
 	{}
+
+	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pTransformMenu = pMenuBar->AddMenu("Transformation");
+
+		Widgets::MenuItem* pTranslateItem = pTransformMenu->AddMenuItem("Translate");
+		pTranslateItem->SetShortcut("W");
+		pTranslateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kTranslation); });
+
+		Widgets::MenuItem* pRotateItem = pTransformMenu->AddMenuItem("Rotate");
+		pRotateItem->SetShortcut("E");
+		pRotateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation); });
+
+		Widgets::MenuItem* pScaleItem = pTransformMenu->AddMenuItem("Scale");
+		pScaleItem->SetShortcut("R");
+		pScaleItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kScale); });
+	}
+
+	void LevelEditorTab::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pMenu = pMenuBar->AddMenu("Windows");
+
+		Widgets::MenuItem* pSceneTreeItem = pMenu->AddMenuItem("Scene Tree");
+		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftSplit); });
+	}
 
 	void LevelEditorTab::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
@@ -146,14 +151,18 @@ namespace Editors
 
 	void LevelEditorTab::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
 	{
-		Widgets::Frame* pFrame = new Widgets::Frame("Scene Tree");
-		pSplit->AddLeftPanel(pFrame);
+		if (m_pSceneTreeFrame != nullptr)
+			return;
+
+		m_pSceneTreeFrame = new Widgets::Frame("Scene Tree");
+		m_pSceneTreeFrame->OnClose([this]() { m_pSceneTreeFrame = nullptr; });
+
+		pSplit->AddLeftPanel(m_pSceneTreeFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		pLayout->SetDirection(Widgets::Layout::Vertical);
-		pFrame->AddWidget(pLayout);
-		//pSplit->AddLeftPanel(pLayout);
+		m_pSceneTreeFrame->AddWidget(pLayout);
 
 		Widgets::Layout* pMenuLayout = new Widgets::Layout();
 		pMenuLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);

@@ -13,7 +13,9 @@ namespace Rendering
 
 namespace Widgets
 {
+	class Frame;
 	class Label;
+	class MenuBar;
 	class SplitVertical;
 }
 
@@ -39,9 +41,15 @@ namespace Editors
 		EntityWidget* m_pEntityWidget;
 		TreeWidget* m_pTreeWidget;
 		LevelEditorViewportWidget* m_pViewport;
+		Widgets::SplitVertical* m_pSplit; //split the right and center
+		Widgets::SplitVertical* m_pLeftSplit; //split between the left and center
+		Widgets::Frame* m_pSceneTreeFrame;
 
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
+
+		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
+		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 
 		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
