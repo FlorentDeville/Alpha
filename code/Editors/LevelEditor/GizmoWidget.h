@@ -11,6 +11,15 @@ namespace Editors
 	class GizmoWidget
 	{
 	public:
+		enum ManipulatorMode
+		{
+			kTranslation,
+			kRotation,
+			kScale,
+
+			kCount
+		};
+
 		GizmoWidget();
 		~GizmoWidget();
 
@@ -19,6 +28,8 @@ namespace Editors
 
 		void SetWs(const DirectX::XMMATRIX& txWs);
 
+		void SetManipulatorMode(ManipulatorMode mode);
+
 	private:
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();
@@ -26,5 +37,7 @@ namespace Editors
 		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color);
 
 		DirectX::XMMATRIX m_txWs;
+
+		ManipulatorMode m_manipulatorMode;
 	};
 }

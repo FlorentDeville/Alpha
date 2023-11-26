@@ -11,6 +11,7 @@ using namespace DirectX;
 namespace Editors
 {
 	GizmoWidget::GizmoWidget()
+		: m_manipulatorMode(kTranslation)
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 	}
@@ -23,13 +24,29 @@ namespace Editors
 
 	void GizmoWidget::Render()
 	{
-		RenderTranslationManipulator();
-		RenderRotationManipulator();
+		switch (m_manipulatorMode)
+		{
+		case kTranslation:
+			RenderTranslationManipulator();
+			break;
+
+		case kRotation:
+			RenderRotationManipulator();
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	void GizmoWidget::SetWs(const DirectX::XMMATRIX& txWs)
 	{
 		m_txWs = txWs;
+	}
+
+	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
+	{
+		m_manipulatorMode = mode;
 	}
 
 	void GizmoWidget::RenderRotationManipulator()
