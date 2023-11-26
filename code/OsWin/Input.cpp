@@ -17,7 +17,7 @@ namespace Os
 	bool IsKeyDown(VKeyCode vkey)
 	{
 		int16_t res = GetKeyState(vkey);
-		if (res == 0x8000)
+		if (res & 0x8000)
 			return true;
 
 		return false;
