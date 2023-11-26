@@ -16,3 +16,4 @@ code/Core/x64/*
 raw/*
 editor/*
 publish/*
+.vs/slnx.sqlite
