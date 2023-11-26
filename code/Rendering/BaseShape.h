@@ -11,8 +11,9 @@ namespace Rendering
 	class BaseShape
 	{
 	public:
-		static void CreateCircle(Rendering::Mesh* pMesh, int resolution);
-		static void CreateCylinder(Rendering::Mesh* pMesh, float height, float diameter, int tessellation);
-		static void CreateCone(Rendering::Mesh* pMesh, float diameter, float height, size_t tessellation);
+		static void CreateCircle(Mesh* pMesh, int resolution);
+		static void CreateCylinder(Mesh* pMesh, float height, float diameter, int tessellation);
+		static void CreateCone(Mesh* pMesh, float diameter, float height, size_t tessellation);
+		static void CreateTorus(Mesh* pMesh, float diameter, float thickness, int tessellation);
 	};
 }

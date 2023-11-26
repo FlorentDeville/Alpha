@@ -82,7 +82,7 @@ namespace Rendering
         }
     }
 
-	void BaseShape::CreateCircle(Rendering::Mesh* pMesh, int resolution)
+	void BaseShape::CreateCircle(Mesh* pMesh, int resolution)
 	{
 		const int VERTEX_COUNT = resolution + 1;
 		const float THETA = 2 * 3.14f / resolution;
@@ -102,7 +102,7 @@ namespace Rendering
 		delete[] pVertices;
 	}
 
-	void BaseShape::CreateCylinder(Rendering::Mesh* pMesh, float height, float diameter, int tessellation)
+	void BaseShape::CreateCylinder(Mesh* pMesh, float height, float diameter, int tessellation)
 	{
         if (tessellation < 3)
             return;
@@ -162,7 +162,7 @@ namespace Rendering
         pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
 	}
 
-    void BaseShape::CreateCone(Rendering::Mesh* pMesh, float diameter, float height, size_t tessellation)
+    void BaseShape::CreateCone(Mesh* pMesh, float diameter, float height, size_t tessellation)
     {
         std::vector<Rendering::VertexPosColor> vertices;
         std::vector<uint16_t> indices;
@@ -212,4 +212,61 @@ namespace Rendering
         pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
     }
 
+    void BaseShape::CreateTorus(Mesh* pMesh, float diameter, float thickness, int tessellation)
+    {
+        std::vector<VertexPosColor> vertices;
+        std::vector<uint16_t> indices;
+
+        const int stride = tessellation + 1;
+
+        // First we loop around the main ring of the torus.
+        for (int ii = 0; ii <= tessellation; ii++)
+        {
+            const float u = float(ii) / float(tessellation);
+
+            const float outerAngle = float(ii) * DirectX::XM_2PI / float(tessellation) - DirectX::XM_PIDIV2;
+
+            // Create a transform matrix that will align geometry to
+            // slice perpendicularly though the current ring position.
+            const DirectX::XMMATRIX transform = DirectX::XMMatrixTranslation(diameter / 2, 0, 0) * DirectX::XMMatrixRotationY(outerAngle);
+
+            // Now we loop along the other axis, around the side of the tube.
+            for (int j = 0; j <= tessellation; j++)
+            {
+                const float v = 1 - float(j) / float(tessellation);
+
+                const float innerAngle = float(j) * DirectX::XM_2PI / float(tessellation) + DirectX::XM_PI;
+                float dx, dy;
+
+                DirectX::XMScalarSinCos(&dy, &dx, innerAngle);
+
+                // Create a vertex.
+                DirectX::XMVECTOR normal = DirectX::XMVectorSet(dx, dy, 0, 0);
+                DirectX::XMVECTOR position = DirectX::XMVectorScale(normal, thickness / 2);
+                const DirectX::XMVECTOR textureCoordinate = DirectX::XMVectorSet(u, v, 0, 0);
+
+                position = XMVector3Transform(position, transform);
+                normal = XMVector3TransformNormal(normal, transform);
+
+                VertexPosColor vertex;
+                vertex.Position = DirectX::XMFLOAT3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
+                vertex.Color = DirectX::XMFLOAT3(0, 0, 0);
+                vertices.push_back(vertex);
+
+                // And create indices for two triangles.
+                const int nextI = (ii + 1) % stride;
+                const int nextJ = (j + 1) % stride;
+
+                indices.push_back(ii * stride + j);
+                indices.push_back(nextI * stride + j);
+                indices.push_back(ii * stride + nextJ);
+
+                indices.push_back(ii * stride + nextJ);
+                indices.push_back(nextI * stride + j);
+                indices.push_back(nextI * stride + nextJ);
+            }
+        }
+
+        pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
+    }
 }

@@ -58,9 +58,9 @@ namespace Rendering
 		void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
 		void RenderMesh(const Rendering::Mesh& mesh);
 
-		void RenderPrimitiveCircle(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
+		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 
 		void ExecuteRenderCommand();
 
@@ -143,12 +143,11 @@ namespace Rendering
 		UINT m_currentBackBufferIndex;
 		Rendering::RenderTarget* m_gameRenderTarget;
 
-		Rendering::Mesh* m_pCylinderMesh;
-		Rendering::Mesh* m_pCircleMesh;
-		Rendering::Mesh* m_pConeMesh;
+		Mesh* m_pCylinderMesh;
+		Mesh* m_pConeMesh;
+		Mesh* m_pTorusMesh;
 
-		Rendering::Material* m_pCircleMaterial;
-		Rendering::Material* m_pVertexColorMaterial;
+		Material* m_pBaseShapeMaterial;
 
 		Rendering::Mesh* m_pBaseQuadMesh;
 

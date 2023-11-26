@@ -413,7 +413,6 @@ bool LoadContent()
 		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
 		const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(6));//vertex_color
 		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
-		renderingMgr.m_pVertexColorMaterial = pMaterial;
 	}
 
 	//create the texture material
@@ -463,7 +462,7 @@ bool LoadContent()
 		materialMgr.CreateMaterial(&pMaterial, materialId);
 		pMaterial->Init(rsId, pid);
 
-		Rendering::RenderModule::Get().m_pCircleMaterial = pMaterial;
+		renderingMgr.m_pBaseShapeMaterial = pMaterial;
 	}
 
 	//basic shape quad

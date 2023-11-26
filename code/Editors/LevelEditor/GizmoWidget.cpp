@@ -23,8 +23,8 @@ namespace Editors
 
 	void GizmoWidget::Render()
 	{
-	//	RenderTranslationManipulator();
-		//RenderRotationManipulator();
+		RenderTranslationManipulator();
+		RenderRotationManipulator();
 	}
 
 	void GizmoWidget::SetWs(const DirectX::XMMATRIX& txWs)
@@ -41,13 +41,13 @@ namespace Editors
 			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(rotation, m_txWs);
 
 			DirectX::XMFLOAT4 red(1, 0, 0, 1);
-			Rendering::RenderModule::Get().RenderPrimitiveCircle(mvpMatrix, red);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, red);
 		}
 
 		//rotation y axis
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 1);
-			Rendering::RenderModule::Get().RenderPrimitiveCircle(m_txWs, green);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(m_txWs, green);
 		}
 
 		//rotation z axis
@@ -57,7 +57,7 @@ namespace Editors
 			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(rotation, m_txWs);
 
 			DirectX::XMFLOAT4 blue(0, 0, 1, 1);
-			Rendering::RenderModule::Get().RenderPrimitiveCircle(mvpMatrix, blue);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, blue);
 		}
 	}
 
