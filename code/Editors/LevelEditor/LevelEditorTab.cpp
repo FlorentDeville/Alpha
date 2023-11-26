@@ -31,6 +31,7 @@
 #include "Widgets/TextBox.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
+#include "Widgets/Widgets/Frame.h"
 
 namespace Editors
 {
@@ -124,11 +125,14 @@ namespace Editors
 
 	void LevelEditorTab::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
+		Widgets::Frame* pFrame = new Widgets::Frame("Properties");
+		pSplit->AddRightPanel(pFrame);
+
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
 		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
 		pLayout->SetDirection(Widgets::Layout::Vertical);
 
-		pSplit->AddRightPanel(pLayout);
+		pFrame->AddWidget(pLayout);
 
 		m_pEntityNameLabel = new Widgets::Label();
 		m_pEntityNameLabel->SetSize(DirectX::XMUINT2(0, 20));
@@ -142,10 +146,14 @@ namespace Editors
 
 	void LevelEditorTab::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
 	{
+		Widgets::Frame* pFrame = new Widgets::Frame("Scene Tree");
+		pSplit->AddLeftPanel(pFrame);
+
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		pLayout->SetDirection(Widgets::Layout::Vertical);
-		pSplit->AddLeftPanel(pLayout);
+		pFrame->AddWidget(pLayout);
+		//pSplit->AddLeftPanel(pLayout);
 
 		Widgets::Layout* pMenuLayout = new Widgets::Layout();
 		pMenuLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
@@ -186,7 +194,7 @@ namespace Editors
 		//separator
 		Widgets::Container* pSeparator = new Widgets::Container(0, 2);
 		pSeparator->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		pSeparator->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1));
+		pSeparator->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.18f, 0.18f, 0.18f, 1.f));
 		pLayout->AddWidget(pSeparator);
 
 		Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();

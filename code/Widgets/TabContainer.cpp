@@ -39,8 +39,8 @@ namespace Widgets
 		m_pInternalLayout->AddWidget(m_pHeaderLayout);
 		m_pInternalLayout->AddWidget(m_pContentContainer);
 
-		m_selectedHeaderColor = DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f);
-		m_defaultHeaderColor = DirectX::XMVectorSet(0.18f, 0.18f, 0.18f, 1.f);
+		m_selectedHeaderColor = Color(0.24f, 0.24f, 0.24f, 1.f);
+		m_defaultHeaderColor = Color(0.18f, 0.18f, 0.18f, 1.f);
 	}
 
 	TabContainer::~TabContainer()

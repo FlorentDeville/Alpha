@@ -18,7 +18,7 @@ namespace Widgets
 		: Container()
 	{
 		Widgets::ContainerStyle& style = GetDefaultStyle();
-		style.SetBorderColor(DirectX::XMVectorSet(0.44f, 0.37f, 0.91f, 1.f));
+		style.SetBorderColor(Color(0.44f, 0.37f, 0.91f, 1.f));
 		style.ShowBorder(true);
 
 		m_pInnerLayout = new Widgets::Layout();
@@ -30,7 +30,7 @@ namespace Widgets
 		const int TITLE_HEIGHT = 20;
 		Container* pLabelContainer = new Container(0, TITLE_HEIGHT);
 		pLabelContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		pLabelContainer->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0, 0, 0, 1.f));
+		pLabelContainer->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 1.f));
 		m_pInnerLayout->AddWidget(pLabelContainer);
 
 		m_pTitleLabel = new Widgets::Label(0, 0, 1, title);

@@ -6,6 +6,8 @@
 
 #include "Widgets/Widget.h"
 
+#include "Widgets/Tools/Color.h"
+
 namespace Widgets
 {
 	class Container;
@@ -39,7 +41,7 @@ namespace Widgets
 		std::vector<Container*> m_tabHeaders;
 		std::vector<Widget*> m_tabContent;
 
-		DirectX::XMVECTOR m_defaultHeaderColor;
-		DirectX::XMVECTOR m_selectedHeaderColor;
+		Color m_defaultHeaderColor;
+		Color m_selectedHeaderColor;
 	};
 }

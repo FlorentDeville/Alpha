@@ -8,11 +8,10 @@ namespace Widgets
 {
 	ContainerStyle::ContainerStyle()
 		: BaseStyle()
-		, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
-		, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
+		, m_backgroundColor(0.12f, 0.12f, 0.12f, 1.f)
+		, m_borderColor(1.f, 1.f, 1.f, 1.f)
 		, m_showBorder(false)
 		, m_borderSize(1)
-		, m_padding()
 	{}
 
 	ContainerStyle::~ContainerStyle()
@@ -23,12 +22,12 @@ namespace Widgets
 		m_borderSize = size;
 	}
 
-	void ContainerStyle::SetBackgroundColor(const DirectX::XMVECTOR& backgroundColor)
+	void ContainerStyle::SetBackgroundColor(const Color& backgroundColor)
 	{
 		m_backgroundColor = backgroundColor;
 	}
 
-	void ContainerStyle::SetBorderColor(const DirectX::XMVECTOR& borderColor)
+	void ContainerStyle::SetBorderColor(const Color& borderColor)
 	{
 		m_borderColor = borderColor;
 	}

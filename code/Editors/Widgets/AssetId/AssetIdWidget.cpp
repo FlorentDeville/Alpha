@@ -100,8 +100,8 @@ namespace Editors
 		m_pLabelContainer = new Widgets::Container();
 		m_pLabelContainer->SetSizeStyle(Widgets::Widget::STRETCH);
 		m_pLabelContainer->GetDefaultStyle().ShowBorder(true);
-		m_pLabelContainer->GetDefaultStyle().SetBorderColor(DirectX::XMVectorSet(0.26f, 0.26f, 0.26f, 1.f));
-		m_pLabelContainer->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.22f, 0.22f, 0.22f, 1.f));
+		m_pLabelContainer->GetDefaultStyle().SetBorderColor(Widgets::Color(0.26f, 0.26f, 0.26f, 1.f));
+		m_pLabelContainer->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.22f, 0.22f, 0.22f, 1.f));
 		AddWidget(m_pLabelContainer);
 
 		m_pLabel = new Widgets::Label();
