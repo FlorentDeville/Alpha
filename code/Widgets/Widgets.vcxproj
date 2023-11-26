@@ -41,10 +41,12 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="Tools\Color.h" />
+    <ClInclude Include="Tools\DefaultColors.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="Viewport_v2.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetMgr.h" />
+    <ClInclude Include="Widgets\Frame.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
@@ -69,10 +71,12 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Tools\Color.cpp" />
+    <ClCompile Include="Tools\DefaultColors.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="Viewport_v2.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WidgetMgr.cpp" />
+    <ClCompile Include="Widgets\Frame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">

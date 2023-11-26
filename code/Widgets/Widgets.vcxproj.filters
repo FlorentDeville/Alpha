@@ -117,6 +117,12 @@
     <ClInclude Include="Shortcuts\Shortcut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\Frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tools\DefaultColors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">
@@ -195,6 +201,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shortcuts\Shortcut.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Frame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tools\DefaultColors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

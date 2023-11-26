@@ -6,6 +6,14 @@
 
 namespace Widgets
 {
+	Color::Color()
+	{
+		m_channels[0] = 0;
+		m_channels[1] = 0;
+		m_channels[2] = 0;
+		m_channels[3] = 0;
+	}
+
 	Color::Color(int r, int g, int b, int a)
 	{
 		m_channels[0] = r / 255.f;
