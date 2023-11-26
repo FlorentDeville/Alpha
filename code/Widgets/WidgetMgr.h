@@ -6,6 +6,7 @@
 
 #include <deque>
 #include <set>
+#include <vector>
 
 
 #include "Rendering/Font/Font.h"
@@ -30,6 +31,7 @@ namespace Widgets
 	class Icon;
 	class Container;
 	class Layout;
+	class Shortcut;
 	class Split;
 	class TextBox;
 	class Viewport;
@@ -68,9 +70,11 @@ namespace Widgets
 
 		void Release();
 
-		void RegisterWidget(Widget* pWidget);
-		
+		void RegisterWidget(Widget* pWidget);	
 		void UnregisterWidget(Widget* pWidget);
+
+		void RegisterShortcut(Shortcut* pShortcut);
+		void UnregisterShortcut(Shortcut* pShortcut);
 
 		void SetRoot(Widget* pRoot);
 
@@ -138,6 +142,8 @@ namespace Widgets
 		};
 		
 		EventStorage m_internalEvent;
+
+		std::vector<Shortcut*> m_shortcutsArray;
 
 		void ComputeSortedWidgetQueue();
 

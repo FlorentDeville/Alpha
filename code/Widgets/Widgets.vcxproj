@@ -27,6 +27,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageId.h" />
     <ClInclude Include="ModalWindow.h" />
+    <ClInclude Include="Shortcuts\Shortcut.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
     <ClInclude Include="SplitVertical.h" />
@@ -55,6 +56,7 @@
     <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="ModalWindow.cpp" />
+    <ClCompile Include="Shortcuts\Shortcut.cpp" />
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="SplitHorizontal.cpp" />
     <ClCompile Include="SplitVertical.cpp" />

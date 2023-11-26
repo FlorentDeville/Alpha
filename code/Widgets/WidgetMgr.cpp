@@ -16,10 +16,12 @@
 #include "Rendering/Shaders/ShaderMgr.h"
 
 #include "OsWin/SysWindow.h"
+#include "OsWin/VirtualKeyCode.h"
 
 #include "Widgets/Events/FocusEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Message.h"
+#include "Widgets/Shortcuts/Shortcut.h"
 #include "Widgets/Widget.h"
 
 #include <algorithm>
@@ -47,6 +49,7 @@ namespace Widgets
 		, m_editorIconsPath()
 		, m_pMainSysWindow(nullptr)
 		, m_pModalWindow(nullptr)
+		, m_shortcutsArray()
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -159,6 +162,20 @@ namespace Widgets
 	void WidgetMgr::UnregisterWidget(Widget* pWidget)
 	{
 		m_widgets.erase(pWidget);
+	}
+
+	void WidgetMgr::RegisterShortcut(Shortcut* pShortcut)
+	{
+		m_shortcutsArray.push_back(pShortcut);
+	}
+
+	void WidgetMgr::UnregisterShortcut(Shortcut* pShortcut)
+	{
+		std::vector<Shortcut*>::iterator it = std::find(m_shortcutsArray.begin(), m_shortcutsArray.end(), pShortcut);
+		if (it == m_shortcutsArray.end())
+			return;
+
+		m_shortcutsArray.erase(it);
 	}
 
 	void WidgetMgr::SetRoot(Widget* pRoot)
@@ -315,6 +332,22 @@ namespace Widgets
 		break;
 
 		case M_VirtualKeyDown:
+		{
+			//first check if a shortcut is triggered
+			for (Shortcut* pShortcut : m_shortcutsArray)
+			{
+				pShortcut->Evaluate();
+			}
+
+			if (m_pFocusedWidget)
+			{
+				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
+				if (ev.m_id != EventId::kUnknown)
+					m_pFocusedWidget->Handle(ev);
+			}
+		}
+		break;
+
 		case M_VirtualKeyUp:
 		case M_CharKeyDown:
 		{
