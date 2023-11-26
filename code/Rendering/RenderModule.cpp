@@ -263,53 +263,17 @@ namespace Rendering
 
 	void RenderModule::RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
 	{
-		m_pRenderCommandList->SetPipelineState(m_pBaseShapeMaterial->m_pPipelineState->GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeMaterial->m_pRootSignature->GetRootSignature());
-
-		DirectX::XMMATRIX wvp = world * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
-
-		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		m_pRenderCommandList->IASetVertexBuffers(0, 1, &m_pCylinderMesh->GetVertexBufferView());
-		m_pRenderCommandList->IASetIndexBuffer(&m_pCylinderMesh->GetIndexBufferView());
-
-		m_pRenderCommandList->DrawIndexedInstanced(m_pCylinderMesh->GetIndicesCount(), 1, 0, 0, 0);
+		RenderBaseShape(m_pCylinderMesh, world, color);
 	}
 
 	void RenderModule::RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
 	{
-		m_pRenderCommandList->SetPipelineState(m_pBaseShapeMaterial->m_pPipelineState->GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeMaterial->m_pRootSignature->GetRootSignature());
-
-		DirectX::XMMATRIX wvp = world * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
-
-		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		m_pRenderCommandList->IASetVertexBuffers(0, 1, &m_pConeMesh->GetVertexBufferView());
-		m_pRenderCommandList->IASetIndexBuffer(&m_pConeMesh->GetIndexBufferView());
-
-		m_pRenderCommandList->DrawIndexedInstanced(m_pConeMesh->GetIndicesCount(), 1, 0, 0, 0);
+		RenderBaseShape(m_pConeMesh, world, color);
 	}
 
 	void RenderModule::RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
 	{
-		m_pRenderCommandList->SetPipelineState(m_pBaseShapeMaterial->m_pPipelineState->GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeMaterial->m_pRootSignature->GetRootSignature());
-
-		DirectX::XMMATRIX wvp = world * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
-
-		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		m_pRenderCommandList->IASetVertexBuffers(0, 1, &m_pTorusMesh->GetVertexBufferView());
-		m_pRenderCommandList->IASetIndexBuffer(&m_pTorusMesh->GetIndexBufferView());
-
-		m_pRenderCommandList->DrawIndexedInstanced(m_pTorusMesh->GetIndicesCount(), 1, 0, 0, 0);
+		RenderBaseShape(m_pTorusMesh, world, color);
 	}
 
 	void RenderModule::ExecuteRenderCommand()
@@ -831,5 +795,22 @@ namespace Rendering
 
 			m_pBackBuffers[ii] = backBuffer;
 		}
+	}
+
+	void RenderModule::RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color) const
+	{
+		m_pRenderCommandList->SetPipelineState(m_pBaseShapeMaterial->m_pPipelineState->GetPipelineState());
+		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeMaterial->m_pRootSignature->GetRootSignature());
+
+		DirectX::XMMATRIX wvp = txWs * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
+
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
+		m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+
+		m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
 }

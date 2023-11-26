@@ -170,5 +170,7 @@ namespace Rendering
 
 		void ResizeSwapChain(uint32_t width, uint32_t height);
 		void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
+
+		void RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& wvp, const DirectX::XMFLOAT4& color) const;
 	};
 }
