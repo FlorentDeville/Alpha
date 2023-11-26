@@ -98,6 +98,7 @@ namespace Widgets
 		void CaptureMouse(Widget* pWidget);
 
 		void RequestResize();
+		void RequestWidgetDeletion(Widget* pWidget);
 
 		const std::string& GetEditorIconsPath() const;
 
@@ -128,6 +129,7 @@ namespace Widgets
 		Rendering::FontId m_segoeUIFontId;
 
 		bool m_resizeRequest;
+		std::vector<Widget*> m_deleteRequestArray;
 
 		SysWindow* m_pMainSysWindow;
 
@@ -144,6 +146,7 @@ namespace Widgets
 		EventStorage m_internalEvent;
 
 		std::vector<Shortcut*> m_shortcutsArray;
+
 
 		void ComputeSortedWidgetQueue();
 

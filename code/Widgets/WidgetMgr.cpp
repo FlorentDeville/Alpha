@@ -192,6 +192,14 @@ namespace Widgets
 			m_resizeRequest = false;
 		}
 
+		for (Widget* pWidget : m_deleteRequestArray)
+		{
+			if (Widget* pParent = pWidget->GetParent())
+				pParent->DeleteChild(pWidget);
+		}
+
+		m_deleteRequestArray.clear();
+
 		for (Widget* pWidget : m_widgets)
 			pWidget->Update(dt);
 	}
@@ -412,6 +420,11 @@ namespace Widgets
 	void WidgetMgr::RequestResize()
 	{
 		m_resizeRequest = true;
+	}
+
+	void WidgetMgr::RequestWidgetDeletion(Widget* pWidget)
+	{
+		m_deleteRequestArray.push_back(pWidget);
 	}
 
 	const std::string& WidgetMgr::GetEditorIconsPath() const
