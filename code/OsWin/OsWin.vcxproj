@@ -12,13 +12,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Guid.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Guid.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="SysWindow.h" />
+    <ClInclude Include="VirtualKeyCode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

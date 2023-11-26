@@ -4,10 +4,13 @@
     <ClCompile Include="SysWindow.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="Guid.cpp" />
+    <ClCompile Include="Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SysWindow.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="Guid.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="VirtualKeyCode.h" />
   </ItemGroup>
 </Project>
