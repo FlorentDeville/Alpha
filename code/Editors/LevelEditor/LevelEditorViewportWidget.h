@@ -22,6 +22,8 @@ namespace Editors
 
 		void SetEnableViewportControl(bool enable);
 
+		GizmoWidget* GetGizmoWidget();
+
 	private:
 		GizmoWidget* m_pGizmoWidget;
 		Camera* m_pCamera;

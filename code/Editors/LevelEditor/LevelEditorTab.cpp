@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/LevelEditorTab.h"
 
+#include "Editors/LevelEditor/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/LevelEditorViewportWidget.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
@@ -54,15 +55,28 @@ namespace Editors
 		Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 		Widgets::MenuItem* pItemNew = pFileMenu->AddMenuItem("New...");
 		pItemNew->SetShortcut("Ctrl+N");
-		pItemNew->OnClick([]() {
-			OutputDebugString("Ctrl+N \n");
-			});
 		pFileMenu->AddMenuItem("Open...");
 		pFileMenu->AddMenuItem("Save...");
 
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
 		pEditMenu->AddMenuItem("Add");
 		pEditMenu->AddMenuItem("Remove");
+
+		{
+			Widgets::Menu* pTransformMenu = pMenuBar->AddMenu("Transformation");
+			
+			Widgets::MenuItem* pTranslateItem = pTransformMenu->AddMenuItem("Translate");
+			pTranslateItem->SetShortcut("W");
+			pTranslateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kTranslation); });
+
+			Widgets::MenuItem* pRotateItem = pTransformMenu->AddMenuItem("Rotate");
+			pRotateItem->SetShortcut("E");
+			pRotateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation); });
+
+			Widgets::MenuItem* pScaleItem = pTransformMenu->AddMenuItem("Scale");
+			pScaleItem->SetShortcut("R");
+			pScaleItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kScale); });
+		}
 
 		pInternalLayout->AddWidget(pMenuBar);
 
@@ -73,17 +87,17 @@ namespace Editors
 		pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
 		pInternalLayout->AddWidget(pSplit);
 
-		LevelEditorViewportWidget* pViewport = new LevelEditorViewportWidget(width, height);
-		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
-		pViewport->OnFocusGained([pViewport](const Widgets::FocusEvent&) { pViewport->SetEnableViewportControl(true); });
-		pViewport->OnFocusLost([pViewport](const Widgets::FocusEvent&) { pViewport->SetEnableViewportControl(false); });
+		m_pViewport = new LevelEditorViewportWidget(width, height);
+		m_pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(true); });
+		m_pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(false); });
 
 		//create split between viewport and left panel
 		Widgets::SplitVertical* pLeftSplit = new Widgets::SplitVertical();
 		pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
 		pLeftSplit->SetLeftPanelWidth(200);
 		pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
-		pLeftSplit->AddRightPanel(pViewport);
+		pLeftSplit->AddRightPanel(m_pViewport);
 
 
 		pSplit->AddLeftPanel(pLeftSplit);

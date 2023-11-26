@@ -183,4 +183,9 @@ namespace Editors
 	{
 		m_enableViewportControl = enable;
 	}
+
+	GizmoWidget* LevelEditorViewportWidget::GetGizmoWidget()
+	{
+		return m_pGizmoWidget;
+	}
 }

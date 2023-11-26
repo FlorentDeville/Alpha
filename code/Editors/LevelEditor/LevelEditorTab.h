@@ -22,6 +22,7 @@ namespace Editors
 	class BaseModel;
 	class EntityModel;
 	class EntityWidget;
+	class LevelEditorViewportWidget;
 	class LevelTreeModel;
 	class TreeWidget;
 
@@ -37,6 +38,7 @@ namespace Editors
 		Widgets::Label* m_pEntityNameLabel;
 		EntityWidget* m_pEntityWidget;
 		TreeWidget* m_pTreeWidget;
+		LevelEditorViewportWidget* m_pViewport;
 
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
