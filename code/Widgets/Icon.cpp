@@ -71,4 +71,9 @@ namespace Widgets
 	{
 		m_textureId = tid;
 	}
+
+	Rendering::TextureId Icon::GetTextureId() const
+	{
+		return m_textureId;
+	}
 }

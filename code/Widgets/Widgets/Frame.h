@@ -7,11 +7,13 @@
 #include "Widgets/Container.h"
 
 #include "Core/Callbacks/CallbackList.h"
+#include "Rendering/Texture/TextureId.h"
 
 #include <string>
 
 namespace Widgets
 {
+	class Container;
 	class Icon;
 	class Label;
 	class Layout;
@@ -38,6 +40,10 @@ namespace Widgets
 		Container* m_pInternalContainer;
 		Icon* m_pCloseIcon;
 		Icon* m_pCloseHoverIcon;
+		Container* m_pCloseButton;
+
+		Rendering::TextureId m_closeTextureId;
+		Rendering::TextureId m_closeHoverTextureId;
 
 		OnCloseEvent m_onClose;
 

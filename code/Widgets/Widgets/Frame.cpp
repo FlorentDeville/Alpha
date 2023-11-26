@@ -48,25 +48,27 @@ namespace Widgets
 
 		std::string closeIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/close.png";
 		m_pCloseIcon = new Icon(closeIconPath);
+		m_closeTextureId = m_pCloseIcon->GetTextureId();
 
 		std::string closeHoverIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/close_hover.png";
 		m_pCloseHoverIcon = new Icon(closeHoverIconPath);
-		m_pCloseHoverIcon->Disable();
+		m_closeHoverTextureId = m_pCloseHoverIcon->GetTextureId();
 
-		Container* pCloseButton = new Container(m_pCloseIcon->GetWidth(), m_pCloseIcon->GetHeight());
-		pCloseButton->AddWidget(m_pCloseIcon);
-		pCloseButton->AddWidget(m_pCloseHoverIcon);
-		pCloseButton->SetY(5);
+		m_pCloseButton = new Container(m_pCloseIcon->GetWidth(), m_pCloseIcon->GetHeight());
+		m_pCloseButton->AddWidget(m_pCloseIcon);
+		m_pCloseButton->SetY(5);
 
-		pCloseButton->OnMouseEnter([this]() -> bool { return OnMouseEnter_CloseButton(); });
-		pCloseButton->OnMouseExit([this]() -> bool { return OnMouseExit_CloseButton(); });
-		pCloseButton->OnClick([this]() { OnClick_CloseButton(); });
+		m_pCloseButton->OnMouseEnter([this]() -> bool { return OnMouseEnter_CloseButton(); });
+		m_pCloseButton->OnMouseExit([this]() -> bool { return OnMouseExit_CloseButton(); });
+		m_pCloseButton->OnClick([this]() { OnClick_CloseButton(); });
 
-		pIconLayout->AddWidget(pCloseButton);
+		pIconLayout->AddWidget(m_pCloseButton);
 	}
 
 	Frame::~Frame()
-	{}
+	{
+		delete m_pCloseHoverIcon;
+	}
 
 	void Frame::AddWidget(Widget* pWidget)
 	{
@@ -92,15 +94,13 @@ namespace Widgets
 
 	bool Frame::OnMouseEnter_CloseButton()
 	{
-		m_pCloseIcon->Disable();
-		m_pCloseHoverIcon->Enable();
+		m_pCloseIcon->SetTextureId(m_closeHoverTextureId);
 		return true;
 	}
 
 	bool Frame::OnMouseExit_CloseButton()
 	{
-		m_pCloseIcon->Enable();
-		m_pCloseHoverIcon->Disable();
+		m_pCloseIcon->SetTextureId(m_closeTextureId);
 		return true;
 	}
 }

@@ -24,6 +24,8 @@ namespace Widgets
 
 		void SetTextureId(Rendering::TextureId tid);
 
+		Rendering::TextureId GetTextureId() const;
+
 	private:
 		Rendering::TextureId m_textureId;
 	};
