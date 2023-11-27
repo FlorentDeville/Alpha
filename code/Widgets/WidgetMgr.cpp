@@ -162,6 +162,10 @@ namespace Widgets
 	void WidgetMgr::UnregisterWidget(Widget* pWidget)
 	{
 		m_widgets.erase(pWidget);
+
+		std::deque<Widget*>::iterator it = std::find(m_sortedWidgets.begin(), m_sortedWidgets.end(), pWidget);
+		if(it != m_sortedWidgets.end())
+			m_sortedWidgets.erase(it);
 	}
 
 	void WidgetMgr::RegisterShortcut(Shortcut* pShortcut)
