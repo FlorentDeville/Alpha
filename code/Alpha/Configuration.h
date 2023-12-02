@@ -12,7 +12,9 @@ public:
 	Configuration();
 	~Configuration();
 
-	bool Load(const std::string& filename);
+	bool Load(const std::string& binPath, const std::string& filename);
+	
+	std::string m_binPath;
 
 	std::string m_dataFontsPath;
 	std::string m_dataMaterialsPath;

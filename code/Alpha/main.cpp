@@ -399,7 +399,7 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-bool LoadContent()
+bool LoadContent(const Configuration& config)
 {
 	const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
@@ -447,7 +447,7 @@ bool LoadContent()
 		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-		const std::string shaderPath = "C:\\workspace\\Alpha\\code\\x64\\Release\\"; //"c:\\workspace\\Alpha\\data\\shaders\\";
+		const std::string shaderPath = config.m_binPath + "\\";
 
 		Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
 		Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
@@ -592,7 +592,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Configuration configuration;
 	std::string configurationFilename = binPath + "\\config.ini";
-	configuration.Load(configurationFilename);
+	configuration.Load(binPath, configurationFilename);
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
 	Systems::LoaderParameter loaderParameter;
@@ -637,7 +637,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MeshEditor::InitSingleton();
 	Editors::ShaderEditor::InitSingleton();
 
-	LoadContent();
+	LoadContent(configuration);
 
 	CreateMainWindow(configuration);
 

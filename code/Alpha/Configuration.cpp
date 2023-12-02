@@ -24,8 +24,10 @@ Configuration::Configuration()
 Configuration::~Configuration()
 {}
 
-bool Configuration::Load(const std::string& filename)
+bool Configuration::Load(const std::string& binPath, const std::string& filename)
 {
+	m_binPath = binPath;
+
 	const int BUFFER_SIZE = 256;
 	char buffer[BUFFER_SIZE] = { '\0' };
 
