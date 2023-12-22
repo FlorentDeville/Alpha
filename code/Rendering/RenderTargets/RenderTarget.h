@@ -27,6 +27,8 @@ namespace Rendering
 		void BeginScene();
 		void EndScene();
 
+		void ClearDepthBuffer();
+
 	private:
 		DescriptorHeap* m_pRTVHeap;				// memory heap for the render target view
 		DescriptorHeap* m_pDSVHeap;				// memory heap for the depth stencil view

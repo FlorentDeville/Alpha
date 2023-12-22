@@ -107,6 +107,16 @@ namespace Rendering
 		TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 	}
 
+	void RenderTarget::ClearDepthBuffer()
+	{
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
+
+		// Clear the depth buffer
+		float depthValue = 1.f;
+		commandList->ClearDepthStencilView(m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	}
+
 	void RenderTarget::CreateDepthBuffer(int width, int height)
 	{
 		RenderModule& renderModule = RenderModule::Get();

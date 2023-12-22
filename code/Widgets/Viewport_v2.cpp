@@ -40,6 +40,11 @@ namespace Widgets
 	void Viewport_v2::Render()
 	{}
 
+	void Viewport_v2::ClearDepthBuffer()
+	{
+		m_pRenderTarget->ClearDepthBuffer();
+	}
+
 	void Viewport_v2::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();

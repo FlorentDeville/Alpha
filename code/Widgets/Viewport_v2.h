@@ -21,6 +21,8 @@ namespace Widgets
 
 		virtual void Render(); //Render everything inside this function
 
+		void ClearDepthBuffer();
+
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 	protected:

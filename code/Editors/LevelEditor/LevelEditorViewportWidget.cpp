@@ -118,6 +118,8 @@ namespace Editors
 			RenderTreeNodeRecursive(pNode, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
 		}
 
+		ClearDepthBuffer();
+
 		m_pGizmoWidget->Render();
 	}
 
