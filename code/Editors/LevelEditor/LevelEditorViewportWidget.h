@@ -8,7 +8,7 @@
 
 namespace Editors
 {
-	class Camera;
+	class CameraWidget;
 	class GizmoModel;
 	class GizmoWidget;
 
@@ -30,7 +30,7 @@ namespace Editors
 		GizmoWidget* m_pGizmoWidget;
 		GizmoModel* m_pGizmoModel;
 
-		Camera* m_pCamera;
+		CameraWidget* m_pCamera;
 		
 		bool m_enableViewportControl;
 		

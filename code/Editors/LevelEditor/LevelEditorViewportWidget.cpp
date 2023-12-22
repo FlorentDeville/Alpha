@@ -6,7 +6,7 @@
 
 #include "Core/Math/Mat44f.h"
 
-#include "Editors/LevelEditor/Camera.h"
+#include "Editors/LevelEditor/CameraWidget.h"
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/GizmoModel.h"
 #include "Editors/LevelEditor/GizmoWidget.h"
@@ -88,7 +88,7 @@ namespace Editors
 		, m_enableViewportControl(false)
 		, m_isPanning(false)
 	{
-		m_pCamera = new Camera();
+		m_pCamera = new CameraWidget();
 
 		m_pGizmoModel = new GizmoModel();
 		m_pGizmoWidget = new GizmoWidget();

@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/Camera.h"
+#include "Editors/LevelEditor/CameraWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -16,7 +16,7 @@ using namespace DirectX;
 
 namespace Editors
 {
-	Camera::Camera()
+	CameraWidget::CameraWidget()
 		: m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
 		, m_cameraState(CameraState::None)
@@ -34,10 +34,10 @@ namespace Editors
 		m_cameraTransform = m_cameraRotation * translationMatrix;
 	}
 
-	Camera::~Camera()
+	CameraWidget::~CameraWidget()
 	{}
 
-	void Camera::Update(float dtInSeconds)
+	void CameraWidget::Update(float dtInSeconds)
 	{
 		switch (m_cameraState)
 		{
@@ -55,7 +55,7 @@ namespace Editors
 		}
 	}
 
-	void Camera::Render(float aspectRatio)
+	void CameraWidget::Render(float aspectRatio)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -72,14 +72,14 @@ namespace Editors
 		pCamera->SetProjection(fovRad, aspectRatio, nearDistance, farDistance);
 	}
 
-	void Camera::UpdateCamera_None(float dtInSeconds)
+	void CameraWidget::UpdateCamera_None(float dtInSeconds)
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 		if (inputs.IsMouseRightButtonDown())
 			m_cameraState = CameraState::FPS;
 	}
 
-	void Camera::UpdateCamera_FPS(float dtInSeconds)
+	void CameraWidget::UpdateCamera_FPS(float dtInSeconds)
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 

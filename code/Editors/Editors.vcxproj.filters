@@ -96,7 +96,7 @@
     <ClInclude Include="LevelEditor\LevelEditorTab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\Camera.h">
+    <ClInclude Include="LevelEditor\CameraWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\GizmoModel.h">
@@ -182,7 +182,7 @@
     <ClCompile Include="LevelEditor\LevelEditorTab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\Camera.cpp">
+    <ClCompile Include="LevelEditor\CameraWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\GizmoModel.cpp">

@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamePlayer\GamePlayer.h" />
-    <ClInclude Include="LevelEditor\Camera.h" />
+    <ClInclude Include="LevelEditor\CameraWidget.h" />
     <ClInclude Include="LevelEditor\Component.h" />
     <ClInclude Include="LevelEditor\GizmoModel.h" />
     <ClInclude Include="LevelEditor\LevelEditorViewportWidget.h" />
@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
-    <ClCompile Include="LevelEditor\Camera.cpp" />
+    <ClCompile Include="LevelEditor\CameraWidget.cpp" />
     <ClCompile Include="LevelEditor\Component.cpp" />
     <ClCompile Include="LevelEditor\GizmoModel.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorViewportWidget.cpp" />

@@ -8,11 +8,11 @@
 
 namespace Editors
 {
-	class Camera
+	class CameraWidget
 	{
 	public:
-		Camera();
-		~Camera();
+		CameraWidget();
+		~CameraWidget();
 
 		void Update(float dtInSeconds);
 		void Render(float aspectRatio);
