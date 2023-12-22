@@ -58,5 +58,8 @@ namespace Editors
 		bool OnClick_RemoveEntity();
 
 		bool OnClick_TreeItem(BaseModel* pModel, int rowId);
+
+		void OnClick_SetGizmoModeTranslate();
+		void OnClick_SetGizmoModeRotation();
 	};
 }

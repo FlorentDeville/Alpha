@@ -17,6 +17,8 @@
 #include "Editors/Widgets/Tree/LevelTreeModel.h"
 #include "Editors/Widgets/Tree/TreeWidget.h"
 
+#include "Inputs/InputMgr.h"
+
 #include "Rendering/RenderModule.h"
 
 #include "Widgets/Container.h"
@@ -110,11 +112,11 @@ namespace Editors
 
 		Widgets::MenuItem* pTranslateItem = pTransformMenu->AddMenuItem("Translate");
 		pTranslateItem->SetShortcut("W");
-		pTranslateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kTranslation); });
+		pTranslateItem->OnClick([this]() { OnClick_SetGizmoModeTranslate(); });
 
 		Widgets::MenuItem* pRotateItem = pTransformMenu->AddMenuItem("Rotate");
 		pRotateItem->SetShortcut("E");
-		pRotateItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation); });
+		pRotateItem->OnClick([this]() { OnClick_SetGizmoModeRotation(); });
 
 		Widgets::MenuItem* pScaleItem = pTransformMenu->AddMenuItem("Scale");
 		pScaleItem->SetShortcut("R");
@@ -375,5 +377,25 @@ namespace Editors
 		pGizmoModel->SetNode(pNode);
 
 		return true;
+	}
+
+	void LevelEditorTab::OnClick_SetGizmoModeTranslate()
+	{
+		//if right click, don't apply the mode
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseRightButtonDown())
+			return;
+
+		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kTranslation);
+	}
+
+	void LevelEditorTab::OnClick_SetGizmoModeRotation()
+	{
+		//if right click, don't apply the mode
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseRightButtonDown())
+			return;
+
+		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation);
 	}
 }
