@@ -4,6 +4,8 @@
 
 #include "Core/Math/Vec4f.h"
 
+#include <cmath>
+
 namespace Core
 {
 	Vec4f::Vec4f()
@@ -33,13 +35,29 @@ namespace Core
 		m_values[index] = f;
 	}
 
-	float Vec4f::Dot(const Vec4f& other)
+	float Vec4f::Dot(const Vec4f& other) const
 	{
 		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ();
 	}
 
-	float Vec4f::Dot4(const Vec4f& other)
+	float Vec4f::Dot4(const Vec4f& other) const
 	{
 		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ() + GetW() * other.GetW();
+	}
+
+	float Vec4f::Length() const
+	{
+		float squaredLength = Dot(*this);
+		return sqrt(squaredLength);
+	}
+
+	void Vec4f::Normalize()
+	{
+		float length = Length();
+		float invLength = 1.f / length;
+
+		m_values[0] *= invLength;
+		m_values[1] *= invLength;
+		m_values[2] *= invLength;
 	}
 }

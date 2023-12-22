@@ -38,6 +38,11 @@ namespace Core
 		m_rows[row].Set(column, f);
 	}
 
+	void Mat44f::SetRow(int row, const Vec4f& value)
+	{
+		m_rows[row] = value;
+	}
+
 	void Mat44f::SetIdentity()
 	{
 		m_rows[0] = Vec4f(1, 0, 0, 0);

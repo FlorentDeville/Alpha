@@ -23,6 +23,8 @@ namespace Core
 		float Get(int row, int column) const;
 
 		void Set(int row, int column, float f);
+		void SetRow(int row, const Vec4f& value);
+
 		void SetIdentity();
 
 		void Transpose();
