@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/GizmoWidget.h"
 
+#include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/GizmoModel.h"
 
 #include "Rendering/RenderModule.h"
@@ -131,20 +132,43 @@ namespace Editors
 	void GizmoWidget::RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color)
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
+		
+		const LevelEditor& levelEditor = LevelEditor::Get();
+		const Core::Mat44f& camera = levelEditor.GetCameraWs();
+		float fov = levelEditor.GetFovRad();
+		
+		Core::Vec4f objectPosition(txWs.r[0].m128_f32[0], txWs.r[0].m128_f32[1], txWs.r[0].m128_f32[2], 1);
+		Core::Vec4f dt = camera.GetT() - objectPosition;
+		float distance = dt.Length();
+		float worldSize = (2 * tanf(fov * 0.5f)) * distance;
+		const float SCREEN_RATIO = 0.025f;
+		float size = SCREEN_RATIO * worldSize;
+
+		const float BASE_DIAMETER = 0.075f;
+		float realDiameter = BASE_DIAMETER * size;
+
+		const float LENGTH = 7.f;
+		float realLength = LENGTH * size;
 
 		{
-			DirectX::XMVECTOR scale = DirectX::XMVectorSet(0.05f, 1, 0.05f, 0);
-			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0.f, 0.5f, 0, 0);
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realDiameter, realLength, realDiameter, 0);
+			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0.f, realLength * 0.5f, 0, 0);
 			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
 			DirectX::XMMATRIX ws = txLs * txWs;
 			renderingMgr.RenderPrimitiveCylinder(ws, color);
 		}
 
 		{
-			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, 1, 0, 0);
+			const float CONE_BASE_DIAMETER = 0.5;
+			float coneDiameter = CONE_BASE_DIAMETER * size;
+
+			const float CONE_BASE_LENGTH = 0.75;
+			float coneLength = CONE_BASE_LENGTH * size;
+
+			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, realLength, 0, 0);
 			DirectX::XMVECTOR localRotationOrigin = DirectX::XMVectorSet(0, 0, 0, 1);
 			DirectX::XMVECTOR localRotation = DirectX::XMQuaternionIdentity();
-			DirectX::XMVECTOR localScale = DirectX::XMVectorSet(0.2f, 0.25f, 0.2f, 0);
+			DirectX::XMVECTOR localScale = DirectX::XMVectorSet(coneDiameter, coneLength, coneDiameter, 0);
 			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(localScale, localRotationOrigin, localRotation, localTranslation);
 
 			DirectX::XMMATRIX ws = txLs * txWs;

@@ -4,6 +4,10 @@
 
 #include "Editors/LevelEditor/CameraWidget.h"
 
+#include "Core/Math/Mat44f.h"
+
+#include "Editors/LevelEditor/LevelEditor.h"
+
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Input.h"
@@ -57,6 +61,8 @@ namespace Editors
 
 	void CameraWidget::Render(float aspectRatio)
 	{
+		float fovRad = LevelEditor::Get().GetFovRad();
+
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
@@ -66,10 +72,14 @@ namespace Editors
 		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
 		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
 
-		constexpr float fovRad = DirectX::XMConvertToRadians(45.f);
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
 		pCamera->SetProjection(fovRad, aspectRatio, nearDistance, farDistance);
+	}
+
+	Core::CallbackId CameraWidget::OnWsChanged(const OnWsChangedEvent::Callback& callback)
+	{
+		return m_onWsChanged.Connect(callback);
 	}
 
 	void CameraWidget::UpdateCamera_None(float dtInSeconds)
@@ -174,6 +184,17 @@ namespace Editors
 		{
 			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
 			m_cameraTransform = m_cameraRotation * translationMatrix;
+
+			const DirectX::XMVECTOR& dxX = m_cameraTransform.r[0];
+			const DirectX::XMVECTOR& dxY = m_cameraTransform.r[1];
+			const DirectX::XMVECTOR& dxZ = m_cameraTransform.r[2];
+			const DirectX::XMVECTOR& dxW = m_cameraTransform.r[3];
+			Core::Vec4f x(dxX.m128_f32[0], dxX.m128_f32[1], dxX.m128_f32[2], dxX.m128_f32[3]);
+			Core::Vec4f y(dxY.m128_f32[0], dxY.m128_f32[1], dxY.m128_f32[2], dxY.m128_f32[3]);
+			Core::Vec4f z(dxZ.m128_f32[0], dxZ.m128_f32[1], dxZ.m128_f32[2], dxZ.m128_f32[3]);
+			Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
+			Core::Mat44f mat(x, y, z, w);
+			m_onWsChanged(mat);
 		}
 
 		m_mousePreviousPos = mousePosition;

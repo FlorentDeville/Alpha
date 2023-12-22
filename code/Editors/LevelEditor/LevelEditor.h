@@ -6,6 +6,9 @@
 
 #include "Core/Singleton.h"
 
+//#include "Core/Callbacks/CallbackList.h"
+#include "Core/Math/Mat44f.h"
+
 #include "Editors/LevelEditor/Level.h"
 
 #include <map>
@@ -45,11 +48,20 @@ namespace Editors
 		void AddNewEntity(const std::string& name);
 		void DeleteEntity(Node* pNode);
 
+		void SetCameraWs(const Core::Mat44f& ws);
+		const Core::Mat44f& GetCameraWs() const;
+
+		float GetFovRad() const;
+
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
 
 	private:
 		Level m_level;
+
+		//camera state
+		Core::Mat44f m_cameraWs;
+		float m_fovRad;
 	};
 }

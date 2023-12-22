@@ -4,7 +4,14 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackList.h"
+
 #include <DirectXMath.h>
+
+namespace Core
+{
+	class Mat44f;
+}
 
 namespace Editors
 {
@@ -16,6 +23,10 @@ namespace Editors
 
 		void Update(float dtInSeconds);
 		void Render(float aspectRatio);
+
+		//event
+		using OnWsChangedEvent = Core::CallbackList<void(const Core::Mat44f&)>;
+		Core::CallbackId OnWsChanged(const OnWsChangedEvent::Callback& callback);
 
 	private:
 		enum CameraState
@@ -38,6 +49,8 @@ namespace Editors
 		DirectX::XMINT2 m_mousePreviousPos;
 
 		CameraState m_cameraState;
+
+		OnWsChangedEvent m_onWsChanged;
 
 		void UpdateCamera_None(float dtInSeconds);
 		void UpdateCamera_FPS(float dtInSeconds);

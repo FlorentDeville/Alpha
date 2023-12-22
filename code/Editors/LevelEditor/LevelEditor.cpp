@@ -160,6 +160,7 @@ namespace Editors
 
 	LevelEditor::LevelEditor()
 		: m_level()
+		, m_fovRad(DirectX::XMConvertToRadians(45.f))
 	{}
 
 	LevelEditor::~LevelEditor()
@@ -212,5 +213,20 @@ namespace Editors
 	void LevelEditor::DeleteEntity(Node* pNode)
 	{
 		m_level.GetSceneTree()->DeleteNode(pNode->GetConstGuid());
+	}
+
+	void LevelEditor::SetCameraWs(const Core::Mat44f& ws)
+	{
+		m_cameraWs = ws;
+	}
+
+	const Core::Mat44f& LevelEditor::GetCameraWs() const
+	{
+		return m_cameraWs;
+	}
+
+	float LevelEditor::GetFovRad() const
+	{
+		return m_fovRad;
 	}
 }

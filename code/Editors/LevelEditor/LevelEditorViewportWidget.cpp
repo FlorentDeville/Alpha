@@ -89,7 +89,8 @@ namespace Editors
 		, m_isPanning(false)
 	{
 		m_pCamera = new CameraWidget();
-
+		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditor::Get().SetCameraWs(mat); });
+		
 		m_pGizmoModel = new GizmoModel();
 		m_pGizmoWidget = new GizmoWidget();
 
