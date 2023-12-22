@@ -32,4 +32,9 @@ namespace Core
 	{
 		m_values[index] = f;
 	}
+
+	float Vec4f::Dot(const Vec4f& other)
+	{
+		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ();
+	}
 }

@@ -18,10 +18,17 @@ namespace Core
 		const Vec4f& GetY() const;
 		const Vec4f& GetZ() const;
 		const Vec4f& GetT() const;
+		const Vec4f& GetRow(int row) const;
 
 		float Get(int row, int column) const;
 
 		void Set(int row, int column, float f);
+		void SetIdentity();
+
+		void Transpose();
+
+		Mat44f operator*(const Mat44f& other);
+
 	private:
 		Vec4f m_rows[4];
 	};
