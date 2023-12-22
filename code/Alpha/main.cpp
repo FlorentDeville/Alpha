@@ -358,7 +358,6 @@ void Update()
 
 	Editors::MeshEditor::Get().Update();
 	Editors::ShaderEditor::Get().Update();
-	Editors::LevelEditor::Get().Update();
 	GameMgr::Get().Update();
 	Widgets::WidgetMgr::Get().Update(dtMs.count());
 }
@@ -378,7 +377,6 @@ void Render()
 	renderModule.m_gameRenderTarget->EndScene();
 
 	//render the level editor
-	Editors::LevelEditor::Get().Render();
 	Editors::MeshEditor::Get().Render();
 	Editors::ShaderEditor::Get().Render();
 

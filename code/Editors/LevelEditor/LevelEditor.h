@@ -39,9 +39,6 @@ namespace Editors
 
 		void CreateEditor(Widgets::Widget* pParent);
 
-		void Update();
-		void Render();
-
 		const Level& GetConstLevel() const;
 		Level& GetLevel();
 

@@ -172,12 +172,6 @@ namespace Editors
 		LevelEditorTab* pTab = new LevelEditorTab(pParent);
 	}
 
-	void LevelEditor::Update()
-	{}
-
-	void LevelEditor::Render()
-	{}
-
 	const Level& LevelEditor::GetConstLevel() const
 	{
 		return m_level;
