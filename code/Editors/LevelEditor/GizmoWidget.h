@@ -8,6 +8,9 @@
 
 namespace Editors
 {
+	class GizmoModel;
+	class Node;
+
 	class GizmoWidget
 	{
 	public:
@@ -26,7 +29,7 @@ namespace Editors
 		void Update();
 		void Render();
 
-		void SetWs(const DirectX::XMMATRIX& txWs);
+		void SetModel(GizmoModel* pModel);
 
 		void SetManipulatorMode(ManipulatorMode mode);
 
@@ -35,6 +38,10 @@ namespace Editors
 		void RenderTranslationManipulator();
 
 		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color);
+
+		void OnNodeChanged_Model(Node* pNode);
+
+		GizmoModel* m_pModel;
 
 		DirectX::XMMATRIX m_txWs;
 

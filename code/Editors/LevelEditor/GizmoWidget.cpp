@@ -4,20 +4,31 @@
 
 #include "Editors/LevelEditor/GizmoWidget.h"
 
+#include "Editors/LevelEditor/GizmoModel.h"
+
 #include "Rendering/RenderModule.h"
 
 using namespace DirectX;
+
+//#pragma optimize("", off)
 
 namespace Editors
 {
 	GizmoWidget::GizmoWidget()
 		: m_manipulatorMode(kTranslation)
+		, m_pModel(nullptr)
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 	}
 
 	GizmoWidget::~GizmoWidget()
-	{}
+	{
+		if (m_pModel)
+		{
+			delete m_pModel;
+			m_pModel = nullptr;
+		}
+	}
 
 	void GizmoWidget::Update()
 	{}
@@ -39,9 +50,21 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::SetWs(const DirectX::XMMATRIX& txWs)
+	void GizmoWidget::SetModel(GizmoModel* pModel)
 	{
-		m_txWs = txWs;
+		if (m_pModel == pModel)
+			return;
+
+		if (m_pModel)
+			delete m_pModel;
+
+		m_pModel = pModel;
+
+		if (!pModel)
+			return;
+
+		pModel->OnNodeChanged([this](Node* pNode) { OnNodeChanged_Model(pNode); });
+		m_txWs = pModel->GetTransform();
 	}
 
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
@@ -127,5 +150,10 @@ namespace Editors
 			DirectX::XMMATRIX ws = txLs * txWs;
 			renderingMgr.RenderPrimitiveCone(ws, color);
 		}
+	}
+
+	void GizmoWidget::OnNodeChanged_Model(Node* pNode)
+	{
+		m_txWs = m_pModel->GetTransform();
 	}
 }

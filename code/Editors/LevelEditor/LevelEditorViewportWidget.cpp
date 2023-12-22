@@ -8,6 +8,7 @@
 
 #include "Editors/LevelEditor/Camera.h"
 #include "Editors/LevelEditor/Component.h"
+#include "Editors/LevelEditor/GizmoModel.h"
 #include "Editors/LevelEditor/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
@@ -89,8 +90,10 @@ namespace Editors
 	{
 		m_pCamera = new Camera();
 
+		m_pGizmoModel = new GizmoModel();
 		m_pGizmoWidget = new GizmoWidget();
-		m_pGizmoWidget->SetWs(DirectX::XMMatrixTranslation(0, 2, 0));
+
+		m_pGizmoWidget->SetModel(m_pGizmoModel);
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -141,5 +144,10 @@ namespace Editors
 	GizmoWidget* LevelEditorViewportWidget::GetGizmoWidget()
 	{
 		return m_pGizmoWidget;
+	}
+
+	GizmoModel* LevelEditorViewportWidget::GetGizmoModel()
+	{
+		return m_pGizmoModel;
 	}
 }

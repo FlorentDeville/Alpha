@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/LevelEditorTab.h"
 
+#include "Editors/LevelEditor/GizmoModel.h"
 #include "Editors/LevelEditor/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/LevelEditorViewportWidget.h"
@@ -356,16 +357,22 @@ namespace Editors
 		if (!m_pEntityWidget)
 			return true;
 
+		//get the entity
 		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
 		Node* pNode = pLevelTreeModel->GetSource();
 		Entity* pEntity = pNode->ToEntity();
 
+		//set the entity widget
 		delete m_pEntityModel;
 		m_pEntityModel = new EntityModel(pEntity);
 		m_pEntityWidget->SetModel(m_pEntityModel);
 		Widgets::WidgetMgr::Get().RequestResize();
 
 		m_pEntityNameLabel->SetText(pEntity->GetName());
+
+		//set the gizmo
+		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+		pGizmoModel->SetNode(pNode);
 
 		return true;
 	}

@@ -9,6 +9,7 @@
 namespace Editors
 {
 	class Camera;
+	class GizmoModel;
 	class GizmoWidget;
 
 	class LevelEditorViewportWidget : public Widgets::Viewport_v2
@@ -23,9 +24,12 @@ namespace Editors
 		void SetEnableViewportControl(bool enable);
 
 		GizmoWidget* GetGizmoWidget();
+		GizmoModel* GetGizmoModel();
 
 	private:
 		GizmoWidget* m_pGizmoWidget;
+		GizmoModel* m_pGizmoModel;
+
 		Camera* m_pCamera;
 		
 		bool m_enableViewportControl;
