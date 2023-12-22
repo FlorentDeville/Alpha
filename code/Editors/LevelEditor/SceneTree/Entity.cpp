@@ -53,7 +53,6 @@ namespace Editors
 			++it;
 
 		return it->second;
-
 	}
 
 	Component* Entity::GetComponent(int index)
@@ -63,7 +62,6 @@ namespace Editors
 			++it;
 
 		return it->second;
-
 	}
 
 	int Entity::GetComponentCount() const
@@ -75,4 +73,43 @@ namespace Editors
 	{
 		return m_name;
 	}
+
+	Core::Mat44f Entity::ComputeWs() const
+	{
+		Core::Mat44f lsTransform;
+		lsTransform.SetIdentity();
+		if (const Component* pComponent = GetComponent("Transform"))
+		{
+			if (const Property* pProperty = pComponent->GetProperty("Local"))
+			{
+				const PropertyValueMat44f& value = static_cast<const PropertyValueMat44f&>(pProperty->GetValue());
+				lsTransform = value.Get();
+			}
+		}
+
+		const Node* pParent = GetConstParent();
+		if (!pParent)
+			return lsTransform;
+
+		Core::Mat44f parentWs = ComputeParentWs();
+		Core::Mat44f ws = lsTransform * parentWs;
+		return ws;
+	}
+
+	Core::Mat44f Entity::ComputeParentWs() const
+	{
+		Core::Mat44f parentWs;
+		parentWs.SetIdentity();
+
+		const Node* pParentNode = GetConstParent();
+		if (!pParentNode)
+			return parentWs;
+
+		const Entity* pParentEntity = pParentNode->ToConstEntity();
+		if (!pParentEntity)
+			return parentWs;
+
+		return pParentEntity->ComputeWs();
+	}
+
 }

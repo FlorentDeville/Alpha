@@ -9,6 +9,11 @@
 #include <map>
 #include <string>
 
+namespace Core
+{
+	class Mat44f;
+}
+
 namespace Editors
 {
 	class Component;
@@ -31,6 +36,9 @@ namespace Editors
 		int GetComponentCount() const;
 
 		const std::string& GetName() const;
+
+		virtual Core::Mat44f ComputeWs() const;
+		virtual Core::Mat44f ComputeParentWs() const;
 
 	private:
 		std::string m_name;
