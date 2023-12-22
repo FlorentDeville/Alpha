@@ -60,4 +60,15 @@ namespace Core
 		m_values[1] *= invLength;
 		m_values[2] *= invLength;
 	}
+
+	Vec4f Vec4f::operator-(const Vec4f& other) const
+	{
+		Vec4f res(
+			GetX() - other.GetX(),
+			GetY() - other.GetY(),
+			GetZ() - other.GetZ(),
+			0);
+
+		return res;
+	}
 }

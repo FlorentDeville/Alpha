@@ -28,6 +28,8 @@ namespace Core
 
 		void Normalize();
 
+		Vec4f operator-(const Vec4f& other) const;
+
 	private:
 		float m_values[4];
 	};
