@@ -27,4 +27,13 @@ namespace Os
 	{
 		return !IsKeyDown(vkey);
 	}
+
+	bool GetMousePosition(int32_t& x, int32_t& y)
+	{
+		POINT point;
+		bool res = GetCursorPos(&point);
+		x = point.x;
+		y = point.y;
+		return res;
+	}
 }

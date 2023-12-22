@@ -14,4 +14,6 @@ namespace Os
 
 	bool IsKeyDown(VKeyCode vkey);
 	bool IsKeyUp(VKeyCode vkey);
+
+	bool GetMousePosition(int32_t& x, int32_t& y);
 }

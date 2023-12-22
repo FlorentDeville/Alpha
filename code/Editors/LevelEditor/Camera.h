@@ -35,7 +35,7 @@ namespace Editors
 
 		bool m_firstFrameMouseDown;
 
-		DirectX::XMUINT2 m_mousePreviousPos;
+		DirectX::XMINT2 m_mousePreviousPos;
 
 		CameraState m_cameraState;
 

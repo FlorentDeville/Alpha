@@ -131,54 +131,6 @@ namespace Editors
 		float dtInSeconds = dt / 1000.f;
 
 		m_pCamera->Update(dtInSeconds);
-
-		//const float TRANSLATION_SPEED = 0.5f;
-		//const float PAN_SPEED = 0.1f;
-
-		//if (inputs.IsMouseMiddleButtonDown())
-		//{
-		//	OutputDebugString("pan\n");
-		//	DirectX::XMUINT2 mousePosition;
-		//	inputs.GetMousePosition(mousePosition.x, mousePosition.y);
-		//	if (!m_isPanning)
-		//	{
-		//		m_mousePreviousPos = mousePosition;
-		//		m_isPanning = true;
-		//	}
-
-		//	DirectX::XMINT2 delta;
-		//	delta.x = m_mousePreviousPos.x - mousePosition.x;
-		//	delta.y = m_mousePreviousPos.y - mousePosition.y;
-
-		//	if (delta.x != 0)
-		//	{
-		//		DirectX::XMVECTOR xAxis = m_cameraRotation.r[0];
-		//		m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, xAxis * static_cast<float>(delta.x) * PAN_SPEED);
-		//		updateCameraTransform = true;
-		//	}
-		//	if (delta.y != 0)
-		//	{
-		//		DirectX::XMVECTOR yAxis = m_cameraRotation.r[1];
-		//		m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, yAxis * static_cast<float>(-delta.y) * PAN_SPEED);
-		//		updateCameraTransform = true;
-		//	}
-
-		//	m_mousePreviousPos = mousePosition;
-		//}
-		//else if (m_isPanning)
-		//{
-		//	m_isPanning = false;
-		//}
-
-		//int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
-		//if (mouseWheelDistance != 0)
-		//{
-		//	const float CAMERA_DISTANCE_SPEED = 0.05f;
-		//	const float MIN_DISTANCE = 2;
-		//	DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-		//	m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * mouseWheelDistance * CAMERA_DISTANCE_SPEED);
-		//	updateCameraTransform = true;
-		//}
 	}
 
 	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
