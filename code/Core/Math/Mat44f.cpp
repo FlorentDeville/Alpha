@@ -69,13 +69,14 @@ namespace Core
 		Mat44f result;
 		for (int ii = 0; ii < 4; ++ii) //first matrix row
 		{
-			for (int jj = 0; jj < 4; ++jj) //second matrix column
+			for (int jj = 0; jj < 3; ++jj) //second matrix column
 			{
-				float dot = m_rows[ii].Dot(transposedOther.GetRow(jj));
+				float dot = m_rows[ii].Dot4(transposedOther.GetRow(jj));
 				result.Set(ii, jj, dot);
 			}
 		}
 
+		result.Set(3, 3, 1);
 		return result;
 	}
 }

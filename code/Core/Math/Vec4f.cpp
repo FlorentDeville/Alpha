@@ -37,4 +37,9 @@ namespace Core
 	{
 		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ();
 	}
+
+	float Vec4f::Dot4(const Vec4f& other)
+	{
+		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ() + GetW() * other.GetW();
+	}
 }

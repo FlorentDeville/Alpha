@@ -22,6 +22,7 @@ namespace Core
 		void Set(int index, float f);
 
 		float Dot(const Vec4f& other);
+		float Dot4(const Vec4f& other);
 
 	private:
 		float m_values[4];
