@@ -18,6 +18,11 @@ namespace Editors
 	GizmoWidget::GizmoWidget()
 		: m_manipulatorMode(kTranslation)
 		, m_pModel(nullptr)
+		, BASE_DIAMETER(0.075f)
+		, LENGTH(7.f)
+		, CONE_BASE_DIAMETER(0.5)
+		, CONE_BASE_LENGTH(0.75)
+		, ROTATION_DIAMATER(5.f)
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 	}
@@ -75,11 +80,17 @@ namespace Editors
 
 	void GizmoWidget::RenderRotationManipulator()
 	{
+		Core::Vec4f objectPosition(m_txWs.r[0].m128_f32[0], m_txWs.r[0].m128_f32[1], m_txWs.r[0].m128_f32[2], 1);
+		float size = ComputeConstantScreenSizeScale(objectPosition);
+
+		float realRotationDiameter = ROTATION_DIAMATER * size;
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(realRotationDiameter, realRotationDiameter, realRotationDiameter);
+
 		//rotation x axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(0, 0, rotationAngle);
-			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(rotation, m_txWs);
+			DirectX::XMMATRIX mvpMatrix = scale * rotation * m_txWs;
 
 			DirectX::XMFLOAT4 red(1, 0, 0, 1);
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, red);
@@ -88,14 +99,16 @@ namespace Editors
 		//rotation y axis
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 1);
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(m_txWs, green);
+
+			DirectX::XMMATRIX mvpMatrix = scale * m_txWs;
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, green);
 		}
 
 		//rotation z axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(rotationAngle, 0, 0);
-			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(rotation, m_txWs);
+			DirectX::XMMATRIX mvpMatrix = scale * rotation * m_txWs;
 
 			DirectX::XMFLOAT4 blue(0, 0, 1, 1);
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, blue);
@@ -133,21 +146,10 @@ namespace Editors
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 		
-		const LevelEditor& levelEditor = LevelEditor::Get();
-		const Core::Mat44f& camera = levelEditor.GetCameraWs();
-		float fov = levelEditor.GetFovRad();
-		
 		Core::Vec4f objectPosition(txWs.r[0].m128_f32[0], txWs.r[0].m128_f32[1], txWs.r[0].m128_f32[2], 1);
-		Core::Vec4f dt = camera.GetT() - objectPosition;
-		float distance = dt.Length();
-		float worldSize = (2 * tanf(fov * 0.5f)) * distance;
-		const float SCREEN_RATIO = 0.025f;
-		float size = SCREEN_RATIO * worldSize;
+		float size = ComputeConstantScreenSizeScale(objectPosition);
 
-		const float BASE_DIAMETER = 0.075f;
 		float realDiameter = BASE_DIAMETER * size;
-
-		const float LENGTH = 7.f;
 		float realLength = LENGTH * size;
 
 		{
@@ -159,10 +161,8 @@ namespace Editors
 		}
 
 		{
-			const float CONE_BASE_DIAMETER = 0.5;
+			
 			float coneDiameter = CONE_BASE_DIAMETER * size;
-
-			const float CONE_BASE_LENGTH = 0.75;
 			float coneLength = CONE_BASE_LENGTH * size;
 
 			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, realLength, 0, 0);
@@ -174,6 +174,20 @@ namespace Editors
 			DirectX::XMMATRIX ws = txLs * txWs;
 			renderingMgr.RenderPrimitiveCone(ws, color);
 		}
+	}
+
+	float GizmoWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
+	{
+		const LevelEditor& levelEditor = LevelEditor::Get();
+		const Core::Mat44f& camera = levelEditor.GetCameraWs();
+		float fov = levelEditor.GetFovRad();
+
+		Core::Vec4f dt = camera.GetT() - objectPosition;
+		float distance = dt.Length();
+		float worldSize = (2 * tanf(fov * 0.5f)) * distance;
+		const float SCREEN_RATIO = 0.025f;
+		float size = SCREEN_RATIO * worldSize;
+		return size;
 	}
 
 	void GizmoWidget::OnNodeChanged_Model(Node* pNode)

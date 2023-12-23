@@ -124,7 +124,7 @@ namespace Rendering
 
 		MeshId torusMeshId;
 		meshMgr.CreateMesh(&m_pTorusMesh, torusMeshId);
-		BaseShape::CreateTorus(m_pTorusMesh, 2, 0.1f, 40);
+		BaseShape::CreateTorus(m_pTorusMesh, 2, 0.02f, 40);
 	}
 
 	void RenderModule::Release()

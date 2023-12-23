@@ -6,6 +6,11 @@
 
 #include <DirectXMath.h>
 
+namespace Core
+{
+	class Vec4f;
+}
+
 namespace Editors
 {
 	class GizmoModel;
@@ -39,6 +44,8 @@ namespace Editors
 
 		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color);
 
+		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
+
 		void OnNodeChanged_Model(Node* pNode);
 
 		GizmoModel* m_pModel;
@@ -46,5 +53,14 @@ namespace Editors
 		DirectX::XMMATRIX m_txWs;
 
 		ManipulatorMode m_manipulatorMode;
+
+		//standard size for translation gizmo
+		const float BASE_DIAMETER;
+		const float LENGTH;
+		const float CONE_BASE_DIAMETER;
+		const float CONE_BASE_LENGTH;
+
+		//standard size for rotation gizmo
+		const float ROTATION_DIAMATER;
 	};
 }
