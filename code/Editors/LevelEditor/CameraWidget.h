@@ -24,6 +24,8 @@ namespace Editors
 		void Update(float dtInSeconds);
 		void Render(float aspectRatio);
 
+		void SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle);
+
 		//event
 		using OnWsChangedEvent = Core::CallbackList<void(const Core::Mat44f&)>;
 		Core::CallbackId OnWsChanged(const OnWsChangedEvent::Callback& callback);

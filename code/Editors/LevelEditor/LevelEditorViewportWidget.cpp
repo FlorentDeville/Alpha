@@ -90,7 +90,11 @@ namespace Editors
 	{
 		m_pCamera = new CameraWidget();
 		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditor::Get().SetCameraWs(mat); });
-		
+
+		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
+		DirectX::XMVECTOR cameraEulerAngle = DirectX::XMVectorSet(3.14f / 4.f, 0, 0, 0);
+		m_pCamera->SetTransform(cameraPosition, cameraEulerAngle);
+
 		m_pGizmoModel = new GizmoModel();
 		m_pGizmoWidget = new GizmoWidget();
 

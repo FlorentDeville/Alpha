@@ -26,17 +26,11 @@ namespace Editors
 		, m_cameraState(CameraState::None)
 		, m_translationSpeed(10.f)
 		, m_rotationSpeed(0.3f)
-	{
-		m_cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
-		m_cameraEulerAngle = DirectX::XMVectorSet(3.14f / 4.f, 0, 0, 0);
-
-		DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
-		DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
-		m_cameraRotation = XRotation * YRotation;
-
-		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
-		m_cameraTransform = m_cameraRotation * translationMatrix;
-	}
+		, m_cameraEulerAngle()
+		, m_cameraPosition()
+		, m_cameraRotation()
+		, m_cameraTransform()
+	{}
 
 	CameraWidget::~CameraWidget()
 	{}
@@ -75,6 +69,30 @@ namespace Editors
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
 		pCamera->SetProjection(fovRad, aspectRatio, nearDistance, farDistance);
+	}
+
+	void CameraWidget::SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle)
+	{
+		m_cameraPosition = pos;
+		m_cameraEulerAngle = eulerAngle;
+
+		DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
+		DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
+		m_cameraRotation = XRotation * YRotation;
+		
+		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
+		m_cameraTransform = m_cameraRotation * translationMatrix;
+
+		const DirectX::XMVECTOR& dxX = m_cameraTransform.r[0];
+		const DirectX::XMVECTOR& dxY = m_cameraTransform.r[1];
+		const DirectX::XMVECTOR& dxZ = m_cameraTransform.r[2];
+		const DirectX::XMVECTOR& dxW = m_cameraTransform.r[3];
+		Core::Vec4f x(dxX.m128_f32[0], dxX.m128_f32[1], dxX.m128_f32[2], dxX.m128_f32[3]);
+		Core::Vec4f y(dxY.m128_f32[0], dxY.m128_f32[1], dxY.m128_f32[2], dxY.m128_f32[3]);
+		Core::Vec4f z(dxZ.m128_f32[0], dxZ.m128_f32[1], dxZ.m128_f32[2], dxZ.m128_f32[3]);
+		Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
+		Core::Mat44f mat(x, y, z, w);
+		m_onWsChanged(mat);
 	}
 
 	Core::CallbackId CameraWidget::OnWsChanged(const OnWsChangedEvent::Callback& callback)
