@@ -4,6 +4,8 @@
 
 #include "Editors/LevelEditor/LevelEditor.h"
 
+#include "Core/Math/Vec4f.h"
+
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelEditorTab.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"

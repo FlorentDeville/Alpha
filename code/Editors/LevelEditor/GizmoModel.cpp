@@ -4,8 +4,9 @@
 
 #include "Editors/LevelEditor/GizmoModel.h"
 
-#include "Editors/LevelEditor/Component.h"
+#include "Core/Math/Vec4f.h"
 
+#include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 

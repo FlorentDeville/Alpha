@@ -4,21 +4,23 @@
 
 #pragma once
 
-#include "Core/Math/Vec4f.h"
+#include <DirectXMath.h>
 
 namespace Core
 {
+	class Vec4f;
+
 	class Mat44f
 	{
 	public:
 		Mat44f();
 		Mat44f(const Vec4f& x, const Vec4f& y, const Vec4f& z, const Vec4f& pos);
 
-		const Vec4f& GetX() const;
-		const Vec4f& GetY() const;
-		const Vec4f& GetZ() const;
-		const Vec4f& GetT() const;
-		const Vec4f& GetRow(int row) const;
+		Vec4f GetX() const;
+		Vec4f GetY() const;
+		Vec4f GetZ() const;
+		Vec4f GetT() const;
+		Vec4f GetRow(int row) const;
 
 		float Get(int row, int column) const;
 
@@ -32,6 +34,8 @@ namespace Core
 		Mat44f operator*(const Mat44f& other);
 
 	private:
-		Vec4f m_rows[4];
+		explicit Mat44f(const DirectX::XMMATRIX& matrix);
+
+		DirectX::XMMATRIX m_matrix;
 	};
 }

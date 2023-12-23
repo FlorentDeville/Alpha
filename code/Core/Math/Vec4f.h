@@ -8,8 +8,12 @@
 
 namespace Core
 {
+	class Mat44f;
+
 	class Vec4f
 	{
+		friend Mat44f;
+
 	public:
 		Vec4f();
 		Vec4f(float x, float y, float z, float w);
@@ -33,6 +37,8 @@ namespace Core
 		Vec4f operator-(const Vec4f& other) const;
 
 	private:
+		explicit Vec4f(const DirectX::XMVECTOR& vector);
+
 		DirectX::XMVECTOR m_vector;
 	};
 }

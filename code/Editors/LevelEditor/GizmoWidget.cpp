@@ -4,6 +4,8 @@
 
 #include "Editors/LevelEditor/GizmoWidget.h"
 
+#include "Core/Math/Vec4f.h"
+
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/GizmoModel.h"
 

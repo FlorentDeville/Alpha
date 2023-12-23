@@ -52,14 +52,16 @@ namespace Core
 
 	void Vec4f::Normalize()
 	{
-		DirectX::XMVector3Normalize(m_vector);
+		m_vector = DirectX::XMVector3Normalize(m_vector);
 	}
 
 	Vec4f Vec4f::operator-(const Vec4f& other) const
 	{
 		DirectX::XMVECTOR dxRes = DirectX::XMVectorSubtract(m_vector, other.m_vector);
-		Vec4f res;
-		res.m_vector = dxRes;
-		return res;
+		return Vec4f(dxRes);
 	}
+
+	Vec4f::Vec4f(const DirectX::XMVECTOR& vector)
+		: m_vector(vector)
+	{}
 }

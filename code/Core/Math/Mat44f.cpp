@@ -4,84 +4,57 @@
 
 #include "Core/Math/Mat44f.h"
 
+#include "Core/Math/Vec4f.h"
+
 namespace Core
 {
 	Mat44f::Mat44f()
-	{
-		m_rows[0] = Vec4f();
-		m_rows[1] = Vec4f();
-		m_rows[2] = Vec4f();
-		m_rows[3] = Vec4f();
-	}
+		: m_matrix()
+	{}
 
 	Mat44f::Mat44f(const Vec4f& x, const Vec4f& y, const Vec4f& z, const Vec4f& pos)
 	{
-		m_rows[0] = x;
-		m_rows[1] = y;
-		m_rows[2] = z;
-		m_rows[3] = pos;
+		m_matrix = DirectX::XMMATRIX(x.m_vector, y.m_vector, z.m_vector, pos.m_vector);
 	}
 
-	const Vec4f& Mat44f::GetX() const { return m_rows[0]; }
-	const Vec4f& Mat44f::GetY() const { return m_rows[1]; }
-	const Vec4f& Mat44f::GetZ() const { return m_rows[2]; }
-	const Vec4f& Mat44f::GetT() const { return m_rows[3]; }
-	const Vec4f& Mat44f::GetRow(int row) const { return m_rows[row]; }
+	Vec4f Mat44f::GetX() const { return Vec4f(m_matrix.r[0]); }
+	Vec4f Mat44f::GetY() const { return Vec4f(m_matrix.r[1]); }
+	Vec4f Mat44f::GetZ() const { return Vec4f(m_matrix.r[2]); }
+	Vec4f Mat44f::GetT() const { return Vec4f(m_matrix.r[3]); }
+	Vec4f Mat44f::GetRow(int row) const { return Vec4f(m_matrix.r[row]); }
 
 	float Mat44f::Get(int row, int column) const
 	{
-		return m_rows[row].Get(column);
+		return m_matrix.r[row].m128_f32[column];
 	}
 
 	void Mat44f::Set(int row, int column, float f)
 	{
-		m_rows[row].Set(column, f);
+		m_matrix.r[row].m128_f32[column] = f;
 	}
 
 	void Mat44f::SetRow(int row, const Vec4f& value)
 	{
-		m_rows[row] = value;
+		m_matrix.r[row] = value.m_vector;
 	}
 
 	void Mat44f::SetIdentity()
 	{
-		m_rows[0] = Vec4f(1, 0, 0, 0);
-		m_rows[1] = Vec4f(0, 1, 0, 0);
-		m_rows[2] = Vec4f(0, 0, 1, 0);
-		m_rows[3] = Vec4f(0, 0, 0, 1);
+		m_matrix = DirectX::XMMatrixIdentity();
 	}
 
 	void Mat44f::Transpose()
 	{
-		Mat44f res;
-		for (int ii = 0; ii < 4; ++ii)
-		{
-			for (int jj = 0; jj < 4; ++jj)
-			{
-				res.Set(jj, ii, Get(ii, jj));
-			}
-		}
-
-		*this = res;
+		m_matrix = DirectX::XMMatrixTranspose(m_matrix);
 	}
 
 	Mat44f Mat44f::operator*(const Mat44f& other)
 	{
-		//transpose the second matrix to have a list of columns
-		Mat44f transposedOther = other;
-		transposedOther.Transpose();
-
-		Mat44f result;
-		for (int ii = 0; ii < 4; ++ii) //first matrix row
-		{
-			for (int jj = 0; jj < 3; ++jj) //second matrix column
-			{
-				float dot = m_rows[ii].Dot4(transposedOther.GetRow(jj));
-				result.Set(ii, jj, dot);
-			}
-		}
-
-		result.Set(3, 3, 1);
-		return result;
+		DirectX::XMMATRIX dxRes = DirectX::XMMatrixMultiply(m_matrix, other.m_matrix);
+		return Mat44f(dxRes);
 	}
+
+	Mat44f::Mat44f(const DirectX::XMMATRIX& matrix)
+		: m_matrix(matrix)
+	{}
 }
