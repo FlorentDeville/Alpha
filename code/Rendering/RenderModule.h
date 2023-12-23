@@ -61,6 +61,7 @@ namespace Rendering
 		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
+		void RenderPrimitiveCube(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 
 		void ExecuteRenderCommand();
 
@@ -146,6 +147,7 @@ namespace Rendering
 		Mesh* m_pCylinderMesh;
 		Mesh* m_pConeMesh;
 		Mesh* m_pTorusMesh;
+		Mesh* m_pCubeMesh;
 
 		Material* m_pBaseShapeMaterial;
 

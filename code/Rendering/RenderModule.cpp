@@ -57,6 +57,7 @@ namespace Rendering
 #endif
 		, m_pRenderCommandList(nullptr)
 		, m_pCamera(nullptr)
+		, m_pCubeMesh(nullptr)
 	{
 		m_clearColor[0] = 0.4f;
 		m_clearColor[1] = 0.6f;
@@ -125,6 +126,10 @@ namespace Rendering
 		MeshId torusMeshId;
 		meshMgr.CreateMesh(&m_pTorusMesh, torusMeshId);
 		BaseShape::CreateTorus(m_pTorusMesh, 2, 0.02f, 40);
+
+		MeshId cubeMeshId;
+		meshMgr.CreateMesh(&m_pCubeMesh, cubeMeshId);
+		BaseShape::CreateCube(m_pCubeMesh);
 	}
 
 	void RenderModule::Release()
@@ -274,6 +279,11 @@ namespace Rendering
 	void RenderModule::RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
 	{
 		RenderBaseShape(m_pTorusMesh, world, color);
+	}
+
+	void RenderModule::RenderPrimitiveCube(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	{
+		RenderBaseShape(m_pCubeMesh, world, color);
 	}
 
 	void RenderModule::ExecuteRenderCommand()

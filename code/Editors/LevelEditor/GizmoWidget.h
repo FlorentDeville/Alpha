@@ -41,8 +41,10 @@ namespace Editors
 	private:
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();
+		void RenderScaleManipulator();
 
 		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color);
+		void RenderScaleSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 
@@ -62,5 +64,8 @@ namespace Editors
 
 		//standard size for rotation gizmo
 		const float ROTATION_DIAMATER;
+
+		//standard size for scale gizmo
+		const float SCALE_SQUARE_SIZE;
 	};
 }

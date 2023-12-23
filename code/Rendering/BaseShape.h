@@ -15,5 +15,6 @@ namespace Rendering
 		static void CreateCylinder(Mesh* pMesh, float height, float diameter, int tessellation);
 		static void CreateCone(Mesh* pMesh, float diameter, float height, size_t tessellation);
 		static void CreateTorus(Mesh* pMesh, float diameter, float thickness, int tessellation);
+		static void CreateCube(Mesh* pMesh);
 	};
 }

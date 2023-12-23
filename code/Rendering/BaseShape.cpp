@@ -269,4 +269,80 @@ namespace Rendering
 
         pMesh->LoadVertexAndIndexBuffer(vertices.data(), static_cast<int>(vertices.size()), indices.data(), static_cast<int>(indices.size()));
     }
+
+    void BaseShape::CreateCube(Mesh* pMesh)
+    {
+        const float HALF_SIZE = 0.5f;
+        const int VERTEX_COUNT = 8;
+        Rendering::VertexPosColor vertices[VERTEX_COUNT];
+        vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+        vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+        vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+        vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+
+        vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+        vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+        vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+        vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+
+        const int INDEX_COUNT = 36;
+        //const int INDEX_COUNT = 6;
+        uint16_t indices[INDEX_COUNT];
+
+        //top face
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+
+        indices[3] = 0;
+        indices[4] = 2;
+        indices[5] = 3;
+
+        //bottom face
+        indices[6] = 5;
+        indices[7] = 4;
+        indices[8] = 7;
+
+        indices[9] = 6;
+        indices[10] = 5;
+        indices[11] = 7;
+
+        //front
+        indices[12] = 2;
+        indices[13] = 1;
+        indices[14] = 5;
+
+        indices[15] = 2;
+        indices[16] = 5;
+        indices[17] = 6;
+
+        //back
+        indices[18] = 0;
+        indices[19] = 3;
+        indices[20] = 7;
+
+        indices[21] = 0;
+        indices[22] = 7;
+        indices[23] = 4;
+
+        //left
+        indices[24] = 2;
+        indices[25] = 6;
+        indices[26] = 7;
+
+        indices[27] = 2;
+        indices[28] = 7;
+        indices[29] = 3;
+
+        //right
+        indices[30] = 1;
+        indices[31] = 0;
+        indices[32] = 4;
+
+        indices[33] = 1;
+        indices[34] = 4;
+        indices[35] = 5;
+
+        pMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
+    }
 }

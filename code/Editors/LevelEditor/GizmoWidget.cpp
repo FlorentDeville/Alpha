@@ -23,6 +23,7 @@ namespace Editors
 		, CONE_BASE_DIAMETER(0.5)
 		, CONE_BASE_LENGTH(0.75)
 		, ROTATION_DIAMATER(5.f)
+		, SCALE_SQUARE_SIZE(0.5f)
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 	}
@@ -49,6 +50,10 @@ namespace Editors
 
 		case kRotation:
 			RenderRotationManipulator();
+			break;
+
+		case kScale:
+			RenderScaleManipulator();
 			break;
 
 		default:
@@ -142,6 +147,33 @@ namespace Editors
 		}
 	}
 
+	void GizmoWidget::RenderScaleManipulator()
+	{
+		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
+
+		//x axis
+		{
+			//rotate everything 90 degres around z axis
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+			DirectX::XMFLOAT4 red(1, 0, 0, 0);
+			RenderScaleSingleAxis(rotation * m_txWs, red);
+		}
+
+		//y axis
+		{
+			DirectX::XMFLOAT4 green(0, 1, 0, 0);
+			RenderScaleSingleAxis(m_txWs, green);
+		}
+
+		//z axis
+		{
+			//rotate everything 90 degres around z axis
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+			DirectX::XMFLOAT4 blue(0, 0, 1, 0);
+			RenderScaleSingleAxis(rotation * m_txWs, blue);
+		}
+	}
+
 	void GizmoWidget::RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color)
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
@@ -173,6 +205,40 @@ namespace Editors
 
 			DirectX::XMMATRIX ws = txLs * txWs;
 			renderingMgr.RenderPrimitiveCone(ws, color);
+		}
+	}
+
+	void GizmoWidget::RenderScaleSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color) const
+	{
+		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
+
+		Core::Vec4f objectPosition(txWs.r[0].m128_f32[0], txWs.r[0].m128_f32[1], txWs.r[0].m128_f32[2], 1);
+		float size = ComputeConstantScreenSizeScale(objectPosition);
+
+		float realDiameter = BASE_DIAMETER * size;
+		float realLength = LENGTH * size;
+
+		{
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realDiameter, realLength, realDiameter, 0);
+			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0.f, realLength * 0.5f, 0, 0);
+			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
+			DirectX::XMMATRIX ws = txLs * txWs;
+			renderingMgr.RenderPrimitiveCylinder(ws, color);
+		}
+
+		{
+
+			float coneDiameter = CONE_BASE_DIAMETER * size;
+			float coneLength = SCALE_SQUARE_SIZE * size;
+
+			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, realLength, 0, 0);
+			DirectX::XMVECTOR localRotationOrigin = DirectX::XMVectorSet(0, 0, 0, 1);
+			DirectX::XMVECTOR localRotation = DirectX::XMQuaternionIdentity();
+			DirectX::XMVECTOR localScale = DirectX::XMVectorSet(coneLength, coneLength, coneLength, 0);
+			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(localScale, localRotationOrigin, localRotation, localTranslation);
+
+			DirectX::XMMATRIX ws = txLs * txWs;
+			renderingMgr.RenderPrimitiveCube(ws, color);
 		}
 	}
 
