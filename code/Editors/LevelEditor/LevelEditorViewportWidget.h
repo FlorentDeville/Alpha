@@ -27,6 +27,8 @@ namespace Editors
 		GizmoModel* GetGizmoModel();
 
 	private:
+		DirectX::XMVECTOR Compute3dMousePosition() const;
+
 		GizmoWidget* m_pGizmoWidget;
 		GizmoModel* m_pGizmoModel;
 
@@ -34,6 +36,6 @@ namespace Editors
 		
 		bool m_enableViewportControl;
 		
-		bool m_isPanning; //when the user is panning the camera		
+		bool m_isPanning; //when the user is panning the camera	
 	};
 }

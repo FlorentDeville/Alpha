@@ -31,7 +31,7 @@ namespace Editors
 		GizmoWidget();
 		~GizmoWidget();
 
-		void Update();
+		void Update(const DirectX::XMVECTOR& mouse3dPosition);
 		void Render();
 
 		void SetModel(GizmoModel* pModel);

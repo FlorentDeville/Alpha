@@ -37,8 +37,18 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::Update()
-	{}
+	void GizmoWidget::Update(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		//get mouse position in viewport
+
+
+		//compute aabb for translation axis
+
+		//create ray 
+		//convert ray to gizmo local space
+
+		//collision test, ray vs aabb
+	}
 
 	void GizmoWidget::Render()
 	{
