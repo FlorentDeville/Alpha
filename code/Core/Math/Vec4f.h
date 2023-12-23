@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <DirectXMath.h>
+
 namespace Core
 {
 	class Vec4f
@@ -31,6 +33,6 @@ namespace Core
 		Vec4f operator-(const Vec4f& other) const;
 
 	private:
-		float m_values[4];
+		DirectX::XMVECTOR m_vector;
 	};
 }

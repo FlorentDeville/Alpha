@@ -9,40 +9,39 @@
 namespace Core
 {
 	Vec4f::Vec4f()
-		: m_values()
+		: m_vector()
 	{}
 
 	Vec4f::Vec4f(float x, float y, float z, float w)
 	{
-		m_values[0] = x;
-		m_values[1] = y;
-		m_values[2] = z;
-		m_values[3] = w;
+		m_vector = DirectX::XMVectorSet(x, y, z, w);
 	}
 
-	float Vec4f::GetX() const { return m_values[0]; }
-	float Vec4f::GetY() const { return m_values[1]; }
-	float Vec4f::GetZ() const { return m_values[2]; }
-	float Vec4f::GetW() const { return m_values[3]; }
+	float Vec4f::GetX() const { return m_vector.m128_f32[0]; }
+	float Vec4f::GetY() const { return m_vector.m128_f32[1]; }
+	float Vec4f::GetZ() const { return m_vector.m128_f32[2]; }
+	float Vec4f::GetW() const { return m_vector.m128_f32[3]; }
 
 	float Vec4f::Get(int index) const
 	{
-		return m_values[index];
+		return m_vector.m128_f32[index];
 	}
 
 	void Vec4f::Set(int index, float f)
 	{
-		m_values[index] = f;
+		m_vector.m128_f32[index] = f;
 	}
 
 	float Vec4f::Dot(const Vec4f& other) const
 	{
-		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ();
+		DirectX::XMVECTOR res = DirectX::XMVector3Dot(m_vector, other.m_vector);
+		return res.m128_f32[0];
 	}
 
 	float Vec4f::Dot4(const Vec4f& other) const
 	{
-		return GetX() * other.GetX() + GetY() * other.GetY() + GetZ() * other.GetZ() + GetW() * other.GetW();
+		DirectX::XMVECTOR res = DirectX::XMVector4Dot(m_vector, other.m_vector);
+		return res.m128_f32[0];
 	}
 
 	float Vec4f::Length() const
@@ -53,22 +52,14 @@ namespace Core
 
 	void Vec4f::Normalize()
 	{
-		float length = Length();
-		float invLength = 1.f / length;
-
-		m_values[0] *= invLength;
-		m_values[1] *= invLength;
-		m_values[2] *= invLength;
+		DirectX::XMVector3Normalize(m_vector);
 	}
 
 	Vec4f Vec4f::operator-(const Vec4f& other) const
 	{
-		Vec4f res(
-			GetX() - other.GetX(),
-			GetY() - other.GetY(),
-			GetZ() - other.GetZ(),
-			0);
-
+		DirectX::XMVECTOR dxRes = DirectX::XMVectorSubtract(m_vector, other.m_vector);
+		Vec4f res;
+		res.m_vector = dxRes;
 		return res;
 	}
 }
