@@ -5,6 +5,7 @@
 #include "Editors/LevelEditor/GizmoWidget.h"
 
 #include "Core/Math/Aabb.h"
+#include "Core/Math/Intersection.h"
 #include "Core/Math/Ray.h"
 #include "Core/Math/Vec4f.h"
 
@@ -71,7 +72,7 @@ namespace Editors
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 		float realLength = LENGTH * size;
 
-		const float BOX_HALF_SIZE = 0.5f;
+		const float BOX_HALF_SIZE = 0.5f * size;
 		Core::Vec4f min(0, -BOX_HALF_SIZE, -BOX_HALF_SIZE, 0);
 		Core::Vec4f max(realLength, BOX_HALF_SIZE, BOX_HALF_SIZE, 0);
 		Core::Aabb axisAabb(min, max);
@@ -83,30 +84,11 @@ namespace Editors
 		mousePickingRay.Transform(invTxWs);
 		
 		//collision test, ray vs aabb
+		bool collision = Core::Intersection::RayVsAabb(mousePickingRay, axisAabb);
+
 #if defined(DEBUG_COLLISION)
-		m_debugCollisionDetected = false;
+		m_debugCollisionDetected = collision;
 #endif
-
-		{
-			float tmin = 0;
-			float tmax = FLT_MAX;
-			Core::Vec4f invRayDirectionLs = mousePickingRay.ComputeInverseDirection();
-			for (int ii = 0; ii < 3; ++ii)
-			{
-				float t1 = (axisAabb.GetMin().Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
-				float t2 = (axisAabb.GetMax().Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
-
-				tmin = std::min(std::max(t1, tmin), std::max(t2, tmin));
-				tmax = std::max(std::min(t1, tmax), std::min(t2, tmax));
-			}
-
-			if (tmin < tmax)
-			{
-#if defined(DEBUG_COLLISION)
-				m_debugCollisionDetected = true;
-#endif
-			}
-		}
 	}
 
 	void GizmoWidget::Render()
@@ -269,7 +251,7 @@ namespace Editors
 		//debug render aabb
 #if defined(DEBUG_COLLISION)
 		{
-			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realLength, 1, 1, 0);
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realLength, size, size, 0);
 			DirectX::XMVECTOR translation = m_txWs.r[3];
 			translation.m128_f32[0] += (realLength * 0.5f);
 			DirectX::XMMATRIX txWs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
