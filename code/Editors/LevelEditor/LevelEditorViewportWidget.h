@@ -27,8 +27,6 @@ namespace Editors
 		GizmoModel* GetGizmoModel();
 
 	private:
-		DirectX::XMVECTOR Compute3dMousePosition() const;
-
 		GizmoWidget* m_pGizmoWidget;
 		GizmoModel* m_pGizmoModel;
 

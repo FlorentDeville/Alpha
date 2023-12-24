@@ -6,6 +6,13 @@
 
 #include <DirectXMath.h>
 
+#include "Core/Math/Ray.h"
+
+#if defined(_DEBUG)
+//#define DEBUG_RAY
+//#define DEBUG_COLLISION
+#endif
+
 namespace Core
 {
 	class Vec4f;
@@ -67,5 +74,13 @@ namespace Editors
 
 		//standard size for scale gizmo
 		const float SCALE_SQUARE_SIZE;
+
+#if defined(DEBUG_RAY)
+		Core::Ray m_debugRay;
+#endif
+
+#if defined(DEBUG_COLLISION)
+		bool m_debugCollisionDetected;
+#endif
 	};
 }

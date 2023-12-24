@@ -141,7 +141,9 @@ namespace Editors
 
 		float dtInSeconds = dt / 1000.f;
 
-		DirectX::XMVECTOR mouse3dPosition = Compute3dMousePosition();
+		DirectX::XMUINT2 mouseAbsPos;
+		Inputs::InputMgr::Get().GetMousePosition(mouseAbsPos.x, mouseAbsPos.y);
+		DirectX::XMVECTOR mouse3dPosition = Compute3dPosition(mouseAbsPos);
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouse3dPosition);
@@ -160,35 +162,5 @@ namespace Editors
 	GizmoModel* LevelEditorViewportWidget::GetGizmoModel()
 	{
 		return m_pGizmoModel;
-	}
-
-	DirectX::XMVECTOR LevelEditorViewportWidget::Compute3dMousePosition() const
-	{
-		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
-		const XMMATRIX& view = pCamera->GetViewMatrix();
-		const XMMATRIX& proj = pCamera->GetProjectionMatrix();
-
-		//get mouse position in viewport
-		DirectX::XMUINT2 mouseAbsPos;
-		Inputs::InputMgr::Get().GetMousePosition(mouseAbsPos.x, mouseAbsPos.y);
-		DirectX::XMUINT2 absPos(GetScreenX(), GetScreenY());
-		DirectX::XMUINT2 size = GetSize();
-
-		DirectX::XMUINT2 mouseViewportPos(mouseAbsPos.x - absPos.x, mouseAbsPos.y - absPos.y);
-		DirectX::XMFLOAT2 mouseScreenSpace;
-		mouseScreenSpace.x = ((mouseViewportPos.x / (float)size.x) * 2 - 1) / proj.r[0].m128_f32[0];
-		mouseScreenSpace.y = ((mouseViewportPos.y / (float)size.y) * -2 + 1) / proj.r[1].m128_f32[1];
-
-		//get mouse 3d position
-		XMMATRIX invView = XMMatrixInverse(nullptr, view);
-		XMVECTOR mousePosition = XMVectorSet(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
-
-		XMVECTOR mousePosition3d = XMVector3Transform(mousePosition, invView);
-
-		//char buffer[64];
-		//snprintf(buffer, 64, "x %f, y %f, z %f, w %f\n", mousePosition3d.m128_f32[0], mousePosition3d.m128_f32[1], mousePosition3d.m128_f32[2], mousePosition3d.m128_f32[3]);
-		//OutputDebugString(buffer);
-
-		return mousePosition3d;
 	}
 }

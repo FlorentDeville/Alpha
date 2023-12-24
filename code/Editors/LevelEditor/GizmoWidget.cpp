@@ -11,6 +11,8 @@
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/GizmoModel.h"
 
+#include "Inputs/InputMgr.h"
+
 #include "Rendering/RenderModule.h"
 
 using namespace DirectX;
@@ -28,6 +30,9 @@ namespace Editors
 		, CONE_BASE_LENGTH(0.75)
 		, ROTATION_DIAMATER(5.f)
 		, SCALE_SQUARE_SIZE(0.5f)
+#if defined(DEBUG_COLLISION)
+		, m_debugCollisionDetected(false)
+#endif
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 	}
@@ -54,8 +59,15 @@ namespace Editors
 		rayDirection.Normalize();
 		Core::Ray mousePickingRay(rayOrigin, rayDirection);
 
+#if defined(DEBUG_RAY)
+		if (Inputs::InputMgr::Get().IsMouseLeftButtonDown())
+		{
+			m_debugRay = mousePickingRay;
+		}
+#endif
+
 		//create aabb for x axis
-		Core::Vec4f objectPosition(m_txWs.r[0].m128_f32[0], m_txWs.r[0].m128_f32[1], m_txWs.r[0].m128_f32[2], 1);
+		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 		float realLength = LENGTH * size;
 
@@ -71,7 +83,10 @@ namespace Editors
 		mousePickingRay.Transform(invTxWs);
 		
 		//collision test, ray vs aabb
-		bool collided = false;
+#if defined(DEBUG_COLLISION)
+		m_debugCollisionDetected = false;
+#endif
+
 		{
 			float tmin = 0;
 			float tmax = FLT_MAX;
@@ -87,16 +102,28 @@ namespace Editors
 
 			if (tmin < tmax)
 			{
-				collided = true;
+#if defined(DEBUG_COLLISION)
+				m_debugCollisionDetected = true;
+#endif
 			}
 		}
-
-		if (collided)
-			OutputDebugString("Collision\n");
 	}
 
 	void GizmoWidget::Render()
 	{
+#if defined(DEBUG_RAY)
+		for (int ii = 0; ii < 100; ++ii)
+		{
+			Core::Vec4f pos = m_debugRay.GetOrigin() + m_debugRay.GetDirection() * (float)ii;
+
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(0.1f, 0.1f, 0.1f, 0);
+			DirectX::XMVECTOR translation = DirectX::XMVectorSet(pos.GetX(), pos.GetY(), pos.GetZ(), 1);
+			DirectX::XMMATRIX txWs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
+
+			Rendering::RenderModule::Get().RenderPrimitiveCube(txWs, DirectX::XMFLOAT4(0.25f, 0.25f, 0.25f, 1));
+		}
+#endif
+
 		switch (m_manipulatorMode)
 		{
 		case kTranslation:
@@ -140,7 +167,7 @@ namespace Editors
 
 	void GizmoWidget::RenderRotationManipulator()
 	{
-		Core::Vec4f objectPosition(m_txWs.r[0].m128_f32[0], m_txWs.r[0].m128_f32[1], m_txWs.r[0].m128_f32[2], 1);
+		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realRotationDiameter = ROTATION_DIAMATER * size;
@@ -233,11 +260,29 @@ namespace Editors
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 		
-		Core::Vec4f objectPosition(txWs.r[0].m128_f32[0], txWs.r[0].m128_f32[1], txWs.r[0].m128_f32[2], 1);
+		Core::Vec4f objectPosition(txWs.r[3].m128_f32[0], txWs.r[3].m128_f32[1], txWs.r[3].m128_f32[2], 1);
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realDiameter = BASE_DIAMETER * size;
 		float realLength = LENGTH * size;
+
+		//debug render aabb
+#if defined(DEBUG_COLLISION)
+		{
+			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realLength, 1, 1, 0);
+			DirectX::XMVECTOR translation = m_txWs.r[3];
+			translation.m128_f32[0] += (realLength * 0.5f);
+			DirectX::XMMATRIX txWs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
+
+			Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
+
+			DirectX::XMFLOAT4 color(1, 1, 0, 1);
+			if(m_debugCollisionDetected)
+				color = DirectX::XMFLOAT4(0.99f, 0.49f, 0.22f, 1);
+
+			renderingMgr.RenderPrimitiveCube(txWs, color);
+		}
+#endif
 
 		{
 			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realDiameter, realLength, realDiameter, 0);
@@ -267,7 +312,7 @@ namespace Editors
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
-		Core::Vec4f objectPosition(txWs.r[0].m128_f32[0], txWs.r[0].m128_f32[1], txWs.r[0].m128_f32[2], 1);
+		Core::Vec4f objectPosition(txWs.r[3].m128_f32[0], txWs.r[3].m128_f32[1], txWs.r[3].m128_f32[2], 1);
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realDiameter = BASE_DIAMETER * size;
