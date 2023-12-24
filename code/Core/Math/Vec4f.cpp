@@ -8,6 +8,8 @@
 
 #include <cmath>
 
+using namespace DirectX;
+
 namespace Core
 {
 	Vec4f::Vec4f()
@@ -57,6 +59,12 @@ namespace Core
 		m_vector = DirectX::XMVector3Normalize(m_vector);
 	}
 
+	Vec4f Vec4f::operator+(const Vec4f& other) const
+	{
+		DirectX::XMVECTOR dxRes = DirectX::XMVectorAdd(m_vector, other.m_vector);
+		return Vec4f(dxRes);
+	}
+
 	Vec4f Vec4f::operator-(const Vec4f& other) const
 	{
 		DirectX::XMVECTOR dxRes = DirectX::XMVectorSubtract(m_vector, other.m_vector);
@@ -66,6 +74,11 @@ namespace Core
 	Vec4f Vec4f::operator*(const Mat44f& other) const
 	{
 		return Vec4f(DirectX::XMVector4Transform(m_vector, other.m_matrix));
+	}
+
+	Vec4f Vec4f::operator*(float f) const
+	{
+		return Vec4f(f * m_vector);
 	}
 
 	Vec4f::Vec4f(const DirectX::XMVECTOR& vector)
