@@ -25,6 +25,8 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
+		DirectX::XMVECTOR Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
+
 	protected:
 		int m_width;
 		int m_height;

@@ -4,6 +4,7 @@
 
 #include "Widgets/Viewport_v2.h"
 
+#include "Rendering/Camera.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
@@ -88,6 +89,65 @@ namespace Widgets
 
 		//Draw!!!
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+	}
+
+	DirectX::XMVECTOR Viewport_v2::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
+	{
+		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
+		const XMMATRIX& view = pCamera->GetViewMatrix();
+		const XMMATRIX& proj = pCamera->GetProjectionMatrix();
+
+		//get position in viewport widget
+		DirectX::XMUINT2 absPos(GetScreenX(), GetScreenY());
+		DirectX::XMUINT2 size = GetSize();
+
+		DirectX::XMUINT2 mouseViewportWidgetPos(windowAbsPos.x - absPos.x, windowAbsPos.y - absPos.y);
+
+		DirectX::XMUINT2 mouseViewportPos(0, 0);
+
+		//real size of the texture painted on the viewport, copied from the shader code
+		float h = 0;
+		float w = 0;
+		float textureRatio = (float)m_width / (float)m_height;
+		{
+			h = static_cast<float>(size.y);
+			w = h * textureRatio;
+			if (w < size.x)
+			{
+				w = static_cast<float>(size.x);
+				h = w / textureRatio;
+			}
+		}
+
+		if (size.x < w)
+		{
+			mouseViewportPos.x = static_cast<uint32_t>(mouseViewportWidgetPos.x + (w - size.x) * 0.5f);
+		}
+		else
+		{
+			mouseViewportPos.x = mouseViewportWidgetPos.x;
+		}
+
+		if (size.y < h)
+		{
+			mouseViewportPos.y = static_cast<uint32_t>(mouseViewportWidgetPos.y + (h - size.y) * 0.5f);
+		}
+		else
+		{
+			mouseViewportPos.y = mouseViewportWidgetPos.y;
+		}
+
+		DirectX::XMFLOAT2 mouseScreenSpace;
+		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.r[0].m128_f32[0];
+		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.r[1].m128_f32[1];
+
+		//get mouse 3d position
+		XMMATRIX invView = XMMatrixInverse(nullptr, view);
+		XMVECTOR mousePosition = XMVectorSet(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
+
+		XMVECTOR mousePosition3d = XMVector3Transform(mousePosition, invView);
+
+		return mousePosition3d;
 	}
 
 	void Viewport_v2::Internal_Render()
