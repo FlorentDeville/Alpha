@@ -30,4 +30,23 @@ namespace Core
 
 		return false;
 	}
+
+	void Intersection::RayVsRay_ClosestPoint(const Ray& rayA, const Ray& rayB, Vec4f& closestPointRayB)
+	{
+		const Core::Vec4f& A = rayA.GetOrigin();
+		const Core::Vec4f& aDir = rayA.GetDirection();
+
+		const Core::Vec4f& B = rayB.GetOrigin();
+		const Core::Vec4f& bDir = rayB.GetDirection();
+
+		Core::Vec4f C = B - A;
+
+		float ADotA = aDir.Dot(aDir);
+		float BDotB = bDir.Dot(bDir);
+		float ADotB = aDir.Dot(bDir);
+		float ADotC = aDir.Dot(C);
+		float BDotC = bDir.Dot(C);
+
+		closestPointRayB = B + bDir * ((ADotB * ADotC - BDotC * ADotA) / ((ADotA * BDotB) - (ADotB * ADotB)));
+	}
 }
