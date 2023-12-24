@@ -14,6 +14,7 @@
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\CameraWidget.h" />
     <ClInclude Include="LevelEditor\Component.h" />
+    <ClInclude Include="LevelEditor\GizmoAxis.h" />
     <ClInclude Include="LevelEditor\GizmoModel.h" />
     <ClInclude Include="LevelEditor\LevelEditorViewportWidget.h" />
     <ClInclude Include="LevelEditor\LevelEditorTab.h" />
@@ -45,6 +46,7 @@
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\CameraWidget.cpp" />
     <ClCompile Include="LevelEditor\Component.cpp" />
+    <ClCompile Include="LevelEditor\GizmoAxis.cpp" />
     <ClCompile Include="LevelEditor\GizmoModel.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorViewportWidget.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorTab.cpp" />

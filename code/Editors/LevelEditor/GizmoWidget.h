@@ -8,6 +8,8 @@
 
 #include "Core/Math/Ray.h"
 
+#include "Editors/LevelEditor/GizmoAxis.h"
+
 #if defined(_DEBUG)
 //#define DEBUG_RAY
 //#define DEBUG_COLLISION
@@ -96,7 +98,7 @@ namespace Editors
 		//standard size for scale gizmo
 		const float SCALE_SQUARE_SIZE;
 
-		bool m_hoverAxis[3];
+		GizmoAxis m_hoverAxis;
 
 #if defined(DEBUG_RAY)
 		Core::Ray m_debugRay;

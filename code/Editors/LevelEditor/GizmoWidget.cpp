@@ -37,11 +37,9 @@ namespace Editors
 		, m_internalState(InternalState::kIdle)
 		, m_previousMousePosition()
 		, m_translationOffset()
+		, m_hoverAxis()
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
-		m_hoverAxis[0] = false;
-		m_hoverAxis[1] = false;
-		m_hoverAxis[2] = false;
 	}
 
 	GizmoWidget::~GizmoWidget()
@@ -130,7 +128,7 @@ namespace Editors
 	{
 		UpdateMouseHover(mouse3dPosition);
 
-		if (m_hoverAxis[0] || m_hoverAxis[1] || m_hoverAxis[2])
+		if (!m_hoverAxis.IsEmpty())
 		{
 			if (Inputs::InputMgr::Get().IsMouseLeftButtonDown())
 			{
@@ -140,16 +138,8 @@ namespace Editors
 				if (m_manipulatorMode == kTranslation)
 				{
 					//project the axis in screen space
-					int axisIndex = -1;
-					for (int ii = 0; ii < 3; ++ii)
-					{
-						if (m_hoverAxis[ii])
-						{
-							axisIndex = ii;
-							break;
-						}
-					}
-
+					int axisIndex = m_hoverAxis.GetAxisIndex();
+					
 					DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
 
 					{
@@ -179,15 +169,7 @@ namespace Editors
 		if (m_manipulatorMode == kTranslation)
 		{
 			//project the axis in screen space
-			int axisIndex = -1;
-			for (int ii = 0; ii < 3; ++ii)
-			{
-				if (m_hoverAxis[ii])
-				{
-					axisIndex = ii;
-					break;
-				}
-			}
+			int axisIndex = m_hoverAxis.GetAxisIndex();
 			
 			DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
 
@@ -232,9 +214,7 @@ namespace Editors
 
 	void GizmoWidget::UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition)
 	{
-		m_hoverAxis[0] = false;
-		m_hoverAxis[1] = false;
-		m_hoverAxis[2] = false;
+		m_hoverAxis = GizmoAxis::GizmoAxisEnum::kEmpty;
 
 		//create ray 
 		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
@@ -278,7 +258,7 @@ namespace Editors
 			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
 			if (collision)
 			{
-				m_hoverAxis[0] = collision;
+				m_hoverAxis = GizmoAxis::GizmoAxisEnum::kXAxis;
 				return;
 			}
 		}
@@ -294,7 +274,7 @@ namespace Editors
 			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
 			if (collision)
 			{
-				m_hoverAxis[1] = collision;
+				m_hoverAxis = GizmoAxis::GizmoAxisEnum::kYAxis;
 				return;
 			}
 		}
@@ -310,7 +290,7 @@ namespace Editors
 			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
 			if (collision)
 			{
-				m_hoverAxis[2] = collision;
+				m_hoverAxis = GizmoAxis::GizmoAxisEnum::kZAxis;
 				return;
 			}
 		}
@@ -366,7 +346,7 @@ namespace Editors
 			DirectX::XMFLOAT4 red(1, 0, 0, 0);
 
 			DirectX::XMFLOAT4 appliedColor = red;
-			if (m_hoverAxis[0])
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				appliedColor = hoverColor;
 
 			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
@@ -376,7 +356,7 @@ namespace Editors
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 0);
 			DirectX::XMFLOAT4 appliedColor = green;
-			if (m_hoverAxis[1])
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				appliedColor = hoverColor;
 
 			RenderTranslationSingleAxis(m_txWs, appliedColor);
@@ -389,7 +369,7 @@ namespace Editors
 
 			DirectX::XMFLOAT4 blue(0, 0, 1, 0);
 			DirectX::XMFLOAT4 appliedColor = blue;
-			if (m_hoverAxis[2])
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				appliedColor = hoverColor;
 
 			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
