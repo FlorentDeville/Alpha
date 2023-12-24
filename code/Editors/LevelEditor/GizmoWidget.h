@@ -62,6 +62,7 @@ namespace Editors
 
 		void UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition);
 		void UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateMouseHoverRotation(const DirectX::XMVECTOR& mouse3dPosition);
 
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();

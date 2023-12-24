@@ -207,6 +207,8 @@ namespace Editors
 
 	void GizmoWidget::UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition)
 	{
+		m_hoverAxis = GizmoAxis::GizmoAxisEnum::kEmpty;
+
 		switch (m_manipulatorMode)
 		{
 		case kTranslation:
@@ -214,7 +216,7 @@ namespace Editors
 			break;
 
 		case kRotation:
-			//RenderRotationManipulator();
+			UpdateMouseHoverRotation(mouse3dPosition);
 			break;
 
 		case kScale:
@@ -228,8 +230,6 @@ namespace Editors
 
 	void GizmoWidget::UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition)
 	{
-		m_hoverAxis = GizmoAxis::GizmoAxisEnum::kEmpty;
-
 		//create ray 
 		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
 
@@ -310,6 +310,58 @@ namespace Editors
 		}
 	}
 
+	void GizmoWidget::UpdateMouseHoverRotation(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		//create ray 
+		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+
+		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+
+		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		Core::Vec4f rayDirection = mouseWs - rayOrigin;
+		rayDirection.Set(3, 0);
+		rayDirection.Normalize();
+		Core::Ray mousePickingRay(rayOrigin, rayDirection);
+
+		//disk center
+		const DirectX::XMVECTOR& position = m_txWs.r[3];
+		Core::Vec4f diskCenter(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2], 1);
+
+		//disk inner and outer radius
+		float size = ComputeConstantScreenSizeScale(diskCenter);
+
+		float torusRadius = ROTATION_DIAMATER * size;
+		float smallRadius = 1.f * size;
+
+		float outerRadius = torusRadius + smallRadius;
+		float innerRadius = torusRadius - smallRadius;
+
+		//float parameter[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
+		//bool collided[3] = { false, false, false };
+
+		float smallestParameter = FLT_MAX;
+		int closestAxisIndex = -1;
+
+		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+		{
+			//create the disk info
+			const DirectX::XMVECTOR& normalsAxis = m_txWs.r[axisIndex];
+			Core::Vec4f diskNormal(normalsAxis.m128_f32[0], normalsAxis.m128_f32[1], normalsAxis.m128_f32[2], 0);
+
+			float parameter = 0;
+			bool collision = Core::Intersection::RayVsDisk(mousePickingRay, diskNormal, diskCenter, innerRadius, outerRadius, parameter);
+			if (collision && parameter < smallestParameter)
+			{
+				smallestParameter = parameter;
+				closestAxisIndex = axisIndex;
+			}
+		}
+
+		if (closestAxisIndex != -1)
+			m_hoverAxis.SetAxisIndex(closestAxisIndex);
+
+	}
+
 	void GizmoWidget::RenderRotationManipulator()
 	{
 		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
@@ -325,12 +377,17 @@ namespace Editors
 			DirectX::XMMATRIX mvpMatrix = scale * rotation * m_txWs;
 
 			DirectX::XMFLOAT4 red(1, 0, 0, 1);
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
+				red = m_hoverColor;
+
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, red);
 		}
 
 		//rotation y axis
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 1);
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
+				green = m_hoverColor;
 
 			DirectX::XMMATRIX mvpMatrix = scale * m_txWs;
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, green);
@@ -343,6 +400,9 @@ namespace Editors
 			DirectX::XMMATRIX mvpMatrix = scale * rotation * m_txWs;
 
 			DirectX::XMFLOAT4 blue(0, 0, 1, 1);
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
+				blue = m_hoverColor;
+
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, blue);
 		}
 	}

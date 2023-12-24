@@ -26,7 +26,10 @@ namespace Editors
 		bool Contains(GizmoAxisEnum axis) const;
 		bool IsSingleAxis() const;
 		bool IsEmpty() const;
+
 		int GetAxisIndex() const;
+
+		void SetAxisIndex(uint8_t index);
 
 	private:
 		GizmoAxisEnum m_axis;

@@ -49,6 +49,11 @@ namespace Editors
 		return -1;
 	}
 
+	void GizmoAxis::SetAxisIndex(uint8_t index)
+	{
+		m_axis = static_cast<GizmoAxisEnum>(1 << index);
+	}
+
 	GizmoAxis::GizmoAxisEnum operator&(GizmoAxis::GizmoAxisEnum a, GizmoAxis::GizmoAxisEnum b)
 	{
 		return static_cast<GizmoAxis::GizmoAxisEnum>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b));
