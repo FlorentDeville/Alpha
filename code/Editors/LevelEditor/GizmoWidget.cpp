@@ -36,6 +36,9 @@ namespace Editors
 #endif
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
+		m_hoverAxis[0] = false;
+		m_hoverAxis[1] = false;
+		m_hoverAxis[2] = false;
 	}
 
 	GizmoWidget::~GizmoWidget()
@@ -49,46 +52,7 @@ namespace Editors
 
 	void GizmoWidget::Update(const DirectX::XMVECTOR& mouse3dPosition)
 	{
-		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
-		
-		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
-
-		const Core::Vec4f& rayOrigin = cameraWs.GetT();
-		Core::Vec4f rayDirection = mouseWs - rayOrigin;
-		rayDirection.Set(3, 0);
-		rayDirection.Normalize();
-		Core::Ray mousePickingRay(rayOrigin, rayDirection);
-
-#if defined(DEBUG_RAY)
-		if (Inputs::InputMgr::Get().IsMouseLeftButtonDown())
-		{
-			m_debugRay = mousePickingRay;
-		}
-#endif
-
-		//create aabb for x axis
-		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
-		float size = ComputeConstantScreenSizeScale(objectPosition);
-		float realLength = LENGTH * size;
-
-		const float BOX_HALF_SIZE = 0.5f * size;
-		Core::Vec4f min(0, -BOX_HALF_SIZE, -BOX_HALF_SIZE, 0);
-		Core::Vec4f max(realLength, BOX_HALF_SIZE, BOX_HALF_SIZE, 0);
-		Core::Aabb axisAabb(min, max);
-
-		//convert ray to gizmo local space
-		Core::Mat44f txWs(m_txWs);
-		Core::Mat44f invTxWs = txWs.Inverse();
-
-		mousePickingRay.Transform(invTxWs);
-		
-		//collision test, ray vs aabb
-		bool collision = Core::Intersection::RayVsAabb(mousePickingRay, axisAabb);
-
-#if defined(DEBUG_COLLISION)
-		m_debugCollisionDetected = collision;
-#endif
+		UpdateMouseHover(mouse3dPosition);
 	}
 
 	void GizmoWidget::Render()
@@ -147,6 +111,113 @@ namespace Editors
 		m_manipulatorMode = mode;
 	}
 
+	void GizmoWidget::UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		switch (m_manipulatorMode)
+		{
+		case kTranslation:
+			UpdateMouseHoverTranslation(mouse3dPosition);
+			break;
+
+		case kRotation:
+			//RenderRotationManipulator();
+			break;
+
+		case kScale:
+			//RenderScaleManipulator();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	void GizmoWidget::UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		m_hoverAxis[0] = false;
+		m_hoverAxis[1] = false;
+		m_hoverAxis[2] = false;
+
+		//create ray 
+		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+
+		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+
+		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		Core::Vec4f rayDirection = mouseWs - rayOrigin;
+		rayDirection.Set(3, 0);
+		rayDirection.Normalize();
+		Core::Ray mousePickingRay(rayOrigin, rayDirection);
+
+#if defined(DEBUG_RAY)
+		if (Inputs::InputMgr::Get().IsMouseLeftButtonDown())
+		{
+			m_debugRay = mousePickingRay;
+		}
+#endif
+
+		//convert ray to gizmo local space
+		Core::Mat44f txWs(m_txWs);
+		Core::Mat44f invTxWs = txWs.Inverse();
+
+		Core::Ray mousePickingRayLs = mousePickingRay;
+		mousePickingRayLs.Transform(invTxWs);
+
+		//compute aabb size
+		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
+		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float realLength = LENGTH * size;
+		const float BOX_HALF_SIZE = 0.5f * size;
+
+		//x axis
+		{
+			
+			Core::Vec4f min(0, -BOX_HALF_SIZE, -BOX_HALF_SIZE, 0);
+			Core::Vec4f max(realLength, BOX_HALF_SIZE, BOX_HALF_SIZE, 0);
+			Core::Aabb axisAabb(min, max);
+
+			//collision test, ray vs aabb
+			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
+			if (collision)
+			{
+				m_hoverAxis[0] = collision;
+				return;
+			}
+		}
+
+		//y axis
+		{
+			//create aabb for x axis
+			Core::Vec4f min(-BOX_HALF_SIZE, 0, -BOX_HALF_SIZE, 0);
+			Core::Vec4f max(BOX_HALF_SIZE, realLength, BOX_HALF_SIZE, 0);
+			Core::Aabb axisAabb(min, max);
+
+			//collision test, ray vs aabb
+			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
+			if (collision)
+			{
+				m_hoverAxis[1] = collision;
+				return;
+			}
+		}
+
+		//z axis
+		{
+			//create aabb for x axis
+			Core::Vec4f min(-BOX_HALF_SIZE, -BOX_HALF_SIZE, 0, 0);
+			Core::Vec4f max(BOX_HALF_SIZE, BOX_HALF_SIZE, realLength, 0);
+			Core::Aabb axisAabb(min, max);
+
+			//collision test, ray vs aabb
+			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
+			if (collision)
+			{
+				m_hoverAxis[2] = collision;
+				return;
+			}
+		}
+	}
+
 	void GizmoWidget::RenderRotationManipulator()
 	{
 		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
@@ -188,26 +259,42 @@ namespace Editors
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
+		DirectX::XMFLOAT4 hoverColor(0.99f, 0.49f, 0.22f, 1);
+
 		//x axis
 		{
 			//rotate everything 90 degres around z axis
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
 			DirectX::XMFLOAT4 red(1, 0, 0, 0);
-			RenderTranslationSingleAxis(rotation * m_txWs, red);
+
+			DirectX::XMFLOAT4 appliedColor = red;
+			if (m_hoverAxis[0])
+				appliedColor = hoverColor;
+
+			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
 		}
 
 		//y axis
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 0);
-			RenderTranslationSingleAxis(m_txWs, green);
+			DirectX::XMFLOAT4 appliedColor = green;
+			if (m_hoverAxis[1])
+				appliedColor = hoverColor;
+
+			RenderTranslationSingleAxis(m_txWs, appliedColor);
 		}
 
 		//z axis
 		{
 			//rotate everything 90 degres around z axis
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+
 			DirectX::XMFLOAT4 blue(0, 0, 1, 0);
-			RenderTranslationSingleAxis(rotation * m_txWs, blue);
+			DirectX::XMFLOAT4 appliedColor = blue;
+			if (m_hoverAxis[2])
+				appliedColor = hoverColor;
+
+			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
 		}
 	}
 

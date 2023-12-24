@@ -46,6 +46,9 @@ namespace Editors
 		void SetManipulatorMode(ManipulatorMode mode);
 
 	private:
+		void UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition);
+
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();
 		void RenderScaleManipulator();
@@ -74,6 +77,8 @@ namespace Editors
 
 		//standard size for scale gizmo
 		const float SCALE_SQUARE_SIZE;
+
+		bool m_hoverAxis[3];
 
 #if defined(DEBUG_RAY)
 		Core::Ray m_debugRay;
