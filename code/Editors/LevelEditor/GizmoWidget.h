@@ -99,6 +99,7 @@ namespace Editors
 		const float SCALE_SQUARE_SIZE;
 
 		GizmoAxis m_hoverAxis;
+		DirectX::XMFLOAT4 m_hoverColor;
 
 #if defined(DEBUG_RAY)
 		Core::Ray m_debugRay;

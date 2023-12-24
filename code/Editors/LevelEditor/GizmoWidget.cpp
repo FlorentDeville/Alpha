@@ -38,6 +38,7 @@ namespace Editors
 		, m_previousMousePosition()
 		, m_translationOffset()
 		, m_hoverAxis()
+		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 	}
@@ -350,8 +351,6 @@ namespace Editors
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
-		DirectX::XMFLOAT4 hoverColor(0.99f, 0.49f, 0.22f, 1);
-
 		//x axis
 		{
 			//rotate everything 90 degres around z axis
@@ -360,7 +359,7 @@ namespace Editors
 
 			DirectX::XMFLOAT4 appliedColor = red;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				appliedColor = hoverColor;
+				appliedColor = m_hoverColor;
 
 			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
 		}
@@ -370,7 +369,7 @@ namespace Editors
 			DirectX::XMFLOAT4 green(0, 1, 0, 0);
 			DirectX::XMFLOAT4 appliedColor = green;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				appliedColor = hoverColor;
+				appliedColor = m_hoverColor;
 
 			RenderTranslationSingleAxis(m_txWs, appliedColor);
 		}
@@ -383,7 +382,7 @@ namespace Editors
 			DirectX::XMFLOAT4 blue(0, 0, 1, 0);
 			DirectX::XMFLOAT4 appliedColor = blue;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				appliedColor = hoverColor;
+				appliedColor = m_hoverColor;
 
 			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
 		}
