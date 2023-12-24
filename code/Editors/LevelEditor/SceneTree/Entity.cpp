@@ -46,6 +46,15 @@ namespace Editors
 		return it->second;
 	}
 
+	Component* Entity::GetComponent(const std::string& name)
+	{
+		std::map<std::string, Component*>::const_iterator it = m_components.find(name);
+		if (it == m_components.cend())
+			return nullptr;
+
+		return it->second;
+	}
+
 	const Component* Entity::GetComponent(int index) const
 	{
 		std::map<std::string, Component*>::const_iterator it = m_components.begin();
@@ -110,6 +119,21 @@ namespace Editors
 			return parentWs;
 
 		return pParentEntity->ComputeWs();
+	}
+
+	void Entity::SetLs(const Core::Mat44f& txLs)
+	{
+		Component* pComponent = GetComponent("Transform");
+		if (!pComponent)
+			return;
+
+		Property* pProperty = pComponent->GetProperty("Local");
+		if (!pProperty)
+			return;
+
+		
+		PropertyValueMat44f& value = static_cast<PropertyValueMat44f&>(pProperty->GetValue());
+		value.Set(txLs);
 	}
 
 }

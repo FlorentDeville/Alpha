@@ -30,6 +30,7 @@ namespace Editors
 		void AddComponent(Component* component);
 
 		const Component* GetComponent(const std::string& name) const;
+		Component* GetComponent(const std::string& name);
 		const Component* GetComponent(int index) const;
 		Component* GetComponent(int index);
 
@@ -39,6 +40,8 @@ namespace Editors
 
 		virtual Core::Mat44f ComputeWs() const;
 		virtual Core::Mat44f ComputeParentWs() const;
+
+		virtual void SetLs(const Core::Mat44f& txLs);
 
 	private:
 		std::string m_name;

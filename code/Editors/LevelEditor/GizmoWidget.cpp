@@ -187,6 +187,19 @@ namespace Editors
 
 				closestPointOnAxis = closestPointOnAxis - m_translationOffset;
 				m_txWs.r[3] = DirectX::XMVectorSet(closestPointOnAxis.GetX(), closestPointOnAxis.GetY(), closestPointOnAxis.GetZ(), 1);
+
+				{
+					const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
+					const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
+					const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
+					const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
+					Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
+					Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
+					Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+					Core::Vec4f tAxis(dxTAxis.m128_f32[0], dxTAxis.m128_f32[1], dxTAxis.m128_f32[2], dxTAxis.m128_f32[3]);
+					Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
+					m_pModel->Translate(txWs);
+				}
 			}
 		}
 	}

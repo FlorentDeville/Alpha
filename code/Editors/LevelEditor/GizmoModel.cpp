@@ -63,4 +63,19 @@ namespace Editors
 
 		return res;
 	}
+
+	void GizmoModel::Translate(const Core::Mat44f& txWs)
+	{
+		if (!m_pNode)
+			return;
+
+		Entity* pEntity = m_pNode->ToEntity();
+		if (!pEntity)
+			return;
+
+		Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
+		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+		Core::Mat44f txLs = txWs * invTxPs;
+		pEntity->SetLs(txLs);
+	}
 }

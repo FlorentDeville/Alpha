@@ -8,6 +8,11 @@
 
 #include <DirectXMath.h>
 
+namespace Core
+{
+	class Mat44f;
+}
+
 namespace Editors
 {
 	class Node;
@@ -25,8 +30,10 @@ namespace Editors
 
 		Core::CallbackId OnNodeChanged(const OnNodeChangedEvent::Callback& callback);
 
-		//Function called by the gizmo to be placed in the correct location/orientation
+		//Function called by the gizmo to be placed in the correct location/orientation. Typically doesn't contain the scale.
 		virtual const DirectX::XMMATRIX GetTransform() const;
+
+		virtual void Translate(const Core::Mat44f& txWs);
 
 	private:
 		Node* m_pNode;
