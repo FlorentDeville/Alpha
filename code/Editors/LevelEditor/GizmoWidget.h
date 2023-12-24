@@ -82,6 +82,8 @@ namespace Editors
 
 		DirectX::XMUINT2 m_previousMousePosition;
 
+		Core::Vec4f m_translationOffset;
+
 		//standard size for translation gizmo
 		const float BASE_DIAMETER;
 		const float LENGTH;

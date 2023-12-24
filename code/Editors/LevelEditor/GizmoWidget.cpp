@@ -36,6 +36,7 @@ namespace Editors
 #endif
 		, m_internalState(InternalState::kIdle)
 		, m_previousMousePosition()
+		, m_translationOffset()
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 		m_hoverAxis[0] = false;
@@ -135,6 +136,37 @@ namespace Editors
 			{
 				m_internalState = InternalState::kMoving;
 				Inputs::InputMgr::Get().GetMousePosition(m_previousMousePosition.x, m_previousMousePosition.y);
+
+				if (m_manipulatorMode == kTranslation)
+				{
+					//project the axis in screen space
+					int axisIndex = -1;
+					for (int ii = 0; ii < 3; ++ii)
+					{
+						if (m_hoverAxis[ii])
+						{
+							axisIndex = ii;
+							break;
+						}
+					}
+
+					DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
+
+					{
+						Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+						const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+						Core::Vec4f aDir = mouse3dPos - A;
+						aDir.Normalize();
+
+						Core::Vec4f B(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], m_txWs.r[3].m128_f32[3]);
+						Core::Vec4f bDir(axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2], axis.m128_f32[3]);
+
+						Core::Vec4f closestPointOnAxis;
+						Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
+						
+						m_translationOffset = closestPointOnAxis - B;
+					}
+				}
 			}
 		}
 	}
@@ -170,6 +202,8 @@ namespace Editors
 
 				Core::Vec4f closestPointOnAxis;
 				Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
+
+				closestPointOnAxis = closestPointOnAxis - m_translationOffset;
 				m_txWs.r[3] = DirectX::XMVectorSet(closestPointOnAxis.GetX(), closestPointOnAxis.GetY(), closestPointOnAxis.GetZ(), 1);
 			}
 		}
