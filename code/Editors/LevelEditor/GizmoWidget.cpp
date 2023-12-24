@@ -34,6 +34,8 @@ namespace Editors
 #if defined(DEBUG_COLLISION)
 		, m_debugCollisionDetected(false)
 #endif
+		, m_internalState(InternalState::kIdle)
+		, m_previousMousePosition()
 	{
 		m_txWs = DirectX::XMMatrixIdentity();
 		m_hoverAxis[0] = false;
@@ -52,7 +54,19 @@ namespace Editors
 
 	void GizmoWidget::Update(const DirectX::XMVECTOR& mouse3dPosition)
 	{
-		UpdateMouseHover(mouse3dPosition);
+		switch (m_internalState)
+		{
+		case InternalState::kIdle:
+			UpdateState_Idle(mouse3dPosition);
+			break;
+
+		case InternalState::kMoving:
+			UpdateState_Moving(mouse3dPosition);
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	void GizmoWidget::Render()
@@ -109,6 +123,56 @@ namespace Editors
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
 	{
 		m_manipulatorMode = mode;
+	}
+
+	void GizmoWidget::UpdateState_Idle(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		UpdateMouseHover(mouse3dPosition);
+
+		if (m_hoverAxis[0] || m_hoverAxis[1] || m_hoverAxis[2])
+		{
+			if (Inputs::InputMgr::Get().IsMouseLeftButtonDown())
+			{
+				m_internalState = InternalState::kMoving;
+				Inputs::InputMgr::Get().GetMousePosition(m_previousMousePosition.x, m_previousMousePosition.y);
+			}
+		}
+	}
+
+	void GizmoWidget::UpdateState_Moving(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		if (!Inputs::InputMgr::Get().IsMouseLeftButtonDown())
+			m_internalState = InternalState::kIdle;
+
+		if (m_manipulatorMode == kTranslation)
+		{
+			//project the axis in screen space
+			int axisIndex = -1;
+			for (int ii = 0; ii < 3; ++ii)
+			{
+				if (m_hoverAxis[ii])
+				{
+					axisIndex = ii;
+					break;
+				}
+			}
+			
+			DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
+
+			{
+				Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+				const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+				Core::Vec4f aDir = mouse3dPos - A;
+				aDir.Normalize();
+
+				Core::Vec4f B(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], m_txWs.r[3].m128_f32[3]);
+				Core::Vec4f bDir(axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2], axis.m128_f32[3]);
+
+				Core::Vec4f closestPointOnAxis;
+				Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
+				m_txWs.r[3] = DirectX::XMVectorSet(closestPointOnAxis.GetX(), closestPointOnAxis.GetY(), closestPointOnAxis.GetZ(), 1);
+			}
+		}
 	}
 
 	void GizmoWidget::UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition)

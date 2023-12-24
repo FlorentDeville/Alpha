@@ -35,6 +35,15 @@ namespace Editors
 			kCount
 		};
 
+		enum class InternalState
+		{
+			kUnknown = -1,
+			kIdle,
+			kMoving,
+
+			kCount
+		};
+
 		GizmoWidget();
 		~GizmoWidget();
 
@@ -46,6 +55,9 @@ namespace Editors
 		void SetManipulatorMode(ManipulatorMode mode);
 
 	private:
+		void UpdateState_Idle(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateState_Moving(const DirectX::XMVECTOR& mouse3dPosition);
+
 		void UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition);
 		void UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition);
 
@@ -60,11 +72,15 @@ namespace Editors
 
 		void OnNodeChanged_Model(Node* pNode);
 
+		InternalState m_internalState;
+
 		GizmoModel* m_pModel;
 
 		DirectX::XMMATRIX m_txWs;
 
 		ManipulatorMode m_manipulatorMode;
+
+		DirectX::XMUINT2 m_previousMousePosition;
 
 		//standard size for translation gizmo
 		const float BASE_DIAMETER;
