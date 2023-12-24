@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/GizmoWidget.h"
 
+#include "Core/Math/Aabb.h"
 #include "Core/Math/Ray.h"
 #include "Core/Math/Vec4f.h"
 
@@ -61,6 +62,7 @@ namespace Editors
 		const float BOX_HALF_SIZE = 0.5f;
 		Core::Vec4f min(0, -BOX_HALF_SIZE, -BOX_HALF_SIZE, 0);
 		Core::Vec4f max(realLength, BOX_HALF_SIZE, BOX_HALF_SIZE, 0);
+		Core::Aabb axisAabb(min, max);
 
 		//convert ray to gizmo local space
 		Core::Mat44f txWs(m_txWs);
@@ -76,8 +78,8 @@ namespace Editors
 			Core::Vec4f invRayDirectionLs = mousePickingRay.ComputeInverseDirection();
 			for (int ii = 0; ii < 3; ++ii)
 			{
-				float t1 = (min.Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
-				float t2 = (max.Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
+				float t1 = (axisAabb.GetMin().Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
+				float t2 = (axisAabb.GetMax().Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
 
 				tmin = std::min(std::max(t1, tmin), std::max(t2, tmin));
 				tmax = std::max(std::min(t1, tmax), std::min(t2, tmax));

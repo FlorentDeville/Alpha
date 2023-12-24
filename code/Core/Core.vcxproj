@@ -93,6 +93,7 @@
     <ClCompile Include="Callbacks\CallbackId.cpp" />
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Math\Aabb.cpp" />
     <ClCompile Include="Math\Mat44f.cpp" />
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="Callbacks\CallbackList.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Math\Aabb.h" />
     <ClInclude Include="Math\Mat44f.h" />
     <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Vec4f.h" />
