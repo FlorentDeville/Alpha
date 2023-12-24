@@ -181,7 +181,7 @@ namespace Editors
 
 		//get mouse 3d position
 		XMMATRIX invView = XMMatrixInverse(nullptr, view);
-		XMVECTOR mousePosition = XMVectorSet(mouseScreenSpace.x, mouseScreenSpace.y, 0, 1);
+		XMVECTOR mousePosition = XMVectorSet(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
 
 		XMVECTOR mousePosition3d = XMVector3Transform(mousePosition, invView);
 

@@ -35,6 +35,7 @@ namespace Core
 		void Normalize();
 
 		Vec4f operator-(const Vec4f& other) const;
+		Vec4f operator*(const Mat44f& other) const;
 
 	private:
 		explicit Vec4f(const DirectX::XMVECTOR& vector);

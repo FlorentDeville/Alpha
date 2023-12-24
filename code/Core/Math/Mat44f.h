@@ -12,9 +12,12 @@ namespace Core
 
 	class Mat44f
 	{
+		friend Vec4f;
+
 	public:
 		Mat44f();
 		Mat44f(const Vec4f& x, const Vec4f& y, const Vec4f& z, const Vec4f& pos);
+		explicit Mat44f(const DirectX::XMMATRIX& matrix);
 
 		Vec4f GetX() const;
 		Vec4f GetY() const;
@@ -30,11 +33,11 @@ namespace Core
 		void SetIdentity();
 
 		void Transpose();
+		Mat44f Inverse() const;
 
 		Mat44f operator*(const Mat44f& other);
 
 	private:
-		explicit Mat44f(const DirectX::XMMATRIX& matrix);
 
 		DirectX::XMMATRIX m_matrix;
 	};

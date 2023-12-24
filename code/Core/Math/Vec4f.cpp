@@ -4,6 +4,8 @@
 
 #include "Core/Math/Vec4f.h"
 
+#include "Core/Math/Mat44f.h"
+
 #include <cmath>
 
 namespace Core
@@ -59,6 +61,11 @@ namespace Core
 	{
 		DirectX::XMVECTOR dxRes = DirectX::XMVectorSubtract(m_vector, other.m_vector);
 		return Vec4f(dxRes);
+	}
+
+	Vec4f Vec4f::operator*(const Mat44f& other) const
+	{
+		return Vec4f(DirectX::XMVector4Transform(m_vector, other.m_matrix));
 	}
 
 	Vec4f::Vec4f(const DirectX::XMVECTOR& vector)

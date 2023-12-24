@@ -48,6 +48,11 @@ namespace Core
 		m_matrix = DirectX::XMMatrixTranspose(m_matrix);
 	}
 
+	Mat44f Mat44f::Inverse() const
+	{
+		return Mat44f(DirectX::XMMatrixInverse(nullptr, m_matrix));
+	}
+
 	Mat44f Mat44f::operator*(const Mat44f& other)
 	{
 		DirectX::XMMATRIX dxRes = DirectX::XMMatrixMultiply(m_matrix, other.m_matrix);

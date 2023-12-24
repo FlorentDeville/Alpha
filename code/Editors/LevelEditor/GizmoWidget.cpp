@@ -41,15 +41,55 @@ namespace Editors
 
 	void GizmoWidget::Update(const DirectX::XMVECTOR& mouse3dPosition)
 	{
-		//get mouse position in viewport
-
-
-		//compute aabb for translation axis
-
 		//create ray 
-		//convert ray to gizmo local space
+		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+		
+		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
 
+		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		Core::Vec4f rayDirection = mouseWs - rayOrigin;
+		rayDirection.Set(3, 0);
+		rayDirection.Normalize();
+
+		//create aabb for x axis
+		Core::Vec4f objectPosition(m_txWs.r[0].m128_f32[0], m_txWs.r[0].m128_f32[1], m_txWs.r[0].m128_f32[2], 1);
+		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float realLength = LENGTH * size;
+
+		const float BOX_HALF_SIZE = 0.5f;
+		Core::Vec4f min(0, -BOX_HALF_SIZE, -BOX_HALF_SIZE, 0);
+		Core::Vec4f max(realLength, BOX_HALF_SIZE, BOX_HALF_SIZE, 0);
+
+		//convert ray to gizmo local space
+		Core::Mat44f txWs(m_txWs);
+		Core::Mat44f invTxWs = txWs.Inverse();
+
+		Core::Vec4f rayOriginLs = rayOrigin * invTxWs;
+		Core::Vec4f rayDirectionLs = rayDirection * invTxWs;
+		
 		//collision test, ray vs aabb
+		bool collided = false;
+		{
+			float tmin = 0;
+			float tmax = FLT_MAX;
+			Core::Vec4f invRayDirectionLs(1.f / rayDirectionLs.GetX(), 1.f / rayDirectionLs.GetY(), 1.f / rayDirectionLs.GetZ(), 0);
+			for (int ii = 0; ii < 3; ++ii)
+			{
+				float t1 = (min.Get(ii) - rayOriginLs.Get(ii)) * invRayDirectionLs.Get(ii);
+				float t2 = (max.Get(ii) - rayOriginLs.Get(ii)) * invRayDirectionLs.Get(ii);
+
+				tmin = std::min(std::max(t1, tmin), std::max(t2, tmin));
+				tmax = std::max(std::min(t1, tmax), std::min(t2, tmax));
+			}
+
+			if (tmin < tmax)
+			{
+				collided = true;
+			}
+		}
+
+		if (collided)
+			OutputDebugString("Collision\n");
 	}
 
 	void GizmoWidget::Render()
