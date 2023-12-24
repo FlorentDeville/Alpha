@@ -35,7 +35,7 @@ namespace Core
 		void Transpose();
 		Mat44f Inverse() const;
 
-		Mat44f operator*(const Mat44f& other);
+		Mat44f operator*(const Mat44f& other) const;
 
 	private:
 
