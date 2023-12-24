@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/GizmoWidget.h"
 
+#include "Core/Math/Ray.h"
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditor.h"
@@ -50,6 +51,7 @@ namespace Editors
 		Core::Vec4f rayDirection = mouseWs - rayOrigin;
 		rayDirection.Set(3, 0);
 		rayDirection.Normalize();
+		Core::Ray mousePickingRay(rayOrigin, rayDirection);
 
 		//create aabb for x axis
 		Core::Vec4f objectPosition(m_txWs.r[0].m128_f32[0], m_txWs.r[0].m128_f32[1], m_txWs.r[0].m128_f32[2], 1);
@@ -64,19 +66,18 @@ namespace Editors
 		Core::Mat44f txWs(m_txWs);
 		Core::Mat44f invTxWs = txWs.Inverse();
 
-		Core::Vec4f rayOriginLs = rayOrigin * invTxWs;
-		Core::Vec4f rayDirectionLs = rayDirection * invTxWs;
+		mousePickingRay.Transform(invTxWs);
 		
 		//collision test, ray vs aabb
 		bool collided = false;
 		{
 			float tmin = 0;
 			float tmax = FLT_MAX;
-			Core::Vec4f invRayDirectionLs(1.f / rayDirectionLs.GetX(), 1.f / rayDirectionLs.GetY(), 1.f / rayDirectionLs.GetZ(), 0);
+			Core::Vec4f invRayDirectionLs = mousePickingRay.ComputeInverseDirection();
 			for (int ii = 0; ii < 3; ++ii)
 			{
-				float t1 = (min.Get(ii) - rayOriginLs.Get(ii)) * invRayDirectionLs.Get(ii);
-				float t2 = (max.Get(ii) - rayOriginLs.Get(ii)) * invRayDirectionLs.Get(ii);
+				float t1 = (min.Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
+				float t2 = (max.Get(ii) - mousePickingRay.GetOrigin().Get(ii)) * invRayDirectionLs.Get(ii);
 
 				tmin = std::min(std::max(t1, tmin), std::max(t2, tmin));
 				tmax = std::max(std::min(t1, tmax), std::min(t2, tmax));
