@@ -16,5 +16,9 @@ namespace Core
 		static bool RayVsAabb(const Ray& ray, const Aabb& aabb);
 
 		static void RayVsRay_ClosestPoint(const Ray& rayA, const Ray& rayB, Vec4f& closestPointRayB);
+
+		static bool RayVsPlane(const Ray& ray, const Vec4f& planeNormal, const Vec4f& planePoint, float& t);
+
+		static bool RayVsDisk(const Ray& ray, const Vec4f& diskNormal, const Vec4f& diskCenter, float innerRadius, float outerRadius, float& t);
 	};
 }

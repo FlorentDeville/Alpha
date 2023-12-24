@@ -49,4 +49,38 @@ namespace Core
 
 		closestPointRayB = B + bDir * ((ADotB * ADotC - BDotC * ADotA) / ((ADotA * BDotB) - (ADotB * ADotB)));
 	}
+
+	bool Intersection::RayVsPlane(const Ray& ray, const Vec4f& planeNormal, const Vec4f& planePoint, float& t)
+	{
+		float denom = planeNormal.Dot(ray.GetDirection());
+		if (denom > 1e-6 || denom < -1e-6)
+		{
+			Core::Vec4f p0l0 = planePoint - ray.GetOrigin();
+			t = p0l0.Dot(planeNormal) / denom;
+			if (t >= 0)
+				return true;
+		}
+
+		return false;
+	}
+
+	bool Intersection::RayVsDisk(const Ray& ray, const Vec4f& diskNormal, const Vec4f& center, float innerRadius, float outerRadius, float& t)
+	{
+		bool intersectPlane = RayVsPlane(ray, diskNormal, center, t);
+		if (!intersectPlane)
+			return false;
+
+		Core::Vec4f planePoint = ray.GetOrigin() + ray.GetDirection() * t;
+
+		float squaredInnerRadius = innerRadius * innerRadius;
+		float squaredOuterRadius = outerRadius * outerRadius;
+
+		Core::Vec4f radius = center - planePoint;
+		float squaredDistance = radius.Dot(radius);
+
+		if (squaredDistance >= squaredInnerRadius && squaredDistance <= squaredOuterRadius)
+			return true;
+
+		return false;
+	}
 }
