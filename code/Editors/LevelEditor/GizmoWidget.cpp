@@ -52,7 +52,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::Update(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::Update(const Core::Vec4f& mouse3dPosition)
 	{
 		switch (m_internalState)
 		{
@@ -138,7 +138,7 @@ namespace Editors
 		m_manipulatorMode = mode;
 	}
 
-	void GizmoWidget::UpdateState_Idle(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
 	{
 		UpdateMouseHover(mouse3dPosition);
 
@@ -157,9 +157,8 @@ namespace Editors
 					const Core::Vec4f& axis = m_txWs.GetRow(axisIndex);
 
 					{
-						Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
 						const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
-						Core::Vec4f aDir = mouse3dPos - A;
+						Core::Vec4f aDir = mouse3dPosition - A;
 						aDir.Normalize();
 
 						Core::Vec4f B = m_txWs.GetT();
@@ -184,7 +183,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateState_Moving(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving(const Core::Vec4f& mouse3dPosition)
 	{
 		if (!Inputs::InputMgr::Get().IsMouseLeftButtonDown())
 			m_internalState = InternalState::kIdle;
@@ -199,7 +198,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHover(const Core::Vec4f& mouse3dPosition)
 	{
 		m_hoverAxis = GizmoAxis::GizmoAxisEnum::kEmpty;
 
@@ -222,15 +221,13 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition)
 	{
 		//create ray 
 		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
 
-		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
-
 		const Core::Vec4f& rayOrigin = cameraWs.GetT();
-		Core::Vec4f rayDirection = mouseWs - rayOrigin;
+		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
 		rayDirection.Set(3, 0);
 		rayDirection.Normalize();
 		Core::Ray mousePickingRay(rayOrigin, rayDirection);
@@ -304,15 +301,13 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateMouseHoverRotation(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition)
 	{
 		//create ray 
 		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
 
-		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
-
 		const Core::Vec4f& rayOrigin = cameraWs.GetT();
-		Core::Vec4f rayDirection = mouseWs - rayOrigin;
+		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
 		rayDirection.Set(3, 0);
 		rayDirection.Normalize();
 		Core::Ray mousePickingRay(rayOrigin, rayDirection);
@@ -354,7 +349,7 @@ namespace Editors
 
 	}
 
-	void GizmoWidget::UpdateState_Moving_Translation(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition)
 	{
 		//project the axis in screen space
 		int axisIndex = m_hoverAxis.GetAxisIndex();
@@ -362,9 +357,8 @@ namespace Editors
 		const Core::Vec4f& axis = m_txWs.GetRow(axisIndex);
 
 		{
-			Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
 			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
-			Core::Vec4f aDir = mouse3dPos - A;
+			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
 			Core::Vec4f B = m_txWs.GetT();
@@ -381,12 +375,11 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateState_Moving_Rotation(const DirectX::XMVECTOR& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition)
 	{
 		//get the closest point from the ray to the disk
-		Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
 		const Core::Vec4f& rayOrigin = LevelEditor::Get().GetCameraWs().GetT();
-		Core::Vec4f rayDir = mouse3dPos - rayOrigin;
+		Core::Vec4f rayDir = mouse3dPosition - rayOrigin;
 		rayDir.Normalize();
 
 		//disk center

@@ -50,7 +50,7 @@ namespace Editors
 		GizmoWidget();
 		~GizmoWidget();
 
-		void Update(const DirectX::XMVECTOR& mouse3dPosition);
+		void Update(const Core::Vec4f& mouse3dPosition);
 		void Render();
 
 		void SetModel(GizmoModel* pModel);
@@ -58,15 +58,15 @@ namespace Editors
 		void SetManipulatorMode(ManipulatorMode mode);
 
 	private:
-		void UpdateState_Idle(const DirectX::XMVECTOR& mouse3dPosition);
-		void UpdateState_Moving(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateState_Idle(const Core::Vec4f& mouse3dPosition);
+		void UpdateState_Moving(const Core::Vec4f& mouse3dPosition);
 
-		void UpdateMouseHover(const DirectX::XMVECTOR& mouse3dPosition);
-		void UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition);
-		void UpdateMouseHoverRotation(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateMouseHover(const Core::Vec4f& mouse3dPosition);
+		void UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition);
+		void UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition);
 
-		void UpdateState_Moving_Translation(const DirectX::XMVECTOR& mouse3dPosition);
-		void UpdateState_Moving_Rotation(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition);
+		void UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition);
 
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();

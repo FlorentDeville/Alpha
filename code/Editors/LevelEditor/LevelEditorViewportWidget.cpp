@@ -144,9 +144,10 @@ namespace Editors
 		DirectX::XMUINT2 mouseAbsPos;
 		Inputs::InputMgr::Get().GetMousePosition(mouseAbsPos.x, mouseAbsPos.y);
 		DirectX::XMVECTOR mouse3dPosition = Compute3dPosition(mouseAbsPos);
+		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
 
 		m_pCamera->Update(dtInSeconds);
-		m_pGizmoWidget->Update(mouse3dPosition);
+		m_pGizmoWidget->Update(mouseWs);
 	}
 
 	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
