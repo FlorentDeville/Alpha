@@ -83,7 +83,7 @@ namespace Editors
 
 		GizmoModel* m_pModel;
 
-		DirectX::XMMATRIX m_txWs;
+		Core::Mat44f m_txWs;
 		Core::Vec4f m_eulerAngles;
 
 		ManipulatorMode m_manipulatorMode;

@@ -40,7 +40,7 @@ namespace Editors
 		, m_hoverAxis()
 		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
 	{
-		m_txWs = DirectX::XMMatrixIdentity();
+		m_txWs.SetIdentity();
 	}
 
 	GizmoWidget::~GizmoWidget()
@@ -119,22 +119,18 @@ namespace Editors
 		pModel->OnNodeChanged([this](Node* pNode) { OnNodeChanged_Model(pNode); });
 		m_txWs = pModel->GetTransform();
 
-		const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
-		const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
-		const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
-		const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
-		Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
-		Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
-		Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+		Core::Vec4f xAxis = m_txWs.GetX();
+		Core::Vec4f yAxis = m_txWs.GetY();
+		Core::Vec4f zAxis = m_txWs.GetZ();
 		Core::Vec4f tAxis(0, 0, 0, 1);
 
 		xAxis.Normalize();
 		yAxis.Normalize();
 		zAxis.Normalize();
 
-		Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
+		Core::Mat44f rotationMatrix(xAxis, yAxis, zAxis, tAxis);
 
-		m_eulerAngles = txWs.GetEulerAngle();
+		m_eulerAngles = rotationMatrix.GetEulerAngle();
 	}
 
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
@@ -158,7 +154,7 @@ namespace Editors
 					//project the axis in screen space
 					int axisIndex = m_hoverAxis.GetAxisIndex();
 					
-					DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
+					const Core::Vec4f& axis = m_txWs.GetRow(axisIndex);
 
 					{
 						Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
@@ -166,8 +162,8 @@ namespace Editors
 						Core::Vec4f aDir = mouse3dPos - A;
 						aDir.Normalize();
 
-						Core::Vec4f B(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], m_txWs.r[3].m128_f32[3]);
-						Core::Vec4f bDir(axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2], axis.m128_f32[3]);
+						Core::Vec4f B = m_txWs.GetT();
+						Core::Vec4f bDir = axis;
 
 						Core::Vec4f closestPointOnAxis;
 						Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
@@ -177,14 +173,10 @@ namespace Editors
 				}
 				else if (m_manipulatorMode == kRotation)
 				{
-					const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
-					const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
-					const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
-					const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
-					Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
-					Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
-					Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
-					Core::Vec4f tAxis(dxTAxis.m128_f32[0], dxTAxis.m128_f32[1], dxTAxis.m128_f32[2], dxTAxis.m128_f32[3]);
+					Core::Vec4f xAxis = m_txWs.GetX();
+					Core::Vec4f yAxis = m_txWs.GetY();
+					Core::Vec4f zAxis = m_txWs.GetZ();
+					Core::Vec4f tAxis(0, 0, 0, 1);
 					Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
 					m_rotationInitialEulerAngles = txWs.GetEulerAngle();
 				}
@@ -258,7 +250,7 @@ namespace Editors
 		mousePickingRayLs.Transform(invTxWs);
 
 		//compute aabb size
-		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
+		Core::Vec4f objectPosition = m_txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 		float realLength = LENGTH * size;
 		const float BOX_HALF_SIZE = 0.5f * size;
@@ -326,8 +318,7 @@ namespace Editors
 		Core::Ray mousePickingRay(rayOrigin, rayDirection);
 
 		//disk center
-		const DirectX::XMVECTOR& position = m_txWs.r[3];
-		Core::Vec4f diskCenter(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2], 1);
+		Core::Vec4f diskCenter = m_txWs.GetT();
 
 		//disk inner and outer radius
 		float size = ComputeConstantScreenSizeScale(diskCenter);
@@ -344,8 +335,7 @@ namespace Editors
 		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 		{
 			//create the disk info
-			const DirectX::XMVECTOR& normalsAxis = m_txWs.r[axisIndex];
-			Core::Vec4f diskNormal(normalsAxis.m128_f32[0], normalsAxis.m128_f32[1], normalsAxis.m128_f32[2], 0);
+			Core::Vec4f diskNormal = m_txWs.GetRow(axisIndex);
 
 			float parameter = 0;
 			bool collision = Core::Intersection::RayVsDisk(mousePickingRay, diskNormal, diskCenter, innerRadius, outerRadius, parameter);
@@ -369,7 +359,7 @@ namespace Editors
 		//project the axis in screen space
 		int axisIndex = m_hoverAxis.GetAxisIndex();
 
-		DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
+		const Core::Vec4f& axis = m_txWs.GetRow(axisIndex);
 
 		{
 			Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
@@ -377,27 +367,17 @@ namespace Editors
 			Core::Vec4f aDir = mouse3dPos - A;
 			aDir.Normalize();
 
-			Core::Vec4f B(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], m_txWs.r[3].m128_f32[3]);
-			Core::Vec4f bDir(axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2], axis.m128_f32[3]);
+			Core::Vec4f B = m_txWs.GetT();
+			Core::Vec4f bDir = axis;
 
 			Core::Vec4f closestPointOnAxis;
 			Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
 
 			closestPointOnAxis = closestPointOnAxis - m_translationOffset;
-			m_txWs.r[3] = DirectX::XMVectorSet(closestPointOnAxis.GetX(), closestPointOnAxis.GetY(), closestPointOnAxis.GetZ(), 1);
+			closestPointOnAxis.Set(3, 1);
+			m_txWs.SetRow(3, closestPointOnAxis);
 
-			{
-				const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
-				const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
-				const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
-				const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
-				Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
-				Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
-				Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
-				Core::Vec4f tAxis(dxTAxis.m128_f32[0], dxTAxis.m128_f32[1], dxTAxis.m128_f32[2], dxTAxis.m128_f32[3]);
-				Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
-				m_pModel->Translate(txWs);
-			}
+			m_pModel->Translate(m_txWs);
 		}
 	}
 
@@ -410,13 +390,11 @@ namespace Editors
 		rayDir.Normalize();
 
 		//disk center
-		const DirectX::XMVECTOR& position = m_txWs.r[3];
-		Core::Vec4f diskCenter(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2], 1);
+		Core::Vec4f diskCenter = m_txWs.GetT();
 
 		//disk axis
 		int axisIndex = m_hoverAxis.GetAxisIndex();
-		const DirectX::XMVECTOR& normal = m_txWs.r[axisIndex];
-		Core::Vec4f diskNormal(normal.m128_f32[0], normal.m128_f32[1], normal.m128_f32[2], 0);
+		Core::Vec4f diskNormal = m_txWs.GetRow(axisIndex);
 
 		Core::Vec4f closestPoint;
 		Core::Intersection::RayVsCircle_ClosestPoint(Core::Ray(rayOrigin, rayDir), diskNormal, diskCenter, 1.f, closestPoint);
@@ -454,9 +432,9 @@ namespace Editors
 		currentEulerAngle.Set(axisIndex, angle);
 		Core::Vec4f eulerAngles = m_rotationInitialEulerAngles + currentEulerAngle;
 
-		float scaleX = DirectX::XMVector3Length(m_txWs.r[0]).m128_f32[0];
-		float scaleY = DirectX::XMVector3Length(m_txWs.r[1]).m128_f32[0];
-		float scaleZ = DirectX::XMVector3Length(m_txWs.r[2]).m128_f32[0];
+		float scaleX = m_txWs.GetX().Length();
+		float scaleY = m_txWs.GetY().Length();
+		float scaleZ = m_txWs.GetZ().Length();
 
 		Core::Mat44f scaleMatrix(
 			Core::Vec4f(scaleX, 0, 0, 0),
@@ -471,30 +449,24 @@ namespace Editors
 		translationMatrix.SetIdentity();
 		translationMatrix.SetRow(3, diskCenter);
 
-		Core::Mat44f txWs = scaleMatrix * rotationMatrix * translationMatrix;
+		m_txWs = scaleMatrix * rotationMatrix * translationMatrix;
 
-		//now construct a rotation matrix
-		//Core::Mat44f rotationMatrix = Core::Mat44f::CreateRotationMatrix(diskNormal, angle);
-
-		//Core::Mat44f txWs = rotationMatrix * m_rotationInitialWs;
-		m_pModel->Translate(txWs);
-		
-		{
-			const Core::Vec4f& dxXAxis = txWs.GetX();
-			const Core::Vec4f& dxYAxis = txWs.GetY();
-			const Core::Vec4f& dxZAxis = txWs.GetZ();
-			const Core::Vec4f& dxTAxis = txWs.GetT();
-			DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
-			DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
-			DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
-			DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
-			m_txWs = DirectX::XMMATRIX(xAxis, yAxis, zAxis, tAxis);
-		}
+		m_pModel->Translate(m_txWs);
 	}
 
 	void GizmoWidget::RenderRotationManipulator()
 	{
-		Core::Vec4f objectPosition(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], 1);
+		const Core::Vec4f& dxXAxis = m_txWs.GetX();
+		const Core::Vec4f& dxYAxis = m_txWs.GetY();
+		const Core::Vec4f& dxZAxis = m_txWs.GetZ();
+		const Core::Vec4f& dxTAxis = m_txWs.GetT();
+		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
+		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
+		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
+		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
+		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
+
+		Core::Vec4f objectPosition = m_txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realRotationDiameter = ROTATION_DIAMATER * size;
@@ -504,7 +476,7 @@ namespace Editors
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(0, 0, rotationAngle);
-			DirectX::XMMATRIX mvpMatrix = scale * rotation * m_txWs;
+			DirectX::XMMATRIX mvpMatrix = scale * rotation * dxTxWs;
 
 			DirectX::XMFLOAT4 red(1, 0, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
@@ -519,7 +491,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				green = m_hoverColor;
 
-			DirectX::XMMATRIX mvpMatrix = scale * m_txWs;
+			DirectX::XMMATRIX mvpMatrix = scale * dxTxWs;
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, green);
 		}
 
@@ -527,7 +499,7 @@ namespace Editors
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(rotationAngle, 0, 0);
-			DirectX::XMMATRIX mvpMatrix = scale * rotation * m_txWs;
+			DirectX::XMMATRIX mvpMatrix = scale * rotation * dxTxWs;
 
 			DirectX::XMFLOAT4 blue(0, 0, 1, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
@@ -539,6 +511,16 @@ namespace Editors
 
 	void GizmoWidget::RenderTranslationManipulator()
 	{
+		const Core::Vec4f& dxXAxis = m_txWs.GetX();
+		const Core::Vec4f& dxYAxis = m_txWs.GetY();
+		const Core::Vec4f& dxZAxis = m_txWs.GetZ();
+		const Core::Vec4f& dxTAxis = m_txWs.GetT();
+		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
+		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
+		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
+		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
+		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
+
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 		//x axis
@@ -551,7 +533,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
+			RenderTranslationSingleAxis(rotation * dxTxWs, appliedColor);
 		}
 
 		//y axis
@@ -561,7 +543,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(m_txWs, appliedColor);
+			RenderTranslationSingleAxis(dxTxWs, appliedColor);
 		}
 
 		//z axis
@@ -574,12 +556,22 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(rotation * m_txWs, appliedColor);
+			RenderTranslationSingleAxis(rotation * dxTxWs, appliedColor);
 		}
 	}
 
 	void GizmoWidget::RenderScaleManipulator()
 	{
+		const Core::Vec4f& dxXAxis = m_txWs.GetX();
+		const Core::Vec4f& dxYAxis = m_txWs.GetY();
+		const Core::Vec4f& dxZAxis = m_txWs.GetZ();
+		const Core::Vec4f& dxTAxis = m_txWs.GetT();
+		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
+		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
+		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
+		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
+		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
+
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 		//x axis
@@ -587,13 +579,13 @@ namespace Editors
 			//rotate everything 90 degres around z axis
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
 			DirectX::XMFLOAT4 red(1, 0, 0, 0);
-			RenderScaleSingleAxis(rotation * m_txWs, red);
+			RenderScaleSingleAxis(rotation * dxTxWs, red);
 		}
 
 		//y axis
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 0);
-			RenderScaleSingleAxis(m_txWs, green);
+			RenderScaleSingleAxis(dxTxWs, green);
 		}
 
 		//z axis
@@ -601,7 +593,7 @@ namespace Editors
 			//rotate everything 90 degres around z axis
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
 			DirectX::XMFLOAT4 blue(0, 0, 1, 0);
-			RenderScaleSingleAxis(rotation * m_txWs, blue);
+			RenderScaleSingleAxis(rotation * dxTxWs, blue);
 		}
 	}
 
@@ -709,13 +701,9 @@ namespace Editors
 	{
 		m_txWs = m_pModel->GetTransform();
 
-		const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
-		const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
-		const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
-		const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
-		Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
-		Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
-		Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+		Core::Vec4f xAxis = m_txWs.GetX();
+		Core::Vec4f yAxis = m_txWs.GetY();
+		Core::Vec4f zAxis = m_txWs.GetZ();
 		Core::Vec4f tAxis(0, 0, 0, 1);
 
 		xAxis.Normalize();

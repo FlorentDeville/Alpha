@@ -5,8 +5,7 @@
 #pragma once
 
 #include "Core/Callbacks/CallbackList.h"
-
-#include <DirectXMath.h>
+#include "Core/Math/Mat44f.h"
 
 namespace Core
 {
@@ -31,7 +30,7 @@ namespace Editors
 		Core::CallbackId OnNodeChanged(const OnNodeChangedEvent::Callback& callback);
 
 		//Function called by the gizmo to be placed in the correct location/orientation. Typically doesn't contain the scale.
-		virtual const DirectX::XMMATRIX GetTransform() const;
+		virtual const Core::Mat44f GetTransform() const;
 
 		virtual void Translate(const Core::Mat44f& txWs);
 
@@ -40,6 +39,6 @@ namespace Editors
 
 		OnNodeChangedEvent m_onNodeChangedEvent;
 
-		DirectX::XMMATRIX m_default;
+		Core::Mat44f m_default;
 	};
 }

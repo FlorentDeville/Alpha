@@ -16,7 +16,7 @@ namespace Editors
 		: m_pNode(nullptr)
 		, m_onNodeChangedEvent()
 	{
-		m_default = DirectX::XMMatrixIdentity();
+		m_default.SetIdentity();
 	}
 
 	GizmoModel::~GizmoModel()
@@ -36,7 +36,7 @@ namespace Editors
 		return m_onNodeChangedEvent.Connect(callback);
 	}
 
-	const DirectX::XMMATRIX GizmoModel::GetTransform() const
+	const Core::Mat44f GizmoModel::GetTransform() const
 	{
 		if (!m_pNode)
 			return m_default;
@@ -55,13 +55,7 @@ namespace Editors
 			txWs.SetRow(ii, axis);
 		}
 
-		DirectX::XMMATRIX res = DirectX::XMMatrixSet(
-			txWs.Get(0, 0), txWs.Get(0, 1), txWs.Get(0, 2), txWs.Get(0, 3),
-			txWs.Get(1, 0), txWs.Get(1, 1), txWs.Get(1, 2), txWs.Get(1, 3),
-			txWs.Get(2, 0), txWs.Get(2, 1), txWs.Get(2, 2), txWs.Get(2, 3),
-			txWs.Get(3, 0), txWs.Get(3, 1), txWs.Get(3, 2), txWs.Get(3, 3));
-
-		return res;
+		return txWs;
 	}
 
 	void GizmoModel::Translate(const Core::Mat44f& txWs)
