@@ -118,6 +118,23 @@ namespace Editors
 
 		pModel->OnNodeChanged([this](Node* pNode) { OnNodeChanged_Model(pNode); });
 		m_txWs = pModel->GetTransform();
+
+		const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
+		const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
+		const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
+		const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
+		Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
+		Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
+		Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+		Core::Vec4f tAxis(0, 0, 0, 1);
+
+		xAxis.Normalize();
+		yAxis.Normalize();
+		zAxis.Normalize();
+
+		Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
+
+		m_eulerAngles = txWs.GetEulerAngle();
 	}
 
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
@@ -158,6 +175,19 @@ namespace Editors
 						m_translationOffset = closestPointOnAxis - B;
 					}
 				}
+				else if (m_manipulatorMode == kRotation)
+				{
+					const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
+					const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
+					const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
+					const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
+					Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
+					Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
+					Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+					Core::Vec4f tAxis(dxTAxis.m128_f32[0], dxTAxis.m128_f32[1], dxTAxis.m128_f32[2], dxTAxis.m128_f32[3]);
+					Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
+					m_rotationInitialEulerAngles = txWs.GetEulerAngle();
+				}
 			}
 		}
 	}
@@ -169,39 +199,11 @@ namespace Editors
 
 		if (m_manipulatorMode == kTranslation)
 		{
-			//project the axis in screen space
-			int axisIndex = m_hoverAxis.GetAxisIndex();
-			
-			DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
-
-			{
-				Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
-				const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
-				Core::Vec4f aDir = mouse3dPos - A;
-				aDir.Normalize();
-
-				Core::Vec4f B(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], m_txWs.r[3].m128_f32[3]);
-				Core::Vec4f bDir(axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2], axis.m128_f32[3]);
-
-				Core::Vec4f closestPointOnAxis;
-				Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
-
-				closestPointOnAxis = closestPointOnAxis - m_translationOffset;
-				m_txWs.r[3] = DirectX::XMVectorSet(closestPointOnAxis.GetX(), closestPointOnAxis.GetY(), closestPointOnAxis.GetZ(), 1);
-
-				{
-					const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
-					const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
-					const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
-					const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
-					Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
-					Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
-					Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
-					Core::Vec4f tAxis(dxTAxis.m128_f32[0], dxTAxis.m128_f32[1], dxTAxis.m128_f32[2], dxTAxis.m128_f32[3]);
-					Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
-					m_pModel->Translate(txWs);
-				}
-			}
+			UpdateState_Moving_Translation(mouse3dPosition);
+		}
+		else if (m_manipulatorMode == kRotation)
+		{
+			UpdateState_Moving_Rotation(mouse3dPosition);
 		}
 	}
 
@@ -336,9 +338,6 @@ namespace Editors
 		float outerRadius = torusRadius + smallRadius;
 		float innerRadius = torusRadius - smallRadius;
 
-		//float parameter[3] = { FLT_MAX, FLT_MAX, FLT_MAX };
-		//bool collided[3] = { false, false, false };
-
 		float smallestParameter = FLT_MAX;
 		int closestAxisIndex = -1;
 
@@ -358,8 +357,139 @@ namespace Editors
 		}
 
 		if (closestAxisIndex != -1)
+		{
 			m_hoverAxis.SetAxisIndex(closestAxisIndex);
+			m_rotationInitialPoint = mousePickingRay.GetOrigin() + mousePickingRay.GetDirection() * smallestParameter;
+		}
 
+	}
+
+	void GizmoWidget::UpdateState_Moving_Translation(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		//project the axis in screen space
+		int axisIndex = m_hoverAxis.GetAxisIndex();
+
+		DirectX::XMVECTOR axis = m_txWs.r[axisIndex];
+
+		{
+			Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+			Core::Vec4f aDir = mouse3dPos - A;
+			aDir.Normalize();
+
+			Core::Vec4f B(m_txWs.r[3].m128_f32[0], m_txWs.r[3].m128_f32[1], m_txWs.r[3].m128_f32[2], m_txWs.r[3].m128_f32[3]);
+			Core::Vec4f bDir(axis.m128_f32[0], axis.m128_f32[1], axis.m128_f32[2], axis.m128_f32[3]);
+
+			Core::Vec4f closestPointOnAxis;
+			Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
+
+			closestPointOnAxis = closestPointOnAxis - m_translationOffset;
+			m_txWs.r[3] = DirectX::XMVectorSet(closestPointOnAxis.GetX(), closestPointOnAxis.GetY(), closestPointOnAxis.GetZ(), 1);
+
+			{
+				const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
+				const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
+				const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
+				const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
+				Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
+				Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
+				Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+				Core::Vec4f tAxis(dxTAxis.m128_f32[0], dxTAxis.m128_f32[1], dxTAxis.m128_f32[2], dxTAxis.m128_f32[3]);
+				Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
+				m_pModel->Translate(txWs);
+			}
+		}
+	}
+
+	void GizmoWidget::UpdateState_Moving_Rotation(const DirectX::XMVECTOR& mouse3dPosition)
+	{
+		//get the closest point from the ray to the disk
+		Core::Vec4f mouse3dPos(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+		const Core::Vec4f& rayOrigin = LevelEditor::Get().GetCameraWs().GetT();
+		Core::Vec4f rayDir = mouse3dPos - rayOrigin;
+		rayDir.Normalize();
+
+		//disk center
+		const DirectX::XMVECTOR& position = m_txWs.r[3];
+		Core::Vec4f diskCenter(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2], 1);
+
+		//disk axis
+		int axisIndex = m_hoverAxis.GetAxisIndex();
+		const DirectX::XMVECTOR& normal = m_txWs.r[axisIndex];
+		Core::Vec4f diskNormal(normal.m128_f32[0], normal.m128_f32[1], normal.m128_f32[2], 0);
+
+		Core::Vec4f closestPoint;
+		Core::Intersection::RayVsCircle_ClosestPoint(Core::Ray(rayOrigin, rayDir), diskNormal, diskCenter, 1.f, closestPoint);
+		Core::Vec4f currentVector = closestPoint - diskCenter;
+		currentVector.Normalize();
+
+		//compute angle between start point and current point
+		Core::Vec4f initialVector = m_rotationInitialPoint - diskCenter;
+		initialVector.Normalize();
+
+		float cos = currentVector.Dot(initialVector);
+
+		//saturate cos between 1 and -1.
+		if (cos > 1) cos = 1;
+		if (cos < -1) cos = -1;
+
+		Core::Vec4f cross = currentVector.Cross(initialVector);
+		float sin = cross.Dot(diskNormal);
+
+		char buffer[64];
+		snprintf(buffer, 64, "cos %f, sin %f\n", cos, sin);
+		OutputDebugString(buffer);
+
+		float angle = acosf(cos);
+		if (angle == 0)
+			return;
+
+		if (sin < 0)
+			angle = DirectX::XM_2PI - angle;
+		
+		snprintf(buffer, 64, "angle %f\n", angle);
+		OutputDebugString(buffer);
+
+		Core::Vec4f currentEulerAngle(0, 0, 0, 0);
+		currentEulerAngle.Set(axisIndex, angle);
+		Core::Vec4f eulerAngles = m_rotationInitialEulerAngles + currentEulerAngle;
+
+		float scaleX = DirectX::XMVector3Length(m_txWs.r[0]).m128_f32[0];
+		float scaleY = DirectX::XMVector3Length(m_txWs.r[1]).m128_f32[0];
+		float scaleZ = DirectX::XMVector3Length(m_txWs.r[2]).m128_f32[0];
+
+		Core::Mat44f scaleMatrix(
+			Core::Vec4f(scaleX, 0, 0, 0),
+			Core::Vec4f(0, scaleY, 0, 0),
+			Core::Vec4f(0, 0, scaleZ, 0),
+			Core::Vec4f(0, 0, 0, 1)
+		);
+
+		Core::Mat44f rotationMatrix = Core::Mat44f::CreateRotationMatrixFromEulerAngles(eulerAngles);
+
+		Core::Mat44f translationMatrix;
+		translationMatrix.SetIdentity();
+		translationMatrix.SetRow(3, diskCenter);
+
+		Core::Mat44f txWs = scaleMatrix * rotationMatrix * translationMatrix;
+
+		//now construct a rotation matrix
+		//Core::Mat44f rotationMatrix = Core::Mat44f::CreateRotationMatrix(diskNormal, angle);
+
+		//Core::Mat44f txWs = rotationMatrix * m_rotationInitialWs;
+		m_pModel->Translate(txWs);
+		
+		{
+			const Core::Vec4f& dxXAxis = txWs.GetX();
+			const Core::Vec4f& dxYAxis = txWs.GetY();
+			const Core::Vec4f& dxZAxis = txWs.GetZ();
+			const Core::Vec4f& dxTAxis = txWs.GetT();
+			DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
+			DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
+			DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
+			DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
+			m_txWs = DirectX::XMMATRIX(xAxis, yAxis, zAxis, tAxis);
+		}
 	}
 
 	void GizmoWidget::RenderRotationManipulator()
@@ -578,5 +708,22 @@ namespace Editors
 	void GizmoWidget::OnNodeChanged_Model(Node* pNode)
 	{
 		m_txWs = m_pModel->GetTransform();
+
+		const DirectX::XMVECTOR& dxXAxis = m_txWs.r[0];
+		const DirectX::XMVECTOR& dxYAxis = m_txWs.r[1];
+		const DirectX::XMVECTOR& dxZAxis = m_txWs.r[2];
+		const DirectX::XMVECTOR& dxTAxis = m_txWs.r[3];
+		Core::Vec4f xAxis(dxXAxis.m128_f32[0], dxXAxis.m128_f32[1], dxXAxis.m128_f32[2], dxXAxis.m128_f32[3]);
+		Core::Vec4f yAxis(dxYAxis.m128_f32[0], dxYAxis.m128_f32[1], dxYAxis.m128_f32[2], dxYAxis.m128_f32[3]);
+		Core::Vec4f zAxis(dxZAxis.m128_f32[0], dxZAxis.m128_f32[1], dxZAxis.m128_f32[2], dxZAxis.m128_f32[3]);
+		Core::Vec4f tAxis(0, 0, 0, 1);
+
+		xAxis.Normalize();
+		yAxis.Normalize();
+		zAxis.Normalize();
+
+		Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
+
+		m_eulerAngles = txWs.GetEulerAngle();
 	}
 }

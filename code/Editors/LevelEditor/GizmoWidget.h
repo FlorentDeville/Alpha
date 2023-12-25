@@ -6,6 +6,7 @@
 
 #include <DirectXMath.h>
 
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Ray.h"
 
 #include "Editors/LevelEditor/GizmoAxis.h"
@@ -64,6 +65,9 @@ namespace Editors
 		void UpdateMouseHoverTranslation(const DirectX::XMVECTOR& mouse3dPosition);
 		void UpdateMouseHoverRotation(const DirectX::XMVECTOR& mouse3dPosition);
 
+		void UpdateState_Moving_Translation(const DirectX::XMVECTOR& mouse3dPosition);
+		void UpdateState_Moving_Rotation(const DirectX::XMVECTOR& mouse3dPosition);
+
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();
 		void RenderScaleManipulator();
@@ -80,12 +84,15 @@ namespace Editors
 		GizmoModel* m_pModel;
 
 		DirectX::XMMATRIX m_txWs;
+		Core::Vec4f m_eulerAngles;
 
 		ManipulatorMode m_manipulatorMode;
 
 		DirectX::XMUINT2 m_previousMousePosition;
 
 		Core::Vec4f m_translationOffset;
+		Core::Vec4f m_rotationInitialPoint; //where the user clicked for the first time
+		Core::Vec4f m_rotationInitialEulerAngles;
 
 		//standard size for translation gizmo
 		const float BASE_DIAMETER;
