@@ -59,6 +59,7 @@ namespace Editors
 
 		bool OnClick_TreeItem(BaseModel* pModel, int rowId);
 
+		void OnClick_SetGizmoModeSelection();
 		void OnClick_SetGizmoModeTranslate();
 		void OnClick_SetGizmoModeRotation();
 	};

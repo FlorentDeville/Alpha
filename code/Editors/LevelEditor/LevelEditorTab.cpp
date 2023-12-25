@@ -75,6 +75,7 @@ namespace Editors
 		m_pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
 		m_pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(true); });
 		m_pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(false); });
+		m_pViewport->GetGizmoWidget()->SetEnable(false);
 
 		//create split between viewport and left panel
 		m_pLeftSplit = new Widgets::SplitVertical();
@@ -109,6 +110,10 @@ namespace Editors
 	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pTransformMenu = pMenuBar->AddMenu("Transformation");
+
+		Widgets::MenuItem* pSelectionItem = pTransformMenu->AddMenuItem("Selection");
+		pSelectionItem->SetShortcut("Q");
+		pSelectionItem->OnClick([this]() { OnClick_SetGizmoModeSelection(); });
 
 		Widgets::MenuItem* pTranslateItem = pTransformMenu->AddMenuItem("Translate");
 		pTranslateItem->SetShortcut("W");
@@ -377,6 +382,17 @@ namespace Editors
 		pGizmoModel->SetNode(pNode);
 
 		return true;
+	}
+
+	void LevelEditorTab::OnClick_SetGizmoModeSelection()
+	{
+		//if right click, don't apply the mode
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseRightButtonDown())
+			return;
+
+		GizmoWidget* pGizmo = m_pViewport->GetGizmoWidget();
+		pGizmo->SetEnable(!pGizmo->IsEnabled());
 	}
 
 	void LevelEditorTab::OnClick_SetGizmoModeTranslate()

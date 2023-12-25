@@ -56,6 +56,10 @@ namespace Editors
 
 		void SetManipulatorMode(ManipulatorMode mode);
 
+		void SetEnable(bool enable);
+
+		bool IsEnabled() const;
+
 	private:
 		void UpdateState_Idle(const Core::Vec4f& mouse3dPosition);
 		void UpdateState_Moving(const Core::Vec4f& mouse3dPosition);
@@ -79,6 +83,8 @@ namespace Editors
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 
 		void OnNodeChanged_Model(Node* pNode);
+
+		bool m_enabled;
 
 		InternalState m_internalState;
 

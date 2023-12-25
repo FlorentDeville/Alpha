@@ -40,6 +40,7 @@ namespace Editors
 		, m_hoverAxis()
 		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
 		, m_sqt()
+		, m_enabled(true)
 	{}
 
 	GizmoWidget::~GizmoWidget()
@@ -53,6 +54,9 @@ namespace Editors
 
 	void GizmoWidget::Update(const Core::Vec4f& mouse3dPosition)
 	{
+		if (!m_enabled)
+			return;
+
 		switch (m_internalState)
 		{
 		case InternalState::kIdle:
@@ -70,6 +74,9 @@ namespace Editors
 
 	void GizmoWidget::Render()
 	{
+		if (!m_enabled)
+			return;
+
 #if defined(DEBUG_RAY)
 		for (int ii = 0; ii < 100; ++ii)
 		{
@@ -122,6 +129,16 @@ namespace Editors
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
 	{
 		m_manipulatorMode = mode;
+	}
+
+	void GizmoWidget::SetEnable(bool enable)
+	{
+		m_enabled = enable;
+	}
+
+	bool GizmoWidget::IsEnabled() const
+	{
+		return m_enabled;
 	}
 
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
