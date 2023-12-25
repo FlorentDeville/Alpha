@@ -8,6 +8,7 @@
 
 namespace Core
 {
+	class Srt;
 	class Vec4f;
 
 	class Mat44f
@@ -38,9 +39,14 @@ namespace Core
 		Mat44f operator*(const Mat44f& other) const;
 
 		Vec4f GetEulerAngle() const;
+		Vec4f GetRotationQuaternion() const;
 
 		static Mat44f CreateRotationMatrix(const Vec4f& axis, float angle);
 		static Mat44f CreateRotationMatrixFromEulerAngles(const Vec4f& eulerAngles);
+		static Mat44f CreateRotationMatrixFromQuaternion(const Vec4f& quat);
+		static Mat44f CreateTranslationMatrix(const Vec4f& translation);
+		static Mat44f CreateScaleMatrix(const Vec4f& scale);
+		static Mat44f CreateTransformMatrix(const Srt& srt);
 
 	private:
 

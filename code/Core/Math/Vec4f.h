@@ -41,6 +41,8 @@ namespace Core
 		Vec4f operator*(const Mat44f& other) const;
 		Vec4f operator*(float f) const;
 
+		static Vec4f QuaternionToEulerAngles(const Vec4f& quaternion);
+
 	private:
 		explicit Vec4f(const DirectX::XMVECTOR& vector);
 

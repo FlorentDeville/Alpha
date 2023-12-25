@@ -39,6 +39,9 @@
     <ClCompile Include="Math\Intersection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Srt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Math\Intersection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Srt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

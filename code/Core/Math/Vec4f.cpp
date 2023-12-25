@@ -87,6 +87,31 @@ namespace Core
 		return Vec4f(f * m_vector);
 	}
 
+	Vec4f Vec4f::QuaternionToEulerAngles(const Vec4f& quaternion)
+	{
+		float x = quaternion.GetX();
+		float y = quaternion.GetY();
+		float z = quaternion.GetZ();
+		float w = quaternion.GetW();
+
+		// roll (x-axis rotation)
+		float sinr_cosp = 2 * (w * x + y * z);
+		float cosr_cosp = 1 - 2 * (x * x + y * y);
+		float roll = std::atan2(sinr_cosp, cosr_cosp);
+
+		// pitch (y-axis rotation)
+		float sinp = std::sqrt(1 + 2 * (w * y - x * z));
+		float cosp = std::sqrt(1 - 2 * (w * y - x * z));
+		float pitch = 2 * std::atan2(sinp, cosp) - DirectX::XM_PIDIV2;
+
+		// yaw (z-axis rotation)
+		float siny_cosp = 2 * (w * z + x * y);
+		float cosy_cosp = 1 - 2 * (y * y + z * z);
+		float yaw = std::atan2(siny_cosp, cosy_cosp);
+
+		return Vec4f(roll, pitch, yaw, 0);
+	}
+
 	Vec4f::Vec4f(const DirectX::XMVECTOR& vector)
 		: m_vector(vector)
 	{}
