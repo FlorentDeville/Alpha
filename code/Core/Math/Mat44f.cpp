@@ -59,6 +59,13 @@ namespace Core
 		return Mat44f(dxRes);
 	}
 
+	Mat44f Mat44f::CreateRotationMatrix(const Vec4f& axis, float angle)
+	{
+		Mat44f res;
+		res.m_matrix = DirectX::XMMatrixRotationAxis(axis.m_vector, angle);
+		return res;
+	}
+
 	Mat44f::Mat44f(const DirectX::XMMATRIX& matrix)
 		: m_matrix(matrix)
 	{}

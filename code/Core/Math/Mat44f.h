@@ -37,6 +37,8 @@ namespace Core
 
 		Mat44f operator*(const Mat44f& other) const;
 
+		static Mat44f CreateRotationMatrix(const Vec4f& axis, float angle);
+
 	private:
 
 		DirectX::XMMATRIX m_matrix;

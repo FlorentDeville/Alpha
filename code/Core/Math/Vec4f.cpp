@@ -48,6 +48,12 @@ namespace Core
 		return res.m128_f32[0];
 	}
 
+	Vec4f Vec4f::Cross(const Vec4f& other) const
+	{
+		DirectX::XMVECTOR res = DirectX::XMVector3Cross(m_vector, other.m_vector);
+		return Vec4f(res);
+	}
+
 	float Vec4f::Length() const
 	{
 		float squaredLength = Dot(*this);

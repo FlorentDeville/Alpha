@@ -31,25 +31,6 @@ namespace Core
 		return false;
 	}
 
-	void Intersection::RayVsRay_ClosestPoint(const Ray& rayA, const Ray& rayB, Vec4f& closestPointRayB)
-	{
-		const Core::Vec4f& A = rayA.GetOrigin();
-		const Core::Vec4f& aDir = rayA.GetDirection();
-
-		const Core::Vec4f& B = rayB.GetOrigin();
-		const Core::Vec4f& bDir = rayB.GetDirection();
-
-		Core::Vec4f C = B - A;
-
-		float ADotA = aDir.Dot(aDir);
-		float BDotB = bDir.Dot(bDir);
-		float ADotB = aDir.Dot(bDir);
-		float ADotC = aDir.Dot(C);
-		float BDotC = bDir.Dot(C);
-
-		closestPointRayB = B + bDir * ((ADotB * ADotC - BDotC * ADotA) / ((ADotA * BDotB) - (ADotB * ADotB)));
-	}
-
 	bool Intersection::RayVsPlane(const Ray& ray, const Vec4f& planeNormal, const Vec4f& planePoint, float& t)
 	{
 		float denom = planeNormal.Dot(ray.GetDirection());
@@ -82,5 +63,42 @@ namespace Core
 			return true;
 
 		return false;
+	}
+
+	void Intersection::RayVsRay_ClosestPoint(const Ray& rayA, const Ray& rayB, Vec4f& closestPointRayB)
+	{
+		const Core::Vec4f& A = rayA.GetOrigin();
+		const Core::Vec4f& aDir = rayA.GetDirection();
+
+		const Core::Vec4f& B = rayB.GetOrigin();
+		const Core::Vec4f& bDir = rayB.GetDirection();
+
+		Core::Vec4f C = B - A;
+
+		float ADotA = aDir.Dot(aDir);
+		float BDotB = bDir.Dot(bDir);
+		float ADotB = aDir.Dot(bDir);
+		float ADotC = aDir.Dot(C);
+		float BDotC = bDir.Dot(C);
+
+		closestPointRayB = B + bDir * ((ADotB * ADotC - BDotC * ADotA) / ((ADotA * BDotB) - (ADotB * ADotB)));
+	}
+
+	void Intersection::RayVsCircle_ClosestPoint(const Ray& ray, const Vec4f& circleNormal, const Vec4f& circleCenter, float radius, Vec4f& closestPoint)
+	{
+		float parameter = 0;
+		bool intersectPlane = RayVsPlane(ray, circleNormal, circleCenter, parameter);
+		if (!intersectPlane)
+		{
+			closestPoint = ray.GetOrigin();
+			return;
+		}
+
+		Core::Vec4f planePoint = ray.GetOrigin() + ray.GetDirection() * parameter;
+
+		Core::Vec4f radiusVector = planePoint - circleCenter;
+		radiusVector.Normalize();
+
+		closestPoint = circleCenter + radiusVector * radius;
 	}
 }

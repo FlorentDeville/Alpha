@@ -30,6 +30,8 @@ namespace Core
 		float Dot(const Vec4f& other) const;
 		float Dot4(const Vec4f& other) const;
 
+		Vec4f Cross(const Vec4f& other) const;
+
 		float Length() const;
 
 		void Normalize();
