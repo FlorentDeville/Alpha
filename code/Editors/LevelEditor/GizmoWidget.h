@@ -67,6 +67,7 @@ namespace Editors
 
 		void UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition);
 		void UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition);
+		void UpdateState_Moving_Scale(const Core::Vec4f& mouse3dPosition);
 
 		void RenderRotationManipulator();
 		void RenderTranslationManipulator();
@@ -92,6 +93,7 @@ namespace Editors
 		Core::Vec4f m_translationOffset;
 		Core::Vec4f m_rotationInitialPoint; //where the user clicked for the first time
 		float m_previousAngle;
+		float m_previousScaleDistance;
 
 		//standard size for translation gizmo
 		const float BASE_DIAMETER;

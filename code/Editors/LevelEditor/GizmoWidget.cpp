@@ -161,6 +161,26 @@ namespace Editors
 				{
 					m_previousAngle = 0;
 				}
+				else if (m_manipulatorMode == kScale)
+				{
+					int axisIndex = m_hoverAxis.GetAxisIndex();
+
+					const Core::Mat44f& txWs = m_sqt.GetMatrix();
+					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
+
+					const Core::Vec4f& cameraRayOrigin = LevelEditor::Get().GetCameraWs().GetT();
+					Core::Vec4f aDir = mouse3dPosition - cameraRayOrigin;
+					aDir.Normalize();
+
+					Core::Vec4f B = txWs.GetT();
+					Core::Vec4f bDir = axis;
+
+					Core::Vec4f closestPointOnAxis;
+					Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(cameraRayOrigin, aDir), Core::Ray(B, bDir), closestPointOnAxis);
+
+					Core::Vec4f centerToMouse = closestPointOnAxis - B;
+					m_previousScaleDistance = centerToMouse.Dot(axis);
+				}
 			}
 		}
 	}
@@ -177,6 +197,10 @@ namespace Editors
 		else if (m_manipulatorMode == kRotation)
 		{
 			UpdateState_Moving_Rotation(mouse3dPosition);
+		}
+		else if (m_manipulatorMode == kScale)
+		{
+			UpdateState_Moving_Scale(mouse3dPosition);
 		}
 	}
 
@@ -449,6 +473,37 @@ namespace Editors
 		m_previousAngle = angle;
 		m_pModel->Rotate(newRotation);
 		m_sqt = m_pModel->GetTransform();
+	}
+
+	void GizmoWidget::UpdateState_Moving_Scale(const Core::Vec4f& mouse3dPosition)
+	{
+		//project the axis in screen space
+		int axisIndex = m_hoverAxis.GetAxisIndex();
+
+		const Core::Vec4f& axis = m_sqt.GetMatrix().GetRow(axisIndex);
+
+		{
+			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+			Core::Vec4f aDir = mouse3dPosition - A;
+			aDir.Normalize();
+
+			const Core::Vec4f& B = m_sqt.GetTranslation();
+			Core::Vec4f bDir = axis;
+
+			Core::Vec4f closestPointOnAxis;
+			Core::Intersection::RayVsRay_ClosestPoint(Core::Ray(A, aDir), Core::Ray(B, bDir), closestPointOnAxis);
+
+			Core::Vec4f centerToMouse = closestPointOnAxis - B;
+			float distance = centerToMouse.Dot(axis);
+
+			float dt = distance - m_previousScaleDistance;
+			
+			Core::Vec4f newScale(1, 1, 1, 0);
+			newScale.Set(axisIndex, 1 + dt);
+
+			m_pModel->Scale(newScale);
+			m_previousScaleDistance = distance;
+		}
 	}
 
 	void GizmoWidget::RenderRotationManipulator()

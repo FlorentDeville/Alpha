@@ -38,6 +38,9 @@ namespace Editors
 		//The gizmo sends the new rotation to apply
 		virtual void Rotate(const Core::Mat44f& rotation);
 
+		//The gizmo sends a new scale to apply
+		virtual void Scale(const Core::Vec4f& scale);
+
 	private:
 		Node* m_pNode;
 
