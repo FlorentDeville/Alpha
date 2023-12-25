@@ -17,11 +17,11 @@ namespace Core
 		Srt(const Mat44f& transform);
 
 		void SetTranslation(const Vec4f& translation);
-		void SetRotation(const Vec4f& eulerAngles);
+		void SetEulerAngles(const Vec4f& eulerAngles);
 		void SetScale(const Vec4f& scale);
 
 		const Vec4f& GetTranslation() const;
-		const Vec4f& GetRotation() const;
+		const Vec4f& GetEulerAngles() const;
 		const Vec4f& GetScale() const;
 		
 		const Mat44f& GetMatrix() const;

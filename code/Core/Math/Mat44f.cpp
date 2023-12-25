@@ -122,7 +122,7 @@ namespace Core
 	Mat44f Mat44f::CreateTransformMatrix(const Srt& srt)
 	{
 		Mat44f t = CreateTranslationMatrix(srt.GetTranslation());
-		Mat44f q = CreateRotationMatrixFromEulerAngles(srt.GetRotation());
+		Mat44f q = CreateRotationMatrixFromEulerAngles(srt.GetEulerAngles());
 		Mat44f s = CreateScaleMatrix(srt.GetScale());
 
 		Mat44f res = s * q * t;

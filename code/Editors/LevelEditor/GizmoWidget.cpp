@@ -39,9 +39,8 @@ namespace Editors
 		, m_translationOffset()
 		, m_hoverAxis()
 		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
-	{
-		m_txWs.SetIdentity();
-	}
+		, m_srt()
+	{}
 
 	GizmoWidget::~GizmoWidget()
 	{
@@ -117,20 +116,7 @@ namespace Editors
 			return;
 
 		pModel->OnNodeChanged([this](Node* pNode) { OnNodeChanged_Model(pNode); });
-		m_txWs = pModel->GetTransform();
-
-		Core::Vec4f xAxis = m_txWs.GetX();
-		Core::Vec4f yAxis = m_txWs.GetY();
-		Core::Vec4f zAxis = m_txWs.GetZ();
-		Core::Vec4f tAxis(0, 0, 0, 1);
-
-		xAxis.Normalize();
-		yAxis.Normalize();
-		zAxis.Normalize();
-
-		Core::Mat44f rotationMatrix(xAxis, yAxis, zAxis, tAxis);
-
-		m_eulerAngles = rotationMatrix.GetEulerAngle();
+		m_srt = pModel->GetTransform();
 	}
 
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
@@ -154,14 +140,15 @@ namespace Editors
 					//project the axis in screen space
 					int axisIndex = m_hoverAxis.GetAxisIndex();
 					
-					const Core::Vec4f& axis = m_txWs.GetRow(axisIndex);
+					const Core::Mat44f& txWs = m_srt.GetMatrix();
+					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
 
 					{
 						const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
 						Core::Vec4f aDir = mouse3dPosition - A;
 						aDir.Normalize();
 
-						Core::Vec4f B = m_txWs.GetT();
+						Core::Vec4f B = txWs.GetT();
 						Core::Vec4f bDir = axis;
 
 						Core::Vec4f closestPointOnAxis;
@@ -172,12 +159,7 @@ namespace Editors
 				}
 				else if (m_manipulatorMode == kRotation)
 				{
-					Core::Vec4f xAxis = m_txWs.GetX();
-					Core::Vec4f yAxis = m_txWs.GetY();
-					Core::Vec4f zAxis = m_txWs.GetZ();
-					Core::Vec4f tAxis(0, 0, 0, 1);
-					Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
-					m_rotationInitialEulerAngles = txWs.GetEulerAngle();
+					m_rotationInitialEulerAngles = m_srt.GetEulerAngles();
 				}
 			}
 		}
@@ -240,14 +222,14 @@ namespace Editors
 #endif
 
 		//convert ray to gizmo local space
-		Core::Mat44f txWs(m_txWs);
+		const Core::Mat44f& txWs = m_srt.GetMatrix();
 		Core::Mat44f invTxWs = txWs.Inverse();
 
 		Core::Ray mousePickingRayLs = mousePickingRay;
 		mousePickingRayLs.Transform(invTxWs);
 
 		//compute aabb size
-		Core::Vec4f objectPosition = m_txWs.GetT();
+		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 		float realLength = LENGTH * size;
 		const float BOX_HALF_SIZE = 0.5f * size;
@@ -313,7 +295,7 @@ namespace Editors
 		Core::Ray mousePickingRay(rayOrigin, rayDirection);
 
 		//disk center
-		Core::Vec4f diskCenter = m_txWs.GetT();
+		const Core::Vec4f& diskCenter = m_srt.GetTranslation();
 
 		//disk inner and outer radius
 		float size = ComputeConstantScreenSizeScale(diskCenter);
@@ -330,7 +312,7 @@ namespace Editors
 		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 		{
 			//create the disk info
-			Core::Vec4f diskNormal = m_txWs.GetRow(axisIndex);
+			Core::Vec4f diskNormal = m_srt.GetMatrix().GetRow(axisIndex);
 
 			float parameter = 0;
 			bool collision = Core::Intersection::RayVsDisk(mousePickingRay, diskNormal, diskCenter, innerRadius, outerRadius, parameter);
@@ -354,14 +336,14 @@ namespace Editors
 		//project the axis in screen space
 		int axisIndex = m_hoverAxis.GetAxisIndex();
 
-		const Core::Vec4f& axis = m_txWs.GetRow(axisIndex);
+		const Core::Vec4f& axis = m_srt.GetMatrix().GetRow(axisIndex);
 
 		{
 			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
 			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
-			Core::Vec4f B = m_txWs.GetT();
+			const Core::Vec4f& B = m_srt.GetTranslation();
 			Core::Vec4f bDir = axis;
 
 			Core::Vec4f closestPointOnAxis;
@@ -369,9 +351,9 @@ namespace Editors
 
 			closestPointOnAxis = closestPointOnAxis - m_translationOffset;
 			closestPointOnAxis.Set(3, 1);
-			m_txWs.SetRow(3, closestPointOnAxis);
+			m_srt.SetTranslation(closestPointOnAxis);
 
-			m_pModel->Translate(m_txWs);
+			m_pModel->Translate(m_srt.GetMatrix());
 		}
 	}
 
@@ -383,11 +365,11 @@ namespace Editors
 		rayDir.Normalize();
 
 		//disk center
-		Core::Vec4f diskCenter = m_txWs.GetT();
+		Core::Vec4f diskCenter = m_srt.GetTranslation();
 
 		//disk axis
 		int axisIndex = m_hoverAxis.GetAxisIndex();
-		Core::Vec4f diskNormal = m_txWs.GetRow(axisIndex);
+		Core::Vec4f diskNormal = m_srt.GetMatrix().GetRow(axisIndex);
 
 		Core::Vec4f closestPoint;
 		Core::Intersection::RayVsCircle_ClosestPoint(Core::Ray(rayOrigin, rayDir), diskNormal, diskCenter, 1.f, closestPoint);
@@ -425,41 +407,25 @@ namespace Editors
 		currentEulerAngle.Set(axisIndex, angle);
 		Core::Vec4f eulerAngles = m_rotationInitialEulerAngles + currentEulerAngle;
 
-		float scaleX = m_txWs.GetX().Length();
-		float scaleY = m_txWs.GetY().Length();
-		float scaleZ = m_txWs.GetZ().Length();
-
-		Core::Mat44f scaleMatrix(
-			Core::Vec4f(scaleX, 0, 0, 0),
-			Core::Vec4f(0, scaleY, 0, 0),
-			Core::Vec4f(0, 0, scaleZ, 0),
-			Core::Vec4f(0, 0, 0, 1)
-		);
-
-		Core::Mat44f rotationMatrix = Core::Mat44f::CreateRotationMatrixFromEulerAngles(eulerAngles);
-
-		Core::Mat44f translationMatrix;
-		translationMatrix.SetIdentity();
-		translationMatrix.SetRow(3, diskCenter);
-
-		m_txWs = scaleMatrix * rotationMatrix * translationMatrix;
-
-		m_pModel->Translate(m_txWs);
+		m_srt.SetEulerAngles(eulerAngles);
+		
+		m_pModel->Translate(m_srt.GetMatrix());
 	}
 
 	void GizmoWidget::RenderRotationManipulator()
 	{
-		const Core::Vec4f& dxXAxis = m_txWs.GetX();
-		const Core::Vec4f& dxYAxis = m_txWs.GetY();
-		const Core::Vec4f& dxZAxis = m_txWs.GetZ();
-		const Core::Vec4f& dxTAxis = m_txWs.GetT();
+		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Vec4f& dxXAxis = txWs.GetX();
+		const Core::Vec4f& dxYAxis = txWs.GetY();
+		const Core::Vec4f& dxZAxis = txWs.GetZ();
+		const Core::Vec4f& dxTAxis = txWs.GetT();
 		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
 		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
 		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
 		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
 		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
 
-		Core::Vec4f objectPosition = m_txWs.GetT();
+		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realRotationDiameter = ROTATION_DIAMATER * size;
@@ -504,10 +470,11 @@ namespace Editors
 
 	void GizmoWidget::RenderTranslationManipulator()
 	{
-		const Core::Vec4f& dxXAxis = m_txWs.GetX();
-		const Core::Vec4f& dxYAxis = m_txWs.GetY();
-		const Core::Vec4f& dxZAxis = m_txWs.GetZ();
-		const Core::Vec4f& dxTAxis = m_txWs.GetT();
+		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Vec4f& dxXAxis = txWs.GetX();
+		const Core::Vec4f& dxYAxis = txWs.GetY();
+		const Core::Vec4f& dxZAxis = txWs.GetZ();
+		const Core::Vec4f& dxTAxis = txWs.GetT();
 		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
 		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
 		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
@@ -555,10 +522,11 @@ namespace Editors
 
 	void GizmoWidget::RenderScaleManipulator()
 	{
-		const Core::Vec4f& dxXAxis = m_txWs.GetX();
-		const Core::Vec4f& dxYAxis = m_txWs.GetY();
-		const Core::Vec4f& dxZAxis = m_txWs.GetZ();
-		const Core::Vec4f& dxTAxis = m_txWs.GetT();
+		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Vec4f& dxXAxis = txWs.GetX();
+		const Core::Vec4f& dxYAxis = txWs.GetY();
+		const Core::Vec4f& dxZAxis = txWs.GetZ();
+		const Core::Vec4f& dxTAxis = txWs.GetT();
 		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
 		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
 		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
@@ -692,19 +660,6 @@ namespace Editors
 
 	void GizmoWidget::OnNodeChanged_Model(Node* pNode)
 	{
-		m_txWs = m_pModel->GetTransform();
-
-		Core::Vec4f xAxis = m_txWs.GetX();
-		Core::Vec4f yAxis = m_txWs.GetY();
-		Core::Vec4f zAxis = m_txWs.GetZ();
-		Core::Vec4f tAxis(0, 0, 0, 1);
-
-		xAxis.Normalize();
-		yAxis.Normalize();
-		zAxis.Normalize();
-
-		Core::Mat44f txWs(xAxis, yAxis, zAxis, tAxis);
-
-		m_eulerAngles = txWs.GetEulerAngle();
+		m_srt = m_pModel->GetTransform();
 	}
 }

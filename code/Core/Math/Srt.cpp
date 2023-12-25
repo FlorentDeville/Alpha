@@ -41,7 +41,7 @@ namespace Core
 		m_dirty = true;
 	}
 
-	void Srt::SetRotation(const Vec4f& eulerAngles)
+	void Srt::SetEulerAngles(const Vec4f& eulerAngles)
 	{
 		m_eulerAngles = eulerAngles;
 		m_dirty = true;
@@ -58,7 +58,7 @@ namespace Core
 		return m_translation;
 	}
 
-	const Vec4f& Srt::GetRotation() const
+	const Vec4f& Srt::GetEulerAngles() const
 	{
 		return m_eulerAngles;
 	}

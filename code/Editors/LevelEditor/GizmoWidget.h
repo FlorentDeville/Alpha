@@ -6,8 +6,7 @@
 
 #include <DirectXMath.h>
 
-#include "Core/Math/Mat44f.h"
-#include "Core/Math/Ray.h"
+#include "Core/Math/Srt.h"
 
 #include "Editors/LevelEditor/GizmoAxis.h"
 
@@ -83,8 +82,7 @@ namespace Editors
 
 		GizmoModel* m_pModel;
 
-		Core::Mat44f m_txWs;
-		Core::Vec4f m_eulerAngles;
+		Core::Srt m_srt;
 
 		ManipulatorMode m_manipulatorMode;
 
