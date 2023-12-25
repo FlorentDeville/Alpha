@@ -39,7 +39,7 @@ namespace Editors
 		, m_translationOffset()
 		, m_hoverAxis()
 		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
-		, m_srt()
+		, m_sqt()
 	{}
 
 	GizmoWidget::~GizmoWidget()
@@ -116,7 +116,7 @@ namespace Editors
 			return;
 
 		pModel->OnNodeChanged([this](Node* pNode) { OnNodeChanged_Model(pNode); });
-		m_srt = pModel->GetTransform();
+		m_sqt = pModel->GetTransform();
 	}
 
 	void GizmoWidget::SetManipulatorMode(ManipulatorMode mode)
@@ -140,7 +140,7 @@ namespace Editors
 					//project the axis in screen space
 					int axisIndex = m_hoverAxis.GetAxisIndex();
 					
-					const Core::Mat44f& txWs = m_srt.GetMatrix();
+					const Core::Mat44f& txWs = m_sqt.GetMatrix();
 					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
 
 					{
@@ -159,7 +159,7 @@ namespace Editors
 				}
 				else if (m_manipulatorMode == kRotation)
 				{
-					m_rotationInitialEulerAngles = m_srt.GetEulerAngles();
+					m_previousAngle = 0;
 				}
 			}
 		}
@@ -222,7 +222,7 @@ namespace Editors
 #endif
 
 		//convert ray to gizmo local space
-		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 		Core::Mat44f invTxWs = txWs.Inverse();
 
 		Core::Ray mousePickingRayLs = mousePickingRay;
@@ -295,7 +295,7 @@ namespace Editors
 		Core::Ray mousePickingRay(rayOrigin, rayDirection);
 
 		//disk center
-		const Core::Vec4f& diskCenter = m_srt.GetTranslation();
+		const Core::Vec4f& diskCenter = m_sqt.GetTranslation();
 
 		//disk inner and outer radius
 		float size = ComputeConstantScreenSizeScale(diskCenter);
@@ -312,7 +312,7 @@ namespace Editors
 		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 		{
 			//create the disk info
-			Core::Vec4f diskNormal = m_srt.GetMatrix().GetRow(axisIndex);
+			Core::Vec4f diskNormal = m_sqt.GetMatrix().GetRow(axisIndex);
 
 			float parameter = 0;
 			bool collision = Core::Intersection::RayVsDisk(mousePickingRay, diskNormal, diskCenter, innerRadius, outerRadius, parameter);
@@ -336,14 +336,14 @@ namespace Editors
 		//project the axis in screen space
 		int axisIndex = m_hoverAxis.GetAxisIndex();
 
-		const Core::Vec4f& axis = m_srt.GetMatrix().GetRow(axisIndex);
+		const Core::Vec4f& axis = m_sqt.GetMatrix().GetRow(axisIndex);
 
 		{
 			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
 			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
-			const Core::Vec4f& B = m_srt.GetTranslation();
+			const Core::Vec4f& B = m_sqt.GetTranslation();
 			Core::Vec4f bDir = axis;
 
 			Core::Vec4f closestPointOnAxis;
@@ -351,9 +351,9 @@ namespace Editors
 
 			closestPointOnAxis = closestPointOnAxis - m_translationOffset;
 			closestPointOnAxis.Set(3, 1);
-			m_srt.SetTranslation(closestPointOnAxis);
+			m_sqt.SetTranslation(closestPointOnAxis);
 
-			m_pModel->Translate(m_srt.GetMatrix());
+			m_pModel->Translate(m_sqt.GetMatrix());
 		}
 	}
 
@@ -365,11 +365,11 @@ namespace Editors
 		rayDir.Normalize();
 
 		//disk center
-		Core::Vec4f diskCenter = m_srt.GetTranslation();
+		Core::Vec4f diskCenter = m_sqt.GetTranslation();
 
 		//disk axis
 		int axisIndex = m_hoverAxis.GetAxisIndex();
-		Core::Vec4f diskNormal = m_srt.GetMatrix().GetRow(axisIndex);
+		Core::Vec4f diskNormal = m_sqt.GetMatrix().GetRow(axisIndex);
 
 		Core::Vec4f closestPoint;
 		Core::Intersection::RayVsCircle_ClosestPoint(Core::Ray(rayOrigin, rayDir), diskNormal, diskCenter, 1.f, closestPoint);
@@ -388,11 +388,6 @@ namespace Editors
 
 		Core::Vec4f cross = currentVector.Cross(initialVector);
 		float sin = cross.Dot(diskNormal);
-
-		char buffer[64];
-		snprintf(buffer, 64, "cos %f, sin %f\n", cos, sin);
-		OutputDebugString(buffer);
-
 		float angle = acosf(cos);
 		if (angle == 0)
 			return;
@@ -400,21 +395,27 @@ namespace Editors
 		if (sin < 0)
 			angle = DirectX::XM_2PI - angle;
 		
-		snprintf(buffer, 64, "angle %f\n", angle);
-		OutputDebugString(buffer);
+		float dtAngle = angle - m_previousAngle;
 
-		Core::Vec4f currentEulerAngle(0, 0, 0, 0);
-		currentEulerAngle.Set(axisIndex, angle);
-		Core::Vec4f eulerAngles = m_rotationInitialEulerAngles + currentEulerAngle;
+		Core::Sqt baseSrt = m_sqt;
+		baseSrt.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
+		Core::Mat44f baseTransformation = baseSrt.GetMatrix();
+		Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(m_sqt.GetScale());
 
-		m_srt.SetEulerAngles(eulerAngles);
+		Core::Vec4f rotationAxis(0, 0, 0, 1);
+		rotationAxis.Set(axisIndex, 1);
+		Core::Mat44f newRotation = Core::Mat44f::CreateRotationMatrix(rotationAxis, -dtAngle);
 		
-		m_pModel->Translate(m_srt.GetMatrix());
+		Core::Mat44f txWs = baseScale * newRotation * baseTransformation;
+		m_sqt = txWs;
+		
+		m_previousAngle = angle;
+		m_pModel->Translate(m_sqt.GetMatrix());
 	}
 
 	void GizmoWidget::RenderRotationManipulator()
 	{
-		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 		const Core::Vec4f& dxXAxis = txWs.GetX();
 		const Core::Vec4f& dxYAxis = txWs.GetY();
 		const Core::Vec4f& dxZAxis = txWs.GetZ();
@@ -470,7 +471,7 @@ namespace Editors
 
 	void GizmoWidget::RenderTranslationManipulator()
 	{
-		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 		const Core::Vec4f& dxXAxis = txWs.GetX();
 		const Core::Vec4f& dxYAxis = txWs.GetY();
 		const Core::Vec4f& dxZAxis = txWs.GetZ();
@@ -522,7 +523,7 @@ namespace Editors
 
 	void GizmoWidget::RenderScaleManipulator()
 	{
-		const Core::Mat44f& txWs = m_srt.GetMatrix();
+		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 		const Core::Vec4f& dxXAxis = txWs.GetX();
 		const Core::Vec4f& dxYAxis = txWs.GetY();
 		const Core::Vec4f& dxZAxis = txWs.GetZ();
@@ -660,6 +661,6 @@ namespace Editors
 
 	void GizmoWidget::OnNodeChanged_Model(Node* pNode)
 	{
-		m_srt = m_pModel->GetTransform();
+		m_sqt = m_pModel->GetTransform();
 	}
 }

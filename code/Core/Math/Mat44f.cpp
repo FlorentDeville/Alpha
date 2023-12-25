@@ -4,7 +4,7 @@
 
 #include "Core/Math/Mat44f.h"
 
-#include "Core/Math/Srt.h"
+#include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 
 #include <cmath>
@@ -62,13 +62,6 @@ namespace Core
 		return Mat44f(dxRes);
 	}
 
-	Vec4f Mat44f::GetEulerAngle() const
-	{
-		Vec4f quat;
-		quat.m_vector = DirectX::XMQuaternionRotationMatrix(m_matrix);
-		return Vec4f::QuaternionToEulerAngles(quat);
-	}
-
 	Vec4f Mat44f::GetRotationQuaternion() const
 	{
 		DirectX::XMVECTOR dxQuat = DirectX::XMQuaternionRotationMatrix(m_matrix);
@@ -119,11 +112,11 @@ namespace Core
 		return matrix;
 	}
 
-	Mat44f Mat44f::CreateTransformMatrix(const Srt& srt)
+	Mat44f Mat44f::CreateTransformMatrix(const Sqt& sqt)
 	{
-		Mat44f t = CreateTranslationMatrix(srt.GetTranslation());
-		Mat44f q = CreateRotationMatrixFromEulerAngles(srt.GetEulerAngles());
-		Mat44f s = CreateScaleMatrix(srt.GetScale());
+		Mat44f t = CreateTranslationMatrix(sqt.GetTranslation());
+		Mat44f q = CreateRotationMatrixFromQuaternion(sqt.GetRotationQuaternion());
+		Mat44f s = CreateScaleMatrix(sqt.GetScale());
 
 		Mat44f res = s * q * t;
 		return res;

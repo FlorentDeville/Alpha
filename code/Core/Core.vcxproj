@@ -97,7 +97,7 @@
     <ClCompile Include="Math\Intersection.cpp" />
     <ClCompile Include="Math\Mat44f.cpp" />
     <ClCompile Include="Math\Ray.cpp" />
-    <ClCompile Include="Math\Srt.cpp" />
+    <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +109,7 @@
     <ClInclude Include="Math\Intersection.h" />
     <ClInclude Include="Math\Mat44f.h" />
     <ClInclude Include="Math\Ray.h" />
-    <ClInclude Include="Math\Srt.h" />
+    <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="Tree\Tree.h" />

@@ -2,20 +2,20 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Core/Math/Srt.h"
+#include "Core/Math/Sqt.h"
 
 namespace Core
 {
-	Srt::Srt()
+	Sqt::Sqt()
 		: m_translation(0, 0, 0, 1)
-		, m_eulerAngles(0, 0, 0, 0)
+		, m_quat(0, 0, 0, 1)
 		, m_scale(1, 1, 1, 0)
 		, m_dirty(false)
 	{
 		m_matrix.SetIdentity();
 	}
 
-	Srt::Srt(const Mat44f& transform)
+	Sqt::Sqt(const Mat44f& transform)
 		: m_dirty(false)
 	{
 		m_matrix = transform;
@@ -32,43 +32,44 @@ namespace Core
 		z.Normalize();
 
 		Mat44f rotationMatrix(x, y, z, t);
-		m_eulerAngles = rotationMatrix.GetEulerAngle();
+		//m_eulerAngles = rotationMatrix.GetEulerAngle();
+		m_quat = rotationMatrix.GetRotationQuaternion();
 	}
 
-	void Srt::SetTranslation(const Vec4f& translation)
+	void Sqt::SetTranslation(const Vec4f& translation)
 	{
 		m_translation = translation;
 		m_dirty = true;
 	}
 
-	void Srt::SetEulerAngles(const Vec4f& eulerAngles)
+	void Sqt::SetRotationQuaternion(const Vec4f& quat)
 	{
-		m_eulerAngles = eulerAngles;
+		m_quat = quat;
 		m_dirty = true;
 	}
 
-	void Srt::SetScale(const Vec4f& scale)
+	void Sqt::SetScale(const Vec4f& scale)
 	{
 		m_scale = scale;
 		m_dirty = true;
 	}
 
-	const Vec4f& Srt::GetTranslation() const
+	const Vec4f& Sqt::GetTranslation() const
 	{
 		return m_translation;
 	}
 
-	const Vec4f& Srt::GetEulerAngles() const
+	const Vec4f& Sqt::GetRotationQuaternion() const
 	{
-		return m_eulerAngles;
+		return m_quat;
 	}
 
-	const Vec4f& Srt::GetScale() const
+	const Vec4f& Sqt::GetScale() const
 	{
 		return m_scale;
 	}
 
-	const Mat44f& Srt::GetMatrix() const
+	const Mat44f& Sqt::GetMatrix() const
 	{
 		if (m_dirty)
 		{

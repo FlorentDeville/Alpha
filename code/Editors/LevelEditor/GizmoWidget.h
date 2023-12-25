@@ -6,7 +6,7 @@
 
 #include <DirectXMath.h>
 
-#include "Core/Math/Srt.h"
+#include "Core/Math/Sqt.h"
 
 #include "Editors/LevelEditor/GizmoAxis.h"
 
@@ -82,7 +82,7 @@ namespace Editors
 
 		GizmoModel* m_pModel;
 
-		Core::Srt m_srt;
+		Core::Sqt m_sqt;
 
 		ManipulatorMode m_manipulatorMode;
 
@@ -90,7 +90,7 @@ namespace Editors
 
 		Core::Vec4f m_translationOffset;
 		Core::Vec4f m_rotationInitialPoint; //where the user clicked for the first time
-		Core::Vec4f m_rotationInitialEulerAngles;
+		float m_previousAngle;
 
 		//standard size for translation gizmo
 		const float BASE_DIAMETER;
