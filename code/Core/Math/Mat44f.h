@@ -37,7 +37,10 @@ namespace Core
 
 		Mat44f operator*(const Mat44f& other) const;
 
+		Vec4f GetEulerAngle() const;
+
 		static Mat44f CreateRotationMatrix(const Vec4f& axis, float angle);
+		static Mat44f CreateRotationMatrixFromEulerAngles(const Vec4f& eulerAngles);
 
 	private:
 
