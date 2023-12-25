@@ -195,7 +195,7 @@ namespace Editors
 			break;
 
 		case kScale:
-			//RenderScaleManipulator();
+			UpdateMouseHoverScale(mouse3dPosition);
 			break;
 
 		default:
@@ -329,6 +329,51 @@ namespace Editors
 			m_rotationInitialPoint = mousePickingRay.GetOrigin() + mousePickingRay.GetDirection() * smallestParameter;
 		}
 
+	}
+
+	void GizmoWidget::UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition)
+	{
+		//create ray 
+		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+
+		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
+		rayDirection.Set(3, 0);
+		rayDirection.Normalize();
+		Core::Ray mousePickingRay(rayOrigin, rayDirection);
+
+		//convert ray to gizmo local space
+		const Core::Mat44f& txWs = m_sqt.GetMatrix();
+		Core::Mat44f invTxWs = txWs.Inverse();
+
+		Core::Ray mousePickingRayLs = mousePickingRay;
+		mousePickingRayLs.Transform(invTxWs);
+
+		//compute aabb size
+		Core::Vec4f objectPosition = txWs.GetT();
+		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float realLength = LENGTH * size;
+		const float BOX_HALF_SIZE = 0.5f * size;
+
+		//check each axis
+		for (int ii = 0; ii < 3; ++ii)
+		{
+			Core::Vec4f min(-BOX_HALF_SIZE, -BOX_HALF_SIZE, -BOX_HALF_SIZE, 0);
+			min.Set(ii, 0);
+
+			Core::Vec4f max(BOX_HALF_SIZE, BOX_HALF_SIZE, BOX_HALF_SIZE, 0);
+			max.Set(ii, realLength);
+
+			Core::Aabb axisAabb(min, max);
+
+			//collision test, ray vs aabb
+			bool collision = Core::Intersection::RayVsAabb(mousePickingRayLs, axisAabb);
+			if (collision)
+			{
+				m_hoverAxis.SetAxisIndex(ii);
+				return;
+			}
+		}
 	}
 
 	void GizmoWidget::UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition)
@@ -534,12 +579,18 @@ namespace Editors
 			//rotate everything 90 degres around z axis
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
 			DirectX::XMFLOAT4 red(1, 0, 0, 0);
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
+				red = m_hoverColor;
+
 			RenderScaleSingleAxis(rotation * dxTxWs, red);
 		}
 
 		//y axis
 		{
 			DirectX::XMFLOAT4 green(0, 1, 0, 0);
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
+				green = m_hoverColor;
+
 			RenderScaleSingleAxis(dxTxWs, green);
 		}
 
@@ -548,6 +599,9 @@ namespace Editors
 			//rotate everything 90 degres around z axis
 			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
 			DirectX::XMFLOAT4 blue(0, 0, 1, 0);
+			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
+				blue = m_hoverColor;
+
 			RenderScaleSingleAxis(rotation * dxTxWs, blue);
 		}
 	}

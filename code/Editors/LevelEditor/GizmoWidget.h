@@ -63,6 +63,7 @@ namespace Editors
 		void UpdateMouseHover(const Core::Vec4f& mouse3dPosition);
 		void UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition);
 		void UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition);
+		void UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition);
 
 		void UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition);
 		void UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition);
