@@ -353,7 +353,7 @@ namespace Editors
 			closestPointOnAxis.Set(3, 1);
 			m_sqt.SetTranslation(closestPointOnAxis);
 
-			m_pModel->Translate(m_sqt.GetMatrix());
+			m_pModel->Translate(closestPointOnAxis);
 		}
 	}
 
@@ -397,20 +397,13 @@ namespace Editors
 		
 		float dtAngle = angle - m_previousAngle;
 
-		Core::Sqt baseSrt = m_sqt;
-		baseSrt.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
-		Core::Mat44f baseTransformation = baseSrt.GetMatrix();
-		Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(m_sqt.GetScale());
-
 		Core::Vec4f rotationAxis(0, 0, 0, 1);
 		rotationAxis.Set(axisIndex, 1);
 		Core::Mat44f newRotation = Core::Mat44f::CreateRotationMatrix(rotationAxis, -dtAngle);
-		
-		Core::Mat44f txWs = baseScale * newRotation * baseTransformation;
-		m_sqt = txWs;
-		
+	
 		m_previousAngle = angle;
-		m_pModel->Translate(m_sqt.GetMatrix());
+		m_pModel->Rotate(newRotation);
+		m_sqt = m_pModel->GetTransform();
 	}
 
 	void GizmoWidget::RenderRotationManipulator()

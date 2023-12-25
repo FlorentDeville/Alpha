@@ -41,10 +41,14 @@ namespace Editors
 		virtual Core::Mat44f ComputeWs() const;
 		virtual Core::Mat44f ComputeParentWs() const;
 
+		virtual const Core::Mat44f& GetLs() const;
+
 		virtual void SetLs(const Core::Mat44f& txLs);
 
 	private:
 		std::string m_name;
 		std::map<std::string, Component*> m_components;
+
+		static Core::Mat44f s_default;
 	};
 }

@@ -32,7 +32,11 @@ namespace Editors
 		//Function called by the gizmo to be placed in the correct location/orientation. Typically doesn't contain the scale.
 		virtual const Core::Mat44f GetTransform() const;
 
-		virtual void Translate(const Core::Mat44f& txWs);
+		//The gizmo sends the new world space position
+		virtual void Translate(const Core::Vec4f& translate);
+
+		//The gizmo sends the new rotation to apply
+		virtual void Rotate(const Core::Mat44f& rotation);
 
 	private:
 		Node* m_pNode;

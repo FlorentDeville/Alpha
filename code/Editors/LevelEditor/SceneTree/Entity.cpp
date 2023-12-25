@@ -8,6 +8,8 @@
 
 namespace Editors
 {
+	Core::Mat44f Entity::s_default;
+
 	Entity::Entity(const std::string& name)
 		: Node()
 		, m_components()
@@ -119,6 +121,21 @@ namespace Editors
 			return parentWs;
 
 		return pParentEntity->ComputeWs();
+	}
+
+	const Core::Mat44f& Entity::GetLs() const
+	{
+		const Component* pComponent = GetComponent("Transform");
+		if (!pComponent)
+			return s_default;
+
+		const Property* pProperty = pComponent->GetProperty("Local");
+		if (!pProperty)
+			return s_default;
+
+
+		const PropertyValueMat44f& value = static_cast<const PropertyValueMat44f&>(pProperty->GetValue());
+		return value.Get();
 	}
 
 	void Entity::SetLs(const Core::Mat44f& txLs)

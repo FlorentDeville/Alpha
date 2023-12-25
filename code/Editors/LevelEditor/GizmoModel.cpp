@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/GizmoModel.h"
 
+#include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/Component.h"
@@ -58,7 +59,7 @@ namespace Editors
 		return txWs;
 	}
 
-	void GizmoModel::Translate(const Core::Mat44f& txWs)
+	void GizmoModel::Translate(const Core::Vec4f& translate)
 	{
 		if (!m_pNode)
 			return;
@@ -67,8 +68,34 @@ namespace Editors
 		if (!pEntity)
 			return;
 
+		Core::Mat44f txLs = pEntity->GetLs();
+		txLs.SetRow(3, translate);
+
+		pEntity->SetLs(txLs);
+	}
+
+	void GizmoModel::Rotate(const Core::Mat44f& rotation)
+	{
+		if (!m_pNode)
+			return;
+
+		Entity* pEntity = m_pNode->ToEntity();
+		if (!pEntity)
+			return;
+
+		Core::Mat44f oldTxWs = pEntity->ComputeWs();
+
+		Core::Sqt sqtWs(oldTxWs);
+		Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
+
+		sqtWs.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
+		Core::Mat44f baseTransformation = sqtWs.GetMatrix();
+
+		Core::Mat44f txWs = baseScale * rotation * baseTransformation;
+
 		Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
 		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+
 		Core::Mat44f txLs = txWs * invTxPs;
 		pEntity->SetLs(txLs);
 	}
