@@ -15,6 +15,9 @@ namespace Editors
 		std::string line;
 		while (std::getline(file, line))
 		{
+			if (line.empty())
+				continue;
+
 			//parse a single line
 			size_t id;
 			const int REL_PATH_MAX_LENGTH = 255;
