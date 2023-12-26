@@ -79,7 +79,6 @@ def Export(outputFilename):
 		for polygon in mesh.polygons:
 			loop_length = len(polygon.loop_indices)
 			for ii in range(0, loop_length, 3):
-				#print ("boom")
 				loop_index = polygon.loop_indices[ii]
 				current_vertex_index = vertex_index_to_out_vertex_index[loop_index]
 				index_buffer.append(current_vertex_index)
