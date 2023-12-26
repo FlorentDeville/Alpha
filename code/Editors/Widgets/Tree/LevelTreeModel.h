@@ -21,7 +21,7 @@ namespace Editors
 
 		int GetRowCount() const override;
 		int GetColumnCount() const override;
-		int GetSubRowCount(int rowId) const override;
+		int GetChildrenCount(int rowId) const override;
 
 		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
 

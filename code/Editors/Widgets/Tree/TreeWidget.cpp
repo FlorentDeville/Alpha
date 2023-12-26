@@ -111,7 +111,7 @@ namespace Editors
 		pChildrenLayout->SetDirection(Widgets::Layout::Vertical);
 		pParentLayout->AddWidget(pChildrenLayout);
 
-		int count = pModel->GetSubRowCount(0);
+		int count = pModel->GetChildrenCount(0);
 		if (count > 0)
 		{
 			Widgets::Icon* pIcon = new Widgets::Icon();

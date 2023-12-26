@@ -40,7 +40,7 @@ namespace Editors
 		return 1;
 	}
 
-	int LevelTreeModel::GetSubRowCount(int rowId) const
+	int LevelTreeModel::GetChildrenCount(int rowId) const
 	{
 		return static_cast<int>(m_pRoot->GetChildren().size());
 	}
