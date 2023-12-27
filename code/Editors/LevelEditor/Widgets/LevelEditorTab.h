@@ -73,5 +73,8 @@ namespace Editors
 
 		void OnSelectionCleared_EntityProperties();
 		void OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid);
+
+		void OnSelectionCleared_Gizmo();
+		void OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid);
 	};
 }

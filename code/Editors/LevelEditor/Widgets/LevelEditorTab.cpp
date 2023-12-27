@@ -106,6 +106,12 @@ namespace Editors
 
 		CreateEntityPropertyGrid(m_pSplit);
 		CreateSceneTreeViewer(m_pLeftSplit);
+
+		//gizmo callback registration
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+		pSelectionMgr->OnClear([this]() { OnSelectionCleared_Gizmo(); });
+		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_Gizmo(nodeGuid); });
 	}
 
 	LevelEditorTab::~LevelEditorTab()
@@ -388,18 +394,13 @@ namespace Editors
 		//get the entity
 		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
 		Node* pNode = pLevelTreeModel->GetSource();
-		Entity* pEntity = pNode->ToEntity();
 
-		if (!pEntity)
+		if (!pNode)
 			return false;
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		levelEditorModule.ClearSelection();
-		levelEditorModule.AddToSelection(pEntity->GetConstGuid());
-
-		//set the gizmo
-		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(pNode);
+		levelEditorModule.AddToSelection(pNode->GetConstGuid());
 
 		return true;
 	}
@@ -462,5 +463,23 @@ namespace Editors
 		Widgets::WidgetMgr::Get().RequestResize();
 
 		m_pEntityNameLabel->SetText(pEntity->GetName());
+	}
+
+	void LevelEditorTab::OnSelectionCleared_Gizmo()
+	{
+		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+		pGizmoModel->SetNode(nullptr);
+	}
+
+	void LevelEditorTab::OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid)
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+		Node* pNode = pSceneTree->GetNode(nodeGuid);
+		if (!pNode)
+			return;
+
+		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+		pGizmoModel->SetNode(pNode);
 	}
 }
