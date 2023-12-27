@@ -259,4 +259,19 @@ namespace Editors
 
 		return meshId;
 	}
+
+	bool LevelEditorModule::AddToSelection(const Os::Guid& nodeGuid)
+	{
+		return m_pSelectionMgr->Add(nodeGuid);
+	}
+
+	bool LevelEditorModule::RemoveFromSelection(const Os::Guid& nodeGuid)
+	{
+		return m_pSelectionMgr->Remove(nodeGuid);
+	}
+
+	void LevelEditorModule::ClearSelection()
+	{
+		m_pSelectionMgr->Clear();
+	}
 }

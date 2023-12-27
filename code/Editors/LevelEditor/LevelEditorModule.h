@@ -13,6 +13,11 @@
 
 #include <map>
 
+namespace Os
+{
+	class Guid;
+}
+
 namespace Rendering
 {
 	class MaterialId;
@@ -55,6 +60,10 @@ namespace Editors
 		float GetFovRad() const;
 
 		Rendering::MeshId LoadMesh(Systems::AssetId id);
+
+		bool AddToSelection(const Os::Guid& nodeGuid);
+		bool RemoveFromSelection(const Os::Guid& nodeGuid);
+		void ClearSelection();
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;

@@ -383,6 +383,13 @@ namespace Editors
 		Node* pNode = pLevelTreeModel->GetSource();
 		Entity* pEntity = pNode->ToEntity();
 
+		if (!pEntity)
+			return false;
+
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		levelEditorModule.ClearSelection();
+		levelEditorModule.AddToSelection(pEntity->GetConstGuid());
+
 		//set the entity widget
 		delete m_pEntityModel;
 		m_pEntityModel = new EntityModel(pEntity);
