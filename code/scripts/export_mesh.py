@@ -31,9 +31,15 @@ def Export(outputFilename):
 		if obj.type != "MESH":
 			continue
 
+		print(" Exporting " + obj.name)
 		#set the active object to the mesh
 		bpy.context.view_layer.objects.active = obj
 
+		#apply all modifiers
+		for modifier in obj.modifiers:
+			print("  Applying modifiers " + modifier.name + "...")
+			bpy.ops.object.modifier_apply(modifier=modifier.name)
+		
 		Triangulate(obj)
 		
 		#switch to vertex paint mode otherwise the vertex color are not applied to the vertices.
@@ -96,7 +102,7 @@ def Export(outputFilename):
 	out_mesh["index_buffer"] = index_buffer
 		
 	with open(outputFilename, 'w') as out_file:
-		print("writing file " + outputFilename)
+		print(" Writing output file " + outputFilename)
 		json.dump(out_mesh, out_file, indent = 2)
 
 
