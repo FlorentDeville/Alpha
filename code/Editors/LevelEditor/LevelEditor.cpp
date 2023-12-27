@@ -7,9 +7,10 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/Component.h"
-#include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
+#include "Editors/LevelEditor/SelectionMgr.h"
+#include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
 
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -163,10 +164,14 @@ namespace Editors
 	LevelEditor::LevelEditor()
 		: m_level()
 		, m_fovRad(DirectX::XMConvertToRadians(45.f))
-	{}
+	{
+		m_pSelectionMgr = new SelectionMgr();
+	}
 
 	LevelEditor::~LevelEditor()
-	{}
+	{
+		delete m_pSelectionMgr;
+	}
 
 	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
 	{

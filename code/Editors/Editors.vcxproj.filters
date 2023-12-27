@@ -105,6 +105,9 @@
     <ClInclude Include="LevelEditor\Widgets\LevelEditorViewportWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelEditor\SelectionMgr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -192,6 +195,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\Widgets\LevelEditorViewportWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\SelectionMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

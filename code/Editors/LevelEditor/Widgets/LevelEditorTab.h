@@ -48,6 +48,7 @@ namespace Editors
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
 
+		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 

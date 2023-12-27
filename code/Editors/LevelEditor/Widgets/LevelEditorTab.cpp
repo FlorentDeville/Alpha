@@ -59,6 +59,7 @@ namespace Editors
 
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 
+		CreateMenuEdit(pMenuBar);
 		CreateMenuTransformation(pMenuBar);
 		CreateMenuWindows(pMenuBar);
 
@@ -107,6 +108,18 @@ namespace Editors
 
 	LevelEditorTab::~LevelEditorTab()
 	{}
+
+	void LevelEditorTab::CreateMenuEdit(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
+
+		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add");
+		//pAddItem->OnClick([this]() { OnClick_SetGizmoModeSelection(); });
+
+		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
+		pDeleteItem->SetShortcut("Del");
+		//pDeleteItem->OnClick([this]() { OnClick_SetGizmoModeTranslate(); });
+	}
 
 	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
 	{

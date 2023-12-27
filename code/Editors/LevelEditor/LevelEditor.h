@@ -33,7 +33,8 @@ namespace Editors
 {
 	class Node;
 	class GizmoWidget;
-	
+	class SelectionMgr;
+
 	class LevelEditor : public Core::Singleton<LevelEditor>
 	{
 	public:
@@ -61,6 +62,7 @@ namespace Editors
 
 	private:
 		Level m_level;
+		SelectionMgr* m_pSelectionMgr;
 
 		//camera state
 		Core::Mat44f m_cameraWs;
