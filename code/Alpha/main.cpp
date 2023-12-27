@@ -17,7 +17,7 @@
 #include "Core/Helper.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
-#include "Editors/LevelEditor/LevelEditor.h"
+#include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/ShaderEditor/ShaderEditor.h"
 #include "Editors/Widgets/List/ListWidget.h"

@@ -18,7 +18,7 @@
     <ClInclude Include="GamePlayer\GamePlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\LevelEditor.h">
+    <ClInclude Include="LevelEditor\LevelEditorModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshEditor\MeshEditor.h">
@@ -113,7 +113,7 @@
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\LevelEditor.cpp">
+    <ClCompile Include="LevelEditor\LevelEditorModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshEditor\MeshEditor.cpp">

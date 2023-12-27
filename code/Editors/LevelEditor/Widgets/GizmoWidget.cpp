@@ -9,7 +9,7 @@
 #include "Core/Math/Ray.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/LevelEditor.h"
+#include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 
 #include "Inputs/InputMgr.h"

@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/LevelEditor.h"
+#include "Editors/LevelEditor/LevelEditorModule.h"
 
 #include "Core/Math/Vec4f.h"
 

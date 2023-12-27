@@ -11,7 +11,7 @@
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
-#include "Editors/LevelEditor/LevelEditor.h"
+#include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"

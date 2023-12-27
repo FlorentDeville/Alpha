@@ -7,7 +7,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/LevelEditor.h"
+#include "Editors/LevelEditor/LevelEditorModule.h"
 
 #include "Inputs/InputMgr.h"
 

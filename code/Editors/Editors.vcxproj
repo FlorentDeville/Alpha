@@ -15,7 +15,7 @@
     <ClInclude Include="LevelEditor\Component.h" />
     <ClInclude Include="LevelEditor\SceneTree\Entity.h" />
     <ClInclude Include="LevelEditor\Level.h" />
-    <ClInclude Include="LevelEditor\LevelEditor.h" />
+    <ClInclude Include="LevelEditor\LevelEditorModule.h" />
     <ClInclude Include="LevelEditor\SceneTree\Node.h" />
     <ClInclude Include="LevelEditor\SceneTree\SceneTree.h" />
     <ClInclude Include="LevelEditor\SelectionMgr.h" />
@@ -48,7 +48,7 @@
     <ClCompile Include="LevelEditor\Component.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Entity.cpp" />
     <ClCompile Include="LevelEditor\Level.cpp" />
-    <ClCompile Include="LevelEditor\LevelEditor.cpp" />
+    <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Node.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp" />
     <ClCompile Include="LevelEditor\SelectionMgr.cpp" />
