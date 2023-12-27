@@ -231,4 +231,27 @@ namespace Editors
 	{
 		return m_fovRad;
 	}
+
+	Rendering::MeshId LevelEditor::LoadMesh(Systems::AssetId id)
+	{
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		Systems::Loader& loader = Systems::Loader::Get();
+		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+		
+		const Systems::Asset* pAsset = assetMgr.GetAsset(id);
+		if (!pAsset)
+			return Rendering::MeshId::INVALID;
+
+		Rendering::Mesh* pMesh = nullptr;
+		Rendering::MeshId meshId;
+		
+		meshMgr.CreateMesh(&pMesh, meshId);
+		bool res = loader.LoadMesh(pAsset->GetPath(), *pMesh);
+		if (!res)
+			return Rendering::MeshId::INVALID;
+
+		m_assetIdToMeshId[pAsset->GetId()] = meshId;
+
+		return meshId;
+	}
 }

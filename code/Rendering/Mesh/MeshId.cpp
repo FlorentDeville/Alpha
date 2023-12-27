@@ -22,5 +22,10 @@ namespace Rendering
 		return id.m_id == m_id;
 	}
 
+	bool MeshId::operator!=(const MeshId id) const
+	{
+		return id.m_id != m_id;
+	}
+
 	const MeshId MeshId::INVALID = MeshId(); //the default is -1
 }

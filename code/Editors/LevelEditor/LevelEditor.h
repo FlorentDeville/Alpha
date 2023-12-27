@@ -53,6 +53,8 @@ namespace Editors
 
 		float GetFovRad() const;
 
+		Rendering::MeshId LoadMesh(Systems::AssetId id);
+
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;

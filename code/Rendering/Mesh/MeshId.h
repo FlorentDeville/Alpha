@@ -17,6 +17,7 @@ namespace Rendering
 		explicit MeshId(size_t id);
 
 		bool operator==(const MeshId id) const;
+		bool operator!=(const MeshId id) const;
 
 	private:
 		size_t m_id;

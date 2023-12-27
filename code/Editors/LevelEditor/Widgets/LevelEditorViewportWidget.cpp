@@ -65,16 +65,31 @@ namespace Editors
 
 			if (meshAssetId != Systems::AssetId::INVALID && materialAssetId != Systems::AssetId::INVALID)
 			{
-				Rendering::MeshId meshId = assetIdToMeshId.find(meshAssetId)->second;
-				Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
+				Rendering::MeshId meshId = Rendering::MeshId::INVALID;
 
-				Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+				std::map<Systems::AssetId, Rendering::MeshId>::const_iterator it = assetIdToMeshId.find(meshAssetId);
+				if (it == assetIdToMeshId.cend())
+				{
+					//Load mesh
+					meshId = Editors::LevelEditor::Get().LoadMesh(meshAssetId);
+				}
+				else
+				{
+					meshId = it->second;
+				}
 
-				const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
-				renderer.BindMaterial(*pMaterial, currentWVP);
+				if (meshId != Rendering::MeshId::INVALID)
+				{
+					Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
 
-				const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(meshId);
-				renderer.RenderMesh(*pMesh);
+					Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+
+					const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
+					renderer.BindMaterial(*pMaterial, currentWVP);
+
+					const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(meshId);
+					renderer.RenderMesh(*pMesh);
+				}
 			}
 		}
 
