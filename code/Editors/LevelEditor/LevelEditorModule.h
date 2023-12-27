@@ -51,6 +51,9 @@ namespace Editors
 		const Level& GetConstLevel() const;
 		Level& GetLevel();
 
+		const SelectionMgr* GetConstSelectionMgr() const;
+		SelectionMgr* GetSelectionMgr();
+
 		void AddNewEntity(const std::string& name);
 		void DeleteEntity(Node* pNode);
 

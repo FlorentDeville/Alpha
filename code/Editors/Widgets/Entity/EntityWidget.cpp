@@ -54,6 +54,12 @@ namespace Editors
 
 	void EntityWidget::SetModel(BaseModel* pModel)
 	{
+		if (m_pModel == pModel)
+			return;
+
+		if (m_pModel)
+			delete m_pModel;
+
 		DeleteAllChildren();
 		m_pModel = pModel;
 		m_isDirtyWidget = true;

@@ -6,6 +6,11 @@
 
 #include "Widgets/Tab.h"
 
+namespace Os
+{
+	class Guid;
+}
+
 namespace Rendering
 {
 	class RenderTarget;
@@ -48,6 +53,8 @@ namespace Editors
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
 
+		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
+
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
@@ -63,5 +70,8 @@ namespace Editors
 		void OnClick_SetGizmoModeSelection();
 		void OnClick_SetGizmoModeTranslate();
 		void OnClick_SetGizmoModeRotation();
+
+		void OnSelectionCleared_EntityProperties();
+		void OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid);
 	};
 }

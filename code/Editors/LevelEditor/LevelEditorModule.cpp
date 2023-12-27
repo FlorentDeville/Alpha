@@ -190,6 +190,16 @@ namespace Editors
 		return m_level;
 	}
 
+	const SelectionMgr* LevelEditorModule::GetConstSelectionMgr() const
+	{
+		return m_pSelectionMgr;
+	}
+
+	SelectionMgr* LevelEditorModule::GetSelectionMgr()
+	{
+		return m_pSelectionMgr;
+	}
+
 	void LevelEditorModule::AddNewEntity(const std::string& name)
 	{
 		SceneTree* pSceneTree = m_level.GetSceneTree();

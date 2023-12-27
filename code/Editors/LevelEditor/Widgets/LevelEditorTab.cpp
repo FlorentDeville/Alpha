@@ -11,6 +11,7 @@
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
+#include "Editors/LevelEditor/SelectionMgr.h"
 
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
@@ -47,6 +48,7 @@ namespace Editors
 		, m_pLevelTreeModel(nullptr)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
+		, m_cidOnSelectionCleared_EntityProperties()
 	{
 		//create the render target
 		int width = 1280;
@@ -173,6 +175,11 @@ namespace Editors
 		m_pEntityWidget = new EntityWidget();
 		m_pEntityWidget->SetModel(m_pEntityModel);
 		pLayout->AddWidget(m_pEntityWidget);
+
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
+		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
 	}
 
 	void LevelEditorTab::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
@@ -390,14 +397,6 @@ namespace Editors
 		levelEditorModule.ClearSelection();
 		levelEditorModule.AddToSelection(pEntity->GetConstGuid());
 
-		//set the entity widget
-		delete m_pEntityModel;
-		m_pEntityModel = new EntityModel(pEntity);
-		m_pEntityWidget->SetModel(m_pEntityModel);
-		Widgets::WidgetMgr::Get().RequestResize();
-
-		m_pEntityNameLabel->SetText(pEntity->GetName());
-
 		//set the gizmo
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
 		pGizmoModel->SetNode(pNode);
@@ -434,5 +433,34 @@ namespace Editors
 			return;
 
 		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation);
+	}
+
+	void LevelEditorTab::OnSelectionCleared_EntityProperties()
+	{
+		if (!m_pEntityWidget)
+			return;
+
+		m_pEntityModel = new EntityModel(nullptr);
+		m_pEntityWidget->SetModel(m_pEntityModel);
+	}
+
+	void LevelEditorTab::OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid)
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+
+		SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+		Node* pNode = pSceneTree->GetNode(nodeGuid);
+		if (!pNode)
+			return;
+
+		Entity* pEntity = pNode->ToEntity();
+		if (!pEntity)
+			return;
+
+		m_pEntityModel = new EntityModel(pEntity);
+		m_pEntityWidget->SetModel(m_pEntityModel);
+		Widgets::WidgetMgr::Get().RequestResize();
+
+		m_pEntityNameLabel->SetText(pEntity->GetName());
 	}
 }
