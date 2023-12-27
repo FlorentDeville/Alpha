@@ -56,7 +56,7 @@ namespace Editors
 
 	void CameraWidget::Render(float aspectRatio)
 	{
-		float fovRad = LevelEditor::Get().GetFovRad();
+		float fovRad = LevelEditorModule::Get().GetFovRad();
 
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();

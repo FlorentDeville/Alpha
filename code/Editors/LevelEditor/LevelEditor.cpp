@@ -161,36 +161,36 @@ namespace Editors
 		pSceneTree->AddNode(pTorus, pRootEntity->GetConstGuid());
 	}
 
-	LevelEditor::LevelEditor()
+	LevelEditorModule::LevelEditorModule()
 		: m_level()
 		, m_fovRad(DirectX::XMConvertToRadians(45.f))
 	{
 		m_pSelectionMgr = new SelectionMgr();
 	}
 
-	LevelEditor::~LevelEditor()
+	LevelEditorModule::~LevelEditorModule()
 	{
 		delete m_pSelectionMgr;
 	}
 
-	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
+	void LevelEditorModule::CreateEditor(Widgets::Widget* pParent)
 	{
 		CreateLevel(m_level, m_assetIdToMeshId, m_assetIdToMaterialId);
 
 		LevelEditorTab* pTab = new LevelEditorTab(pParent);
 	}
 
-	const Level& LevelEditor::GetConstLevel() const
+	const Level& LevelEditorModule::GetConstLevel() const
 	{
 		return m_level;
 	}
 
-	Level& LevelEditor::GetLevel()
+	Level& LevelEditorModule::GetLevel()
 	{
 		return m_level;
 	}
 
-	void LevelEditor::AddNewEntity(const std::string& name)
+	void LevelEditorModule::AddNewEntity(const std::string& name)
 	{
 		SceneTree* pSceneTree = m_level.GetSceneTree();
 
@@ -217,27 +217,27 @@ namespace Editors
 		pSceneTree->AddNode(pPlan, pParent->GetConstGuid());
 	}
 
-	void LevelEditor::DeleteEntity(Node* pNode)
+	void LevelEditorModule::DeleteEntity(Node* pNode)
 	{
 		m_level.GetSceneTree()->DeleteNode(pNode->GetConstGuid());
 	}
 
-	void LevelEditor::SetCameraWs(const Core::Mat44f& ws)
+	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
 	{
 		m_cameraWs = ws;
 	}
 
-	const Core::Mat44f& LevelEditor::GetCameraWs() const
+	const Core::Mat44f& LevelEditorModule::GetCameraWs() const
 	{
 		return m_cameraWs;
 	}
 
-	float LevelEditor::GetFovRad() const
+	float LevelEditorModule::GetFovRad() const
 	{
 		return m_fovRad;
 	}
 
-	Rendering::MeshId LevelEditor::LoadMesh(Systems::AssetId id)
+	Rendering::MeshId LevelEditorModule::LoadMesh(Systems::AssetId id)
 	{
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 		Systems::Loader& loader = Systems::Loader::Get();

@@ -232,7 +232,7 @@ namespace Editors
 		pSeparator->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.18f, 0.18f, 0.18f, 1.f));
 		pLayout->AddWidget(pSeparator);
 
-		Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
 		m_pTreeWidget = new TreeWidget();
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
@@ -283,7 +283,7 @@ namespace Editors
 		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 		pOkButton->OnClick([this, pNameTextBox]() -> bool
 			{
-				Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();
+				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
 				const std::string& text = pNameTextBox->GetText();
 				levelEditorModule.AddNewEntity(text);
@@ -348,7 +348,7 @@ namespace Editors
 		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 		pOkButton->OnClick([this, pNode]() -> bool
 			{
-				Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();
+				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
 				levelEditorModule.DeleteEntity(pNode);
 				delete m_pLevelTreeModel;

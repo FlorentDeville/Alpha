@@ -35,11 +35,11 @@ namespace Editors
 	class GizmoWidget;
 	class SelectionMgr;
 
-	class LevelEditor : public Core::Singleton<LevelEditor>
+	class LevelEditorModule : public Core::Singleton<LevelEditorModule>
 	{
 	public:
-		LevelEditor();
-		~LevelEditor();
+		LevelEditorModule();
+		~LevelEditorModule();
 
 		void CreateEditor(Widgets::Widget* pParent);
 

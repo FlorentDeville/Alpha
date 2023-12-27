@@ -71,7 +71,7 @@ namespace Editors
 				if (it == assetIdToMeshId.cend())
 				{
 					//Load mesh
-					meshId = Editors::LevelEditor::Get().LoadMesh(meshAssetId);
+					meshId = Editors::LevelEditorModule::Get().LoadMesh(meshAssetId);
 				}
 				else
 				{
@@ -107,7 +107,7 @@ namespace Editors
 		, m_isPanning(false)
 	{
 		m_pCamera = new CameraWidget();
-		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditor::Get().SetCameraWs(mat); });
+		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditorModule::Get().SetCameraWs(mat); });
 
 		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
 		DirectX::XMVECTOR cameraEulerAngle = DirectX::XMVectorSet(3.14f / 4.f, 0, 0, 0);
@@ -133,7 +133,7 @@ namespace Editors
 		const Rendering::Camera* pCamera = renderModule.GetConstCamera();
 
 		//loop through the tree
-		const Editors::LevelEditor& levelEditorModule = Editors::LevelEditor::Get();
+		const Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		const Node* pRoot = levelEditorModule.GetConstLevel().GetConstSceneTree()->GetConstRoot();
 
 		DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();

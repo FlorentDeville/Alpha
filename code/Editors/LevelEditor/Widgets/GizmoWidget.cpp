@@ -161,7 +161,7 @@ namespace Editors
 					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
 
 					{
-						const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+						const Core::Vec4f& A = LevelEditorModule::Get().GetCameraWs().GetT();
 						Core::Vec4f aDir = mouse3dPosition - A;
 						aDir.Normalize();
 
@@ -185,7 +185,7 @@ namespace Editors
 					const Core::Mat44f& txWs = m_sqt.GetMatrix();
 					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
 
-					const Core::Vec4f& cameraRayOrigin = LevelEditor::Get().GetCameraWs().GetT();
+					const Core::Vec4f& cameraRayOrigin = LevelEditorModule::Get().GetCameraWs().GetT();
 					Core::Vec4f aDir = mouse3dPosition - cameraRayOrigin;
 					aDir.Normalize();
 
@@ -247,7 +247,7 @@ namespace Editors
 	void GizmoWidget::UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition)
 	{
 		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+		const Core::Mat44f& cameraWs = LevelEditorModule::Get().GetCameraWs();
 
 		const Core::Vec4f& rayOrigin = cameraWs.GetT();
 		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
@@ -327,7 +327,7 @@ namespace Editors
 	void GizmoWidget::UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition)
 	{
 		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+		const Core::Mat44f& cameraWs = LevelEditorModule::Get().GetCameraWs();
 
 		const Core::Vec4f& rayOrigin = cameraWs.GetT();
 		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
@@ -375,7 +375,7 @@ namespace Editors
 	void GizmoWidget::UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition)
 	{
 		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditor::Get().GetCameraWs();
+		const Core::Mat44f& cameraWs = LevelEditorModule::Get().GetCameraWs();
 
 		const Core::Vec4f& rayOrigin = cameraWs.GetT();
 		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
@@ -425,7 +425,7 @@ namespace Editors
 		const Core::Vec4f& axis = m_sqt.GetMatrix().GetRow(axisIndex);
 
 		{
-			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+			const Core::Vec4f& A = LevelEditorModule::Get().GetCameraWs().GetT();
 			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
@@ -446,7 +446,7 @@ namespace Editors
 	void GizmoWidget::UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition)
 	{
 		//get the closest point from the ray to the disk
-		const Core::Vec4f& rayOrigin = LevelEditor::Get().GetCameraWs().GetT();
+		const Core::Vec4f& rayOrigin = LevelEditorModule::Get().GetCameraWs().GetT();
 		Core::Vec4f rayDir = mouse3dPosition - rayOrigin;
 		rayDir.Normalize();
 
@@ -500,7 +500,7 @@ namespace Editors
 		const Core::Vec4f& axis = m_sqt.GetMatrix().GetRow(axisIndex);
 
 		{
-			const Core::Vec4f& A = LevelEditor::Get().GetCameraWs().GetT();
+			const Core::Vec4f& A = LevelEditorModule::Get().GetCameraWs().GetT();
 			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
@@ -766,7 +766,7 @@ namespace Editors
 
 	float GizmoWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
 	{
-		const LevelEditor& levelEditor = LevelEditor::Get();
+		const LevelEditorModule& levelEditor = LevelEditorModule::Get();
 		const Core::Mat44f& camera = levelEditor.GetCameraWs();
 		float fov = levelEditor.GetFovRad();
 

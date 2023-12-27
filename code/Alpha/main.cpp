@@ -516,7 +516,7 @@ void CreateMainWindow(const Configuration& configuration)
 	pContainer->AddWidget(pMiddleTabContainer);
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
-	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
+	Editors::LevelEditorModule::Get().CreateEditor(pMiddleTabContainer);
 
 	Editors::MeshEditorParameter meshEditorParameter;
 	meshEditorParameter.pParent = pMiddleTabContainer;
@@ -631,7 +631,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Init();
 
 	Editors::GamePlayer::InitSingleton();
-	Editors::LevelEditor::InitSingleton();
+	Editors::LevelEditorModule::InitSingleton();
 	Editors::MeshEditor::InitSingleton();
 	Editors::ShaderEditor::InitSingleton();
 
@@ -657,7 +657,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Editors::ShaderEditor::ReleaseSingleton();
 	Editors::MeshEditor::ReleaseSingleton();
-	Editors::LevelEditor::ReleaseSingleton();
+	Editors::LevelEditorModule::ReleaseSingleton();
 	Editors::GamePlayer::ReleaseSingleton();
 
 	gameMgr.Release();
