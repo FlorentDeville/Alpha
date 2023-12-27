@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/CameraWidget.h"
+#include "Editors/LevelEditor/Widgets/CameraWidget.h"
 
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"

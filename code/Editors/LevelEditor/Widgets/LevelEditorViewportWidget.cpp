@@ -2,15 +2,15 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/LevelEditorViewportWidget.h"
+#include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/CameraWidget.h"
+#include "Editors/LevelEditor/Widgets/CameraWidget.h"
 #include "Editors/LevelEditor/Component.h"
-#include "Editors/LevelEditor/GizmoModel.h"
-#include "Editors/LevelEditor/GizmoWidget.h"
+#include "Editors/LevelEditor/Widgets/GizmoModel.h"
+#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditor.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"

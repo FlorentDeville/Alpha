@@ -2,12 +2,12 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/LevelEditorTab.h"
+#include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
 
-#include "Editors/LevelEditor/GizmoModel.h"
-#include "Editors/LevelEditor/GizmoWidget.h"
+#include "Editors/LevelEditor/Widgets/GizmoModel.h"
+#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditor.h"
-#include "Editors/LevelEditor/LevelEditorViewportWidget.h"
+#include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"

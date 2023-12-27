@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/GizmoAxis.h"
+#include "Editors/LevelEditor/Widgets/GizmoAxis.h"
 
 namespace Editors
 {

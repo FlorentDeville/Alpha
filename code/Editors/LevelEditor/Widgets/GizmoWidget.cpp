@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/GizmoWidget.h"
+#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Core/Math/Aabb.h"
 #include "Core/Math/Intersection.h"
@@ -10,7 +10,7 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditor.h"
-#include "Editors/LevelEditor/GizmoModel.h"
+#include "Editors/LevelEditor/Widgets/GizmoModel.h"
 
 #include "Inputs/InputMgr.h"
 

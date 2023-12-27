@@ -81,28 +81,28 @@
     <ClInclude Include="Widgets\List\Models\AssetListModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\GizmoWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LevelEditor\SceneTree\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\SceneTree\SceneTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\LevelEditorViewportWidget.h">
+    <ClInclude Include="LevelEditor\Widgets\CameraWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\LevelEditorTab.h">
+    <ClInclude Include="LevelEditor\Widgets\GizmoAxis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\CameraWidget.h">
+    <ClInclude Include="LevelEditor\Widgets\GizmoModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\GizmoModel.h">
+    <ClInclude Include="LevelEditor\Widgets\GizmoWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\GizmoAxis.h">
+    <ClInclude Include="LevelEditor\Widgets\LevelEditorTab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelEditor\Widgets\LevelEditorViewportWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,28 +170,28 @@
     <ClCompile Include="Widgets\List\Models\AssetListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\GizmoWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LevelEditor\SceneTree\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\LevelEditorViewportWidget.cpp">
+    <ClCompile Include="LevelEditor\Widgets\CameraWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\LevelEditorTab.cpp">
+    <ClCompile Include="LevelEditor\Widgets\GizmoAxis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\CameraWidget.cpp">
+    <ClCompile Include="LevelEditor\Widgets\GizmoModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\GizmoModel.cpp">
+    <ClCompile Include="LevelEditor\Widgets\GizmoWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\GizmoAxis.cpp">
+    <ClCompile Include="LevelEditor\Widgets\LevelEditorTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditor\Widgets\LevelEditorViewportWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
