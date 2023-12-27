@@ -87,6 +87,14 @@ namespace Editors
 		return true;
 	}
 
+	void SceneTree::Traverse(const std::function<void(const Node* pNode)>& callback) const
+	{
+		if (!m_pRoot)
+			return;
+
+		TraverseRecursive(m_pRoot, callback);
+	}
+
 	void SceneTree::DeleteNodeRecursive(Node* pNode)
 	{
 		std::vector<Node*>& children = pNode->GetChildren();
@@ -97,5 +105,17 @@ namespace Editors
 
 		m_nodeCache.erase(pNode->GetConstGuid());
 		delete pNode;
+	}
+
+	void SceneTree::TraverseRecursive(const Node* pNode, const std::function<void(const Node* pNode)>& callback) const
+	{
+		callback(pNode);
+
+		const std::vector<Node*>& children = pNode->GetConstChildren();
+		for (const Node* pChild : children)
+		{
+			if(pChild)
+				TraverseRecursive(pChild, callback);
+		}
 	}
 }
