@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Widgets/Events/EventId.h"
+#include "Widgets/Events/EventType.h"
 
 namespace Widgets
 {
