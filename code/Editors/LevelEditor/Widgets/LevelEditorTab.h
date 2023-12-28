@@ -64,8 +64,6 @@ namespace Editors
 
 		void CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const;
 
-		bool OnClick_AddEntity();
-
 		bool OnClick_TreeItem(BaseModel* pModel, int rowId);
 
 		void OnClick_SetGizmoModeSelection();
@@ -81,9 +79,11 @@ namespace Editors
 		void OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid);
 		void OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid);
 
+		void OnAddEntity_SceneTree(const Os::Guid& nodeGuid);
 		void OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid);
 		void OnRenameEntity_SceneTree(const Os::Guid& nodeGuid);
 
+		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();
 		void OnClickEditMenu_RenameEntity();
 	};

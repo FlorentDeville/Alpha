@@ -200,17 +200,15 @@ namespace Editors
 		return m_pSelectionMgr;
 	}
 
-	void LevelEditorModule::AddNewEntity(const std::string& name)
+	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)
 	{
 		SceneTree* pSceneTree = m_level.GetSceneTree();
 
 		Node* pParent = pSceneTree->GetRoot();
 
-		std::string entityName = "DEFAULT";
-		if (!name.empty())
-			entityName = name;
+		std::string entityName = "newentity";
 
-		Entity* pPlan = new Entity(entityName);
+		Entity* pNewEntity = new Entity(entityName);
 		Component* pPlanTransform = CreateComponentTransform();
 		pPlanTransform->SetPropertyValue("Local", Core::Mat44f(
 			Core::Vec4f(1, 0, 0, 0),
@@ -219,12 +217,12 @@ namespace Editors
 			Core::Vec4f(0, 0, 0, 1)));
 
 		Component* pPlanRendering = CreateComponentRendering();
-		/*pPlanRendering->SetPropertyValue("Mesh", meshPlane);
-		pPlanRendering->SetPropertyValue("Material", materialBlue);*/
-		pPlan->AddComponent(pPlanTransform);
-		pPlan->AddComponent(pPlanRendering);
+		pNewEntity->AddComponent(pPlanTransform);
+		pNewEntity->AddComponent(pPlanRendering);
 
-		pSceneTree->AddNode(pPlan, pParent->GetConstGuid());
+		pSceneTree->AddNode(pNewEntity, pParent->GetConstGuid());
+
+		m_onAddEntity(pNewEntity->GetConstGuid());
 	}
 
 	void LevelEditorModule::DeleteEntity(const Os::Guid& nodeGuid)
@@ -301,6 +299,16 @@ namespace Editors
 	void LevelEditorModule::ClearSelection()
 	{
 		m_pSelectionMgr->Clear();
+	}
+
+	Core::CallbackId LevelEditorModule::OnAddEntity(const OnAddEntityEvent::Callback& callback)
+	{
+		return m_onAddEntity.Connect(callback);
+	}
+
+	void LevelEditorModule::RemoveOnAddEntity(Core::CallbackId id)
+	{
+		m_onAddEntity.Disconnect(id);
 	}
 
 	Core::CallbackId LevelEditorModule::OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback)

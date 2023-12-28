@@ -54,7 +54,7 @@ namespace Editors
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
 
-		void AddNewEntity(const std::string& name);
+		void AddNewEntity(Os::Guid& nodeGuid);
 		void DeleteEntity(const Os::Guid& nodeGuid);
 		void RenameEntity(const Os::Guid& nodeGuid, const std::string& name);
 
@@ -70,6 +70,10 @@ namespace Editors
 		void ClearSelection();
 
 		//operation callback
+		using OnAddEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
+		Core::CallbackId OnAddEntity(const OnAddEntityEvent::Callback& callback);
+		void RemoveOnAddEntity(Core::CallbackId id);
+
 		using OnDeleteEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
 		Core::CallbackId OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback);
 		void RemoveOnDeleteEntity(Core::CallbackId id);
@@ -91,6 +95,7 @@ namespace Editors
 		float m_fovRad;
 
 		//operation callback
+		OnAddEntityEvent	m_onAddEntity;
 		OnDeleteEntityEvent m_onDeleteEntity;
 		OnRenameEntityEvent m_onRenameEntity;
 	};

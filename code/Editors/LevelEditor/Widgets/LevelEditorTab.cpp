@@ -123,7 +123,7 @@ namespace Editors
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
 
 		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add");
-		//pAddItem->OnClick([this]() { OnClick_SetGizmoModeSelection(); });
+		pAddItem->OnClick([this]() { OnClickEditMenu_AddEntity(); });
 
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
 		pDeleteItem->SetShortcut("Del");
@@ -210,28 +210,28 @@ namespace Editors
 		pLayout->SetDirection(Widgets::Layout::Vertical);
 		m_pSceneTreeFrame->AddWidget(pLayout);
 
-		Widgets::Layout* pMenuLayout = new Widgets::Layout();
+		/*Widgets::Layout* pMenuLayout = new Widgets::Layout();
 		pMenuLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pMenuLayout->SetSize(DirectX::XMUINT2(0, 20));
 		pMenuLayout->SetDirection(Widgets::Layout::Horizontal);
-		pLayout->AddWidget(pMenuLayout);
+		pLayout->AddWidget(pMenuLayout);*/
 
-		const int BUTTON_SIZE = 20;
-		//add entity button
-		{
-			Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
-			pMenuLayout->AddWidget(pButton);
-			Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "+");
-			pButtonLabel->SetX(5);
-			pButton->AddWidget(pButtonLabel);
-			pButton->OnClick(std::bind(&LevelEditorTab::OnClick_AddEntity, this));
-		}
+		//const int BUTTON_SIZE = 20;
+		////add entity button
+		//{
+		//	Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
+		//	pMenuLayout->AddWidget(pButton);
+		//	Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "+");
+		//	pButtonLabel->SetX(5);
+		//	pButton->AddWidget(pButtonLabel);
+		//	pButton->OnClick(std::bind(&LevelEditorTab::OnClick_AddEntity, this));
+		//}
 
 		//separator
-		Widgets::Container* pSeparator = new Widgets::Container(0, 2);
+		/*Widgets::Container* pSeparator = new Widgets::Container(0, 2);
 		pSeparator->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pSeparator->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.18f, 0.18f, 0.18f, 1.f));
-		pLayout->AddWidget(pSeparator);
+		pLayout->AddWidget(pSeparator);*/
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
@@ -243,6 +243,7 @@ namespace Editors
 		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditorTab::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
 
 		//callbacks
+		levelEditorModule.OnAddEntity([this](const Os::Guid& nodeGuid) {OnAddEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
 	}
@@ -306,75 +307,6 @@ namespace Editors
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
-	}
-
-	bool LevelEditorTab::OnClick_AddEntity()
-	{
-		//show a modal window to enter the entity name
-		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Entity Name");
-		pWindow->SetSize(DirectX::XMUINT2(500, 70));
-		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
-		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-
-		//vlayout
-		Widgets::Layout* pVLayout = new Widgets::Layout();
-		pVLayout->SetDirection(Widgets::Layout::Vertical);
-		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pWindow->AddWidget(pVLayout);
-
-		//text box for the name of the entity
-		Widgets::TextBox* pNameTextBox = new Widgets::TextBox();
-		pNameTextBox->SetSize(DirectX::XMUINT2(0, 20));
-		pNameTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-
-		/*pNameTextBox->OnValidate([this](const std::string& value) -> bool
-			{
-				AddNewEntity(value);
-				Widgets::WidgetMgr::Get().CloseModalWindow();
-				return true;
-			});*/
-		pVLayout->AddWidget(pNameTextBox);
-
-		//button ok escape
-		Widgets::Layout* pHLayout = new Widgets::Layout();
-		pHLayout->SetDirection(Widgets::Layout::Horizontal);
-		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pVLayout->AddWidget(pHLayout);
-
-		Widgets::Button* pOkButton = new Widgets::Button(250, 25, 0, 0);
-		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
-		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pOkButton->AddWidget(pOkLabel);
-		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pOkButton->OnClick([this, pNameTextBox]() -> bool
-			{
-				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-
-				const std::string& text = pNameTextBox->GetText();
-				levelEditorModule.AddNewEntity(text);
-
-				delete m_pLevelTreeModel;
-				m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
-				m_pTreeWidget->SetModel(m_pLevelTreeModel);
-				Widgets::WidgetMgr::Get().CloseModalWindow();
-				return true;
-			});
-		pHLayout->AddWidget(pOkButton);
-
-		Widgets::Button* pCancelButton = new Widgets::Button(250, 25, 0, 0);
-		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
-		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pCancelButton->AddWidget(pCancelLabel);
-		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
-		pHLayout->AddWidget(pCancelButton);
-
-		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
-		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
-
-		return true;
 	}
 
 	bool LevelEditorTab::OnClick_TreeItem(BaseModel* pModel, int rowId)
@@ -546,6 +478,14 @@ namespace Editors
 		}
 	}
 
+	void LevelEditorTab::OnAddEntity_SceneTree(const Os::Guid& nodeGuid)
+	{
+		delete m_pLevelTreeModel;
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
 	void LevelEditorTab::OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid)
 	{
 		delete m_pLevelTreeModel;
@@ -559,6 +499,14 @@ namespace Editors
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevel().GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
+	void LevelEditorTab::OnClickEditMenu_AddEntity()
+	{
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+
+		Os::Guid newGuid;
+		levelEditorModule.AddNewEntity(newGuid);
 	}
 
 	void LevelEditorTab::OnClickEditMenu_DeleteEntity()
