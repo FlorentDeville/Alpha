@@ -222,25 +222,6 @@ namespace Editors
 			pButton->OnClick(std::bind(&LevelEditorTab::OnClick_AddEntity, this));
 		}
 
-		//remove entity
-		{
-			Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
-			pMenuLayout->AddWidget(pButton);
-			Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "-");
-			pButtonLabel->SetX(7);
-			pButton->AddWidget(pButtonLabel);
-			pButton->OnClick(std::bind(&LevelEditorTab::OnClick_RemoveEntity, this));
-		}
-
-		////rename entity
-		//{
-		//	Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
-		//	pMenuLayout->AddWidget(pButton);
-		//	Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "RENAME");
-		//	pButtonLabel->SetX(2);
-		//	pButton->AddWidget(pButtonLabel);
-		//}
-
 		//separator
 		Widgets::Container* pSeparator = new Widgets::Container(0, 2);
 		pSeparator->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
@@ -325,68 +306,6 @@ namespace Editors
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
-
-		return true;
-	}
-
-	bool LevelEditorTab::OnClick_RemoveEntity()
-	{
-		//find the currently selected entity
-		BaseModel* pBaseModel = m_pTreeWidget->GetSelectedItemModel();
-		if (!pBaseModel)
-			return false;
-
-		LevelTreeModel* pTreeModel = static_cast<LevelTreeModel*>(pBaseModel);
-		Node* pNode = pTreeModel->GetSource();
-		if (!pNode)
-			return false;
-
-		const Entity* pSelectedEntity = pNode->ToConstEntity();
-		if (!pSelectedEntity)
-			return false;
-
-		//show a modal window to enter the entity name
-		std::string title = "Do you really want to delete entity " + pSelectedEntity->GetName() + " ?";
-		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow(title);
-		pWindow->SetSize(DirectX::XMUINT2(500, 50));
-		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
-		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-
-		//button ok escape
-		Widgets::Layout* pHLayout = new Widgets::Layout();
-		pHLayout->SetDirection(Widgets::Layout::Horizontal);
-		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pWindow->AddWidget(pHLayout);
-
-		Widgets::Button* pOkButton = new Widgets::Button(250, 25, 0, 0);
-		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
-		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pOkButton->AddWidget(pOkLabel);
-		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pOkButton->OnClick([this, pNode]() -> bool
-			{
-				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-
-				levelEditorModule.DeleteEntity(pNode->GetConstGuid());
-				//delete m_pLevelTreeModel;
-				//m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
-				//m_pTreeWidget->SetModel(m_pLevelTreeModel);
-				Widgets::WidgetMgr::Get().CloseModalWindow();
-				return true;
-			});
-		pHLayout->AddWidget(pOkButton);
-
-		Widgets::Button* pCancelButton = new Widgets::Button(250, 25, 0, 0);
-		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
-		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pCancelButton->AddWidget(pCancelLabel);
-		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
-		pHLayout->AddWidget(pCancelButton);
-
-		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 
 		return true;
 	}

@@ -63,7 +63,6 @@ namespace Editors
 		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
 
 		bool OnClick_AddEntity();
-		bool OnClick_RemoveEntity();
 
 		bool OnClick_TreeItem(BaseModel* pModel, int rowId);
 
