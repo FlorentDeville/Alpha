@@ -50,6 +50,7 @@ namespace Widgets
 		, m_pMainSysWindow(nullptr)
 		, m_pModalWindow(nullptr)
 		, m_shortcutsArray()
+		, m_internalEvent()
 	{}
 
 	WidgetMgr::~WidgetMgr()
