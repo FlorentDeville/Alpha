@@ -153,4 +153,9 @@ namespace Editors
 		value.Set(txLs);
 	}
 
+	void Entity::SetName(const std::string& name)
+	{
+		m_name = name;
+	}
+
 }

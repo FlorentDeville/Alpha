@@ -44,6 +44,7 @@ namespace Editors
 		virtual const Core::Mat44f& GetLs() const;
 
 		virtual void SetLs(const Core::Mat44f& txLs);
+		void SetName(const std::string& name);
 
 	private:
 		std::string m_name;

@@ -236,6 +236,20 @@ namespace Editors
 			m_onDeleteEntity(nodeGuid);
 	}
 
+	void LevelEditorModule::RenameEntity(const Os::Guid& nodeGuid, const std::string& name)
+	{
+		Node* pNode = m_level.GetSceneTree()->GetNode(nodeGuid);
+		if (!pNode)
+			return;
+
+		Entity* pEntity = pNode->ToEntity();
+		if (!pEntity)
+			return;
+
+		pEntity->SetName(name);
+		m_onRenameEntity(nodeGuid);
+	}
+
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
 	{
 		m_cameraWs = ws;
@@ -297,5 +311,15 @@ namespace Editors
 	void LevelEditorModule::RemoveOnDeleteEntity(Core::CallbackId id)
 	{
 		m_onDeleteEntity.Disconnect(id);
+	}
+
+	Core::CallbackId LevelEditorModule::OnRenameEntity(const OnRenameEntityEvent::Callback& callback)
+	{
+		return m_onRenameEntity.Connect(callback);
+	}
+
+	void LevelEditorModule::RemoveOnRenameEntity(Core::CallbackId id)
+	{
+		m_onRenameEntity.Disconnect(id);
 	}
 }

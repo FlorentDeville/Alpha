@@ -56,6 +56,7 @@ namespace Editors
 
 		void AddNewEntity(const std::string& name);
 		void DeleteEntity(const Os::Guid& nodeGuid);
+		void RenameEntity(const Os::Guid& nodeGuid, const std::string& name);
 
 		void SetCameraWs(const Core::Mat44f& ws);
 		const Core::Mat44f& GetCameraWs() const;
@@ -73,6 +74,10 @@ namespace Editors
 		Core::CallbackId OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback);
 		void RemoveOnDeleteEntity(Core::CallbackId id);
 
+		using OnRenameEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
+		Core::CallbackId OnRenameEntity(const OnRenameEntityEvent::Callback& callback);
+		void RemoveOnRenameEntity(Core::CallbackId id);
+
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
@@ -87,5 +92,6 @@ namespace Editors
 
 		//operation callback
 		OnDeleteEntityEvent m_onDeleteEntity;
+		OnRenameEntityEvent m_onRenameEntity;
 	};
 }

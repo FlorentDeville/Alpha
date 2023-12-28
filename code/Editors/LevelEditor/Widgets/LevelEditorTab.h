@@ -62,6 +62,8 @@ namespace Editors
 		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
 
+		void CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const;
+
 		bool OnClick_AddEntity();
 
 		bool OnClick_TreeItem(BaseModel* pModel, int rowId);
@@ -73,13 +75,16 @@ namespace Editors
 		void OnSelectionCleared_EntityProperties();
 		void OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid);
 		void OnRemovedFromSelection_EntityProperties(const Os::Guid& nodeGuid);
+		void OnRenameEntity_EntityProperties(const Os::Guid& nodeGuid);
 
 		void OnSelectionCleared_Gizmo();
 		void OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid);
 		void OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid);
 
 		void OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid);
+		void OnRenameEntity_SceneTree(const Os::Guid& nodeGuid);
 
 		void OnClickEditMenu_DeleteEntity();
+		void OnClickEditMenu_RenameEntity();
 	};
 }

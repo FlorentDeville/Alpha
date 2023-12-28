@@ -128,6 +128,9 @@ namespace Editors
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
 		pDeleteItem->SetShortcut("Del");
 		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteEntity(); });
+
+		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
+		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameEntity(); });
 	}
 
 	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
@@ -188,6 +191,8 @@ namespace Editors
 		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
 		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
+
+		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_EntityProperties(nodeGuid); });
 	}
 
 	void LevelEditorTab::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
@@ -239,6 +244,68 @@ namespace Editors
 
 		//callbacks
 		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
+		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
+	}
+
+	void LevelEditorTab::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
+	{
+		//show a modal window to enter the entity name
+		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Entity Name");
+		pWindow->SetSize(DirectX::XMUINT2(500, 70));
+		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+		//vlayout
+		Widgets::Layout* pVLayout = new Widgets::Layout();
+		pVLayout->SetDirection(Widgets::Layout::Vertical);
+		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pWindow->AddWidget(pVLayout);
+
+		//text box for the name of the entity
+		Widgets::TextBox* pNameTextBox = new Widgets::TextBox();
+		pNameTextBox->SetSize(DirectX::XMUINT2(0, 20));
+		pNameTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+
+		pNameTextBox->OnValidate([this, callback](const std::string& value) -> bool
+			{
+				callback(value);
+				Widgets::WidgetMgr::Get().CloseModalWindow();
+				return true;
+			});
+		pVLayout->AddWidget(pNameTextBox);
+
+		//button ok escape
+		Widgets::Layout* pHLayout = new Widgets::Layout();
+		pHLayout->SetDirection(Widgets::Layout::Horizontal);
+		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pVLayout->AddWidget(pHLayout);
+
+		Widgets::Button* pOkButton = new Widgets::Button(250, 25, 0, 0);
+		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
+		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pOkButton->AddWidget(pOkLabel);
+		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pOkButton->OnClick([this, pNameTextBox, callback]() -> bool
+			{
+				const std::string& text = pNameTextBox->GetText();
+				callback(text);
+				Widgets::WidgetMgr::Get().CloseModalWindow();
+				return true;
+			});
+		pHLayout->AddWidget(pOkButton);
+
+		Widgets::Button* pCancelButton = new Widgets::Button(250, 25, 0, 0);
+		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
+		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pCancelButton->AddWidget(pCancelLabel);
+		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
+		pHLayout->AddWidget(pCancelButton);
+
+		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
+		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
 	}
 
 	bool LevelEditorTab::OnClick_AddEntity()
@@ -421,6 +488,22 @@ namespace Editors
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
+	void LevelEditorTab::OnRenameEntity_EntityProperties(const Os::Guid& nodeGuid)
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+
+		SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+		Node* pNode = pSceneTree->GetNode(nodeGuid);
+		if (!pNode)
+			return;
+
+		Entity* pEntity = pNode->ToEntity();
+		if (!pEntity)
+			return;
+
+		m_pEntityNameLabel->SetText(pEntity->GetName());
+	}
+
 	void LevelEditorTab::OnSelectionCleared_Gizmo()
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
@@ -471,6 +554,13 @@ namespace Editors
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
+	void LevelEditorTab::OnRenameEntity_SceneTree(const Os::Guid& nodeGuid)
+	{
+		delete m_pLevelTreeModel;
+		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevel().GetSceneTree()->GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
 	void LevelEditorTab::OnClickEditMenu_DeleteEntity()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
@@ -481,5 +571,22 @@ namespace Editors
 
 		for (const Os::Guid& selectedGuid : selectionList)
 			levelEditorModule.DeleteEntity(selectedGuid);
+	}
+
+	void LevelEditorTab::OnClickEditMenu_RenameEntity()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+
+		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
+		const std::list<Os::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+		if (selectionList.empty())
+			return;
+
+		const Os::Guid& lastSelectedNode = selectionList.back();
+
+		CreateRenameModalWindow([lastSelectedNode](const std::string& newName) {
+			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+			levelEditorModule.RenameEntity(lastSelectedNode, newName);
+			});
 	}
 }
