@@ -30,6 +30,12 @@
 
 namespace Widgets
 {
+	WidgetMgr::EventStorage::EventStorage()
+	{}
+
+	WidgetMgr::EventStorage::~EventStorage()
+	{}
+
 	void CreateRecursiveWidgetsDeque(Widget* pWidget, std::deque<Widget*>& widgetsDeque)
 	{
 		widgetsDeque.push_back(pWidget);
@@ -509,30 +515,22 @@ namespace Widgets
 				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
 				if (!wasInside && isInside)
 				{
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseEnter;
-					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					m_internalEvent.m_mouseEvent = MouseEvent(EventId::kMouseEnter, msg.m_low.m_pos[0], msg.m_low.m_pos[1], MouseButton::NoButton);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else if (wasInside && !isInside)
 				{
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseExit;
-					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					m_internalEvent.m_mouseEvent = MouseEvent(EventId::kMouseExit, msg.m_low.m_pos[0], msg.m_low.m_pos[1], MouseButton::NoButton);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else if (isInside)
 				{
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMove;
-					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					m_internalEvent.m_mouseEvent = MouseEvent(EventId::kMouseMove, msg.m_low.m_pos[0], msg.m_low.m_pos[1], MouseButton::NoButton);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make an event if we captured the mouse
 				{
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMove;
-					m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
-					m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
+					m_internalEvent.m_mouseEvent = MouseEvent(EventId::kMouseMove, msg.m_low.m_pos[0], msg.m_low.m_pos[1], MouseButton::NoButton);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else //this message doesn't concern this widget
@@ -555,36 +553,35 @@ namespace Widgets
 
 			if (isInside || isCaptured)
 			{
-				m_internalEvent.m_mouseEvent.m_x = msg.m_low.m_pos[0];
-				m_internalEvent.m_mouseEvent.m_y = msg.m_low.m_pos[1];
-
+				EventId currentId = EventId::kUnknown;
 				switch (msg.m_id)
 				{
 				case M_MouseLDown:
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseLDown;
+					currentId = EventId::kMouseLDown;
 					break;
 
 				case M_MouseLUp:
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseLUp;
+					currentId = EventId::kMouseLUp;
 					break;
 
 				case M_MouseMDown:
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMDown;
+					currentId = EventId::kMouseMDown;
 					break;
 
 				case M_MouseMUp:
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseMUp;
+					currentId = EventId::kMouseMUp;
 					break;
 
 				case M_MouseRDown:
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseRDown;
+					currentId = EventId::kMouseRDown;
 					break;
 
 				case M_MouseRUp:
-					m_internalEvent.m_mouseEvent.m_id = EventId::kMouseRUp;
+					currentId = EventId::kMouseRUp;
 					break;
 				}				
 				
+				m_internalEvent.m_mouseEvent = MouseEvent(currentId, msg.m_low.m_pos[0], msg.m_low.m_pos[1], MouseButton::NoButton);
 				return m_internalEvent.m_mouseEvent;
 			}
 			else

@@ -138,6 +138,9 @@ namespace Widgets
 		//internal event storage
 		union EventStorage
 		{
+			EventStorage();
+			~EventStorage();
+
 			BaseEvent m_baseEvent;
 			KeyboardEvent m_keyboardEvent;
 			MouseEvent m_mouseEvent;

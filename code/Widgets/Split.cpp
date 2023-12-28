@@ -92,7 +92,7 @@ bool Split::Handle(const BaseEvent& ev)
 		ReleaseMouse();
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
 
-		if(!IsInside(mouseEvent.m_x, mouseEvent.m_y))
+		if(!IsInside(mouseEvent.GetX(), mouseEvent.GetY()))
 			g_pIconName = IDC_ARROW;
 
 		m_isDragged = false;

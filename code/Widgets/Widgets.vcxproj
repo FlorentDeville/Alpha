@@ -51,6 +51,7 @@
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Container.cpp" />
+    <ClCompile Include="Events\MouseEvent.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layout.cpp" />
