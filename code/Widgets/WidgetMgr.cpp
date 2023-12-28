@@ -166,6 +166,9 @@ namespace Widgets
 		std::deque<Widget*>::iterator it = std::find(m_sortedWidgets.begin(), m_sortedWidgets.end(), pWidget);
 		if(it != m_sortedWidgets.end())
 			m_sortedWidgets.erase(it);
+
+		if (m_pFocusedWidget == pWidget)
+			SetFocus(nullptr);
 	}
 
 	void WidgetMgr::RegisterShortcut(Shortcut* pShortcut)
@@ -345,17 +348,32 @@ namespace Widgets
 
 		case M_VirtualKeyDown:
 		{
-			//first check if a shortcut is triggered
-			for (Shortcut* pShortcut : m_shortcutsArray)
-			{
-				pShortcut->Evaluate();
-			}
+			//First try to handle the inputs, then check if it's a shortcut.
+			//Shortcuts need to be checked after regular inputs. For example a TextBox wants to handle
+			//keyboard events first and not trigger a shortcut
+			bool handled = false;
 
 			if (m_pFocusedWidget)
 			{
 				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
 				if (ev.m_id != EventId::kUnknown)
-					m_pFocusedWidget->Handle(ev);
+				{
+					Widget* pWidget = m_pFocusedWidget;
+					
+					while (pWidget && !handled)
+					{
+						handled = pWidget->Handle(ev);
+						pWidget = pWidget->GetParent();
+					}
+				}
+			}
+
+			if (!handled)
+			{
+				for (Shortcut* pShortcut : m_shortcutsArray)
+				{
+					pShortcut->Evaluate();
+				}
 			}
 		}
 		break;
@@ -393,8 +411,11 @@ namespace Widgets
 
 	void WidgetMgr::SetFocus(Widget* pWidget)
 	{
-		while (pWidget->GetFocusPolicy() == Widget::FOCUS_POLICY::NO_FOCUS)
-			pWidget = pWidget->GetParent();
+		if (pWidget)
+		{
+			while (pWidget->GetFocusPolicy() == Widget::FOCUS_POLICY::NO_FOCUS)
+				pWidget = pWidget->GetParent();
+		}
 
 		if (pWidget == m_pFocusedWidget)
 			return;
