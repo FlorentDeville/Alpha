@@ -35,6 +35,7 @@ namespace Widgets
 {
 	class BaseEvent;
 	class FocusEvent;
+	class MouseEvent;
 
 	class Widget
 	{
@@ -88,6 +89,7 @@ namespace Widgets
 			NO_FOCUS
 		};
 
+		using OnMouseEnterEvent = Core::CallbackList<void(const MouseEvent&)>;
 		using OnClickEvent = Core::CallbackList<void()>;
 		using OnFocusLostEvent = Core::CallbackList<void(const FocusEvent&)>;
 		using OnFocusGainedEvent = Core::CallbackList<void(const FocusEvent&)>;
@@ -154,7 +156,7 @@ namespace Widgets
 
 		void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
 		void OnLeftMouseUp(const std::function<bool()>& callback);
-		void OnMouseEnter(const std::function<bool()>& callback);
+		Core::CallbackId OnMouseEnter(const OnMouseEnterEvent::Callback& callback);
 		void OnMouseExit(const std::function<bool()>& callback);
 		Core::CallbackId OnClick(const OnClickEvent::Callback& callback);
 		Core::CallbackId OnFocusGained(const OnFocusGainedEvent::Callback& callback);
@@ -191,7 +193,7 @@ namespace Widgets
 
 		std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
 		std::function<bool()>						m_onLeftMouseUp;
-		std::function<bool()>						m_onMouseEnter;
+		OnMouseEnterEvent							m_onMouseEnter;
 		std::function<bool()>						m_onMouseExit;
 		OnClickEvent								m_onClick;
 		OnFocusGainedEvent							m_onGetFocus;

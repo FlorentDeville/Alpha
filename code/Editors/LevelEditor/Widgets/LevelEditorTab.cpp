@@ -79,7 +79,7 @@ namespace Editors
 		m_pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(true); });
 		m_pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(false); });
 		m_pViewport->GetGizmoWidget()->SetEnable(false);
-		m_pViewport->OnMouseEnter([this]() -> bool { m_pViewport->SetFocus(); return true; });
+		m_pViewport->OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { m_pViewport->SetFocus(); return true; });
 
 		//create split between viewport and left panel
 		m_pLeftSplit = new Widgets::SplitVertical();

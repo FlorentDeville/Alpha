@@ -181,7 +181,8 @@ namespace Widgets
 		case EventType::kMouseEnter:
 			if (m_onMouseEnter)
 			{
-				m_onMouseEnter();
+				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
+				m_onMouseEnter(mouseEvent);
 				return true;
 			}
 			break;
@@ -422,9 +423,9 @@ namespace Widgets
 		m_onLeftMouseUp = callback;
 	}
 
-	void Widget::OnMouseEnter(const std::function<bool()>& callback)
+	Core::CallbackId Widget::OnMouseEnter(const OnMouseEnterEvent::Callback& callback)
 	{
-		m_onMouseEnter = callback;
+		return m_onMouseEnter.Connect(callback);
 	}
 
 	void Widget::OnMouseExit(const std::function<bool()>& callback)
