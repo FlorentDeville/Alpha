@@ -78,5 +78,7 @@ namespace Editors
 		void OnSelectionCleared_Gizmo();
 		void OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid);
 		void OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid);
+
+		void OnClickEditMenu_DeleteEntity();
 	};
 }

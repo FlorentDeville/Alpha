@@ -127,7 +127,7 @@ namespace Editors
 
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
 		pDeleteItem->SetShortcut("Del");
-		//pDeleteItem->OnClick([this]() { OnClick_SetGizmoModeTranslate(); });
+		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteEntity(); });
 	}
 
 	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
@@ -539,5 +539,17 @@ namespace Editors
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
 			pGizmoModel->SetNode(pNode);
 		}
+	}
+
+	void LevelEditorTab::OnClickEditMenu_DeleteEntity()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
+
+		//make a copy of the selection list because the deletion operation will change the list
+		const std::list<Os::Guid> selectionList = pSelectionMgr->GetSelectionList();
+
+		for (const Os::Guid& selectedGuid : selectionList)
+			levelEditorModule.DeleteEntity(selectedGuid);
 	}
 }
