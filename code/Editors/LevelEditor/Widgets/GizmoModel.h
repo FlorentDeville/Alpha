@@ -24,7 +24,8 @@ namespace Editors
 
 		void SetNode(Node* pNode);
 
-		
+		bool ShouldRender();
+
 		using OnNodeChangedEvent = Core::CallbackList<void(Node*)>;
 
 		Core::CallbackId OnNodeChanged(const OnNodeChangedEvent::Callback& callback);

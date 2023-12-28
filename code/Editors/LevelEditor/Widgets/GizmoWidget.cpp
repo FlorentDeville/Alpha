@@ -74,7 +74,7 @@ namespace Editors
 
 	void GizmoWidget::Render()
 	{
-		if (!m_enabled)
+		if (!m_enabled || !m_pModel->ShouldRender())
 			return;
 
 #if defined(DEBUG_RAY)

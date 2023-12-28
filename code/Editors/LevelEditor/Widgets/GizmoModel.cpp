@@ -32,6 +32,11 @@ namespace Editors
 		m_onNodeChangedEvent(pNode);
 	}
 
+	bool GizmoModel::ShouldRender()
+	{
+		return m_pNode != nullptr;
+	}
+
 	Core::CallbackId GizmoModel::OnNodeChanged(const OnNodeChangedEvent::Callback& callback)
 	{
 		return m_onNodeChangedEvent.Connect(callback);
