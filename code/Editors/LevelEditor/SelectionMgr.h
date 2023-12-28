@@ -23,6 +23,8 @@ namespace Editors
 
 		bool IsSelected(const Os::Guid& guid) const;
 
+		const std::list<Os::Guid>& GetSelectionList() const;
+
 		//callbacks
 		using OnItemAddedEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
 		using OnItemRemovedEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;

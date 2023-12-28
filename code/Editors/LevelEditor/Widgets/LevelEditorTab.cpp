@@ -112,6 +112,7 @@ namespace Editors
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 		pSelectionMgr->OnClear([this]() { OnSelectionCleared_Gizmo(); });
 		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_Gizmo(nodeGuid); });
+		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
 	}
 
 	LevelEditorTab::~LevelEditorTab()
@@ -186,6 +187,7 @@ namespace Editors
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
 		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
+		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
 	}
 
 	void LevelEditorTab::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
@@ -363,7 +365,7 @@ namespace Editors
 			{
 				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
-				levelEditorModule.DeleteEntity(pNode);
+				levelEditorModule.DeleteEntity(pNode->GetConstGuid());
 				delete m_pLevelTreeModel;
 				m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
 				m_pTreeWidget->SetModel(m_pLevelTreeModel);
@@ -465,6 +467,38 @@ namespace Editors
 		m_pEntityNameLabel->SetText(pEntity->GetName());
 	}
 
+	void LevelEditorTab::OnRemovedFromSelection_EntityProperties(const Os::Guid& nodeGuid)
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
+
+		const std::list<Os::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+		if (selectionList.empty())
+		{
+			m_pEntityModel = new EntityModel(nullptr);
+			m_pEntityWidget->SetModel(m_pEntityModel);
+			m_pEntityNameLabel->SetText("");
+			
+		}
+		else
+		{
+			const Os::Guid& lastSelectedNodeGuid = selectionList.back();
+			SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+			Node* pNode = pSceneTree->GetNode(lastSelectedNodeGuid);
+			if (!pNode)
+				return;
+
+			Entity* pEntity = pNode->ToEntity();
+			if (!pEntity)
+				return;
+
+			m_pEntityModel = new EntityModel(pEntity);
+			m_pEntityWidget->SetModel(m_pEntityModel);
+		}
+
+		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
 	void LevelEditorTab::OnSelectionCleared_Gizmo()
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
@@ -481,5 +515,29 @@ namespace Editors
 
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
 		pGizmoModel->SetNode(pNode);
+	}
+
+	void LevelEditorTab::OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid)
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
+
+		const std::list<Os::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+		if (selectionList.empty())
+		{
+			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+			pGizmoModel->SetNode(nullptr);
+
+		}
+		else
+		{
+			SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+			Node* pNode = pSceneTree->GetNode(nodeGuid);
+			if (!pNode)
+				return;
+
+			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+			pGizmoModel->SetNode(pNode);
+		}
 	}
 }

@@ -54,6 +54,11 @@ namespace Editors
 		return true;
 	}
 
+	const std::list<Os::Guid>& SelectionMgr::GetSelectionList() const
+	{
+		return m_selection;
+	}
+
 	Core::CallbackId SelectionMgr::OnItemAdded(const OnItemAddedEvent::Callback& callback)
 	{
 		return m_onItemAdded.Connect(callback);

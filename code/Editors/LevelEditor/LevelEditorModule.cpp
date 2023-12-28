@@ -227,9 +227,10 @@ namespace Editors
 		pSceneTree->AddNode(pPlan, pParent->GetConstGuid());
 	}
 
-	void LevelEditorModule::DeleteEntity(Node* pNode)
+	void LevelEditorModule::DeleteEntity(const Os::Guid& nodeGuid)
 	{
-		m_level.GetSceneTree()->DeleteNode(pNode->GetConstGuid());
+		m_pSelectionMgr->Remove(nodeGuid);
+		m_level.GetSceneTree()->DeleteNode(nodeGuid);
 	}
 
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)

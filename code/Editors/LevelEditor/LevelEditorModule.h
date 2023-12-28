@@ -55,7 +55,7 @@ namespace Editors
 		SelectionMgr* GetSelectionMgr();
 
 		void AddNewEntity(const std::string& name);
-		void DeleteEntity(Node* pNode);
+		void DeleteEntity(const Os::Guid& nodeGuid);
 
 		void SetCameraWs(const Core::Mat44f& ws);
 		const Core::Mat44f& GetCameraWs() const;
