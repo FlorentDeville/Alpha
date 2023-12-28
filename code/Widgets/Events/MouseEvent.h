@@ -28,6 +28,8 @@ namespace Widgets
 		//Mouse position in ui coordinate (origin is the top left of the screen)
 		int GetY() const; 
 
+		MouseButton GetButton() const;
+
 	private:
 		int m_x;
 		int m_y;

@@ -26,4 +26,9 @@ namespace Widgets
 	{
 		return m_y;
 	}
+
+	MouseButton MouseEvent::GetButton() const
+	{
+		return m_button;
+	}
 }

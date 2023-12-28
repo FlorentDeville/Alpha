@@ -64,25 +64,21 @@ namespace Widgets
 
 	bool MenuItem::Handle(const BaseEvent& ev)
 	{
-		switch (ev.m_id)
+		if (ev.m_id == EventType::kMouseUp)
 		{
-		case EventType::kMouseLUp:
-		{
-			if (m_onClick)
-				m_onClick();
+			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
+			if (mouseEvent.GetButton() == MouseButton::LeftButton)
+			{
+				if (m_onClick)
+					m_onClick();
 
-			m_hover = false;
-			return true;
-			//shut down parent menu
-		}
-		break;
-
-		default:
-			return Button::Handle(ev);
-			break;
+				m_hover = false;
+				return true;
+				//shut down parent menu
+			}
 		}
 
-		return false;
+		return Button::Handle(ev);
 	}
 
 	void MenuItem::SetShortcut(const std::string& shortcut)

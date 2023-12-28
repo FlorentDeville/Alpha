@@ -16,12 +16,8 @@ namespace Widgets
 		kMouseExit,		//The mouse exited the area of a widget
 
 		//Mouse button up/down
-		kMouseLDown,	//The mouse left button is down
-		kMouseLUp,		//The mouse left button is up
-		kMouseMDown,
-		kMouseMUp,
-		kMouseRDown,
-		kMouseRUp,
+		kMouseDown,
+		kMouseUp,
 
 		//Mouse click
 		kMouseLeftClick,

@@ -558,32 +558,32 @@ namespace Widgets
 				switch (msg.m_id)
 				{
 				case M_MouseLDown:
-					currentId = EventType::kMouseLDown;
+					currentId = EventType::kMouseDown;
 					currentButton = MouseButton::LeftButton;
 					break;
 
 				case M_MouseLUp:
-					currentId = EventType::kMouseLUp;
+					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::LeftButton;
 					break;
 
 				case M_MouseMDown:
-					currentId = EventType::kMouseMDown;
+					currentId = EventType::kMouseDown;
 					currentButton = MouseButton::MiddleButton;
 					break;
 
 				case M_MouseMUp:
-					currentId = EventType::kMouseMUp;
+					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::MiddleButton;
 					break;
 
 				case M_MouseRDown:
-					currentId = EventType::kMouseRDown;
+					currentId = EventType::kMouseDown;
 					currentButton = MouseButton::RightButton;
 					break;
 
 				case M_MouseRUp:
-					currentId = EventType::kMouseRUp;
+					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::RightButton;
 					break;
 				}	

@@ -188,16 +188,22 @@ namespace Widgets
 				handled = m_onMouseExit();
 			break;
 
-		case EventType::kMouseLUp:
-			if (m_onLeftMouseUp)
-				handled = m_onLeftMouseUp();
+		case EventType::kMouseUp:
+		{
+			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
+			if (mouseEvent.GetButton() == MouseButton::LeftButton)
+			{
+				if(m_onLeftMouseUp)
+					handled = m_onLeftMouseUp();
+			}
+
 			if (m_onClick)
 			{
 				m_onClick();
 				handled = true;
 			}
 			break;
-
+		}
 		default:
 			break;
 		}

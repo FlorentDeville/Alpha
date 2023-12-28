@@ -67,7 +67,7 @@ bool Split::Handle(const BaseEvent& ev)
 {
 	switch (ev.m_id)
 	{
-	case EventType::kMouseEnter://M_MouseEnter:
+	case EventType::kMouseEnter:
 	{
 		if (m_isVerticalSplit)
 			g_pIconName = IDC_SIZEWE;
@@ -78,7 +78,7 @@ bool Split::Handle(const BaseEvent& ev)
 	}
 		break;
 
-	case EventType::kMouseExit: //M_MouseExit:
+	case EventType::kMouseExit:
 	{
 		if (!m_isDragged)
 			g_pIconName = IDC_ARROW;
@@ -87,31 +87,39 @@ bool Split::Handle(const BaseEvent& ev)
 	}
 		break;
 
-	case EventType::kMouseLUp://M_MouseLUp:
+	case EventType::kMouseUp:
 	{
-		ReleaseMouse();
+		//left button
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
+		if (mouseEvent.GetButton() == MouseButton::LeftButton)
+		{
+			ReleaseMouse();
 
-		if(!IsInside(mouseEvent.GetX(), mouseEvent.GetY()))
-			g_pIconName = IDC_ARROW;
+			if (!IsInside(mouseEvent.GetX(), mouseEvent.GetY()))
+				g_pIconName = IDC_ARROW;
 
-		m_isDragged = false;
-		return true;
+			m_isDragged = false;
+			return true;
+		}
 	}
 	break;
 
-	case EventType::kMouseLDown://M_MouseLDown:
+	case EventType::kMouseDown:
 	{
-		CaptureMouse();
+		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
+		if (mouseEvent.GetButton() == MouseButton::LeftButton)
+		{
+			CaptureMouse();
 
-		m_isDragged = true;
-		m_previousCursorPosition = WidgetMgr::Get().GetCursorPosition();
+			m_isDragged = true;
+			m_previousCursorPosition = WidgetMgr::Get().GetCursorPosition();
 
-		if (m_isVerticalSplit)
-			g_pIconName = IDC_SIZEWE;
-		else
-			g_pIconName = IDC_SIZENS;
-		return true;
+			if (m_isVerticalSplit)
+				g_pIconName = IDC_SIZEWE;
+			else
+				g_pIconName = IDC_SIZENS;
+			return true;
+		}
 	}
 	break;
 
