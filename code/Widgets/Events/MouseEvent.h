@@ -28,7 +28,11 @@ namespace Widgets
 		//Mouse position in ui coordinate (origin is the top left of the screen)
 		int GetY() const; 
 
+		//Indicate what button triggered this event
 		MouseButton GetButton() const;
+
+		//Tells if button triggered this event
+		bool HasButton(MouseButton button)const;
 
 	private:
 		int m_x;

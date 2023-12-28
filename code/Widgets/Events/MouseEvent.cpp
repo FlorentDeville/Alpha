@@ -31,4 +31,9 @@ namespace Widgets
 	{
 		return m_button;
 	}
+
+	bool MouseEvent::HasButton(MouseButton button)const
+	{
+		return (m_button & button) != 0;
+	}
 }

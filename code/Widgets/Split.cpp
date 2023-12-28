@@ -91,7 +91,7 @@ bool Split::Handle(const BaseEvent& ev)
 	{
 		//left button
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-		if (mouseEvent.GetButton() == MouseButton::LeftButton)
+		if (mouseEvent.HasButton(MouseButton::LeftButton))
 		{
 			ReleaseMouse();
 
@@ -107,7 +107,7 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseDown:
 	{
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-		if (mouseEvent.GetButton() == MouseButton::LeftButton)
+		if (mouseEvent.HasButton(MouseButton::LeftButton))
 		{
 			CaptureMouse();
 

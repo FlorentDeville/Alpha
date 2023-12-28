@@ -67,7 +67,7 @@ namespace Widgets
 		if (ev.m_id == EventType::kMouseUp)
 		{
 			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-			if (mouseEvent.GetButton() == MouseButton::LeftButton)
+			if (mouseEvent.HasButton(MouseButton::LeftButton))
 			{
 				if (m_onClick)
 					m_onClick();
