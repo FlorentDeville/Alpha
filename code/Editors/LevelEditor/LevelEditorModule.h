@@ -6,7 +6,7 @@
 
 #include "Core/Singleton.h"
 
-//#include "Core/Callbacks/CallbackList.h"
+#include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 
 #include "Editors/LevelEditor/Level.h"
@@ -68,6 +68,11 @@ namespace Editors
 		bool RemoveFromSelection(const Os::Guid& nodeGuid);
 		void ClearSelection();
 
+		//operation callback
+		using OnDeleteEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
+		Core::CallbackId OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback);
+		void RemoveOnDeleteEntity(Core::CallbackId id);
+
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
@@ -79,5 +84,8 @@ namespace Editors
 		//camera state
 		Core::Mat44f m_cameraWs;
 		float m_fovRad;
+
+		//operation callback
+		OnDeleteEntityEvent m_onDeleteEntity;
 	};
 }

@@ -230,7 +230,10 @@ namespace Editors
 	void LevelEditorModule::DeleteEntity(const Os::Guid& nodeGuid)
 	{
 		m_pSelectionMgr->Remove(nodeGuid);
-		m_level.GetSceneTree()->DeleteNode(nodeGuid);
+		bool res = m_level.GetSceneTree()->DeleteNode(nodeGuid);
+
+		if (res)
+			m_onDeleteEntity(nodeGuid);
 	}
 
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
@@ -284,5 +287,15 @@ namespace Editors
 	void LevelEditorModule::ClearSelection()
 	{
 		m_pSelectionMgr->Clear();
+	}
+
+	Core::CallbackId LevelEditorModule::OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback)
+	{
+		return m_onDeleteEntity.Connect(callback);
+	}
+
+	void LevelEditorModule::RemoveOnDeleteEntity(Core::CallbackId id)
+	{
+		m_onDeleteEntity.Disconnect(id);
 	}
 }

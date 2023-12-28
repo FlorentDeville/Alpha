@@ -255,6 +255,9 @@ namespace Editors
 		pLayout->AddWidget(m_pTreeWidget);
 
 		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditorTab::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
+
+		//callbacks
+		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
 	}
 
 	bool LevelEditorTab::OnClick_AddEntity()
@@ -366,9 +369,9 @@ namespace Editors
 				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
 				levelEditorModule.DeleteEntity(pNode->GetConstGuid());
-				delete m_pLevelTreeModel;
-				m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
-				m_pTreeWidget->SetModel(m_pLevelTreeModel);
+				//delete m_pLevelTreeModel;
+				//m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
+				//m_pTreeWidget->SetModel(m_pLevelTreeModel);
 				Widgets::WidgetMgr::Get().CloseModalWindow();
 				return true;
 			});
@@ -539,6 +542,14 @@ namespace Editors
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
 			pGizmoModel->SetNode(pNode);
 		}
+	}
+
+	void LevelEditorTab::OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid)
+	{
+		delete m_pLevelTreeModel;
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
 	void LevelEditorTab::OnClickEditMenu_DeleteEntity()
