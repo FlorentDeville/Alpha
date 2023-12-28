@@ -59,6 +59,11 @@ namespace Widgets
 				m_vkeyCodes[m_keyCount] = Os::VKeyCodes::Shift;
 				++m_keyCount;
 			}
+			else if (strcmp("Del", token) == 0)
+			{
+				m_vkeyCodes[m_keyCount] = Os::VKeyCodes::Delete;
+				++m_keyCount;
+			}
 			else if (strlen(token) == 1) //single character
 			{
 				char singleCharacter = token[0];
