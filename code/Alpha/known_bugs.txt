@@ -1,0 +1,2 @@
+12/27/2023 : Shortcuts are global to the application. 
+Repro : Level Editor, select a node and show the gizmo. Switch to another tab, press W/E/R tochange the gizmo mode. Switch back to the level editor and the gizmo state as changed.
