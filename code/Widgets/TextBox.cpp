@@ -242,9 +242,6 @@ namespace Widgets
 		m_currentState = DEFAULT;
 		m_cursorLastBlinkChange = 0;
 
-		if (m_onValidateCallback)
-			m_onValidateCallback(m_text);
-
 		return true;
 	}
 
