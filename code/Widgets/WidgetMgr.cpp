@@ -553,35 +553,42 @@ namespace Widgets
 
 			if (isInside || isCaptured)
 			{
+				MouseButton currentButton = MouseButton::NoButton;
 				EventId currentId = EventId::kUnknown;
 				switch (msg.m_id)
 				{
 				case M_MouseLDown:
 					currentId = EventId::kMouseLDown;
+					currentButton = MouseButton::LeftButton;
 					break;
 
 				case M_MouseLUp:
 					currentId = EventId::kMouseLUp;
+					currentButton = MouseButton::LeftButton;
 					break;
 
 				case M_MouseMDown:
 					currentId = EventId::kMouseMDown;
+					currentButton = MouseButton::MiddleButton;
 					break;
 
 				case M_MouseMUp:
 					currentId = EventId::kMouseMUp;
+					currentButton = MouseButton::MiddleButton;
 					break;
 
 				case M_MouseRDown:
 					currentId = EventId::kMouseRDown;
+					currentButton = MouseButton::RightButton;
 					break;
 
 				case M_MouseRUp:
 					currentId = EventId::kMouseRUp;
+					currentButton = MouseButton::RightButton;
 					break;
-				}				
+				}	
 				
-				m_internalEvent.m_mouseEvent = MouseEvent(currentId, msg.m_low.m_pos[0], msg.m_low.m_pos[1], MouseButton::NoButton);
+				m_internalEvent.m_mouseEvent = MouseEvent(currentId, msg.m_low.m_pos[0], msg.m_low.m_pos[1], currentButton);
 				return m_internalEvent.m_mouseEvent;
 			}
 			else
