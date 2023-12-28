@@ -178,17 +178,17 @@ namespace Widgets
 
 		switch (event.m_id)
 		{
-		case EventId::kMouseEnter:
+		case EventType::kMouseEnter:
 			if (m_onMouseEnter)
 				handled = m_onMouseEnter();
 			break;
 
-		case EventId::kMouseExit:
+		case EventType::kMouseExit:
 			if (m_onMouseExit)
 				handled = m_onMouseExit();
 			break;
 
-		case EventId::kMouseLUp:
+		case EventType::kMouseLUp:
 			if (m_onLeftMouseUp)
 				handled = m_onLeftMouseUp();
 			if (m_onClick)

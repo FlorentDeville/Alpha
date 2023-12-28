@@ -11,6 +11,6 @@ namespace Widgets
 	class BaseEvent
 	{
 	public:
-		EventId m_id;
+		EventType m_id;
 	};
 }

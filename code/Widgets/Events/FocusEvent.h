@@ -17,7 +17,7 @@ namespace Widgets
 			, m_pFocusLost(pFocusLost)
 			, m_pFocusGained(pFocusGained)
 		{
-			m_id = EventId::kFocusChanged;
+			m_id = EventType::kFocusChanged;
 		}
 
 		Widget* m_pFocusLost;

@@ -6,7 +6,7 @@
 
 namespace Widgets
 {
-	enum EventId
+	enum EventType
 	{
 		kUnknown = -1,
 

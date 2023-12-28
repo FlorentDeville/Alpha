@@ -6,7 +6,7 @@
 
 namespace Widgets
 {
-	MouseEvent::MouseEvent(EventId id, int x, int y, MouseButton button)
+	MouseEvent::MouseEvent(EventType id, int x, int y, MouseButton button)
 		: m_x(x)
 		, m_y(y)
 		, m_button(button)

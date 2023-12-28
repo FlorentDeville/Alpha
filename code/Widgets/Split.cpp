@@ -67,7 +67,7 @@ bool Split::Handle(const BaseEvent& ev)
 {
 	switch (ev.m_id)
 	{
-	case EventId::kMouseEnter://M_MouseEnter:
+	case EventType::kMouseEnter://M_MouseEnter:
 	{
 		if (m_isVerticalSplit)
 			g_pIconName = IDC_SIZEWE;
@@ -78,7 +78,7 @@ bool Split::Handle(const BaseEvent& ev)
 	}
 		break;
 
-	case EventId::kMouseExit: //M_MouseExit:
+	case EventType::kMouseExit: //M_MouseExit:
 	{
 		if (!m_isDragged)
 			g_pIconName = IDC_ARROW;
@@ -87,7 +87,7 @@ bool Split::Handle(const BaseEvent& ev)
 	}
 		break;
 
-	case EventId::kMouseLUp://M_MouseLUp:
+	case EventType::kMouseLUp://M_MouseLUp:
 	{
 		ReleaseMouse();
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
@@ -100,7 +100,7 @@ bool Split::Handle(const BaseEvent& ev)
 	}
 	break;
 
-	case EventId::kMouseLDown://M_MouseLDown:
+	case EventType::kMouseLDown://M_MouseLDown:
 	{
 		CaptureMouse();
 

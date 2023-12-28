@@ -66,7 +66,7 @@ namespace Widgets
 	{
 		switch (ev.m_id)
 		{
-		case EventId::kMouseLUp:
+		case EventType::kMouseLUp:
 		{
 			if (m_onClick)
 				m_onClick();

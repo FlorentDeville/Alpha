@@ -122,7 +122,7 @@ namespace Widgets
 	{
 		switch (ev.m_id)
 		{
-		case EventId::kMouseEnter: //M_MouseEnter:
+		case EventType::kMouseEnter: //M_MouseEnter:
 		{
 			if(m_currentState == DEFAULT)
 				m_currentState = HOVER;
@@ -130,7 +130,7 @@ namespace Widgets
 		}
 		break;
 
-		case EventId::kMouseExit://M_MouseExit:
+		case EventType::kMouseExit://M_MouseExit:
 		{
 			if(m_currentState == HOVER)
 				m_currentState = DEFAULT;
@@ -138,7 +138,7 @@ namespace Widgets
 		}
 		break;
 
-		case EventId::kVKeyDown: //M_VirtualKeyDown:
+		case EventType::kVKeyDown: //M_VirtualKeyDown:
 		{
 			if (m_currentState == EDIT)
 			{
@@ -187,7 +187,7 @@ namespace Widgets
 		}
 		break;
 
-		case EventId::kCharKeyDown: //M_CharKeyDown:
+		case EventType::kCharKeyDown: //M_CharKeyDown:
 		{
 			if(m_currentState == EDIT)
 			{

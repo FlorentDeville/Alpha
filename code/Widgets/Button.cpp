@@ -86,7 +86,7 @@ namespace Widgets
 	{
 		switch (event.m_id)
 		{
-		case EventId::kMouseEnter:
+		case EventType::kMouseEnter:
 		{
 			m_hover = true;
 			m_showBorder = true;
@@ -94,7 +94,7 @@ namespace Widgets
 		}
 		break;
 
-		case EventId::kMouseExit:
+		case EventType::kMouseExit:
 		{
 			m_hover = false;
 			m_showBorder = false;
@@ -102,7 +102,7 @@ namespace Widgets
 		}
 		break;
 
-		case EventId::kMouseMove:
+		case EventType::kMouseMove:
 		{
 			m_hover = true;
 			m_showBorder = true;

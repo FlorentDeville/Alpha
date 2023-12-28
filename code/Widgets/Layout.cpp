@@ -83,14 +83,14 @@ namespace Widgets
 				return Widget::Handle(msg);
 			break;*/
 
-		case EventId::kMouseEnter:
+		case EventType::kMouseEnter:
 		{
 			m_hover = true;
 			return true;
 		}
 		break;
 
-		case EventId::kMouseExit:
+		case EventType::kMouseExit:
 		{
 			m_hover = false;
 			return true;

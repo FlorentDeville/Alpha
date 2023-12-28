@@ -55,7 +55,7 @@ namespace Widgets
 
 	bool ModalWindow::Handle(const BaseEvent& ev)
 	{
-		if (ev.m_id == EventId::kVKeyDown)
+		if (ev.m_id == EventType::kVKeyDown)
 		{
 			const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
 			if(keyboardEvent.m_virtualKey == 0x1B)//escape	

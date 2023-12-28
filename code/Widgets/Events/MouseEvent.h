@@ -19,7 +19,7 @@ namespace Widgets
 	class MouseEvent : public BaseEvent
 	{
 	public:
-		MouseEvent(EventId id, int x, int y, MouseButton button);
+		MouseEvent(EventType id, int x, int y, MouseButton button);
 		~MouseEvent();
 		
 		//Mouse position in ui coordinate (origin is the top left of the screen)
