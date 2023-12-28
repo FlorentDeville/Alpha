@@ -5,7 +5,7 @@
 #pragma once
 
 #include <functional>
-#include <vector>
+#include <map>
 
 #include "Core/Callbacks/CallbackId.h"
 
@@ -19,17 +19,20 @@ namespace Core
 		using Callback = std::function<ReturnType(Args...)>;
 
 		CallbackList()
+			: m_counter(0)
+			, m_callbackMap()
 		{}
 
 		~CallbackList()
 		{
-			m_callbackArray.clear();
+			m_callbackMap.clear();
 		}
 
 		CallbackId Connect(const Callback& callback)
 		{
-			CallbackId id(m_callbackArray.size());
-			m_callbackArray.push_back(callback);
+			CallbackId id(m_counter);
+			++m_counter;
+			m_callbackMap[id] = callback;
 			return id;
 		}
 
@@ -38,27 +41,25 @@ namespace Core
 			if (!id.IsValid())
 				return;
 
-			if (id.m_id >= m_callbackArray.size())
-				return;
-
-			m_callbackArray[id.m_id] = nullptr;
+			m_callbackMap.erase(id);
 		}
 
 		operator bool() const
 		{
-			return !m_callbackArray.empty();
+			return !m_callbackMap.empty();
 		}
 
 		void operator ()(Args... args) const
 		{
-			for (const Callback& callback : m_callbackArray)
+			for (const std::pair<CallbackId,Callback>& callbackPair : m_callbackMap)
 			{
-				if (callback)
-					callback(args...);
+				if (callbackPair.second)
+					callbackPair.second(args...);
 			}
 		}
 
 	private:
-		std::vector<Callback> m_callbackArray;
+		uint64_t m_counter;
+		std::map<CallbackId, Callback> m_callbackMap;
 	};
 }

@@ -28,4 +28,9 @@ namespace Core
 	{
 		return m_id == other.m_id;
 	}
+
+	bool CallbackId::operator<(const CallbackId other) const
+	{
+		return m_id < other.m_id;
+	}
 }

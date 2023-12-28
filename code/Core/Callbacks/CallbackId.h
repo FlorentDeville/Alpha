@@ -18,6 +18,7 @@ namespace Core
 		bool IsValid() const;
 
 		bool operator==(const CallbackId other) const;
+		bool operator<(const CallbackId other) const;
 
 		uint64_t m_id;
 	};
