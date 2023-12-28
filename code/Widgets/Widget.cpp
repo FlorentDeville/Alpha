@@ -180,12 +180,18 @@ namespace Widgets
 		{
 		case EventType::kMouseEnter:
 			if (m_onMouseEnter)
-				handled = m_onMouseEnter();
+			{
+				m_onMouseEnter();
+				return true;
+			}
 			break;
 
 		case EventType::kMouseExit:
 			if (m_onMouseExit)
-				handled = m_onMouseExit();
+			{
+				m_onMouseExit();
+				return true;
+			}
 			break;
 
 		case EventType::kMouseUp:
@@ -193,8 +199,11 @@ namespace Widgets
 			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
 			if (mouseEvent.HasButton(MouseButton::LeftButton))
 			{
-				if(m_onLeftMouseUp)
-					handled = m_onLeftMouseUp();
+				if (m_onLeftMouseUp)
+				{
+					m_onLeftMouseUp();
+					handled = true;
+				}
 			}
 
 			if (m_onClick)
