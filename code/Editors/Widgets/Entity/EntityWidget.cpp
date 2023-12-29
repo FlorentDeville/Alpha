@@ -115,23 +115,28 @@ namespace Editors
 
 			pLayout->AddWidget(pContainer);
 
-			pIcon->OnClick([this, pComponentWidget, pIcon]() -> bool {
-				if (pComponentWidget->IsEnabled())
-				{
-					pComponentWidget->Disable();
-					pIcon->SetTextureId(m_collapsedIcon);
-
-				}
-				else
-				{
-					pComponentWidget->Enable();
-					pIcon->SetTextureId(m_expandedIcon);
-				} 
-				Widgets::WidgetMgr::Get().RequestResize();
-				return true;
-				});
+			pIcon->OnMouseDown([this, pComponentWidget, pIcon](const Widgets::MouseEvent& ev) { OnMouseDown_ExpandIcon(ev, pIcon, pComponentWidget); });
 		}
 
+		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	void EntityWidget::OnMouseDown_ExpandIcon(const Widgets::MouseEvent& ev, Widgets::Icon* pIcon, ComponentWidget* pComponentWidget)
+	{
+		if (!ev.HasButton(Widgets::MouseButton::LeftButton))
+			return;
+
+		if (pComponentWidget->IsEnabled())
+		{
+			pComponentWidget->Disable();
+			pIcon->SetTextureId(m_collapsedIcon);
+
+		}
+		else
+		{
+			pComponentWidget->Enable();
+			pIcon->SetTextureId(m_expandedIcon);
+		}
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 }

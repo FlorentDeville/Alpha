@@ -8,9 +8,15 @@
 
 #include "Widgets/Widget.h"
 
+namespace Widgets
+{
+	class Icon;
+}
+
 namespace Editors
 {
 	class BaseModel;
+	class ComponentWidget;
 
 	class EntityWidget : public Widgets::Widget
 	{
@@ -31,5 +37,7 @@ namespace Editors
 		bool m_isDirtyWidget;
 
 		void CreateWidgets();
+
+		void OnMouseDown_ExpandIcon(const Widgets::MouseEvent& ev, Widgets::Icon* pIcon, ComponentWidget* pComponentWidget);
 	};
 }
