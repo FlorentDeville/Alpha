@@ -64,11 +64,7 @@ namespace Widgets
 		Widgets::Container* pTitleContainer = new Widgets::Container(textRect.x, textRect.y);
 		Label* pTitleLabel = new Label(0, 0, 1, header);
 		pTitleContainer->AddWidget(pTitleLabel);
-		pTitleContainer->OnClick([this, tabIndex]() -> bool {
-			SetSelectedTab(tabIndex);
-			Widgets::WidgetMgr::Get().RequestResize();
-			return true;
-			});
+		pTitleContainer->OnMouseDown([this, tabIndex](const MouseEvent& ev) { OnMouseDown_TitleContainer(ev, tabIndex); });
 
 		m_pHeaderLayout->AddWidget(pTitleContainer);
 		m_pContentContainer->AddWidget(pTab);
@@ -130,5 +126,14 @@ namespace Widgets
 	void TabContainer::Disable(bool recursive)
 	{
 		Widget::Disable(recursive);
+	}
+
+	void TabContainer::OnMouseDown_TitleContainer(const MouseEvent& ev, int tabIndex)
+	{
+		if (!ev.HasButton(MouseButton::LeftButton))
+			return;
+
+		SetSelectedTab(tabIndex);
+		Widgets::WidgetMgr::Get().RequestResize();
 	}
 }

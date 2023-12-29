@@ -31,6 +31,7 @@ namespace Widgets
 		, m_enabled(true)
 		, m_focusPolicy(FOCUS_POLICY::DEFAULT)
 		, m_pParent(nullptr)
+		, m_padding()
 	{}
 
 	Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -195,6 +196,17 @@ namespace Widgets
 				return true;
 			}
 			break;
+
+		case EventType::kMouseDown:
+		{
+			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
+			if (m_onMouseDown)
+			{
+				m_onMouseDown(mouseEvent);
+				handled = true;
+			}
+		}
+		break;
 
 		case EventType::kMouseUp:
 		{

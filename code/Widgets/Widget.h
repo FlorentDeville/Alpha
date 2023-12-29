@@ -160,6 +160,7 @@ namespace Widgets
 		EVENT_DECL(MouseEnter, void(const MouseEvent&))
 		EVENT_DECL(MouseExit, void(const MouseEvent&))
 		EVENT_DECL(MouseMove, void(const MouseEvent&))
+		EVENT_DECL(MouseDown, void(const MouseEvent&))
 		EVENT_DECL(MouseUp, void(const MouseEvent&))
 		EVENT_DECL(FocusGained, void(const FocusEvent&))
 		EVENT_DECL(FocusLost, void(const FocusEvent&))

@@ -32,6 +32,8 @@ namespace Widgets
 		void Disable(bool recursive = true) override;
 
 	private:
+		void OnMouseDown_TitleContainer(const MouseEvent& ev, int tabIndex);
+
 		int m_selectedTab;
 
 		Layout* m_pInternalLayout;
