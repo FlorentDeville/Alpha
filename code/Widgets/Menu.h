@@ -40,7 +40,7 @@ namespace Widgets
 		Layout* m_pLayout;
 
 		OnOpenEvent m_onOpen;
-		OnClickEvent m_onClose;
+		OnCloseEvent m_onClose;
 
 		void OnClickMenuItem();
 	};

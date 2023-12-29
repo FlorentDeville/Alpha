@@ -19,9 +19,6 @@ namespace Widgets
 		kMouseDown,
 		kMouseUp,
 
-		//Mouse click
-		kMouseLeftClick,
-
 		//key
 		kVKeyDown,
 		kVKeyUp,

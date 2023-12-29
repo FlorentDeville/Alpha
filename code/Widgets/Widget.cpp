@@ -205,13 +205,17 @@ namespace Widgets
 				handled = true;
 			}
 
-			if (m_onClick)
+			if (mouseEvent.HasButton(MouseButton::LeftButton) && !handled)
 			{
-				m_onClick();
-				handled = true;
+				if (m_onClick)
+				{
+					m_onClick();
+					handled = true;
+				}
 			}
 			break;
 		}
+
 		default:
 			break;
 		}
