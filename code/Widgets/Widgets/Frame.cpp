@@ -59,7 +59,7 @@ namespace Widgets
 		m_pCloseButton->SetY(5);
 
 		m_pCloseButton->OnMouseEnter([this](const MouseEvent& ev) -> bool { return OnMouseEnter_CloseButton(); });
-		m_pCloseButton->OnMouseExit([this]() -> bool { return OnMouseExit_CloseButton(); });
+		m_pCloseButton->OnMouseExit([this](const MouseEvent& ev) -> bool { return OnMouseExit_CloseButton(); });
 		m_pCloseButton->OnClick([this]() { OnClick_CloseButton(); });
 
 		pIconLayout->AddWidget(m_pCloseButton);

@@ -190,7 +190,8 @@ namespace Widgets
 		case EventType::kMouseExit:
 			if (m_onMouseExit)
 			{
-				m_onMouseExit();
+				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
+				m_onMouseExit(mouseEvent);
 				return true;
 			}
 			break;
@@ -421,11 +422,6 @@ namespace Widgets
 	void Widget::OnLeftMouseUp(const std::function<bool()>& callback)
 	{
 		m_onLeftMouseUp = callback;
-	}
-
-	void Widget::OnMouseExit(const std::function<bool()>& callback)
-	{
-		m_onMouseExit = callback;
 	}
 
 	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const

@@ -153,7 +153,6 @@ namespace Widgets
 
 		void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
 		void OnLeftMouseUp(const std::function<bool()>& callback);
-		void OnMouseExit(const std::function<bool()>& callback);
 
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
@@ -162,6 +161,7 @@ namespace Widgets
 
 		/* Let's put all events declaration here*/
 		EVENT_DECL(MouseEnter, void(const MouseEvent&))
+		EVENT_DECL(MouseExit, void(const MouseEvent&))
 		EVENT_DECL(FocusGained, void(const FocusEvent&))
 		EVENT_DECL(FocusLost, void(const FocusEvent&))
 		EVENT_DECL(Click, void())
@@ -192,7 +192,6 @@ namespace Widgets
 
 		std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
 		std::function<bool()>						m_onLeftMouseUp;
-		std::function<bool()>						m_onMouseExit;
 		std::string m_name;
 
 		void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;
