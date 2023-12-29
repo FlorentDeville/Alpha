@@ -31,7 +31,7 @@ namespace Widgets
 		//Indicate what button triggered this event
 		MouseButton GetButton() const;
 
-		//Tells if button triggered this event
+		//Check if button triggered this event
 		bool HasButton(MouseButton button)const;
 
 	private:

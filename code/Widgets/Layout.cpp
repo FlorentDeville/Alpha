@@ -76,13 +76,6 @@ namespace Widgets
 	{
 		switch (ev.m_id)
 		{
-		/*case M_MouseMove:
-			if (m_onMouseMove)
-				return m_onMouseMove(msg.m_low.m_pos[0], msg.m_low.m_pos[1], (MouseKey)msg.m_high);
-			else
-				return Widget::Handle(msg);
-			break;*/
-
 		case EventType::kMouseEnter:
 		{
 			m_hover = true;

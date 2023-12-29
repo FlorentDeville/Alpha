@@ -414,11 +414,6 @@ namespace Widgets
 		WidgetMgr::Get().CaptureMouse(nullptr);
 	}
 
-	void Widget::OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback)
-	{
-		m_onMouseMove = callback;
-	}
-
 	void Widget::OnLeftMouseUp(const std::function<bool()>& callback)
 	{
 		m_onLeftMouseUp = callback;

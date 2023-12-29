@@ -20,12 +20,12 @@ enum MessageId
 	M_Count
 };
 
-//Button pressed in a M_MouseMove event
-enum MouseKey
-{
-	M_None	  = 0x00,
-	M_Control = 0x01,
-	M_LButton = 0x02,
-	M_MButton = 0x03,
-	M_RButton = 0x04
-};
+////Button pressed in a M_MouseMove event
+//enum MouseKey
+//{
+//	M_None	  = 0x00,
+//	M_Control = 0x01,
+//	M_LButton = 0x02,
+//	M_MButton = 0x03,
+//	M_RButton = 0x04
+//};

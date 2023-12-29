@@ -151,7 +151,6 @@ namespace Widgets
 		void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
 		void ReleaseMouse();	//Stop receiving the mouse events
 
-		void OnMouseMove(const std::function<bool(int, int, MouseKey)>& callback);
 		void OnLeftMouseUp(const std::function<bool()>& callback);
 
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
@@ -162,6 +161,7 @@ namespace Widgets
 		/* Let's put all events declaration here*/
 		EVENT_DECL(MouseEnter, void(const MouseEvent&))
 		EVENT_DECL(MouseExit, void(const MouseEvent&))
+		EVENT_DECL(MouseMove, void(const MouseEvent&))
 		EVENT_DECL(FocusGained, void(const FocusEvent&))
 		EVENT_DECL(FocusLost, void(const FocusEvent&))
 		EVENT_DECL(Click, void())
@@ -190,7 +190,6 @@ namespace Widgets
 
 		FOCUS_POLICY m_focusPolicy;
 
-		std::function<bool(int x, int y, MouseKey)> m_onMouseMove;
 		std::function<bool()>						m_onLeftMouseUp;
 		std::string m_name;
 
