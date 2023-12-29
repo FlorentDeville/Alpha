@@ -50,30 +50,7 @@ namespace Editors
 				pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 				pItemLayout->SetDirection(Widgets::Layout::Horizontal);
 				pItemLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-				pItemLayout->OnClick([this, ii]() -> bool 
-					{ 
-						if (m_selectedRow != -1)
-						{
-							Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pArrayLayout->GetChildren()[m_selectedRow]);
-							if (m_selectedRow % 2 == 0)
-								pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
-							else
-								pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
-
-							pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-							pLayout->GetHoverStyle().ShowBorder(false);
-							pLayout->GetDefaultStyle().ShowBorder(false);
-
-						}
-						
-						m_selectedRow = ii;
-						Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pArrayLayout->GetChildren()[ii]);
-						pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
-						pLayout->GetDefaultStyle().ShowBorder(true);
-						pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-						pLayout->GetHoverStyle().ShowBorder(true);
-						return true; 
-					});
+				pItemLayout->OnMouseDown([this, ii](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, ii); });
 
 				if (ii % 2 == 0)
 				{
@@ -126,5 +103,32 @@ namespace Editors
 	int ListWidget::GetSelectedItem() const
 	{
 		return m_selectedRow;
+	}
+
+	void ListWidget::OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex)
+	{
+		if (!ev.HasButton(Widgets::MouseButton::LeftButton))
+			return;
+
+		if (m_selectedRow != -1)
+		{
+			Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pArrayLayout->GetChildren()[m_selectedRow]);
+			if (m_selectedRow % 2 == 0)
+				pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
+			else
+				pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
+
+			pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+			pLayout->GetHoverStyle().ShowBorder(false);
+			pLayout->GetDefaultStyle().ShowBorder(false);
+
+		}
+
+		m_selectedRow = itemIndex;
+		Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pArrayLayout->GetChildren()[itemIndex]);
+		pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
+		pLayout->GetDefaultStyle().ShowBorder(true);
+		pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+		pLayout->GetHoverStyle().ShowBorder(true);
 	}
 }

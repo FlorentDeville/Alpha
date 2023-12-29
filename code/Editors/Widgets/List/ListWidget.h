@@ -32,6 +32,8 @@ namespace Editors
 		int GetSelectedItem() const;
 
 	private:
+		void OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex);
+
 		BaseModel* m_pModel;
 
 		Widgets::Layout* m_pArrayLayout;
