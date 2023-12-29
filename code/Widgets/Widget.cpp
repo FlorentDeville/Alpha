@@ -219,6 +219,18 @@ namespace Widgets
 			break;
 		}
 
+		case EventType::kMouseDoubleClick:
+		{
+			if (m_onMouseDoubleClick)
+			{
+				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
+				m_onMouseDoubleClick(mouseEvent);
+				handled = true;
+			}
+			break;
+		}
+		break;
+
 		default:
 			break;
 		}

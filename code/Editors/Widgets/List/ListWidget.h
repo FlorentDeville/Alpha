@@ -31,6 +31,8 @@ namespace Editors
 
 		int GetSelectedItem() const;
 
+		EVENT_DECL(ItemDoubleClick, void(int itemIndex))
+
 	private:
 		void OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex);
 

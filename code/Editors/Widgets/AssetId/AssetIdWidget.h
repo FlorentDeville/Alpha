@@ -20,7 +20,9 @@ namespace Widgets
 
 namespace Editors
 {
+	class AssetListModel;
 	class BaseModel;
+	class ListWidget;
 
 	class AssetIdWidget : public Widgets::Layout
 	{
@@ -38,5 +40,10 @@ namespace Editors
 		Widgets::Container* m_pLabelContainer;
 		Widgets::Label* m_pLabel;
 		Widgets::Button* m_pButton;
+
+		ListWidget* m_pAssetList;
+		AssetListModel* m_pAssetListModel;
+
+		void OnOk_AssetList();
 	};
 }

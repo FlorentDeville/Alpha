@@ -51,6 +51,7 @@ namespace Editors
 				pItemLayout->SetDirection(Widgets::Layout::Horizontal);
 				pItemLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 				pItemLayout->OnMouseDown([this, ii](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, ii); });
+				pItemLayout->OnMouseDoubleClick([this, ii](const Widgets::MouseEvent& ev) { m_onItemDoubleClick(ii); });
 
 				if (ii % 2 == 0)
 				{

@@ -21,6 +21,8 @@ namespace Editors
 	AssetIdWidget::AssetIdWidget()
 		: Layout()
 		, m_pModel(nullptr)
+		, m_pAssetList(nullptr)
+		, m_pAssetListModel(nullptr)
 	{
 		SetDirection(Widgets::Layout::Horizontal_Reverse);
 
@@ -47,17 +49,18 @@ namespace Editors
 				pWindow->AddWidget(pVLayout);
 
 				//list
-				Editors::ListWidget* pList = new Editors::ListWidget();
-				pList->SetSize(DirectX::XMUINT2(500, 450));
-				pList->SetColumnSize(0, 75);
+				m_pAssetList = new Editors::ListWidget();
+				m_pAssetList->SetSize(DirectX::XMUINT2(500, 450));
+				m_pAssetList->SetColumnSize(0, 75);
+				m_pAssetList->OnItemDoubleClick([this](int itemIndex) { OnOk_AssetList(); });
 
 				PropertyType type = m_pModel->GetDataType(0, 0);
 				Systems::AssetType assetType = Systems::kMesh;
 				if (type == PropertyType::kAssetMaterial)
 					assetType = Systems::kMaterial;
-				Editors::AssetListModel* pModel = new Editors::AssetListModel(assetType);
-				pList->SetModel(pModel);
-				pVLayout->AddWidget(pList);
+				m_pAssetListModel = new Editors::AssetListModel(assetType);
+				m_pAssetList->SetModel(m_pAssetListModel);
+				pVLayout->AddWidget(m_pAssetList);
 
 				//button ok escape
 				Widgets::Layout* pHLayout = new Widgets::Layout();
@@ -71,17 +74,8 @@ namespace Editors
 				pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 				pOkButton->AddWidget(pOkLabel);
 				pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-				pOkButton->OnClick([this, pList, pModel]() -> bool
-					{
-						int selectedItem = pList->GetSelectedItem();
-						if (selectedItem != -1)
-						{
-							const std::string& selectedValue = pModel->GetData(selectedItem);
-							m_pModel->SetData(0, 0, selectedValue);
-						}
-						Widgets::WidgetMgr::Get().CloseModalWindow(); 
-						return true; 
-					});
+				pOkButton->OnClick([this]() { OnOk_AssetList(); });
+
 				pHLayout->AddWidget(pOkButton);
 
 				Widgets::Button* pCancelButton = new Widgets::Button(250, 50, 0, 0);
@@ -121,5 +115,16 @@ namespace Editors
 	void AssetIdWidget::Update(uint64_t dt)
 	{
 		m_pLabel->SetText(m_pModel->GetData());
+	}
+
+	void AssetIdWidget::OnOk_AssetList()
+	{
+		int selectedItem = m_pAssetList->GetSelectedItem();
+		if (selectedItem != -1)
+		{
+			const std::string& selectedValue = m_pAssetListModel->GetData(selectedItem);
+			m_pModel->SetData(0, 0, selectedValue);
+		}
+		Widgets::WidgetMgr::Get().CloseModalWindow();
 	}
 }
