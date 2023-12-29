@@ -476,7 +476,9 @@ namespace Widgets
 	void WidgetMgr::CloseModalWindow()
 	{
 		SetFocus(m_pRoot);
-		m_pRoot->DeleteChild(m_pModalWindow);
+
+		//Don't delete the modal window here. Some event might still be running, so delay it for the next iteration
+		RequestWidgetDeletion(m_pModalWindow);
 		m_pModalWindow = nullptr;
 
 		RequestResize();
