@@ -199,13 +199,10 @@ namespace Widgets
 		case EventType::kMouseUp:
 		{
 			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
-			if (mouseEvent.HasButton(MouseButton::LeftButton))
+			if (m_onMouseUp)
 			{
-				if (m_onLeftMouseUp)
-				{
-					m_onLeftMouseUp();
-					handled = true;
-				}
+				m_onMouseUp(mouseEvent);
+				handled = true;
 			}
 
 			if (m_onClick)
@@ -412,11 +409,6 @@ namespace Widgets
 	void Widget::ReleaseMouse()
 	{
 		WidgetMgr::Get().CaptureMouse(nullptr);
-	}
-
-	void Widget::OnLeftMouseUp(const std::function<bool()>& callback)
-	{
-		m_onLeftMouseUp = callback;
 	}
 
 	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const

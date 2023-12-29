@@ -151,8 +151,6 @@ namespace Widgets
 		void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
 		void ReleaseMouse();	//Stop receiving the mouse events
 
-		void OnLeftMouseUp(const std::function<bool()>& callback);
-
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
 		virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
@@ -162,6 +160,7 @@ namespace Widgets
 		EVENT_DECL(MouseEnter, void(const MouseEvent&))
 		EVENT_DECL(MouseExit, void(const MouseEvent&))
 		EVENT_DECL(MouseMove, void(const MouseEvent&))
+		EVENT_DECL(MouseUp, void(const MouseEvent&))
 		EVENT_DECL(FocusGained, void(const FocusEvent&))
 		EVENT_DECL(FocusLost, void(const FocusEvent&))
 		EVENT_DECL(Click, void())
@@ -190,7 +189,6 @@ namespace Widgets
 
 		FOCUS_POLICY m_focusPolicy;
 
-		std::function<bool()>						m_onLeftMouseUp;
 		std::string m_name;
 
 		void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;
