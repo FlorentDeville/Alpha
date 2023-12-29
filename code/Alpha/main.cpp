@@ -253,7 +253,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		mouseState.m_mouseLeftButton = false;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
-		break;
+	break;
+
+	case WM_LBUTTONDBLCLK:
+	{
+		int x = GET_X_LPARAM(lParam);
+		int y = GET_Y_LPARAM(lParam);
+
+		Message msg;
+		msg.m_id = M_MouseLDoubleClick;
+		msg.m_low.m_pos[0] = x;
+		msg.m_low.m_pos[1] = y;
+
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
+
+		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
+		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
+		mouseState.m_mouseX = x;
+		mouseState.m_mouseY = y;
+		mouseState.m_mouseLeftButton = true;
+		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
+	}
+	break;
 
 	case WM_RBUTTONDOWN:
 	{

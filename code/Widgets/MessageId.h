@@ -10,6 +10,7 @@ enum MessageId
 	M_MouseMove,	//The mouse has moved
 	M_MouseLDown,	//The mouse left button is down
 	M_MouseLUp,		//The mouse left button is up
+	M_MouseLDoubleClick,
 	M_MouseMDown,
 	M_MouseMUp,
 	M_MouseRDown,

@@ -19,6 +19,9 @@ namespace Widgets
 		kMouseDown,
 		kMouseUp,
 
+		//double click is the second mouse down. The sequence of events is Down, Up, DoubleClick, Up.
+		kMouseDoubleClick,
+
 		//key
 		kVKeyDown,
 		kVKeyUp,

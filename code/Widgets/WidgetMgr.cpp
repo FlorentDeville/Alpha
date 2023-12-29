@@ -327,6 +327,7 @@ namespace Widgets
 		case M_MouseMUp:
 		case M_MouseRDown:
 		case M_MouseRUp:
+		case M_MouseLDoubleClick:
 		{
 			bool setFocus = false;
 			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
@@ -549,6 +550,7 @@ namespace Widgets
 		case M_MouseMUp:
 		case M_MouseRDown:
 		case M_MouseRUp:
+		case M_MouseLDoubleClick:
 		{
 			bool isInside = pWidget->IsInside(msg.m_low.m_pos[0], msg.m_low.m_pos[1]);
 			bool isCaptured = m_pCapturedWidget == pWidget;
@@ -587,6 +589,11 @@ namespace Widgets
 				case M_MouseRUp:
 					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::RightButton;
+					break;
+
+				case M_MouseLDoubleClick:
+					currentId = EventType::kMouseDoubleClick;
+					currentButton = MouseButton::LeftButton;
 					break;
 				}	
 				

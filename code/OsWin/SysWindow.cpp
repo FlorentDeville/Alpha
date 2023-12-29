@@ -178,7 +178,7 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassNam
 
 	WNDCLASSEX windowClass = { 0 };
 	windowClass.cbSize = sizeof(WNDCLASSEXW);
-	windowClass.style = CS_HREDRAW | CS_VREDRAW;
+	windowClass.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	windowClass.lpfnWndProc = callback;
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
