@@ -429,11 +429,11 @@ namespace Widgets
 
 		FocusEvent ev(m_pFocusedWidget, pWidget);
 
-		if (m_pFocusedWidget && m_pFocusedWidget->m_onLoseFocus)
-			m_pFocusedWidget->m_onLoseFocus(ev);
+		if (m_pFocusedWidget && m_pFocusedWidget->m_onFocusLost)
+			m_pFocusedWidget->m_onFocusLost(ev);
 
-		if (pWidget && pWidget->m_onGetFocus)
-			pWidget->m_onGetFocus(ev);
+		if (pWidget && pWidget->m_onFocusGained)
+			pWidget->m_onFocusGained(ev);
 
 		m_pFocusedWidget = pWidget;
 	}

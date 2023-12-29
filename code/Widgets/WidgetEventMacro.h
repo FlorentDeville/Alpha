@@ -1,0 +1,46 @@
+/********************************************************************/
+/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#pragma once
+
+//Example of what this macro does
+// 
+//public:
+//  using OnMouseEnterEvent = Core::CallbackList<void(const MouseEvent&)>;
+//
+//protected
+//  OnMouseEnterEvent							m_onMouseEnter;
+//
+//public:
+//	Core::CallbackId OnMouseEnter(const OnMouseEnterEvent::Callback& callback) { return m_onMouseEnter.Connect(callback); }
+//  void DisconnectOmMouseEnter(const Core::CallbackId& id) { m_onMouseEnter.Disconnect(id); }
+
+#define EVENT_TYPE_NAME(NAME) On ## NAME ## Event
+#define EVENT_VARIABLE(NAME) m_on ## NAME
+
+#define EVENT_TYPE_DECL(NAME, FUNC) using EVENT_TYPE_NAME(NAME) = Core::CallbackList<FUNC>;
+#define EVENT_VARIABLE_DECL(NAME) EVENT_TYPE_NAME(NAME) EVENT_VARIABLE(NAME);
+
+#define CONNECT(NAME) \
+Core::CallbackId On ## NAME (const EVENT_TYPE_NAME(NAME)::Callback& callback) \
+{ \
+    return EVENT_VARIABLE(NAME).Connect(callback); \
+}
+
+#define DISCONNECT(NAME) \
+void DisconnectOn ## NAME (const Core::CallbackId& id) \
+{ \
+    EVENT_VARIABLE(NAME).Disconnect(id); \
+}
+
+//This is the macro you want to use to declare an event
+// Example : EVENT_DECL(MouseMove, void(const MouseEvent&))
+#define EVENT_DECL(NAME, FUNC) \
+public: \
+    EVENT_TYPE_DECL(NAME, FUNC) \
+protected: \
+    EVENT_VARIABLE_DECL(NAME) \
+public: \
+    CONNECT(NAME) \
+    DISCONNECT(NAME)

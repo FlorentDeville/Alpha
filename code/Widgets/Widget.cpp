@@ -423,29 +423,9 @@ namespace Widgets
 		m_onLeftMouseUp = callback;
 	}
 
-	Core::CallbackId Widget::OnMouseEnter(const OnMouseEnterEvent::Callback& callback)
-	{
-		return m_onMouseEnter.Connect(callback);
-	}
-
 	void Widget::OnMouseExit(const std::function<bool()>& callback)
 	{
 		m_onMouseExit = callback;
-	}
-
-	Core::CallbackId Widget::OnClick(const OnClickEvent::Callback& callback)
-	{
-		return m_onClick.Connect(callback);
-	}
-
-	Core::CallbackId Widget::OnFocusGained(const OnFocusGainedEvent::Callback& callback)
-	{
-		return m_onGetFocus.Connect(callback);
-	}
-
-	Core::CallbackId Widget::OnFocusLost(const OnFocusLostEvent::Callback& callback)
-	{
-		return m_onLoseFocus.Connect(callback);
 	}
 
 	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
