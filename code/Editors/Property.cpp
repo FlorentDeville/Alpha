@@ -6,28 +6,35 @@
 
 namespace Editors
 {
+	PropertyValue::PropertyValue()
+	{}
+
+	PropertyValue::~PropertyValue()
+	{}
+
 	Property::Property(const std::string& name, float value)
 		: m_name(name)
 		, m_type(kFloat)
-		, m_value(new PropertyValueFloat(value))
-	{}
+	{
+		m_value.m_float = value;
+	}
 
 	Property::Property(const std::string& name, const Core::Mat44f& value)
 		: m_name(name)
 		, m_type(kMat44f)
-		, m_value(new PropertyValueMat44f(value))
-	{}
+	{
+		m_value.m_mat44f = value;
+	}
 
 	Property::Property(const std::string& name, PropertyType type, Systems::AssetId value)
 		: m_name(name)
 		, m_type(type)
-		, m_value(new PropertyValueAssetId(value))
-	{}
+	{
+		m_value.m_assetId = value;
+	}
 
 	Property::~Property()
-	{
-		delete m_value;
-	}
+	{}
 
 	const std::string& Property::GetName() const
 	{
@@ -39,13 +46,20 @@ namespace Editors
 		return m_type;
 	}
 
-	const PropertyValue& Property::GetValue() const
+	void Property::SetMeshAssetId(const Systems::AssetId& id)
 	{
-		return *m_value;
+		m_value.m_assetId = id;
+		m_type = PropertyType::kAssetMesh;
 	}
 
-	PropertyValue& Property::GetValue()
+	void Property::SetMaterialAssetId(const Systems::AssetId& id)
 	{
-		return *m_value;
+		m_value.m_assetId = id;
+		m_type = PropertyType::kAssetMaterial;
+	}
+
+	void Property::SetValue(const Core::Mat44f& matrix)
+	{
+		m_value.m_mat44f = matrix;
 	}
 }

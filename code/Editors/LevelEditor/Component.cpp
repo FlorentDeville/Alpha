@@ -77,8 +77,7 @@ namespace Editors
 		const Property* pProperty = GetProperty(name);
 		assert(pProperty);
 
-		const PropertyValueAssetId& value = dynamic_cast<const PropertyValueAssetId&>(pProperty->GetValue());
-		id = value.Get();
+		id = pProperty->GetValue<Systems::AssetId>();
 	}
 
 	void Component::GetPropertyValue(const std::string& name, Core::Mat44f& m) const
@@ -86,8 +85,7 @@ namespace Editors
 		const Property* pProperty = GetProperty(name);
 		assert(pProperty);
 
-		const PropertyValueMat44f& value = dynamic_cast<const PropertyValueMat44f&>(pProperty->GetValue());
-		m = value.Get();
+		m = pProperty->GetValue<Core::Mat44f>();
 	}
 
 	void Component::SetPropertyValue(const std::string& name, Systems::AssetId id)
@@ -95,16 +93,27 @@ namespace Editors
 		Property* pProperty = GetProperty(name);
 		assert(pProperty);
 
-		PropertyValueAssetId& value = dynamic_cast<PropertyValueAssetId&>(pProperty->GetValue());
-		value.Set(id);
+		switch (pProperty->GetType())
+		{
+		case PropertyType::kAssetMaterial:
+			pProperty->SetMaterialAssetId(id);
+			break;
+
+		case PropertyType::kAssetMesh:
+			pProperty->SetMeshAssetId(id);
+			break;
+
+		default:
+			assert(false);
+			break;
+
+		}
 	}
 
 	void Component::SetPropertyValue(const std::string& name, const Core::Mat44f& m)
 	{
 		Property* pProperty = GetProperty(name);
 		assert(pProperty);
-
-		PropertyValueMat44f& value = dynamic_cast<PropertyValueMat44f&>(pProperty->GetValue());
-		value.Set(m);
+		pProperty->SetValue(m);
 	}
 }

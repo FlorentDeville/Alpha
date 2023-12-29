@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Core/Math/Mat44f.h"
+#include "Core/Math/Vec4f.h"
 
 #include "Systems/Assets/AssetId.h"
 
@@ -28,51 +29,17 @@ namespace Editors
 		kCount
 	};
 
-	class PropertyValue
+	union PropertyValue
 	{
-	public:
-		virtual ~PropertyValue(){}
-	};
+		int32_t m_int;
+		float m_float;
+		std::string m_string;
+		Systems::AssetId m_assetId;
+		Core::Vec4f m_vec4f;
+		Core::Mat44f m_mat44f;
 
-	class PropertyValueFloat : public PropertyValue
-	{
-	public:
-		PropertyValueFloat(float f)
-			: m_f(f)
-		{}
-
-	private:
-		float m_f;
-	};
-
-	class PropertyValueMat44f : public PropertyValue
-	{
-	public:
-		PropertyValueMat44f(const Core::Mat44f& m)
-			: m_matrix(m)
-		{}
-
-		const Core::Mat44f& Get() const { return m_matrix; }
-		Core::Mat44f& Get() { return m_matrix; }
-		void Set(const Core::Mat44f& m) { m_matrix = m; }
-
-	private:
-		Core::Mat44f m_matrix;
-	};
-
-	class PropertyValueAssetId : public PropertyValue
-	{
-	public:
-		PropertyValueAssetId(Systems::AssetId id)
-			: m_id(id)
-		{}
-
-		const Systems::AssetId& Get() const { return m_id; }
-		Systems::AssetId& Get() { return m_id; }
-		void Set(Systems::AssetId id) { m_id = id; }
-
-	private:
-		Systems::AssetId m_id;
+		PropertyValue();
+		~PropertyValue();
 	};
 
 	// A property is a key value pair used to store and edit data.
@@ -89,13 +56,26 @@ namespace Editors
 
 		const std::string& GetName() const;
 		PropertyType GetType() const;
-		const PropertyValue& GetValue() const;
-		PropertyValue& GetValue();
+
+		template <class T> T& GetValue()
+		{
+			T& castedValue = reinterpret_cast<T&>(m_value);
+			return castedValue;
+		}
+
+		template <class T> const T& GetValue() const
+		{
+			const T& castedValue = reinterpret_cast<const T&>(m_value);
+			return castedValue;
+		}
+
+		void SetMeshAssetId(const Systems::AssetId& id);
+		void SetMaterialAssetId(const Systems::AssetId& id);
+		void SetValue(const Core::Mat44f& matrix);
 
 	private:
 		std::string m_name;
 		PropertyType m_type;
-		PropertyValue* m_value;
-
+		PropertyValue m_value;
 	};
 }

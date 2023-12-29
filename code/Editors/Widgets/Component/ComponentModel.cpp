@@ -28,15 +28,13 @@ namespace Editors
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
 			{
-				PropertyValueAssetId& propertyAssetId = static_cast<PropertyValueAssetId&>(pProperty->GetValue());
-				pNewModel = new AssetIdModel(propertyAssetId.Get(), type);
+				pNewModel = new AssetIdModel(pProperty->GetValue<Systems::AssetId>(), type);
 			}
 			break;
 
 			case PropertyType::kMat44f:
 			{
-				PropertyValueMat44f& propertyAssetId = static_cast<PropertyValueMat44f&>(pProperty->GetValue());
-				pNewModel = new MatrixModel(&propertyAssetId.Get());
+				pNewModel = new MatrixModel(&pProperty->GetValue<Core::Mat44f>());
 			}
 			break;
 				

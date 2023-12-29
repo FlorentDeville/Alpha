@@ -93,8 +93,7 @@ namespace Editors
 		{
 			if (const Property* pProperty = pComponent->GetProperty("Local"))
 			{
-				const PropertyValueMat44f& value = static_cast<const PropertyValueMat44f&>(pProperty->GetValue());
-				lsTransform = value.Get();
+				lsTransform = pProperty->GetValue<Core::Mat44f>();
 			}
 		}
 
@@ -133,9 +132,7 @@ namespace Editors
 		if (!pProperty)
 			return s_default;
 
-
-		const PropertyValueMat44f& value = static_cast<const PropertyValueMat44f&>(pProperty->GetValue());
-		return value.Get();
+		return pProperty->GetValue<Core::Mat44f>();
 	}
 
 	void Entity::SetLs(const Core::Mat44f& txLs)
@@ -148,9 +145,7 @@ namespace Editors
 		if (!pProperty)
 			return;
 
-		
-		PropertyValueMat44f& value = static_cast<PropertyValueMat44f&>(pProperty->GetValue());
-		value.Set(txLs);
+		pProperty->SetValue(txLs);
 	}
 
 	void Entity::SetName(const std::string& name)
