@@ -118,24 +118,8 @@ namespace Editors
 			pIcon->SetY(4);
 			pIcon->SetSize(DirectX::XMUINT2(12, 12));
 			pIcon->SetTextureId(m_expandedIcon);
-			pIcon->OnClick([this, pChildrenLayout, pIcon]() -> bool
-				{
-					if (pChildrenLayout->IsEnabled())
-					{
-						pChildrenLayout->Disable(false);
-						pIcon->SetTextureId(m_collapsedIcon);
-					}
-					else
-					{
-						pChildrenLayout->Enable(false);
-						pIcon->SetTextureId(m_expandedIcon);
-					}
-
-					Widgets::WidgetMgr::Get().RequestResize();
-					return true;
-				});
+			pIcon->OnMouseDown([this, pChildrenLayout, pIcon](const Widgets::MouseEvent& ev) { OnMouseDown_CollapseIcon(ev, pChildrenLayout, pIcon); });
 			pItemLayout->AddWidget(pIcon);
-
 		}
 		else
 		{
@@ -169,8 +153,23 @@ namespace Editors
 		//recursively create widgets for children
 		for (int rowId = 0; rowId < count; ++rowId)
 		{
-
 			CreateRecursiveWidgets(pChildrenLayout, pModel->GetSubModel(rowId, 0), offsetX);
 		}
+	}
+
+	void TreeWidget::OnMouseDown_CollapseIcon(const Widgets::MouseEvent& ev, Widgets::Layout* pChildrenLayout, Widgets::Icon* pIcon)
+	{
+		if (pChildrenLayout->IsEnabled())
+		{
+			pChildrenLayout->Disable(false);
+			pIcon->SetTextureId(m_collapsedIcon);
+		}
+		else
+		{
+			pChildrenLayout->Enable(false);
+			pIcon->SetTextureId(m_expandedIcon);
+		}
+
+		Widgets::WidgetMgr::Get().RequestResize();
 	}
 }

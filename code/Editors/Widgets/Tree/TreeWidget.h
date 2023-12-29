@@ -11,6 +11,7 @@
 namespace Widgets
 {
 	class Button;
+	class Icon;
 	class Layout;
 }
 
@@ -50,5 +51,7 @@ namespace Editors
 		void CreateWidgets();
 
 		void CreateRecursiveWidgets(Widgets::Layout* pParentLayout, BaseModel* pModel, int offsetX);
+
+		void OnMouseDown_CollapseIcon(const Widgets::MouseEvent& ev, Widgets::Layout* pChildrenLayout, Widgets::Icon* pIcon);
 	};
 }
