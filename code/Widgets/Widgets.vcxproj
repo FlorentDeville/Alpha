@@ -47,6 +47,7 @@
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetEventMacro.h" />
     <ClInclude Include="WidgetMgr.h" />
+    <ClInclude Include="Widgets\AbstractClickable.h" />
     <ClInclude Include="Widgets\Frame.h" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +79,7 @@
     <ClCompile Include="Viewport_v2.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WidgetMgr.cpp" />
+    <ClCompile Include="Widgets\AbstractClickable.cpp" />
     <ClCompile Include="Widgets\Frame.cpp" />
   </ItemGroup>
   <ItemGroup>
