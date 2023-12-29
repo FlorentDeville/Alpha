@@ -47,7 +47,7 @@ namespace Widgets
 
 		OnCloseEvent m_onClose;
 
-		void OnClick_CloseButton();
+		void OnMouseDown_CloseButton(const MouseEvent& ev);
 		bool OnMouseEnter_CloseButton();
 		bool OnMouseExit_CloseButton();
 	};

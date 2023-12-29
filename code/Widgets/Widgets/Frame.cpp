@@ -58,9 +58,9 @@ namespace Widgets
 		m_pCloseButton->AddWidget(m_pCloseIcon);
 		m_pCloseButton->SetY(5);
 
-		m_pCloseButton->OnMouseEnter([this](const MouseEvent& ev) -> bool { return OnMouseEnter_CloseButton(); });
-		m_pCloseButton->OnMouseExit([this](const MouseEvent& ev) -> bool { return OnMouseExit_CloseButton(); });
-		m_pCloseButton->OnClick([this]() { OnClick_CloseButton(); });
+		m_pCloseButton->OnMouseEnter([this](const MouseEvent& ev) { OnMouseEnter_CloseButton(); });
+		m_pCloseButton->OnMouseExit([this](const MouseEvent& ev) { OnMouseExit_CloseButton(); });
+		m_pCloseButton->OnMouseDown([this](const MouseEvent& ev) { OnMouseDown_CloseButton(ev); });
 
 		pIconLayout->AddWidget(m_pCloseButton);
 	}
@@ -87,8 +87,11 @@ namespace Widgets
 		return m_onClose.Connect(callback);
 	}
 
-	void Frame::OnClick_CloseButton()
+	void Frame::OnMouseDown_CloseButton(const MouseEvent& ev)
 	{
+		if (!ev.HasButton(MouseButton::LeftButton))
+			return;
+
 		Close();
 	}
 
