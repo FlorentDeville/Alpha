@@ -4,16 +4,18 @@
 
 #pragma once
 
-#include "Widgets/Widget.h"
+#include "Widgets/Widgets/AbstractClickable.h"
 #include "Widgets/Style/Button/ButtonStyle.h"
 
 #include <functional>
 
 namespace Widgets
 {
-	class Button : public Widget
+	class Button : public AbstractClickable
 	{
 	public:
+		using ParentClass = AbstractClickable;
+
 		Button(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		Button(const std::string& textLabel);
 

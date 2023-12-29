@@ -164,7 +164,6 @@ namespace Widgets
 		EVENT_DECL(MouseUp, void(const MouseEvent&))
 		EVENT_DECL(FocusGained, void(const FocusEvent&))
 		EVENT_DECL(FocusLost, void(const FocusEvent&))
-		EVENT_DECL(Click, void())
 
 	protected:
 		DirectX::XMUINT2 m_size; //current size in pixels

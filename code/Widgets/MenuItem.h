@@ -16,6 +16,8 @@ namespace Widgets
 	class MenuItem : public Button
 	{
 	public:
+		using ParentClass = Button;
+
 		MenuItem(const std::string& name);
 		~MenuItem();
 

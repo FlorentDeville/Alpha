@@ -69,16 +69,11 @@ namespace Widgets
 			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
 			if (mouseEvent.HasButton(MouseButton::LeftButton))
 			{
-				if (m_onClick)
-					m_onClick();
-
 				m_hover = false;
-				return true;
-				//shut down parent menu
 			}
 		}
 
-		return Button::Handle(ev);
+		return ParentClass::Handle(ev);
 	}
 
 	void MenuItem::SetShortcut(const std::string& shortcut)

@@ -16,7 +16,7 @@
 namespace Widgets
 {
 	Button::Button(uint32_t w, uint32_t h, int32_t x, int32_t y)
-		: Widget(w, h, x, y)
+		: AbstractClickable(w, h, x , y)
 		, m_isSelected(false)
 		, m_defaultStyle()
 		, m_hoverStyle()
@@ -82,15 +82,15 @@ namespace Widgets
 		Widget::Draw(windowSize);
 	}
 
-	bool Button::Handle(const BaseEvent& event)
+	bool Button::Handle(const BaseEvent& ev)
 	{
-		switch (event.m_id)
+		switch (ev.m_id)
 		{
 		case EventType::kMouseEnter:
 		{
 			m_hover = true;
 			m_showBorder = true;
-			return true;
+			return ParentClass::Handle(ev);
 		}
 		break;
 
@@ -98,7 +98,7 @@ namespace Widgets
 		{
 			m_hover = false;
 			m_showBorder = false;
-			return true;
+			return ParentClass::Handle(ev);
 		}
 		break;
 
@@ -106,12 +106,12 @@ namespace Widgets
 		{
 			m_hover = true;
 			m_showBorder = true;
-			return true;
+			return ParentClass::Handle(ev);
 		}
 		break;
 
 		default:
-			return Widget::Handle(event);
+			return ParentClass::Handle(ev);
 			break;
 		}
 	}
