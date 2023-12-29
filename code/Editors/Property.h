@@ -37,13 +37,9 @@ namespace Editors
 	class PropertyValueFloat : public PropertyValue
 	{
 	public:
-		//PropertyValueFloat();
 		PropertyValueFloat(float f)
 			: m_f(f)
 		{}
-
-		//float Get() const;
-		//void Set(float f);
 
 	private:
 		float m_f;
