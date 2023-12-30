@@ -180,7 +180,10 @@ namespace Editors
 	void LevelEditorModule::Shutdown()
 	{
 		delete m_pSelectionMgr;
+		m_pSelectionMgr = nullptr;
+
 		delete m_pLevelMgr;
+		m_pLevelMgr = nullptr;
 	}
 
 	void LevelEditorModule::CreateEditor(Widgets::Widget* pParent)

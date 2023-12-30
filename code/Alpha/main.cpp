@@ -682,8 +682,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MeshEditor::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();
-	Editors::LevelEditorModule::ReleaseSingleton();
-
+	
 	Editors::GamePlayer::ReleaseSingleton();
 
 	gameMgr.Release();
@@ -702,6 +701,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	render.Release();
 	Rendering::RenderModule::ReleaseSingleton();
+
+	Editors::LevelEditorModule::ReleaseSingleton();
 
 	return 0;
 }
