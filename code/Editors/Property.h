@@ -29,17 +29,46 @@ namespace Editors
 		kCount
 	};
 
-	union PropertyValue
+	class PropertyValue
 	{
-		int32_t m_int;
-		float m_float;
-		std::string m_string;
-		Systems::AssetId m_assetId;
-		Core::Vec4f m_vec4f;
-		Core::Mat44f m_mat44f;
-
+	public:
 		PropertyValue();
 		~PropertyValue();
+
+		PropertyType GetType() const;
+
+		template <class T> T& GetValue()
+		{
+			T& castedValue = reinterpret_cast<T&>(m_internalValue);
+			return castedValue;
+		}
+
+		template <class T> const T& GetValue() const
+		{
+			const T& castedValue = reinterpret_cast<const T&>(m_internalValue);
+			return castedValue;
+		}
+
+		void SetMatrix(const Core::Mat44f& value);
+		void SetMeshAssetId(const Systems::AssetId& value);
+		void SetMaterialAssetId(const Systems::AssetId& value);
+
+	private:
+		union InternalValue
+		{
+			int32_t m_int;
+			float m_float;
+			std::string m_string;
+			Systems::AssetId m_assetId;
+			Core::Vec4f m_vec4f;
+			Core::Mat44f m_mat44f;
+
+			InternalValue();
+			~InternalValue();
+		};
+
+		InternalValue m_internalValue;
+		PropertyType m_type;
 	};
 
 	// A property is a key value pair used to store and edit data.
@@ -47,35 +76,17 @@ namespace Editors
 	class Property
 	{
 	public:
-
-		Property(const std::string& name, float value);
 		Property(const std::string& name, const Core::Mat44f& value);
 		Property(const std::string& name, PropertyType type, Systems::AssetId value);
 
 		~Property();
 
 		const std::string& GetName() const;
-		PropertyType GetType() const;
-
-		template <class T> T& GetValue()
-		{
-			T& castedValue = reinterpret_cast<T&>(m_value);
-			return castedValue;
-		}
-
-		template <class T> const T& GetValue() const
-		{
-			const T& castedValue = reinterpret_cast<const T&>(m_value);
-			return castedValue;
-		}
-
-		void SetMeshAssetId(const Systems::AssetId& id);
-		void SetMaterialAssetId(const Systems::AssetId& id);
-		void SetValue(const Core::Mat44f& matrix);
+		PropertyValue& GetValue();
+		const PropertyValue& GetConstValue() const;
 
 	private:
 		std::string m_name;
-		PropertyType m_type;
 		PropertyValue m_value;
 	};
 }

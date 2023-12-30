@@ -6,31 +6,55 @@
 
 namespace Editors
 {
+	PropertyValue::InternalValue::InternalValue()
+	{}
+
+	PropertyValue::InternalValue::~InternalValue()
+	{}
+
 	PropertyValue::PropertyValue()
+		: m_type(kUnknown)
 	{}
 
 	PropertyValue::~PropertyValue()
 	{}
 
-	Property::Property(const std::string& name, float value)
-		: m_name(name)
-		, m_type(kFloat)
+	PropertyType PropertyValue::GetType() const
 	{
-		m_value.m_float = value;
+		return m_type;
+	}
+
+	void PropertyValue::SetMatrix(const Core::Mat44f& value)
+	{
+		m_type = kMat44f;
+		m_internalValue.m_mat44f = value;
+	}
+
+	void PropertyValue::SetMeshAssetId(const Systems::AssetId& value)
+	{
+		m_type = kAssetMesh;
+		m_internalValue.m_assetId = value;
+	}
+
+	void PropertyValue::SetMaterialAssetId(const Systems::AssetId& value)
+	{
+		m_type = kAssetMaterial;
+		m_internalValue.m_assetId = value;
 	}
 
 	Property::Property(const std::string& name, const Core::Mat44f& value)
 		: m_name(name)
-		, m_type(kMat44f)
 	{
-		m_value.m_mat44f = value;
+		m_value.SetMatrix(value);
 	}
 
 	Property::Property(const std::string& name, PropertyType type, Systems::AssetId value)
 		: m_name(name)
-		, m_type(type)
 	{
-		m_value.m_assetId = value;
+		if (type == PropertyType::kAssetMaterial)
+			m_value.SetMaterialAssetId(value);
+		else if (type == PropertyType::kAssetMesh)
+			m_value.SetMeshAssetId(value);
 	}
 
 	Property::~Property()
@@ -41,25 +65,13 @@ namespace Editors
 		return m_name;
 	}
 
-	PropertyType Property::GetType() const
+	PropertyValue& Property::GetValue()
 	{
-		return m_type;
+		return m_value;
 	}
 
-	void Property::SetMeshAssetId(const Systems::AssetId& id)
+	const PropertyValue& Property::GetConstValue() const
 	{
-		m_value.m_assetId = id;
-		m_type = PropertyType::kAssetMesh;
-	}
-
-	void Property::SetMaterialAssetId(const Systems::AssetId& id)
-	{
-		m_value.m_assetId = id;
-		m_type = PropertyType::kAssetMaterial;
-	}
-
-	void Property::SetValue(const Core::Mat44f& matrix)
-	{
-		m_value.m_mat44f = matrix;
+		return m_value;
 	}
 }
