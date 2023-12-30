@@ -4,14 +4,15 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
 
-#include "Editors/LevelEditor/Widgets/GizmoModel.h"
-#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
-#include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
+#include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
+#include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
+#include "Editors/LevelEditor/Widgets/GizmoModel.h"
+#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
@@ -234,7 +235,7 @@ namespace Editors
 		pLayout->AddWidget(pSeparator);*/
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
+		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget = new TreeWidget();
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 
@@ -372,7 +373,7 @@ namespace Editors
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
-		SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+		SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
 		Node* pNode = pSceneTree->GetNode(nodeGuid);
 		if (!pNode)
 			return;
@@ -404,7 +405,7 @@ namespace Editors
 		else
 		{
 			const Os::Guid& lastSelectedNodeGuid = selectionList.back();
-			SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+			SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
 			Node* pNode = pSceneTree->GetNode(lastSelectedNodeGuid);
 			if (!pNode)
 				return;
@@ -424,7 +425,7 @@ namespace Editors
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
-		SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
+		SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
 		Node* pNode = pSceneTree->GetNode(nodeGuid);
 		if (!pNode)
 			return;
@@ -471,7 +472,7 @@ namespace Editors
 	{
 		delete m_pLevelTreeModel;
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
+		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
@@ -479,14 +480,14 @@ namespace Editors
 	{
 		delete m_pLevelTreeModel;
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevel().GetSceneTree()->GetRoot());
+		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
 	void LevelEditorTab::OnRenameEntity_SceneTree(const Os::Guid& nodeGuid)
 	{
 		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevel().GetSceneTree()->GetRoot());
+		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 

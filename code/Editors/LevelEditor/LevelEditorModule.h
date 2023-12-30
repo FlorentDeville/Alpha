@@ -9,9 +9,8 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 
-#include "Editors/LevelEditor/LevelMgr.h"
-
 #include <map>
+#include <string>
 
 namespace Os
 {
@@ -38,6 +37,7 @@ namespace Editors
 {
 	class Node;
 	class GizmoWidget;
+	class LevelMgr;
 	class SelectionMgr;
 
 	class LevelEditorModule : public Core::Singleton<LevelEditorModule>
@@ -48,8 +48,8 @@ namespace Editors
 
 		void CreateEditor(Widgets::Widget* pParent);
 
-		const LevelMgr& GetConstLevel() const;
-		LevelMgr& GetLevel();
+		const LevelMgr* GetConstLevelMgr() const;
+		LevelMgr* GetLevelMgr();
 
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
@@ -87,7 +87,7 @@ namespace Editors
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
 
 	private:
-		LevelMgr m_level;
+		LevelMgr* m_pLevelMgr;
 		SelectionMgr* m_pSelectionMgr;
 
 		//camera state

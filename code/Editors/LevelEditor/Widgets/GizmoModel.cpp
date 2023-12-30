@@ -9,6 +9,7 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
@@ -121,7 +122,7 @@ namespace Editors
 		if (!m_nodeGuid.IsValid())
 			return nullptr;
 
-		const Node* pNode = LevelEditorModule::Get().GetConstLevel().GetConstSceneTree()->GetConstNode(m_nodeGuid);
+		const Node* pNode = LevelEditorModule::Get().GetConstLevelMgr()->GetConstSceneTree()->GetConstNode(m_nodeGuid);
 		if (!pNode)
 			return nullptr;
 
@@ -134,7 +135,7 @@ namespace Editors
 		if (!m_nodeGuid.IsValid())
 			return nullptr;
 
-		Node* pNode = LevelEditorModule::Get().GetLevel().GetSceneTree()->GetNode(m_nodeGuid);
+		Node* pNode = LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetNode(m_nodeGuid);
 		if (!pNode)
 			return nullptr;
 

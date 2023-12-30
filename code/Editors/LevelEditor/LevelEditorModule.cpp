@@ -7,6 +7,7 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/Component.h"
+#include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
@@ -162,32 +163,33 @@ namespace Editors
 	}
 
 	LevelEditorModule::LevelEditorModule()
-		: m_level()
-		, m_fovRad(DirectX::XMConvertToRadians(45.f))
+		: m_fovRad(DirectX::XMConvertToRadians(45.f))
 	{
+		m_pLevelMgr = new LevelMgr();
 		m_pSelectionMgr = new SelectionMgr();
 	}
 
 	LevelEditorModule::~LevelEditorModule()
 	{
 		delete m_pSelectionMgr;
+		delete m_pLevelMgr;
 	}
 
 	void LevelEditorModule::CreateEditor(Widgets::Widget* pParent)
 	{
-		CreateLevel(m_level, m_assetIdToMeshId, m_assetIdToMaterialId);
+		CreateLevel(*m_pLevelMgr, m_assetIdToMeshId, m_assetIdToMaterialId);
 
 		LevelEditorTab* pTab = new LevelEditorTab(pParent);
 	}
 
-	const LevelMgr& LevelEditorModule::GetConstLevel() const
+	const LevelMgr* LevelEditorModule::GetConstLevelMgr() const
 	{
-		return m_level;
+		return m_pLevelMgr;
 	}
 
-	LevelMgr& LevelEditorModule::GetLevel()
+	LevelMgr* LevelEditorModule::GetLevelMgr()
 	{
-		return m_level;
+		return m_pLevelMgr;
 	}
 
 	const SelectionMgr* LevelEditorModule::GetConstSelectionMgr() const
@@ -202,7 +204,7 @@ namespace Editors
 
 	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)
 	{
-		SceneTree* pSceneTree = m_level.GetSceneTree();
+		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
 
 		Node* pParent = pSceneTree->GetRoot();
 
@@ -228,7 +230,7 @@ namespace Editors
 	void LevelEditorModule::DeleteEntity(const Os::Guid& nodeGuid)
 	{
 		m_pSelectionMgr->Remove(nodeGuid);
-		bool res = m_level.GetSceneTree()->DeleteNode(nodeGuid);
+		bool res = m_pLevelMgr->GetSceneTree()->DeleteNode(nodeGuid);
 
 		if (res)
 			m_onDeleteEntity(nodeGuid);
@@ -236,7 +238,7 @@ namespace Editors
 
 	void LevelEditorModule::RenameEntity(const Os::Guid& nodeGuid, const std::string& name)
 	{
-		Node* pNode = m_level.GetSceneTree()->GetNode(nodeGuid);
+		Node* pNode = m_pLevelMgr->GetSceneTree()->GetNode(nodeGuid);
 		if (!pNode)
 			return;
 

@@ -7,14 +7,16 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/Widgets/CameraWidget.h"
+
 #include "Editors/LevelEditor/Component.h"
-#include "Editors/LevelEditor/Widgets/GizmoModel.h"
-#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
+#include "Editors/LevelEditor/Widgets/CameraWidget.h"
+#include "Editors/LevelEditor/Widgets/GizmoModel.h"
+#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -134,7 +136,7 @@ namespace Editors
 
 		//loop through the tree
 		const Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		const Node* pRoot = levelEditorModule.GetConstLevel().GetConstSceneTree()->GetConstRoot();
+		const Node* pRoot = levelEditorModule.GetConstLevelMgr()->GetConstSceneTree()->GetConstRoot();
 
 		DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
 
