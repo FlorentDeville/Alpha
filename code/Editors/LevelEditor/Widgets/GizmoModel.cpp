@@ -8,13 +8,15 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/Component.h"
+#include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
+#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 
 namespace Editors
 {
 	GizmoModel::GizmoModel()
-		: m_pNode(nullptr)
+		: m_nodeGuid()
 		, m_onNodeChangedEvent()
 	{
 		m_default.SetIdentity();
@@ -23,18 +25,18 @@ namespace Editors
 	GizmoModel::~GizmoModel()
 	{}
 
-	void GizmoModel::SetNode(Node* pNode)
+	void GizmoModel::SetNode(const Os::Guid& nodeGuid)
 	{
-		if (m_pNode == pNode)
+		if (m_nodeGuid == nodeGuid)
 			return;
 
-		m_pNode = pNode;
-		m_onNodeChangedEvent(pNode);
+		m_nodeGuid = nodeGuid;
+		m_onNodeChangedEvent(nodeGuid);
 	}
 
 	bool GizmoModel::ShouldRender()
 	{
-		return m_pNode != nullptr;
+		return m_nodeGuid.IsValid();
 	}
 
 	Core::CallbackId GizmoModel::OnNodeChanged(const OnNodeChangedEvent::Callback& callback)
@@ -44,10 +46,7 @@ namespace Editors
 
 	const Core::Mat44f GizmoModel::GetTransform() const
 	{
-		if (!m_pNode)
-			return m_default;
-
-		const Entity* pEntity = m_pNode->ToConstEntity();
+		const Entity* pEntity = GetConstEntity();
 		if (!pEntity)
 			return m_default;
 
@@ -66,10 +65,7 @@ namespace Editors
 
 	void GizmoModel::Translate(const Core::Vec4f& translate)
 	{
-		if (!m_pNode)
-			return;
-
-		Entity* pEntity = m_pNode->ToEntity();
+		Entity* pEntity = GetEntity();
 		if (!pEntity)
 			return;
 
@@ -81,10 +77,7 @@ namespace Editors
 
 	void GizmoModel::Rotate(const Core::Mat44f& rotation)
 	{
-		if (!m_pNode)
-			return;
-
-		Entity* pEntity = m_pNode->ToEntity();
+		Entity* pEntity = GetEntity();
 		if (!pEntity)
 			return;
 
@@ -107,10 +100,7 @@ namespace Editors
 
 	void GizmoModel::Scale(const Core::Vec4f& scale)
 	{
-		if (!m_pNode)
-			return;
-
-		Entity* pEntity = m_pNode->ToEntity();
+		Entity* pEntity = GetEntity();
 		if (!pEntity)
 			return;
 
@@ -124,5 +114,31 @@ namespace Editors
 
 		Core::Mat44f txLs = newTxWs * invTxPs;
 		pEntity->SetLs(txLs);
+	}
+
+	const Entity* GizmoModel::GetConstEntity() const
+	{
+		if (!m_nodeGuid.IsValid())
+			return nullptr;
+
+		const Node* pNode = LevelEditorModule::Get().GetConstLevel().GetConstSceneTree()->GetConstNode(m_nodeGuid);
+		if (!pNode)
+			return nullptr;
+
+		const Entity* pEntity = pNode->ToConstEntity();
+		return pEntity;
+	}
+
+	Entity* GizmoModel::GetEntity() const
+	{
+		if (!m_nodeGuid.IsValid())
+			return nullptr;
+
+		Node* pNode = LevelEditorModule::Get().GetLevel().GetSceneTree()->GetNode(m_nodeGuid);
+		if (!pNode)
+			return nullptr;
+
+		Entity* pEntity = pNode->ToEntity();
+		return pEntity;
 	}
 }

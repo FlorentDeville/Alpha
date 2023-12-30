@@ -439,19 +439,13 @@ namespace Editors
 	void LevelEditorTab::OnSelectionCleared_Gizmo()
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(nullptr);
+		pGizmoModel->SetNode(Os::Guid());
 	}
 
 	void LevelEditorTab::OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid)
 	{
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
-		Node* pNode = pSceneTree->GetNode(nodeGuid);
-		if (!pNode)
-			return;
-
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(pNode);
+		pGizmoModel->SetNode(nodeGuid);
 	}
 
 	void LevelEditorTab::OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid)
@@ -463,18 +457,13 @@ namespace Editors
 		if (selectionList.empty())
 		{
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-			pGizmoModel->SetNode(nullptr);
+			pGizmoModel->SetNode(Os::Guid());
 
 		}
 		else
 		{
-			SceneTree* pSceneTree = levelEditorModule.GetLevel().GetSceneTree();
-			Node* pNode = pSceneTree->GetNode(nodeGuid);
-			if (!pNode)
-				return;
-
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-			pGizmoModel->SetNode(pNode);
+			pGizmoModel->SetNode(nodeGuid);
 		}
 	}
 

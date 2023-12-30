@@ -82,7 +82,7 @@ namespace Editors
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 
-		void OnNodeChanged_Model(Node* pNode);
+		void OnNodeChanged_Model();
 
 		bool m_enabled;
 

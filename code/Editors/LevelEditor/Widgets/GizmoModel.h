@@ -7,6 +7,8 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 
+#include "OsWin/Guid.h"
+
 namespace Core
 {
 	class Mat44f;
@@ -14,6 +16,7 @@ namespace Core
 
 namespace Editors
 {
+	class Entity;
 	class Node;
 
 	class GizmoModel
@@ -22,11 +25,11 @@ namespace Editors
 		GizmoModel();
 		~GizmoModel();
 
-		void SetNode(Node* pNode);
+		void SetNode(const Os::Guid& nodeGuid);
 
 		bool ShouldRender();
 
-		using OnNodeChangedEvent = Core::CallbackList<void(Node*)>;
+		using OnNodeChangedEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
 
 		Core::CallbackId OnNodeChanged(const OnNodeChangedEvent::Callback& callback);
 
@@ -43,10 +46,13 @@ namespace Editors
 		virtual void Scale(const Core::Vec4f& scale);
 
 	private:
-		Node* m_pNode;
+		Os::Guid m_nodeGuid;
 
 		OnNodeChangedEvent m_onNodeChangedEvent;
 
 		Core::Mat44f m_default;
+
+		const Entity* GetConstEntity() const;
+		Entity* GetEntity() const;
 	};
 }

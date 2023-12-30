@@ -122,7 +122,7 @@ namespace Editors
 		if (!pModel)
 			return;
 
-		pModel->OnNodeChanged([this](Node* pNode) { OnNodeChanged_Model(pNode); });
+		pModel->OnNodeChanged([this](const Os::Guid& nodeGuid) { OnNodeChanged_Model(); });
 		m_sqt = pModel->GetTransform();
 	}
 
@@ -778,7 +778,7 @@ namespace Editors
 		return size;
 	}
 
-	void GizmoWidget::OnNodeChanged_Model(Node* pNode)
+	void GizmoWidget::OnNodeChanged_Model()
 	{
 		m_sqt = m_pModel->GetTransform();
 	}
