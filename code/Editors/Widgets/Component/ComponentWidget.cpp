@@ -23,7 +23,9 @@ namespace Editors
 	}
 
 	ComponentWidget::~ComponentWidget()
-	{}
+	{
+		delete m_pModel;
+	}
 
 	void ComponentWidget::Update(uint64_t dt)
 	{
@@ -36,6 +38,10 @@ namespace Editors
 
 	void ComponentWidget::SetModel(ComponentModel* pModel)
 	{
+		if (m_pModel == pModel)
+			return;
+
+		delete m_pModel;
 		m_pModel = pModel;
 	}
 
@@ -83,7 +89,15 @@ namespace Editors
 				MatrixWidget* pNewWidget = new MatrixWidget();
 				pNewWidget->SetValue(matrix);
 				pNewWidget->OnValueChanged([this, ii](const Core::Mat44f& value) { m_pModel->SetPropertyValue(ii, value); });
-				
+				m_pModel->OnPropertyValueChanged([this, pNewWidget, ii](int row)
+					{
+						if (row != ii)
+							return;
+
+						const Core::Mat44f& matrix = m_pModel->GetPropertyValue<Core::Mat44f>(ii);
+						pNewWidget->SetValue(matrix);
+					});
+
 				pItemLayout->AddWidget(pNewWidget);
 			}
 			break;

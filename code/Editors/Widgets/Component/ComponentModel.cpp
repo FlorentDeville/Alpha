@@ -36,13 +36,27 @@ namespace Editors
 				assert(false);
 				break;
 			}
+			Core::CallbackId cid = pProperty->OnValueChanged([this, ii](const PropertyValue& oldValue, const PropertyValue& newValue)
+				{
+					if (m_onPropertyValueChanged)
+						m_onPropertyValueChanged(ii);
+				});
 
+			m_cidPropertyOnValueChanged.push_back(cid);
 			m_modelsArray.push_back(pNewModel);
 		}
 	}
 
 	ComponentModel::~ComponentModel()
 	{
+		const int propertyCount = m_pComponent->GetPropertyCount();
+		for (int ii = 0; ii < propertyCount; ++ii)
+		{
+			Property* pProperty = m_pComponent->GetProperty(ii);
+			pProperty->DisconnectOnValueChanged(m_cidPropertyOnValueChanged[ii]);
+		}
+
+		m_cidPropertyOnValueChanged.clear();
 		m_modelsArray.clear();
 	}
 

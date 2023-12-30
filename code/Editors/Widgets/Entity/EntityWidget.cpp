@@ -42,7 +42,9 @@ namespace Editors
 	}
 
 	EntityWidget::~EntityWidget()
-	{}
+	{
+		delete m_pModel;
+	}
 
 	void EntityWidget::Update(uint64_t dt)
 	{

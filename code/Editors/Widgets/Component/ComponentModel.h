@@ -7,6 +7,8 @@
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/Property.h"
 
+#include "Widgets/WidgetEventMacro.h"
+
 #include <vector>
 #include <string>
 
@@ -37,10 +39,14 @@ namespace Editors
 
 		BaseModel* GetModel(int row) const;
 
+		EVENT_DECL(PropertyValueChanged, void(int row))
+
 	private:
 		Component* m_pComponent;
 
 		std::vector<BaseModel*> m_modelsArray;
+
+		std::vector<Core::CallbackId> m_cidPropertyOnValueChanged;
 
 		static std::string s_defaultValue;
 	};
