@@ -164,12 +164,20 @@ namespace Editors
 
 	LevelEditorModule::LevelEditorModule()
 		: m_fovRad(DirectX::XMConvertToRadians(45.f))
+		, m_pLevelMgr(nullptr)
+		, m_pSelectionMgr(nullptr)
+	{}
+
+	LevelEditorModule::~LevelEditorModule()
+	{}
+
+	void LevelEditorModule::Init()
 	{
 		m_pLevelMgr = new LevelMgr();
 		m_pSelectionMgr = new SelectionMgr();
 	}
 
-	LevelEditorModule::~LevelEditorModule()
+	void LevelEditorModule::Shutdown()
 	{
 		delete m_pSelectionMgr;
 		delete m_pLevelMgr;

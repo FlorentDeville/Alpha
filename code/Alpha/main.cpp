@@ -652,7 +652,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Init();
 
 	Editors::GamePlayer::InitSingleton();
-	Editors::LevelEditorModule::InitSingleton();
+	Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::InitSingleton();
+	levelEditorModule.Init();
+
 	Editors::MeshEditor::InitSingleton();
 	Editors::ShaderEditor::InitSingleton();
 
@@ -678,7 +680,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Editors::ShaderEditor::ReleaseSingleton();
 	Editors::MeshEditor::ReleaseSingleton();
+
+	levelEditorModule.Shutdown();
 	Editors::LevelEditorModule::ReleaseSingleton();
+
 	Editors::GamePlayer::ReleaseSingleton();
 
 	gameMgr.Release();

@@ -26,6 +26,9 @@ namespace Core
 			s_singleton = nullptr;
 		}
 
+		virtual void Init(){}
+		virtual void Shutdown(){}
+		
 	protected:
 		Singleton(){}
 		virtual ~Singleton(){}
