@@ -22,20 +22,19 @@ namespace Editors
 		{
 			BaseModel* pNewModel = nullptr;
 			Property* pProperty = m_pComponent->GetProperty(ii);
-			PropertyValue& value = pProperty->GetValue();
-			PropertyType type = value.GetType();
+			PropertyType type = pProperty->GetType();
 			switch (type)
 			{
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
 			{
-				pNewModel = new AssetIdModel(value.GetValue<Systems::AssetId>(), type);
+				pNewModel = new AssetIdModel(pProperty->GetValue<Systems::AssetId>(), type);
 			}
 			break;
 
 			case PropertyType::kMat44f:
 			{
-				pNewModel = new MatrixModel(&value.GetValue<Core::Mat44f>());
+				pNewModel = new MatrixModel(&pProperty->GetValue<Core::Mat44f>());
 			}
 			break;
 				
@@ -86,7 +85,7 @@ namespace Editors
 
 	PropertyType ComponentModel::GetDataType(int rowId, int columnId) const
 	{
-		return m_pComponent->GetProperty(rowId)->GetConstValue().GetType();
+		return m_pComponent->GetProperty(rowId)->GetType();
 	}
 
 	BaseModel* ComponentModel::GetSubModel(int rowId, int columnId)

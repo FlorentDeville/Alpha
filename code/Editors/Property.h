@@ -6,6 +6,7 @@
 
 #include <string>
 
+#include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
@@ -33,7 +34,10 @@ namespace Editors
 	{
 	public:
 		PropertyValue();
+		PropertyValue(const PropertyValue& other);
 		~PropertyValue();
+
+		bool operator==(const PropertyValue& other) const;
 
 		PropertyType GetType() const;
 
@@ -82,11 +86,30 @@ namespace Editors
 		~Property();
 
 		const std::string& GetName() const;
-		PropertyValue& GetValue();
-		const PropertyValue& GetConstValue() const;
+		PropertyType GetType() const;
+
+		template <class T> T& GetValue()
+		{
+			return m_value.GetValue<T>();
+		}
+
+		template <class T> const T& GetValue() const
+		{
+			return m_value.GetValue<T>();
+		}
+
+		void SetMatrix(const Core::Mat44f& value);
+		void SetMeshAssetId(const Systems::AssetId& value);
+		void SetMaterialAssetId(const Systems::AssetId& value);
+
+		using OnValueChangedEvent = Core::CallbackList<void(const PropertyValue& oldValue, const PropertyValue& newValue)>;
+		Core::CallbackId OnValueChanged(const OnValueChangedEvent::Callback& callback);
+		void DisconnectOnValueChanged(const Core::CallbackId& id);
 
 	private:
 		std::string m_name;
 		PropertyValue m_value;
+
+		OnValueChangedEvent m_onValueChanged;
 	};
 }

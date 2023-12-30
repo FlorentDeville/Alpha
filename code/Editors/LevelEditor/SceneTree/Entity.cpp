@@ -93,7 +93,7 @@ namespace Editors
 		{
 			if (const Property* pProperty = pComponent->GetProperty("Local"))
 			{
-				lsTransform = pProperty->GetConstValue().GetValue<Core::Mat44f>();
+				lsTransform = pProperty->GetValue<Core::Mat44f>();
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace Editors
 		if (!pProperty)
 			return s_default;
 
-		return pProperty->GetConstValue().GetValue<Core::Mat44f>();
+		return pProperty->GetValue<Core::Mat44f>();
 	}
 
 	void Entity::SetLs(const Core::Mat44f& txLs)
@@ -145,7 +145,7 @@ namespace Editors
 		if (!pProperty)
 			return;
 
-		pProperty->GetValue().SetMatrix(txLs);
+		pProperty->SetMatrix(txLs);
 	}
 
 	void Entity::SetName(const std::string& name)

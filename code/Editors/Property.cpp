@@ -16,8 +16,28 @@ namespace Editors
 		: m_type(kUnknown)
 	{}
 
+	PropertyValue::PropertyValue(const PropertyValue& other)
+		: m_type(other.GetType())
+	{
+		if (other.GetType() == kString)
+			m_internalValue.m_string = other.GetValue<std::string>();
+		else
+			memcpy(&m_internalValue, &other.m_internalValue, sizeof(InternalValue));
+	}
+
 	PropertyValue::~PropertyValue()
 	{}
+
+	bool PropertyValue::operator==(const PropertyValue& other) const
+	{
+		if (m_type != other.GetType())
+			return false;
+
+		if (m_type == kString)
+			return m_internalValue.m_string == other.GetValue<std::string>();
+
+		return memcmp(&m_internalValue, &other.m_internalValue, sizeof(InternalValue)) == 0;
+	}
 
 	PropertyType PropertyValue::GetType() const
 	{
@@ -65,13 +85,54 @@ namespace Editors
 		return m_name;
 	}
 
-	PropertyValue& Property::GetValue()
+	PropertyType Property::GetType() const
 	{
-		return m_value;
+		return m_value.GetType();
 	}
 
-	const PropertyValue& Property::GetConstValue() const
+	void Property::SetMatrix(const Core::Mat44f& value)
 	{
-		return m_value;
+		PropertyValue oldValue = m_value;
+		m_value.SetMatrix(value);
+
+		if (m_value == oldValue)
+			return;
+
+		if (m_onValueChanged)
+			m_onValueChanged(oldValue, m_value);
+	}
+
+	void Property::SetMeshAssetId(const Systems::AssetId& value)
+	{
+		PropertyValue oldValue = m_value;
+		m_value.SetMeshAssetId(value);
+
+		if (m_value == oldValue)
+			return;
+
+		if (m_onValueChanged)
+			m_onValueChanged(oldValue, m_value);
+	}
+
+	void Property::SetMaterialAssetId(const Systems::AssetId& value)
+	{
+		PropertyValue oldValue = m_value;
+		m_value.SetMaterialAssetId(value);
+
+		if (m_value == oldValue)
+			return;
+
+		if (m_onValueChanged)
+			m_onValueChanged(oldValue, m_value);
+	}
+
+	Core::CallbackId Property::OnValueChanged(const OnValueChangedEvent::Callback& callback)
+	{
+		return m_onValueChanged.Connect(callback);
+	}
+
+	void Property::DisconnectOnValueChanged(const Core::CallbackId& id)
+	{
+		m_onValueChanged.Disconnect(id);
 	}
 }

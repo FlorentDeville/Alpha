@@ -77,7 +77,7 @@ namespace Editors
 		const Property* pProperty = GetProperty(name);
 		assert(pProperty);
 
-		id = pProperty->GetConstValue().GetValue<Systems::AssetId>();
+		id = pProperty->GetValue<Systems::AssetId>();
 	}
 
 	void Component::GetPropertyValue(const std::string& name, Core::Mat44f& m) const
@@ -85,7 +85,7 @@ namespace Editors
 		const Property* pProperty = GetProperty(name);
 		assert(pProperty);
 
-		m = pProperty->GetConstValue().GetValue<Core::Mat44f>();
+		m = pProperty->GetValue<Core::Mat44f>();
 	}
 
 	void Component::SetPropertyValue(const std::string& name, Systems::AssetId id)
@@ -93,15 +93,14 @@ namespace Editors
 		Property* pProperty = GetProperty(name);
 		assert(pProperty);
 
-		PropertyValue& value = pProperty->GetValue();
-		switch (value.GetType())
+		switch (pProperty->GetType())
 		{
 		case PropertyType::kAssetMaterial:
-			value.SetMaterialAssetId(id);
+			pProperty->SetMaterialAssetId(id);
 			break;
 
 		case PropertyType::kAssetMesh:
-			value.SetMeshAssetId(id);
+			pProperty->SetMeshAssetId(id);
 			break;
 
 		default:
@@ -115,6 +114,6 @@ namespace Editors
 	{
 		Property* pProperty = GetProperty(name);
 		assert(pProperty);
-		pProperty->GetValue().SetMatrix(m);
+		pProperty->SetMatrix(m);
 	}
 }
