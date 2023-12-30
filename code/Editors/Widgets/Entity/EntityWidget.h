@@ -15,7 +15,7 @@ namespace Widgets
 
 namespace Editors
 {
-	class BaseModel;
+	class EntityModel;
 	class ComponentWidget;
 
 	class EntityWidget : public Widgets::Widget
@@ -26,10 +26,10 @@ namespace Editors
 
 		void Update(uint64_t dt) override;
 
-		void SetModel(BaseModel* pModel);
+		void SetModel(EntityModel* pModel);
 
 	private:
-		BaseModel* m_pModel;
+		EntityModel* m_pModel;
 
 		Rendering::TextureId m_collapsedIcon;
 		Rendering::TextureId m_expandedIcon;

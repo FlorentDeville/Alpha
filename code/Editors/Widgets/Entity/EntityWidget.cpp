@@ -4,8 +4,9 @@
 
 #include "Editors/Widgets/Entity/EntityWidget.h"
 
-#include "Editors/Widgets/BaseModel.h"
+#include "Editors/Widgets/Component/ComponentModel.h"
 #include "Editors/Widgets/Component/ComponentWidget.h"
+#include "Editors/Widgets/Entity/EntityModel.h"
 
 #include "Rendering/Texture/TextureMgr.h"
 #include "Rendering/Texture/Texture.h"
@@ -52,7 +53,7 @@ namespace Editors
 		}
 	}
 
-	void EntityWidget::SetModel(BaseModel* pModel)
+	void EntityWidget::SetModel(EntityModel* pModel)
 	{
 		if (m_pModel == pModel)
 			return;
@@ -74,7 +75,7 @@ namespace Editors
 
 		const int FIELD_HEIGHT = 15;
 
-		int rowCount = m_pModel->GetRowCount();
+		int rowCount = m_pModel->GetComponentCount();
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
 			Widgets::Layout* pComponentLayout = new Widgets::Layout();
@@ -99,7 +100,7 @@ namespace Editors
 
 			Widgets::Label* pNameLabel = new Widgets::Label();
 
-			pNameLabel->SetText(m_pModel->GetData(ii, 0));
+			pNameLabel->SetText(m_pModel->GetComponentName(ii));
 			pNameLabel->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT + 3));
 			pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 			pNameLayout->AddWidget(pNameLabel);
@@ -107,7 +108,7 @@ namespace Editors
 			pComponentLayout->AddWidget(pNameLayout);
 
 			ComponentWidget* pComponentWidget = new ComponentWidget();
-			pComponentWidget->SetModel(m_pModel->GetSubModel(ii, 1));
+			pComponentWidget->SetModel(m_pModel->GetComponentModel(ii));
 
 			pComponentLayout->AddWidget(pComponentWidget);
 

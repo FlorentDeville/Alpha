@@ -14,31 +14,27 @@ namespace Editors
 	std::string EntityModel::s_default = "Unknown Value";
 
 	EntityModel::EntityModel(Entity* pEntity)
-		: BaseModel()
-		, m_pEntity(pEntity)
+		: m_pEntity(pEntity)
 	{
 		if (!pEntity)
 			return;
 
 		int count = m_pEntity->GetComponentCount();
-		m_subModels.reserve(count);
+		m_cachedModelArray.reserve(count);
 		for (int ii = 0; ii < count; ++ii)
 		{
 			Component* pComponent = m_pEntity->GetComponent(ii);
 			ComponentModel* pNewModel = new ComponentModel(pComponent);
-			m_subModels.push_back(pNewModel);
+			m_cachedModelArray.push_back(pNewModel);
 		}
 	}
 
 	EntityModel::~EntityModel()
 	{
-		for (const BaseModel* pModel : m_subModels)
-			delete pModel;
-
-		m_subModels.clear();
+		m_cachedModelArray.clear();
 	}
 
-	int EntityModel::GetRowCount() const
+	int EntityModel::GetComponentCount() const
 	{
 		if (!m_pEntity)
 			return 0;
@@ -46,30 +42,23 @@ namespace Editors
 		return m_pEntity->GetComponentCount();
 	}
 
-	int EntityModel::GetColumnCount() const
-	{
-		return 2; //0 : component name, 1 : component
-	}
-
-	const std::string& EntityModel::GetData(int rowId, int columnId) const
+	const std::string& EntityModel::GetComponentName(int row) const
 	{
 		if (!m_pEntity)
 			return s_default;
-
-		assert(columnId == 0);
 	
-		const Component* pComponent = m_pEntity->GetComponent(rowId);
+		const Component* pComponent = m_pEntity->GetComponent(row);
 		assert(pComponent);
 
 		return pComponent->GetName();
 	}
 
-	BaseModel* EntityModel::GetSubModel(int rowId, int columnId)
+	ComponentModel* EntityModel::GetComponentModel(int row) const
 	{
 		if (!m_pEntity)
 			return nullptr;
 
-		assert(columnId == 1);
-		return m_subModels[rowId];
+		assert(row >= 0 && row < GetComponentCount());
+		return m_cachedModelArray[row];
 	}
 }

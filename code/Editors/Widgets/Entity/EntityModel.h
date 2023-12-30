@@ -4,31 +4,29 @@
 
 #pragma once
 
-#include "Editors/Widgets/BaseModel.h"
-
+#include <string>
 #include <vector>
 
 namespace Editors
 {
+	class ComponentModel;
 	class Entity;
 
-	class EntityModel : public BaseModel
+	class EntityModel
 	{
 	public:
 		EntityModel(Entity* pEntity);
 		~EntityModel();
 
-		int GetRowCount() const override;
-		int GetColumnCount() const override;
+		int GetComponentCount() const;
 
-		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
+		const std::string& GetComponentName(int row) const;
 
-		BaseModel* GetSubModel(int rowId = 0, int columnId = 0) override;
+		ComponentModel* GetComponentModel(int row) const;
 
 	private:
-		std::vector<BaseModel*> m_subModels;
-
-		Entity* m_pEntity;
+		Entity* m_pEntity; //we should have an id here instead of a pointer
+		std::vector<ComponentModel*> m_cachedModelArray;
 
 		static std::string s_default;
 	};
