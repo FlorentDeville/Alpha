@@ -38,7 +38,6 @@
     <ClInclude Include="Widgets\Entity\EntityModel.h" />
     <ClInclude Include="Widgets\Entity\EntityWidget.h" />
     <ClInclude Include="Widgets\List\Models\AssetListModel.h" />
-    <ClInclude Include="Widgets\Matrix\MatrixModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
     <ClInclude Include="Widgets\Tree\LevelTreeModel.h" />
     <ClInclude Include="Widgets\Tree\TreeWidget.h" />
@@ -70,7 +69,6 @@
     <ClCompile Include="Widgets\Entity\EntityModel.cpp" />
     <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
     <ClCompile Include="Widgets\List\Models\AssetListModel.cpp" />
-    <ClCompile Include="Widgets\Matrix\MatrixModel.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
     <ClCompile Include="Widgets\Tree\LevelTreeModel.cpp" />
     <ClCompile Include="Widgets\Tree\TreeWidget.cpp" />

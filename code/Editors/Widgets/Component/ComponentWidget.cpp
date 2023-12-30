@@ -78,8 +78,12 @@ namespace Editors
 
 			case PropertyType::kMat44f:
 			{
+				const Core::Mat44f& matrix = m_pModel->GetPropertyValue<Core::Mat44f>(ii);
+
 				MatrixWidget* pNewWidget = new MatrixWidget();
-				pNewWidget->SetModel(m_pModel->GetModel(ii));
+				pNewWidget->SetValue(matrix);
+				pNewWidget->OnValueChanged([this, ii](const Core::Mat44f& value) { m_pModel->SetPropertyValue(ii, value); });
+				
 				pItemLayout->AddWidget(pNewWidget);
 			}
 			break;

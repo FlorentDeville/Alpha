@@ -4,18 +4,31 @@
 
 #include "Editors/Widgets/Matrix/MatrixWidget.h"
 
-#include "Editors/Widgets/BaseModel.h"
-
-//#include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/TextBox.h"
+
+#include <sstream>
+
+float StringToFloat(const std::string value)
+{
+	//first check if the string is a float
+	std::istringstream iss(value);
+
+	float f;
+	iss >> f;
+	if (!iss.eof() || iss.fail())
+	{
+		f = 0; // an error occured
+	}
+
+	return f;
+}
 
 namespace Editors
 {
 	MatrixWidget::MatrixWidget()
 		: Widget()
-		, m_pModel(nullptr)
-		, m_isDirtyValue(false)
+		, m_cachedMatrix()
 	{
 		const int FIELD_HEIGHT = 20;
 		const int FIELD_WIDTH = 50;
@@ -37,7 +50,15 @@ namespace Editors
 			{
 				Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
 				pNewTextBox->SetSize(DirectX::XMUINT2(FIELD_WIDTH, FIELD_HEIGHT));
-				pNewTextBox->OnValidate([this, ii, jj](const std::string& value) -> bool { m_pModel->SetData(ii, jj, value); return true; });
+				pNewTextBox->OnValidate([this, ii, jj](const std::string& value) -> bool 
+					{ 
+						float floatValue = StringToFloat(value);
+						m_cachedMatrix.Set(ii, jj, floatValue);
+						if (m_onValueChanged)
+							m_onValueChanged(m_cachedMatrix);
+
+						return true;
+					});
 				m_pTextBox[ii][jj] = pNewTextBox;
 				pRowLayout->AddWidget(pNewTextBox);
 			}
@@ -47,24 +68,19 @@ namespace Editors
 	MatrixWidget::~MatrixWidget()
 	{}
 
-	void MatrixWidget::SetModel(BaseModel* pModel)
+	void MatrixWidget::SetValue(const Core::Mat44f& value)
 	{
-		m_pModel = pModel;
-		m_isDirtyValue = true;
-	}
-
-	void MatrixWidget::Update(uint64_t dt)
-	{
-		if (m_isDirtyValue)
+		m_cachedMatrix = value;
+		for (int ii = 0; ii < 4; ++ii)
 		{
-			for (int ii = 0; ii < 4; ++ii)
+			for (int jj = 0; jj < 3; ++jj)
 			{
-				for (int jj = 0; jj < 3; ++jj)
-				{
-					m_pTextBox[ii][jj]->SetText(m_pModel->GetData(ii, jj));
-				}
+				const int BUFFER_SIZE = 9;
+				char buffer[BUFFER_SIZE] = { '\0' };
+				snprintf(buffer, BUFFER_SIZE, "%.2f", value.Get(ii, jj));
+
+				m_pTextBox[ii][jj]->SetText(buffer);
 			}
-			m_isDirtyValue = false;
 		}
 	}
 }

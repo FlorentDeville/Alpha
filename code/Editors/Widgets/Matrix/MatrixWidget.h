@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Math/Mat44f.h"
 #include "Widgets/Widget.h"
 
 namespace Widgets
@@ -22,16 +23,13 @@ namespace Editors
 		MatrixWidget();
 		~MatrixWidget();
 
-		void SetModel(BaseModel* pModel);
+		void SetValue(const Core::Mat44f& value);
 
-		void Update(uint64_t dt) override;
-
+		EVENT_DECL(ValueChanged, void(const Core::Mat44f&))
 	private:
-		BaseModel* m_pModel;
+		Core::Mat44f m_cachedMatrix;
 
 		Widgets::Layout* m_pLayout;
 		Widgets::TextBox* m_pTextBox[4][3];
-
-		bool m_isDirtyValue;
 	};
 }

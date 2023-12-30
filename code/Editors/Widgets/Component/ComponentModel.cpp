@@ -6,9 +6,6 @@
 
 #include "Editors/Widgets/AssetId/AssetIdModel.h"
 #include "Editors/Widgets/BaseModel.h"
-#include "Editors/Widgets/Matrix/MatrixModel.h"
-
-#include "Editors/LevelEditor/Component.h"
 
 namespace Editors
 {
@@ -33,11 +30,8 @@ namespace Editors
 			break;
 
 			case PropertyType::kMat44f:
-			{
-				pNewModel = new MatrixModel(&pProperty->GetValue<Core::Mat44f>());
-			}
-			break;
-				
+				break;
+
 			default:
 				assert(false);
 				break;
@@ -74,6 +68,12 @@ namespace Editors
 			return PropertyType::kUnknown;
 
 		return m_pComponent->GetProperty(row)->GetType();
+	}
+
+	void ComponentModel::SetPropertyValue(int row, const Core::Mat44f& value)
+	{
+		Property* pProperty = m_pComponent->GetProperty(row);
+		pProperty->SetMatrix(value);
 	}
 
 	BaseModel* ComponentModel::GetModel(int row) const

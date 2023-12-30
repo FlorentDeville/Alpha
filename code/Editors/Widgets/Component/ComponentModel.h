@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "Editors/LevelEditor/Component.h"
+#include "Editors/Property.h"
+
 #include <vector>
 #include <string>
 
@@ -23,6 +26,14 @@ namespace Editors
 
 		const std::string& GetPropertyName(int row) const;
 		PropertyType GetPropertyType(int row) const;
+
+		template <class T> const T& GetPropertyValue(int row) const
+		{
+			Property* pProperty = m_pComponent->GetProperty(row);
+			return pProperty->GetValue<T>();
+		}
+
+		void SetPropertyValue(int row, const Core::Mat44f& value);
 
 		BaseModel* GetModel(int row) const;
 
