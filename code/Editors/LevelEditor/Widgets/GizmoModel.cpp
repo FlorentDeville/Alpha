@@ -19,19 +19,51 @@ namespace Editors
 	GizmoModel::GizmoModel()
 		: m_nodeGuid()
 		, m_onNodeChangedEvent()
+		, m_cidOnPropertyValueChanged()
 	{
 		m_default.SetIdentity();
 	}
 
 	GizmoModel::~GizmoModel()
-	{}
+	{
+		if (Entity* pEntity = GetEntity())
+		{
+			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
+			{
+				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
+			}
+		}
+	}
 
 	void GizmoModel::SetNode(const Os::Guid& nodeGuid)
 	{
 		if (m_nodeGuid == nodeGuid)
 			return;
 
+		if (Entity* pEntity = GetEntity())
+		{
+			if(Property* pProperty = pEntity->GetProperty("Transform", "Local"))
+			{
+				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
+			}
+		}
+		
 		m_nodeGuid = nodeGuid;
+
+		if (Entity* pEntity = GetEntity())
+		{
+			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
+			{
+				m_cidOnPropertyValueChanged = pProperty->OnValueChanged([this](const PropertyValue& oldValue, const PropertyValue& newValue) 
+					{
+						if (m_onNodeChangedEvent)
+						{
+							m_onNodeChangedEvent(m_nodeGuid);
+						}
+					});
+			}
+		}
+		
 		m_onNodeChangedEvent(nodeGuid);
 	}
 
@@ -122,7 +154,11 @@ namespace Editors
 		if (!m_nodeGuid.IsValid())
 			return nullptr;
 
-		const Node* pNode = LevelEditorModule::Get().GetConstLevelMgr()->GetConstSceneTree()->GetConstNode(m_nodeGuid);
+		const LevelMgr* pLevelMgr = LevelEditorModule::Get().GetConstLevelMgr();
+		if (!pLevelMgr)
+			return nullptr;
+
+		const Node* pNode = pLevelMgr->GetConstSceneTree()->GetConstNode(m_nodeGuid);
 		if (!pNode)
 			return nullptr;
 
@@ -135,7 +171,11 @@ namespace Editors
 		if (!m_nodeGuid.IsValid())
 			return nullptr;
 
-		Node* pNode = LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetNode(m_nodeGuid);
+		LevelMgr* pLevelMgr = LevelEditorModule::Get().GetLevelMgr();
+		if (!pLevelMgr)
+			return nullptr;
+
+		Node* pNode = pLevelMgr->GetSceneTree()->GetNode(m_nodeGuid);
 		if (!pNode)
 			return nullptr;
 

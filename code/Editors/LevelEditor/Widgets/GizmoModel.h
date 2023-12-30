@@ -50,6 +50,8 @@ namespace Editors
 
 		OnNodeChangedEvent m_onNodeChangedEvent;
 
+		Core::CallbackId m_cidOnPropertyValueChanged;
+
 		Core::Mat44f m_default;
 
 		const Entity* GetConstEntity() const;
