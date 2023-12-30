@@ -14,7 +14,7 @@
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\Component.h" />
     <ClInclude Include="LevelEditor\SceneTree\Entity.h" />
-    <ClInclude Include="LevelEditor\Level.h" />
+    <ClInclude Include="LevelEditor\LevelMgr.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
     <ClInclude Include="LevelEditor\SceneTree\Node.h" />
     <ClInclude Include="LevelEditor\SceneTree\SceneTree.h" />
@@ -46,7 +46,7 @@
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\Component.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Entity.cpp" />
-    <ClCompile Include="LevelEditor\Level.cpp" />
+    <ClCompile Include="LevelEditor\LevelMgr.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Node.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp" />

@@ -39,7 +39,7 @@
     <ClInclude Include="LevelEditor\SceneTree\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\Level.h">
+    <ClInclude Include="LevelEditor\LevelMgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h">
@@ -125,7 +125,7 @@
     <ClCompile Include="Property.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\Level.cpp">
+    <ClCompile Include="LevelEditor\LevelMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\Component.cpp">

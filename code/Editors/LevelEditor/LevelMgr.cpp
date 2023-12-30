@@ -2,29 +2,29 @@
 /* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/Level.h"
+#include "Editors/LevelEditor/LevelMgr.h"
 
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 
 namespace Editors
 {
-	Level::Level()
+	LevelMgr::LevelMgr()
 		: m_name()
 	{
 		m_pSceneTree = new SceneTree();
 	}
 
-	Level::~Level()
+	LevelMgr::~LevelMgr()
 	{
 		delete m_pSceneTree;
 	}
 
-	const SceneTree* Level::GetConstSceneTree() const
+	const SceneTree* LevelMgr::GetConstSceneTree() const
 	{
 		return m_pSceneTree;
 	}
 
-	SceneTree* Level::GetSceneTree()
+	SceneTree* LevelMgr::GetSceneTree()
 	{
 		return m_pSceneTree;
 	}

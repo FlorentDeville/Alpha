@@ -46,7 +46,7 @@ namespace Editors
 		return pRendering;
 	}
 
-	void CreateLevel(Level& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
+	void CreateLevel(LevelMgr& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
 	{
 		//load all the resources we will use
 		Systems::AssetId meshPlane(2);
@@ -180,12 +180,12 @@ namespace Editors
 		LevelEditorTab* pTab = new LevelEditorTab(pParent);
 	}
 
-	const Level& LevelEditorModule::GetConstLevel() const
+	const LevelMgr& LevelEditorModule::GetConstLevel() const
 	{
 		return m_level;
 	}
 
-	Level& LevelEditorModule::GetLevel()
+	LevelMgr& LevelEditorModule::GetLevel()
 	{
 		return m_level;
 	}

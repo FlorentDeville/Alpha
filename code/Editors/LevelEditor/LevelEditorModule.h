@@ -9,7 +9,7 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 
-#include "Editors/LevelEditor/Level.h"
+#include "Editors/LevelEditor/LevelMgr.h"
 
 #include <map>
 
@@ -48,8 +48,8 @@ namespace Editors
 
 		void CreateEditor(Widgets::Widget* pParent);
 
-		const Level& GetConstLevel() const;
-		Level& GetLevel();
+		const LevelMgr& GetConstLevel() const;
+		LevelMgr& GetLevel();
 
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
@@ -87,7 +87,7 @@ namespace Editors
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
 
 	private:
-		Level m_level;
+		LevelMgr m_level;
 		SelectionMgr* m_pSelectionMgr;
 
 		//camera state

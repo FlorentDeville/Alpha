@@ -4,20 +4,17 @@
 
 #pragma once
 
-//#include "Core/Tree/Tree.h"
-
 #include <string>
 
 namespace Editors
 {
-	class Entity;
 	class SceneTree;
 
-	class Level
+	class LevelMgr
 	{
 	public:
-		Level();
-		~Level();
+		LevelMgr();
+		~LevelMgr();
 
 		const SceneTree* GetConstSceneTree() const;
 		SceneTree* GetSceneTree();
