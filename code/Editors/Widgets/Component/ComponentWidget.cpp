@@ -4,10 +4,10 @@
 
 #include "Editors/Widgets/Component/ComponentWidget.h"
 
-#include "Editors/Widgets/BaseModel.h"
 #include "Editors/Widgets/AssetId/AssetIdWidget.h"
+#include "Editors/Widgets/Component/ComponentModel.h"
 #include "Editors/Widgets/Matrix/MatrixWidget.h"
-
+#include "Editors/Property.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/WidgetMgr.h"
@@ -34,7 +34,7 @@ namespace Editors
 		}
 	}
 
-	void ComponentWidget::SetModel(BaseModel* pModel)
+	void ComponentWidget::SetModel(ComponentModel* pModel)
 	{
 		m_pModel = pModel;
 	}
@@ -48,7 +48,7 @@ namespace Editors
 
 		const int FIELD_HEIGHT = 20;
 		const int NAME_WIDTH = 100;
-		const int propertyCount = m_pModel->GetRowCount();
+		const int propertyCount = m_pModel->GetPropertyCount();
 		for (int ii = 0; ii < propertyCount; ++ii)
 		{
 			Widgets::Layout* pItemLayout = new Widgets::Layout(0, FIELD_HEIGHT, 0, 0);
@@ -57,19 +57,19 @@ namespace Editors
 			pGridLayout->AddWidget(pItemLayout);
 
 			//add property name
-			Widgets::Label* pNameLabel = new Widgets::Label(0, 0, 1, m_pModel->GetData(ii, 0));
+			Widgets::Label* pNameLabel = new Widgets::Label(0, 0, 1, m_pModel->GetPropertyName(ii));
 			pNameLabel->SetSize(DirectX::XMUINT2(NAME_WIDTH, FIELD_HEIGHT));
 			pNameLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pItemLayout->AddWidget(pNameLabel);
 
-			PropertyType type = m_pModel->GetDataType(ii, 1);
+			PropertyType type = m_pModel->GetPropertyType(ii);
 			switch (type)
 			{
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
 			{
 				AssetIdWidget* pNewWidget = new AssetIdWidget();
-				pNewWidget->SetModel(m_pModel->GetSubModel(ii, 0));
+				pNewWidget->SetModel(m_pModel->GetModel(ii));
 				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
 				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 				pItemLayout->AddWidget(pNewWidget);
@@ -79,7 +79,7 @@ namespace Editors
 			case PropertyType::kMat44f:
 			{
 				MatrixWidget* pNewWidget = new MatrixWidget();
-				pNewWidget->SetModel(m_pModel->GetSubModel(ii, 0));
+				pNewWidget->SetModel(m_pModel->GetModel(ii));
 				pItemLayout->AddWidget(pNewWidget);
 			}
 			break;

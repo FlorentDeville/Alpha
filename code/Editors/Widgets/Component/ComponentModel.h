@@ -4,32 +4,32 @@
 
 #pragma once
 
-#include "Editors/Widgets/BaseModel.h"
-
 #include <vector>
+#include <string>
 
 namespace Editors
 {
+	class BaseModel;
 	class Component;
+	enum PropertyType;
 
-	class ComponentModel : public BaseModel
+	class ComponentModel
 	{
 	public:
 		ComponentModel(Component* pComponent);
 		~ComponentModel();
 
-		int GetRowCount() const override;
-		int GetColumnCount() const override;
+		int GetPropertyCount() const;
 
-		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
-		PropertyType GetDataType(int rowId = 0, int columnId = 0) const override;
+		const std::string& GetPropertyName(int row) const;
+		PropertyType GetPropertyType(int row) const;
 
-		BaseModel* GetSubModel(int rowId = 0, int columnId = 0) override;
+		BaseModel* GetModel(int row) const;
 
 	private:
 		Component* m_pComponent;
 
-		std::vector<BaseModel*> m_models;
+		std::vector<BaseModel*> m_modelsArray;
 
 		static std::string s_defaultValue;
 	};

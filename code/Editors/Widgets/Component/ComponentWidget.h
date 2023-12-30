@@ -8,7 +8,7 @@
 
 namespace Editors
 {
-	class BaseModel;
+	class ComponentModel;
 
 	class ComponentWidget : public Widgets::Widget
 	{
@@ -18,10 +18,10 @@ namespace Editors
 
 		void Update(uint64_t dt) override;
 
-		void SetModel(BaseModel* pModel);
+		void SetModel(ComponentModel* pModel);
 
 	private:
-		BaseModel* m_pModel;
+		ComponentModel* m_pModel;
 
 		bool m_isDirtyWidget;
 
