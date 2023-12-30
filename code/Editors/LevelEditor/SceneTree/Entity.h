@@ -17,6 +17,7 @@ namespace Core
 namespace Editors
 {
 	class Component;
+	class Property;
 
 	class Entity : public Node
 	{
@@ -33,6 +34,9 @@ namespace Editors
 		Component* GetComponent(const std::string& name);
 		const Component* GetComponent(int index) const;
 		Component* GetComponent(int index);
+
+		Property* GetProperty(const std::string& componentName, const std::string& propertyName);
+		const Property* GetConstProperty(const std::string& componentName, const std::string& propertyName) const;
 
 		int GetComponentCount() const;
 

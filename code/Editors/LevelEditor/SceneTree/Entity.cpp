@@ -75,6 +75,24 @@ namespace Editors
 		return it->second;
 	}
 
+	Property* Entity::GetProperty(const std::string& componentName, const std::string& propertyName)
+	{
+		Component* pComponent = GetComponent(componentName);
+		if (!pComponent)
+			return nullptr;
+
+		return pComponent->GetProperty(propertyName);
+	}
+
+	const Property* Entity::GetConstProperty(const std::string& componentName, const std::string& propertyName) const
+	{
+		const Component* pComponent = GetComponent(componentName);
+		if (!pComponent)
+			return nullptr;
+
+		return pComponent->GetProperty(propertyName);
+	}
+
 	int Entity::GetComponentCount() const
 	{
 		return static_cast<int>(m_components.size());
