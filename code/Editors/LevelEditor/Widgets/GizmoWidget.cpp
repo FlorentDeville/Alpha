@@ -41,6 +41,10 @@ namespace Editors
 		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
 		, m_sqt()
 		, m_enabled(true)
+		, m_snapEnabled(false)
+		, m_translationSnapDistance(1.f)
+		, m_rotationSnapDistance(3.14f * 0.25f)
+		, m_scaleSnapDistance(2.f)
 	{}
 
 	GizmoWidget::~GizmoWidget()
@@ -437,8 +441,25 @@ namespace Editors
 
 			closestPointOnAxis = closestPointOnAxis - m_translationOffset;
 			closestPointOnAxis.Set(3, 1);
-			m_sqt.SetTranslation(closestPointOnAxis);
 
+			if (m_snapEnabled)
+			{
+				Core::Vec4f dt = closestPointOnAxis - m_sqt.GetTranslation();
+				float distance = dt.Dot(bDir);
+				float absDistance = abs(distance);
+				if (absDistance < m_translationSnapDistance)
+				{
+					return;
+				}
+
+				float sign = 1;
+				if (distance < 0)
+					sign = -1;
+
+				closestPointOnAxis = m_sqt.GetTranslation() + bDir * m_translationSnapDistance * sign;
+			}
+
+			m_sqt.SetTranslation(closestPointOnAxis);
 			m_pModel->Translate(closestPointOnAxis);
 		}
 	}
@@ -481,7 +502,31 @@ namespace Editors
 		if (sin < 0)
 			angle = DirectX::XM_2PI - angle;
 		
+		//here angle is in radian, always positive between 0 and 2PI.
+
 		float dtAngle = angle - m_previousAngle;
+		if (dtAngle > DirectX::XM_PI)
+			dtAngle = dtAngle - DirectX::XM_2PI;
+		
+		if(dtAngle < -DirectX::XM_PI)
+			dtAngle = dtAngle + DirectX::XM_2PI;
+
+		// here dtAngle is always the shortest angle. ie [0, PI] or [0, -PI]
+		if (m_snapEnabled)
+		{
+			float absDtAngle = abs(dtAngle);
+			if (absDtAngle < m_rotationSnapDistance)
+			{
+				return;
+			}
+
+			float sign = 1;
+			if (dtAngle < 0)
+				sign = -1;
+
+			dtAngle = sign * m_rotationSnapDistance;
+			angle = m_previousAngle + dtAngle;
+		}
 
 		Core::Vec4f rotationAxis(0, 0, 0, 1);
 		rotationAxis.Set(axisIndex, 1);

@@ -116,6 +116,11 @@ namespace Editors
 		GizmoAxis m_hoverAxis;
 		DirectX::XMFLOAT4 m_hoverColor;
 
+		bool m_snapEnabled;
+		float m_translationSnapDistance;
+		float m_rotationSnapDistance;
+		float m_scaleSnapDistance;
+
 #if defined(DEBUG_RAY)
 		Core::Ray m_debugRay;
 #endif
