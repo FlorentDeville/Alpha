@@ -13,6 +13,16 @@ namespace Editors
 		, m_properties()
 	{}
 
+	Component::Component(const Component& src)
+	{
+		m_name = src.GetName();
+		for (int ii = 0; ii < src.GetPropertyCount(); ++ii)
+		{
+			Property* pNewProperty = new Property(*src.GetProperty(ii));
+			m_properties[pNewProperty->GetName()] = pNewProperty;
+		}
+	}
+
 	Component::~Component()
 	{
 		for (const std::pair<std::string, Property*>& pair : m_properties)

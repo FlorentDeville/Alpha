@@ -15,6 +15,7 @@ namespace Editors
 	{
 	public:
 		Component(const std::string& name);
+		Component(const Component& src);
 		~Component();
 
 		const std::string& GetName() const;
