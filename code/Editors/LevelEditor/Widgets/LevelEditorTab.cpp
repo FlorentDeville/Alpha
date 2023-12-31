@@ -156,6 +156,9 @@ namespace Editors
 		Widgets::MenuItem* pScaleItem = pTransformMenu->AddMenuItem("Scale");
 		pScaleItem->SetShortcut("R");
 		pScaleItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kScale); });
+
+		m_pSnapItem = pTransformMenu->AddMenuItem("Snap");
+		m_pSnapItem->OnClick([this]() { OnClickTransformationMenu_Snap(); });
 	}
 
 	void LevelEditorTab::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
@@ -553,5 +556,13 @@ namespace Editors
 			Os::Guid copy;
 			levelEditorModule.DuplicateEntity(selectedGuid, copy);
 		}
+	}
+
+	void LevelEditorTab::OnClickTransformationMenu_Snap()
+	{
+		GizmoWidget* pGizmo = m_pViewport->GetGizmoWidget();
+		bool enabled = pGizmo->SnappingEnabled();
+		pGizmo->SetSnapping(!enabled);
+		m_pSnapItem->SetChecked(!enabled);
 	}
 }

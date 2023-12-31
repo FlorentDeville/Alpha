@@ -21,6 +21,7 @@ namespace Widgets
 	class Frame;
 	class Label;
 	class MenuBar;
+	class MenuItem;
 	class SplitVertical;
 }
 
@@ -49,6 +50,8 @@ namespace Editors
 		Widgets::SplitVertical* m_pSplit; //split the right and center
 		Widgets::SplitVertical* m_pLeftSplit; //split between the left and center
 		Widgets::Frame* m_pSceneTreeFrame;
+
+		Widgets::MenuItem* m_pSnapItem;
 
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
@@ -88,5 +91,7 @@ namespace Editors
 		void OnClickEditMenu_DeleteEntity();
 		void OnClickEditMenu_RenameEntity();
 		void OnClickEditMenu_DuplicateEntity();
+
+		void OnClickTransformationMenu_Snap();
 	};
 }
