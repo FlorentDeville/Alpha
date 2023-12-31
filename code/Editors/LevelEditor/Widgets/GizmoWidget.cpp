@@ -560,8 +560,22 @@ namespace Editors
 
 			float dt = distance - m_previousScaleDistance;
 			
+			float scaleValue = 1 + dt;
+
+			if (m_snapEnabled)
+			{
+				if (scaleValue < m_scaleSnapDistance && scaleValue > (1.f/m_scaleSnapDistance))
+					return;
+
+				if(scaleValue > m_scaleSnapDistance)
+					scaleValue = m_scaleSnapDistance;
+
+				if (scaleValue < (1.f / m_scaleSnapDistance))
+					scaleValue = 1.f / m_scaleSnapDistance;
+			}
+
 			Core::Vec4f newScale(1, 1, 1, 0);
-			newScale.Set(axisIndex, 1 + dt);
+			newScale.Set(axisIndex, scaleValue);
 
 			m_pModel->Scale(newScale);
 			m_previousScaleDistance = distance;
