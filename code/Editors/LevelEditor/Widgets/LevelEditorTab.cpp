@@ -157,6 +157,8 @@ namespace Editors
 		pScaleItem->SetShortcut("R");
 		pScaleItem->OnClick([this]() { m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kScale); });
 
+		pTransformMenu->AddSeparator();
+
 		m_pSnapItem = pTransformMenu->AddMenuItem("Snap");
 		m_pSnapItem->OnClick([this]() { OnClickTransformationMenu_Snap(); });
 	}
