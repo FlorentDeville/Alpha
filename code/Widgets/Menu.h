@@ -26,6 +26,7 @@ namespace Widgets
 		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		MenuItem* AddMenuItem(const std::string& itemName);
+		void AddSeparator();
 
 		void OpenMenu();
 		void CloseMenu();

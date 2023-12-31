@@ -54,6 +54,13 @@ namespace Widgets
 		return pNewItem;
 	}
 
+	void Menu::AddSeparator()
+	{
+		Container* pContainer = new Container(0, 2);
+		pContainer->GetDefaultStyle().SetBackgroundColor(Color(0.18f, 0.18f, 0.18f));
+		m_pLayout->AddWidget(pContainer);
+	}
+
 	void Menu::OpenMenu()
 	{
 		Enable();
