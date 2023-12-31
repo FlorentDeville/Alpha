@@ -82,9 +82,11 @@ namespace Editors
 		void OnAddEntity_SceneTree(const Os::Guid& nodeGuid);
 		void OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid);
 		void OnRenameEntity_SceneTree(const Os::Guid& nodeGuid);
+		void OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy);
 
 		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();
 		void OnClickEditMenu_RenameEntity();
+		void OnClickEditMenu_DuplicateEntity();
 	};
 }

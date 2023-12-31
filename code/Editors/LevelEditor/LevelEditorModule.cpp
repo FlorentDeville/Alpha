@@ -261,6 +261,36 @@ namespace Editors
 		m_onRenameEntity(nodeGuid);
 	}
 
+	void LevelEditorModule::DuplicateEntity(const Os::Guid& originalNode, Os::Guid& newNode)
+	{
+		if (!originalNode.IsValid())
+			return;
+
+		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
+
+		const Node* pOriginalNode = pSceneTree->GetConstNode(originalNode);
+		if (!pOriginalNode)
+			return;
+
+		const Entity* pOriginalEntity = pOriginalNode->ToConstEntity();
+		if (!pOriginalEntity)
+			return;
+
+		Entity* pNewEntity = new Entity(pOriginalEntity->GetName() + "_copy");
+
+		for (int ii = 0; ii < pOriginalEntity->GetComponentCount(); ++ii)
+		{
+			const Component* pOriginalComponent = pOriginalEntity->GetComponent(ii);
+			Component* pCopyComponent = new Component(*pOriginalComponent);
+			pNewEntity->AddComponent(pCopyComponent);
+		}
+
+		pSceneTree->AddNode(pNewEntity, pOriginalNode->GetConstParent()->GetConstGuid());
+
+		if (m_onDuplicateEntity)
+			m_onDuplicateEntity(originalNode, newNode);
+	}
+
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
 	{
 		m_cameraWs = ws;
@@ -342,5 +372,15 @@ namespace Editors
 	void LevelEditorModule::RemoveOnRenameEntity(Core::CallbackId id)
 	{
 		m_onRenameEntity.Disconnect(id);
+	}
+
+	Core::CallbackId LevelEditorModule::OnDuplicateEntity(const OnDuplicateEntityEvent::Callback& callback)
+	{
+		return m_onDuplicateEntity.Connect(callback);
+	}
+
+	void LevelEditorModule::RemoveOnDuplicateEntity(Core::CallbackId id)
+	{
+		m_onDuplicateEntity.Disconnect(id);
 	}
 }

@@ -132,6 +132,9 @@ namespace Editors
 
 		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
 		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameEntity(); });
+
+		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
+		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateEntity(); });
 	}
 
 	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
@@ -244,9 +247,10 @@ namespace Editors
 		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditorTab::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
 
 		//callbacks
-		levelEditorModule.OnAddEntity([this](const Os::Guid& nodeGuid) {OnAddEntity_SceneTree(nodeGuid); });
+		levelEditorModule.OnAddEntity([this](const Os::Guid& nodeGuid) { OnAddEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
+		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
 	}
 
 	void LevelEditorTab::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
@@ -491,6 +495,13 @@ namespace Editors
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
+	void LevelEditorTab::OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy)
+	{
+		delete m_pLevelTreeModel;
+		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
 	void LevelEditorTab::OnClickEditMenu_AddEntity()
 	{
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
@@ -526,5 +537,21 @@ namespace Editors
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			levelEditorModule.RenameEntity(lastSelectedNode, newName);
 			});
+	}
+
+	void LevelEditorTab::OnClickEditMenu_DuplicateEntity()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+
+		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
+		const std::list<Os::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+		if (selectionList.empty())
+			return;
+
+		for (const Os::Guid& selectedGuid : selectionList)
+		{
+			Os::Guid copy;
+			levelEditorModule.DuplicateEntity(selectedGuid, copy);
+		}
 	}
 }
