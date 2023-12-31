@@ -10,6 +10,7 @@
 
 namespace Widgets
 {
+	class Icon;
 	class Label;
 	class Shortcut;
 
@@ -22,13 +23,21 @@ namespace Widgets
 		~MenuItem();
 
 		bool Handle(const BaseEvent& ev) override;
+		void Enable(bool recursive = true) override;
 
 		void SetShortcut(const std::string& shortcut);
+
+		void SetChecked(bool check);
+
+		bool IsChecked() const;
 
 	private:
 		Label* m_pLabel;
 		Label* m_pShortcutLabel;
+		Icon* m_pCheckmarkIcon;
 
 		Shortcut* m_pShortcut;
+
+		bool m_isChecked;
 	};
 }

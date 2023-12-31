@@ -6,6 +6,7 @@
 
 #include "Widgets/Button.h"
 #include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Shortcuts/Shortcut.h"
@@ -16,22 +17,42 @@ namespace Widgets
 	MenuItem::MenuItem(const std::string& name)
 		: Button(0, 0, 0, 0)
 		, m_pShortcut(nullptr)
+		, m_isChecked(false)
 	{
 		SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 		SetSizeStyle(Widget::SIZE_STYLE::FIT);
 		const int HEIGHT = 20;
 		GetHoverStyle().SetBorderColor(Color(0.48f, 0.48f, 0.48f, 1.f));
 
+		const int CHECKBOX_WIDTH = 12;
+		const int LABEL_WIDTH = 150;
+		const int SHORTCUT_WIDTH = 50;
+
+		const int CHECK_BOX_X = 5;
+		const int LABEL_X = CHECK_BOX_X + CHECKBOX_WIDTH;
+		const int SHORTCUT_X = LABEL_X + LABEL_WIDTH;
+
+		//checkbox icon
+		{
+			std::string checkmarkIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/checkmark.png";
+			m_pCheckmarkIcon = new Icon(checkmarkIconPath);
+			m_pCheckmarkIcon->SetSizeStyle(SIZE_STYLE::FIT);
+			m_pCheckmarkIcon->SetX(CHECK_BOX_X);
+			m_pCheckmarkIcon->SetY((HEIGHT - CHECKBOX_WIDTH) / 2);
+			m_pCheckmarkIcon->Disable();
+			AddWidget(m_pCheckmarkIcon);
+		}
+
 		{
 			m_pLabel = new Label(name);
 			m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::DEFAULT);
 			m_pLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 			DirectX::XMUINT2 size = m_pLabel->GetSize();
-			size.x = 100;
+			size.x = LABEL_WIDTH;
 			size.y = HEIGHT;
 			m_pLabel->SetSize(size);
 
-			m_pLabel->SetX(5);
+			m_pLabel->SetX(25);
 			m_pLabel->SetY(1);
 			AddWidget(m_pLabel);
 		}
@@ -41,11 +62,11 @@ namespace Widgets
 			m_pShortcutLabel->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
 			m_pShortcutLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 			DirectX::XMUINT2 size = m_pShortcutLabel->GetSize();
-			size.x = 50;
+			size.x = SHORTCUT_WIDTH;
 			size.y = HEIGHT;
 			m_pShortcutLabel->SetSize(size);
 
-			m_pShortcutLabel->SetX(101);
+			m_pShortcutLabel->SetX(SHORTCUT_X);
 			m_pShortcutLabel->SetY(1);
 
 			AddWidget(m_pShortcutLabel);
@@ -76,6 +97,14 @@ namespace Widgets
 		return ParentClass::Handle(ev);
 	}
 
+	void MenuItem::Enable(bool recursive)
+	{
+		ParentClass::Enable(recursive);
+
+		if (!m_isChecked)
+			m_pCheckmarkIcon->Disable();
+	}
+
 	void MenuItem::SetShortcut(const std::string& shortcut)
 	{
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
@@ -91,5 +120,15 @@ namespace Widgets
 		m_pShortcut = new Shortcut(shortcut);
 		m_pShortcut->OnActivated([this]() { m_onClick(); });
 		widgetMgr.RegisterShortcut(m_pShortcut);
+	}
+
+	void MenuItem::SetChecked(bool check)
+	{
+		m_isChecked = check;
+	}
+
+	bool MenuItem::IsChecked() const
+	{
+		return m_isChecked;
 	}
 }

@@ -82,31 +82,45 @@ namespace Widgets
 	{
 		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
 		{
-			int maxSize = 0;
-			for (const Widget* pChild : m_children)
+			if (m_children.empty())
 			{
-				if (!pChild->IsEnabled())
-					continue;
-
-				int max = pChild->GetWidth() + pChild->GetX();
-				if (max > maxSize) maxSize = max;
+				m_size.x = m_defaultSize.x;
 			}
+			else
+			{
+				int maxSize = 0;
+				for (const Widget* pChild : m_children)
+				{
+					if (!pChild->IsEnabled())
+						continue;
 
-			m_size.x = maxSize;
+					int max = pChild->GetWidth() + pChild->GetX();
+					if (max > maxSize) maxSize = max;
+				}
+
+				m_size.x = maxSize;
+			}
 		}
 		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
 		{
-			int maxSize = 0;
-			for (const Widget* pChild : m_children)
+			if (m_children.empty())
 			{
-				if (!pChild->IsEnabled())
-					continue;
-
-				int max = pChild->GetHeight() + pChild->GetY();
-				if (max > maxSize) maxSize = max;
+				m_size.y = m_defaultSize.y;
 			}
+			else
+			{
+				int maxSize = 0;
+				for (const Widget* pChild : m_children)
+				{
+					if (!pChild->IsEnabled())
+						continue;
 
-			m_size.y = maxSize;
+					int max = pChild->GetHeight() + pChild->GetY();
+					if (max > maxSize) maxSize = max;
+				}
+
+				m_size.y = maxSize;
+			}
 		}
 	}
 
