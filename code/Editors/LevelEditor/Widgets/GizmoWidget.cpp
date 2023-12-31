@@ -145,6 +145,16 @@ namespace Editors
 		return m_enabled;
 	}
 
+	void GizmoWidget::SetSnapping(bool enable)
+	{
+		m_snapEnabled = enable;
+	}
+
+	bool GizmoWidget::SnappingEnabled() const
+	{
+		return m_snapEnabled;
+	}
+
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
 	{
 		UpdateMouseHover(mouse3dPosition);
