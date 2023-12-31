@@ -42,14 +42,11 @@ namespace Editors
 
 		std::vector<int> m_columnSize;
 
-		bool m_isDirtyWidget;
-		int m_selectedRow;
-
-#ifdef _DEBUG
-		char m_padding[8];
-#endif
 		DirectX::XMVECTOR m_evenRowBackgroundColor;
 		DirectX::XMVECTOR m_oddRowBackgroundColor;
 		DirectX::XMVECTOR m_hoverBackgroundColor;
+
+		int m_selectedRow;
+		bool m_isDirtyWidget;
 	};
 }
