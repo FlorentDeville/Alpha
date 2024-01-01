@@ -4,8 +4,10 @@
 
 #include "Editors/Widgets/Component/ComponentModel.h"
 
-#include "Editors/Widgets/AssetId/AssetIdModel.h"
 #include "Editors/Widgets/BaseModel.h"
+
+#include "Systems/Assets/Asset.h"
+#include "Systems/Assets/AssetMgr.h"
 
 namespace Editors
 {
@@ -24,10 +26,7 @@ namespace Editors
 			{
 			case PropertyType::kAssetMaterial:
 			case PropertyType::kAssetMesh:
-			{
-				pNewModel = new AssetIdModel(pProperty->GetValue<Systems::AssetId>(), type);
-			}
-			break;
+				break;
 
 			case PropertyType::kMat44f:
 				break;
@@ -84,10 +83,39 @@ namespace Editors
 		return m_pComponent->GetProperty(row)->GetType();
 	}
 
+	std::string ComponentModel::ToString(Systems::AssetId id) const
+	{
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		const Systems::Asset* pAsset = assetMgr.GetAsset(id);
+		if (!pAsset)
+			return "Unknown Asset";
+		else
+			return pAsset->GetVirtualName() + " (" + id.ToString() + ")";
+	}
+
 	void ComponentModel::SetPropertyValue(int row, const Core::Mat44f& value)
 	{
 		Property* pProperty = m_pComponent->GetProperty(row);
 		pProperty->SetMatrix(value);
+	}
+
+	void ComponentModel::SetPropertyValue(int row, Systems::AssetId value, Systems::AssetType type)
+	{
+		Property* pProperty = m_pComponent->GetProperty(row);
+		switch (type)
+		{
+		case Systems::kMaterial:
+			pProperty->SetMaterialAssetId(value);
+			break;
+
+		case Systems::kMesh:
+			pProperty->SetMeshAssetId(value);
+			break;
+
+		default:
+			assert(false);
+			break;
+		}
 	}
 
 	BaseModel* ComponentModel::GetModel(int row) const

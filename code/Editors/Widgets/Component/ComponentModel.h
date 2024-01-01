@@ -7,6 +7,8 @@
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/Property.h"
 
+#include "Systems/Assets/AssetType.h"
+
 #include "Widgets/WidgetEventMacro.h"
 
 #include <vector>
@@ -35,7 +37,10 @@ namespace Editors
 			return pProperty->GetValue<T>();
 		}
 
+		std::string ToString(Systems::AssetId id) const;
+
 		void SetPropertyValue(int row, const Core::Mat44f& value);
+		void SetPropertyValue(int row, Systems::AssetId value, Systems::AssetType type);
 
 		BaseModel* GetModel(int row) const;
 

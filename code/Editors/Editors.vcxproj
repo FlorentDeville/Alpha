@@ -29,7 +29,6 @@
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
-    <ClInclude Include="Widgets\AssetId\AssetIdModel.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\List\ListWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
@@ -61,7 +60,6 @@
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="RawDb.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
-    <ClCompile Include="Widgets\AssetId\AssetIdModel.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
     <ClCompile Include="Widgets\List\ListWidget.cpp" />
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />

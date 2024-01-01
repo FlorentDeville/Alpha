@@ -72,12 +72,51 @@ namespace Editors
 			switch (type)
 			{
 			case PropertyType::kAssetMaterial:
-			case PropertyType::kAssetMesh:
 			{
-				AssetIdWidget* pNewWidget = new AssetIdWidget();
-				pNewWidget->SetModel(m_pModel->GetModel(ii));
+				Systems::AssetId assetId = m_pModel->GetPropertyValue<Systems::AssetId>(ii);
+				std::string strAssetId = m_pModel->ToString(assetId);
+				AssetIdWidget* pNewWidget = new AssetIdWidget(Systems::kMaterial);
+				pNewWidget->SetValue(strAssetId);
+				pNewWidget->OnAssetSelected([this, ii](Systems::AssetId id) { m_pModel->SetPropertyValue(ii, id, Systems::kMaterial); });
+
 				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
 				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+
+				m_pModel->OnPropertyValueChanged([this, pNewWidget, ii](int row)
+					{
+						if (row != ii)
+							return;
+
+						Systems::AssetId assetId = m_pModel->GetPropertyValue<Systems::AssetId>(ii);
+						std::string strAssetId = m_pModel->ToString(assetId);
+						pNewWidget->SetValue(strAssetId);
+					});
+
+				pItemLayout->AddWidget(pNewWidget);
+			}
+			break;
+
+			case PropertyType::kAssetMesh:
+			{
+				Systems::AssetId assetId = m_pModel->GetPropertyValue<Systems::AssetId>(ii);
+				std::string strAssetId = m_pModel->ToString(assetId);
+				AssetIdWidget* pNewWidget = new AssetIdWidget(Systems::kMesh);
+				pNewWidget->SetValue(strAssetId);
+				pNewWidget->OnAssetSelected([this, ii](Systems::AssetId id) { m_pModel->SetPropertyValue(ii, id, Systems::kMesh); });
+
+				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
+				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+
+				m_pModel->OnPropertyValueChanged([this, pNewWidget, ii](int row)
+					{
+						if (row != ii)
+							return;
+
+						Systems::AssetId assetId = m_pModel->GetPropertyValue<Systems::AssetId>(ii);
+						std::string strAssetId = m_pModel->ToString(assetId);
+						pNewWidget->SetValue(strAssetId);
+					});
+
 				pItemLayout->AddWidget(pNewWidget);
 			}
 			break;

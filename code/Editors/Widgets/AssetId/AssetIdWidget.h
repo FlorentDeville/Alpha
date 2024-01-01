@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Systems/Assets/AssetType.h"
+
 #include "Widgets/Layout.h"
 
 namespace Systems
@@ -21,28 +23,27 @@ namespace Widgets
 namespace Editors
 {
 	class AssetListModel;
-	class BaseModel;
 	class ListWidget;
 
 	class AssetIdWidget : public Widgets::Layout
 	{
 	public:
-		AssetIdWidget();
+		AssetIdWidget(Systems::AssetType type);
 		~AssetIdWidget();
 
-		void SetModel(BaseModel* pModel);
+		void SetValue(const std::string& value);
 
-		void Update(uint64_t dt) override;
-
+		EVENT_DECL(AssetSelected, void(Systems::AssetId selectedId))
 	private:
-		BaseModel* m_pModel;
-
+		
 		Widgets::Container* m_pLabelContainer;
 		Widgets::Label* m_pLabel;
 		Widgets::Button* m_pButton;
 
 		ListWidget* m_pAssetList;
 		AssetListModel* m_pAssetListModel;
+
+		Systems::AssetType m_type;
 
 		void OnOk_AssetList();
 
