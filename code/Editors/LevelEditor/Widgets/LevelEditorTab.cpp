@@ -553,11 +553,17 @@ namespace Editors
 		if (selectionList.empty())
 			return;
 
+		std::vector<Os::Guid> newNodes;
 		for (const Os::Guid& selectedGuid : selectionList)
 		{
 			Os::Guid copy;
 			levelEditorModule.DuplicateEntity(selectedGuid, copy);
+			newNodes.push_back(copy);
 		}
+
+		levelEditorModule.ClearSelection();
+		for (const Os::Guid& guid : newNodes)
+			levelEditorModule.AddToSelection(guid);
 	}
 
 	void LevelEditorTab::OnClickTransformationMenu_Snap()
