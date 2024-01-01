@@ -16,7 +16,6 @@
 
 namespace Editors
 {
-	class BaseModel;
 	class Component;
 	enum PropertyType;
 
@@ -42,14 +41,10 @@ namespace Editors
 		void SetPropertyValue(int row, const Core::Mat44f& value);
 		void SetPropertyValue(int row, Systems::AssetId value, Systems::AssetType type);
 
-		BaseModel* GetModel(int row) const;
-
 		EVENT_DECL(PropertyValueChanged, void(int row))
 
 	private:
 		Component* m_pComponent;
-
-		std::vector<BaseModel*> m_modelsArray;
 
 		std::vector<Core::CallbackId> m_cidPropertyOnValueChanged;
 

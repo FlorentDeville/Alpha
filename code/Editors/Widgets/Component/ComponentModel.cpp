@@ -4,8 +4,6 @@
 
 #include "Editors/Widgets/Component/ComponentModel.h"
 
-#include "Editors/Widgets/BaseModel.h"
-
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 
@@ -19,22 +17,8 @@ namespace Editors
 		const int propertyCount = m_pComponent->GetPropertyCount();
 		for (int ii = 0; ii < propertyCount; ++ii)
 		{
-			BaseModel* pNewModel = nullptr;
 			Property* pProperty = m_pComponent->GetProperty(ii);
-			PropertyType type = pProperty->GetType();
-			switch (type)
-			{
-			case PropertyType::kAssetMaterial:
-			case PropertyType::kAssetMesh:
-				break;
-
-			case PropertyType::kMat44f:
-				break;
-
-			default:
-				assert(false);
-				break;
-			}
+			
 			Core::CallbackId cid = pProperty->OnValueChanged([this, ii](const PropertyValue& oldValue, const PropertyValue& newValue)
 				{
 					if (m_onPropertyValueChanged)
@@ -42,7 +26,6 @@ namespace Editors
 				});
 
 			m_cidPropertyOnValueChanged.push_back(cid);
-			m_modelsArray.push_back(pNewModel);
 		}
 	}
 
@@ -56,7 +39,6 @@ namespace Editors
 		}
 
 		m_cidPropertyOnValueChanged.clear();
-		m_modelsArray.clear();
 	}
 
 	int ComponentModel::GetPropertyCount() const
@@ -116,10 +98,5 @@ namespace Editors
 			assert(false);
 			break;
 		}
-	}
-
-	BaseModel* ComponentModel::GetModel(int row) const
-	{
-		return m_modelsArray[row];
 	}
 }
