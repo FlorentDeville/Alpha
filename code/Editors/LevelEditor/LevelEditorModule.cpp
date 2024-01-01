@@ -277,6 +277,7 @@ namespace Editors
 			return;
 
 		Entity* pNewEntity = new Entity(pOriginalEntity->GetName() + "_copy");
+		newNode = pNewEntity->GetConstGuid();
 
 		for (int ii = 0; ii < pOriginalEntity->GetComponentCount(); ++ii)
 		{
