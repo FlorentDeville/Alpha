@@ -45,5 +45,7 @@ namespace Editors
 		AssetListModel* m_pAssetListModel;
 
 		void OnOk_AssetList();
+
+		void OnClick_OpenAssetList();
 	};
 }
