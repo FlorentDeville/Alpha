@@ -167,6 +167,16 @@ uint32_t SysWindow::GetHeight() const
 	return m_height;
 }
 
+void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, int32_t iconResourceId)
+{
+	HANDLE imgHandle = ::LoadImage(hInst, MAKEINTRESOURCE(iconResourceId), IMAGE_ICON, 0, 0, LR_DEFAULTCOLOR | LR_SHARED | LR_DEFAULTSIZE);
+	assert(imgHandle != nullptr);
+		
+	HICON hIcon = static_cast<HICON>(imgHandle);
+
+	RegisterWindowClass(hInst, pWindowClassName, callback, hIcon);
+}
+
 void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename)
 {
 	HANDLE imageHandle = ::LoadImage(NULL, iconFilename.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);

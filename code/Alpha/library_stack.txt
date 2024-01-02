@@ -7,9 +7,9 @@
  ____________________________________________
 |					Widgets					 |
 |____________________________________________|
- ____________________________________________
-|					Systems					 |
-|____________________________________________|
+ _____________________   ____________________
+|		Systems		  | |	   Resources	 |
+|_____________________| |____________________|
  ____________	  ____________	  ___________
 |	OsWin	 |   |	Rendering |	 |   Inputs  |
 |____________|   |____________|  |___________|
@@ -26,6 +26,8 @@ Rendering : DirectX12 renderer.
 Inputs : Wrapper for every inputs : keyboard, mouse, controllers
 
 Systems : Library for game systems like loaders, base entities and components.
+
+Resources : Resources files used throughout the project like icon, ui bitmaps, etc.
 
 Widgets : Widgets library used to render all the editors.
 

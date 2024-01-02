@@ -37,6 +37,7 @@ public:
 	uint32_t GetWidth() const;
 	uint32_t GetHeight() const;
 
+	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, int32_t iconResourceId);
 	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename);
 	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, HICON hIcon);
 

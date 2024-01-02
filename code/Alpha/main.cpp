@@ -43,6 +43,8 @@
 #include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
+#include "Resources/ResourcesMgr.h"
+
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
@@ -613,6 +615,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	std::string configurationFilename = binPath + "\\config.ini";
 	configuration.Load(binPath, configurationFilename);
 
+	Resources::ResourcesMgr& resourcesMgr = Resources::ResourcesMgr::InitSingleton();
+	resourcesMgr.Init();
+
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
 	Systems::LoaderParameter loaderParameter;
 	loaderParameter.m_dataMaterialPath = configuration.m_dataMaterialsPath;
@@ -628,9 +633,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
-	std::string iconPath = configuration.m_editorsIconsPath + "\\alpha_white.ico";
 	const char* pWindowClassName = "DX12WindowClass";
-	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, iconPath);
+	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, resourcesMgr.GetApplicationIconResourceId());
 	g_pWindow = new SysWindow();
 	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 
@@ -700,9 +704,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Systems::AssetMgr::ReleaseSingleton();
 
 	render.Release();
-	Rendering::RenderModule::ReleaseSingleton();
+	resourcesMgr.Shutdown();
 
+	Rendering::RenderModule::ReleaseSingleton();
 	Editors::LevelEditorModule::ReleaseSingleton();
+	Resources::ResourcesMgr::ReleaseSingleton();
 
 	return 0;
 }
