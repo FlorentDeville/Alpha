@@ -38,6 +38,7 @@ public:
 	uint32_t GetHeight() const;
 
 	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename);
+	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, HICON hIcon);
 
 private:
 	HWND m_hWindow;

@@ -169,6 +169,14 @@ uint32_t SysWindow::GetHeight() const
 
 void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename)
 {
+	HANDLE imageHandle = ::LoadImage(NULL, iconFilename.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	HICON iconHandle = static_cast<HICON>(imageHandle);
+
+	RegisterWindowClass(hInst, pWindowClassName, callback, iconHandle);
+}
+
+void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, HICON hIcon)
+{
 	// For some reason here I need to create a unicode window class (notice the W at the end) otherwise
 	// the title bar shows garbage.
 
@@ -183,7 +191,7 @@ void SysWindow::RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassNam
 	windowClass.cbClsExtra = 0;
 	windowClass.cbWndExtra = 0;
 	windowClass.hInstance = hInst;
-	windowClass.hIcon = (HICON)::LoadImage(NULL, iconFilename.c_str(), IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	windowClass.hIcon = hIcon;
 	windowClass.hCursor = ::LoadCursor(hInst, IDC_ARROW);
 	windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	windowClass.lpszMenuName = nullptr;
