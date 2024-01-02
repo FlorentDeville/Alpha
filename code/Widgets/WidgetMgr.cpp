@@ -168,11 +168,13 @@ namespace Widgets
 			Rendering::Texture* pTexture = nullptr;
 			textureMgr.CreateTexture(&pTexture, m_expandedIconTextureId);
 
-			const Resources::ResourcesMgr& resourceMgr = Resources::ResourcesMgr::Get();
+			const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
 
 			char* pData = nullptr;
 			uint32_t dataSize = 0;
-			Os::Resource::GetResource(resourceMgr.GetIconExpandedResourceId(), resourceMgr.GetIconExpandedResourceType(), &pData, dataSize);
+			int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconExpanded);
+			const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconExpanded);
+			Os::Resource::GetResource(sysId, type, &pData, dataSize);
 			pTexture->Init(pData, dataSize);
 		}
 	}

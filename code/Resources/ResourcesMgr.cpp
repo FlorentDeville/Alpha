@@ -6,27 +6,43 @@
 
 #include "Resources/resource.h"
 
-namespace Resources
+#include <map>
+
+namespace AppResources
 {
+	struct AppResource
+	{
+		int16_t m_sysId;
+		AppResourceId m_appId;
+		std::string m_type;
+	};
+
+	std::map<AppResourceId, AppResource> s_appResMap;
+
 	ResourcesMgr::ResourcesMgr()
-		: m_typePNG("PNG")
 	{}
 
 	ResourcesMgr::~ResourcesMgr()
 	{}
 
-	int16_t ResourcesMgr::GetApplicationIconResourceId() const
+	void ResourcesMgr::Init()
 	{
-		return REC_APP_ICON;
+		s_appResMap[kAppIcon] =			{ REC_APP_ICON,			kAppIcon,			"ICON" };
+		s_appResMap[kUiIconExpanded] =	{ REC_ICON_EXPANDED,	kUiIconExpanded,	"PNG" };
 	}
 
-	int16_t ResourcesMgr::GetIconExpandedResourceId() const
+	void ResourcesMgr::Shutdown()
 	{
-		return REC_ICON_EXPANDED;
+		s_appResMap.clear();
 	}
 
-	const char* ResourcesMgr::GetIconExpandedResourceType() const
+	int16_t ResourcesMgr::GetSystemResourceId(AppResourceId appId) const
 	{
-		return m_typePNG.c_str();
+		return s_appResMap[appId].m_sysId;
+	}
+
+	const char* ResourcesMgr::GetSystemResourceType(AppResourceId appId) const
+	{
+		return s_appResMap[appId].m_type.c_str();
 	}
 }

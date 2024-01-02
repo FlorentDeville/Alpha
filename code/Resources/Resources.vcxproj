@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AppResourceId.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourcesMgr.h" />
   </ItemGroup>

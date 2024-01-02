@@ -6,10 +6,12 @@
 
 #include "Core/Singleton.h"
 
+#include "Resources/AppResourceId.h"
+
 #include <cstdint>
 #include <string>
 
-namespace Resources
+namespace AppResources
 {
 	class ResourcesMgr : public Core::Singleton<ResourcesMgr>
 	{
@@ -17,12 +19,10 @@ namespace Resources
 		ResourcesMgr();
 		~ResourcesMgr();
 
-		int16_t GetApplicationIconResourceId() const;
+		void Init() override;
+		void Shutdown() override;
 
-		int16_t GetIconExpandedResourceId() const;
-		const char* GetIconExpandedResourceType() const;
-
-	private:
-		std::string m_typePNG;
+		int16_t GetSystemResourceId(AppResourceId appId) const;
+		const char* GetSystemResourceType(AppResourceId appId) const;
 	};
 }

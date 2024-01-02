@@ -615,7 +615,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	std::string configurationFilename = binPath + "\\config.ini";
 	configuration.Load(binPath, configurationFilename);
 
-	Resources::ResourcesMgr& resourcesMgr = Resources::ResourcesMgr::InitSingleton();
+	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
@@ -634,7 +634,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
 	const char* pWindowClassName = "DX12WindowClass";
-	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, resourcesMgr.GetApplicationIconResourceId());
+	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, resourcesMgr.GetSystemResourceId(AppResources::kAppIcon));
 	g_pWindow = new SysWindow();
 	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 
@@ -708,7 +708,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Rendering::RenderModule::ReleaseSingleton();
 	Editors::LevelEditorModule::ReleaseSingleton();
-	Resources::ResourcesMgr::ReleaseSingleton();
+	AppResources::ResourcesMgr::ReleaseSingleton();
 
 	return 0;
 }
