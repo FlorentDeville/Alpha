@@ -15,6 +15,7 @@ namespace Widgets
 		kIconClose,
 		kIconCloseHover,
 		kIconCursor,
+		kIconCheckmark,
 
 		kCount
 	};

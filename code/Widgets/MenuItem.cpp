@@ -34,8 +34,7 @@ namespace Widgets
 
 		//checkbox icon
 		{
-			std::string checkmarkIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/checkmark.png";
-			m_pCheckmarkIcon = new Icon(checkmarkIconPath);
+			m_pCheckmarkIcon = new Icon(WidgetMgr::Get().GetIconTextureId(IconId::kIconCheckmark));
 			m_pCheckmarkIcon->SetSizeStyle(SIZE_STYLE::FIT);
 			m_pCheckmarkIcon->SetX(CHECK_BOX_X);
 			m_pCheckmarkIcon->SetY((HEIGHT - CHECKBOX_WIDTH) / 2);
