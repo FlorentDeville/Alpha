@@ -5,6 +5,7 @@
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="Guid.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Resource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SysWindow.h" />
@@ -12,5 +13,6 @@
     <ClInclude Include="Guid.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="VirtualKeyCode.h" />
+    <ClInclude Include="Resource.h" />
   </ItemGroup>
 </Project>
