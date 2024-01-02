@@ -33,6 +33,7 @@
     <Image Include="icons\close.png" />
     <Image Include="icons\close_hover.png" />
     <Image Include="icons\collapsed.png" />
+    <Image Include="icons\cursor.png" />
     <Image Include="icons\expanded.png" />
   </ItemGroup>
   <ItemGroup>

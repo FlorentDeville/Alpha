@@ -35,7 +35,10 @@ namespace Widgets
 
 		m_editStyle = m_hoverStyle;
 
-		m_pCursorIcon = new Icon(DirectX::XMINT2(4, 2), DirectX::XMUINT2(2, 16), WidgetMgr::Get().GetEditorIconsPath() + "\\cursor.png");
+		m_pCursorIcon = new Icon(WidgetMgr::Get().GetIconTextureId(IconId::kIconCursor));
+		m_pCursorIcon->SetX(4);
+		m_pCursorIcon->SetY(2);
+		m_pCursorIcon->SetSize(DirectX::XMUINT2(2, 16));
 		m_pCursorIcon->Disable();
 		AddWidget(m_pCursorIcon);
 

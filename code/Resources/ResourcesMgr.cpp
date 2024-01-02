@@ -32,6 +32,7 @@ namespace AppResources
 		s_appResMap[kUiIconCollapsed] = { RES_ICON_COLLAPSED,	kUiIconCollapsed,	"PNG" };
 		s_appResMap[kUiIconClose] =		{ RES_ICON_CLOSE,		kUiIconClose,		"PNG" };
 		s_appResMap[kUiIconCloseHover] ={ RES_ICON_CLOSE_HOVER,	kUiIconCloseHover,	"PNG" };
+		s_appResMap[kUiIconCursor] =	{ RES_ICON_CURSOR,		kUiIconCursor,		"PNG" };
 	}
 
 	void ResourcesMgr::Shutdown()

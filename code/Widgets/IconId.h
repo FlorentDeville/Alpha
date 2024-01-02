@@ -14,6 +14,7 @@ namespace Widgets
 		kIconCollapsed,
 		kIconClose,
 		kIconCloseHover,
+		kIconCursor,
 
 		kCount
 	};
