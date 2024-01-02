@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icons\alpha_white.ico" />
+    <Image Include="icons\expanded.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />

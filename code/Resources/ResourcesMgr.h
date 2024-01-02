@@ -7,6 +7,7 @@
 #include "Core/Singleton.h"
 
 #include <cstdint>
+#include <string>
 
 namespace Resources
 {
@@ -17,5 +18,11 @@ namespace Resources
 		~ResourcesMgr();
 
 		int16_t GetApplicationIconResourceId() const;
+
+		int16_t GetIconExpandedResourceId() const;
+		const char* GetIconExpandedResourceType() const;
+
+	private:
+		std::string m_typePNG;
 	};
 }

@@ -9,6 +9,7 @@
 namespace Resources
 {
 	ResourcesMgr::ResourcesMgr()
+		: m_typePNG("PNG")
 	{}
 
 	ResourcesMgr::~ResourcesMgr()
@@ -17,5 +18,15 @@ namespace Resources
 	int16_t ResourcesMgr::GetApplicationIconResourceId() const
 	{
 		return REC_APP_ICON;
+	}
+
+	int16_t ResourcesMgr::GetIconExpandedResourceId() const
+	{
+		return REC_ICON_EXPANDED;
+	}
+
+	const char* ResourcesMgr::GetIconExpandedResourceType() const
+	{
+		return m_typePNG.c_str();
 	}
 }
