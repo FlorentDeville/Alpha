@@ -13,6 +13,7 @@ namespace Widgets
 		kIconExpanded,
 		kIconCollapsed,
 		kIconClose,
+		kIconCloseHover,
 
 		kCount
 	};

@@ -13,6 +13,7 @@
     <Image Include="icons\expanded.png" />
     <Image Include="icons\collapsed.png" />
     <Image Include="icons\close.png" />
+    <Image Include="icons\close_hover.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />
