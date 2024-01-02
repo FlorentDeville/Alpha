@@ -16,6 +16,7 @@ namespace Widgets
 	{
 	public:
 		Icon();
+		Icon(Rendering::TextureId textureId);
 		Icon(const std::string& path);
 		Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path);
 		~Icon();

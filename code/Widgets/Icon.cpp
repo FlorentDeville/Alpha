@@ -19,6 +19,18 @@ namespace Widgets
 		, m_textureId(Rendering::TextureId::INVALID)
 	{}
 
+	Icon::Icon(Rendering::TextureId textureId)
+	{
+		m_textureId = textureId;
+		const Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(textureId);
+
+		uint32_t w = static_cast<uint32_t>(pTexture->GetWidth());
+		uint32_t h = static_cast<uint32_t>(pTexture->GetHeight());
+		SetSize(DirectX::XMUINT2(w, h));
+		SetX(0);
+		SetY(0);
+	}
+
 	Icon::Icon(const std::string& path)
 		: Widget()
 	{
