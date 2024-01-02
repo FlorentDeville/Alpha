@@ -46,8 +46,8 @@ namespace Widgets
 		pIconLayout->SetSizeStyle(Widget::STRETCH);
 		m_pTitleLayout->AddWidget(pIconLayout);
 
-		m_closeTextureId = WidgetMgr::Get().GetCloseIcon();
-		m_pCloseIcon = new Icon(m_closeTextureId);		
+		m_closeTextureId = WidgetMgr::Get().GetIconTextureId(IconId::kIconClose);
+		m_pCloseIcon = new Icon(m_closeTextureId);
 
 		std::string closeHoverIconPath = WidgetMgr::Get().GetEditorIconsPath() + "/close_hover.png";
 		m_pCloseHoverIcon = new Icon(closeHoverIconPath);

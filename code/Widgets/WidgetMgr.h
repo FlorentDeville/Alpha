@@ -23,6 +23,7 @@
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Events/MouseEvent.h"
+#include "Widgets/IconId.h"
 
 struct Message;
 class SysWindow;
@@ -107,9 +108,7 @@ namespace Widgets
 		void OpenModalWindow(Widget* pModalWindow);
 		void CloseModalWindow();
 
-		Rendering::TextureId GetExpandedIcon() const;
-		Rendering::TextureId GetCollapsedIcon() const;
-		Rendering::TextureId GetCloseIcon() const;
+		Rendering::TextureId GetIconTextureId(IconId iconId) const;
 
 	private:
 
@@ -134,9 +133,7 @@ namespace Widgets
 		Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 		Rendering::FontId m_segoeUIFontId;
 
-		Rendering::TextureId m_expandedIconTextureId;
-		Rendering::TextureId m_collapsedIconTextureId;
-		Rendering::TextureId m_closeIconTextureId;
+		Rendering::TextureId m_iconTextureIdArray[static_cast<int>(IconId::kCount)];
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;

@@ -129,6 +129,9 @@
     <ClInclude Include="Widgets\AbstractClickable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IconId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">

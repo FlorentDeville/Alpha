@@ -62,7 +62,7 @@ namespace Widgets
 		, m_pModalWindow(nullptr)
 		, m_shortcutsArray()
 		, m_internalEvent()
-		, m_expandedIconTextureId()
+		, m_iconTextureIdArray()
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -165,14 +165,20 @@ namespace Widgets
 		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
 
 		//Load expanded icon from resources
-		m_expandedIconTextureId = LoadApplicationResourceImage(AppResources::kUiIconExpanded);
-		m_collapsedIconTextureId = LoadApplicationResourceImage(AppResources::kUiIconCollapsed);
-		m_closeIconTextureId = LoadApplicationResourceImage(AppResources::kUiIconClose);
+		m_iconTextureIdArray[static_cast<int>(IconId::kIconExpanded)] = LoadApplicationResourceImage(AppResources::kUiIconExpanded);
+		m_iconTextureIdArray[static_cast<int>(IconId::kIconCollapsed)] = LoadApplicationResourceImage(AppResources::kUiIconCollapsed);
+		m_iconTextureIdArray[static_cast<int>(IconId::kIconClose)] = LoadApplicationResourceImage(AppResources::kUiIconClose);
 	}
 
 	void WidgetMgr::Release()
 	{
 		Rendering::PipelineStateMgr::Get().DeletePipelineState(m_widgetViewportPsoId);
+
+		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
+		for (int ii = 0; ii < static_cast<int>(IconId::kCount); ++ii)
+		{
+			textureMgr.DeleteTexture(m_iconTextureIdArray[ii]);
+		}
 	}
 
 	void WidgetMgr::RegisterWidget(Widget* pWidget)
@@ -499,19 +505,9 @@ namespace Widgets
 		RequestResize();
 	}
 
-	Rendering::TextureId WidgetMgr::GetExpandedIcon() const
+	Rendering::TextureId WidgetMgr::GetIconTextureId(IconId iconId) const
 	{
-		return m_expandedIconTextureId;
-	}
-
-	Rendering::TextureId WidgetMgr::GetCollapsedIcon() const
-	{
-		return m_collapsedIconTextureId;
-	}
-
-	Rendering::TextureId WidgetMgr::GetCloseIcon() const
-	{
-		return m_closeIconTextureId;
+		return m_iconTextureIdArray[static_cast<int>(iconId)];
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()

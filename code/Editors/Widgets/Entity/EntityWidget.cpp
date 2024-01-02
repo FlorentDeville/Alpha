@@ -26,8 +26,9 @@ namespace Editors
 	{
 		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 
-		m_collapsedIcon = Widgets::WidgetMgr::Get().GetCollapsedIcon();
-		m_expandedIcon = Widgets::WidgetMgr::Get().GetExpandedIcon();
+		const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		m_collapsedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconCollapsed);
+		m_expandedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconExpanded);
 	}
 
 	EntityWidget::~EntityWidget()

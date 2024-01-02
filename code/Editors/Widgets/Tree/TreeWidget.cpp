@@ -28,8 +28,9 @@ namespace Editors
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
-		m_collapsedIcon = Widgets::WidgetMgr::Get().GetCollapsedIcon();
-		m_expandedIcon = Widgets::WidgetMgr::Get().GetExpandedIcon();
+		const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		m_collapsedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconCollapsed);
+		m_expandedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconExpanded);
 	}
 
 	TreeWidget::~TreeWidget()

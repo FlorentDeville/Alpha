@@ -27,6 +27,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="MessageId.h" />
     <ClInclude Include="ModalWindow.h" />
+    <ClInclude Include="IconId.h" />
     <ClInclude Include="Shortcuts\Shortcut.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
