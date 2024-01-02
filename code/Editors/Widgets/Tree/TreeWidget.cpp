@@ -35,12 +35,7 @@ namespace Editors
 			pTexture->Init(collapsedIconPath);
 		}
 
-		{
-			Rendering::Texture* pTexture = nullptr;
-			Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_expandedIcon);
-			std::string expandedIconPath = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "/expanded.png";
-			pTexture->Init(expandedIconPath);
-		}
+		m_expandedIcon = Widgets::WidgetMgr::Get().GetExpandedIcon();
 	}
 
 	TreeWidget::~TreeWidget()

@@ -105,6 +105,8 @@ namespace Widgets
 		void OpenModalWindow(Widget* pModalWindow);
 		void CloseModalWindow();
 
+		Rendering::TextureId GetExpandedIcon() const;
+
 	private:
 
 		std::set<Widget*> m_widgets;
@@ -127,6 +129,8 @@ namespace Widgets
 
 		Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
 		Rendering::FontId m_segoeUIFontId;
+
+		Rendering::TextureId m_expandedIconTextureId;
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;

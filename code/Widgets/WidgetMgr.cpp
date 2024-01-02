@@ -14,7 +14,12 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shaders/ShaderMgr.h"
+#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureMgr.h"
 
+#include "Resources/ResourcesMgr.h"
+
+#include "OsWin/Resource.h"
 #include "OsWin/SysWindow.h"
 #include "OsWin/VirtualKeyCode.h"
 
@@ -57,6 +62,7 @@ namespace Widgets
 		, m_pModalWindow(nullptr)
 		, m_shortcutsArray()
 		, m_internalEvent()
+		, m_expandedIconTextureId()
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -153,6 +159,21 @@ namespace Widgets
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_widgetViewportPsoId);
 			pPipelineState->Init_PosUv(rsId, vsId, psId);
+		}
+
+		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
+
+		//Load expanded icon from resources
+		{
+			Rendering::Texture* pTexture = nullptr;
+			textureMgr.CreateTexture(&pTexture, m_expandedIconTextureId);
+
+			const Resources::ResourcesMgr& resourceMgr = Resources::ResourcesMgr::Get();
+
+			char* pData = nullptr;
+			uint32_t dataSize = 0;
+			Os::Resource::GetResource(resourceMgr.GetIconExpandedResourceId(), resourceMgr.GetIconExpandedResourceType(), &pData, dataSize);
+			pTexture->Init(pData, dataSize);
 		}
 	}
 
@@ -483,6 +504,11 @@ namespace Widgets
 		m_pModalWindow = nullptr;
 
 		RequestResize();
+	}
+
+	Rendering::TextureId WidgetMgr::GetExpandedIcon() const
+	{
+		return m_expandedIconTextureId;
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()
