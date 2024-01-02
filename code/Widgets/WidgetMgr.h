@@ -106,6 +106,7 @@ namespace Widgets
 		void CloseModalWindow();
 
 		Rendering::TextureId GetExpandedIcon() const;
+		Rendering::TextureId GetCollapsedIcon() const;
 
 	private:
 
@@ -131,6 +132,7 @@ namespace Widgets
 		Rendering::FontId m_segoeUIFontId;
 
 		Rendering::TextureId m_expandedIconTextureId;
+		Rendering::TextureId m_collapsedIconTextureId;
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;

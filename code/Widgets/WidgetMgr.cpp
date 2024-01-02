@@ -162,18 +162,30 @@ namespace Widgets
 		}
 
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
+		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
 
 		//Load expanded icon from resources
 		{
 			Rendering::Texture* pTexture = nullptr;
 			textureMgr.CreateTexture(&pTexture, m_expandedIconTextureId);
 
-			const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
-
 			char* pData = nullptr;
 			uint32_t dataSize = 0;
 			int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconExpanded);
 			const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconExpanded);
+			Os::Resource::GetResource(sysId, type, &pData, dataSize);
+			pTexture->Init(pData, dataSize);
+		}
+
+		//Load collapsed icon from resources
+		{
+			Rendering::Texture* pTexture = nullptr;
+			textureMgr.CreateTexture(&pTexture, m_collapsedIconTextureId);
+
+			char* pData = nullptr;
+			uint32_t dataSize = 0;
+			int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconCollapsed);
+			const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconCollapsed);
 			Os::Resource::GetResource(sysId, type, &pData, dataSize);
 			pTexture->Init(pData, dataSize);
 		}
@@ -511,6 +523,11 @@ namespace Widgets
 	Rendering::TextureId WidgetMgr::GetExpandedIcon() const
 	{
 		return m_expandedIconTextureId;
+	}
+
+	Rendering::TextureId WidgetMgr::GetCollapsedIcon() const
+	{
+		return m_collapsedIconTextureId;
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()

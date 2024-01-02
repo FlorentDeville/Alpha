@@ -13,6 +13,7 @@ namespace AppResources
 		kAppIcon,
 
 		kUiIconExpanded,
+		kUiIconCollapsed,
 
 		kCount
 	};

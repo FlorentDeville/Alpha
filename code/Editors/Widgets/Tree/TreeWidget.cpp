@@ -28,13 +28,7 @@ namespace Editors
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
-		{
-			Rendering::Texture* pTexture = nullptr;
-			Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_collapsedIcon);
-			std::string collapsedIconPath = Widgets::WidgetMgr::Get().GetEditorIconsPath() + "/collapsed.png";
-			pTexture->Init(collapsedIconPath);
-		}
-
+		m_collapsedIcon = Widgets::WidgetMgr::Get().GetCollapsedIcon();
 		m_expandedIcon = Widgets::WidgetMgr::Get().GetExpandedIcon();
 	}
 

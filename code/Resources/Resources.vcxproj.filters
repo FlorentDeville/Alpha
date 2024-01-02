@@ -11,6 +11,7 @@
   <ItemGroup>
     <Image Include="icons\alpha_white.ico" />
     <Image Include="icons\expanded.png" />
+    <Image Include="icons\collapsed.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />
