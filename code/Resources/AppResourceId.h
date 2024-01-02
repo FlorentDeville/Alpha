@@ -14,6 +14,7 @@ namespace AppResources
 
 		kUiIconExpanded,
 		kUiIconCollapsed,
+		kUiIconClose,
 
 		kCount
 	};
