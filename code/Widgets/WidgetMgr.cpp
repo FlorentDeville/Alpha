@@ -165,30 +165,9 @@ namespace Widgets
 		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
 
 		//Load expanded icon from resources
-		{
-			Rendering::Texture* pTexture = nullptr;
-			textureMgr.CreateTexture(&pTexture, m_expandedIconTextureId);
-
-			char* pData = nullptr;
-			uint32_t dataSize = 0;
-			int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconExpanded);
-			const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconExpanded);
-			Os::Resource::GetResource(sysId, type, &pData, dataSize);
-			pTexture->Init(pData, dataSize);
-		}
-
-		//Load collapsed icon from resources
-		{
-			Rendering::Texture* pTexture = nullptr;
-			textureMgr.CreateTexture(&pTexture, m_collapsedIconTextureId);
-
-			char* pData = nullptr;
-			uint32_t dataSize = 0;
-			int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconCollapsed);
-			const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconCollapsed);
-			Os::Resource::GetResource(sysId, type, &pData, dataSize);
-			pTexture->Init(pData, dataSize);
-		}
+		m_expandedIconTextureId = LoadApplicationResourceImage(AppResources::kUiIconExpanded);
+		m_collapsedIconTextureId = LoadApplicationResourceImage(AppResources::kUiIconCollapsed);
+		m_closeIconTextureId = LoadApplicationResourceImage(AppResources::kUiIconClose);
 	}
 
 	void WidgetMgr::Release()
@@ -530,6 +509,11 @@ namespace Widgets
 		return m_collapsedIconTextureId;
 	}
 
+	Rendering::TextureId WidgetMgr::GetCloseIcon() const
+	{
+		return m_closeIconTextureId;
+	}
+
 	void WidgetMgr::ComputeSortedWidgetQueue()
 	{
 		m_sortedWidgets.clear();
@@ -692,5 +676,24 @@ namespace Widgets
 
 		m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
 		return m_internalEvent.m_baseEvent;
+	}
+
+	Rendering::TextureId WidgetMgr::LoadApplicationResourceImage(AppResources::AppResourceId id) const
+	{
+		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
+		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
+
+		Rendering::TextureId textureId;
+		Rendering::Texture* pTexture = nullptr;
+		textureMgr.CreateTexture(&pTexture, textureId);
+
+		char* pData = nullptr;
+		uint32_t dataSize = 0;
+		int16_t sysId = resourceMgr.GetSystemResourceId(id);
+		const char* type = resourceMgr.GetSystemResourceType(id);
+		Os::Resource::GetResource(sysId, type, &pData, dataSize);
+		pTexture->Init(pData, dataSize);
+
+		return textureId;
 	}
 }

@@ -16,6 +16,8 @@
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/RenderModule.h"
 
+#include "Resources/AppResourceId.h"
+
 #include "Core/Singleton.h"
 
 #include "Widgets/Events/BaseEvent.h"
@@ -107,6 +109,7 @@ namespace Widgets
 
 		Rendering::TextureId GetExpandedIcon() const;
 		Rendering::TextureId GetCollapsedIcon() const;
+		Rendering::TextureId GetCloseIcon() const;
 
 	private:
 
@@ -133,6 +136,7 @@ namespace Widgets
 
 		Rendering::TextureId m_expandedIconTextureId;
 		Rendering::TextureId m_collapsedIconTextureId;
+		Rendering::TextureId m_closeIconTextureId;
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;
@@ -162,5 +166,7 @@ namespace Widgets
 		const Widget* GetFocusedWidget() const;
 
 		const BaseEvent& ConvertMessageToEvent(const Widget* pWidget, const Message& msg);
+
+		Rendering::TextureId LoadApplicationResourceImage(AppResources::AppResourceId id) const;
 	};
 }
