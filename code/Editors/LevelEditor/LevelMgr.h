@@ -19,6 +19,8 @@ namespace Editors
 		const SceneTree* GetConstSceneTree() const;
 		SceneTree* GetSceneTree();
 
+		const std::string& GetName() const;
+
 	private:
 		std::string m_name;
 		SceneTree* m_pSceneTree;

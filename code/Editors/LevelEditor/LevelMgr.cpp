@@ -28,4 +28,9 @@ namespace Editors
 	{
 		return m_pSceneTree;
 	}
+
+	const std::string& LevelMgr::GetName() const
+	{
+		return m_name;
+	}
 }
