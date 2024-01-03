@@ -40,5 +40,10 @@ namespace Systems
 		return std::string(buffer);
 	}
 
+	uint64_t AssetId::ToUint64() const
+	{
+		return m_id;
+	}
+
 	const AssetId AssetId::INVALID = AssetId(); //the default is -1
 }

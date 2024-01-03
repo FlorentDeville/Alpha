@@ -23,6 +23,7 @@ namespace Systems
 		bool operator<(const AssetId id) const;
 
 		std::string ToString() const;
+		uint64_t ToUint64() const;
 
 	private:
 		size_t m_id;
