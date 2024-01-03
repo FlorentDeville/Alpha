@@ -4,6 +4,7 @@
 
 #include "OsWin/Guid.h"
 
+#include <cstdio>
 #include <objbase.h>
 
 namespace Os
@@ -14,6 +15,16 @@ namespace Os
 		, m_data3(0)
 		, m_data4(0)
 	{}
+
+	Guid::Guid(const char* pBuffer)
+	{
+		uint16_t data41;
+		uint16_t data42;
+		uint32_t data43;
+		sscanf_s(pBuffer, "%x-%hx-%hx-%hx-%4hx%x", &m_data1, &m_data2, &m_data3, &data41, &data42, &data43);
+
+		m_data4 = ((uint64_t)data41 << 48) | ((uint64_t)data42 << 32) | (uint64_t)data43;
+	}
 
 	Guid::~Guid()
 	{}
@@ -62,6 +73,19 @@ namespace Os
 			return true;
 
 		return false;
+	}
+
+	bool Guid::ToString(char* pBuffer, uint32_t bufferSize) const
+	{
+		const int GUID_STRING_LENGTH = 37;
+		if (bufferSize < GUID_STRING_LENGTH)
+			return false;
+
+		uint16_t data41 = (uint16_t)(m_data4 >> 48);
+		uint16_t data42 = (uint16_t)((m_data4 >> 32) & 0x0000FFFFF);
+		uint32_t data43 = (uint32_t)(m_data4 & 0x00000000FFFFFFFF);
+		snprintf(pBuffer, GUID_STRING_LENGTH, "%x-%hx-%hx-%hx-%hx%x", m_data1, m_data2, m_data3, data41, data42, data43);
+		return true;
 	}
 
 	Guid Guid::GenerateNewGuid()

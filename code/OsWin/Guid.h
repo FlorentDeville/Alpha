@@ -12,6 +12,7 @@ namespace Os
 	{
 	public:
 		Guid();
+		Guid(const char* pBuffer);
 		~Guid();
 
 		bool operator==(const Guid& other) const;
@@ -20,6 +21,9 @@ namespace Os
 		bool operator<(const Guid& other) const;
 
 		bool IsValid() const;
+
+		//Buffer must be at least 37 characters (36 for the guid + 1 for \0).
+		bool ToString(char* pBuffer, uint32_t bufferSize) const;
 
 		static Guid GenerateNewGuid();
 
