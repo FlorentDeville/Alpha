@@ -6,9 +6,12 @@
 
 #include "Core/Singleton.h"
 #include "Editors/RawDb.h"
+
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Material/MaterialId.h"
+#include "Rendering/Texture/TextureId.h"
+
 #include "Systems/Assets/AssetId.h"
 
 #include "DirectXMath.h"
@@ -91,6 +94,8 @@ namespace Editors
 		int m_selectedMesh; //id in m_allMeshes, -1 if nothing selected
 
 		Rendering::MaterialId m_materialId; //material to use to render the mesh
+
+		Rendering::TextureId m_importIconTextureId;
 
 		bool m_enableViewportControl;
 		DirectX::XMUINT2 m_mousePreviousPos;

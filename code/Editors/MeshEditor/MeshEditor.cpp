@@ -7,6 +7,7 @@
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Process.h"
+#include "OsWin/Resource.h"
 
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
@@ -17,6 +18,10 @@
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shaders/ShaderMgr.h"
+#include "Rendering/Texture/TextureMgr.h"
+#include "Rendering/Texture/Texture.h"
+
+#include "Resources/ResourcesMgr.h"
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
@@ -80,6 +85,17 @@ namespace Editors
 		m_editorScriptsPath = parameter.m_editorScriptsPath;
 
 		LoadRawDb(parameter.m_rawBlenderPath + "\\db.txt", m_meshRawDb);
+
+		Rendering::Texture* pImportIconTexture;
+		Rendering::TextureMgr::Get().CreateTexture(&pImportIconTexture, m_importIconTextureId);
+
+		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
+		int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconImport);
+		const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconImport);
+		char* pData;
+		uint32_t dataSize;
+		Os::Resource::GetResource(sysId, type, &pData, dataSize);
+		pImportIconTexture->Init(pData, dataSize);
 
 		//create the render target
 		const int width = 1280;
@@ -156,8 +172,8 @@ namespace Editors
 			pButtonImport->OnClick([this, ii]() -> bool { return OnMeshImportClicked(ii); });
 			pEntryLayout->AddWidget(pButtonImport);
 
-			std::string importIconFilename = parameter.m_editorIconsPath + "\\import.png";
-			Widgets::Icon* pImportIcon = new Widgets::Icon(DirectX::XMINT2(0, 0), DirectX::XMUINT2(20, 20), importIconFilename);
+			Widgets::Icon* pImportIcon = new Widgets::Icon(m_importIconTextureId);
+			pImportIcon->SetSize(DirectX::XMUINT2(20, 20));
 			pButtonImport->AddWidget(pImportIcon);
 
 			//mesh name

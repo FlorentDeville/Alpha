@@ -36,6 +36,7 @@
     <Image Include="icons\collapsed.png" />
     <Image Include="icons\cursor.png" />
     <Image Include="icons\expanded.png" />
+    <Image Include="icons\import.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />

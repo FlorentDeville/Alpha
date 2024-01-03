@@ -16,6 +16,7 @@
     <Image Include="icons\close_hover.png" />
     <Image Include="icons\cursor.png" />
     <Image Include="icons\checkmark.png" />
+    <Image Include="icons\import.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />
