@@ -29,6 +29,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="fonts\segoeUI_0.png" />
     <Image Include="icons\alpha_white.ico" />
     <Image Include="icons\checkmark.png" />
     <Image Include="icons\close.png" />
@@ -40,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fonts\segoeUI.fnt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

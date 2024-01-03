@@ -20,6 +20,9 @@ namespace AppResources
 		kUiIconCheckmark,
 		kUiIconImport,
 
+		kFontDefSegoeUI,
+		kFontTexSegoeUI,
+
 		kCount
 	};
 }

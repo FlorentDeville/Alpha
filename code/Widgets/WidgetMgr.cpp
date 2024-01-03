@@ -117,12 +117,30 @@ namespace Widgets
 			pWidgetMaterial->Init(rsId, psoId);
 		}
 
+		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
+
 		//Font for label
 		{
 			std::string fontName = "segoeUI";
 			Rendering::Font* pFont = nullptr;
 			Rendering::FontMgr::Get().CreateFont(&pFont, m_segoeUIFontId);
-			pFont->Init(parameter.m_editorFontsPath, fontName);
+			
+			//load the font from the application resource
+			int16_t fontDefResourceId = resourceMgr.GetSystemResourceId(AppResources::kFontDefSegoeUI);
+			const char* fontDefType = resourceMgr.GetSystemResourceType(AppResources::kFontDefSegoeUI);
+
+			char* pFontDefData = nullptr;
+			uint32_t fontDefDataSize = 0;
+			Os::Resource::GetResource(fontDefResourceId, fontDefType, &pFontDefData, fontDefDataSize);
+
+			int16_t fontTexResourceId = resourceMgr.GetSystemResourceId(AppResources::kFontTexSegoeUI);
+			const char* fontTexType = resourceMgr.GetSystemResourceType(AppResources::kFontTexSegoeUI);
+
+			char* pFontTexData = nullptr;
+			uint32_t fontTexDataSize = 0;
+			Os::Resource::GetResource(fontTexResourceId, fontTexType, &pFontTexData, fontTexDataSize);
+
+			pFont->Init(pFontDefData, fontDefDataSize, pFontTexData, fontTexDataSize);
 
 			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\text.rs.cso");
 			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\text.vs.cso");
@@ -162,7 +180,6 @@ namespace Widgets
 		}
 
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
-		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
 
 		//Load expanded icon from resources
 		m_iconTextureIdArray[static_cast<int>(IconId::kIconExpanded)] = LoadApplicationResourceImage(AppResources::kUiIconExpanded);
