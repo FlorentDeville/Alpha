@@ -6,9 +6,12 @@ set DATETIME=%mydate%_%mytime%
 
 set OUTPUT=c:\workspace\Alpha\publish\Alpha_%DATETIME%
 
-set SRC_ROOT=c:\workspace\Alpha\
+set OUTPUT_DIR=%USERPROFILE%\Alpha\
+
+set SRC_ROOT=C:\workspace\Alpha\
+
 REM copy the executable
-set EXE_SRC=%SRC_ROOT%code\x64\Release\
+set EXE_SRC=%OUTPUT_DIR%output\Alpha\x64\Release\
 xcopy %EXE_SRC%*.exe %OUTPUT%\bin /I /F
 xcopy %EXE_SRC%*.cso %OUTPUT%\bin /I /F
 xcopy %EXE_SRC%*.ini %OUTPUT%\bin /I /F
@@ -19,8 +22,5 @@ xcopy %SRC_ROOT%code\scripts\*.* %OUTPUT%\scripts /I /F
 REM copy the data and raw
 xcopy %SRC_ROOT%data %OUTPUT%\data /I /F /S
 xcopy %SRC_ROOT%raw %OUTPUT%\raw /I /F /S
-
-REM copy the editor data
-xcopy %SRC_ROOT%editor %OUTPUT%\editor /I /F /S
 
 echo Alpha published to %OUTPUT%
