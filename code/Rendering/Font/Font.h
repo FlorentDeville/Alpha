@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <iosfwd>
 #include <string>
 
 #include "Rendering/Texture/TextureId.h"
@@ -49,6 +50,7 @@ namespace Rendering
         Font();
         ~Font();
 
+        void Init(const char* pFntFileData, uint32_t fntFileDataSize, const char* pFntTextureData, uint32_t fntTextureDataSize);
         void Init(const std::string& fontPath, const std::string& fontName);
         void Release();
 
@@ -82,6 +84,9 @@ namespace Rendering
         float m_bottompadding;
 
     private:
+        void Internal_LoadFntFile(std::istream& stream);
+
         void LoadFntFile(const std::string& fntName);
+        void LoadFntFile(const char* pBuffer, uint32_t size);
     };
 }

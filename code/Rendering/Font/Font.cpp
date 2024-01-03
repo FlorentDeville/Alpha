@@ -9,6 +9,7 @@
 #include "Core/Helper.h"
 
 #include <fstream>
+#include <sstream>
 
 namespace Rendering
 {
@@ -16,10 +17,21 @@ namespace Rendering
         : m_name()
         , m_CharList(nullptr)
         , m_KerningsList(nullptr)
+        , m_baseHeight()
+        , m_bottompadding()
     {}
 
     Font::~Font()
     {}
+
+    void Font::Init(const char* pFntFileData, uint32_t fntFileDataSize, const char* pFntTextureData, uint32_t fntTextureDataSize)
+    {
+        LoadFntFile(pFntFileData, fntFileDataSize);
+
+        Texture* pTexture = nullptr;
+        Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_texture);
+        pTexture->Init(pFntTextureData, fntTextureDataSize);
+    }
 
     void Font::Init(const std::string& fontPath, const std::string& fontName)
     {
@@ -95,31 +107,28 @@ namespace Rendering
         }
     }
 
-    void Font::LoadFntFile(const std::string& fntName)
+    void Font::Internal_LoadFntFile(std::istream& stream)
     {
-        std::ifstream fs;
-        fs.open(fntName);
-
         std::string tmp;
         size_t startpos;
 
         // extract font name
-        fs >> tmp; //info
+        stream >> tmp; //info
 
         //face="Segoe UI"
         //the first getline stops at the first quote, the second getline stops at the second quote.
-        std::getline(std::getline(fs, tmp, '\"'), m_name, '\"');
+        std::getline(std::getline(stream, tmp, '\"'), m_name, '\"');
 
         // get font size
-        fs >> tmp; // size=73
+        stream >> tmp; // size=73
         startpos = tmp.find("=") + 1;
         m_size = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // bold, italic, charset, unicode, stretchH, smooth, aa, padding, spacing
-        fs >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp; // bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 
+        stream >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp >> tmp; // bold=0 italic=0 charset="" unicode=0 stretchH=100 smooth=1 aa=1 
 
         // get padding
-        fs >> tmp; // padding=5,5,5,5 
+        stream >> tmp; // padding=5,5,5,5 
         startpos = tmp.find("=") + 1;
         tmp = tmp.substr(startpos, tmp.size() - startpos); // 5,5,5,5
 
@@ -141,46 +150,46 @@ namespace Rendering
         tmp = tmp.substr(startpos, tmp.size() - startpos);
         m_leftpadding = (float)std::stoi(tmp);// / (float)windowWidth;
 
-        fs >> tmp; // spacing=0,0
+        stream >> tmp; // spacing=0,0
 
-        fs >> tmp; // outline
+        stream >> tmp; // outline
 
         // get lineheight (how much to move down for each line), and normalize (between 0.0 and 1.0 based on size of font)
-        fs >> tmp >> tmp; // common lineHeight=95
+        stream >> tmp >> tmp; // common lineHeight=95
         startpos = tmp.find("=") + 1;
         m_lineHeight = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // get base height (height of all characters), and normalize (between 0.0 and 1.0 based on size of font)
-        fs >> tmp; // base=68
+        stream >> tmp; // base=68
         startpos = tmp.find("=") + 1;
         m_baseHeight = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos));// / (float)windowHeight;
 
         // get texture width
-        fs >> tmp; // scaleW=512
+        stream >> tmp; // scaleW=512
         startpos = tmp.find("=") + 1;
         m_textureWidth = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // get texture height
-        fs >> tmp; // scaleH=512
+        stream >> tmp; // scaleH=512
         startpos = tmp.find("=") + 1;
         m_textureHeight = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
         // get pages, packed, page id
-        fs >> tmp >> tmp; // pages=1 packed=0
+        stream >> tmp >> tmp; // pages=1 packed=0
 
-        fs >> tmp >> tmp >> tmp >> tmp; //alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+        stream >> tmp >> tmp >> tmp >> tmp; //alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 
         //page id = 0
-        fs >> tmp >> tmp;
+        stream >> tmp >> tmp;
 
         // get texture filename
         std::string wtmp;
-        fs >> wtmp; // file="Arial.png"
+        stream >> wtmp; // file="Arial.png"
         startpos = wtmp.find("\"") + 1;
         m_fontImage = wtmp.substr(startpos, wtmp.size() - startpos - 1);
 
         // get number of characters
-        fs >> tmp >> tmp; // chars count=97
+        stream >> tmp >> tmp; // chars count=97
         startpos = tmp.find("=") + 1;
         m_numCharacters = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
@@ -190,56 +199,56 @@ namespace Rendering
         for (int c = 0; c < m_numCharacters; ++c)
         {
             // get unicode id
-            fs >> tmp >> tmp; // char id=0
+            stream >> tmp >> tmp; // char id=0
             startpos = tmp.find("=") + 1;
             m_CharList[c].m_id = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
             // get x
-            fs >> tmp; // x=392
+            stream >> tmp; // x=392
             startpos = tmp.find("=") + 1;
             m_CharList[c].m_u = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)m_textureWidth;
 
             // get y
-            fs >> tmp; // y=340
+            stream >> tmp; // y=340
             startpos = tmp.find("=") + 1;
             m_CharList[c].m_v = (float)std::stoi(tmp.substr(startpos, tmp.size() - startpos)) / (float)m_textureHeight;
 
             // get width
-            fs >> tmp; // width=47
+            stream >> tmp; // width=47
             startpos = tmp.find("=") + 1;
             tmp = tmp.substr(startpos, tmp.size() - startpos);
             m_CharList[c].m_width = std::stoi(tmp);
             m_CharList[c].m_twidth = (float)std::stoi(tmp) / (float)m_textureWidth;
 
             // get height
-            fs >> tmp; // height=57
+            stream >> tmp; // height=57
             startpos = tmp.find("=") + 1;
             tmp = tmp.substr(startpos, tmp.size() - startpos);
             m_CharList[c].m_height = std::stoi(tmp);
             m_CharList[c].m_theight = (float)std::stoi(tmp) / (float)m_textureHeight;
 
             // get xoffset
-            fs >> tmp; // xoffset=-6
+            stream >> tmp; // xoffset=-6
             startpos = tmp.find("=") + 1;
             m_CharList[c].m_xoffset = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
             // get yoffset
-            fs >> tmp; // yoffset=16
+            stream >> tmp; // yoffset=16
             startpos = tmp.find("=") + 1;
             m_CharList[c].m_yoffset = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
             // get xadvance
-            fs >> tmp; // xadvance=65
+            stream >> tmp; // xadvance=65
             startpos = tmp.find("=") + 1;
             m_CharList[c].m_xadvance = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
             // get page
             // get channel
-            fs >> tmp >> tmp; // page=0    chnl=0
+            stream >> tmp >> tmp; // page=0    chnl=0
         }
 
         // get number of kernings
-        fs >> tmp >> tmp; // kernings count=96
+        stream >> tmp >> tmp; // kernings count=96
         startpos = tmp.find("=") + 1;
         m_numKernings = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
@@ -249,20 +258,36 @@ namespace Rendering
         for (int k = 0; k < m_numKernings; ++k)
         {
             // get first character
-            fs >> tmp >> tmp; // kerning first=87
+            stream >> tmp >> tmp; // kerning first=87
             startpos = tmp.find("=") + 1;
             m_KerningsList[k].m_firstid = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
             // get second character
-            fs >> tmp; // second=45
+            stream >> tmp; // second=45
             startpos = tmp.find("=") + 1;
             m_KerningsList[k].m_secondid = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
 
             // get amount
-            fs >> tmp; // amount=-1
+            stream >> tmp; // amount=-1
             startpos = tmp.find("=") + 1;
             int t = std::stoi(tmp.substr(startpos, tmp.size() - startpos));
             m_KerningsList[k].m_amount = t;
         }
+    }
+
+    void Font::LoadFntFile(const std::string& fntName)
+    {
+        std::ifstream fs;
+        fs.open(fntName);
+
+        Internal_LoadFntFile(fs);
+
+        fs.close();
+    }
+
+    void Font::LoadFntFile(const char* pBuffer, uint32_t size)
+    {
+        std::istringstream stream(std::string(pBuffer, size));
+        Internal_LoadFntFile(stream);
     }
 }
