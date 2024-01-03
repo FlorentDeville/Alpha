@@ -173,6 +173,8 @@ namespace Editors
 
 	void LevelEditorModule::Init()
 	{
+		InitializePropertyDescriptor();
+
 		m_pLevelMgr = new LevelMgr();
 		m_pSelectionMgr = new SelectionMgr();
 	}

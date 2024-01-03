@@ -6,6 +6,41 @@
 
 namespace Editors
 {
+	struct PropertyTypeDescriptor
+	{
+		PropertyType m_type;
+		std::string m_strType;
+	};
+
+	std::map<PropertyType, PropertyTypeDescriptor> s_propertyTypeDescriptors;
+
+	void InitializePropertyDescriptor()
+	{
+		s_propertyTypeDescriptors[kInt] =			{ kInt,				"int" };
+		s_propertyTypeDescriptors[kFloat] =			{ kFloat,			"float" };
+		s_propertyTypeDescriptors[kString] =		{ kString,			"string" };
+		s_propertyTypeDescriptors[kAssetMesh] =		{ kAssetMesh,		"mesh" };
+		s_propertyTypeDescriptors[kAssetMaterial] = { kAssetMaterial,	"material" };
+		s_propertyTypeDescriptors[kVec4f] =			{ kVec4f,			"vec4f" };
+		s_propertyTypeDescriptors[kMat44f] =		{ kMat44f,			"mat44f" };
+	}
+
+	const char* PropertyTypeToString(PropertyType type)
+	{
+		return s_propertyTypeDescriptors[type].m_strType.c_str();
+	}
+
+	PropertyType StringToPropertyType(const char* str)
+	{
+		for (const std::pair<PropertyType, PropertyTypeDescriptor>& pair : s_propertyTypeDescriptors)
+		{
+			if (strcmp(str, pair.second.m_strType.c_str()) == 0)
+				return pair.first;
+		}
+
+		return kUnknown;
+	}
+
 	PropertyValue::InternalValue::InternalValue()
 	{}
 

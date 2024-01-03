@@ -30,6 +30,11 @@ namespace Editors
 		kCount
 	};
 
+	void InitializePropertyDescriptor();
+
+	const char* PropertyTypeToString(PropertyType type);
+	PropertyType StringToPropertyType(const char* str);
+
 	class PropertyValue
 	{
 	public:
