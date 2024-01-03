@@ -86,6 +86,10 @@ namespace Systems
 				m_shaders.push_back(pNewAsset);
 				break;
 
+			case kLevel:
+				m_levels.push_back(pNewAsset);
+				break;
+
 			default:
 				assert(false);
 				break;
@@ -122,5 +126,10 @@ namespace Systems
 	const std::vector<Asset*>& AssetMgr::GetShaders() const
 	{
 		return m_shaders;
+	}
+
+	const std::vector<Asset*>& AssetMgr::GetLevels() const
+	{
+		return m_levels;
 	}
 }

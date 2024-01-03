@@ -15,6 +15,7 @@ namespace Systems
 		kShader,
 		kTexture,
 		kMaterial,
+		kLevel,
 
 		kCount 
 		//Do not add anything after kCount

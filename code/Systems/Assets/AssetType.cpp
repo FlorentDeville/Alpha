@@ -16,6 +16,8 @@ namespace Systems
 			return kTexture;
 		else if (type == "SHADER")
 			return kShader;
+		else if (type == "LEVEL")
+			return kLevel;
 		else
 			return kInvalid;
 	}
@@ -38,6 +40,10 @@ namespace Systems
 
 		case kShader:
 			return "shaders";
+			break;
+
+		case kLevel:
+			return "levels";
 			break;
 
 		default:

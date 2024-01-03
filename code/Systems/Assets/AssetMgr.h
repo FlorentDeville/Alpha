@@ -34,6 +34,7 @@ namespace Systems
 		const std::vector<Asset*>& GetMaterials() const;
 		const std::vector<Asset*>& GetTextures() const;
 		const std::vector<Asset*>& GetShaders() const;
+		const std::vector<Asset*>& GetLevels() const;
 
 	private:
 		std::string m_root; //location of toc.txt
@@ -45,6 +46,7 @@ namespace Systems
 		std::vector<Asset*> m_materials;
 		std::vector<Asset*> m_textures;
 		std::vector<Asset*> m_shaders;
+		std::vector<Asset*> m_levels;
 	};
 
 }
