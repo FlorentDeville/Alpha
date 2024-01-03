@@ -45,8 +45,6 @@ namespace Widgets
 	{
 	public:
 		std::string m_gameShaderPath;
-		std::string m_editorFontsPath;
-		std::string m_editorIconsPath;
 		SysWindow* m_pMainWindow;
 	};
 
@@ -103,8 +101,6 @@ namespace Widgets
 		void RequestResize();
 		void RequestWidgetDeletion(Widget* pWidget);
 
-		const std::string& GetEditorIconsPath() const;
-
 		void OpenModalWindow(Widget* pModalWindow);
 		void CloseModalWindow();
 
@@ -139,8 +135,6 @@ namespace Widgets
 		std::vector<Widget*> m_deleteRequestArray;
 
 		SysWindow* m_pMainSysWindow;
-
-		std::string m_editorIconsPath;
 
 		//internal event storage
 		union EventStorage

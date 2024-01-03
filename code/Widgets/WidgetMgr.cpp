@@ -57,7 +57,6 @@ namespace Widgets
 		, m_widgetViewportPsoId()
 		, m_segoeUIFontId()
 		, m_resizeRequest(false)
-		, m_editorIconsPath()
 		, m_pMainSysWindow(nullptr)
 		, m_pModalWindow(nullptr)
 		, m_shortcutsArray()
@@ -74,7 +73,6 @@ namespace Widgets
 	void WidgetMgr::Init(const WidgetMgrParameter& parameter)
 	{
 		m_pMainSysWindow = parameter.m_pMainWindow;
-		m_editorIconsPath = parameter.m_editorIconsPath;
 
 		Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
 		Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
@@ -498,11 +496,6 @@ namespace Widgets
 	void WidgetMgr::RequestWidgetDeletion(Widget* pWidget)
 	{
 		m_deleteRequestArray.push_back(pWidget);
-	}
-
-	const std::string& WidgetMgr::GetEditorIconsPath() const
-	{
-		return m_editorIconsPath;
 	}
 
 	void WidgetMgr::OpenModalWindow(Widget* pModalWindow)

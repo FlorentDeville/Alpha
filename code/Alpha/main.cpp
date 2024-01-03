@@ -545,7 +545,6 @@ void CreateMainWindow(const Configuration& configuration)
 	meshEditorParameter.pParent = pMiddleTabContainer;
 	meshEditorParameter.m_dataMaterialPath = configuration.m_dataMaterialsPath;
 	meshEditorParameter.m_dataMeshPath = configuration.m_dataMeshPath;
-	meshEditorParameter.m_editorIconsPath = configuration.m_editorsIconsPath;
 	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
 	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
 	meshEditorParameter.m_blender = configuration.m_blender;
@@ -643,8 +642,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::InitSingleton();
 	Widgets::WidgetMgrParameter widgetMgrParameter;
-	widgetMgrParameter.m_editorFontsPath = configuration.m_editorsFontsPath;
-	widgetMgrParameter.m_editorIconsPath = configuration.m_editorsIconsPath;
 	widgetMgrParameter.m_gameShaderPath = binPath;
 	widgetMgrParameter.m_pMainWindow = g_pWindow;
 	widgetMgr.Init(widgetMgrParameter);

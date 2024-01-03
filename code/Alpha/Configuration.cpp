@@ -15,8 +15,6 @@ Configuration::Configuration()
 	, m_dataRoot()
 	, m_rawBlenderPath()
 	, m_rawShadersPath()
-	, m_editorsIconsPath()
-	, m_editorsFontsPath()
 	, m_gameResolutionWidth(1920)	// default resolution is FHD
 	, m_gameResolutionHeight(1080)	// default resolution is FHD
 {}
@@ -54,12 +52,6 @@ bool Configuration::Load(const std::string& binPath, const std::string& filename
 
 	GetPrivateProfileString("raw", "shaders", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_rawShadersPath = buffer;
-
-	GetPrivateProfileString("editors", "icons", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_editorsIconsPath = buffer;
-
-	GetPrivateProfileString("editors", "fonts", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_editorsFontsPath = buffer;
 
 	GetPrivateProfileString("editors", "scripts", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_editorsScriptsPath = buffer;
