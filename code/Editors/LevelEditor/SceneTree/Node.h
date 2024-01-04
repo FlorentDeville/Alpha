@@ -34,10 +34,11 @@ namespace Editors
 		virtual Entity* ToEntity();
 		virtual const Entity* ToConstEntity() const;
 
+	protected:
+		Os::Guid m_guid;
+
 	private:
 		Node* m_pParent;
 		std::vector<Node*> m_children;
-
-		Os::Guid m_guid;
 	};
 }

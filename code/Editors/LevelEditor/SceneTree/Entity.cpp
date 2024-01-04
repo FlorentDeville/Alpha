@@ -16,6 +16,14 @@ namespace Editors
 		, m_name(name)
 	{}
 
+	Entity::Entity(const std::string& name, const Os::Guid& guid)
+		: Node()
+		, m_components()
+		, m_name(name)
+	{
+		m_guid = guid;
+	}
+
 	Entity::~Entity()
 	{
 		for (const std::pair<std::string, Component*>& pair : m_components)

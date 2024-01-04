@@ -23,6 +23,7 @@ namespace Editors
 	{
 	public:
 		Entity(const std::string& name);
+		Entity(const std::string& name, const Os::Guid& guid);
 		~Entity();
 
 		Entity* ToEntity() override;
