@@ -11,6 +11,7 @@
 #include "Systems/Assets/Asset.h"
 
 #include "rapidjson/document.h"
+#include "rapidjson/filereadstream.h"
 #include "rapidjson/filewritestream.h"
 #include "rapidjson/prettywriter.h"
 
@@ -98,6 +99,66 @@ namespace Editors
 		return true;
 	}
 
+	bool DeserializeComponent(const rapidjson::Value& jsonComponent, Component** ppComponent)
+	{
+		const char* componentName = jsonComponent["name"].GetString();
+		*ppComponent = new Component(componentName);
+
+		const rapidjson::Value& jsonPropertyArray = jsonComponent["properties"];
+		for (const rapidjson::Value& jsonProperty : jsonPropertyArray.GetArray())
+		{
+			const char* propertyName = jsonProperty["name"].GetString();
+			const char* strPropertyType = jsonProperty["type"].GetString();
+			PropertyType type = StringToPropertyType(strPropertyType);
+			
+			Property* pNewProperty = new Property(propertyName);
+			switch (type)
+			{
+			case kAssetMaterial:
+			{
+				uint64_t id = jsonProperty["value"].GetUint64();
+				pNewProperty->SetMaterialAssetId(Systems::AssetId(id));
+			}
+			break;
+
+			case kAssetMesh:
+			{
+				uint64_t id = jsonProperty["value"].GetUint64();
+				pNewProperty->SetMeshAssetId(Systems::AssetId(id));
+			}
+			break;
+
+			case kMat44f:
+			{
+				Core::Mat44f mat;
+				const rapidjson::Value& jsonMatArray = jsonProperty["value"];
+				for (int ii = 0; ii < 4; ++ii)
+				{
+					int offset = ii * 4;
+					for (int jj = 0; jj < 4; ++jj)
+					{
+						int index = offset + jj;
+						float v = jsonMatArray[index].GetFloat();
+						mat.Set(ii, jj, v);
+					}
+				}
+
+				pNewProperty->SetMatrix(mat);
+			}
+			break;
+
+			default:
+				assert(false);
+				break;
+
+			}
+
+			(*ppComponent)->AddProperty(pNewProperty);
+		}
+
+		return true;
+	}
+
 	bool SerializeEntity(rapidjson::Value& jsonEntityArray, rapidjson::Document::AllocatorType& alloc, const Entity* pEntity)
 	{
 		rapidjson::Value entityJson(rapidjson::kObjectType);
@@ -124,7 +185,6 @@ namespace Editors
 		
 		//go recursively to save children
 		rapidjson::Value jsonChildren(rapidjson::kArrayType);
-		//entityJson.AddMember("children", jsonChildren, alloc);
 
 		const std::vector<Node*>& children = pEntity->GetConstChildren();
 		for (const Node* pChildNode : children)
@@ -138,6 +198,37 @@ namespace Editors
 		entityJson.AddMember("children", jsonChildren, alloc);
 
 		jsonEntityArray.PushBack(entityJson, alloc);
+
+		return true;
+	}
+
+	bool DeserializeEntity(const rapidjson::Value& jsonEntity, SceneTree* pSceneTree, const Os::Guid& parentGuid)
+	{
+		std::string strGuid = jsonEntity["guid"].GetString();
+		Os::Guid guid(strGuid.c_str());
+
+		std::string name = jsonEntity["name"].GetString();
+
+		Entity* pEntity = new Entity(name, guid);
+		pSceneTree->AddNode(pEntity, parentGuid);
+
+		//load components
+		const rapidjson::Value& jsonComponentArray = jsonEntity["components"];
+		for (const rapidjson::Value& jsonComponent : jsonComponentArray.GetArray())
+		{
+			Component* pComponent = nullptr;
+			DeserializeComponent(jsonComponent, &pComponent);
+
+			pEntity->AddComponent(pComponent);
+		}
+
+		//now load the children
+		const rapidjson::Value& jsonChildrenArray = jsonEntity["children"];
+		for (const rapidjson::Value& jsonChild : jsonChildrenArray.GetArray())
+		{
+			Entity* pChildEntity = nullptr;
+			DeserializeEntity(jsonChild, pSceneTree, pEntity->GetConstGuid());
+		}
 
 		return true;
 	}
@@ -192,6 +283,33 @@ namespace Editors
 
 	bool LevelSerializer::Deserialize(const Systems::Asset& asset, std::string& levelName, SceneTree* pSceneTree)
 	{
+		const std::string& assetPath = asset.GetPath();
+		FILE* pFile = nullptr;
+		errno_t err = fopen_s(&pFile, assetPath.c_str(), "rb");
+		if (err != 0)
+			return false;
+
+		const int READ_BUFFER_SIZE = 65536;
+		char* pReadBuffer = new char[READ_BUFFER_SIZE];
+
+		rapidjson::FileReadStream frs(pFile, pReadBuffer, READ_BUFFER_SIZE);
+
+		rapidjson::Document document;
+		document.ParseStream(frs);
+
+		delete[] pReadBuffer;
+		fclose(pFile);
+
+		levelName = document["levelname"].GetString();
+
+		const rapidjson::Value& jsonSceneTree = document["scenetree"];
+		if (!jsonSceneTree.IsArray())
+			return false;
+
+		const rapidjson::Value& jsonRoot = jsonSceneTree[0];
+
+		DeserializeEntity(jsonRoot, pSceneTree, Os::Guid());
+
 		return true;
 	}
 }
