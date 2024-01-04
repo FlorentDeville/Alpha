@@ -17,6 +17,9 @@ namespace Editors
 		: BaseModel()
 		, m_pRoot(pRoot)
 	{
+		if (!pRoot)
+			return;
+
 		const std::vector<Node*>& children = pRoot->GetChildren();
 		for (Node* pNode : children)
 			m_subModels.push_back(new LevelTreeModel(pNode));
@@ -42,11 +45,17 @@ namespace Editors
 
 	int LevelTreeModel::GetChildrenCount(int rowId) const
 	{
+		if (!m_pRoot)
+			return 0;
+
 		return static_cast<int>(m_pRoot->GetChildren().size());
 	}
 
 	const std::string& LevelTreeModel::GetData(int rowId, int columnId) const
 	{
+		if (!m_pRoot)
+			return s_default;
+
 		const Entity* pEntity = m_pRoot->ToConstEntity();
 		if (pEntity)
 			return pEntity->GetName();

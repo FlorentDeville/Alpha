@@ -137,16 +137,18 @@ namespace Editors
 		//loop through the tree
 		const Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		const Node* pRoot = levelEditorModule.GetConstLevelMgr()->GetConstSceneTree()->GetConstRoot();
-
-		DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
-
-		const std::vector<Node*>& children = pRoot->GetConstChildren();
-		for (const Node* pNode : children)
+		if (pRoot)
 		{
-			RenderTreeNodeRecursive(pNode, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
-		}
+			DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
 
-		ClearDepthBuffer();
+			const std::vector<Node*>& children = pRoot->GetConstChildren();
+			for (const Node* pNode : children)
+			{
+				RenderTreeNodeRecursive(pNode, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
+			}
+
+			ClearDepthBuffer();
+		}
 
 		m_pGizmoWidget->Render();
 	}
