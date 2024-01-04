@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\Component.h" />
+    <ClInclude Include="LevelEditor\LevelSerializer.h" />
     <ClInclude Include="LevelEditor\SceneTree\Entity.h" />
     <ClInclude Include="LevelEditor\LevelMgr.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
@@ -44,6 +45,7 @@
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\Component.cpp" />
+    <ClCompile Include="LevelEditor\LevelSerializer.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Entity.cpp" />
     <ClCompile Include="LevelEditor\LevelMgr.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
@@ -134,8 +136,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;C:\workspace\Alpha\code\3rdparty\rapidjson-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -154,8 +156,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\workspace\Alpha\code;C:\workspace\Alpha\code\3rdparty\rapidjson-1.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>

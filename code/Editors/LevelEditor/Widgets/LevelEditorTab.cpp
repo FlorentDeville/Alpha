@@ -126,6 +126,12 @@ namespace Editors
 
 		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New");
 		pNewItem->OnClick([this]() { LevelEditorModule::Get().NewLevel(); });
+
+		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Load");
+		pLoadItem->OnClick([this]() { LevelEditorModule::Get().LoadLevel(); });
+
+		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
+		pSaveItem->OnClick([this]() { LevelEditorModule::Get().SaveLevel(); });
 	}
 
 	void LevelEditorTab::CreateMenuEdit(Widgets::MenuBar* pMenuBar)
@@ -243,6 +249,7 @@ namespace Editors
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
 		levelEditorModule.OnNewLevel([this]() { OnNewLevel_SceneTree(); });
+		levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
 	}
 
 	void LevelEditorTab::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
@@ -495,6 +502,13 @@ namespace Editors
 	}
 
 	void LevelEditorTab::OnNewLevel_SceneTree()
+	{
+		delete m_pLevelTreeModel;
+		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
+	void LevelEditorTab::OnLoadLevel_SceneTree()
 	{
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());

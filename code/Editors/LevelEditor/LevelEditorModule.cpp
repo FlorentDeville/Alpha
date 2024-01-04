@@ -8,6 +8,7 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelMgr.h"
+#include "Editors/LevelEditor/LevelSerializer.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
@@ -223,6 +224,35 @@ namespace Editors
 		pSceneTree->DeleteNode(pSceneTree->GetConstRoot()->GetConstGuid());
 
 		m_onNewLevel();
+	}
+
+	bool LevelEditorModule::SaveLevel()
+	{
+		const std::vector<Systems::Asset*>& allLevels = Systems::AssetMgr::Get().GetLevels();
+		if (allLevels.empty())
+			return false;
+
+		const Systems::Asset* pAsset = allLevels[0];
+
+		return LevelSerializer::Serialize(*pAsset, m_pLevelMgr->GetName(), m_pLevelMgr->GetConstSceneTree());
+	}
+
+	bool LevelEditorModule::LoadLevel()
+	{
+		const std::vector<Systems::Asset*>& allLevels = Systems::AssetMgr::Get().GetLevels();
+		if (allLevels.empty())
+			return false;
+
+		const Systems::Asset* pAsset = allLevels[0];
+
+		std::string levelName;
+		bool res = LevelSerializer::Deserialize(*pAsset, levelName, m_pLevelMgr->GetSceneTree());
+		if (!res)
+			return false;
+
+		m_onLoadLevel();
+
+		return true;
 	}
 
 	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)

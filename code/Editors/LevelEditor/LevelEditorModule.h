@@ -59,6 +59,8 @@ namespace Editors
 		SelectionMgr* GetSelectionMgr();
 
 		void NewLevel();
+		bool SaveLevel();
+		bool LoadLevel();
 
 		void AddNewEntity(Os::Guid& nodeGuid);
 		void DeleteEntity(const Os::Guid& nodeGuid);
@@ -94,6 +96,7 @@ namespace Editors
 		void RemoveOnDuplicateEntity(Core::CallbackId id);
 
 		EVENT_DECL(NewLevel, void())
+		EVENT_DECL(LoadLevel, void())
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
