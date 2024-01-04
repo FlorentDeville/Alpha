@@ -85,6 +85,7 @@ namespace Editors
 	class Property
 	{
 	public:
+		Property(const std::string& name);
 		Property(const Property& src);
 		Property(const std::string& name, const Core::Mat44f& value);
 		Property(const std::string& name, PropertyType type, Systems::AssetId value);

@@ -97,6 +97,10 @@ namespace Editors
 		m_internalValue.m_assetId = value;
 	}
 
+	Property::Property(const std::string& name)
+		: m_name(name)
+	{}
+
 	Property::Property(const Property& src)
 		: m_name(src.m_name)
 		, m_value(src.m_value)
