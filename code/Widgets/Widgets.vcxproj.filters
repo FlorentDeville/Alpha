@@ -123,9 +123,6 @@
     <ClInclude Include="Tools\DefaultColors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WidgetEventMacro.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Widgets\AbstractClickable.h">
       <Filter>Header Files</Filter>
     </ClInclude>

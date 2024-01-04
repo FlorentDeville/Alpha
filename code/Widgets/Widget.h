@@ -12,8 +12,7 @@
 #include "MessageId.h"
 
 #include "Core/Callbacks/CallbackList.h"
-
-#include "Widgets/WidgetEventMacro.h"
+#include "Core/Callbacks/CallbackMacro.h"
 
 struct Message;
 

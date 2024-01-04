@@ -4,12 +4,12 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackMacro.h"
+
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/Property.h"
 
 #include "Systems/Assets/AssetType.h"
-
-#include "Widgets/WidgetEventMacro.h"
 
 #include <vector>
 #include <string>

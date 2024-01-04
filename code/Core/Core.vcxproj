@@ -105,6 +105,7 @@
   <ItemGroup>
     <ClInclude Include="Callbacks\CallbackId.h" />
     <ClInclude Include="Callbacks\CallbackList.h" />
+    <ClInclude Include="Callbacks\CallbackMacro.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Math\Aabb.h" />
