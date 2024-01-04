@@ -7,6 +7,7 @@
 #include "Core/Singleton.h"
 
 #include "Core/Callbacks/CallbackList.h"
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Math/Mat44f.h"
 
 #include <map>
@@ -57,6 +58,8 @@ namespace Editors
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
 
+		void NewLevel();
+
 		void AddNewEntity(Os::Guid& nodeGuid);
 		void DeleteEntity(const Os::Guid& nodeGuid);
 		void RenameEntity(const Os::Guid& nodeGuid, const std::string& name);
@@ -89,6 +92,8 @@ namespace Editors
 		using OnDuplicateEntityEvent = Core::CallbackList<void(const Os::Guid& src, const Os::Guid& copy)>;
 		Core::CallbackId OnDuplicateEntity(const OnDuplicateEntityEvent::Callback& callback);
 		void RemoveOnDuplicateEntity(Core::CallbackId id);
+
+		EVENT_DECL(NewLevel, void())
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;

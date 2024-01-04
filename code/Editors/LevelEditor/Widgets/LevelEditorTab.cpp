@@ -62,6 +62,7 @@ namespace Editors
 
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 
+		CreateMenuFile(pMenuBar);
 		CreateMenuEdit(pMenuBar);
 		CreateMenuTransformation(pMenuBar);
 		CreateMenuWindows(pMenuBar);
@@ -118,6 +119,14 @@ namespace Editors
 
 	LevelEditorTab::~LevelEditorTab()
 	{}
+
+	void LevelEditorTab::CreateMenuFile(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("File");
+
+		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New");
+		pNewItem->OnClick([this]() { LevelEditorModule::Get().NewLevel(); });
+	}
 
 	void LevelEditorTab::CreateMenuEdit(Widgets::MenuBar* pMenuBar)
 	{
@@ -219,29 +228,6 @@ namespace Editors
 		pLayout->SetDirection(Widgets::Layout::Vertical);
 		m_pSceneTreeFrame->AddWidget(pLayout);
 
-		/*Widgets::Layout* pMenuLayout = new Widgets::Layout();
-		pMenuLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		pMenuLayout->SetSize(DirectX::XMUINT2(0, 20));
-		pMenuLayout->SetDirection(Widgets::Layout::Horizontal);
-		pLayout->AddWidget(pMenuLayout);*/
-
-		//const int BUTTON_SIZE = 20;
-		////add entity button
-		//{
-		//	Widgets::Button* pButton = new Widgets::Button(BUTTON_SIZE, BUTTON_SIZE, 0, 0);
-		//	pMenuLayout->AddWidget(pButton);
-		//	Widgets::Label* pButtonLabel = new Widgets::Label(0, 0, 1, "+");
-		//	pButtonLabel->SetX(5);
-		//	pButton->AddWidget(pButtonLabel);
-		//	pButton->OnClick(std::bind(&LevelEditorTab::OnClick_AddEntity, this));
-		//}
-
-		//separator
-		/*Widgets::Container* pSeparator = new Widgets::Container(0, 2);
-		pSeparator->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		pSeparator->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.18f, 0.18f, 0.18f, 1.f));
-		pLayout->AddWidget(pSeparator);*/
-
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget = new TreeWidget();
@@ -256,6 +242,7 @@ namespace Editors
 		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
+		levelEditorModule.OnNewLevel([this]() { OnNewLevel_SceneTree(); });
 	}
 
 	void LevelEditorTab::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
@@ -501,6 +488,13 @@ namespace Editors
 	}
 
 	void LevelEditorTab::OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy)
+	{
+		delete m_pLevelTreeModel;
+		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
+		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
+	void LevelEditorTab::OnNewLevel_SceneTree()
 	{
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());

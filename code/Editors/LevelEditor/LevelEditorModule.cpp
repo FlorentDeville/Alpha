@@ -215,12 +215,24 @@ namespace Editors
 		return m_pSelectionMgr;
 	}
 
+	void LevelEditorModule::NewLevel()
+	{
+		m_pSelectionMgr->Clear();
+
+		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
+		pSceneTree->DeleteNode(pSceneTree->GetConstRoot()->GetConstGuid());
+
+		m_onNewLevel();
+	}
+
 	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)
 	{
 		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
 
-		Node* pParent = pSceneTree->GetRoot();
-
+		Os::Guid parentGuid;
+		if (Node* pParent = pSceneTree->GetRoot())
+			parentGuid = pParent->GetConstGuid();
+		
 		std::string entityName = "newentity";
 
 		Entity* pNewEntity = new Entity(entityName);
@@ -235,7 +247,7 @@ namespace Editors
 		pNewEntity->AddComponent(pPlanTransform);
 		pNewEntity->AddComponent(pPlanRendering);
 
-		pSceneTree->AddNode(pNewEntity, pParent->GetConstGuid());
+		pSceneTree->AddNode(pNewEntity, parentGuid);
 
 		m_onAddEntity(pNewEntity->GetConstGuid());
 	}

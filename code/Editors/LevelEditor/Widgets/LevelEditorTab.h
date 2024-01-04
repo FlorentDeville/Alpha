@@ -58,6 +58,7 @@ namespace Editors
 
 		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
 
+		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
@@ -86,6 +87,7 @@ namespace Editors
 		void OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid);
 		void OnRenameEntity_SceneTree(const Os::Guid& nodeGuid);
 		void OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy);
+		void OnNewLevel_SceneTree();
 
 		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();
