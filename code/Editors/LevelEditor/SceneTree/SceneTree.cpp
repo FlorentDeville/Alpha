@@ -103,6 +103,8 @@ namespace Editors
 			DeleteNodeRecursive(pChild);			
 		}
 
+		children.clear();
+
 		m_nodeCache.erase(pNode->GetConstGuid());
 		delete pNode;
 	}
