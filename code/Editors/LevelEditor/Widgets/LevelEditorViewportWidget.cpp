@@ -141,11 +141,7 @@ namespace Editors
 		{
 			DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
 
-			const std::vector<Node*>& children = pRoot->GetConstChildren();
-			for (const Node* pNode : children)
-			{
-				RenderTreeNodeRecursive(pNode, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
-			}
+			RenderTreeNodeRecursive(pRoot, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
 
 			ClearDepthBuffer();
 		}
