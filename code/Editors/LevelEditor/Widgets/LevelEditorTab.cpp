@@ -14,6 +14,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
+#include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
 #include "Editors/Widgets/Tree/LevelTreeModel.h"
@@ -128,7 +129,7 @@ namespace Editors
 		pNewItem->OnClick([this]() { LevelEditorModule::Get().NewLevel(); });
 
 		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Load");
-		pLoadItem->OnClick([this]() { LevelEditorModule::Get().LoadLevel(); });
+		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->OnClick([this]() { LevelEditorModule::Get().SaveLevel(); });
@@ -513,6 +514,15 @@ namespace Editors
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
+	void LevelEditorTab::OnClickFileMenu_LoadLevel()
+	{
+		//modal windows are automatically deleted when closed,sono need to delete the dialog.
+		Editors::AssetDialog* pNewAssetDialog = new Editors::AssetDialog(false, Systems::kLevel);
+
+		pNewAssetDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().LoadLevel(id); });
+		pNewAssetDialog->Open();
 	}
 
 	void LevelEditorTab::OnClickEditMenu_AddEntity()

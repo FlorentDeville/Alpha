@@ -90,6 +90,8 @@ namespace Editors
 		void OnNewLevel_SceneTree();
 		void OnLoadLevel_SceneTree();
 
+		void OnClickFileMenu_LoadLevel();
+
 		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();
 		void OnClickEditMenu_RenameEntity();

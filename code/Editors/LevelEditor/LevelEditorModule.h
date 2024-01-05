@@ -60,7 +60,7 @@ namespace Editors
 
 		void NewLevel();
 		bool SaveLevel();
-		bool LoadLevel();
+		bool LoadLevel(Systems::AssetId levelId);
 
 		void AddNewEntity(Os::Guid& nodeGuid);
 		void DeleteEntity(const Os::Guid& nodeGuid);

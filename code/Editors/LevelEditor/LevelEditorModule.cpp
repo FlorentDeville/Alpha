@@ -237,13 +237,11 @@ namespace Editors
 		return LevelSerializer::Serialize(*pAsset, m_pLevelMgr->GetName(), m_pLevelMgr->GetConstSceneTree());
 	}
 
-	bool LevelEditorModule::LoadLevel()
+	bool LevelEditorModule::LoadLevel(Systems::AssetId levelId)
 	{
-		const std::vector<Systems::Asset*>& allLevels = Systems::AssetMgr::Get().GetLevels();
-		if (allLevels.empty())
+		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(levelId);
+		if (pAsset->GetType() != Systems::AssetType::kLevel)
 			return false;
-
-		const Systems::Asset* pAsset = allLevels[0];
 
 		std::string levelName;
 		bool res = LevelSerializer::Deserialize(*pAsset, levelName, m_pLevelMgr->GetSceneTree());

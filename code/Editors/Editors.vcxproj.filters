@@ -102,6 +102,9 @@
     <ClInclude Include="LevelEditor\LevelSerializer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\Dialog\AssetDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -186,6 +189,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\LevelSerializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Dialog\AssetDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
