@@ -7,7 +7,7 @@
 #include "Widgets/Models/AbstractViewModel.h"
 #include "Widgets/Models/Modelndex.h"
 
-#include "Widgets/Button.h"
+#include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 
 namespace Widgets
@@ -16,6 +16,9 @@ namespace Widgets
 		: Widget()
 		, m_pModel(nullptr)
 		, m_columnCount(1)
+		, m_oddRowBackgroundColor(0.12f, 0.12f, 0.12f, 1.f)
+		, m_evenRowBackgroundColor(0.16f, 0.16f, 0.16f, 1.f)
+		, m_hoverBackgroundColor(0.24f, 0.24f, 0.24f, 1.f)
 	{
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
@@ -62,8 +65,15 @@ namespace Widgets
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
 			Layout* pRowLayout = new Layout();
+			pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
 			pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
 			pRowLayout->SetDirection(Layout::Horizontal);
+			pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+
+			if (ii % 2 == 0)
+			{
+				pRowLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
+			}
 
 			m_pLayout->AddWidget(pRowLayout);
 
@@ -75,8 +85,17 @@ namespace Widgets
 
 				std::string data = m_pModel->GetData(rowIndex);
 
-				Button* pButton = new Button(data);
-				pRowLayout->AddWidget(pButton);
+				Label* pLabel = new Label(data);
+				if (jj != m_columnCount - 1)
+				{
+					pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+				}
+				else
+				{
+					pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+				}
+
+				pRowLayout->AddWidget(pLabel);
 			}
 		}
 	}

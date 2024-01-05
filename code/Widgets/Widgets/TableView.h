@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Widgets/Tools/Color.h"
 #include "Widgets/Widget.h"
 
 namespace Widgets
@@ -24,6 +25,10 @@ namespace Widgets
 	private:
 		AbstractViewModel* m_pModel;
 		int m_columnCount;
+		
+		Color m_oddRowBackgroundColor;
+		Color m_evenRowBackgroundColor;
+		Color m_hoverBackgroundColor;
 
 		Layout* m_pLayout;
 
