@@ -5,64 +5,47 @@
 #include "Widgets/Models/SelectionModel.h"
 
 #include "Widgets/Models/AbstractViewModel.h"
-#include "Widgets/Models/SelectionRange.h"
+#include "Widgets/Models/SelectionRow.h"
 
 namespace Widgets
 {
 	SelectionModel::SelectionModel()
-		: m_selection()
+		: m_selectedRows()
 	{}
 
 	SelectionModel::~SelectionModel()
 	{}
 
-	bool SelectionModel::IsRowSelected(const SelectionRange& range) const
+	bool SelectionModel::IsRowSelected(const SelectionRow& row) const
 	{
-		int columnCount = range.GetConstModel()->GetColumnCount(range.GetParent());
-		int lastColumnIndex = columnCount - 1;
-
-		for (std::list<SelectionRange>::const_iterator it = m_selection.cbegin(); it != m_selection.cend(); ++it)
+		for (const SelectionRow& selectedRow : m_selectedRows)
 		{
-			const SelectionRange& selectedRange = *it;
-
-			if (selectedRange.GetParent() != range.GetParent())
-				return false;
-
-			if (selectedRange.GetLeft() == 0 && selectedRange.GetRight() == lastColumnIndex && selectedRange.GetTop() >= range.GetTop() && selectedRange.GetBottom() <= range.GetTop())
-			{
+			if (selectedRow == row)
 				return true;
-			}
 		}
 
 		return false;
 	}
 
-	void SelectionModel::SelectRow(const SelectionRange& range)
+	void SelectionModel::SelectRow(const SelectionRow& row)
 	{
-		if (IsRowSelected(range))
+		if (IsRowSelected(row))
 			return;
 
-		m_selection.push_back(range);
+		m_selectedRows.push_back(row);
 	}
 
-	void SelectionModel::DeselectRow(const SelectionRange& range)
+	void SelectionModel::DeselectRow(const SelectionRow& row)
 	{
-		int columnCount = range.GetConstModel()->GetColumnCount(range.GetParent());
-		int lastColumnIndex = columnCount - 1;
-
-		for(std::list<SelectionRange>::const_iterator it = m_selection.cbegin(); it != m_selection.cend(); ++it)
+		for(std::list<SelectionRow>::const_iterator it = m_selectedRows.cbegin(); it != m_selectedRows.cend(); ++it)
 		{
-			const SelectionRange& selectedRange = *it;
+			const SelectionRow& selectedRow = *it;
 
-			if (selectedRange.GetParent() != range.GetParent())
+			if (selectedRow != row)
 				continue;
 
-			if (selectedRange.GetLeft() == 0 && selectedRange.GetRight() == lastColumnIndex && selectedRange.GetTop() >= range.GetTop() && selectedRange.GetBottom() <= range.GetTop())
-			{
-				m_selection.erase(it);
-				return;
-			}
+			m_selectedRows.erase(it);
+			return;
 		}
 	}
-
 }

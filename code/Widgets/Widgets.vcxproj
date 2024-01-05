@@ -31,7 +31,7 @@
     <ClInclude Include="Models\AbstractViewModel.h" />
     <ClInclude Include="Models\ModelIndex.h" />
     <ClInclude Include="Models\SelectionModel.h" />
-    <ClInclude Include="Models\SelectionRange.h" />
+    <ClInclude Include="Models\SelectionRow.h" />
     <ClInclude Include="Shortcuts\Shortcut.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
@@ -69,7 +69,7 @@
     <ClCompile Include="Models\AbstractViewModel.cpp" />
     <ClCompile Include="Models\ModelIndex.cpp" />
     <ClCompile Include="Models\SelectionModel.cpp" />
-    <ClCompile Include="Models\SelectionRange.cpp" />
+    <ClCompile Include="Models\SelectionRow.cpp" />
     <ClCompile Include="Shortcuts\Shortcut.cpp" />
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="SplitHorizontal.cpp" />

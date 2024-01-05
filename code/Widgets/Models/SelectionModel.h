@@ -9,20 +9,23 @@
 namespace Widgets
 {
 	class ModelIndex;
-	class SelectionRange;
+	class SelectionRow;
 
+	/*
+	* Model keeping track of the list of selected rows
+	*/
 	class SelectionModel
 	{
 	public:
 		SelectionModel();
 		~SelectionModel();
 
-		bool IsRowSelected(const SelectionRange& range) const;
+		bool IsRowSelected(const SelectionRow& row) const;
 
-		void SelectRow(const SelectionRange& parent);
-		void DeselectRow(const SelectionRange& parent);
+		void SelectRow(const SelectionRow& row);
+		void DeselectRow(const SelectionRow& row);
 
 	private:
-		std::list<SelectionRange> m_selection;
+		std::list<SelectionRow> m_selectedRows;
 	};
 }

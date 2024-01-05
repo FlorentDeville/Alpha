@@ -141,7 +141,7 @@
     <ClInclude Include="Models\SelectionModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Models\SelectionRange.h">
+    <ClInclude Include="Models\SelectionRow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -248,7 +248,7 @@
     <ClCompile Include="Models\SelectionModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Models\SelectionRange.cpp">
+    <ClCompile Include="Models\SelectionRow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

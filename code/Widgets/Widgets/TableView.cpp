@@ -8,7 +8,7 @@
 #include "Widgets/Models/AbstractViewModel.h"
 #include "Widgets/Models/ModelIndex.h"
 #include "Widgets/Models/SelectionModel.h"
-#include "Widgets/Models/SelectionRange.h"
+#include "Widgets/Models/SelectionRow.h"
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -106,11 +106,10 @@ namespace Widgets
 			return;
 
 		ModelIndex start = m_pModel->GetIndex(row, 0, ModelIndex());
-		ModelIndex end = m_pModel->GetIndex(row, m_pModel->GetColumnCount(ModelIndex()) - 1, ModelIndex());
-		SelectionRange range(start, end);
+		SelectionRow clickedRow(start.GetParent(), row);
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
-		bool rowSelected = pSelectionModel->IsRowSelected(range);
+		bool rowSelected = pSelectionModel->IsRowSelected(clickedRow);
 
 		if (rowSelected)
 		{
@@ -128,7 +127,7 @@ namespace Widgets
 			pLayout->GetHoverStyle().ShowBorder(false);
 			pLayout->GetDefaultStyle().ShowBorder(false);
 			
-			pSelectionModel->DeselectRow(range);
+			pSelectionModel->DeselectRow(clickedRow);
 		}
 		else
 		{
@@ -138,7 +137,7 @@ namespace Widgets
 			pLayout->GetDefaultStyle().ShowBorder(true);
 			pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 			pLayout->GetHoverStyle().ShowBorder(true);
-			pSelectionModel->SelectRow(range);
+			pSelectionModel->SelectRow(clickedRow);
 		}
 	}
 }
