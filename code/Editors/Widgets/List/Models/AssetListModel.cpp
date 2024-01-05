@@ -19,24 +19,10 @@ namespace Editors
 		: AbstractViewModel()
 		, m_assetType(type)
 	{
-		const std::vector<Systems::Asset*>* pAssetList = nullptr;
-
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		switch (m_assetType)
-		{
-		case Systems::kMaterial:
-			pAssetList = &assetMgr.GetMaterials();
-			break;
-
-		case Systems::kMesh:
-			pAssetList = &assetMgr.GetMeshes();
-			break;
-
-		default:
-			assert(false);
-		}
-
-		for (const Systems::Asset* pAsset : *pAssetList)
+		const std::vector<Systems::Asset*>& assetList = assetMgr.GetAssets(m_assetType);
+	
+		for (const Systems::Asset* pAsset : assetList)
 		{
 			m_cachedAssetId.push_back(pAsset->GetId().ToString());
 		}
