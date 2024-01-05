@@ -6,7 +6,6 @@
 
 #include "Editors/Widgets/BaseModel.h"
 
-//#include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/WidgetMgr.h"
@@ -18,9 +17,9 @@ namespace Editors
 		, m_isDirtyWidget(false)
 		, m_pModel(nullptr)
 		, m_selectedRow(-1)
-		, m_oddRowBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1))
-		, m_evenRowBackgroundColor(DirectX::XMVectorSet(0.16f, 0.16f, 0.16f, 1))
-		, m_hoverBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1))
+		, m_oddRowBackgroundColor(0.12f, 0.12f, 0.12f, 1.f)
+		, m_evenRowBackgroundColor(0.16f, 0.16f, 0.16f, 1.f)
+		, m_hoverBackgroundColor(0.24f, 0.24f, 0.24f, 1.f)
 	{
 		SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
 

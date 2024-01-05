@@ -9,8 +9,8 @@ namespace Widgets
 	LayoutStyle::LayoutStyle()
 		: BaseStyle()
 		, m_borderSize(1)
-		, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
-		, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
+		, m_backgroundColor(Color(0.12f, 0.12f, 0.12f, 1.f))
+		, m_borderColor(Color(1.f, 1.f, 1.f, 1.f))
 		, m_showBorder(false)
 	{}
 
@@ -22,12 +22,12 @@ namespace Widgets
 		m_borderSize = size;
 	}
 
-	void LayoutStyle::SetBackgroundColor(const DirectX::XMVECTOR& backgroundColor)
+	void LayoutStyle::SetBackgroundColor(const Color& backgroundColor)
 	{
 		m_backgroundColor = backgroundColor;
 	}
 
-	void LayoutStyle::SetBorderColor(const DirectX::XMVECTOR& borderColor)
+	void LayoutStyle::SetBorderColor(const Color& borderColor)
 	{
 		m_borderColor = borderColor;
 	}

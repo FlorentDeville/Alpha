@@ -5,8 +5,7 @@
 #pragma once
 
 #include "Widgets/Style/BaseStyle.h"
-
-#include <DirectXMath.h>
+#include "Widgets/Tools/Color.h"
 
 namespace Widgets
 {
@@ -19,15 +18,14 @@ namespace Widgets
 		~LayoutStyle();
 
 		void SetBorderSize(int size);
-		void SetBackgroundColor(const DirectX::XMVECTOR& backgroundColor);
-		void SetBorderColor(const DirectX::XMVECTOR& borderColor);
+		void SetBackgroundColor(const Color& backgroundColor);
+		void SetBorderColor(const Color& borderColor);
 		void ShowBorder(bool showBorder);
 
 	private:
-		int m_borderSize;
-		char m_padding[4];
-		DirectX::XMVECTOR m_backgroundColor;
-		DirectX::XMVECTOR m_borderColor;
+		Color m_backgroundColor;
+		Color m_borderColor;
+		int m_borderSize;	
 		bool m_showBorder;
 	};
 }

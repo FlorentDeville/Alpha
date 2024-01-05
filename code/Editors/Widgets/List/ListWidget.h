@@ -4,9 +4,8 @@
 
 #pragma once
 
+#include "Widgets/Tools/Color.h"
 #include "Widgets/Widget.h"
-
-#include <DirectXMath.h>
 
 namespace Widgets
 {
@@ -42,9 +41,9 @@ namespace Editors
 
 		std::vector<int> m_columnSize;
 
-		DirectX::XMVECTOR m_evenRowBackgroundColor;
-		DirectX::XMVECTOR m_oddRowBackgroundColor;
-		DirectX::XMVECTOR m_hoverBackgroundColor;
+		Widgets::Color m_evenRowBackgroundColor;
+		Widgets::Color m_oddRowBackgroundColor;
+		Widgets::Color m_hoverBackgroundColor;
 
 		int m_selectedRow;
 		bool m_isDirtyWidget;

@@ -19,11 +19,11 @@ namespace Widgets
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(Widget::FIT);
 		m_pLayout->GetDefaultStyle().ShowBorder(true);
-		m_pLayout->GetDefaultStyle().SetBorderColor(DirectX::XMVectorSet(0.44f, 0.44f, 0.44f, 1.f));
-		m_pLayout->GetDefaultStyle().SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+		m_pLayout->GetDefaultStyle().SetBorderColor(Color(0.44f, 0.44f, 0.44f, 1.f));
+		m_pLayout->GetDefaultStyle().SetBackgroundColor(Color(0.24f, 0.24f, 0.24f, 1.f));
 		m_pLayout->GetHoverStyle().ShowBorder(true);
-		m_pLayout->GetHoverStyle().SetBorderColor(DirectX::XMVectorSet(0.44f, 0.44f, 0.44f, 1.f));
-		m_pLayout->GetHoverStyle().SetBackgroundColor(DirectX::XMVectorSet(0.24f, 0.24f, 0.24f, 1.f));
+		m_pLayout->GetHoverStyle().SetBorderColor(Color(0.44f, 0.44f, 0.44f, 1.f));
+		m_pLayout->GetHoverStyle().SetBackgroundColor(Color(0.24f, 0.24f, 0.24f, 1.f));
 		m_pLayout->SetDirection(Layout::Direction::Vertical);
 		m_pLayout->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 		AddWidget(m_pLayout);
