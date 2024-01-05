@@ -28,6 +28,8 @@
     <ClInclude Include="MessageId.h" />
     <ClInclude Include="ModalWindow.h" />
     <ClInclude Include="IconId.h" />
+    <ClInclude Include="Models\AbstractViewModel.h" />
+    <ClInclude Include="Models\Modelndex.h" />
     <ClInclude Include="Shortcuts\Shortcut.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
@@ -49,6 +51,7 @@
     <ClInclude Include="WidgetMgr.h" />
     <ClInclude Include="Widgets\AbstractClickable.h" />
     <ClInclude Include="Widgets\Frame.h" />
+    <ClInclude Include="Widgets\TableView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
@@ -61,6 +64,8 @@
     <ClCompile Include="MenuBar.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="ModalWindow.cpp" />
+    <ClCompile Include="Models\AbstractViewModel.cpp" />
+    <ClCompile Include="Models\Modelndex.cpp" />
     <ClCompile Include="Shortcuts\Shortcut.cpp" />
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="SplitHorizontal.cpp" />
@@ -81,6 +86,7 @@
     <ClCompile Include="WidgetMgr.cpp" />
     <ClCompile Include="Widgets\AbstractClickable.cpp" />
     <ClCompile Include="Widgets\Frame.cpp" />
+    <ClCompile Include="Widgets\TableView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">
