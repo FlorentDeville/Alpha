@@ -7,6 +7,8 @@
 #include "Widgets/Tools/Color.h"
 #include "Widgets/Widget.h"
 
+#include <map>
+
 namespace Widgets
 {
 	class AbstractViewModel;
@@ -20,12 +22,9 @@ namespace Widgets
 
 		void SetModel(AbstractViewModel* pModel);
 
-		void SetColumnCount(int columnCount);
-
 	private:
 		AbstractViewModel* m_pModel;
-		int m_columnCount;
-		
+
 		Color m_oddRowBackgroundColor;
 		Color m_evenRowBackgroundColor;
 		Color m_hoverBackgroundColor;

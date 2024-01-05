@@ -15,7 +15,6 @@ namespace Widgets
 	TableView::TableView()
 		: Widget()
 		, m_pModel(nullptr)
-		, m_columnCount(1)
 		, m_oddRowBackgroundColor(0.12f, 0.12f, 0.12f, 1.f)
 		, m_evenRowBackgroundColor(0.16f, 0.16f, 0.16f, 1.f)
 		, m_hoverBackgroundColor(0.24f, 0.24f, 0.24f, 1.f)
@@ -51,16 +50,12 @@ namespace Widgets
 		CreateView();
 	}
 
-	void TableView::SetColumnCount(int columnCount)
-	{
-		m_columnCount = columnCount;
-	}
-
 	void TableView::CreateView()
 	{
 		ModelIndex root;
 
 		int rowCount = m_pModel->GetRowCount(root);
+		int columnCount = m_pModel->GetColumnCount(root);
 
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
@@ -77,7 +72,7 @@ namespace Widgets
 
 			m_pLayout->AddWidget(pRowLayout);
 
-			for (int jj = 0; jj < m_columnCount; ++jj)
+			for (int jj = 0; jj < columnCount; ++jj)
 			{
 				ModelIndex rowIndex = m_pModel->GetIndex(ii, jj, root);
 				if (!rowIndex.IsValid())
@@ -86,9 +81,10 @@ namespace Widgets
 				std::string data = m_pModel->GetData(rowIndex);
 
 				Label* pLabel = new Label(data);
-				if (jj != m_columnCount - 1)
+				if (jj != columnCount - 1)
 				{
 					pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+					pLabel->SetSize(DirectX::XMUINT2(75, 20));
 				}
 				else
 				{
