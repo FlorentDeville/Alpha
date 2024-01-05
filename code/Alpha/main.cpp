@@ -20,7 +20,6 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/ShaderEditor/ShaderEditor.h"
-#include "Editors/Widgets/List/ListWidget.h"
 #include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Inputs/InputMgr.h"
@@ -63,6 +62,7 @@
 #include "Widgets/TextBox.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
+#include "Widgets/Widgets/TableView.h"
 
 //#pragma optimize("", off)
 
@@ -580,18 +580,14 @@ void CreateMainWindow(const Configuration& configuration)
 		Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
 		pVLayout->AddWidget(pTopOffsetContainer);
 
-		Editors::ListWidget* pList = new Editors::ListWidget();
-		pList->SetSize(DirectX::XMUINT2(300, 700));
-		pList->SetColumnSize(0, 75);
+		Widgets::TableView* pTableView = new Widgets::TableView();
+		pTableView->SetSize(DirectX::XMUINT2(300, 700));
 
 		Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
-		pList->SetModel(pModel);
-		/*Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
-		pNewTextBox->SetSize(DirectX::XMUINT2(100, 20));
-		pNewTextBox->SetText("This is a dummy text");*/
-
-		//pVLayout->AddWidget(pNewTextBox);
-		pVLayout->AddWidget(pList);
+		pTableView->SetModel(pModel);
+		pTableView->SetMultiSelection(true);
+		
+		pVLayout->AddWidget(pTableView);
 	}
 
 	pMiddleTabContainer->SetSelectedTab(0);

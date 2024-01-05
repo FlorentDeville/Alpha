@@ -4,15 +4,18 @@
 
 #include "Editors/Widgets/AssetId/AssetIdWidget.h"
 
-#include "Editors/Widgets/List/ListWidget.h"
 #include "Editors/Widgets/List/Models/AssetListModel.h"
 
+#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetId.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Container.h"
 #include "Widgets/Label.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/ModalWindow.h"
+#include "Widgets/Widgets/TableView.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Editors
@@ -59,15 +62,13 @@ namespace Editors
 
 	void AssetIdWidget::OnOk_AssetList()
 	{
-		int selectedItem = m_pAssetList->GetSelectedItem();
-		if (selectedItem != -1)
-		{
-			const std::string& selectedValue = m_pAssetListModel->GetData(selectedItem);
+		const std::list<Widgets::SelectionRow>& selection = m_pAssetListModel->GetSelectionModel()->GetSelectedRows();
+		if (selection.empty())
+			return;
 
-			int id = std::stoi(selectedValue);
-			Systems::AssetId aid(id);
-			m_onAssetSelected(aid);
-		}
+		const void* pData = selection.back().GetStartIndex().GetConstDataPointer();
+		const Systems::Asset* pAsset = static_cast<const Systems::Asset*>(pData);
+		m_onAssetSelected(pAsset->GetId());
 
 		Widgets::WidgetMgr::Get().CloseModalWindow();
 	}
@@ -86,10 +87,9 @@ namespace Editors
 		pWindow->AddWidget(pVLayout);
 
 		//list
-		m_pAssetList = new Editors::ListWidget();
+		m_pAssetList = new Widgets::TableView();
 		m_pAssetList->SetSize(DirectX::XMUINT2(500, 450));
-		m_pAssetList->SetColumnSize(0, 75);
-		m_pAssetList->OnItemDoubleClick([this](int itemIndex) { OnOk_AssetList(); });
+		m_pAssetList->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk_AssetList(); });
 
 		m_pAssetListModel = new Editors::AssetListModel(m_type);
 		m_pAssetList->SetModel(m_pAssetListModel);

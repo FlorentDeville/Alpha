@@ -7,12 +7,16 @@
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 
+#include "Widgets/Models/ModelIndex.h"
+
+#include <cassert>
+
 namespace Editors
 {
 	std::string AssetListModel::s_invalidValue = "DEADMEAT";
 
 	AssetListModel::AssetListModel(Systems::AssetType type)
-		: BaseModel()
+		: AbstractViewModel()
 		, m_assetType(type)
 	{
 		const std::vector<Systems::Asset*>* pAssetList = nullptr;
@@ -41,62 +45,72 @@ namespace Editors
 	AssetListModel::~AssetListModel()
 	{}
 
-	int AssetListModel::GetRowCount() const
+	Widgets::ModelIndex AssetListModel::GetParent(const Widgets::ModelIndex& child) const
 	{
-		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		switch (m_assetType)
-		{
-		case Systems::kMaterial:
-			return static_cast<int>(assetMgr.GetMaterials().size());
-			break;
-
-		case Systems::kMesh:
-			return static_cast<int>(assetMgr.GetMeshes().size());
-			break;
-
-		default:
-			assert(false);
-		}
-
-		return 0;
+		return Widgets::ModelIndex(); //in an array, the parent is always root
 	}
 
-	int AssetListModel::GetColumnCount() const
+	Widgets::ModelIndex AssetListModel::GetIndex(int row, int column, const Widgets::ModelIndex& parent) const
 	{
-		//0 : id
-		//1 : virtual path
+		//parent must be the invalid index. This is an array, rows don't have children
+		if (parent.IsValid())
+			return Widgets::ModelIndex();
+
+		//this array only had 2 columns
+		if (column > 2)
+			return Widgets::ModelIndex();
+
+		//get the data pointer
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		const std::vector<Systems::Asset*>& assetList = assetMgr.GetAssets(m_assetType);
+		
+		//we should have an internal cached copy inside the model
+		Systems::Asset* pAsset = assetList[row];
+		return CreateIndex(row, column, pAsset);
+	}
+
+	int AssetListModel::GetRowCount(const Widgets::ModelIndex& parent)
+	{
+		//only root has children
+		if (parent.IsValid())
+			return 0;
+
+		//only root in the first column has children
+		if (parent.GetColumn() > 0)
+			return 0;
+
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		const std::vector<Systems::Asset*>& assetList = assetMgr.GetAssets(m_assetType);
+		return static_cast<int>(assetList.size());
+	}
+
+	int AssetListModel::GetColumnCount(const Widgets::ModelIndex& parent) const
+	{
+		if (parent.IsValid())
+			return 0;
+
+		if (parent.GetColumn() > 0)
+			return 0;
+
+		//column 0 : id
+		//column 1 : virtual path
 		return 2;
 	}
 
-	const std::string& AssetListModel::GetData(int rowId, int columnId) const
+	std::string AssetListModel::GetData(const Widgets::ModelIndex& idx)
 	{
-		const std::vector<Systems::Asset*>* pAssetList = nullptr;
+		const void* pData = idx.GetConstDataPointer();
+		const Systems::Asset* pAsset = reinterpret_cast<const Systems::Asset*>(pData);
 
-		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		switch (m_assetType)
+		if (idx.GetColumn() == 0)
 		{
-		case Systems::kMaterial:
-			pAssetList = &assetMgr.GetMaterials();
-			break;
-
-		case Systems::kMesh:
-			pAssetList = &assetMgr.GetMeshes();
-			break;
-
-		default:
-			assert(false);
+			return pAsset->GetId().ToString();
 		}
-
-		Systems::Asset* pAsset = (*pAssetList)[rowId];
-
-		if (columnId == 0)
+		else if (idx.GetColumn() == 1)
 		{
-			return m_cachedAssetId[rowId];
-		}
-		else if (columnId == 1)
 			return pAsset->GetVirtualName();
+		}
 
-		assert(false);
-		return s_invalidValue;
+		return "";
 	}
 }

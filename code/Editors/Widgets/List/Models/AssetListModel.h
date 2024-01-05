@@ -4,23 +4,25 @@
 
 #pragma once
 
-#include "Editors/Widgets/BaseModel.h"
-
 #include "Systems/Assets/AssetType.h"
+#include "Widgets/Models/AbstractViewModel.h"
 
 #include <vector>
 
 namespace Editors
 {
-	class AssetListModel : public BaseModel
+	class AssetListModel : public Widgets::AbstractViewModel
 	{
 	public:
 		AssetListModel(Systems::AssetType type);
 		~AssetListModel();
 
-		int GetRowCount() const override;
-		int GetColumnCount() const override;
-		const std::string& GetData(int rowId = 0, int columnId = 0) const override;
+		Widgets::ModelIndex GetParent(const Widgets::ModelIndex& child) const override;
+		Widgets::ModelIndex GetIndex(int row, int column, const Widgets::ModelIndex& parent) const override;
+		int GetRowCount(const Widgets::ModelIndex& parent) override;
+		int GetColumnCount(const Widgets::ModelIndex& parent) const override;
+
+		std::string GetData(const Widgets::ModelIndex& idx) override;
 
 	private:
 		Systems::AssetType m_assetType;

@@ -18,12 +18,12 @@ namespace Widgets
 	class Button;
 	class Container;
 	class Label;
+	class TableView;
 }
 
 namespace Editors
 {
 	class AssetListModel;
-	class ListWidget;
 
 	class AssetIdWidget : public Widgets::Layout
 	{
@@ -40,7 +40,7 @@ namespace Editors
 		Widgets::Label* m_pLabel;
 		Widgets::Button* m_pButton;
 
-		ListWidget* m_pAssetList;
+		Widgets::TableView* m_pAssetList;
 		AssetListModel* m_pAssetListModel;
 
 		Systems::AssetType m_type;
