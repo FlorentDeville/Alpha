@@ -135,7 +135,13 @@
     <ClInclude Include="Models\AbstractViewModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Models\Modelndex.h">
+    <ClInclude Include="Models\ModelIndex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\SelectionModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\SelectionRange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -236,7 +242,13 @@
     <ClCompile Include="Models\AbstractViewModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Models\Modelndex.cpp">
+    <ClCompile Include="Models\ModelIndex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\SelectionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\SelectionRange.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

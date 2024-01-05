@@ -29,7 +29,9 @@
     <ClInclude Include="ModalWindow.h" />
     <ClInclude Include="IconId.h" />
     <ClInclude Include="Models\AbstractViewModel.h" />
-    <ClInclude Include="Models\Modelndex.h" />
+    <ClInclude Include="Models\ModelIndex.h" />
+    <ClInclude Include="Models\SelectionModel.h" />
+    <ClInclude Include="Models\SelectionRange.h" />
     <ClInclude Include="Shortcuts\Shortcut.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
@@ -65,7 +67,9 @@
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="ModalWindow.cpp" />
     <ClCompile Include="Models\AbstractViewModel.cpp" />
-    <ClCompile Include="Models\Modelndex.cpp" />
+    <ClCompile Include="Models\ModelIndex.cpp" />
+    <ClCompile Include="Models\SelectionModel.cpp" />
+    <ClCompile Include="Models\SelectionRange.cpp" />
     <ClCompile Include="Shortcuts\Shortcut.cpp" />
     <ClCompile Include="Split.cpp" />
     <ClCompile Include="SplitHorizontal.cpp" />

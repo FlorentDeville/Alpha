@@ -32,5 +32,7 @@ namespace Widgets
 		Layout* m_pLayout;
 
 		void CreateView();
+
+		void OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex);
 	};
 }

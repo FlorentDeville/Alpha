@@ -20,7 +20,15 @@ namespace Widgets
 		int GetRow() const;
 		int GetColumn() const;
 
+		ModelIndex GetParent() const;
+		ModelIndex GetIndex(int row, int column) const;
+
 		const void* GetConstDataPointer() const;
+
+		const AbstractViewModel* GetConstModel() const;
+
+		bool operator==(const ModelIndex& other) const;
+		bool operator!=(const ModelIndex& other) const;
 
 	private:
 		ModelIndex(int row, int column, void* pData, const AbstractViewModel* pModel);

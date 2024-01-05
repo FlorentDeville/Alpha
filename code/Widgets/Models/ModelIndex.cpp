@@ -2,7 +2,9 @@
 /* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Widgets/Models/Modelndex.h"
+#include "Widgets/Models/ModelIndex.h"
+
+#include "Widgets/Models/AbstractViewModel.h"
 
 namespace Widgets
 {
@@ -34,9 +36,37 @@ namespace Widgets
 		return m_column;
 	}
 
+	ModelIndex ModelIndex::GetParent() const
+	{
+		return m_pModel->GetParent(*this);
+	}
+
+	ModelIndex ModelIndex::GetIndex(int row, int column) const
+	{
+		return m_pModel->GetIndex(row, column, *this);
+	}
+
 	const void* ModelIndex::GetConstDataPointer() const
 	{
 		return m_pData;
+	}
+
+	const AbstractViewModel* ModelIndex::GetConstModel() const
+	{
+		return m_pModel;
+	}
+
+	bool ModelIndex::operator==(const ModelIndex& other) const
+	{
+		if (m_row == other.m_row && m_column == other.m_column && m_pData == other.m_pData && m_pModel == other.m_pModel)
+			return true;
+
+		return false;
+	}
+
+	bool ModelIndex::operator!=(const ModelIndex& other) const
+	{
+		return !(*this == other);
 	}
 
 	ModelIndex::ModelIndex(int row, int column, void* pData, const AbstractViewModel* pModel)

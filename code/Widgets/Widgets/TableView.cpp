@@ -4,8 +4,11 @@
 
 #include "Widgets/Widgets/TableView.h"
 
+#include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Models/AbstractViewModel.h"
-#include "Widgets/Models/Modelndex.h"
+#include "Widgets/Models/ModelIndex.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRange.h"
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -64,6 +67,7 @@ namespace Widgets
 			pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
 			pRowLayout->SetDirection(Layout::Horizontal);
 			pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+			pRowLayout->OnMouseDown([this, ii](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, ii); });
 
 			if (ii % 2 == 0)
 			{
@@ -93,6 +97,48 @@ namespace Widgets
 
 				pRowLayout->AddWidget(pLabel);
 			}
+		}
+	}
+
+	void TableView::OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int row)
+	{
+		if (!ev.HasButton(MouseButton::LeftButton))
+			return;
+
+		ModelIndex start = m_pModel->GetIndex(row, 0, ModelIndex());
+		ModelIndex end = m_pModel->GetIndex(row, m_pModel->GetColumnCount(ModelIndex()) - 1, ModelIndex());
+		SelectionRange range(start, end);
+
+		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
+		bool rowSelected = pSelectionModel->IsRowSelected(range);
+
+		if (rowSelected)
+		{
+			//deselect
+
+			Widget* pWidget = m_pLayout->GetChildren()[row];
+			Layout* pLayout = static_cast<Layout*>(pWidget);
+
+			if (row % 2 == 0)
+				pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
+			else
+				pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
+
+			pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+			pLayout->GetHoverStyle().ShowBorder(false);
+			pLayout->GetDefaultStyle().ShowBorder(false);
+			
+			pSelectionModel->DeselectRow(range);
+		}
+		else
+		{
+			//select		
+			Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pLayout->GetChildren()[row]);
+			pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
+			pLayout->GetDefaultStyle().ShowBorder(true);
+			pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+			pLayout->GetHoverStyle().ShowBorder(true);
+			pSelectionModel->SelectRow(range);
 		}
 	}
 }
