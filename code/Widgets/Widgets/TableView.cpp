@@ -75,6 +75,7 @@ namespace Widgets
 			pRowLayout->SetDirection(Layout::Horizontal);
 			pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 			pRowLayout->OnMouseDown([this, ii](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, ii); });
+			pRowLayout->OnMouseDoubleClick([this, ii](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, ii); });
 
 			if (ii % 2 == 0)
 			{
@@ -143,6 +144,12 @@ namespace Widgets
 				pSelectionModel->SetSelectionRow(clickedRow);
 			}
 		}
+	}
+
+	void TableView::OnMouseDoubleClick_ItemLayout(const Widgets::MouseEvent& ev, int row)
+	{
+		ModelIndex idx = m_pModel->GetIndex(row, 0, ModelIndex());
+		m_onItemDoubleClick(idx);
 	}
 
 	void TableView::SetSelectedRowStyle(int row)

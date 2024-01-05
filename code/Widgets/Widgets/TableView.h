@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackMacro.h"
+
 #include "Widgets/Tools/Color.h"
 #include "Widgets/Widget.h"
 
@@ -13,6 +15,7 @@ namespace Widgets
 {
 	class AbstractViewModel;
 	class Layout;
+	class ModelIndex;
 
 	class TableView : public Widget
 	{
@@ -23,6 +26,8 @@ namespace Widgets
 		void SetModel(AbstractViewModel* pModel);
 
 		void SetMultiSelection(bool enable);
+		
+		EVENT_DECL(ItemDoubleClick, void(const ModelIndex& idx))
 
 	private:
 		AbstractViewModel* m_pModel;
@@ -39,6 +44,7 @@ namespace Widgets
 		void CreateView();
 
 		void OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex);
+		void OnMouseDoubleClick_ItemLayout(const Widgets::MouseEvent& ev, int row);
 
 		void SetSelectedRowStyle(int row);
 		void SetDeselectedRowStyle(int row);
