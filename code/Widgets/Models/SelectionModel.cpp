@@ -27,6 +27,17 @@ namespace Widgets
 		return false;
 	}
 
+	const std::list<SelectionRow>& SelectionModel::GetSelectedRows() const
+	{
+		return m_selectedRows;
+	}
+
+	void SelectionModel::SetSelectionRow(const SelectionRow& row)
+	{
+		m_selectedRows.clear();
+		m_selectedRows.push_back(row);
+	}
+
 	void SelectionModel::SelectRow(const SelectionRow& row)
 	{
 		if (IsRowSelected(row))

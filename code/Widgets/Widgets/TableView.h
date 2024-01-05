@@ -22,17 +22,25 @@ namespace Widgets
 
 		void SetModel(AbstractViewModel* pModel);
 
+		void SetMultiSelection(bool enable);
+
 	private:
 		AbstractViewModel* m_pModel;
 
 		Color m_oddRowBackgroundColor;
 		Color m_evenRowBackgroundColor;
 		Color m_hoverBackgroundColor;
+		Color m_selectedBorderColor;
 
 		Layout* m_pLayout;
+
+		bool m_multiSelectionEnabled;
 
 		void CreateView();
 
 		void OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex);
+
+		void SetSelectedRowStyle(int row);
+		void SetDeselectedRowStyle(int row);
 	};
 }

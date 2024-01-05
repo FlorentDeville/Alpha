@@ -21,6 +21,8 @@ namespace Widgets
 		, m_oddRowBackgroundColor(0.12f, 0.12f, 0.12f, 1.f)
 		, m_evenRowBackgroundColor(0.16f, 0.16f, 0.16f, 1.f)
 		, m_hoverBackgroundColor(0.24f, 0.24f, 0.24f, 1.f)
+		, m_selectedBorderColor(0.44f, 0.44f, 0.44f, 1.f)
+		, m_multiSelectionEnabled(false)
 	{
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
@@ -51,6 +53,11 @@ namespace Widgets
 
 		m_pModel = pModel;
 		CreateView();
+	}
+
+	void TableView::SetMultiSelection(bool enable)
+	{
+		m_multiSelectionEnabled = enable;
 	}
 
 	void TableView::CreateView()
@@ -114,30 +121,53 @@ namespace Widgets
 		if (rowSelected)
 		{
 			//deselect
-
-			Widget* pWidget = m_pLayout->GetChildren()[row];
-			Layout* pLayout = static_cast<Layout*>(pWidget);
-
-			if (row % 2 == 0)
-				pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
-			else
-				pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
-
-			pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-			pLayout->GetHoverStyle().ShowBorder(false);
-			pLayout->GetDefaultStyle().ShowBorder(false);
-			
+			SetDeselectedRowStyle(row);
 			pSelectionModel->DeselectRow(clickedRow);
 		}
 		else
 		{
-			//select		
-			Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pLayout->GetChildren()[row]);
-			pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
-			pLayout->GetDefaultStyle().ShowBorder(true);
-			pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-			pLayout->GetHoverStyle().ShowBorder(true);
-			pSelectionModel->SelectRow(clickedRow);
+			//select
+			if (m_multiSelectionEnabled)
+			{
+				SetSelectedRowStyle(row);
+				pSelectionModel->SelectRow(clickedRow);
+			}
+			else
+			{
+				const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
+				for (const SelectionRow& sel : selection)
+					SetDeselectedRowStyle(sel.GetRow());
+
+				SetSelectedRowStyle(row);
+				pSelectionModel->SetSelectionRow(clickedRow);
+			}
 		}
+	}
+
+	void TableView::SetSelectedRowStyle(int row)
+	{
+		Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pLayout->GetChildren()[row]);
+		pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
+		pLayout->GetDefaultStyle().ShowBorder(true);
+		pLayout->GetDefaultStyle().SetBorderColor(m_selectedBorderColor);
+
+		pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+		pLayout->GetHoverStyle().ShowBorder(true);
+		pLayout->GetHoverStyle().SetBorderColor(m_selectedBorderColor);
+	}
+
+	void TableView::SetDeselectedRowStyle(int row)
+	{
+		Widget* pWidget = m_pLayout->GetChildren()[row];
+		Layout* pLayout = static_cast<Layout*>(pWidget);
+
+		if (row % 2 == 0)
+			pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
+		else
+			pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
+
+		pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+		pLayout->GetHoverStyle().ShowBorder(false);
+		pLayout->GetDefaultStyle().ShowBorder(false);
 	}
 }

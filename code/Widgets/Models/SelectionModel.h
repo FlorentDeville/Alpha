@@ -22,6 +22,9 @@ namespace Widgets
 
 		bool IsRowSelected(const SelectionRow& row) const;
 
+		const std::list<SelectionRow>& GetSelectedRows() const;
+
+		void SetSelectionRow(const SelectionRow& row);
 		void SelectRow(const SelectionRow& row);
 		void DeselectRow(const SelectionRow& row);
 
