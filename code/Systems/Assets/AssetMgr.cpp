@@ -108,6 +108,40 @@ namespace Systems
 		return it->second;
 	}
 
+	const std::vector<Asset*>& AssetMgr::GetAssets(AssetType type) const
+	{
+		switch (type)
+		{
+		case kMesh:
+			return m_meshes;
+			break;
+
+		case kMaterial:
+			return m_materials;
+			break;
+
+		case kTexture:
+			return m_textures;
+			break;
+
+		case kShader:
+			return m_shaders;
+			break;
+
+		case kLevel:
+			return m_levels;
+			break;
+
+		default:
+			assert(false);
+			break;
+		}
+
+		//we should never reach this
+		assert(false);
+		return m_meshes;
+	}
+
 	const std::vector<Asset*>& AssetMgr::GetMeshes() const
 	{
 		return m_meshes;

@@ -6,6 +6,7 @@
 
 #include "Core/Singleton.h"
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/AssetType.h"
 
 #include <map>
 #include <string>
@@ -29,6 +30,7 @@ namespace Systems
 		bool LoadAllAssets();
 
 		const Asset* GetAsset(AssetId id) const;
+		const std::vector<Asset*>& GetAssets(AssetType type) const;
 
 		const std::vector<Asset*>& GetMeshes() const;
 		const std::vector<Asset*>& GetMaterials() const;
