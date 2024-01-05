@@ -14,17 +14,17 @@ namespace Widgets
 	class SelectionRow
 	{
 	public:
-		SelectionRow(const ModelIndex& parent, int row);
+		SelectionRow(const ModelIndex& start, const ModelIndex& end);
 		~SelectionRow();
 
-		ModelIndex GetParent() const;
-		int GetRow() const;
+		ModelIndex GetStartIndex() const;
+		ModelIndex GetEndIndex() const;
 
 		bool operator==(const SelectionRow& other) const;
 		bool operator!=(const SelectionRow& other) const;
 
 	private:
-		ModelIndex m_parentIndex;
-		int m_row;
+		ModelIndex m_startIndex;
+		ModelIndex m_endIndex;
 	};
 }

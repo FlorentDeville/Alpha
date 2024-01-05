@@ -113,7 +113,8 @@ namespace Widgets
 			return;
 
 		ModelIndex start = m_pModel->GetIndex(row, 0, ModelIndex());
-		SelectionRow clickedRow(start.GetParent(), row);
+		ModelIndex end = m_pModel->GetIndex(row, m_pModel->GetColumnCount(ModelIndex()), ModelIndex());
+		SelectionRow clickedRow(start, end);
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
 		bool rowSelected = pSelectionModel->IsRowSelected(clickedRow);
@@ -136,7 +137,7 @@ namespace Widgets
 			{
 				const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
 				for (const SelectionRow& sel : selection)
-					SetDeselectedRowStyle(sel.GetRow());
+					SetDeselectedRowStyle(sel.GetStartIndex().GetRow());
 
 				SetSelectedRowStyle(row);
 				pSelectionModel->SetSelectionRow(clickedRow);

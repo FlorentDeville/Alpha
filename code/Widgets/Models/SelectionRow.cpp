@@ -8,27 +8,27 @@
 
 namespace Widgets
 {
-	SelectionRow::SelectionRow(const ModelIndex& parent, int row)
-		: m_parentIndex(parent)
-		, m_row(row)
+	SelectionRow::SelectionRow(const ModelIndex& start, const ModelIndex& end)
+		: m_startIndex(start)
+		, m_endIndex(end)
 	{}
 	
 	SelectionRow::~SelectionRow()
 	{}
 
-	ModelIndex SelectionRow::GetParent() const
+	ModelIndex SelectionRow::GetStartIndex() const
 	{
-		return m_parentIndex;
+		return m_startIndex;
 	}
 
-	int SelectionRow::GetRow() const
+	ModelIndex SelectionRow::GetEndIndex() const
 	{
-		return m_row;
+		return m_endIndex;
 	}
 
 	bool SelectionRow::operator==(const SelectionRow& other) const
 	{
-		if (m_parentIndex == other.m_parentIndex && m_row == other.m_row)
+		if (m_startIndex == other.m_startIndex && m_endIndex == other.m_endIndex)
 			return true;
 
 		return false;
