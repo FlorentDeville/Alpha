@@ -48,121 +48,6 @@ namespace Editors
 		return pRendering;
 	}
 
-	void CreateLevel(LevelMgr& level, std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId, std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
-	{
-		//load all the resources we will use
-		Systems::AssetId meshPlane(2);
-		Systems::AssetId meshCube(1);
-		Systems::AssetId meshTorus(3);
-		Systems::AssetId materialBlue(4);
-		Systems::AssetId materialOrange(5);
-		Systems::AssetId materialVertexColor(6);
-
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
-		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-		Systems::Loader& loader = Systems::Loader::Get();
-
-		const Systems::Asset* pAsset = assetMgr.GetAsset(meshPlane);
-		Rendering::Mesh* pMesh = nullptr;
-		Rendering::MeshId meshId;
-		{
-			meshMgr.CreateMesh(&pMesh, meshId);
-			loader.LoadMesh(pAsset->GetPath(), *pMesh);
-			assetIdToMeshId[pAsset->GetId()] = meshId;
-		}
-		{
-			pAsset = assetMgr.GetAsset(meshCube);
-			meshMgr.CreateMesh(&pMesh, meshId);
-			loader.LoadMesh(pAsset->GetPath(), *pMesh);
-			assetIdToMeshId[pAsset->GetId()] = meshId;
-		}
-		{
-			pAsset = assetMgr.GetAsset(meshTorus);
-			meshMgr.CreateMesh(&pMesh, meshId);
-			loader.LoadMesh(pAsset->GetPath(), *pMesh);
-			assetIdToMeshId[pAsset->GetId()] = meshId;
-		}
-
-		Rendering::Material* pMaterial = nullptr;
-		Rendering::MaterialId materialId;
-		{
-			pAsset = assetMgr.GetAsset(materialBlue);
-			materialMgr.CreateMaterial(&pMaterial, materialId);
-			loader.LoadMaterial(pAsset->GetPath(), *pMaterial);
-			assetIdToMaterialId[pAsset->GetId()] = materialId;
-		}
-		{
-			pAsset = assetMgr.GetAsset(materialOrange);
-			materialMgr.CreateMaterial(&pMaterial, materialId);
-			loader.LoadMaterial(pAsset->GetPath(), *pMaterial);
-			assetIdToMaterialId[pAsset->GetId()] = materialId;
-		}
-		{
-			pAsset = assetMgr.GetAsset(materialVertexColor);
-			materialMgr.CreateMaterial(&pMaterial, materialId);
-			loader.LoadMaterial(pAsset->GetPath(), *pMaterial);
-			assetIdToMaterialId[pAsset->GetId()] = materialId;
-		}
-
-		//create a base plan with a scale as a root
-		SceneTree* pSceneTree = level.GetSceneTree();
-		Entity* pRootEntity = new Entity("/");
-		pSceneTree->AddNode(pRootEntity, Os::Guid());
-
-		Entity* pPlan = new Entity("plan");
-		Component* pPlanTransform = CreateComponentTransform();
-		float scale = 100;
-		pPlanTransform->SetPropertyValue("Local", Core::Mat44f(
-			Core::Vec4f(scale, 0, 0, 0),
-			Core::Vec4f(0, scale, 0, 0),
-			Core::Vec4f(0, 0, scale, 0),
-			Core::Vec4f(0, 0, 0, 1)));
-
-		Component* pPlanRendering = CreateComponentRendering();
-		pPlanRendering->SetPropertyValue("Mesh", meshPlane);
-		pPlanRendering->SetPropertyValue("Material", materialBlue);
-		pPlan->AddComponent(pPlanTransform);
-		pPlan->AddComponent(pPlanRendering);
-
-		pSceneTree->AddNode(pPlan, pRootEntity->GetConstGuid());
-
-		{
-			Entity* pCube = new Entity("dummy1");
-			pSceneTree->AddNode(pCube, pPlan->GetConstGuid());
-		}
-		{
-			Entity* pCube = new Entity("dummy2");
-			pSceneTree->AddNode(pCube, pPlan->GetConstGuid());
-		}
-
-		//first child is a cube
-		Entity* pCube = new Entity("cube");
-		Component* pCubeTransform = CreateComponentTransform();
-		pCubeTransform->SetPropertyValue("Local", Core::Mat44f(Core::Vec4f(1, 0, 0, 0), Core::Vec4f(0, 1, 0, 0), Core::Vec4f(0, 0, 1, 0), Core::Vec4f(-5, 0, 0, 1)));
-
-		Component* pCubeRendering = CreateComponentRendering();
-		pCubeRendering->SetPropertyValue("Mesh", meshCube);
-		pCubeRendering->SetPropertyValue("Material", materialOrange);
-
-		pCube->AddComponent(pCubeTransform);
-		pCube->AddComponent(pCubeRendering);
-		pSceneTree->AddNode(pCube, pRootEntity->GetConstGuid());
-
-		//second child, the torus
-		Entity* pTorus = new Entity("torus");
-		Component* pTorusTransform = CreateComponentTransform();
-		pTorusTransform->SetPropertyValue("Local", Core::Mat44f(Core::Vec4f(1, 0, 0, 0), Core::Vec4f(0, 1, 0, 0), Core::Vec4f(0, 0, 1, 0), Core::Vec4f(5, 0, 0, 1)));
-
-		Component* pTorusRendering = CreateComponentRendering();
-		pTorusRendering->SetPropertyValue("Mesh", meshTorus);
-		pTorusRendering->SetPropertyValue("Material", materialVertexColor);
-
-		pTorus->AddComponent(pTorusTransform);
-		pTorus->AddComponent(pTorusRendering);
-		pSceneTree->AddNode(pTorus, pRootEntity->GetConstGuid());
-	}
-
 	LevelEditorModule::LevelEditorModule()
 		: m_fovRad(DirectX::XMConvertToRadians(45.f))
 		, m_pLevelMgr(nullptr)
@@ -192,8 +77,6 @@ namespace Editors
 
 	void LevelEditorModule::CreateEditor(Widgets::Widget* pParent)
 	{
-		CreateLevel(*m_pLevelMgr, m_assetIdToMeshId, m_assetIdToMaterialId);
-
 		LevelEditorTab* pTab = new LevelEditorTab(pParent);
 	}
 
@@ -388,6 +271,29 @@ namespace Editors
 		m_assetIdToMeshId[pAsset->GetId()] = meshId;
 
 		return meshId;
+	}
+
+	Rendering::MaterialId LevelEditorModule::LoadMaterial(Systems::AssetId id)
+	{
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		Systems::Loader& loader = Systems::Loader::Get();
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+		const Systems::Asset* pAsset = assetMgr.GetAsset(id);
+		if (!pAsset)
+			return Rendering::MaterialId::INVALID;
+
+		Rendering::Material* pMaterial = nullptr;
+		Rendering::MaterialId materialId;
+
+		materialMgr.CreateMaterial(&pMaterial, materialId);
+		bool res = loader.LoadMaterial(pAsset->GetPath(), *pMaterial);
+		if (!res)
+			return Rendering::MaterialId::INVALID;
+
+		m_assetIdToMaterialId[pAsset->GetId()] = materialId;
+
+		return materialId;
 	}
 
 	bool LevelEditorModule::AddToSelection(const Os::Guid& nodeGuid)

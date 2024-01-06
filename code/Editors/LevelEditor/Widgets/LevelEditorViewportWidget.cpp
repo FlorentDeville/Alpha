@@ -80,6 +80,17 @@ namespace Editors
 					meshId = it->second;
 				}
 
+				std::map<Systems::AssetId, Rendering::MaterialId>::const_iterator itMaterial = assetIdToMaterialId.find(materialAssetId);
+				Rendering::MaterialId materialId = Rendering::MaterialId::INVALID;
+				if (itMaterial == assetIdToMaterialId.cend())
+				{
+					materialId = Editors::LevelEditorModule::Get().LoadMaterial(materialAssetId);
+				}
+				else
+				{
+					materialId = itMaterial->second;
+				}
+
 				if (meshId != Rendering::MeshId::INVALID)
 				{
 					Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
