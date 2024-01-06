@@ -4,6 +4,8 @@
 
 #include "Widgets/TextBox.h"
 
+#include "OsWin/VirtualKeyCode.h"
+
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Icon.h"
@@ -146,7 +148,7 @@ namespace Widgets
 			if (m_currentState == EDIT)
 			{
 				const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
-				if (keyboardEvent.m_virtualKey == 39) //right
+				if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Right) //right
 				{
 					if (m_cursorPosition < m_text.size())
 					{
@@ -155,7 +157,7 @@ namespace Widgets
 					}
 					return true;
 				}
-				else if (keyboardEvent.m_virtualKey == 37) // left
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Left) // left
 				{
 					if (m_cursorPosition > 0)
 					{
@@ -164,7 +166,7 @@ namespace Widgets
 					}
 					return true;
 				}
-				else if (keyboardEvent.m_virtualKey == 0x08) // backspace
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Back) // backspace
 				{
 					if (m_cursorPosition > 0)
 					{
@@ -173,17 +175,33 @@ namespace Widgets
 						ComputeCursorPosition();
 					}
 				}
-				else if (keyboardEvent.m_virtualKey == 0x2E) //delete
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Delete)
 				{
-					if (m_cursorPosition < m_text.size())
+					if (m_cursorPosition < static_cast<int>(m_text.size()))
 					{
 						m_text.erase(m_cursorPosition, 1);
 					}
 				}
-				else if (keyboardEvent.m_virtualKey == 0x0D) // enter
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Return) // enter
 				{
 					if (m_onValidateCallback)
 						m_onValidateCallback(m_text);
+				}
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Home)
+				{
+					if (m_cursorPosition != 0)
+					{
+						m_cursorPosition = 0;
+						ComputeCursorPosition();
+					}
+				}
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::End)
+				{
+					if (m_cursorPosition != static_cast<int>(m_text.size()))
+					{
+						m_cursorPosition = static_cast<int>(m_text.size());
+						ComputeCursorPosition();
+					}
 				}
 			}
 			return true;
