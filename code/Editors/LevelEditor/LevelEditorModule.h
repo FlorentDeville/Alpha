@@ -85,25 +85,14 @@ namespace Editors
 		std::string GetCurrentLoadedLevelName();
 
 		//operation callback
-		using OnAddEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
-		Core::CallbackId OnAddEntity(const OnAddEntityEvent::Callback& callback);
-		void RemoveOnAddEntity(Core::CallbackId id);
-
-		using OnDeleteEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
-		Core::CallbackId OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback);
-		void RemoveOnDeleteEntity(Core::CallbackId id);
-
-		using OnRenameEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
-		Core::CallbackId OnRenameEntity(const OnRenameEntityEvent::Callback& callback);
-		void RemoveOnRenameEntity(Core::CallbackId id);
-
-		using OnDuplicateEntityEvent = Core::CallbackList<void(const Os::Guid& src, const Os::Guid& copy)>;
-		Core::CallbackId OnDuplicateEntity(const OnDuplicateEntityEvent::Callback& callback);
-		void RemoveOnDuplicateEntity(Core::CallbackId id);
-
 		EVENT_DECL(NewLevel, void())
 		EVENT_DECL(LoadLevel, void())
 		EVENT_DECL(SaveLevel, void())
+
+		EVENT_DECL(AddEntity, void(const Os::Guid& nodeGuid))
+		EVENT_DECL(DeleteEntity, void(const Os::Guid& nodeGuid))
+		EVENT_DECL(RenameEntity, void(const Os::Guid& nodeGuid))
+		EVENT_DECL(DuplicateEntity, void(const Os::Guid& src, const Os::Guid& copy))
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
@@ -118,11 +107,5 @@ namespace Editors
 		//camera state
 		Core::Mat44f m_cameraWs;
 		float m_fovRad;
-
-		//operation callback
-		OnAddEntityEvent	m_onAddEntity;
-		OnDeleteEntityEvent m_onDeleteEntity;
-		OnRenameEntityEvent m_onRenameEntity;
-		OnDuplicateEntityEvent m_onDuplicateEntity;
 	};
 }

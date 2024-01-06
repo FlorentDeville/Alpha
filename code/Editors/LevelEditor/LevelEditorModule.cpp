@@ -416,44 +416,4 @@ namespace Editors
 
 		return pAsset->GetVirtualName();
 	}
-
-	Core::CallbackId LevelEditorModule::OnAddEntity(const OnAddEntityEvent::Callback& callback)
-	{
-		return m_onAddEntity.Connect(callback);
-	}
-
-	void LevelEditorModule::RemoveOnAddEntity(Core::CallbackId id)
-	{
-		m_onAddEntity.Disconnect(id);
-	}
-
-	Core::CallbackId LevelEditorModule::OnDeleteEntity(const OnDeleteEntityEvent::Callback& callback)
-	{
-		return m_onDeleteEntity.Connect(callback);
-	}
-
-	void LevelEditorModule::RemoveOnDeleteEntity(Core::CallbackId id)
-	{
-		m_onDeleteEntity.Disconnect(id);
-	}
-
-	Core::CallbackId LevelEditorModule::OnRenameEntity(const OnRenameEntityEvent::Callback& callback)
-	{
-		return m_onRenameEntity.Connect(callback);
-	}
-
-	void LevelEditorModule::RemoveOnRenameEntity(Core::CallbackId id)
-	{
-		m_onRenameEntity.Disconnect(id);
-	}
-
-	Core::CallbackId LevelEditorModule::OnDuplicateEntity(const OnDuplicateEntityEvent::Callback& callback)
-	{
-		return m_onDuplicateEntity.Connect(callback);
-	}
-
-	void LevelEditorModule::RemoveOnDuplicateEntity(Core::CallbackId id)
-	{
-		m_onDuplicateEntity.Disconnect(id);
-	}
 }
