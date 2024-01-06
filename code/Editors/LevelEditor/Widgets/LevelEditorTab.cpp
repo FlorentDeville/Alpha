@@ -132,7 +132,7 @@ namespace Editors
 		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
-		pSaveItem->OnClick([this]() { LevelEditorModule::Get().SaveLevel(); });
+		pSaveItem->OnClick([this]() { OnClickFileMenu_Save(); });
 
 		Widgets::MenuItem* pSaveAsItem = pEditMenu->AddMenuItem("Save As...");
 		pSaveAsItem->OnClick([this]() { OnClickFileMenu_SaveAs(); });
@@ -531,6 +531,20 @@ namespace Editors
 
 		pNewAssetDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().LoadLevel(id); });
 		pNewAssetDialog->Open();
+	}
+
+	void LevelEditorTab::OnClickFileMenu_Save()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		Systems::AssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
+		if (id.IsValid())
+		{
+			levelEditorModule.SaveLevel();
+		}
+		else
+		{
+			OnClickFileMenu_SaveAs();
+		}
 	}
 
 	void LevelEditorTab::OnClickFileMenu_SaveAs()

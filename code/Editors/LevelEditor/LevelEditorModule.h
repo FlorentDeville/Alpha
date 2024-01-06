@@ -82,7 +82,8 @@ namespace Editors
 		bool RemoveFromSelection(const Os::Guid& nodeGuid);
 		void ClearSelection();
 
-		std::string GetCurrentLoadedLevelName();
+		Systems::AssetId GetCurrentLoadedLevelAssetId() const;
+		std::string GetCurrentLoadedLevelName() const;
 
 		//operation callback
 		EVENT_DECL(NewLevel, void())

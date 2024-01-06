@@ -405,7 +405,12 @@ namespace Editors
 		m_pSelectionMgr->Clear();
 	}
 
-	std::string LevelEditorModule::GetCurrentLoadedLevelName()
+	Systems::AssetId LevelEditorModule::GetCurrentLoadedLevelAssetId() const
+	{
+		return m_loadedLevelAssetId;
+	}
+
+	std::string LevelEditorModule::GetCurrentLoadedLevelName() const
 	{
 		if (!m_loadedLevelAssetId.IsValid())
 			return "";
