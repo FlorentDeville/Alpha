@@ -13,6 +13,7 @@
 #include "Widgets/Layout.h"
 #include "Widgets/Models/SelectionModel.h"
 #include "Widgets/Models/SelectionRow.h"
+#include "Widgets/TextBox.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/TableView.h"
 
@@ -23,7 +24,18 @@ namespace Editors
 	AssetDialog::AssetDialog(bool isSaveDialog, Systems::AssetType type)
 		: Widgets::ModalWindow(isSaveDialog ? "Save Asset" : "Load Asset")
 	{
-		SetSize(DirectX::XMUINT2(500, 500));
+		const int WINDOW_WIDTH = 500;
+		const int WINDOW_HEIGHT = 500;
+		const int NEW_ASSET_HEIGHT = 20;
+		const int OK_CANCEL_HEIGHT = 50;
+
+		int TABLE_HEIGHT = 0;
+		if (isSaveDialog)
+			TABLE_HEIGHT = WINDOW_HEIGHT - NEW_ASSET_HEIGHT - OK_CANCEL_HEIGHT;
+		else
+			TABLE_HEIGHT = WINDOW_HEIGHT - OK_CANCEL_HEIGHT;
+
+		SetSize(DirectX::XMUINT2(WINDOW_WIDTH, WINDOW_HEIGHT));
 		SetSizeStyle(Widgets::Widget::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
@@ -35,12 +47,39 @@ namespace Editors
 
 		//list
 		m_pAssetView = new Widgets::TableView();
-		m_pAssetView->SetSize(DirectX::XMUINT2(500, 450));
+		m_pAssetView->SetSize(DirectX::XMUINT2(500, TABLE_HEIGHT));
 		m_pAssetView->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk(); });
 
 		m_pAssetViewModel = new Editors::AssetListModel(type);
 		m_pAssetView->SetModel(m_pAssetViewModel);
 		pVLayout->AddWidget(m_pAssetView);
+
+		if (isSaveDialog)
+		{
+			int LABEL_WIDTH = 70;
+			int BUTTON_WIDTH = 60;
+			int TEXTBOX_WIDTH = WINDOW_WIDTH - LABEL_WIDTH - BUTTON_WIDTH;
+
+			Widgets::Layout* pNewAssetLayout = new Widgets::Layout();
+			pNewAssetLayout->SetDirection(Widgets::Layout::Horizontal);
+			pNewAssetLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+			pNewAssetLayout->SetSize(DirectX::XMUINT2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
+
+			pVLayout->AddWidget(pNewAssetLayout);
+
+			Widgets::Label* pNewAssetLabel = new Widgets::Label("New asset : ");
+			pNewAssetLabel->SetSize(DirectX::XMUINT2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
+			pNewAssetLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pNewAssetLayout->AddWidget(pNewAssetLabel);
+
+			Widgets::TextBox* pNewAssetTextBox = new Widgets::TextBox();
+			pNewAssetTextBox->SetSize(DirectX::XMUINT2(TEXTBOX_WIDTH, NEW_ASSET_HEIGHT));
+			pNewAssetTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pNewAssetLayout->AddWidget(pNewAssetTextBox);
+
+			Widgets::Button* pNewAssetButton = new Widgets::Button("Create", BUTTON_WIDTH, NEW_ASSET_HEIGHT);
+			pNewAssetLayout->AddWidget(pNewAssetButton);
+		}
 
 		//button ok escape
 		Widgets::Layout* pHLayout = new Widgets::Layout();
@@ -48,8 +87,8 @@ namespace Editors
 		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		pVLayout->AddWidget(pHLayout);
 
-		std::string okLabel = isSaveDialog ? "SAVE" : "LOAD";
-		Widgets::Button* pOkButton = new Widgets::Button(250, 50, 0, 0);
+		std::string okLabel = isSaveDialog ? "Save" : "Load";
+		Widgets::Button* pOkButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
 		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, okLabel);
 		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
 		pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
@@ -59,8 +98,8 @@ namespace Editors
 
 		pHLayout->AddWidget(pOkButton);
 
-		Widgets::Button* pCancelButton = new Widgets::Button(250, 50, 0, 0);
-		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
+		Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
+		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
 		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
 		pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 		pCancelButton->AddWidget(pCancelLabel);

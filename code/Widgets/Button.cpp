@@ -44,6 +44,22 @@ namespace Widgets
 		AddWidget(pLabel);
 	}
 
+	Button::Button(const std::string& textLabel, uint32_t width, uint32_t height)
+		: Button(width, height, 0, 0)
+	{
+		Label* pLabel = new Label(textLabel);
+
+		DirectX::XMUINT2 labelSize = pLabel->GetSize();
+
+		int labelX = static_cast<int>((width - labelSize.x) * 0.5f);
+		int labelY = static_cast<int>((height - labelSize.y) * 0.5f);
+		
+		pLabel->SetX(labelX);
+		pLabel->SetY(labelY);
+
+		AddWidget(pLabel);
+	}
+
 	Button::~Button()
 	{}
 

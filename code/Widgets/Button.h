@@ -18,6 +18,7 @@ namespace Widgets
 
 		Button(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		Button(const std::string& textLabel);
+		Button(const std::string& textLabel, uint32_t width, uint32_t height);
 
 		virtual ~Button();
 
