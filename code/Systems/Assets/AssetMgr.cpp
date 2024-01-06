@@ -19,6 +19,7 @@ namespace Systems
 		, m_assets()
 		, m_meshes()
 		, m_materials()
+		, m_nextId()
 	{}
 
 	AssetMgr::~AssetMgr()
@@ -54,17 +55,19 @@ namespace Systems
 			const int TYPE_MAX_LENGTH = 16;
 			char strType[TYPE_MAX_LENGTH] = { '\0' };
 			sscanf_s(line.c_str(), "%zu,%[^,],%s", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, strType, TYPE_MAX_LENGTH);
+			AssetId assetId(id);
 
 			//convert type to AssetType
 			AssetType type = StringToAssetType(strType);
 			assert(type != AssetType::kInvalid);
 
 			//get the path of the asset
-			std::string subFolder = GetAssetFolder(type);
-			const int PATH_MAX_LENGTH = 255;
-			char path[PATH_MAX_LENGTH] = { '\0' };
-			snprintf(path, PATH_MAX_LENGTH, "%s\\%s\\%08zu", m_root.c_str(), subFolder.c_str(), id);
-			Asset* pNewAsset = new Asset(AssetId(id), virtualName, path, type);
+			std::string path = ConstructAssetPath(assetId, type);
+
+			if (id >= m_nextId)
+				m_nextId = id + 1;
+
+			Asset* pNewAsset = new Asset(assetId, virtualName, path, type);
 			
 			m_assets[pNewAsset->GetId()] = pNewAsset;
 
@@ -97,6 +100,22 @@ namespace Systems
 		}
 
 		return true;
+	}
+
+	const Asset* AssetMgr::CreateAsset(AssetType type, const std::string& name)
+	{
+		AssetId newId(m_nextId);
+		++m_nextId;
+
+		std::string path = ConstructAssetPath(newId, type);
+
+		Asset* pNewAsset = new Asset(newId, name, path, type);
+
+		m_assets[newId] = pNewAsset;
+		std::vector<Asset*>& assetList = Internal_GetAssets(type);
+		assetList.push_back(pNewAsset);
+
+		return pNewAsset;
 	}
 
 	const Asset* AssetMgr::GetAsset(AssetId id) const
@@ -165,5 +184,45 @@ namespace Systems
 	const std::vector<Asset*>& AssetMgr::GetLevels() const
 	{
 		return m_levels;
+	}
+
+	std::vector<Asset*>& AssetMgr::Internal_GetAssets(AssetType type)
+	{
+		switch (type)
+		{
+		case kMesh:
+			return m_meshes;
+			break;
+
+		case kMaterial:
+			return m_materials;
+			break;
+
+		case kTexture:
+			return m_textures;
+			break;
+
+		case kShader:
+			return m_shaders;
+			break;
+
+		case kLevel:
+			return m_levels;
+			break;
+
+		default:
+			assert(false);
+			break;
+		}
+
+		//we should never reach this
+		assert(false);
+		return m_meshes;
+	}
+
+	std::string AssetMgr::ConstructAssetPath(AssetId id, AssetType type) const
+	{
+		std::string subFolder = GetAssetFolder(type);
+		return m_root + "\\" + subFolder + "\\" + id.ToString();
 	}
 }

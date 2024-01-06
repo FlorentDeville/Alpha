@@ -29,6 +29,8 @@ namespace Systems
 
 		bool LoadAllAssets();
 
+		const Asset* CreateAsset(AssetType type, const std::string& name);
+
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
 
@@ -40,6 +42,8 @@ namespace Systems
 
 	private:
 		std::string m_root; //location of toc.txt
+		
+		size_t m_nextId; //next available asset id
 
 		std::map<AssetId, Asset*> m_assets; //use this structure to retrieve an asset from its id
 
@@ -49,6 +53,10 @@ namespace Systems
 		std::vector<Asset*> m_textures;
 		std::vector<Asset*> m_shaders;
 		std::vector<Asset*> m_levels;
+
+		std::vector<Asset*>& Internal_GetAssets(AssetType type);
+
+		std::string ConstructAssetPath(AssetId id, AssetType type) const;
 	};
 
 }
