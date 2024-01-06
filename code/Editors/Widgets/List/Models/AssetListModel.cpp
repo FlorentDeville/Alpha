@@ -102,6 +102,6 @@ namespace Editors
 
 	void AssetListModel::InsertRows(int start, int count)
 	{
-		m_onCommitInsertRows(start, count, Widgets::ModelIndex());
+		CommitInsertRows(start, count, Widgets::ModelIndex());
 	}
 }

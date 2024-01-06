@@ -59,4 +59,27 @@ namespace Widgets
 			return;
 		}
 	}
+
+	void SelectionModel::CommitInsertRows(int start, int count, const ModelIndex& parent)
+	{
+		for (std::list<SelectionRow>::iterator it = m_selectedRows.begin(); it != m_selectedRows.end(); ++it)
+		{
+			SelectionRow& selectedRow = *it;
+
+			if (selectedRow.GetParent() != parent)
+				continue;
+
+			ModelIndex startIndex = selectedRow.GetStartIndex();
+			if (startIndex.GetRow() < start)
+				continue;
+
+			ModelIndex endIndex = selectedRow.GetEndIndex();
+
+			int newRow = startIndex.GetRow() + count;
+			ModelIndex newStart = startIndex.GetIndex(newRow, 0);
+			ModelIndex newEnd = startIndex.GetIndex(newRow, endIndex.GetColumn());
+			
+			selectedRow = SelectionRow(newStart, newEnd);
+		}
+	}
 }

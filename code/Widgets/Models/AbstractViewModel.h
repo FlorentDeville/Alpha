@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackList.h"
 #include "Core/Callbacks/CallbackMacro.h"
 
 #include <string>
@@ -16,6 +15,8 @@ namespace Widgets
 
 	class AbstractViewModel
 	{
+		friend class TableView;
+
 	public:
 		AbstractViewModel();
 		virtual ~AbstractViewModel();
@@ -31,10 +32,13 @@ namespace Widgets
 
 		SelectionModel* GetSelectionModel();
 
-		//call this event after inserting new rows in the model
-		EVENT_DECL(CommitInsertRows, void(int start, int count, const ModelIndex& parent))
+		//call this after inserting new rows in the model
+		void CommitInsertRows(int start, int count, const ModelIndex& parent);
 
 	private:
 		SelectionModel* m_pSelectionModel;
+
+		//Used only by widgets. they need to be friend with this class.
+		PRIVATE_EVENT_DECL(CommitInsertRows, void(int start, int count, const ModelIndex& parent))
 	};
 }

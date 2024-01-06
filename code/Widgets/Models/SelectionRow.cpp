@@ -26,6 +26,11 @@ namespace Widgets
 		return m_endIndex;
 	}
 
+	ModelIndex SelectionRow::GetParent() const
+	{
+		return m_startIndex.GetParent();
+	}
+
 	bool SelectionRow::operator==(const SelectionRow& other) const
 	{
 		if (m_startIndex == other.m_startIndex && m_endIndex == other.m_endIndex)

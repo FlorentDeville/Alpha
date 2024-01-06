@@ -19,6 +19,7 @@ namespace Widgets
 
 		ModelIndex GetStartIndex() const;
 		ModelIndex GetEndIndex() const;
+		ModelIndex GetParent() const;
 
 		bool operator==(const SelectionRow& other) const;
 		bool operator!=(const SelectionRow& other) const;

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackList.h"
+
 //Example of what this macro does
 // 
 //public:
@@ -34,7 +36,7 @@ void DisconnectOn ## NAME (const Core::CallbackId& id) \
     EVENT_VARIABLE(NAME).Disconnect(id); \
 }
 
-//This is the macro you want to use to declare an event
+//This is the macro you want to use to declare a public event
 // Example : EVENT_DECL(MouseMove, void(const MouseEvent&))
 #define EVENT_DECL(NAME, FUNC) \
 public: \
@@ -42,5 +44,14 @@ public: \
 protected: \
     EVENT_VARIABLE_DECL(NAME) \
 public: \
+    CONNECT(NAME) \
+    DISCONNECT(NAME)
+
+//This is the macro you want to use to declare a private event
+// Example : PRIVATE_EVENT_DECL(MouseMove, void(const MouseEvent&))
+#define PRIVATE_EVENT_DECL(NAME, FUNC) \
+private: \
+    EVENT_TYPE_DECL(NAME, FUNC) \
+    EVENT_VARIABLE_DECL(NAME) \
     CONNECT(NAME) \
     DISCONNECT(NAME)

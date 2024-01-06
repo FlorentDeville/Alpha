@@ -8,6 +8,7 @@
 
 namespace Widgets
 {
+	class AbstractViewModel;
 	class ModelIndex;
 	class SelectionRow;
 
@@ -16,6 +17,8 @@ namespace Widgets
 	*/
 	class SelectionModel
 	{
+		friend AbstractViewModel;
+
 	public:
 		SelectionModel();
 		~SelectionModel();
@@ -30,5 +33,7 @@ namespace Widgets
 
 	private:
 		std::list<SelectionRow> m_selectedRows;
+
+		void CommitInsertRows(int start, int count, const ModelIndex& parent);
 	};
 }

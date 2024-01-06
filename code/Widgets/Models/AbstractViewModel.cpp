@@ -25,4 +25,10 @@ namespace Widgets
 	{
 		return m_pSelectionModel;
 	}
+
+	void AbstractViewModel::CommitInsertRows(int start, int count, const ModelIndex& parent)
+	{
+		m_onCommitInsertRows(start, count, parent);
+		m_pSelectionModel->CommitInsertRows(start, count, parent);
+	}
 }
