@@ -99,4 +99,9 @@ namespace Editors
 
 		return "";
 	}
+
+	void AssetListModel::InsertRows(int start, int count)
+	{
+		m_onCommitInsertRows(start, count, Widgets::ModelIndex());
+	}
 }

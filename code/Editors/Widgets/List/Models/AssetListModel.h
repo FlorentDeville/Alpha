@@ -24,6 +24,8 @@ namespace Editors
 
 		std::string GetData(const Widgets::ModelIndex& idx) override;
 
+		void InsertRows(int start, int count);
+
 	private:
 		Systems::AssetType m_assetType;
 

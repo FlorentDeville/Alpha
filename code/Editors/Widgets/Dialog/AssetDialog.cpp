@@ -150,5 +150,8 @@ namespace Editors
 			return;
 
 		assetMgr.SaveTableOfContent();
+
+		int start = static_cast<int>(assetMgr.GetAssets(m_assetType).size());
+		m_pAssetViewModel->InsertRows(start - 1, 1);
 	}
 }
