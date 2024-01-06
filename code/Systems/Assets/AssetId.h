@@ -25,6 +25,8 @@ namespace Systems
 		std::string ToString() const;
 		uint64_t ToUint64() const;
 
+		bool IsValid() const;
+
 	private:
 		size_t m_id;
 	};

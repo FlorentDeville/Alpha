@@ -45,5 +45,10 @@ namespace Systems
 		return m_id;
 	}
 
+	bool AssetId::IsValid() const
+	{
+		return *this != INVALID;
+	}
+
 	const AssetId AssetId::INVALID = AssetId(); //the default is -1
 }
