@@ -38,6 +38,8 @@ namespace Systems
 		const std::vector<Asset*>& GetShaders() const;
 		const std::vector<Asset*>& GetLevels() const;
 
+		bool SaveTableOfContent() const;
+
 	private:
 		std::string m_root; //location of toc.txt
 		

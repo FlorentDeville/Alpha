@@ -4,51 +4,70 @@
 
 #include "Systems/Assets/AssetType.h"
 
+#include <cassert>
+#include <map>
+#include <vector>
+
 namespace Systems
 {
-	AssetType StringToAssetType(const std::string& type)
+	struct AssetTypeDescription
 	{
-		if (type == "MESH")
-			return kMesh;
-		else if (type == "MATERIAL")
-			return kMaterial;
-		else if (type == "TEXTURE")
-			return kTexture;
-		else if (type == "SHADER")
-			return kShader;
-		else if (type == "LEVEL")
-			return kLevel;
-		else
-			return kInvalid;
+		AssetType m_type;
+		std::string m_strType;
+		std::string m_folder;
+
+		AssetTypeDescription()
+			: m_type(kInvalid)
+			, m_strType()
+			, m_folder()
+		{}
+
+		AssetTypeDescription(AssetType type, const std::string& strType, const std::string& folder)
+			: m_type(type)
+			, m_strType(strType)
+			, m_folder(folder)
+		{}
+	};
+
+	std::vector<AssetTypeDescription> s_assetTypeDescription;
+	std::map<std::string, AssetType> s_stringToAssetType;
+
+	bool InitAssetTypeDescription()
+	{
+		s_assetTypeDescription.resize(static_cast<int>(kCount));
+		s_assetTypeDescription[static_cast<int>(kMesh)] = AssetTypeDescription(kMesh, "MESH", "mesh");
+		s_assetTypeDescription[static_cast<int>(kMaterial)] = AssetTypeDescription(kMesh, "MATERIAL", "materials");
+		s_assetTypeDescription[static_cast<int>(kTexture)] = AssetTypeDescription(kTexture, "TEXTURE", "textures");
+		s_assetTypeDescription[static_cast<int>(kShader)] = AssetTypeDescription(kShader, "SHADER", "shaders");
+		s_assetTypeDescription[static_cast<int>(kLevel)] = AssetTypeDescription(kLevel, "LEVEL", "levels");
+
+		s_stringToAssetType["MESH"] = kMesh;
+		s_stringToAssetType["MATERIAL"] = kMaterial;
+		s_stringToAssetType["TEXTURE"] = kTexture;
+		s_stringToAssetType["SHADER"] = kShader;
+		s_stringToAssetType["LEVEL"] = kLevel;
+
+		return true;
 	}
 
-	std::string GetAssetFolder(AssetType type)
+	AssetType StringToAssetType(const std::string& type)
 	{
-		switch (type)
-		{
-		case kMesh:
-			return "mesh";
-			break;
+		std::map<std::string, AssetType>::const_iterator it = s_stringToAssetType.find(type);
+		if (it == s_stringToAssetType.cend())
+			return kInvalid;
 
-		case kMaterial:
-			return "materials";
-			break;
+		return it->second;
+	}
 
-		case kTexture:
-			return "textures";
-			break;
+	const std::string& AssetTypeToString(AssetType type)
+	{
+		assert(type != kInvalid);
+		return s_assetTypeDescription[type].m_strType;
+	}
 
-		case kShader:
-			return "shaders";
-			break;
-
-		case kLevel:
-			return "levels";
-			break;
-
-		default:
-			return "DEADMEAT";
-			break;
-		}
+	const std::string& GetAssetFolder(AssetType type)
+	{
+		assert(type != kInvalid);
+		return s_assetTypeDescription[type].m_folder;
 	}
 }

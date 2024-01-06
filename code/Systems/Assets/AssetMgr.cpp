@@ -38,6 +38,8 @@ namespace Systems
 	{
 		m_root = root;
 
+		InitAssetTypeDescription();
+
 		LoadTableOfContent();
 
 		return true;
@@ -127,6 +129,26 @@ namespace Systems
 		return m_levels;
 	}
 
+	bool AssetMgr::SaveTableOfContent() const
+	{
+		std::string tocFilename = m_root + "\\toc.txt";
+		std::ofstream file(tocFilename);
+
+		for(const std::pair<AssetId, Asset*>& pair : m_assets)
+		{
+			const Asset* pAsset = pair.second;
+
+			const std::string& strType = AssetTypeToString(pAsset->GetType());
+
+
+			file << pAsset->GetId().ToUint64() << "," << pAsset->GetVirtualName() << "," << strType << std::endl;
+		}
+
+		file.close();
+
+		return true;
+	}
+
 	std::vector<Asset*>& AssetMgr::Internal_GetAssets(AssetType type)
 	{
 		switch (type)
@@ -198,32 +220,8 @@ namespace Systems
 
 			m_assets[pNewAsset->GetId()] = pNewAsset;
 
-			switch (type)
-			{
-			case kMesh:
-				m_meshes.push_back(pNewAsset);
-				break;
-
-			case kMaterial:
-				m_materials.push_back(pNewAsset);
-				break;
-
-			case kTexture:
-				m_textures.push_back(pNewAsset);
-				break;
-
-			case kShader:
-				m_shaders.push_back(pNewAsset);
-				break;
-
-			case kLevel:
-				m_levels.push_back(pNewAsset);
-				break;
-
-			default:
-				assert(false);
-				break;
-			}
+			std::vector<Asset*>& typedAsset = Internal_GetAssets(pNewAsset->GetType());
+			typedAsset.push_back(pNewAsset);
 		}
 
 		return true;

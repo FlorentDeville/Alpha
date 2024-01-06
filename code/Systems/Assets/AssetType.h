@@ -21,8 +21,11 @@ namespace Systems
 		//Do not add anything after kCount
 	};
 
+	bool InitAssetTypeDescription();
+
 	AssetType StringToAssetType(const std::string& type);
+	const std::string& AssetTypeToString(AssetType type);
 	
-	std::string GetAssetFolder(AssetType type);
+	const std::string& GetAssetFolder(AssetType type);
 
 }
