@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackList.h"
+#include "Core/Callbacks/CallbackMacro.h"
+
 #include <string>
 
 namespace Widgets
@@ -27,6 +30,9 @@ namespace Widgets
 		virtual std::string GetData(const ModelIndex& idx) = 0;
 
 		SelectionModel* GetSelectionModel();
+
+		//call this event after inserting new rows in the model
+		EVENT_DECL(CommitInsertRows, void(int start, int count, const ModelIndex& parent))
 
 	private:
 		SelectionModel* m_pSelectionModel;

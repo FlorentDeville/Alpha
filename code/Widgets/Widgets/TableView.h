@@ -48,5 +48,9 @@ namespace Widgets
 
 		void SetSelectedRowStyle(int row);
 		void SetDeselectedRowStyle(int row);
+
+		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
+
+		Widgets::Layout* CreateItem(int row, int columnCount, const ModelIndex& parent);
 	};
 }

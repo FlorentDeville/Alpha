@@ -12,6 +12,7 @@
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
@@ -52,6 +53,8 @@ namespace Widgets
 		}
 
 		m_pModel = pModel;
+		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
+
 		CreateView();
 	}
 
@@ -69,42 +72,8 @@ namespace Widgets
 
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
-			Layout* pRowLayout = new Layout();
-			pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
-			pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
-			pRowLayout->SetDirection(Layout::Horizontal);
-			pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-			pRowLayout->OnMouseDown([this, ii](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, ii); });
-			pRowLayout->OnMouseDoubleClick([this, ii](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, ii); });
-
-			if (ii % 2 == 0)
-			{
-				pRowLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
-			}
-
+			Layout* pRowLayout = CreateItem(ii, columnCount, root);
 			m_pLayout->AddWidget(pRowLayout);
-
-			for (int jj = 0; jj < columnCount; ++jj)
-			{
-				ModelIndex rowIndex = m_pModel->GetIndex(ii, jj, root);
-				if (!rowIndex.IsValid())
-					continue;
-
-				std::string data = m_pModel->GetData(rowIndex);
-
-				Label* pLabel = new Label(data);
-				if (jj != columnCount - 1)
-				{
-					pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-					pLabel->SetSize(DirectX::XMUINT2(75, 20));
-				}
-				else
-				{
-					pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-				}
-
-				pRowLayout->AddWidget(pLabel);
-			}
 		}
 	}
 
@@ -177,5 +146,67 @@ namespace Widgets
 		pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pLayout->GetHoverStyle().ShowBorder(false);
 		pLayout->GetDefaultStyle().ShowBorder(false);
+	}
+
+	void TableView::OnCommitInsertRows(int start, int count, const ModelIndex& parent)
+	{
+		//This is a table, only root can have children
+		if (parent.IsValid())
+			return;
+
+		ModelIndex root;
+		int columnCount = m_pModel->GetColumnCount(root);
+		
+		//handle selection!!!!
+
+		for (int ii = start; ii < start + count; ++ii)
+		{
+			Layout* pRowLayout = CreateItem(ii, columnCount, root);
+			m_pLayout->InsertWidget(pRowLayout, ii);
+		}
+
+		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	Widgets::Layout* TableView::CreateItem(int row, int columnCount, const ModelIndex& parent)
+	{
+		Layout* pRowLayout = new Layout();
+		pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
+		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
+		pRowLayout->SetDirection(Layout::Horizontal);
+		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
+		pRowLayout->OnMouseDown([this, row](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, row); });
+		pRowLayout->OnMouseDoubleClick([this, row](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, row); });
+
+		if (row % 2 == 0)
+		{
+			pRowLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
+		}
+
+		//m_pLayout->AddWidget(pRowLayout);
+
+		for (int jj = 0; jj < columnCount; ++jj)
+		{
+			ModelIndex rowIndex = m_pModel->GetIndex(row, jj, parent);
+			if (!rowIndex.IsValid())
+				continue;
+
+			std::string data = m_pModel->GetData(rowIndex);
+
+			Label* pLabel = new Label(data);
+			if (jj != columnCount - 1)
+			{
+				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+				pLabel->SetSize(DirectX::XMUINT2(75, 20));
+			}
+			else
+			{
+				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+			}
+
+			pRowLayout->AddWidget(pLabel);
+		}
+
+		return pRowLayout;
 	}
 }
