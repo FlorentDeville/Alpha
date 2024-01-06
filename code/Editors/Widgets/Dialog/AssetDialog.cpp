@@ -72,15 +72,17 @@ namespace Editors
 			Widgets::Label* pNewAssetLabel = new Widgets::Label("New asset : ");
 			pNewAssetLabel->SetSize(DirectX::XMUINT2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
 			pNewAssetLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-			pNewAssetLayout->AddWidget(pNewAssetLabel);
-
+			
 			Widgets::TextBox* pNewAssetTextBox = new Widgets::TextBox();
 			pNewAssetTextBox->SetSize(DirectX::XMUINT2(TEXTBOX_WIDTH, NEW_ASSET_HEIGHT));
 			pNewAssetTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
-			pNewAssetLayout->AddWidget(pNewAssetTextBox);
+			pNewAssetTextBox->OnValidate([this](const std::string& value) { OnCreateAsset(value); return true; });
 
 			Widgets::Button* pNewAssetButton = new Widgets::Button("Create", BUTTON_WIDTH, NEW_ASSET_HEIGHT);
 			pNewAssetButton->OnClick([this, pNewAssetTextBox]() { OnCreateAsset(pNewAssetTextBox->GetText()); });
+
+			pNewAssetLayout->AddWidget(pNewAssetLabel);
+			pNewAssetLayout->AddWidget(pNewAssetTextBox);
 			pNewAssetLayout->AddWidget(pNewAssetButton);
 		}
 
