@@ -259,6 +259,16 @@ namespace Widgets
 		pWidget->m_pParent = this;
 	}
 
+	void Widget::InsertWidget(Widget* pWidget, int position)
+	{
+		std::vector<Widget*>::iterator it = m_children.begin();
+		std::advance(it, position);
+
+		m_children.insert(it, pWidget);
+		WidgetMgr::Get().RegisterWidget(pWidget);
+		pWidget->m_pParent = this;
+	}
+
 	void Widget::DeleteChild(Widget* pWidget)
 	{
 		WidgetMgr::Get().UnregisterWidget(pWidget);

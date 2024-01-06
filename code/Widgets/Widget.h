@@ -102,6 +102,7 @@ namespace Widgets
 		virtual bool Handle(const BaseEvent& event);
 
 		virtual void AddWidget(Widget* pWidget);
+		virtual void InsertWidget(Widget* pWidget, int position);
 		virtual void DeleteChild(Widget* pWidget);
 		virtual void DeleteAllChildren();
 
