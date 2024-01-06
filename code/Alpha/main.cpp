@@ -635,7 +635,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 
 	Rendering::RenderModule& render = Rendering::RenderModule::InitSingleton();
-	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution);
+	render.Init(g_pWindow->GetWindowHandle(), gameResolution, windowResolution, configuration.m_binPath);
 
 	Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::InitSingleton();
 	Widgets::WidgetMgrParameter widgetMgrParameter;

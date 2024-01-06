@@ -68,7 +68,7 @@ namespace Rendering
 	RenderModule::~RenderModule()
 	{}
 
-	void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution)
+	void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution, const std::string& binPath)
 	{
 		m_gameResolution = gameResolution;
 		m_mainResolution = mainResolution;
@@ -130,6 +130,30 @@ namespace Rendering
 		MeshId cubeMeshId;
 		meshMgr.CreateMesh(&m_pCubeMesh, cubeMeshId);
 		BaseShape::CreateCube(m_pCubeMesh);
+
+		//basic shape material (should be an app resources?)
+		{
+			Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+			const std::string shaderPath = binPath + "\\";
+
+			Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
+			Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
+			Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
+
+			Rendering::PipelineStateId pid;
+			Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+			pPipelineState->Init_Generic(rsId, vsId, psId);
+
+			Rendering::Material* pMaterial = nullptr;
+			Rendering::MaterialId materialId;
+			materialMgr.CreateMaterial(&pMaterial, materialId);
+			pMaterial->Init(rsId, pid);
+
+			m_pBaseShapeMaterial = pMaterial;
+		}
+
 	}
 
 	void RenderModule::Release()

@@ -46,7 +46,7 @@ namespace Rendering
 		RenderModule();
 		~RenderModule();
 
-		void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution);
+		void Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution, const std::string& binPath);
 		void Release();
 
 		void PreRender();
