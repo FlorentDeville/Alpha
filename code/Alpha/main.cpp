@@ -543,8 +543,8 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::MeshEditorParameter meshEditorParameter;
 	meshEditorParameter.pParent = pMiddleTabContainer;
-	meshEditorParameter.m_dataMaterialPath = configuration.m_dataMaterialsPath;
-	meshEditorParameter.m_dataMeshPath = configuration.m_dataMeshPath;
+	meshEditorParameter.m_dataMaterialPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMaterial);
+	meshEditorParameter.m_dataMeshPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMesh);
 	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
 	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
 	meshEditorParameter.m_blender = configuration.m_blender;
@@ -552,7 +552,7 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::ShaderEditorParameter shaderEditorParameter;
 	shaderEditorParameter.m_pParent = pMiddleTabContainer;
-	shaderEditorParameter.m_dataShaderPath = configuration.m_dataShadersPath;
+	shaderEditorParameter.m_dataShaderPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kShader);
 	shaderEditorParameter.m_rawShaderPath = configuration.m_rawShadersPath;
 	shaderEditorParameter.m_shaderCompilerPath = configuration.m_shaderCompiler;
 	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
@@ -615,16 +615,16 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();
 
-	Systems::Loader& loader = Systems::Loader::InitSingleton();
-	Systems::LoaderParameter loaderParameter;
-	loaderParameter.m_dataMaterialPath = configuration.m_dataMaterialsPath;
-	loaderParameter.m_dataMeshPath = configuration.m_dataMeshPath;
-	loaderParameter.m_dataShaderPath = configuration.m_dataShadersPath;
-	loaderParameter.m_dataTexturePath = configuration.m_dataTexturesPath;
-	loader.Init(loaderParameter);
-
 	Systems::AssetMgr& assetMgr = Systems::AssetMgr::InitSingleton();
 	assetMgr.Init(configuration.m_dataRoot);
+
+	Systems::Loader& loader = Systems::Loader::InitSingleton();
+	Systems::LoaderParameter loaderParameter;
+	loaderParameter.m_dataMaterialPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMaterial);
+	loaderParameter.m_dataMeshPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMesh);
+	loaderParameter.m_dataShaderPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kShader);
+	loaderParameter.m_dataTexturePath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kTexture);
+	loader.Init(loaderParameter);
 
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);

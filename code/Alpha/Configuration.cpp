@@ -7,12 +7,7 @@
 #include <Windows.h>
 
 Configuration::Configuration()
-	: m_dataFontsPath()
-	, m_dataMaterialsPath()
-	, m_dataMeshPath()
-	, m_dataShadersPath()
-	, m_dataTexturesPath()
-	, m_dataRoot()
+	: m_dataRoot()
 	, m_rawBlenderPath()
 	, m_rawShadersPath()
 	, m_gameResolutionWidth(1920)	// default resolution is FHD
@@ -28,21 +23,6 @@ bool Configuration::Load(const std::string& binPath, const std::string& filename
 
 	const int BUFFER_SIZE = 256;
 	char buffer[BUFFER_SIZE] = { '\0' };
-
-	GetPrivateProfileString("data", "fonts", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_dataFontsPath = buffer;
-
-	GetPrivateProfileString("data", "materials", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_dataMaterialsPath = buffer;
-
-	GetPrivateProfileString("data", "mesh", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_dataMeshPath = buffer;
-
-	GetPrivateProfileString("data", "shaders", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_dataShadersPath = buffer;
-
-	GetPrivateProfileString("data", "textures", "NULL", buffer, BUFFER_SIZE, filename.c_str());
-	m_dataTexturesPath = buffer;
 
 	GetPrivateProfileString("data", "root", "NULL", buffer, BUFFER_SIZE, filename.c_str());
 	m_dataRoot = buffer;
