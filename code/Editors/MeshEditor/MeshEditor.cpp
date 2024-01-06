@@ -241,7 +241,8 @@ namespace Editors
 		}
 
 		//by default use the first material
-		m_materialId = m_allMaterials.front().m_materialId;
+		if(!m_allMaterials.empty())
+			m_materialId = m_allMaterials.front().m_materialId;
 	}
 
 	void MeshEditor::Update()
