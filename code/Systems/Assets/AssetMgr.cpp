@@ -47,6 +47,12 @@ namespace Systems
 
 	const Asset* AssetMgr::CreateAsset(AssetType type, const std::string& name)
 	{
+		if (name.empty())
+			return nullptr;
+
+		if (name[0] != '/')
+			return nullptr;
+
 		AssetId newId(m_nextId);
 		++m_nextId;
 

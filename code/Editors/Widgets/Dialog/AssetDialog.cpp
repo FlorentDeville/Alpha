@@ -7,6 +7,7 @@
 #include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Systems/Assets/Asset.h"
+#include "Systems/Assets/AssetMgr.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -23,6 +24,7 @@ namespace Editors
 {
 	AssetDialog::AssetDialog(bool isSaveDialog, Systems::AssetType type)
 		: Widgets::ModalWindow(isSaveDialog ? "Save Asset" : "Load Asset")
+		, m_assetType(type)
 	{
 		const int WINDOW_WIDTH = 500;
 		const int WINDOW_HEIGHT = 500;
@@ -78,6 +80,7 @@ namespace Editors
 			pNewAssetLayout->AddWidget(pNewAssetTextBox);
 
 			Widgets::Button* pNewAssetButton = new Widgets::Button("Create", BUTTON_WIDTH, NEW_ASSET_HEIGHT);
+			pNewAssetButton->OnClick([this, pNewAssetTextBox]() { OnCreateAsset(pNewAssetTextBox->GetText()); });
 			pNewAssetLayout->AddWidget(pNewAssetButton);
 		}
 
@@ -137,5 +140,15 @@ namespace Editors
 	void AssetDialog::OnCancel()
 	{
 		Close();
+	}
+
+	void AssetDialog::OnCreateAsset(const std::string& assetName)
+	{
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		const Systems::Asset* pNewAsset = assetMgr.CreateAsset(m_assetType, assetName);
+		if (!pNewAsset)
+			return;
+
+		assetMgr.SaveTableOfContent();
 	}
 }

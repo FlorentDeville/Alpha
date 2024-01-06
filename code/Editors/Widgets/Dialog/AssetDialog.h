@@ -36,8 +36,11 @@ namespace Editors
 	private:
 		Widgets::TableView* m_pAssetView;
 		Editors::AssetListModel* m_pAssetViewModel;
+		
+		Systems::AssetType m_assetType;
 
 		void OnOk();
 		void OnCancel();
+		void OnCreateAsset(const std::string& assetName);
 	};
 }
