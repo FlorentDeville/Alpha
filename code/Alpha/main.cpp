@@ -557,6 +557,7 @@ void CreateMainWindow(const Configuration& configuration)
 	shaderEditorParameter.m_shaderCompilerPath = configuration.m_shaderCompiler;
 	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
 
+#ifdef _DEBUG
 	{
 		Widgets::Tab* pTab = new Widgets::Tab();
 		Widgets::Layout* pLayout = new Widgets::Layout();
@@ -589,6 +590,7 @@ void CreateMainWindow(const Configuration& configuration)
 		
 		pVLayout->AddWidget(pTableView);
 	}
+#endif
 
 	pMiddleTabContainer->SetSelectedTab(0);
 }
