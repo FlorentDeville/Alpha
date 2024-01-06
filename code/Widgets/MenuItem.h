@@ -26,8 +26,8 @@ namespace Widgets
 		void Enable(bool recursive = true) override;
 
 		void SetShortcut(const std::string& shortcut);
-
 		void SetChecked(bool check);
+		void SetText(const std::string& text);
 
 		bool IsChecked() const;
 

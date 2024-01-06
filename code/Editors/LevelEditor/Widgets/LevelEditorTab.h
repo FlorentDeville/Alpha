@@ -91,6 +91,7 @@ namespace Editors
 		void OnLoadLevel_SceneTree();
 
 		void OnClickFileMenu_LoadLevel();
+		void OnClickFileMenu_SaveAs();
 
 		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();

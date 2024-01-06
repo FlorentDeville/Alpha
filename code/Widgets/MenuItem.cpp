@@ -126,6 +126,11 @@ namespace Widgets
 		m_isChecked = check;
 	}
 
+	void MenuItem::SetText(const std::string& text)
+	{
+		m_pLabel->SetText(text);
+	}
+
 	bool MenuItem::IsChecked() const
 	{
 		return m_isChecked;

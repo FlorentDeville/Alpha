@@ -167,6 +167,7 @@ namespace Editors
 		: m_fovRad(DirectX::XMConvertToRadians(45.f))
 		, m_pLevelMgr(nullptr)
 		, m_pSelectionMgr(nullptr)
+		, m_loadedLevelAssetId()
 	{}
 
 	LevelEditorModule::~LevelEditorModule()
@@ -218,6 +219,8 @@ namespace Editors
 
 	void LevelEditorModule::NewLevel()
 	{
+		m_loadedLevelAssetId = Systems::AssetId::INVALID;
+
 		m_pSelectionMgr->Clear();
 
 		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
@@ -226,15 +229,28 @@ namespace Editors
 		m_onNewLevel();
 	}
 
-	bool LevelEditorModule::SaveLevel()
+	bool LevelEditorModule::SaveAsLevel(Systems::AssetId levelId)
 	{
-		const std::vector<Systems::Asset*>& allLevels = Systems::AssetMgr::Get().GetLevels();
-		if (allLevels.empty())
+		if (!levelId.IsValid())
 			return false;
 
-		const Systems::Asset* pAsset = allLevels[0];
+		m_loadedLevelAssetId = levelId;
 
-		return LevelSerializer::Serialize(*pAsset, m_pLevelMgr->GetName(), m_pLevelMgr->GetConstSceneTree());
+		return SaveLevel();
+	}
+
+	bool LevelEditorModule::SaveLevel()
+	{
+		if (!m_loadedLevelAssetId.IsValid())
+			return false;
+
+		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(m_loadedLevelAssetId);
+		bool res = LevelSerializer::Serialize(*pAsset, m_pLevelMgr->GetName(), m_pLevelMgr->GetConstSceneTree());
+		if (!res)
+			return false;
+
+		m_onSaveLevel();
+		return true;
 	}
 
 	bool LevelEditorModule::LoadLevel(Systems::AssetId levelId)
@@ -242,6 +258,8 @@ namespace Editors
 		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(levelId);
 		if (pAsset->GetType() != Systems::AssetType::kLevel)
 			return false;
+
+		m_loadedLevelAssetId = levelId;
 
 		std::string levelName;
 		bool res = LevelSerializer::Deserialize(*pAsset, levelName, m_pLevelMgr->GetSceneTree());
@@ -385,6 +403,18 @@ namespace Editors
 	void LevelEditorModule::ClearSelection()
 	{
 		m_pSelectionMgr->Clear();
+	}
+
+	std::string LevelEditorModule::GetCurrentLoadedLevelName()
+	{
+		if (!m_loadedLevelAssetId.IsValid())
+			return "";
+
+		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(m_loadedLevelAssetId);
+		if (!pAsset)
+			return "";
+
+		return pAsset->GetVirtualName();
 	}
 
 	Core::CallbackId LevelEditorModule::OnAddEntity(const OnAddEntityEvent::Callback& callback)

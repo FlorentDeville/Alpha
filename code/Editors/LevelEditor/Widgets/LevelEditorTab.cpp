@@ -133,6 +133,14 @@ namespace Editors
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->OnClick([this]() { LevelEditorModule::Get().SaveLevel(); });
+
+		Widgets::MenuItem* pSaveAsItem = pEditMenu->AddMenuItem("Save As...");
+		pSaveAsItem->OnClick([this]() { OnClickFileMenu_SaveAs(); });
+
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		levelEditorModule.OnNewLevel([pSaveItem]() { pSaveItem->SetText("Save"); });
+		levelEditorModule.OnLoadLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
+		levelEditorModule.OnSaveLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 	}
 
 	void LevelEditorTab::CreateMenuEdit(Widgets::MenuBar* pMenuBar)
@@ -523,6 +531,13 @@ namespace Editors
 
 		pNewAssetDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().LoadLevel(id); });
 		pNewAssetDialog->Open();
+	}
+
+	void LevelEditorTab::OnClickFileMenu_SaveAs()
+	{
+		AssetDialog* pDialog = new AssetDialog(true, Systems::kLevel);
+		pDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().SaveAsLevel(id); });
+		pDialog->Open();
 	}
 
 	void LevelEditorTab::OnClickEditMenu_AddEntity()

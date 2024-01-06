@@ -10,6 +10,8 @@
 #include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Math/Mat44f.h"
 
+#include "Systems/Assets/AssetId.h"
+
 #include <map>
 #include <string>
 
@@ -58,8 +60,10 @@ namespace Editors
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
 
+//		Systems::AssetId CreateAssetLevel(const std::string& virtualName);
 		void NewLevel();
 		bool SaveLevel();
+		bool SaveAsLevel(Systems::AssetId levelId);
 		bool LoadLevel(Systems::AssetId levelId);
 
 		void AddNewEntity(Os::Guid& nodeGuid);
@@ -77,6 +81,8 @@ namespace Editors
 		bool AddToSelection(const Os::Guid& nodeGuid);
 		bool RemoveFromSelection(const Os::Guid& nodeGuid);
 		void ClearSelection();
+
+		std::string GetCurrentLoadedLevelName();
 
 		//operation callback
 		using OnAddEntityEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
@@ -97,6 +103,7 @@ namespace Editors
 
 		EVENT_DECL(NewLevel, void())
 		EVENT_DECL(LoadLevel, void())
+		EVENT_DECL(SaveLevel, void())
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
@@ -105,6 +112,8 @@ namespace Editors
 	private:
 		LevelMgr* m_pLevelMgr;
 		SelectionMgr* m_pSelectionMgr;
+
+		Systems::AssetId m_loadedLevelAssetId;
 
 		//camera state
 		Core::Mat44f m_cameraWs;
