@@ -37,67 +37,8 @@ namespace Systems
 	bool AssetMgr::Init(const std::string& root)
 	{
 		m_root = root;
-		return true;
-	}
 
-	bool AssetMgr::LoadAllAssets()
-	{
-		std::string tocFilename = m_root + "\\toc.txt";
-		std::ifstream file(tocFilename);
-
-		std::string line;
-		while (std::getline(file, line))
-		{
-			//parse a single line
-			size_t id;
-			const int VIRTUAL_NAME_MAX_LENGTH = 255;
-			char virtualName[VIRTUAL_NAME_MAX_LENGTH] = { '\0' };
-			const int TYPE_MAX_LENGTH = 16;
-			char strType[TYPE_MAX_LENGTH] = { '\0' };
-			sscanf_s(line.c_str(), "%zu,%[^,],%s", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, strType, TYPE_MAX_LENGTH);
-			AssetId assetId(id);
-
-			//convert type to AssetType
-			AssetType type = StringToAssetType(strType);
-			assert(type != AssetType::kInvalid);
-
-			//get the path of the asset
-			std::string path = ConstructAssetPath(assetId, type);
-
-			if (id >= m_nextId)
-				m_nextId = id + 1;
-
-			Asset* pNewAsset = new Asset(assetId, virtualName, path, type);
-			
-			m_assets[pNewAsset->GetId()] = pNewAsset;
-
-			switch (type)
-			{
-			case kMesh:
-				m_meshes.push_back(pNewAsset);
-				break;
-
-			case kMaterial:
-				m_materials.push_back(pNewAsset);
-				break;
-
-			case kTexture:
-				m_textures.push_back(pNewAsset);
-				break;
-
-			case kShader:
-				m_shaders.push_back(pNewAsset);
-				break;
-
-			case kLevel:
-				m_levels.push_back(pNewAsset);
-				break;
-
-			default:
-				assert(false);
-				break;
-			}
-		}
+		LoadTableOfContent();
 
 		return true;
 	}
@@ -224,5 +165,67 @@ namespace Systems
 	{
 		std::string subFolder = GetAssetFolder(type);
 		return m_root + "\\" + subFolder + "\\" + id.ToString();
+	}
+
+	bool AssetMgr::LoadTableOfContent()
+	{
+		std::string tocFilename = m_root + "\\toc.txt";
+		std::ifstream file(tocFilename);
+
+		std::string line;
+		while (std::getline(file, line))
+		{
+			//parse a single line
+			size_t id;
+			const int VIRTUAL_NAME_MAX_LENGTH = 255;
+			char virtualName[VIRTUAL_NAME_MAX_LENGTH] = { '\0' };
+			const int TYPE_MAX_LENGTH = 16;
+			char strType[TYPE_MAX_LENGTH] = { '\0' };
+			sscanf_s(line.c_str(), "%zu,%[^,],%s", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, strType, TYPE_MAX_LENGTH);
+			AssetId assetId(id);
+
+			//convert type to AssetType
+			AssetType type = StringToAssetType(strType);
+			assert(type != AssetType::kInvalid);
+
+			//get the path of the asset
+			std::string path = ConstructAssetPath(assetId, type);
+
+			if (id >= m_nextId)
+				m_nextId = id + 1;
+
+			Asset* pNewAsset = new Asset(assetId, virtualName, path, type);
+
+			m_assets[pNewAsset->GetId()] = pNewAsset;
+
+			switch (type)
+			{
+			case kMesh:
+				m_meshes.push_back(pNewAsset);
+				break;
+
+			case kMaterial:
+				m_materials.push_back(pNewAsset);
+				break;
+
+			case kTexture:
+				m_textures.push_back(pNewAsset);
+				break;
+
+			case kShader:
+				m_shaders.push_back(pNewAsset);
+				break;
+
+			case kLevel:
+				m_levels.push_back(pNewAsset);
+				break;
+
+			default:
+				assert(false);
+				break;
+			}
+		}
+
+		return true;
 	}
 }

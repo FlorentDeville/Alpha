@@ -27,8 +27,6 @@ namespace Systems
 	public:
 		bool Init(const std::string& root);
 
-		bool LoadAllAssets();
-
 		const Asset* CreateAsset(AssetType type, const std::string& name);
 
 		const Asset* GetAsset(AssetId id) const;
@@ -57,6 +55,8 @@ namespace Systems
 		std::vector<Asset*>& Internal_GetAssets(AssetType type);
 
 		std::string ConstructAssetPath(AssetId id, AssetType type) const;
+
+		bool LoadTableOfContent();
 	};
 
 }

@@ -623,7 +623,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Systems::AssetMgr& assetMgr = Systems::AssetMgr::InitSingleton();
 	assetMgr.Init(configuration.m_dataRoot);
-	assetMgr.LoadAllAssets();
 
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
