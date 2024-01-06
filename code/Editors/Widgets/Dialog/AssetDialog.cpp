@@ -76,7 +76,7 @@ namespace Editors
 			Widgets::TextBox* pNewAssetTextBox = new Widgets::TextBox();
 			pNewAssetTextBox->SetSize(DirectX::XMUINT2(TEXTBOX_WIDTH, NEW_ASSET_HEIGHT));
 			pNewAssetTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
-			pNewAssetTextBox->OnValidate([this](const std::string& value) { OnCreateAsset(value); return true; });
+			pNewAssetTextBox->OnValidate([this](const std::string& value) { OnCreateAsset(value); });
 
 			Widgets::Button* pNewAssetButton = new Widgets::Button("Create", BUTTON_WIDTH, NEW_ASSET_HEIGHT);
 			pNewAssetButton->OnClick([this, pNewAssetTextBox]() { OnCreateAsset(pNewAssetTextBox->GetText()); });

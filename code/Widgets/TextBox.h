@@ -15,8 +15,6 @@ namespace Widgets
 	class TextBox : public Widget
 	{
 	public:
-		using OnValidateCallback = std::function<bool(const std::string& value)>;
-
 		TextBox();
 		~TextBox();
 
@@ -30,9 +28,9 @@ namespace Widgets
 
 		void SetText(const std::string& text);
 
-		void OnValidate(const OnValidateCallback& callback);
-
 		const std::string& GetText() const;
+
+		EVENT_DECL(Validate, void(const std::string& value))
 
 	private:
 		enum State
@@ -53,8 +51,6 @@ namespace Widgets
 		State m_currentState;
 
 		int m_cursorPosition;
-
-		OnValidateCallback m_onValidateCallback;
 		
 		uint64_t m_cursorLastBlinkChange;
 

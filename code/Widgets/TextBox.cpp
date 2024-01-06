@@ -184,8 +184,7 @@ namespace Widgets
 				}
 				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Return) // enter
 				{
-					if (m_onValidateCallback)
-						m_onValidateCallback(m_text);
+					m_onValidate(m_text);
 				}
 				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Home)
 				{
@@ -238,10 +237,10 @@ namespace Widgets
 		m_text = text;
 	}
 
-	void TextBox::OnValidate(const OnValidateCallback& callback)
-	{
-		m_onValidateCallback = callback;
-	}
+	//void TextBox::OnValidate(const OnValidateCallback& callback)
+	//{
+	//	m_onValidateCallback = callback;
+	//}
 
 	const std::string& TextBox::GetText() const
 	{
