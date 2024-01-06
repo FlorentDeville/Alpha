@@ -420,111 +420,111 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-bool LoadContent(const Configuration& config)
+bool LoadContent(const Configuration& /*config*/)
 {
-	const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+	//const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
-	Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
-	Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
+	//Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
+	//Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
-	//create the base material
-	Rendering::MaterialId baseMaterialId;
-	{
-		Rendering::Material* pMaterial = nullptr;
-		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
-		const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(6));//vertex_color
-		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
-	}
+	////create the base material
+	//Rendering::MaterialId baseMaterialId;
+	//{
+	//	Rendering::Material* pMaterial = nullptr;
+	//	Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
+	//	const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(6));//vertex_color
+	//	Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
+	//}
 
-	//create the texture material
-	Rendering::MaterialId textureMaterialId;
-	{
-		Rendering::Material* pMaterial = nullptr;
-		Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
-		const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(4));//grid_blue
-		Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
-	}
+	////create the texture material
+	//Rendering::MaterialId textureMaterialId;
+	//{
+	//	Rendering::Material* pMaterial = nullptr;
+	//	Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
+	//	const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(4));//grid_blue
+	//	Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
+	//}
 
-	//load torus mesh
-	Rendering::MeshId torusMeshId;
-	{
-		Rendering::Mesh* pCubeMesh = nullptr;
-		meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
-		const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(3)); //basic_cube
-		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pCubeMesh);
-	}
+	////load torus mesh
+	//Rendering::MeshId torusMeshId;
+	//{
+	//	Rendering::Mesh* pCubeMesh = nullptr;
+	//	meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
+	//	const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(3)); //basic_cube
+	//	Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pCubeMesh);
+	//}
 
-	//load plane
-	Rendering::MeshId planeMeshId;
-	{
-		Rendering::Mesh* pPlaneMesh = nullptr;
-		meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
-		const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(2)); //basic_plane
-		Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pPlaneMesh);
-	}
+	////load plane
+	//Rendering::MeshId planeMeshId;
+	//{
+	//	Rendering::Mesh* pPlaneMesh = nullptr;
+	//	meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
+	//	const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(2)); //basic_plane
+	//	Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pPlaneMesh);
+	//}
 
-	//basic shape material
-	{
-		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
-		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+	////basic shape material
+	//{
+	//	Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
+	//	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-		const std::string shaderPath = config.m_binPath + "\\";
+	//	const std::string shaderPath = config.m_binPath + "\\";
 
-		Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
-		Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
-		Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
+	//	Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
+	//	Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
+	//	Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
 
-		Rendering::PipelineStateId pid;
-		Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-		pPipelineState->Init_Generic(rsId, vsId, psId);
+	//	Rendering::PipelineStateId pid;
+	//	Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+	//	pPipelineState->Init_Generic(rsId, vsId, psId);
 
-		Rendering::Material* pMaterial = nullptr;
-		Rendering::MaterialId materialId;
-		materialMgr.CreateMaterial(&pMaterial, materialId);
-		pMaterial->Init(rsId, pid);
+	//	Rendering::Material* pMaterial = nullptr;
+	//	Rendering::MaterialId materialId;
+	//	materialMgr.CreateMaterial(&pMaterial, materialId);
+	//	pMaterial->Init(rsId, pid);
 
-		renderingMgr.m_pBaseShapeMaterial = pMaterial;
-	}
+	//	renderingMgr.m_pBaseShapeMaterial = pMaterial;
+	//}
 
-	//basic shape quad
-	{
-		Rendering::Mesh* pBasicQuadMesh = nullptr;
-		Rendering::MeshId basicQuadMeshId;
-		meshMgr.CreateMesh(&pBasicQuadMesh, basicQuadMeshId);
+	////basic shape quad
+	//{
+	//	Rendering::Mesh* pBasicQuadMesh = nullptr;
+	//	Rendering::MeshId basicQuadMeshId;
+	//	meshMgr.CreateMesh(&pBasicQuadMesh, basicQuadMeshId);
 
-		const int VERTEX_COUNT = 4;
-		Rendering::VertexPosColor vertices[VERTEX_COUNT];
-		vertices[0].Position = DirectX::XMFLOAT3(-0.5, 0.5, 0);
-		vertices[1].Position = DirectX::XMFLOAT3(0.5, 0.5, 0);
-		vertices[2].Position = DirectX::XMFLOAT3(0.5, -0.5, 0);
-		vertices[3].Position = DirectX::XMFLOAT3(-0.5, -0.5, 0);
+	//	const int VERTEX_COUNT = 4;
+	//	Rendering::VertexPosColor vertices[VERTEX_COUNT];
+	//	vertices[0].Position = DirectX::XMFLOAT3(-0.5, 0.5, 0);
+	//	vertices[1].Position = DirectX::XMFLOAT3(0.5, 0.5, 0);
+	//	vertices[2].Position = DirectX::XMFLOAT3(0.5, -0.5, 0);
+	//	vertices[3].Position = DirectX::XMFLOAT3(-0.5, -0.5, 0);
 
-		vertices[0].Color = DirectX::XMFLOAT3(1, 0, 0);
-		vertices[1].Color = DirectX::XMFLOAT3(1, 0, 0);
-		vertices[2].Color = DirectX::XMFLOAT3(1, 0, 0);
-		vertices[3].Color = DirectX::XMFLOAT3(1, 0, 0);
+	//	vertices[0].Color = DirectX::XMFLOAT3(1, 0, 0);
+	//	vertices[1].Color = DirectX::XMFLOAT3(1, 0, 0);
+	//	vertices[2].Color = DirectX::XMFLOAT3(1, 0, 0);
+	//	vertices[3].Color = DirectX::XMFLOAT3(1, 0, 0);
 
-		const int INDEX_COUNT = 6;
-		uint16_t indices[INDEX_COUNT];
-		indices[0] = 0;
-		indices[1] = 1;
-		indices[2] = 2;
-		indices[3] = 2;
-		indices[4] = 3;
-		indices[5] = 0;
-		pBasicQuadMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
-		Rendering::RenderModule::Get().m_pBaseQuadMesh = pBasicQuadMesh;
-	}
+	//	const int INDEX_COUNT = 6;
+	//	uint16_t indices[INDEX_COUNT];
+	//	indices[0] = 0;
+	//	indices[1] = 1;
+	//	indices[2] = 2;
+	//	indices[3] = 2;
+	//	indices[4] = 3;
+	//	indices[5] = 0;
+	//	pBasicQuadMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
+	//	Rendering::RenderModule::Get().m_pBaseQuadMesh = pBasicQuadMesh;
+	//}
 
-	//Load the entities
-	GameMgr& gameMgr = GameMgr::Get();
-	gameMgr.CreatePlayerEntity(torusMeshId, baseMaterialId);
+	////Load the entities
+	//GameMgr& gameMgr = GameMgr::Get();
+	//gameMgr.CreatePlayerEntity(torusMeshId, baseMaterialId);
 
-	const DirectX::XMUINT2 gameResolution = Rendering::RenderModule::Get().GetGameResolution();
-	float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
-	gameMgr.CreateCameraEntity(aspectRatio);
+	//const DirectX::XMUINT2 gameResolution = Rendering::RenderModule::Get().GetGameResolution();
+	//float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
+	//gameMgr.CreateCameraEntity(aspectRatio);
 
-	gameMgr.CreateBackgroundEntity(planeMeshId, textureMaterialId);
+	//gameMgr.CreateBackgroundEntity(planeMeshId, textureMaterialId);
 
 	return true;
 }
