@@ -203,6 +203,9 @@ namespace Systems
 		std::string line;
 		while (std::getline(file, line))
 		{
+			if (line.empty())
+				continue;
+
 			//parse a single line
 			size_t id;
 			const int VIRTUAL_NAME_MAX_LENGTH = 255;
