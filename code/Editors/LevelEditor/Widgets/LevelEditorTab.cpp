@@ -562,6 +562,12 @@ namespace Editors
 
 		Os::Guid newGuid;
 		levelEditorModule.AddNewEntity(newGuid);
+
+		if (!newGuid.IsValid())
+			return;
+
+		levelEditorModule.ClearSelection();
+		levelEditorModule.AddToSelection(newGuid);
 	}
 
 	void LevelEditorTab::OnClickEditMenu_DeleteEntity()

@@ -178,6 +178,8 @@ namespace Editors
 
 		pSceneTree->AddNode(pNewEntity, parentGuid);
 
+		nodeGuid = pNewEntity->GetGuid();
+
 		m_onAddEntity(pNewEntity->GetConstGuid());
 	}
 
