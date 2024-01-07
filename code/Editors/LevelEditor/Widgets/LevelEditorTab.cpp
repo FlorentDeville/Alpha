@@ -132,6 +132,7 @@ namespace Editors
 		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
+		pSaveItem->SetShortcut("Ctrl+S");
 		pSaveItem->OnClick([this]() { OnClickFileMenu_Save(); });
 
 		Widgets::MenuItem* pSaveAsItem = pEditMenu->AddMenuItem("Save As...");
@@ -158,6 +159,7 @@ namespace Editors
 		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameEntity(); });
 
 		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
+		pDuplicateItem->SetShortcut("Ctrl+D");
 		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateEntity(); });
 	}
 
