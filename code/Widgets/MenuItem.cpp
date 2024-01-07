@@ -116,7 +116,7 @@ namespace Widgets
 
 		m_pShortcutLabel->SetText(shortcut);
 
-		m_pShortcut = new Shortcut(shortcut);
+		m_pShortcut = new Shortcut(shortcut, this);
 		m_pShortcut->OnActivated([this]() { m_onClick(); });
 		widgetMgr.RegisterShortcut(m_pShortcut);
 	}

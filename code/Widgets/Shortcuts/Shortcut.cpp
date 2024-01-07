@@ -6,9 +6,13 @@
 
 #include "OsWin/Input.h"
 
+#include "Widgets/Widget.h"
+#include "Widgets/Tab.h"
+
 namespace Widgets
 {
-	Shortcut::Shortcut(const std::string& keySequence)
+	Shortcut::Shortcut(const std::string& keySequence, Widget* pParent)
+		: m_pParentWidget(pParent)
 	{
 		ParseKeySequence(keySequence);
 	}
@@ -18,6 +22,9 @@ namespace Widgets
 
 	bool Shortcut::Evaluate()
 	{
+		if (!IsEnabled())
+			return false;
+
 		for (int ii = 0; ii < m_keyCount; ++ii)
 		{
 			if (!Os::IsKeyDown(m_vkeyCodes[ii]))
@@ -87,5 +94,25 @@ namespace Widgets
 			if (m_keyCount >= MAX_KEY_COUNT)
 				return;
 		}
+	}
+
+	bool Shortcut::IsEnabled() const
+	{
+		//only enable the shortcut if one parent window/frame/tab is enabled
+		Widget* pParent = m_pParentWidget;
+		while (pParent)
+		{
+			if (!pParent)
+				return false;
+
+			if (Tab* pTab = dynamic_cast<Tab*>(pParent))
+			{
+				return pTab->IsEnabled();
+			}
+
+			pParent = pParent->GetParent();
+		}
+
+		return false;
 	}
 }

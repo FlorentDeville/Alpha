@@ -12,10 +12,12 @@
 
 namespace Widgets
 {
+	class Widget;
+
 	class Shortcut
 	{
 	public:
-		Shortcut(const std::string& keySequence);
+		Shortcut(const std::string& keySequence, Widget* pParent);
 		~Shortcut();
 
 		bool Evaluate();
@@ -31,6 +33,10 @@ namespace Widgets
 
 		OnActivatedEvent m_onActivated;
 
+		Widget* m_pParentWidget;
+
 		void ParseKeySequence(const std::string& keySequence);
+
+		bool IsEnabled() const;
 	};
 }
