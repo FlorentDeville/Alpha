@@ -11,11 +11,15 @@
 
 #include "Systems/ComponentId.h"
 #include "Systems/TransformComponent.h"
+#include "Systems/RenderingComponent.h"
+#include "Systems/Scene.h"
 
 GameMgr::GameMgr()
 	: m_entities()
 	, m_pCurrentCamera()
-{}
+{
+	m_pScene = new Systems::Scene();
+}
 
 GameMgr::~GameMgr()
 {
@@ -30,7 +34,11 @@ GameMgr::~GameMgr()
 void GameMgr::Init()
 {
 	//register the components
-	Systems::GetComponentId<Systems::TransformComponent>();
+	int transformComponentId = Systems::GetComponentId<Systems::TransformComponent>();
+	int renderingComponentId = Systems::GetComponentId<Systems::RenderingComponent>();
+
+	m_pScene->InitComponent(transformComponentId, sizeof(Systems::TransformComponent));
+	m_pScene->InitComponent(renderingComponentId, sizeof(Systems::RenderingComponent));
 }
 
 void GameMgr::Release()

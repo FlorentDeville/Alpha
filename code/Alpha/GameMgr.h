@@ -18,6 +18,11 @@ namespace DirectX
 	struct XMMATRIX;
 }
 
+namespace Systems
+{
+	class Scene;
+}
+
 class GameMgr : public Core::Singleton<GameMgr>
 {
 public:
@@ -40,4 +45,6 @@ public:
 	std::vector<GameEntity*> m_entities;
 
 	CameraEntity* m_pCurrentCamera; //this could be a stack of cameras but I don't need this for now
+
+	Systems::Scene* m_pScene;
 };
