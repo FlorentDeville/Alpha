@@ -4,8 +4,15 @@
 
 #pragma once
 
+#include "Rendering/Material/MaterialId.h"
+#include "Rendering/Mesh/MeshId.h"
+
 namespace Systems
 {
-	typedef size_t EntityId; //make it a class at some point to avoid implicit cast.
-	const EntityId INVALID_ENTITY_ID = 0xFFFFFFFFFFFFFFFF;
+	class RenderingComponent
+	{
+	public:
+		Rendering::MeshId m_meshId;
+		Rendering::MaterialId m_materialId;
+	};
 }

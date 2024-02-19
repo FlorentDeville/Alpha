@@ -13,6 +13,7 @@
     <ClInclude Include="EntityId.h" />
     <ClInclude Include="ComponentPool.h" />
     <ClInclude Include="SceneView.h" />
+    <ClInclude Include="RenderingComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
