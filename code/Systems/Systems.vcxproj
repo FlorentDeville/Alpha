@@ -15,14 +15,26 @@
     <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetType.h" />
+    <ClInclude Include="ComponentId.h" />
+    <ClInclude Include="ComponentPool.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityId.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneView.h" />
+    <ClInclude Include="TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Asset.cpp" />
     <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
+    <ClCompile Include="ComponentId.cpp" />
+    <ClCompile Include="ComponentPool.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
@@ -34,6 +46,12 @@
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">
       <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scene.inl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

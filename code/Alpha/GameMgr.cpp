@@ -9,6 +9,9 @@
 #include "Entities/GameEntity.h"
 #include "Entities/PlayerEntity.h"
 
+#include "Systems/ComponentId.h"
+#include "Systems/TransformComponent.h"
+
 GameMgr::GameMgr()
 	: m_entities()
 	, m_pCurrentCamera()
@@ -25,7 +28,10 @@ GameMgr::~GameMgr()
 }
 
 void GameMgr::Init()
-{}
+{
+	//register the components
+	Systems::GetComponentId<Systems::TransformComponent>();
+}
 
 void GameMgr::Release()
 {}
