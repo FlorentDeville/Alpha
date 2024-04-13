@@ -6,14 +6,6 @@
     <ClInclude Include="Assets\AssetType.h" />
     <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
-    <ClInclude Include="ComponentId.h" />
-    <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="EntityId.h" />
-    <ClInclude Include="ComponentPool.h" />
-    <ClInclude Include="SceneView.h" />
-    <ClInclude Include="RenderingComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -21,13 +13,5 @@
     <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
-    <ClCompile Include="ComponentId.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="ComponentPool.cpp" />
-    <ClCompile Include="SceneView.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Scene.inl" />
   </ItemGroup>
 </Project>
