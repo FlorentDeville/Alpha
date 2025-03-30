@@ -47,6 +47,10 @@
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Loader.h"
+#include "Systems/Reflection/FieldDescriptor.h"
+#include "Systems/Reflection/ReflectionCoreTypes.h"
+#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Reflection/ReflectionStandardTypes.h"
 
 #include "OsWin/SysWindow.h"
 
@@ -595,6 +599,35 @@ void CreateMainWindow(const Configuration& configuration)
 	pMiddleTabContainer->SetSelectedTab(0);
 }
 
+ENABLE_REFLECTION(TestSerialization)
+class TestSerialization
+{
+public:
+	int32_t m_myInt;
+	double m_superDouble;
+
+private:
+	float m_privateFloat;
+
+	START_REFLECTION(TestSerialization)
+		ADD_FIELD(m_myInt)
+		ADD_FIELD(m_superDouble)
+		ADD_FIELD(m_privateFloat)
+	END_REFLECTION()
+};
+
+ENABLE_REFLECTION(TestChild)
+class TestChild : public TestSerialization
+{
+public:
+	float m_float;
+
+	START_REFLECTION(TestChild)
+		ADD_BASETYPE(TestSerialization)
+		ADD_FIELD(m_float)
+	END_REFLECTION()
+};
+
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
 	//CommandLine cmd;
@@ -611,6 +644,13 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Configuration configuration;
 	std::string configurationFilename = binPath + "\\config.ini";
 	configuration.Load(binPath, configurationFilename);
+
+	Systems::ReflectionMgr::InitSingleton();
+	Systems::RegisterStandardTypesToReflection();
+	Systems::RegisterCoreTypesToReflection();
+
+	TestSerialization::RegisterReflection();
+	TestChild::RegisterReflection();
 
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();

@@ -6,6 +6,14 @@
     <ClInclude Include="Assets\AssetType.h" />
     <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
+    <ClInclude Include="Objects\Object.h" />
+    <ClInclude Include="Reflection\FieldDescriptor.h" />
+    <ClInclude Include="Reflection\TypeDescriptor.h" />
+    <ClInclude Include="Reflection\FieldAttribute.h" />
+    <ClInclude Include="Reflection\ReflectionMgr.h" />
+    <ClInclude Include="Reflection\ReflectionMacro.h" />
+    <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
+    <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -13,5 +21,10 @@
     <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
+    <ClCompile Include="Reflection\FieldDescriptor.cpp" />
+    <ClCompile Include="Reflection\TypeDescriptor.cpp" />
+    <ClCompile Include="Reflection\ReflectionMgr.cpp" />
+    <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
+    <ClCompile Include="Reflection\ReflectionCoreTypes.cpp" />
   </ItemGroup>
 </Project>
