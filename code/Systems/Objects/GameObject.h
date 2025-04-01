@@ -10,6 +10,8 @@
 
 namespace Systems
 {
+	class GameComponent;
+
 	ENABLE_REFLECTION_WITH_NS(Systems, GameObject)
 	class GameObject : public Object
 	{
@@ -28,10 +30,12 @@ namespace Systems
 		//Define an object id. It is persistant, saved to disk, unique, 64 bits.
 
 		//Define an array of component.
+		std::vector<GameComponent*> m_components;
 
 		START_REFLECTION(Systems::GameObject)
 			ADD_BASETYPE(Systems::Object)
 			ADD_FIELD(m_name)
+		//	ADD_FIELD_ARRAY(m_components)
 		END_REFLECTION()
 	};
 }

@@ -33,6 +33,7 @@ namespace Systems
 		m_name = name;
 		m_offset = offset;
 		m_attribute = attribute;
+
 		ReflectionMgr& reflectionMgr = ReflectionMgr::Get();
 		m_pType = reflectionMgr.GetType<FIELD_TYPE>();
 	}

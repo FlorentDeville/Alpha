@@ -2,14 +2,15 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#pragma once
-
-#include "Systems/Assets/AssetId.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/GameComponent/TransformComponent.h"
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Systems::AssetId)
+	TransformComponent::TransformComponent()
+		: GameComponent()
+		, m_localTransform()
+	{ }
 
-	void RegisterSystemsTypesToReflection();
+	TransformComponent::~TransformComponent()
+	{ }
 }

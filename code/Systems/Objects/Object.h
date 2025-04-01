@@ -17,7 +17,7 @@ namespace Systems
 	{
 	public:
 		Object() = default;
-		~Object() = default;
+		virtual ~Object() = default;
 
 		void SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor);
 

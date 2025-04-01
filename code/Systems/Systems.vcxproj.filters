@@ -16,6 +16,9 @@
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
     <ClInclude Include="Objects\GameObject.h" />
+    <ClInclude Include="Objects\GameComponent.h" />
+    <ClInclude Include="GameComponent\StaticMeshComponent.h" />
+    <ClInclude Include="GameComponent\TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -31,5 +34,8 @@
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
+    <ClCompile Include="Objects\GameComponent.cpp" />
+    <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
+    <ClCompile Include="GameComponent\TransformComponent.cpp" />
   </ItemGroup>
 </Project>

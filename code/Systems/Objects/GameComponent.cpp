@@ -2,14 +2,20 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#pragma once
-
-#include "Systems/Assets/AssetId.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Objects/GameComponent.h"
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Systems::AssetId)
+	GameComponent::GameComponent()
+		: Object()
+	{ }
 
-	void RegisterSystemsTypesToReflection();
+	GameComponent::~GameComponent()
+	{ }
+
+	void GameComponent::Update()
+	{ }
+
+	void GameComponent::Render()
+	{ }
 }

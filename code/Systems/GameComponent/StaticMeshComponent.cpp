@@ -2,14 +2,16 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#pragma once
-
-#include "Systems/Assets/AssetId.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/GameComponent/StaticMeshComponent.h"
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Systems::AssetId)
+	StaticMeshComponent::StaticMeshComponent()
+		: GameComponent()
+		, m_meshId()
+		, m_materialId()
+	{ }
 
-	void RegisterSystemsTypesToReflection();
+	StaticMeshComponent::~StaticMeshComponent()
+	{ }
 }

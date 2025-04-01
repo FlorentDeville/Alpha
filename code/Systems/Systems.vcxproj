@@ -15,9 +15,12 @@
     <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetType.h" />
+    <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="Loader.h" />
+    <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="Objects\GameObject.h" />
     <ClInclude Include="Objects\Object.h" />
+    <ClInclude Include="GameComponent\TransformComponent.h" />
     <ClInclude Include="Reflection\FieldAttribute.h" />
     <ClInclude Include="Reflection\FieldDescriptor.h" />
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
@@ -32,7 +35,10 @@
     <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
+    <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
+    <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Loader.cpp" />
+    <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
     <ClCompile Include="Reflection\FieldDescriptor.cpp" />
