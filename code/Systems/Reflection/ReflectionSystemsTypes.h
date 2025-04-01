@@ -4,15 +4,7 @@
 
 #pragma once
 
-#include "Core/Math/Mat44f.h"
-#include "Core/Math/Vec4f.h"
-
-#include "Systems/Reflection/ReflectionMacro.h"
-
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Core::Vec4f)
-	DEFINE_GET_TYPENAME(Core::Mat44f)
-
-	void RegisterCoreTypesToReflection();
+	void RegisterSystemsTypesToReflection();
 }

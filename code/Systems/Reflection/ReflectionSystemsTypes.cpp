@@ -2,18 +2,17 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#pragma once
+#include "Systems/Reflection/ReflectionSystemsTypes.h"
 
 #include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Objects/GameObject.h"
+#include "Systems/Objects/Object.h"
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(int32_t)
-	DEFINE_GET_TYPENAME(double)
-	DEFINE_GET_TYPENAME(float)
-	DEFINE_GET_TYPENAME(bool)
-	DEFINE_GET_TYPENAME(std::string)
-
-	// Register the standard c++ types like bool, float ,etc
-	void RegisterStandardTypesToReflection();
+	void RegisterSystemsTypesToReflection()
+	{
+		Systems::Object::RegisterReflection();
+		Systems::GameObject::RegisterReflection();
+	}
 }

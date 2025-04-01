@@ -29,6 +29,9 @@ namespace Systems
 		void RegisterType(TypeDescriptor* pType);
 
 		TypeDescriptor* GetType(const std::string& name);
+		template<typename T> TypeDescriptor* GetType();
+
+		template<typename T> const TypeDescriptor* GetConstType();
 
 	private:
 		std::map<std::string, TypeDescriptor*> m_typeDb;
@@ -51,8 +54,15 @@ namespace Systems
 		}
 	}
 
-	template<typename T> const std::string& ReflectionMgr::GetTypename() const
+	template<typename T> TypeDescriptor* ReflectionMgr::GetType()
 	{
-		assert(false); //the default assert, it needs to be specialized for every type
+		const std::string& strTypename = GetTypename<T>();
+		return GetType(strTypename);
+	}
+
+	template<typename T> const TypeDescriptor* ReflectionMgr::GetConstType()
+	{
+		const std::string& strTypename = GetTypename<T>();
+		return GetType(strTypename);
 	}
 }

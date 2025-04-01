@@ -4,18 +4,37 @@
 
 #pragma once
 
+#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Reflection/ReflectionMgr.h"
+
 namespace Systems
 {
 	class TypeDescriptor;
 
 	// Base class for any object editable and serializable.
+	ENABLE_REFLECTION_WITH_NS(Systems, Object)
 	class Object
 	{
 	public:
 		Object() = default;
-		Object() = default;
+		~Object() = default;
+
+		void SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor);
 
 	private:
-		TypeDescriptor* m_typeDescriptor;
+		const TypeDescriptor* m_pTypeDescriptor;
+
+		START_REFLECTION(Systems::Object)
+		END_REFLECTION()
 	};
+
+	template<typename T, typename... Args> T* CreateObject(Args...)
+	{
+		T* pNewObject = new T(Args...);
+
+		const TypeDescriptor* pType = ReflectionMgr::Get().GetConstType<T>();
+		pNewObject->SetTypeDescriptor(pType);
+
+		return pNewObject;
+	}
 }

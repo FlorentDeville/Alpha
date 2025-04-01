@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 
 // Define macros to enable serialization of a class
@@ -27,31 +28,45 @@
 // }
 // 
 
+#define OPEN_SYSTEMS_NAMESPACE namespace Systems {
+#define CLOSE_SYSTEMS_NAMESPACE }
 
 // Macro to specialize the template function GetTypname()
-#define DEFINE_GET_TYPENAME(TYPE) \
-	namespace Systems \
-	{\
-		template<> inline const std::string& ReflectionMgr::GetTypename<TYPE>() const { static std::string strType = #TYPE; return strType; } \
-	}
+#define DEFINE_GET_TYPENAME(TYPE) template<> inline const std::string& ReflectionMgr::GetTypename<TYPE>() const { static std::string strType = #TYPE; return strType; } 
+
+// Macro to specialize the template function GetTypname() inside the Systems namespace
+#define DEFINE_SYSTEMS_GET_TYPENAME(TYPE) \
+	OPEN_SYSTEMS_NAMESPACE \
+		DEFINE_GET_TYPENAME(TYPE) \
+	CLOSE_SYSTEMS_NAMESPACE
 
 // Macro to register a type
 #define REGISTER_TYPE(TYPE) Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE)
 
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME) DESCRIPTOR->AddField<FIELD_TYPE>(#FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute::None);
 
+// Macro to put first before the class
+#define ENABLE_REFLECTION_WITH_NS(NAMESPACE, TYPE) \
+	class TYPE; \
+	DEFINE_GET_TYPENAME(NAMESPACE::TYPE)
 
 // Macro to put first before the class
 #define ENABLE_REFLECTION(TYPE) \
 	class TYPE; \
 	DEFINE_GET_TYPENAME(TYPE)
 
+// Macro to put first before the class
+#define ENABLE_SYSTEMS_REFLECTION(TYPE) \
+	class TYPE; \
+	DEFINE_SYSTEMS_GET_TYPENAME(TYPE)
+
 // Macro to start the description of the reflection
 #define START_REFLECTION(TYPE) \
 public: \
 	static void RegisterReflection() {\
 		using ClassType = TYPE; \
-		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE);
+		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		pType; //prevent warning for empty class.
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }

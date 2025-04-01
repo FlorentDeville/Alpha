@@ -14,5 +14,6 @@ namespace Systems
 		REGISTER_TYPE(float);
 		REGISTER_TYPE(char);
 		REGISTER_TYPE(double);
+		REGISTER_TYPE(std::string);
 	}
 }

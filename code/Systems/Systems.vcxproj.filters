@@ -14,6 +14,8 @@
     <ClInclude Include="Reflection\ReflectionMacro.h" />
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
+    <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
+    <ClInclude Include="Objects\GameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -26,5 +28,8 @@
     <ClCompile Include="Reflection\ReflectionMgr.cpp" />
     <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionCoreTypes.cpp" />
+    <ClCompile Include="Objects\Object.cpp" />
+    <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />
+    <ClCompile Include="Objects\GameObject.cpp" />
   </ItemGroup>
 </Project>

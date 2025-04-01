@@ -19,11 +19,7 @@ namespace Systems
 		FieldDescriptor();
 		~FieldDescriptor();
 
-		/*FieldDescriptor(const std::string& name, uint64_t offset, FieldAttribute attribute)
-		{ }*/
-
 		template<typename FIELD_TYPE> void Init(const std::string& name, size_t offset, FieldAttribute attribute);
-		//FieldDescriptor(const std::string& name, size_t offset, FieldAttribute attribute);
 
 	private:
 		std::string m_name;
@@ -37,9 +33,7 @@ namespace Systems
 		m_name = name;
 		m_offset = offset;
 		m_attribute = attribute;
-		//m_offset = offsetof(OBJECT_TYPE, *field);
 		ReflectionMgr& reflectionMgr = ReflectionMgr::Get();
-		const std::string typeName = reflectionMgr.GetTypename<FIELD_TYPE>();
-		m_pType = reflectionMgr.GetType(typeName);
+		m_pType = reflectionMgr.GetType<FIELD_TYPE>();
 	}
 }

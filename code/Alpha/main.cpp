@@ -51,6 +51,8 @@
 #include "Systems/Reflection/ReflectionCoreTypes.h"
 #include "Systems/Reflection/ReflectionMacro.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
+#include "Systems/Reflection/ReflectionSystemsTypes.h"
+#include "Systems/Objects/GameObject.h"
 
 #include "OsWin/SysWindow.h"
 
@@ -599,7 +601,7 @@ void CreateMainWindow(const Configuration& configuration)
 	pMiddleTabContainer->SetSelectedTab(0);
 }
 
-ENABLE_REFLECTION(TestSerialization)
+ENABLE_SYSTEMS_REFLECTION(TestSerialization)
 class TestSerialization
 {
 public:
@@ -616,7 +618,7 @@ private:
 	END_REFLECTION()
 };
 
-ENABLE_REFLECTION(TestChild)
+ENABLE_SYSTEMS_REFLECTION(TestChild)
 class TestChild : public TestSerialization
 {
 public:
@@ -648,9 +650,13 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Systems::ReflectionMgr::InitSingleton();
 	Systems::RegisterStandardTypesToReflection();
 	Systems::RegisterCoreTypesToReflection();
+	Systems::RegisterSystemsTypesToReflection();
 
 	TestSerialization::RegisterReflection();
 	TestChild::RegisterReflection();
+
+	Systems::GameObject* pObject = Systems::CreateObject<Systems::GameObject>();
+	delete pObject;
 
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();

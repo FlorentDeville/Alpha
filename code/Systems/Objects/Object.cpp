@@ -2,17 +2,12 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#pragma once
-
-#include "Core/Math/Mat44f.h"
-#include "Core/Math/Vec4f.h"
-
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Objects/Object.h"
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Core::Vec4f)
-	DEFINE_GET_TYPENAME(Core::Mat44f)
-
-	void RegisterCoreTypesToReflection();
+	void Object::SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor)
+	{
+		m_pTypeDescriptor = pTypeDescriptor;
+	}
 }
