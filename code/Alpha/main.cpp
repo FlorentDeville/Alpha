@@ -15,6 +15,8 @@
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
+#include "Core/Json/JsonArray.h"
+#include "Core/Json/JsonObject.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -659,6 +661,24 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Systems::GameObject* pObject = Systems::CreateObject<Systems::GameObject>();
 	delete pObject;
+
+	{
+		Core::JsonObject root;
+		root.AddMember("pi", 3.14f);
+		root.AddMember("name", std::string("Florent"));
+		root.AddMember("zero", 0);
+		root.AddMember("true", true);
+
+		Core::JsonObject* pObj = root.AddObject("newObject");
+		pObj->AddMember("component", "boom");
+		pObj->AddMember("component", 12);
+
+		Core::JsonArray* pArr = root.AddArray("odd numbers");
+		pArr->AddElement(0);
+		pArr->AddElement(2);
+		pArr->AddElement(4);
+		pArr->AddElement(6);
+	}
 
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();
