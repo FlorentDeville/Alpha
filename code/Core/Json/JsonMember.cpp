@@ -49,4 +49,14 @@ namespace Core
 
 	JsonMember::~JsonMember()
 	{}
+
+	const std::string& JsonMember::GetName() const
+	{
+		return m_name;
+	}
+
+	const JsonValue& JsonMember::GetValue() const
+	{
+		return m_value;
+	}
 }

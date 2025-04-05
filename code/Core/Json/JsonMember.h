@@ -28,6 +28,9 @@ namespace Core
 
 		~JsonMember();
 
+		const std::string& GetName() const;
+		const JsonValue& GetValue() const;
+
 	private:
 		std::string m_name;
 		JsonValue m_value;

@@ -100,6 +100,7 @@
     <ClCompile Include="Json\JsonArray.cpp" />
     <ClCompile Include="Json\JsonMember.cpp" />
     <ClCompile Include="Json\JsonObject.cpp" />
+    <ClCompile Include="Json\JsonSerializer.cpp" />
     <ClCompile Include="Json\JsonValue.cpp" />
     <ClCompile Include="Math\Aabb.cpp" />
     <ClCompile Include="Math\Intersection.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="Json\JsonArray.h" />
     <ClInclude Include="Json\JsonMember.h" />
     <ClInclude Include="Json\JsonObject.h" />
+    <ClInclude Include="Json\JsonSerializer.h" />
     <ClInclude Include="Json\JsonType.h" />
     <ClInclude Include="Json\JsonValue.h" />
     <ClInclude Include="Math\Aabb.h" />

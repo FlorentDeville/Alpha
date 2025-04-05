@@ -17,6 +17,7 @@
 #include "Core/Helper.h"
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonObject.h"
+#include "Core/Json/JsonSerializer.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -678,6 +679,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		pArr->AddElement(2);
 		pArr->AddElement(4);
 		pArr->AddElement(6);
+
+		Core::JsonSerializer ser;
+		std::string output;
+		ser.Serialize(root, output);
 	}
 
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();

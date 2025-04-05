@@ -71,4 +71,34 @@ namespace Core
 			m_value = static_cast<JsonObject*>(nullptr);
 		}
 	}
+
+	JsonType JsonValue::GetType() const
+	{
+		return m_type;
+	}
+
+	bool JsonValue::GetValueAsBool() const
+	{
+		return std::get<bool>(m_value);
+	}
+
+	double JsonValue::GetValueAsDouble() const
+	{
+		return std::get<double>(m_value);
+	}
+
+	std::string JsonValue::GetValueAsString() const
+	{
+		return std::get<std::string>(m_value);
+	}
+
+	JsonArray* JsonValue::GetValueAsArray() const
+	{
+		return std::get<JsonArray*>(m_value);
+	}
+
+	JsonObject* JsonValue::GetValueAsObject() const
+	{
+		return std::get<JsonObject*>(m_value);
+	}
 }

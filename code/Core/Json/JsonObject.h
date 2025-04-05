@@ -27,6 +27,8 @@ namespace Core
 		JsonObject* AddObject(const std::string& name);
 		JsonArray* AddArray(const std::string& name);
 
+		const std::vector<JsonMember*>& GetMembers() const;
+
 	private:
 		std::vector<JsonMember*> m_members;
 	};

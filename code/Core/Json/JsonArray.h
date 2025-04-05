@@ -27,8 +27,9 @@ namespace Core
 		void AddElement(JsonObject* pValue);
 		void AddElement(JsonArray* pValue);
 
+		const std::vector<JsonValue>& GetElements() const;
 
 	private:
-		std::vector<JsonValue> m_values;
+		std::vector<JsonValue> m_elements;
 	};
 }

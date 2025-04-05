@@ -29,6 +29,14 @@ namespace Core
 
 		~JsonValue();
 
+		JsonType GetType() const;
+
+		bool GetValueAsBool() const;
+		double GetValueAsDouble() const;
+		std::string GetValueAsString() const;
+		JsonArray* GetValueAsArray() const;
+		JsonObject* GetValueAsObject() const;
+
 	private:
 		JsonType m_type;
 		std::variant<double, std::string, bool, JsonArray*, JsonObject*> m_value;

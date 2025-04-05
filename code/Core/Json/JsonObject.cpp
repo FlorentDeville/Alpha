@@ -70,4 +70,9 @@ namespace Core
 
 		return pNewArray;
 	}
+
+	const std::vector<JsonMember*>& JsonObject::GetMembers() const
+	{
+		return m_members;
+	}
 }
