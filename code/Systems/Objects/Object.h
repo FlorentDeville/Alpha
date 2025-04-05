@@ -32,7 +32,7 @@ namespace Systems
 	{
 		T* pNewObject = new T(Args...);
 
-		const TypeDescriptor* pType = ReflectionMgr::Get().GetConstType<T>();
+		const TypeDescriptor* pType = TypeResolver<T>::GetConstType();
 		pNewObject->SetTypeDescriptor(pType);
 
 		return pNewObject;

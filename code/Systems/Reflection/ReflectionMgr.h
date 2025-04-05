@@ -23,15 +23,9 @@ namespace Systems
 		~ReflectionMgr();
 
 		template<typename T> TypeDescriptor* RegisterType(const std::string& name);
-
-		template<typename T> const std::string& GetTypename() const;
-
 		void RegisterType(TypeDescriptor* pType);
 
 		TypeDescriptor* GetType(const std::string& name);
-		template<typename T> TypeDescriptor* GetType();
-
-		template<typename T> const TypeDescriptor* GetConstType();
 
 	private:
 		std::map<std::string, TypeDescriptor*> m_typeDb;
@@ -54,15 +48,11 @@ namespace Systems
 		}
 	}
 
-	template<typename T> TypeDescriptor* ReflectionMgr::GetType()
+	template<typename T> class TypeResolver
 	{
-		const std::string& strTypename = GetTypename<T>();
-		return GetType(strTypename);
-	}
-
-	template<typename T> const TypeDescriptor* ReflectionMgr::GetConstType()
-	{
-		const std::string& strTypename = GetTypename<T>();
-		return GetType(strTypename);
-	}
+	public:
+		static const std::string& GetTypename();
+		static const TypeDescriptor* GetConstType();
+		static TypeDescriptor* GetType();
+	};
 }

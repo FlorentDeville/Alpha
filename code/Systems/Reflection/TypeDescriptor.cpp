@@ -17,9 +17,11 @@ namespace Systems
 		, m_id(++s_idCounter)
 	{ }
 
-	void TypeDescriptor::AddField(const FieldDescriptor& field)
+	FieldDescriptor* TypeDescriptor::AddField()
 	{
-		m_fields.push_back(field);
+		m_fields.push_back(FieldDescriptor());
+		FieldDescriptor& field = m_fields.back();
+		return &field;
 	}
 
 	void TypeDescriptor::SetBaseType(const std::string& baseTypeName)

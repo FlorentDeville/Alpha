@@ -11,8 +11,8 @@
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Core::Vec4f)
-	DEFINE_GET_TYPENAME(Core::Mat44f)
+	DEFINE_TYPE_RESOLVER(Core::Vec4f)
+	DEFINE_TYPE_RESOLVER(Core::Mat44f)
 
 	void RegisterCoreTypesToReflection();
 }

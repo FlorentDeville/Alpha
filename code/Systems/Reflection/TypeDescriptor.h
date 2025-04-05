@@ -18,8 +18,7 @@ namespace Systems
 	public:
 		TypeDescriptor(const std::string& name, uint64_t size);
 
-		void AddField(const FieldDescriptor& field);
-		template<typename T> void AddField(const std::string& name, size_t offset, FieldAttribute attribute);
+		FieldDescriptor* AddField();
 
 		void SetBaseType(const std::string& baseTypeName);
 
@@ -34,11 +33,4 @@ namespace Systems
 
 		static uint64_t s_idCounter;
 	};
-
-	template<typename T> void TypeDescriptor::AddField(const std::string& name, size_t offset, FieldAttribute attribute)
-	{
-		Systems::FieldDescriptor newField;
-		newField.Init<T>(name, offset, attribute);
-		AddField(newField);
-	}
 }

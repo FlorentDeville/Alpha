@@ -9,7 +9,7 @@
 
 namespace Systems
 {
-	DEFINE_GET_TYPENAME(Systems::AssetId)
+	DEFINE_TYPE_RESOLVER(Systems::AssetId)
 
 	void RegisterSystemsTypesToReflection();
 }

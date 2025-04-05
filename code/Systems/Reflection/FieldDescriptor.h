@@ -16,30 +16,65 @@ namespace Systems
 
 	class FieldDescriptor
 	{
+		template<typename T> friend class FieldInitializer;
+
 	public:
 		FieldDescriptor();
 		~FieldDescriptor();
-
-		template<typename FIELD_TYPE> void Init(const std::string& name, size_t offset, FieldAttribute attribute);
 
 	private:
 		std::string m_name;
 		uint64_t m_offset;
 		TypeDescriptor* m_pType;
-		bool m_isPointer;
+		TypeDescriptor* m_pElementType; // this is the type of the elements when the field is a container. it must be iteratable with begin/end.
+		bool m_isPointer : 1;
+		bool m_isContainer : 1;
+		bool m_isElementPointer : 1;	//the elements are pointers to m_pElementType.
+
 		FieldAttribute m_attribute;
 	};
 
-	template<typename FIELD_TYPE> void FieldDescriptor::Init(const std::string& name, size_t offset, FieldAttribute attribute)
+	template<typename FIELD_TYPE> class FieldInitializer
 	{
-		m_name = name;
-		m_offset = offset;
-		m_attribute = attribute;
-		m_isPointer = IsPointer<FIELD_TYPE>::value;
+	public:
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		{
+			typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
+			TypeDescriptor* pType = TypeResolver<NonPointerType>::GetType();
 
-		ReflectionMgr& reflectionMgr = ReflectionMgr::Get();
+			bool isPointer = IsPointer<FIELD_TYPE>::value;
 
-		typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
-		m_pType = reflectionMgr.GetType<NonPointerType>();
-	}
+			pField->m_name = name;
+			pField->m_offset = offset;
+			pField->m_pType = pType;
+			pField->m_pElementType = nullptr;
+			pField->m_isPointer = isPointer;
+			pField->m_isContainer = false;
+			pField->m_isElementPointer = false;
+			pField->m_attribute = attribute;
+		}
+	};
+
+	template<typename T> class FieldInitializer<std::vector<T>>
+	{
+	public:
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		{
+			TypeDescriptor* pType = TypeResolver<std::vector<T>>::GetType();
+
+			typedef RemovePointer<T>::type NonPointerElementType;
+			TypeDescriptor* pElementType = TypeResolver<NonPointerElementType>::GetType();
+
+			bool isElementPointer = IsPointer<T>::value;
+
+			pField->m_name = name;
+			pField->m_offset = offset;
+			pField->m_pType = pType;
+			pField->m_pElementType = pElementType;
+			pField->m_isPointer = false;
+			pField->m_isContainer = true;
+			pField->m_isElementPointer = isElementPointer;
+			pField->m_attribute = attribute;
+		}
+	};
 }

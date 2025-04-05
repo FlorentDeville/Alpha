@@ -31,34 +31,45 @@
 #define OPEN_SYSTEMS_NAMESPACE namespace Systems {
 #define CLOSE_SYSTEMS_NAMESPACE }
 
-// Macro to specialize the template function GetTypname()
-#define DEFINE_GET_TYPENAME(TYPE) template<> inline const std::string& ReflectionMgr::GetTypename<TYPE>() const { static std::string strType = #TYPE; return strType; } 
+// Macro to specialize the template class TypeResolver
+#define DEFINE_TYPE_RESOLVER(TYPE) \
+	template<> class TypeResolver<TYPE> \
+	{ \
+	public: \
+		static const std::string& GetTypename() { static const std::string typeName = #TYPE; return typeName; } \
+		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetType(GetTypename()); } \
+		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetType(GetTypename()); } \
+	};
 
-// Macro to specialize the template function GetTypname() inside the Systems namespace
-#define DEFINE_SYSTEMS_GET_TYPENAME(TYPE) \
+// Macro to specialize the template class TypeResolver inside the Systems namespace
+#define DEFINE_SYSTEMS_TYPE_RESOLVER(TYPE) \
 	OPEN_SYSTEMS_NAMESPACE \
-		DEFINE_GET_TYPENAME(TYPE) \
+		DEFINE_TYPE_RESOLVER(TYPE) \
 	CLOSE_SYSTEMS_NAMESPACE
 
 // Macro to register a type
 #define REGISTER_TYPE(TYPE) Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE)
 
-#define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME) DESCRIPTOR->AddField<FIELD_TYPE>(#FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute::None);
+#define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME) \
+	{ \
+		Systems::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
+		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute::None); \
+	}
 
 // Macro to put first before the class
 #define ENABLE_REFLECTION_WITH_NS(NAMESPACE, TYPE) \
 	class TYPE; \
-	DEFINE_GET_TYPENAME(NAMESPACE::TYPE)
+	DEFINE_TYPE_RESOLVER(NAMESPACE::TYPE)
 
 // Macro to put first before the class
 #define ENABLE_REFLECTION(TYPE) \
 	class TYPE; \
-	DEFINE_GET_TYPENAME(TYPE)
+	DEFINE_TYPE_RESOLVER(TYPE)
 
 // Macro to put first before the class
 #define ENABLE_SYSTEMS_REFLECTION(TYPE) \
 	class TYPE; \
-	DEFINE_SYSTEMS_GET_TYPENAME(TYPE)
+	DEFINE_SYSTEMS_TYPE_RESOLVER(TYPE)
 
 // Macro to start the description of the reflection
 #define START_REFLECTION(TYPE) \

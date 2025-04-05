@@ -35,7 +35,7 @@ namespace Systems
 		START_REFLECTION(Systems::GameObject)
 			ADD_BASETYPE(Systems::Object)
 			ADD_FIELD(m_name)
-		//	ADD_FIELD_ARRAY(m_components)
+			ADD_FIELD(m_components)
 		END_REFLECTION()
 	};
 }
