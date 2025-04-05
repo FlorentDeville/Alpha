@@ -6,6 +6,7 @@
 
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
+#include "Systems/Reflection/ReflectionUtils.h"
 
 #include <string>
 
@@ -25,6 +26,7 @@ namespace Systems
 		std::string m_name;
 		uint64_t m_offset;
 		TypeDescriptor* m_pType;
+		bool m_isPointer;
 		FieldAttribute m_attribute;
 	};
 
@@ -33,8 +35,11 @@ namespace Systems
 		m_name = name;
 		m_offset = offset;
 		m_attribute = attribute;
+		m_isPointer = IsPointer<FIELD_TYPE>::value;
 
 		ReflectionMgr& reflectionMgr = ReflectionMgr::Get();
-		m_pType = reflectionMgr.GetType<FIELD_TYPE>();
+
+		typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
+		m_pType = reflectionMgr.GetType<NonPointerType>();
 	}
 }

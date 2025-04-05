@@ -19,6 +19,7 @@
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
+    <ClInclude Include="Reflection\ReflectionUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />

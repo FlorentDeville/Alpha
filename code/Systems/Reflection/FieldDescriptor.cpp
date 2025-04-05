@@ -11,6 +11,7 @@ namespace Systems
 		, m_offset(0)
 		, m_pType(nullptr)
 		, m_attribute(FieldAttribute::None)
+		, m_isPointer(false)
 	{ }
 
 	FieldDescriptor::~FieldDescriptor()

@@ -28,6 +28,7 @@
     <ClInclude Include="Reflection\ReflectionMgr.h" />
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
+    <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Reflection\TypeDescriptor.h" />
   </ItemGroup>
   <ItemGroup>

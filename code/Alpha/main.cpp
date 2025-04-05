@@ -610,11 +610,13 @@ public:
 
 private:
 	float m_privateFloat;
+	bool* m_pBool;
 
 	START_REFLECTION(TestSerialization)
 		ADD_FIELD(m_myInt)
 		ADD_FIELD(m_superDouble)
 		ADD_FIELD(m_privateFloat)
+		ADD_FIELD(m_pBool)
 	END_REFLECTION()
 };
 
