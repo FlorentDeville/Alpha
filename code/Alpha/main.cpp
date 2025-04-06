@@ -680,6 +680,17 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		pArr->AddElement(4);
 		pArr->AddElement(6);
 
+		Core::JsonArray* pArrObj = root.AddArray("object");
+		Core::JsonObject* obj1 = new Core::JsonObject();
+		obj1->AddMember("name", "component1");
+		obj1->AddMember("id", 123);
+		pArrObj->AddElement(obj1);
+
+		Core::JsonObject* obj2 = new Core::JsonObject();
+		obj2->AddMember("name", "component2");
+		obj2->AddMember("id", 156);
+		pArrObj->AddElement(obj2);
+
 		Core::JsonSerializer ser;
 		std::string output;
 		ser.Serialize(root, output);

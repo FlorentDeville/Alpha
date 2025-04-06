@@ -13,39 +13,50 @@ namespace Core
 	{}
 
 	JsonArray::~JsonArray()
-	{}
+	{
+		for (JsonValue* pValue : m_elements)
+			delete pValue;
+
+		m_elements.clear();
+	}
 
 	void JsonArray::AddElement(int32_t value)
 	{
-		m_elements.push_back(JsonValue(value));
+		JsonValue* pNewValue = new JsonValue(value);
+		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(float value)
 	{
-		m_elements.push_back(JsonValue(value));
+		JsonValue* pNewValue = new JsonValue(value);
+		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(bool value)
 	{
-		m_elements.push_back(JsonValue(value));
+		JsonValue* pNewValue = new JsonValue(value);
+		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(const std::string& value)
 	{
-		m_elements.push_back(JsonValue(value));
+		JsonValue* pNewValue = new JsonValue(value);
+		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(JsonObject* pValue)
 	{
-		m_elements.push_back(JsonValue(pValue));
+		JsonValue* pNewValue = new JsonValue(pValue);
+		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(JsonArray* pValue)
 	{
-		m_elements.push_back(JsonValue(pValue));
+		JsonValue* pNewValue = new JsonValue(pValue);
+		m_elements.push_back(pNewValue);
 	}
 
-	const std::vector<JsonValue>& JsonArray::GetElements() const
+	const std::vector<JsonValue*>& JsonArray::GetElements() const
 	{
 		return m_elements;
 	}
