@@ -11,6 +11,11 @@ namespace Core
 		, m_value()
 	{}
 
+	JsonMember::JsonMember(const std::string& name)
+		: m_name(name)
+		, m_value()
+	{}
+
 	JsonMember::JsonMember(const std::string& name, int32_t value)
 		: m_name(name)
 		, m_value(value)

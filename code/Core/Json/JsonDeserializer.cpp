@@ -39,6 +39,8 @@ namespace Core
 
 			if (m_token == "{")
 				ReadObject(output);
+			else
+				assert(false);
 
 			continueReading = ReadNextToken();
 		}
@@ -242,6 +244,10 @@ namespace Core
 			else if (m_token == "false")
 			{
 				output.AddMember(memberName, false);
+			}
+			else if (m_token == "null")
+			{
+				output.AddNullMember(memberName);
 			}
 
 			ReadNextToken();

@@ -18,6 +18,7 @@ namespace Core
 	{
 	public:
 		JsonMember();
+		explicit JsonMember(const std::string& name); //create a mamber set to null
 		explicit JsonMember(const std::string& name, int32_t value);
 		explicit JsonMember(const std::string& name, float value);
 		explicit JsonMember(const std::string& name, double value);

@@ -104,7 +104,6 @@ namespace Core
 		for (int ii = 0; ii < offset; ++ii)
 			strOffset += "\t";
 
-		//output << strOffset;
 		output << "{\n";
 
 		bool isFirst = true;

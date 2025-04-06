@@ -690,6 +690,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		Core::JsonObject* obj2 = new Core::JsonObject();
 		obj2->AddMember("name", "component2");
 		obj2->AddMember("id", 156);
+		obj2->AddNullMember("nullmember");
 		pArrObj->AddElement(obj2);
 
 		Core::JsonSerializer ser;

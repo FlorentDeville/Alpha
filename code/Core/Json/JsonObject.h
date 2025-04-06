@@ -25,6 +25,8 @@ namespace Core
 		void AddMember(const std::string& name, const char* pValue);
 		void AddMember(const std::string& name, const std::string& value);
 
+		void AddNullMember(const std::string& name);
+
 		JsonObject* AddObject(const std::string& name);
 		JsonArray* AddArray(const std::string& name);
 
