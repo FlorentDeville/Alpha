@@ -20,6 +20,7 @@ namespace Core
 
 		void AddMember(const std::string& name, int32_t value);
 		void AddMember(const std::string& name, float value);
+		void AddMember(const std::string& name, double value);
 		void AddMember(const std::string& name, bool value);
 		void AddMember(const std::string& name, const char* pValue);
 		void AddMember(const std::string& name, const std::string& value);

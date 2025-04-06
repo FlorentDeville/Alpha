@@ -26,6 +26,12 @@ namespace Core
 		m_value = static_cast<double>(value);
 	}
 
+	JsonValue::JsonValue(double value)
+		: m_type(JsonType::Number)
+	{
+		m_value = value;
+	}
+
 	JsonValue::JsonValue(bool value)
 		: m_type(JsonType::Boolean)
 	{

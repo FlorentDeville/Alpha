@@ -98,6 +98,7 @@
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Json\JsonArray.cpp" />
+    <ClCompile Include="Json\JsonDeserializer.cpp" />
     <ClCompile Include="Json\JsonMember.cpp" />
     <ClCompile Include="Json\JsonObject.cpp" />
     <ClCompile Include="Json\JsonSerializer.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Json\JsonArray.h" />
+    <ClInclude Include="Json\JsonDeserializer.h" />
     <ClInclude Include="Json\JsonMember.h" />
     <ClInclude Include="Json\JsonObject.h" />
     <ClInclude Include="Json\JsonSerializer.h" />

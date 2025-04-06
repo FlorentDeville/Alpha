@@ -21,11 +21,15 @@ namespace Core
 		, m_value(value)
 	{}
 
+	JsonMember::JsonMember(const std::string& name, double value)
+		: m_name(name)
+		, m_value(value)
+	{}
+
 	JsonMember::JsonMember(const std::string& name, const char* pValue)
 		: m_name(name)
 		, m_value(std::string(pValue))
-	{
-	}
+	{}
 
 	JsonMember::JsonMember(const std::string& name, const std::string& value)
 		: m_name(name)

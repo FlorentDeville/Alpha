@@ -16,6 +16,7 @@
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
 #include "Core/Json/JsonArray.h"
+#include "Core/Json/JsonDeserializer.h"
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonSerializer.h"
 
@@ -694,6 +695,34 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		Core::JsonSerializer ser;
 		std::string output;
 		ser.Serialize(root, output);
+
+		FILE* pFile = nullptr;
+		fopen_s(&pFile, "C:\\Workspace\\text.json", "w");
+		fwrite(output.data(), sizeof(char), output.size(), pFile);
+		fclose(pFile);
+	}
+
+	{
+		FILE* pFile = nullptr;
+		fopen_s(&pFile, "C:\\Workspace\\text.json", "r");
+		char jsonBuffer[1024] = { '\0' };
+		fread(jsonBuffer, sizeof(char), 1024, pFile);
+		fclose(pFile);
+
+		Core::JsonDeserializer des;
+		Core::JsonObject obj;
+		des.Deserialize(jsonBuffer, obj);
+
+		{
+			Core::JsonSerializer anotherSer;
+			std::string output;
+			anotherSer.Serialize(obj, output);
+
+			FILE* pAnotherFile = nullptr;
+			fopen_s(&pAnotherFile, "C:\\Workspace\\text2.json", "w");
+			fwrite(output.data(), sizeof(char), output.size(), pAnotherFile);
+			fclose(pAnotherFile);
+		}
 	}
 
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();

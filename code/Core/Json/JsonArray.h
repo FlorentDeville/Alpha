@@ -22,6 +22,7 @@ namespace Core
 
 		void AddElement(int32_t value);
 		void AddElement(float value);
+		void AddElement(double value);
 		void AddElement(bool value);
 		void AddElement(const std::string& value);
 		void AddElement(JsonObject* pValue);

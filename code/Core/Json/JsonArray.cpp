@@ -32,6 +32,12 @@ namespace Core
 		m_elements.push_back(pNewValue);
 	}
 
+	void JsonArray::AddElement(double value)
+	{
+		JsonValue* pNewValue = new JsonValue(value);
+		m_elements.push_back(pNewValue);
+	}
+
 	void JsonArray::AddElement(bool value)
 	{
 		JsonValue* pNewValue = new JsonValue(value);

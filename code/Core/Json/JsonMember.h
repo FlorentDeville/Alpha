@@ -20,6 +20,7 @@ namespace Core
 		JsonMember();
 		explicit JsonMember(const std::string& name, int32_t value);
 		explicit JsonMember(const std::string& name, float value);
+		explicit JsonMember(const std::string& name, double value);
 		explicit JsonMember(const std::string& name, const char* pValue);
 		explicit JsonMember(const std::string& name, const std::string& value);
 		explicit JsonMember(const std::string& name, bool value);

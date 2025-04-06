@@ -33,6 +33,12 @@ namespace Core
 		m_members.push_back(pNewMember);
 	}
 
+	void JsonObject::AddMember(const std::string& name, double value)
+	{
+		JsonMember* pNewMember = new JsonMember(name, value);
+		m_members.push_back(pNewMember);
+	}
+
 	void JsonObject::AddMember(const std::string& name, bool value)
 	{
 		JsonMember* pNewMember = new JsonMember(name, value);
