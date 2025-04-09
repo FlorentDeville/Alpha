@@ -1,0 +1,80 @@
+/********************************************************************/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#pragma once
+
+#include "Systems/Reflection/FieldAttribute.h"
+#include "Systems/Reflection/ReflectionMgr.h"
+#include "Systems/Reflection/ReflectionUtils.h"
+
+#include <string>
+
+namespace Systems
+{
+	class TypeDescriptor;
+
+	class FieldDescriptor
+	{
+		template<typename T> friend class FieldInitializer;
+
+	public:
+		FieldDescriptor();
+		~FieldDescriptor();
+
+	private:
+		std::string m_name;
+		uint64_t m_offset;
+		TypeDescriptor* m_pType;
+		TypeDescriptor* m_pElementType; // this is the type of the elements when the field is a container. it must be iteratable with begin/end.
+		bool m_isPointer : 1;
+		bool m_isContainer : 1;
+		bool m_isElementPointer : 1;	//the elements are pointers to m_pElementType.
+
+		FieldAttribute m_attribute;
+	};
+
+	template<typename FIELD_TYPE> class FieldInitializer
+	{
+	public:
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		{
+			typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
+			TypeDescriptor* pType = TypeResolver<NonPointerType>::GetType();
+
+			bool isPointer = IsPointer<FIELD_TYPE>::value;
+
+			pField->m_name = name;
+			pField->m_offset = offset;
+			pField->m_pType = pType;
+			pField->m_pElementType = nullptr;
+			pField->m_isPointer = isPointer;
+			pField->m_isContainer = false;
+			pField->m_isElementPointer = false;
+			pField->m_attribute = attribute;
+		}
+	};
+
+	template<typename T> class FieldInitializer<std::vector<T>>
+	{
+	public:
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		{
+			TypeDescriptor* pType = TypeResolver<std::vector<T>>::GetType();
+
+			typedef RemovePointer<T>::type NonPointerElementType;
+			TypeDescriptor* pElementType = TypeResolver<NonPointerElementType>::GetType();
+
+			bool isElementPointer = IsPointer<T>::value;
+
+			pField->m_name = name;
+			pField->m_offset = offset;
+			pField->m_pType = pType;
+			pField->m_pElementType = pElementType;
+			pField->m_isPointer = false;
+			pField->m_isContainer = true;
+			pField->m_isElementPointer = isElementPointer;
+			pField->m_attribute = attribute;
+		}
+	};
+}
