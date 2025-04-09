@@ -36,7 +36,7 @@ namespace Systems
 	{
 		s_assetTypeDescription.resize(static_cast<int>(kCount));
 		s_assetTypeDescription[static_cast<int>(kMesh)] = AssetTypeDescription(kMesh, "MESH", "mesh");
-		s_assetTypeDescription[static_cast<int>(kMaterial)] = AssetTypeDescription(kMesh, "MATERIAL", "materials");
+		s_assetTypeDescription[static_cast<int>(kMaterial)] = AssetTypeDescription(kMaterial, "MATERIAL", "materials");
 		s_assetTypeDescription[static_cast<int>(kTexture)] = AssetTypeDescription(kTexture, "TEXTURE", "textures");
 		s_assetTypeDescription[static_cast<int>(kShader)] = AssetTypeDescription(kShader, "SHADER", "shaders");
 		s_assetTypeDescription[static_cast<int>(kLevel)] = AssetTypeDescription(kLevel, "LEVEL", "levels");
