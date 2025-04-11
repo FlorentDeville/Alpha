@@ -2,19 +2,21 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Systems/Reflection/ReflectionStandardTypes.h"
+#pragma once
+
+#include "Systems/Objects/Object.h"
 
 #include "Systems/Reflection/ReflectionMacro.h"
 
 namespace Systems
 {
-	void RegisterStandardTypesToReflection()
+	//Base class for any asset
+	ENABLE_REFLECTION_WITH_NS(Systems, AssetObject)
+	class AssetObject : public Object
 	{
-		REGISTER_TYPE(int32_t);
-		REGISTER_TYPE(uint16_t);
-		REGISTER_TYPE(float);
-		REGISTER_TYPE(char);
-		REGISTER_TYPE(double);
-		REGISTER_TYPE(std::string);
-	}
+
+		START_REFLECTION(Systems::AssetObject)
+			ADD_BASETYPE(Systems::Object)
+		END_REFLECTION()
+	};
 }

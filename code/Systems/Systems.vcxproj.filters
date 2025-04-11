@@ -20,6 +20,8 @@
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
     <ClInclude Include="Reflection\ReflectionUtils.h" />
+    <ClInclude Include="Objects\AssetObject.h" />
+    <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -38,5 +40,6 @@
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
+    <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
   </ItemGroup>
 </Project>
