@@ -231,6 +231,9 @@
     <ProjectReference Include="..\Editors\Editors.vcxproj">
       <Project>{e4c43edc-88b3-4687-9e69-33b02c08403a}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Importer\FbxImporter\FbxImporter.vcxproj">
+      <Project>{775a5480-2451-4e4b-9d41-d8b2bcf922d0}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Inputs\Inputs.vcxproj">
       <Project>{7103a061-0369-4b24-bd99-9c3129816d83}</Project>
     </ProjectReference>
