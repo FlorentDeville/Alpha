@@ -96,7 +96,7 @@ namespace FbxImporter
 				for (int triangleIndex = 0; triangleIndex < triangleCount; ++triangleIndex)
 				{
 					//first vertex of the triangle is always the same
-					int internalVertexIndex = m_position.size();
+					uint16_t internalVertexIndex = static_cast<uint16_t>(m_position.size());
 
 					{
 						ofbx::Vec3 pos = positions.values[positions.indices[vertexStart]];
@@ -115,7 +115,7 @@ namespace FbxImporter
 						ofbx::Vec2 uv = uvs.values[uvs.indices[secondVertexIndex]];
 						//ofbx::Vec4 color = colors.values[colors.indices[secondVertexIndex]];
 
-						int internalVertexIndex = m_position.size();
+						size_t internalVertexIndex = m_position.size();
 						m_position.push_back(Core::Vec4f(pos.x, pos.y, pos.z, 1));
 						//m_color.push_back(Core::Vec4f(color.x, color.y, color.z, color.w));
 						m_color.push_back(Core::Vec4f(0, 0, 0, 0));
@@ -128,7 +128,7 @@ namespace FbxImporter
 						ofbx::Vec2 uv = uvs.values[uvs.indices[lastVertexIndex]];
 						//ofbx::Vec4 color = colors.values[colors.indices[lastVertexIndex]];
 
-						int internalVertexIndex = m_position.size();
+						size_t internalVertexIndex = m_position.size();
 						m_position.push_back(Core::Vec4f(pos.x, pos.y, pos.z, 1));
 						//m_color.push_back(Core::Vec4f(color.x, color.y, color.z, color.w));
 						m_color.push_back(Core::Vec4f(0, 0, 0, 0));

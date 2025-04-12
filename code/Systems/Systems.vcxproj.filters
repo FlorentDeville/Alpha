@@ -41,5 +41,6 @@
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
+    <ClCompile Include="Objects\AssetObject.cpp" />
   </ItemGroup>
 </Project>

@@ -48,4 +48,9 @@ namespace Systems
 		int indexCount = static_cast<int>(m_indices.size());
 		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.data(), indexCount);
 	}
+
+	const Rendering::Mesh* MeshAsset::GetRenderingMesh() const
+	{
+		return &m_mesh;
+	}
 }

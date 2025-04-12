@@ -23,6 +23,8 @@ namespace Systems
 		void Init(const std::string& sourceFile, std::vector<Core::Vec4f>&& pos, std::vector<Core::Vec4f>&& uv, std::vector<Core::Vec4f>&& color,
 			std::vector<uint16_t>&& indices);
 
+		const Rendering::Mesh* GetRenderingMesh() const;
+
 	private:
 
 		std::string m_sourceFile;
