@@ -11,6 +11,7 @@ namespace Systems
 	void RegisterStandardTypesToReflection()
 	{
 		REGISTER_TYPE(int32_t);
+		REGISTER_TYPE(uint16_t);
 		REGISTER_TYPE(float);
 		REGISTER_TYPE(char);
 		REGISTER_TYPE(double);

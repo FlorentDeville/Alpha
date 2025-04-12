@@ -4,13 +4,14 @@
 
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Objects/AssetObject.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Objects/Object.h"
-
 
 namespace Systems
 {
@@ -23,5 +24,8 @@ namespace Systems
 		Systems::GameComponent::RegisterReflection();
 		Systems::StaticMeshComponent::RegisterReflection();
 		Systems::TransformComponent::RegisterReflection();
+
+		Systems::AssetObject::RegisterReflection();
+		Systems::MeshAsset::RegisterReflection();
 	}
 }

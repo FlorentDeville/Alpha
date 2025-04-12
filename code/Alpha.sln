@@ -29,6 +29,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Systems", "Systems\Systems.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Resources", "Resources\Resources.vcxproj", "{D4B9C861-FB53-479C-AB56-74BAE2EC49A8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Importer", "Importer", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FbxImporter", "Importer\FbxImporter\FbxImporter.vcxproj", "{775A5480-2451-4E4B-9D41-D8B2BCF922D0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FE92B2B8-EE64-4C06-89FE-EB3BAD9A470B} = {FE92B2B8-EE64-4C06-89FE-EB3BAD9A470B}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -109,9 +116,20 @@ Global
 		{D4B9C861-FB53-479C-AB56-74BAE2EC49A8}.Release|x64.Build.0 = Release|x64
 		{D4B9C861-FB53-479C-AB56-74BAE2EC49A8}.Release|x86.ActiveCfg = Release|Win32
 		{D4B9C861-FB53-479C-AB56-74BAE2EC49A8}.Release|x86.Build.0 = Release|Win32
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Debug|x64.ActiveCfg = Debug|x64
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Debug|x64.Build.0 = Debug|x64
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Debug|x86.ActiveCfg = Debug|Win32
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Debug|x86.Build.0 = Debug|Win32
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x64.ActiveCfg = Release|x64
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x64.Build.0 = Release|x64
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x86.ActiveCfg = Release|Win32
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{775A5480-2451-4E4B-9D41-D8B2BCF922D0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14F50D67-A38C-4F66-ADAF-221E3E04C6C2}
