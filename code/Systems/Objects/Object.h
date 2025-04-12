@@ -21,6 +21,8 @@ namespace Systems
 
 		void SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor);
 
+		const TypeDescriptor* GetTypeDescriptor() const;
+
 	private:
 		const TypeDescriptor* m_pTypeDescriptor;
 

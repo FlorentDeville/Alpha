@@ -10,4 +10,9 @@ namespace Systems
 	{
 		m_pTypeDescriptor = pTypeDescriptor;
 	}
+
+	const TypeDescriptor* Object::GetTypeDescriptor() const
+	{
+		return m_pTypeDescriptor;
+	}
 }

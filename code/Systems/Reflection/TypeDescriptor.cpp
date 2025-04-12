@@ -8,14 +8,13 @@
 
 namespace Systems
 {
-	uint64_t TypeDescriptor::s_idCounter = 1;
-
 	TypeDescriptor::TypeDescriptor(const std::string& name, uint64_t size)
 		: m_name(name)
 		, m_size(size)
 		, m_pBaseType(nullptr)
-		, m_id(++s_idCounter)
-	{ }
+	{
+		m_sid = Core::MakeSid(name);
+	}
 
 	FieldDescriptor* TypeDescriptor::AddField()
 	{
@@ -34,5 +33,20 @@ namespace Systems
 	const std::string& TypeDescriptor::GetName() const
 	{
 		return m_name;
+	}
+
+	Core::Sid TypeDescriptor::GetSid() const
+	{
+		return m_sid;
+	}
+
+	const std::vector<FieldDescriptor>& TypeDescriptor::GetFields() const
+	{
+		return m_fields;
+	}
+
+	const TypeDescriptor* TypeDescriptor::GetBaseType() const
+	{
+		return m_pBaseType;
 	}
 }

@@ -22,14 +22,29 @@ namespace Systems
 		FieldDescriptor();
 		~FieldDescriptor();
 
+		const std::string& GetName() const;
+		const TypeDescriptor* GetType() const;
+		const TypeDescriptor* GetElementType() const;
+		bool IsPointer() const;
+		bool IsContainer() const;
+		bool IsElementPointer() const;
+
+		//Return a pointer to the variable in pObj
+		const void* GetDataPtr(const void* pObj) const;
+
+		template<typename T> const T* GetDataPtr(const void* pObj) const
+		{
+			return static_cast<const T*>(GetDataPtr(pObj));
+		}
+
 	private:
 		std::string m_name;
 		uint64_t m_offset;
 		TypeDescriptor* m_pType;
 		TypeDescriptor* m_pElementType; // this is the type of the elements when the field is a container. it must be iteratable with begin/end.
 		bool m_isPointer : 1;
-		bool m_isContainer : 1;
-		bool m_isElementPointer : 1;	//the elements are pointers to m_pElementType.
+		bool m_isContainer : 1;			// array, map, list of any kind
+		bool m_isElementPointer : 1;	// the elements are pointers to m_pElementType.
 
 		FieldAttribute m_attribute;
 	};
