@@ -9,6 +9,7 @@
 #include "3rdparty/xxh64/xxh64.hpp"
 
 #define MAKESID(LiteralString) [&]() { constexpr Core::Sid sid = Core::MakeSid(LiteralString); return sid; } ()
+#define SID(LiteralString) Core::MakeSid(LiteralString)
 
 namespace Core
 {
@@ -30,7 +31,9 @@ namespace Core
 
 	template<size_t N> static constexpr Sid MakeSid(const char(&str)[N])
 	{
-		return static_cast<Sid>(xxh64::hash(str, N, PRIME_SID));
+		//For compatibility between std::string and string literal.
+		//String literal includes the \0 character in their size but std::string doesn't.
+		return static_cast<Sid>(xxh64::hash(str, N-1, PRIME_SID));
 	}
 
 	
