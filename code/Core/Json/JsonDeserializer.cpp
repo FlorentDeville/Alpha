@@ -11,6 +11,27 @@
 
 namespace Core
 {
+	std::string UnescapeString(const std::string& source)
+	{
+		std::string output;
+		for (int ii = 0; ii < source.size(); ++ii)
+		{
+			char c = source[ii];
+
+			if (c == '\\')
+			{
+				++ii;
+				output += source[ii];
+			}
+			else
+			{
+				output += c;
+			}
+		}
+
+		return output;
+	}
+
 	void StripLeadingAndTrailingWhitespace(std::string& str)
 	{
 		size_t firstNonWhitespace = str.find_first_not_of(" \r\n\t");
@@ -80,11 +101,29 @@ namespace Core
 			std::getline(m_line, m_token, '}');
 			m_token = "}";
 		}
-		else if (nextChar == '\"')
+		else if (nextChar == '"')
 		{
 			//read the string
-			std::getline(m_line, m_token, '\"'); //start quote
-			std::getline(m_line, m_token, '\"'); //end quote
+			std::getline(m_line, m_token, '"'); //start quote
+
+			bool lastQuoteFound = false;
+			while (!lastQuoteFound)
+			{
+				std::string tempToken;
+				std::getline(m_line, tempToken, '"');
+
+				m_token += tempToken;
+
+				if (tempToken.size() > 0)
+				{
+					char escapeCharacter = tempToken[tempToken.size() - 1];
+					if (escapeCharacter != '\\')
+						lastQuoteFound = true;
+					else
+						m_token += "\"";
+				}
+			}
+			
 			m_token = "\"" + m_token + "\"";
 		}
 		else if (nextChar == ':')
@@ -235,7 +274,8 @@ namespace Core
 			else if (m_token[0] == '"')
 			{
 				std::string value = m_token.substr(1, m_token.size() - 2);
-				output.AddMember(memberName, value);
+				std::string unescapedString = UnescapeString(value);
+				output.AddMember(memberName, unescapedString);
 			}
 			else if (m_token == "true")
 			{
