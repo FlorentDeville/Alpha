@@ -20,6 +20,7 @@ namespace Core
 		JsonMember();
 		explicit JsonMember(const std::string& name); //create a mamber set to null
 		explicit JsonMember(const std::string& name, int32_t value);
+		explicit JsonMember(const std::string& name, uint64_t value);
 		explicit JsonMember(const std::string& name, float value);
 		explicit JsonMember(const std::string& name, double value);
 		explicit JsonMember(const std::string& name, const char* pValue);
@@ -31,7 +32,8 @@ namespace Core
 		~JsonMember();
 
 		const std::string& GetName() const;
-		const JsonValue& GetValue() const;
+		const JsonValue& GetConstValue() const;
+		JsonValue& GetValue();
 
 	private:
 		std::string m_name;

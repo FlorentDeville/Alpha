@@ -21,6 +21,11 @@ namespace Core
 		, m_value(value)
 	{}
 
+	JsonMember::JsonMember(const std::string& name, uint64_t value)
+		: m_name(name)
+		, m_value(value)
+	{}
+
 	JsonMember::JsonMember(const std::string& name, float value)
 		: m_name(name)
 		, m_value(value)
@@ -64,7 +69,12 @@ namespace Core
 		return m_name;
 	}
 
-	const JsonValue& JsonMember::GetValue() const
+	const JsonValue& JsonMember::GetConstValue() const
+	{
+		return m_value;
+	}
+
+	JsonValue& JsonMember::GetValue()
 	{
 		return m_value;
 	}

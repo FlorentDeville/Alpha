@@ -116,7 +116,7 @@ namespace Core
 				output << ", \n";
 	
 			output << strOffset << "\t\"" << pMember->GetName() << "\": ";
-			WriteValue(pMember->GetValue(), output, offset+1);
+			WriteValue(pMember->GetConstValue(), output, offset+1);
 		}
 
 		output << "\n" << strOffset << "}";
