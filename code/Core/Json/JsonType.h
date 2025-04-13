@@ -7,7 +7,7 @@
 namespace Core
 {
 	// Define the standard types supported in json.
-	enum JsonType
+	enum class JsonType
 	{
 		Undefined = 0,
 		Number,
