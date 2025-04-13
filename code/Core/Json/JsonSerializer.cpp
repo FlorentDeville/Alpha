@@ -16,6 +16,27 @@ namespace Core
 	void WriteArray(const JsonArray& array, std::stringstream& output, int offset);
 	void WriteObject(const JsonObject& input, std::stringstream& output, int offset);
 
+	std::string EscapeString(const std::string& str)
+	{
+		std::string output;
+		for (char c : str)
+		{
+			switch (c)
+			{
+			case '\'': output += "\\'"; break;
+			case '\"': output += "\\\""; break;
+			case '\\': output += "\\\\"; break;
+			case '\0': output += "\\0"; break;
+			case '\n': output += "\\n"; break;
+			case '\r': output += "\\r"; break;
+			case '\t': output += "\\t"; break;
+			default:   output += c;
+			}
+		}
+
+		return output;
+	}
+
 	void WriteBoolean(const JsonValue& value, std::stringstream& output)
 	{
 		if (value.GetValueAsBool())
@@ -31,7 +52,8 @@ namespace Core
 
 	void WriteString(const JsonValue& value, std::stringstream& output)
 	{
-		output << "\"" << value.GetValueAsString() << "\"";
+		std::string escapedString = EscapeString(value.GetValueAsString());
+		output << "\"" << escapedString << "\"";
 	}
 
 	void WriteNull(std::stringstream& output)
@@ -116,7 +138,7 @@ namespace Core
 				output << ", \n";
 	
 			output << strOffset << "\t\"" << pMember->GetName() << "\": ";
-			WriteValue(pMember->GetValue(), output, offset+1);
+			WriteValue(pMember->GetConstValue(), output, offset+1);
 		}
 
 		output << "\n" << strOffset << "}";

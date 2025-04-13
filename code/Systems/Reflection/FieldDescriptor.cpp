@@ -18,4 +18,44 @@ namespace Systems
 
 	FieldDescriptor::~FieldDescriptor()
 	{ }
+
+	const std::string& FieldDescriptor::GetName() const
+	{
+		return m_name;
+	}
+
+	const TypeDescriptor* FieldDescriptor::GetType() const
+	{
+		return m_pType;
+	}
+
+	const TypeDescriptor* FieldDescriptor::GetElementType() const
+	{
+		return m_pElementType;
+	}
+
+	bool FieldDescriptor::IsPointer() const
+	{
+		return m_isPointer;
+	}
+
+	bool FieldDescriptor::IsContainer() const
+	{
+		return m_isContainer;
+	}
+
+	bool FieldDescriptor::IsElementPointer() const
+	{
+		return m_isElementPointer;
+	}
+
+	const void* FieldDescriptor::GetDataPtr(const void* pObj) const
+	{
+		return reinterpret_cast<const char*>(pObj) + m_offset;
+	}
+
+	void* FieldDescriptor::GetDataPtr(void* pObj) const
+	{
+		return reinterpret_cast<char*>(pObj) + m_offset;
+	}
 }

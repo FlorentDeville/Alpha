@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
 #include "Core/Math/Vec4f.h"
 
 #include "Rendering/Mesh/Mesh.h"
@@ -20,22 +21,24 @@ namespace Systems
 		MeshAsset();
 		~MeshAsset();
 
-		void Init(const std::string& sourceFile, std::vector<Core::Vec4f>&& pos, std::vector<Core::Vec4f>&& uv, std::vector<Core::Vec4f>&& color,
-			std::vector<uint16_t>&& indices);
+		void Init(const std::string& sourceFile, Core::Array<Core::Vec4f>& pos, Core::Array<Core::Vec4f>& uv, Core::Array<Core::Vec4f>& color,
+			Core::Array<uint16_t>& indices);
 
 		const Rendering::Mesh* GetRenderingMesh() const;
+
+		void PostLoad() override;
 
 	private:
 
 		std::string m_sourceFile;
 
 		//All those arrays are the same size. Each element represents an information for a single vertex
-		std::vector<Core::Vec4f> m_position;	//should be a vec3
-		std::vector<Core::Vec4f> m_uv;			//should be a vec2
-		std::vector<Core::Vec4f> m_color;
+		Core::Array<Core::Vec4f> m_position;	//should be a vec3
+		Core::Array<Core::Vec4f> m_uv;			//should be a vec2
+		Core::Array<Core::Vec4f> m_color;
 
 		//Each 3 consecutive indices makes a triangle
-		std::vector<uint16_t> m_indices;
+		Core::Array<uint16_t> m_indices;
 
 		//The low level mesh used by the renderer
 		Rendering::Mesh m_mesh;

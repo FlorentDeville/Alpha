@@ -4,19 +4,9 @@
 
 #pragma once
 
-namespace Core
-{
-	// Define the standard types supported in json.
-	enum class JsonType
-	{
-		Undefined = 0,
-		Number,
-		String,
-		Boolean,
-		Array,
-		Object,
-		Null,
+#include <cstdint>
 
-		Count
-	};
+namespace Systems
+{
+	const uint8_t HEADER_VERSION = 1;
 }

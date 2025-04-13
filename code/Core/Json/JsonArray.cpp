@@ -62,8 +62,23 @@ namespace Core
 		m_elements.push_back(pNewValue);
 	}
 
+	void JsonArray::AddElement(JsonValue* pValue)
+	{
+		m_elements.push_back(pValue);
+	}
+
 	const std::vector<JsonValue*>& JsonArray::GetElements() const
 	{
 		return m_elements;
+	}
+
+	const JsonValue* JsonArray::GetElement(int32_t index) const
+	{
+		return m_elements[index];
+	}
+
+	size_t JsonArray::GetSize() const
+	{
+		return m_elements.size();
 	}
 }

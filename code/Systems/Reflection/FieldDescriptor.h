@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionUtils.h"
@@ -22,14 +24,25 @@ namespace Systems
 		FieldDescriptor();
 		~FieldDescriptor();
 
+		const std::string& GetName() const;
+		const TypeDescriptor* GetType() const;
+		const TypeDescriptor* GetElementType() const;
+		bool IsPointer() const;
+		bool IsContainer() const;
+		bool IsElementPointer() const;
+
+		//Return a pointer to the variable in pObj
+		const void* GetDataPtr(const void* pObj) const;
+		void* GetDataPtr(void* pObj) const;
+
 	private:
 		std::string m_name;
 		uint64_t m_offset;
 		TypeDescriptor* m_pType;
 		TypeDescriptor* m_pElementType; // this is the type of the elements when the field is a container. it must be iteratable with begin/end.
 		bool m_isPointer : 1;
-		bool m_isContainer : 1;
-		bool m_isElementPointer : 1;	//the elements are pointers to m_pElementType.
+		bool m_isContainer : 1;			// array, map, list of any kind
+		bool m_isElementPointer : 1;	// the elements are pointers to m_pElementType.
 
 		FieldAttribute m_attribute;
 	};
@@ -55,12 +68,12 @@ namespace Systems
 		}
 	};
 
-	template<typename T> class FieldInitializer<std::vector<T>>
+	template<typename T> class FieldInitializer<Core::Array<T>>
 	{
 	public:
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
 		{
-			TypeDescriptor* pType = TypeResolver<std::vector<T>>::GetType();
+			TypeDescriptor* pType = TypeResolver<Core::Array<T>>::GetType();
 
 			typedef RemovePointer<T>::type NonPointerElementType;
 			TypeDescriptor* pElementType = TypeResolver<NonPointerElementType>::GetType();

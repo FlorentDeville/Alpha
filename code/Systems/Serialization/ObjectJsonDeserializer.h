@@ -6,17 +6,19 @@
 
 namespace Core
 {
-	// Define the standard types supported in json.
-	enum class JsonType
-	{
-		Undefined = 0,
-		Number,
-		String,
-		Boolean,
-		Array,
-		Object,
-		Null,
+	class JsonObject;
+}
 
-		Count
+namespace Systems
+{
+	class Object;
+
+	class ObjectJsonDeserializer
+	{
+	public:
+		ObjectJsonDeserializer() = default;
+		~ObjectJsonDeserializer() = default;
+
+		bool Deserialize(const Core::JsonObject& jsonObject, Object** ppObject);
 	};
 }

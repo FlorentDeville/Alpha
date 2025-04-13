@@ -6,6 +6,7 @@
 
 #include <string>
 
+#include "Core/Collections/Array.h"
 #include "Core/Math/Vec4f.h"
 #include "Systems/Assets/AssetObjects/MeshAsset.h"
 
@@ -26,12 +27,10 @@ namespace FbxImporter
 		bool Visit(const ofbx::Object*);
 		bool ImportMesh(const ofbx::Mesh* pMesh);
 
-		std::vector<Core::Vec4f> m_position;
-		std::vector<Core::Vec4f> m_uv;
-		std::vector<Core::Vec4f> m_color;
+		Core::Array<Core::Vec4f> m_position;
+		Core::Array<Core::Vec4f> m_uv;
+		Core::Array<Core::Vec4f> m_color;
 
-		std::vector<uint16_t> m_indices;
-
-		//fbxsdk::FbxManager* m_pManager;
+		Core::Array<uint16_t> m_indices;
 	};
 }

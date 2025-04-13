@@ -20,6 +20,12 @@ namespace Core
 		m_value = static_cast<double>(value);
 	}
 
+	JsonValue::JsonValue(uint64_t value)
+		: m_type(JsonType::Number)
+	{
+		m_value = static_cast<double>(value);
+	}
+
 	JsonValue::JsonValue(float value)
 		: m_type(JsonType::Number)
 	{
@@ -59,6 +65,60 @@ namespace Core
 	JsonValue::JsonValue(JsonArray* pValue)
 		: m_type(JsonType::Array)
 	{
+		m_value = pValue;
+	}
+
+	void JsonValue::Set(int32_t value)
+	{
+		m_type = JsonType::Number;
+		m_value = static_cast<double>(value);
+	}
+
+	void JsonValue::Set(uint64_t value)
+	{
+		m_type = JsonType::Number;
+		m_value = static_cast<double>(value);
+	}
+
+	void JsonValue::Set(float value)
+	{
+		m_type = JsonType::Number;
+		m_value = static_cast<double>(value);
+	}
+
+	void JsonValue::Set(double value)
+	{
+		m_type = JsonType::Number;
+		m_value = static_cast<double>(value);
+	}
+
+	void JsonValue::Set(bool value)
+	{
+		m_type = JsonType::Boolean;
+		m_value = value;
+	}
+
+	void JsonValue::Set(const char* value)
+	{
+		m_type = JsonType::String;
+		m_value = value;
+	}
+
+	void JsonValue::Set(const std::string& value)
+	{
+		m_type = JsonType::String;
+		m_value = value;
+	}
+
+	void JsonValue::Set(JsonArray* pValue)
+	{
+		m_type = JsonType::Array;
+		m_value = pValue;
+	}
+
+	void JsonValue::Set(JsonObject* pValue)
+	{
+		m_type = JsonType::Object;
 		m_value = pValue;
 	}
 

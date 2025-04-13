@@ -20,6 +20,7 @@ namespace Core
 		JsonValue();
 
 		explicit JsonValue(int32_t value);
+		explicit JsonValue(uint64_t value);
 		explicit JsonValue(float value);
 		explicit JsonValue(double value);
 		explicit JsonValue(bool value);
@@ -27,6 +28,16 @@ namespace Core
 		explicit JsonValue(const std::string& value);
 		explicit JsonValue(JsonArray* pValue);
 		explicit JsonValue(JsonObject* pValue);
+
+		void Set(int32_t value);
+		void Set(uint64_t value);
+		void Set(float value);
+		void Set(double value);
+		void Set(bool value);
+		void Set(const char* value);
+		void Set(const std::string& value);
+		void Set(JsonArray* pValue);
+		void Set(JsonObject* pValue);
 
 		~JsonValue();
 

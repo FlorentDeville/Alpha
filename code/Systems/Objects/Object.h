@@ -16,10 +16,14 @@ namespace Systems
 	class Object
 	{
 	public:
-		Object() = default;
+		Object();
 		virtual ~Object() = default;
 
 		void SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor);
+
+		const TypeDescriptor* GetTypeDescriptor() const;
+
+		virtual void PostLoad();
 
 	private:
 		const TypeDescriptor* m_pTypeDescriptor;
@@ -36,5 +40,10 @@ namespace Systems
 		pNewObject->SetTypeDescriptor(pType);
 
 		return pNewObject;
+	}
+
+	template<typename T> void DeleteObject(T* pObject)
+	{
+		delete pObject;
 	}
 }

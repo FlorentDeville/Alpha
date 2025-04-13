@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Sid/Sid.h"
 #include "Systems/Reflection/FieldAttribute.h"
 
 #include <string>
@@ -23,14 +24,32 @@ namespace Systems
 		void SetBaseType(const std::string& baseTypeName);
 
 		const std::string& GetName() const;
+		Core::Sid GetSid() const;
+		const std::vector<FieldDescriptor>& GetFields() const;
+		const TypeDescriptor* GetBaseType() const;
+
+		// True if this class inehrits from Object.
+		bool IsObject() const;
+
+		// True if this is a class (it has fields). False if it's a pod (there is no field).
+		bool IsClass() const;
+
+		// Create an object of the type. (Allocate memory and call the no parameter constructor)
+		void* (*Construct)();
+
+		//Call in place constructor to construct a type
+		void* (*InPlaceConstruct)(void*);
+
+		// Delete an object of the type.
+		void (*Destruct)(void*);
 
 	private:
 		std::string m_name;
-		uint64_t m_id; //should be a typedef. This is a non persistant id. It can be different between execution
+		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
 		std::vector<FieldDescriptor> m_fields;
 
-		static uint64_t s_idCounter;
+
 	};
 }
