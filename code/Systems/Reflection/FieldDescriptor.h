@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionUtils.h"
@@ -70,12 +72,12 @@ namespace Systems
 		}
 	};
 
-	template<typename T> class FieldInitializer<std::vector<T>>
+	template<typename T> class FieldInitializer<Core::Array<T>>
 	{
 	public:
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
 		{
-			TypeDescriptor* pType = TypeResolver<std::vector<T>>::GetType();
+			TypeDescriptor* pType = TypeResolver<Core::Array<T>>::GetType();
 
 			typedef RemovePointer<T>::type NonPointerElementType;
 			TypeDescriptor* pElementType = TypeResolver<NonPointerElementType>::GetType();
