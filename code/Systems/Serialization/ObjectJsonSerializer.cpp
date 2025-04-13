@@ -48,6 +48,12 @@ namespace Systems
 
 	bool SerializeField(const void* pFieldPtr, const FieldDescriptor* pField, const TypeDescriptor* pDescription, Core::JsonValue& value)
 	{
+		if (pField && pField->IsPointer())
+		{
+			const char* pCharPtr = reinterpret_cast<const char*>(pFieldPtr);
+			pFieldPtr = reinterpret_cast<const char*>(*pCharPtr);
+		}
+
 		if (pDescription->GetFields().size() > 0)
 		{
 			Core::JsonObject* pJsonObject = new Core::JsonObject();
@@ -94,9 +100,7 @@ namespace Systems
 
 		case SID("Core::Array"):
 		{
-			//don't support arrays of arrays
-			//don't support array of pointers
-			assert(pField && !pField->IsElementPointer()); //don't support array of pointers for now
+			assert(pField); //don't support array of arrays
 
 			const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pFieldPtr);
 			Core::JsonArray* pNewArray = new Core::JsonArray();
@@ -116,19 +120,23 @@ namespace Systems
 
 	bool SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray)
 	{
-		assert(!pFieldArray->IsElementPointer()); //don't support array of pointers for now
-
 		const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pArrayPtr);
 
 		int32_t size = pArray->GetSize();
 
 		for(int ii = 0; ii < size; ++ii)
 		{
-			const void* item = pArray->GetConstElement(ii);
+			const void* pItem = pArray->GetConstElement(ii);
+			if (pFieldArray->IsElementPointer())
+			{
+				const char* pCharPtr = reinterpret_cast<const char*>(pItem);
+				pItem = reinterpret_cast<const char*>(*pCharPtr);
+			}
+
 			Core::JsonValue* pNewValue = new Core::JsonValue();
 			jsonArray.AddElement(pNewValue);
 
-			bool res = SerializeField(item, nullptr, pFieldArray->GetElementType(), *pNewValue);
+			bool res = SerializeField(pItem, nullptr, pFieldArray->GetElementType(), *pNewValue);
 			if (!res)
 				return false;
 		}
