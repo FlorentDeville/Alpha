@@ -16,6 +16,9 @@
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
     <ClInclude Include="Assets\AssetType.h" />
+    <ClInclude Include="Container\Container.h" />
+    <ClInclude Include="Container\ContainerId.h" />
+    <ClInclude Include="Container\ContainerMgr.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Objects\AssetObject.h" />
@@ -42,6 +45,9 @@
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
+    <ClCompile Include="Container\Container.cpp" />
+    <ClCompile Include="Container\ContainerId.cpp" />
+    <ClCompile Include="Container\ContainerMgr.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Loader.cpp" />
