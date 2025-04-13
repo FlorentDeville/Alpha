@@ -102,6 +102,10 @@ namespace Core
 			source.m_reservedSize = 0;
 		}
 
+		void Resize(int32_t newSize) override;
+
+		void Reserve(int32_t index, bool allowShrink = false);
+
 	private:
 		int32_t m_size; // number of element used
 		int32_t m_reservedSize; // number of element allocated
@@ -109,88 +113,39 @@ namespace Core
 
 	};
 
-	//template<typename T> Array<T>::Array()
-	//	: BaseArray()
-	//	, m_pStart(nullptr)
-	//	, m_size(0)
-	//	, m_reservedSize(0)
-	//{ }
-
-	/*template<typename T> Array<T>::Array(Array&& source)
+	template<typename T> void Array<T>::Resize(int32_t newSize)
 	{
-		*this = source;
-	}*/
+		if (newSize < m_size)
+		{
+			for (int ii = newSize; ii < m_size; ++ii)
+				m_pStart[ii].~T();
+		}
 
-	/*template<typename T> Array<T>::~Array()
+		if (m_reservedSize < newSize)
+			Reserve(newSize);
+
+		m_size = newSize;
+	}
+
+	template<typename T> void Array<T>::Reserve(int32_t newSize, bool allowShrink)
 	{
-		for (int ii = 0; ii < m_size; ++ii)
-			m_pStart[m_size].~T();
+		if (m_reservedSize > newSize && !allowShrink)
+			return;
+
+		if (m_size > newSize)
+		{
+			for (int ii = newSize; ii < m_size; ++ii)
+				m_pStart[ii].~T();
+
+			m_size = newSize;
+		}
+
+		T* pNewArray = new T[newSize];
+		std::memcpy(pNewArray, m_pStart, sizeof(T) * m_size);
 
 		delete[] m_pStart;
-		m_pStart = nullptr;
+		m_pStart = pNewArray;
 
-		m_size = 0;
-		m_reservedSize = 0;
-	}*/
-
-	//template<typename T> void Array<T>::PushBack(const T& item)
-	//{
-	//	if (m_reservedSize <= m_size)
-	//	{
-	//		m_reservedSize = m_reservedSize + (m_reservedSize / 2);
-
-	//		T* pNewArray = new T[m_reservedSize];
-	//		std::memcpy(pNewArray, m_pStart, sizeof(T) * m_size);
-
-	//		delete[] m_pStart;
-	//		m_pStart = pNewArray;
-	//	}
-
-	//	m_pStart[m_size] = item;
-	//	++m_size;
-	//}
-
-	/*template<typename T> int32_t Array<T>::GetSize() const
-	{
-		return m_size;
-	}*/
-
-	/*template<typename T> void* Array<T>::GetElement(int32_t index)
-	{
-		assert(index > 0 && index < m_size);
-		return &m_pStart[index];
-	}*/
-
-	/*template<typename T> const void* Array<T>::GetConstElement(int32_t index) const
-	{
-		assert(index > 0 && index < m_size);
-		return &m_pStart[index];
+		m_reservedSize = newSize;
 	}
-
-	template<typename T> T* Array<T>::GetData()
-	{
-		return m_pStart;
-	}
-
-	template<typename T> const T* Array<T>::GetData() const
-	{
-		return m_pStart;
-	}*/
-
-	/*template<typename T> T& Array<T>::operator[](int32_t index)
-	{
-		assert(index > 0 && index < m_size);
-		return m_pStart[index];
-	}
-
-	template<typename T> void Array<T>::operator=(Array&& source)
-	{
-		m_pStart = source.m_pStart;
-		m_size = source.m_size;
-		m_reservedSize = source.m_reservedSize;
-
-		source.m_pStart = nullptr;
-		source.m_size = 0;
-		source.m_reservedSize = 0;
-	}*/
 }
