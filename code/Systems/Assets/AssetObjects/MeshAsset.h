@@ -26,6 +26,8 @@ namespace Systems
 
 		const Rendering::Mesh* GetRenderingMesh() const;
 
+		void PostLoad() override;
+
 	private:
 
 		std::string m_sourceFile;
