@@ -31,6 +31,9 @@ namespace Core
 		void AddElement(JsonValue* pValue);
 
 		const std::vector<JsonValue*>& GetElements() const;
+		const JsonValue* GetElement(int32_t index) const;
+
+		size_t GetSize() const;
 
 	private:
 		std::vector<JsonValue*> m_elements;

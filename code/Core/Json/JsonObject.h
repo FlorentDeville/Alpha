@@ -35,6 +35,8 @@ namespace Core
 		JsonArray* AddArray(const std::string& name);
 
 		const std::vector<JsonMember*>& GetMembers() const;
+		const JsonValue& GetMember(const std::string& name) const;
+		const JsonValue& GetMember(int32_t index) const;
 
 	private:
 		std::vector<JsonMember*> m_members;

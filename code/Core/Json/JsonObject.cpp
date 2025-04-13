@@ -7,6 +7,8 @@
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonMember.h"
 
+#include <assert.h>
+
 namespace Core
 {
 	JsonObject::JsonObject()
@@ -99,5 +101,25 @@ namespace Core
 	const std::vector<JsonMember*>& JsonObject::GetMembers() const
 	{
 		return m_members;
+	}
+
+	const JsonValue& JsonObject::GetMember(const std::string& name) const
+	{
+		//Booo!! This is bad. I could make a map, or use a sid for member's name.
+		for (const JsonMember* member : m_members)
+		{
+			if (member->GetName() == name)
+				return member->GetConstValue();
+		}
+
+		assert(false);
+		
+		static JsonValue DummyValue;
+		return DummyValue;
+	}
+
+	const JsonValue& JsonObject::GetMember(int32_t index) const
+	{
+		return m_members[index]->GetConstValue();
 	}
 }
