@@ -34,11 +34,22 @@ namespace Systems
 		// True if this is a class (it has fields). False if it's a pod (there is no field).
 		bool IsClass() const;
 
+		// Create an object of the type. (Allocate memory and call the no parameter constructor)
+		void* (*Construct)();
+
+		//Call in place constructor to construct a type
+		void* (*InPlaceConstruct)(void*);
+
+		// Delete an object of the type.
+		void (*Destruct)(void*);
+
 	private:
 		std::string m_name;
 		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
 		std::vector<FieldDescriptor> m_fields;
+
+
 	};
 }

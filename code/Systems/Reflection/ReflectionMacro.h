@@ -7,7 +7,26 @@
 #include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 
-// Define macros to enable serialization of a class
+// Define macros to enable reflection of a class
+// To have reflection working :
+//  - Create an instance of TypeDescriptor. This class describes a type. 
+//  - Register the TypeDescriptor to the ReflectionMgr.
+//  - Create a class TypeResolver<TYPE>. It contains functions to query the ReflectionMgr to find the TypeDescriptor.
+//
+// Here are the macros used to (almost) automatically generates all of this :
+// ENABLE_REFLECTION : Creates class TypeResolver<TYPE>.
+// 
+// START_REFLECTION : Creates function static void RegisterReflection(). This function creates a TypeDescriptor.
+// ADD_FIELD : Add a field to the TypeDescriptor.
+// ADD_BASETYPE : Add basetype to the TypeDescriptor.
+// END_REFLECTION : Close RegisterReflection.
+// 
+// Then somewhere you need to call MyClass::RegisterReflection();
+// 
+// If the type is a pod, you don't need to do all of this and can do this :
+//  - DEFINE_TYPE_RESOLVER : to create the TypeResolver<Type>
+//  - REGISTER_TYPE : use this macro in a cpp to register the type to ReflectionMgr
+// 
 // Here is an example:
 // 
 // ENABLE_REFLECTION(MyClass)
@@ -77,7 +96,9 @@ public: \
 	static void RegisterReflection() {\
 		using ClassType = TYPE; \
 		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		pType; //prevent warning for empty class.
+		pType->Construct = []() -> void* { return new ClassType(); }; \
+		pType->InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) ClassType(); }; \
+		pType->Destruct = [](void* pObject) { delete reinterpret_cast<ClassType*>(pObject); };
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }
