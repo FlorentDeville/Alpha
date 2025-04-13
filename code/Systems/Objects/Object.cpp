@@ -6,6 +6,10 @@
 
 namespace Systems
 {
+	Object::Object()
+		: m_pTypeDescriptor(nullptr)
+	{ }
+
 	void Object::SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor)
 	{
 		m_pTypeDescriptor = pTypeDescriptor;
@@ -15,4 +19,7 @@ namespace Systems
 	{
 		return m_pTypeDescriptor;
 	}
+
+	void Object::PostLoad()
+	{ }
 }
