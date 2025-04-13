@@ -22,6 +22,7 @@
     <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
+    <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -42,5 +43,6 @@
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
+    <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />
   </ItemGroup>
 </Project>
