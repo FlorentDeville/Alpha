@@ -23,6 +23,8 @@
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
+    <ClInclude Include="Serialization\ObjectJsonDeserializer.h" />
+    <ClInclude Include="Serialization\ObjectHeader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -44,5 +46,6 @@
     <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />
+    <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />
   </ItemGroup>
 </Project>

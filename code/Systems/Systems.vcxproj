@@ -32,6 +32,8 @@
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
     <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Reflection\TypeDescriptor.h" />
+    <ClInclude Include="Serialization\ObjectHeader.h" />
+    <ClInclude Include="Serialization\ObjectJsonDeserializer.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -53,6 +55,7 @@
     <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />
     <ClCompile Include="Reflection\TypeDescriptor.cpp" />
+    <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />
     <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />
   </ItemGroup>
   <ItemGroup>
