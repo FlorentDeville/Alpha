@@ -49,4 +49,23 @@ namespace Systems
 	{
 		return m_pBaseType;
 	}
+
+	bool TypeDescriptor::IsObject() const
+	{
+		const TypeDescriptor* pType = this;
+		while (pType)
+		{
+			if (pType->m_sid == MAKESID("Systems::Object"))
+				return true;
+
+			pType = pType->m_pBaseType;
+		}
+
+		return false;
+	}
+
+	bool TypeDescriptor::IsClass() const
+	{
+		return m_fields.size() > 0;
+	}
 }

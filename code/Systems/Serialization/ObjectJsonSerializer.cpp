@@ -11,15 +11,15 @@
 #include "Core/Collections/BaseArray.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Systems/Objects/Object.h"
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Objects/Object.h"
+#include "Systems/Serialization/ObjectHeader.h"
 
 namespace Systems
 {
-	const uint8_t HEADER_VERSION = 1;
-
 	bool SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray);
-	bool SerializeObject(const Object* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj);
+	bool SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj);
+	bool SerializeObject(const Object* pObject, Core::JsonObject& jsonObj);
 
 	template<typename T> bool SerializeData(const T& data, Core::JsonValue& value)
 	{
@@ -54,11 +54,18 @@ namespace Systems
 			pFieldPtr = reinterpret_cast<const char*>(*pCharPtr);
 		}
 
-		if (pDescription->GetFields().size() > 0)
+		if (pDescription->IsObject())
 		{
 			Core::JsonObject* pJsonObject = new Core::JsonObject();
 			value.Set(pJsonObject);
-			return SerializeObject(reinterpret_cast<const Object*>(pFieldPtr), pDescription, *pJsonObject);
+			const Systems::Object* pObject = reinterpret_cast<const Systems::Object*>(pFieldPtr);
+			return SerializeObject(pObject, *pJsonObject);
+		}
+		else if (pDescription->IsClass())
+		{
+			Core::JsonObject* pJsonObject = new Core::JsonObject();
+			value.Set(pJsonObject);
+			return SerializeClass(pFieldPtr, pDescription, *pJsonObject);
 		}
 
 		switch (pDescription->GetSid())
@@ -144,12 +151,12 @@ namespace Systems
 		return true;
 	}
 
-	bool SerializeObject(const Object* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj)
+	bool SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj)
 	{
 		const TypeDescriptor* pBaseType = pType->GetBaseType();
 		if (pBaseType)
 		{
-			bool res = SerializeObject(pObject, pBaseType, jsonObj);
+			bool res = SerializeClass(pObject, pBaseType, jsonObj);
 			if (!res)
 				return false;
 		}
@@ -167,7 +174,7 @@ namespace Systems
 		return true;
 	}
 
-	bool ObjectJsonSerializer::Serialize(const Object* pObject, Core::JsonObject& jsonObj)
+	bool SerializeObject(const Object* pObject, Core::JsonObject& jsonObj)
 	{
 		const Systems::TypeDescriptor* pTypeDescriptor = pObject->GetTypeDescriptor();
 		if (!pTypeDescriptor)
@@ -184,9 +191,14 @@ namespace Systems
 		{
 			Core::JsonObject* pJsonObject = jsonObj.AddObject("object");
 
-			bool res = SerializeObject(pObject, pTypeDescriptor, *pJsonObject);
+			bool res = SerializeClass(pObject, pTypeDescriptor, *pJsonObject);
 			return res;
 
 		}
+	}
+
+	bool ObjectJsonSerializer::Serialize(const Object* pObject, Core::JsonObject& jsonObj)
+	{
+		return SerializeObject(pObject, jsonObj);
 	}
 }
