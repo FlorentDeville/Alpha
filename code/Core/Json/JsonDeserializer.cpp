@@ -199,11 +199,11 @@ namespace Core
 				valueStream >> value;
 				output.AddElement(value);
 			}
-			else if (m_token[0] == ']')
+			else if (m_token[0] == '[')
 			{
 				JsonArray* pArray = new JsonArray();
 				output.AddElement(pArray);
-				ReadArray(output);
+				ReadArray(*pArray);
 			}
 			else if (m_token[0] == '"')
 			{
