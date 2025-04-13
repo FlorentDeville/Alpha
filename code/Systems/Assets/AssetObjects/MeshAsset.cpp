@@ -19,16 +19,16 @@ namespace Systems
 	MeshAsset::~MeshAsset()
 	{}
 
-	void MeshAsset::Init(const std::string& sourceFile, std::vector<Core::Vec4f>&& pos, std::vector<Core::Vec4f>&& uv, std::vector<Core::Vec4f>&& color,
-		std::vector<uint16_t>&& indices)
+	void MeshAsset::Init(const std::string& sourceFile, Core::Array<Core::Vec4f>& pos, Core::Array<Core::Vec4f>& uv, Core::Array<Core::Vec4f>& color,
+		Core::Array<uint16_t>& indices)
 	{
 		m_sourceFile = sourceFile;
-		m_position = pos;
-		m_uv = uv;
-		m_color = color;
-		m_indices = indices;
+		m_position = std::move(pos);
+		m_uv = std::move(uv);
+		m_color = std::move(color);
+		m_indices = std::move(indices);
 
-		int vertexCount = static_cast<int>(m_position.size());
+		int vertexCount = static_cast<int>(m_position.GetSize());
 		std::vector<Rendering::VertexGeneric> vertices;
 		vertices.resize(vertexCount);
 
@@ -45,8 +45,8 @@ namespace Systems
 			vertex.Uv = DirectX::XMFLOAT2(uv.GetX(), uv.GetY());
 		}
 
-		int indexCount = static_cast<int>(m_indices.size());
-		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.data(), indexCount);
+		int indexCount = static_cast<int>(m_indices.GetSize());
+		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.GetData(), indexCount);
 	}
 
 	const Rendering::Mesh* MeshAsset::GetRenderingMesh() const
