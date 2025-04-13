@@ -33,11 +33,7 @@ namespace Systems
 
 		//Return a pointer to the variable in pObj
 		const void* GetDataPtr(const void* pObj) const;
-
-		template<typename T> const T* GetDataPtr(const void* pObj) const
-		{
-			return static_cast<const T*>(GetDataPtr(pObj));
-		}
+		void* GetDataPtr(void* pObj) const;
 
 	private:
 		std::string m_name;

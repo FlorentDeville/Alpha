@@ -53,4 +53,9 @@ namespace Systems
 	{
 		return reinterpret_cast<const char*>(pObj) + m_offset;
 	}
+
+	void* FieldDescriptor::GetDataPtr(void* pObj) const
+	{
+		return reinterpret_cast<char*>(pObj) + m_offset;
+	}
 }
