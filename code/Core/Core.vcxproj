@@ -114,6 +114,8 @@
     <ClInclude Include="Callbacks\CallbackId.h" />
     <ClInclude Include="Callbacks\CallbackList.h" />
     <ClInclude Include="Callbacks\CallbackMacro.h" />
+    <ClInclude Include="Collections\Array.h" />
+    <ClInclude Include="Collections\BaseArray.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Json\JsonArray.h" />
