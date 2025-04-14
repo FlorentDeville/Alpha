@@ -33,6 +33,7 @@ namespace Systems
 		std::string m_root;
 		std::map<ContainerId, Container*> m_containerMap;
 
+		std::string MakeDirectory(ContainerId cid);
 		std::string MakeFilename(ContainerId cid);
 	};
 }

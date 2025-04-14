@@ -14,6 +14,7 @@
 #include "Systems/Serialization/ContainerJsonDeserializer.h"
 #include "Systems/Serialization/ContainerJsonSerializer.h"
 
+#include <filesystem>
 #include <fstream>
 
 namespace Systems
@@ -80,12 +81,17 @@ namespace Systems
 
 	bool ContainerMgr::LoadContainer(ContainerId cid)
 	{
-		//first let's read the file
-		std::string filename = MakeFilename(cid);
-		std::ifstream fileStream(filename);
 		std::string fileContent;
-		fileStream >> fileContent;
-		fileStream.close();
+
+		//first let's read the file
+		{
+			std::string filename = MakeFilename(cid);
+			std::ifstream fileStream(filename);
+			std::stringstream ss;
+			ss << fileStream.rdbuf();
+			fileContent = ss.str();
+			fileStream.close();
+		}
 
 		Core::JsonObject json;
 		Core::JsonDeserializer deser;
@@ -121,6 +127,9 @@ namespace Systems
 		if (!res)
 			return false;
 
+		std::string directory = MakeDirectory(cid);
+		std::filesystem::create_directories(directory);
+
 		std::string filename = MakeFilename(cid);
 		std::ofstream fileStream(filename);
 		fileStream << strContainer;
@@ -129,13 +138,19 @@ namespace Systems
 		return true;
 	}
 
+	std::string ContainerMgr::MakeDirectory(ContainerId cid)
+	{
+		std::string cidStr = cid.ToString();
+		std::string firstSubFolder = cidStr.substr(2, 2);
+		std::string secondSubFolder = cidStr.substr(4, 2);
+		std::string thirdSubFolder = cidStr.substr(6, 2);
+		std::string directory = m_root + firstSubFolder + "\\" + secondSubFolder + "\\" + thirdSubFolder + "\\";
+		return directory;
+	}
+
 	std::string ContainerMgr::MakeFilename(ContainerId cid)
 	{
 		std::string cidStr = cid.ToString();
-		std::string firstSubFolder = cidStr.substr(0, 2);
-		std::string secondSubFolder = cidStr.substr(2, 2);
-		std::string thirdSubFolder = cidStr.substr(4, 2);
-		std::string filename = m_root + firstSubFolder + "\\" + secondSubFolder + "\\" + thirdSubFolder + "\\" + cidStr;
-		return filename;
+		return MakeDirectory(cid) + cidStr;
 	}
 }

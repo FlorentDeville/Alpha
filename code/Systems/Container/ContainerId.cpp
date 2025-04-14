@@ -20,7 +20,7 @@ namespace Systems
 
 	ContainerId::ContainerId(const char* strId)
 	{
-		sscanf_s(strId, "%16llx", &m_id);
+		sscanf_s(strId, "%016llx", &m_id);
 	}
 
 	bool ContainerId::operator==(ContainerId other) const
@@ -47,7 +47,7 @@ namespace Systems
 	{
 		const int MAX_SIZE = 17; //16 characters plus \0.
 		char buffer[MAX_SIZE] = { '\0' };
-		snprintf(buffer, MAX_SIZE, "%16llx", m_id);
+		snprintf(buffer, MAX_SIZE, "%016llx", m_id);
 		return std::string(buffer);
 	}
 
