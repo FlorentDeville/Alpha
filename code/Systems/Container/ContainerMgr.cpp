@@ -4,10 +4,17 @@
 
 #include "Systems/Container/ContainerMgr.h"
 
+#include "Core/Json/JsonDeserializer.h"
+#include "Core/Json/JsonObject.h"
+#include "Core/Json/JsonSerializer.h"
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerId.h"
+#include "Systems/Serialization/ContainerJsonDeserializer.h"
+#include "Systems/Serialization/ContainerJsonSerializer.h"
+
+#include <fstream>
 
 namespace Systems
 {
@@ -34,7 +41,7 @@ namespace Systems
 		m_containerMap.clear();
 	}
 
-	Container* ContainerMgr::Create(const char* seed)
+	Container* ContainerMgr::CreateContainer(const char* seed)
 	{
 		//first make a new container id
 		Core::Sid startSid = SID(seed);
@@ -62,7 +69,7 @@ namespace Systems
 		return pContainer;
 	}
 
-	Container* ContainerMgr::Get(ContainerId cid)
+	Container* ContainerMgr::GetContainer(ContainerId cid)
 	{
 		std::map<ContainerId, Container*>::const_iterator it = m_containerMap.find(cid);
 		if (it == m_containerMap.cend())
@@ -71,13 +78,54 @@ namespace Systems
 		return it->second;
 	}
 
-	bool ContainerMgr::Load(ContainerId cid)
+	bool ContainerMgr::LoadContainer(ContainerId cid)
 	{
+		//first let's read the file
+		std::string filename = MakeFilename(cid);
+		std::ifstream fileStream(filename);
+		std::string fileContent;
+		fileStream >> fileContent;
+		fileStream.close();
+
+		Core::JsonObject json;
+		Core::JsonDeserializer deser;
+		bool res = deser.Deserialize(fileContent, json);
+		if (!res)
+			return false;
+
+		Container* pContainer = new Container();
+		ContainerJsonDeserializer containerDeser;
+		res = containerDeser.Deserialize(json, *pContainer);
+		if (!res)
+			return false;
+
+		m_containerMap[pContainer->GetId()] = pContainer;
 		return true;
 	}
 
-	bool ContainerMgr::Save(ContainerId cid)
+	bool ContainerMgr::SaveContainer(ContainerId cid)
 	{
+		Container* pContainer = GetContainer(cid);
+		if (!pContainer)
+			return false;
+
+		Core::JsonObject json;
+		ContainerJsonSerializer ser;
+		bool res = ser.Serialize(pContainer, json);
+		if (!res)
+			return false;
+
+		std::string strContainer;
+		Core::JsonSerializer jsonSer;
+		res = jsonSer.Serialize(json, strContainer);
+		if (!res)
+			return false;
+
+		std::string filename = MakeFilename(cid);
+		std::ofstream fileStream(filename);
+		fileStream << strContainer;
+		fileStream.close();
+
 		return true;
 	}
 

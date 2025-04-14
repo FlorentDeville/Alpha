@@ -19,6 +19,7 @@ namespace Systems
 	public:
 		ContainerId();
 		explicit ContainerId(uint64_t id);
+		explicit ContainerId(const char* strId);
 		~ContainerId() = default;
 
 		bool operator==(ContainerId other) const;

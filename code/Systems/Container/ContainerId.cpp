@@ -18,6 +18,11 @@ namespace Systems
 		m_id = id & 0x00FFFFFFFFFFFFFF;
 	}
 
+	ContainerId::ContainerId(const char* strId)
+	{
+		sscanf_s(strId, "%16llx", &m_id);
+	}
+
 	bool ContainerId::operator==(ContainerId other) const
 	{
 		return m_id == other.m_id;
@@ -42,7 +47,7 @@ namespace Systems
 	{
 		const int MAX_SIZE = 17; //16 characters plus \0.
 		char buffer[MAX_SIZE] = { '\0' };
-		snprintf(buffer, MAX_SIZE, "%16zu", m_id);
+		snprintf(buffer, MAX_SIZE, "%16llx", m_id);
 		return std::string(buffer);
 	}
 

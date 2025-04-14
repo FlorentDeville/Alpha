@@ -17,10 +17,15 @@ namespace Systems
 	class Container
 	{
 	public:
+		Container();
 		explicit Container(ContainerId cid);
 		~Container();
 
+		void SetId(ContainerId cid);
 		void AddAsset(AssetObject* pAsset);
+
+		ContainerId GetId() const;
+		const std::vector<AssetObject*>& GetAssets() const;
 
 	private:
 		ContainerId m_id;

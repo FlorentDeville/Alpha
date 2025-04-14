@@ -23,11 +23,11 @@ namespace Systems
 		void Init(const std::string& root);
 		void Shutdown() override;
 
-		Container* Create(const char* seed);
-		Container* Get(ContainerId cid);
+		Container* CreateContainer(const char* seed);
+		Container* GetContainer(ContainerId cid);
 
-		bool Load(ContainerId cid);
-		bool Save(ContainerId cid);
+		bool LoadContainer(ContainerId cid);
+		bool SaveContainer(ContainerId cid);
 
 	private:
 		std::string m_root;
