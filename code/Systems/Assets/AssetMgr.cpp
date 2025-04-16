@@ -41,6 +41,7 @@ namespace Systems
 		InitAssetTypeDescription();
 
 		LoadTableOfContent();
+		LoadMetadataTable();
 
 		return true;
 	}
@@ -65,6 +66,17 @@ namespace Systems
 		assetList.push_back(pNewAsset);
 
 		return pNewAsset;
+	}
+
+	bool AssetMgr::CreateAssetMetadata(AssetMetadata& metadata)
+	{
+		std::map<NewAssetId, AssetMetadata>::const_iterator it = m_metadata.find(metadata.GetAssetId());
+		if (it != m_metadata.cend())
+			return false;
+
+		m_metadata[metadata.GetAssetId()] = metadata;
+
+		return true;
 	}
 
 	const Asset* AssetMgr::GetAsset(AssetId id) const
@@ -155,6 +167,22 @@ namespace Systems
 		return true;
 	}
 
+	bool AssetMgr::SaveMetadataTable() const
+	{
+		std::string tocFilename = GetMetadataTableFilePath();
+		std::ofstream file(tocFilename);
+
+		for (const std::pair<NewAssetId, AssetMetadata>& pair : m_metadata)
+		{
+			const AssetMetadata& metadata = pair.second;
+			file << metadata.GetAssetId().ToString() << "," << metadata.GetVirtualName() << "," << metadata.GetClassName() << std::endl;
+		}
+
+		file.close();
+
+		return true;
+	}
+
 	std::vector<Asset*>& AssetMgr::Internal_GetAssets(AssetType type)
 	{
 		switch (type)
@@ -234,5 +262,39 @@ namespace Systems
 		}
 
 		return true;
+	}
+
+	bool AssetMgr::LoadMetadataTable()
+	{
+		std::string filename = GetMetadataTableFilePath();
+		std::ifstream file(filename);
+
+		std::string line;
+		while (std::getline(file, line))
+		{
+			if (line.empty())
+				continue;
+
+			//parse a single line
+			uint64_t id;
+			const int VIRTUAL_NAME_MAX_LENGTH = 255;
+			char virtualName[VIRTUAL_NAME_MAX_LENGTH] = { '\0' };
+			uint64_t classNameSid;
+			sscanf_s(line.c_str(), "%zu,%[^,],%zu", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, &classNameSid);
+
+			NewAssetId assetId(id);
+			Core::Sid className(classNameSid);
+
+			AssetMetadata metadata(assetId, virtualName, className);
+			m_metadata[assetId] = metadata;
+		}
+
+		return true;
+	}
+
+	std::string AssetMgr::GetMetadataTableFilePath() const
+	{
+		std::string filename = m_root + "\\metadata.txt";
+		return filename;
 	}
 }

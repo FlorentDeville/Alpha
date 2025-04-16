@@ -16,6 +16,8 @@
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
     <ClInclude Include="Assets\AssetType.h" />
+    <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
+    <ClInclude Include="Assets\NewAssetId.h" />
     <ClInclude Include="Container\Container.h" />
     <ClInclude Include="Container\ContainerId.h" />
     <ClInclude Include="Container\ContainerMgr.h" />
@@ -47,6 +49,8 @@
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
+    <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />
+    <ClCompile Include="Assets\NewAssetId.cpp" />
     <ClCompile Include="Container\Container.cpp" />
     <ClCompile Include="Container\ContainerId.cpp" />
     <ClCompile Include="Container\ContainerMgr.cpp" />
@@ -124,7 +128,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -143,7 +147,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>

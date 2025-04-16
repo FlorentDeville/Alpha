@@ -30,6 +30,8 @@
     <ClInclude Include="Container\ContainerMgr.h" />
     <ClInclude Include="Serialization\ContainerJsonSerializer.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
+    <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
+    <ClInclude Include="Assets\NewAssetId.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -57,5 +59,7 @@
     <ClCompile Include="Container\ContainerMgr.cpp" />
     <ClCompile Include="Serialization\ContainerJsonSerializer.cpp" />
     <ClCompile Include="Serialization\ContainerJsonDeserializer.cpp" />
+    <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />
+    <ClCompile Include="Assets\NewAssetId.cpp" />
   </ItemGroup>
 </Project>

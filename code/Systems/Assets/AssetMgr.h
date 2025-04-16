@@ -7,6 +7,8 @@
 #include "Core/Singleton.h"
 #include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetType.h"
+#include "Systems/Assets/Metadata/AssetMetadata.h"
+#include "Systems/Assets/NewAssetId.h"
 
 #include <map>
 #include <string>
@@ -29,6 +31,8 @@ namespace Systems
 
 		const Asset* CreateAsset(AssetType type, const std::string& name);
 
+		bool CreateAssetMetadata(AssetMetadata& metadata);
+
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
 
@@ -39,6 +43,8 @@ namespace Systems
 		const std::vector<Asset*>& GetLevels() const;
 
 		bool SaveTableOfContent() const;
+
+		bool SaveMetadataTable() const;
 
 	private:
 		std::string m_root; //location of toc.txt
@@ -54,11 +60,17 @@ namespace Systems
 		std::vector<Asset*> m_shaders;
 		std::vector<Asset*> m_levels;
 
+		// New asset system using containers
+		std::map<NewAssetId, AssetMetadata> m_metadata;
+
 		std::vector<Asset*>& Internal_GetAssets(AssetType type);
 
 		std::string ConstructAssetPath(AssetId id, AssetType type) const;
 
 		bool LoadTableOfContent();
+		bool LoadMetadataTable();
+
+		std::string GetMetadataTableFilePath() const;
 	};
 
 }
