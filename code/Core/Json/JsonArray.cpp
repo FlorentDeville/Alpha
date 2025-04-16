@@ -4,6 +4,7 @@
 
 #include "Core/Json/JsonArray.h"
 
+#include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonValue.h"
 
 namespace Core
@@ -65,6 +66,15 @@ namespace Core
 	void JsonArray::AddElement(JsonValue* pValue)
 	{
 		m_elements.push_back(pValue);
+	}
+
+	Core::JsonObject* JsonArray::AddObject()
+	{
+		Core::JsonObject* pObj = new Core::JsonObject();
+		JsonValue* pNewValue = new JsonValue(pObj);
+		m_elements.push_back(pNewValue);
+		
+		return pObj;
 	}
 
 	const std::vector<JsonValue*>& JsonArray::GetElements() const

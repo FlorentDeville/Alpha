@@ -25,6 +25,11 @@
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
     <ClInclude Include="Serialization\ObjectJsonDeserializer.h" />
     <ClInclude Include="Serialization\ObjectHeader.h" />
+    <ClInclude Include="Container\Container.h" />
+    <ClInclude Include="Container\ContainerId.h" />
+    <ClInclude Include="Container\ContainerMgr.h" />
+    <ClInclude Include="Serialization\ContainerJsonSerializer.h" />
+    <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -47,5 +52,10 @@
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />
     <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />
+    <ClCompile Include="Container\ContainerId.cpp" />
+    <ClCompile Include="Container\Container.cpp" />
+    <ClCompile Include="Container\ContainerMgr.cpp" />
+    <ClCompile Include="Serialization\ContainerJsonSerializer.cpp" />
+    <ClCompile Include="Serialization\ContainerJsonDeserializer.cpp" />
   </ItemGroup>
 </Project>

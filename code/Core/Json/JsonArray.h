@@ -30,6 +30,8 @@ namespace Core
 		
 		void AddElement(JsonValue* pValue);
 
+		Core::JsonObject* AddObject();
+
 		const std::vector<JsonValue*>& GetElements() const;
 		const JsonValue* GetElement(int32_t index) const;
 
