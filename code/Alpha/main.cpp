@@ -46,6 +46,7 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Container/ContainerMgr.h"
 #include "Systems/Loader.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
@@ -627,6 +628,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Systems::AssetMgr& assetMgr = Systems::AssetMgr::InitSingleton();
 	assetMgr.Init(configuration.m_dataRoot);
+
+	Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::InitSingleton();
+	containerMgr.Init(configuration.m_dataRoot);
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
 	Systems::LoaderParameter loaderParameter;
