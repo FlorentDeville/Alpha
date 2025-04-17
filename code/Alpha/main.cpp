@@ -630,7 +630,13 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.Init(configuration.m_dataRoot);
 
 	Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::InitSingleton();
-	containerMgr.Init(configuration.m_dataRoot);
+	std::string containerRoot = configuration.m_dataRoot;
+	if (containerRoot.back() != '\\')
+		containerRoot += "\\";
+
+	containerRoot += "containers\\";
+
+	containerMgr.Init(containerRoot);
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
 	Systems::LoaderParameter loaderParameter;
