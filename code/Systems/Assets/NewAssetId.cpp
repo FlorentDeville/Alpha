@@ -16,6 +16,11 @@ namespace Systems
 		: m_id(id)
 	{ }
 
+	NewAssetId::NewAssetId(ContainerId containerId, uint64_t objectId)
+	{
+		m_id = containerId.ToUint64() | objectId << 56;
+	}
+
 	NewAssetId::~NewAssetId()
 	{ }
 

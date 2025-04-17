@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include <cstdint>
+#include "Systems/Container/ContainerId.h"
 
+#include <cstdint>
 #include <string>
 
 namespace Systems
@@ -19,6 +20,7 @@ namespace Systems
 	public:
 		NewAssetId();
 		explicit NewAssetId(uint64_t id);
+		explicit NewAssetId(ContainerId containerId, uint64_t objectId );
 		~NewAssetId();
 
 		std::string ToString() const;

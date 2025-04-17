@@ -29,6 +29,7 @@ namespace Systems
 		bool IsValid() const;
 
 		std::string ToString() const;
+		uint64_t ToUint64() const;
 
 		static const ContainerId INVALID;
 
