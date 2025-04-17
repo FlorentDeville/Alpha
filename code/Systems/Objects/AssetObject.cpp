@@ -6,13 +6,18 @@
 
 namespace Systems
 {
-	AssetObject::AssetObject(AssetId id)
+	AssetObject::AssetObject(NewAssetId id)
 		: Object()
 		, m_id(id)
 	{ }
 
-	void AssetObject::SetAssetId(AssetId id)
+	void AssetObject::SetAssetId(NewAssetId id)
 	{
 		m_id = id;
+	}
+
+	NewAssetId AssetObject::GetId() const
+	{
+		return m_id;
 	}
 }

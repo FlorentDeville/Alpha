@@ -31,7 +31,7 @@ namespace Systems
 
 		const Asset* CreateAsset(AssetType type, const std::string& name);
 
-		bool CreateAssetMetadata(AssetMetadata& metadata);
+		bool RegisterAssetMetadata(AssetMetadata& metadata);
 
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;

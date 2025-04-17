@@ -68,7 +68,7 @@ namespace Systems
 		return pNewAsset;
 	}
 
-	bool AssetMgr::CreateAssetMetadata(AssetMetadata& metadata)
+	bool AssetMgr::RegisterAssetMetadata(AssetMetadata& metadata)
 	{
 		std::map<NewAssetId, AssetMetadata>::const_iterator it = m_metadata.find(metadata.GetAssetId());
 		if (it != m_metadata.cend())
@@ -175,7 +175,8 @@ namespace Systems
 		for (const std::pair<NewAssetId, AssetMetadata>& pair : m_metadata)
 		{
 			const AssetMetadata& metadata = pair.second;
-			file << metadata.GetAssetId().ToString() << "," << metadata.GetVirtualName() << "," << metadata.GetClassName() << std::endl;
+			std::string aid = metadata.GetAssetId().ToString();
+			file << aid << "," << metadata.GetVirtualName() << "," << metadata.GetClassName() << std::endl;
 		}
 
 		file.close();
@@ -280,7 +281,7 @@ namespace Systems
 			const int VIRTUAL_NAME_MAX_LENGTH = 255;
 			char virtualName[VIRTUAL_NAME_MAX_LENGTH] = { '\0' };
 			uint64_t classNameSid;
-			sscanf_s(line.c_str(), "%zu,%[^,],%zu", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, &classNameSid);
+			sscanf_s(line.c_str(), "%016llx,%s,%llu", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, &classNameSid);
 
 			NewAssetId assetId(id);
 			Core::Sid className(classNameSid);

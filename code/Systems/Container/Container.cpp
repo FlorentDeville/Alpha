@@ -33,7 +33,9 @@ namespace Systems
 
 	void Container::AddAsset(AssetObject* pAsset)
 	{
+		NewAssetId assetId(m_id, m_assets.size() + 1);
 		m_assets.push_back(pAsset);
+		pAsset->SetAssetId(assetId);
 	}
 
 	ContainerId Container::GetId() const
