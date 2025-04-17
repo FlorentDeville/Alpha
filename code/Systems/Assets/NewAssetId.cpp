@@ -4,6 +4,9 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
+#include <iomanip>
+#include <sstream>
+
 namespace Systems
 {
 	const NewAssetId NewAssetId::INVALID = NewAssetId();
@@ -26,11 +29,9 @@ namespace Systems
 
 	std::string NewAssetId::ToString() const
 	{
-		const int MAX_SIZE = 16;
-		std::string buffer;
-		buffer.resize(MAX_SIZE);
-		snprintf(&buffer[0], MAX_SIZE, "%016llx", m_id);
-		return buffer;
+		std::stringstream ss;
+		ss << std::hex << std::setfill('0') << std::setw(16) << m_id;
+		return ss.str();
 	}
 
 	bool NewAssetId::operator<(NewAssetId other) const
