@@ -270,18 +270,26 @@ namespace Systems
 		std::string filename = GetMetadataTableFilePath();
 		std::ifstream file(filename);
 
+		const char separator = ',';
 		std::string line;
-		while (std::getline(file, line))
+		while (std::getline(file, line, separator))
 		{
 			if (line.empty())
 				continue;
 
+
 			//parse a single line
 			uint64_t id;
+			sscanf_s(line.c_str(), "%16llx", &id);
+
+			std::string virtualName;
 			const int VIRTUAL_NAME_MAX_LENGTH = 255;
-			char virtualName[VIRTUAL_NAME_MAX_LENGTH] = { '\0' };
+			virtualName.reserve(VIRTUAL_NAME_MAX_LENGTH);
+			std::getline(file, virtualName, separator);
+
+			std::getline(file, line, separator);
 			uint64_t classNameSid;
-			sscanf_s(line.c_str(), "%016llx,%s,%llu", &id, virtualName, VIRTUAL_NAME_MAX_LENGTH, &classNameSid);
+			sscanf_s(line.c_str(), "%llu", &classNameSid);
 
 			NewAssetId assetId(id);
 			Core::Sid className(classNameSid);
