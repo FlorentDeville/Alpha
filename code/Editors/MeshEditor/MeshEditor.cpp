@@ -8,7 +8,6 @@
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/FileDialog.h"
-#include "OsWin/Process.h"
 #include "OsWin/Resource.h"
 
 #include "Rendering/Material/Material.h"
@@ -45,8 +44,6 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
 #include "Widgets/Viewport.h"
-
-#include <fstream>
 
 namespace Editors
 {
