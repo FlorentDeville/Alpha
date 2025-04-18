@@ -33,9 +33,9 @@ namespace Systems
 	};
 
 	//Create a new asset with a new asset id
-	template<typename T, typename... Args> T* CreateNewAsset(Args...)
+	template<typename T, typename... Args> T* CreateNewAsset(Args... args)
 	{
-		T* pAsset = CreateObject<T>(Args...);
+		T* pAsset = CreateObject<T>(std::forward<Args>(args)...);
 		return pAsset;
 	}
 }
