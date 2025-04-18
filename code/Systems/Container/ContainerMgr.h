@@ -26,7 +26,7 @@ namespace Systems
 		Container* CreateContainer(const char* seed);
 		Container* GetContainer(ContainerId cid);
 
-		bool LoadContainer(ContainerId cid);
+		Container* LoadContainer(ContainerId cid);
 		bool SaveContainer(ContainerId cid);
 
 	private:
