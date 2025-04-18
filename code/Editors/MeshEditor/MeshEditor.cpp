@@ -7,6 +7,7 @@
 #include "Importer/FbxImporter/FbxImporter.h"
 #include "Inputs/InputMgr.h"
 
+#include "OsWin/FileDialog.h"
 #include "OsWin/Process.h"
 #include "OsWin/Resource.h"
 
@@ -51,26 +52,25 @@ namespace Editors
 {
 	static void Imports()
 	{
+		std::string filename;
+		bool res = Os::OpenFileDialog(filename);
+		if (!res)
+			return;
+
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
-		std::vector<std::string> sourceFiles;
-		sourceFiles.push_back("C:\\Workspace\\Alpha_data\\source_assets\\chimney.fbx");
-
-		for (const std::string& source : sourceFiles)
-		{
-			Systems::MeshAsset* pMesh = Systems::CreateNewAsset<Systems::MeshAsset>();
-			FbxImporter::FbxImporter importer;
-			importer.Import(source, *pMesh);
+		Systems::MeshAsset* pMesh = Systems::CreateNewAsset<Systems::MeshAsset>();
+		FbxImporter::FbxImporter importer;
+		importer.Import(filename, *pMesh);
 	
-			Systems::Container* pContainer = containerMgr.CreateContainer(source.c_str());
-			pContainer->AddAsset(pMesh);
+		Systems::Container* pContainer = containerMgr.CreateContainer(filename.c_str());
+		pContainer->AddAsset(pMesh);
 
-			Systems::AssetMetadata metadata(pMesh->GetId(), source, pMesh->GetTypeDescriptor()->GetSid());
-			assetMgr.RegisterAssetMetadata(metadata);
+		Systems::AssetMetadata metadata(pMesh->GetId(), filename, pMesh->GetTypeDescriptor()->GetSid());
+		assetMgr.RegisterAssetMetadata(metadata);
 
-			containerMgr.SaveContainer(pContainer->GetId());
-		}
+		containerMgr.SaveContainer(pContainer->GetId());
 
 		assetMgr.SaveMetadataTable();
 	}
