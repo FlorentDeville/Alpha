@@ -178,7 +178,7 @@ namespace Systems
 		{
 			const AssetMetadata& metadata = pair.second;
 			std::string aid = metadata.GetAssetId().ToString();
-			file << aid << "," << metadata.GetVirtualName() << "," << Core::ToString(metadata.GetClassName()) << std::endl;
+			file << aid << "," << metadata.GetVirtualName() << "," << Core::ToString(metadata.GetClassSid()) << std::endl;
 		}
 
 		file.close();
