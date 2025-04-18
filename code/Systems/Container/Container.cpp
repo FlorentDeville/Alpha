@@ -33,7 +33,7 @@ namespace Systems
 
 	void Container::AddAsset(AssetObject* pAsset)
 	{
-		NewAssetId assetId(m_id, m_assets.size() + 1);
+		NewAssetId assetId(m_id, m_assets.size());
 		m_assets.push_back(pAsset);
 		pAsset->SetAssetId(assetId);
 	}
@@ -46,5 +46,15 @@ namespace Systems
 	const std::vector<AssetObject*>& Container::GetAssets() const
 	{
 		return m_assets;
+	}
+
+	const AssetObject* Container::GetConstAsset(uint64_t objectId) const
+	{
+		return m_assets[objectId];
+	}
+
+	AssetObject* Container::GetAsset(uint64_t objectId)
+	{
+		return m_assets[objectId];
 	}
 }

@@ -26,6 +26,9 @@ namespace Systems
 
 		ContainerId GetId() const;
 		const std::vector<AssetObject*>& GetAssets() const;
+		
+		const AssetObject* GetConstAsset(uint64_t objectId) const;
+		AssetObject* GetAsset(uint64_t objectId);
 
 	private:
 		ContainerId m_id;
