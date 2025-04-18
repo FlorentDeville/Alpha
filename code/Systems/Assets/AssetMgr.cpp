@@ -4,6 +4,8 @@
 
 #include "Systems/Assets/AssetMgr.h"
 
+#include "Core/String/BytesToHexa.h"
+
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetType.h"
 
@@ -176,7 +178,7 @@ namespace Systems
 		{
 			const AssetMetadata& metadata = pair.second;
 			std::string aid = metadata.GetAssetId().ToString();
-			file << aid << "," << metadata.GetVirtualName() << "," << metadata.GetClassName() << std::endl;
+			file << aid << "," << metadata.GetVirtualName() << "," << Core::ToString(metadata.GetClassName()) << std::endl;
 		}
 
 		file.close();
@@ -279,8 +281,7 @@ namespace Systems
 
 
 			//parse a single line
-			uint64_t id;
-			sscanf_s(line.c_str(), "%16llx", &id);
+			uint64_t id = Core::HexaToUint64(line);
 
 			std::string virtualName;
 			const int VIRTUAL_NAME_MAX_LENGTH = 255;
@@ -288,8 +289,7 @@ namespace Systems
 			std::getline(file, virtualName, separator);
 
 			std::getline(file, line, separator);
-			uint64_t classNameSid;
-			sscanf_s(line.c_str(), "%llu", &classNameSid);
+			uint64_t classNameSid = Core::HexaToUint64(line);
 
 			NewAssetId assetId(id);
 			Core::Sid className(classNameSid);
