@@ -1,2 +1,4 @@
 12/27/2023 : Shortcuts are global to the application. 
 Repro : Level Editor, select a node and show the gizmo. Switch to another tab, press W/E/R tochange the gizmo mode. Switch back to the level editor and the gizmo state as changed.
+
+04/15/2025 : Remove precompiled variable _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS from Systems project. It was added for rapidjson compilation. Remove it when removing rapidjson.

@@ -13,6 +13,7 @@
 #include "Rendering/Texture/TextureId.h"
 
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/NewAssetId.h"
 
 #include "DirectXMath.h"
 
@@ -23,6 +24,11 @@
 namespace Rendering
 {
 	class RenderTarget;
+}
+
+namespace Systems
+{
+	class MeshAsset;
 }
 
 namespace Widgets
@@ -38,11 +44,9 @@ namespace Editors
 	class MeshEntry
 	{
 	public:
-		std::string m_rawFilename;		//blender filename
-		std::string m_binFilename;		//binary filename
 		std::string m_displayName;		//name of the mesh in the editor
-		Rendering::MeshId m_meshId;
-		Systems::AssetId m_assetId;
+		Systems::NewAssetId m_id;
+		Systems::MeshAsset* m_mesh;
 		
 		MeshEntry();
 	};
@@ -106,8 +110,6 @@ namespace Editors
 
 		std::string m_editorScriptsPath;
 		std::string m_blender;
-
-		RawDb m_meshRawDb; //map between the asset id and the blender file
 
 		void ShowMesh(int entryIndex);
 		void LoadMesh(MeshEntry& entry);

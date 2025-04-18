@@ -15,10 +15,6 @@
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
-#include "Core/Json/JsonArray.h"
-#include "Core/Json/JsonDeserializer.h"
-#include "Core/Json/JsonObject.h"
-#include "Core/Json/JsonSerializer.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -50,13 +46,13 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Container/ContainerMgr.h"
 #include "Systems/Loader.h"
-#include "Systems/Reflection/FieldDescriptor.h"
+
 #include "Systems/Reflection/ReflectionCoreTypes.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
-#include "Systems/Objects/GameObject.h"
 
 #include "OsWin/SysWindow.h"
 
@@ -605,37 +601,6 @@ void CreateMainWindow(const Configuration& configuration)
 	pMiddleTabContainer->SetSelectedTab(0);
 }
 
-ENABLE_SYSTEMS_REFLECTION(TestSerialization)
-class TestSerialization
-{
-public:
-	int32_t m_myInt;
-	double m_superDouble;
-
-private:
-	float m_privateFloat;
-	bool* m_pBool;
-
-	START_REFLECTION(TestSerialization)
-		ADD_FIELD(m_myInt)
-		ADD_FIELD(m_superDouble)
-		ADD_FIELD(m_privateFloat)
-		ADD_FIELD(m_pBool)
-	END_REFLECTION()
-};
-
-ENABLE_SYSTEMS_REFLECTION(TestChild)
-class TestChild : public TestSerialization
-{
-public:
-	float m_float;
-
-	START_REFLECTION(TestChild)
-		ADD_BASETYPE(TestSerialization)
-		ADD_FIELD(m_float)
-	END_REFLECTION()
-};
-
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
 	//CommandLine cmd;
@@ -658,79 +623,20 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Systems::RegisterCoreTypesToReflection();
 	Systems::RegisterSystemsTypesToReflection();
 
-	TestSerialization::RegisterReflection();
-	TestChild::RegisterReflection();
-
-	Systems::GameObject* pObject = Systems::CreateObject<Systems::GameObject>();
-	delete pObject;
-
-	{
-		Core::JsonObject root;
-		root.AddMember("pi", 3.14f);
-		root.AddMember("name", std::string("Florent"));
-		root.AddMember("zero", 0);
-		root.AddMember("true", true);
-
-		Core::JsonObject* pObj = root.AddObject("newObject");
-		pObj->AddMember("component", "boom");
-		pObj->AddMember("component", 12);
-
-		Core::JsonArray* pArr = root.AddArray("odd numbers");
-		pArr->AddElement(0);
-		pArr->AddElement(2);
-		pArr->AddElement(4);
-		pArr->AddElement(6);
-
-		Core::JsonArray* pArrObj = root.AddArray("object");
-		Core::JsonObject* obj1 = new Core::JsonObject();
-		obj1->AddMember("name", "component1");
-		obj1->AddMember("id", 123);
-		pArrObj->AddElement(obj1);
-
-		Core::JsonObject* obj2 = new Core::JsonObject();
-		obj2->AddMember("name", "component2");
-		obj2->AddMember("id", 156);
-		obj2->AddNullMember("nullmember");
-		pArrObj->AddElement(obj2);
-
-		Core::JsonSerializer ser;
-		std::string output;
-		ser.Serialize(root, output);
-
-		FILE* pFile = nullptr;
-		fopen_s(&pFile, "C:\\Workspace\\text.json", "w");
-		fwrite(output.data(), sizeof(char), output.size(), pFile);
-		fclose(pFile);
-	}
-
-	{
-		FILE* pFile = nullptr;
-		fopen_s(&pFile, "C:\\Workspace\\text.json", "r");
-		char jsonBuffer[1024] = { '\0' };
-		fread(jsonBuffer, sizeof(char), 1024, pFile);
-		fclose(pFile);
-
-		Core::JsonDeserializer des;
-		Core::JsonObject obj;
-		des.Deserialize(jsonBuffer, obj);
-
-		{
-			Core::JsonSerializer anotherSer;
-			std::string output;
-			anotherSer.Serialize(obj, output);
-
-			FILE* pAnotherFile = nullptr;
-			fopen_s(&pAnotherFile, "C:\\Workspace\\text2.json", "w");
-			fwrite(output.data(), sizeof(char), output.size(), pAnotherFile);
-			fclose(pAnotherFile);
-		}
-	}
-
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();
 
 	Systems::AssetMgr& assetMgr = Systems::AssetMgr::InitSingleton();
 	assetMgr.Init(configuration.m_dataRoot);
+
+	Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::InitSingleton();
+	std::string containerRoot = configuration.m_dataRoot;
+	if (containerRoot.back() != '\\')
+		containerRoot += "\\";
+
+	containerRoot += "containers\\";
+
+	containerMgr.Init(containerRoot);
 
 	Systems::Loader& loader = Systems::Loader::InitSingleton();
 	Systems::LoaderParameter loaderParameter;

@@ -31,6 +31,11 @@ namespace Systems
 		PostLoad();
 	}
 
+	const std::string& MeshAsset::GetSourceFile() const
+	{
+		return m_sourceFile;
+	}
+
 	const Rendering::Mesh* MeshAsset::GetRenderingMesh() const
 	{
 		return &m_mesh;

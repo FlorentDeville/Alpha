@@ -51,4 +51,9 @@ namespace Systems
 		return std::string(buffer);
 	}
 
+	uint64_t ContainerId::ToUint64() const
+	{
+		return m_id;
+	}
+
 }

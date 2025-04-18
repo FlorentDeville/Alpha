@@ -24,6 +24,8 @@ namespace Systems
 		void Init(const std::string& sourceFile, Core::Array<Core::Vec4f>& pos, Core::Array<Core::Vec4f>& uv, Core::Array<Core::Vec4f>& color,
 			Core::Array<uint16_t>& indices);
 
+		const std::string& GetSourceFile() const;
+
 		const Rendering::Mesh* GetRenderingMesh() const;
 
 		void PostLoad() override;

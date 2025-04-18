@@ -36,6 +36,7 @@ namespace Core
 		return static_cast<Sid>(xxh64::hash(str, N-1, PRIME_SID));
 	}
 
-	
+	std::string ToString(Sid sid);
+
 	static constexpr Sid INVALID_SID = MakeSid();
 }

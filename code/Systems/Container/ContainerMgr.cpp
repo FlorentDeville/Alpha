@@ -79,7 +79,7 @@ namespace Systems
 		return it->second;
 	}
 
-	bool ContainerMgr::LoadContainer(ContainerId cid)
+	Container* ContainerMgr::LoadContainer(ContainerId cid)
 	{
 		std::string fileContent;
 
@@ -97,16 +97,16 @@ namespace Systems
 		Core::JsonDeserializer deser;
 		bool res = deser.Deserialize(fileContent, json);
 		if (!res)
-			return false;
+			return nullptr;
 
 		Container* pContainer = new Container();
 		ContainerJsonDeserializer containerDeser;
 		res = containerDeser.Deserialize(json, *pContainer);
 		if (!res)
-			return false;
+			return nullptr;
 
 		m_containerMap[pContainer->GetId()] = pContainer;
-		return true;
+		return pContainer;
 	}
 
 	bool ContainerMgr::SaveContainer(ContainerId cid)

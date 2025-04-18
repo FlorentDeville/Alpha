@@ -6,6 +6,7 @@
     <ClCompile Include="Guid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="FileDialog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SysWindow.h" />
@@ -14,5 +15,6 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="VirtualKeyCode.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="FileDialog.h" />
   </ItemGroup>
 </Project>

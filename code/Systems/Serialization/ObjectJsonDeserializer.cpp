@@ -10,6 +10,7 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/Object.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Serialization/ObjectHeader.h"
@@ -91,6 +92,19 @@ namespace Systems
 		case SID("Systems::AssetId"):
 		{
 			Systems::AssetId* pValue = reinterpret_cast<Systems::AssetId*>(ptr);
+
+			std::string valueStr = jsonFieldValue.GetValueAsString();
+			std::stringstream ss(valueStr);
+			size_t value = 0;
+			ss >> value;
+
+			new (pValue) Systems::AssetId(value);
+		}
+		break;
+
+		case SID("Systems::NewAssetId"):
+		{
+			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(ptr);
 
 			std::string valueStr = jsonFieldValue.GetValueAsString();
 			std::stringstream ss(valueStr);

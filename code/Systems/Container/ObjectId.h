@@ -4,14 +4,21 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetId.h"
-#include "Systems/Assets/NewAssetId.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include <cstdint>
 
 namespace Systems
 {
-	DEFINE_TYPE_RESOLVER(Systems::AssetId)
-	DEFINE_TYPE_RESOLVER(Systems::NewAssetId)
+	class ObjectId
+	{
+	public:
+		ObjectId();
+		explicit ObjectId(uint64_t id);
+		~ObjectId();
 
-	void RegisterSystemsTypesToReflection();
+		uint64_t ToUint64() const;
+
+		static const ObjectId INVALID;
+	private:
+		uint64_t m_id;
+	};
 }

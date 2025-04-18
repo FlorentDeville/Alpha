@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="FileDialog.cpp" />
     <ClCompile Include="Guid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Process.cpp" />
@@ -18,6 +19,7 @@
     <ClCompile Include="SysWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileDialog.h" />
     <ClInclude Include="Guid.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Process.h" />

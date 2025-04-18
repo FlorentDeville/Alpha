@@ -2,21 +2,24 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Systems/Objects/AssetObject.h"
+#include "Systems/Container/ObjectId.h"
 
 namespace Systems
 {
-	AssetObject::AssetObject(NewAssetId id)
-		: Object()
-		, m_id(id)
+	const ObjectId ObjectId::INVALID = ObjectId();
+
+	ObjectId::ObjectId()
+		: m_id(-1)
 	{ }
 
-	void AssetObject::SetAssetId(NewAssetId id)
-	{
-		m_id = id;
-	}
+	ObjectId::ObjectId(uint64_t id)
+		: m_id(id)
+	{ }
 
-	NewAssetId AssetObject::GetId() const
+	ObjectId::~ObjectId()
+	{ }
+
+	uint64_t ObjectId::ToUint64() const
 	{
 		return m_id;
 	}

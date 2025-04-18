@@ -6,7 +6,7 @@
 
 #include "Systems/Objects/Object.h"
 
-#include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/NewAssetId.h"
 #include "Systems/Reflection/ReflectionMacro.h"
 
 namespace Systems
@@ -17,14 +17,16 @@ namespace Systems
 	{
 	public:
 		AssetObject() = default;
-		AssetObject(AssetId id);
+		AssetObject(NewAssetId id);
 
 		~AssetObject() = default;
 
-		void SetAssetId(AssetId id);
+		void SetAssetId(NewAssetId id);
+
+		NewAssetId GetId() const;
 
 	private:
-		AssetId m_id;
+		NewAssetId m_id;
 
 		START_REFLECTION(Systems::AssetObject)
 			ADD_BASETYPE(Systems::Object)

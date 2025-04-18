@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Systems/Container/ContainerId.h"
+#include "Systems/Container/ObjectId.h"
 
 namespace Systems
 {
@@ -26,6 +27,9 @@ namespace Systems
 
 		ContainerId GetId() const;
 		const std::vector<AssetObject*>& GetAssets() const;
+		
+		const AssetObject* GetConstAsset(ObjectId objectId) const;
+		AssetObject* GetAsset(ObjectId objectId);
 
 	private:
 		ContainerId m_id;
