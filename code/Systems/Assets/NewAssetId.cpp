@@ -18,9 +18,9 @@ namespace Systems
 		: m_id(id)
 	{ }
 
-	NewAssetId::NewAssetId(ContainerId containerId, uint64_t objectId)
+	NewAssetId::NewAssetId(ContainerId containerId, ObjectId objectId)
 	{
-		m_id = containerId.ToUint64() | objectId << 56;
+		m_id = containerId.ToUint64() | objectId.ToUint64() << 56;
 	}
 
 	NewAssetId::~NewAssetId()
@@ -31,9 +31,9 @@ namespace Systems
 		return ContainerId(m_id & 0x00FFFFFFFFFFFFFF);
 	}
 
-	uint64_t NewAssetId::GetObjectId() const
+	ObjectId NewAssetId::GetObjectId() const
 	{
-		return (m_id & 0xFF00000000000000) >> 56;
+		return ObjectId((m_id & 0xFF00000000000000) >> 56);
 	}
 
 	std::string NewAssetId::ToString() const

@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Systems/Container/ContainerId.h"
+#include "Systems/Container/ObjectId.h"
 
 #include <cstdint>
 #include <string>
@@ -20,13 +21,13 @@ namespace Systems
 	public:
 		NewAssetId();
 		explicit NewAssetId(uint64_t id);
-		explicit NewAssetId(ContainerId containerId, uint64_t objectId );
+		explicit NewAssetId(ContainerId containerId, ObjectId objectId);
 		~NewAssetId();
 
 		std::string ToString() const;
 
 		ContainerId GetContainerId() const;
-		uint64_t GetObjectId() const;
+		ObjectId GetObjectId() const;
 
 		bool operator<(NewAssetId other) const;
 

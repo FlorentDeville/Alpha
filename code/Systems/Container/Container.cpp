@@ -33,7 +33,8 @@ namespace Systems
 
 	void Container::AddAsset(AssetObject* pAsset)
 	{
-		NewAssetId assetId(m_id, m_assets.size());
+		ObjectId oid(m_assets.size());
+		NewAssetId assetId(m_id, oid);
 		m_assets.push_back(pAsset);
 		pAsset->SetAssetId(assetId);
 	}
@@ -48,13 +49,13 @@ namespace Systems
 		return m_assets;
 	}
 
-	const AssetObject* Container::GetConstAsset(uint64_t objectId) const
+	const AssetObject* Container::GetConstAsset(ObjectId objectId) const
 	{
-		return m_assets[objectId];
+		return m_assets[objectId.ToUint64()];
 	}
 
-	AssetObject* Container::GetAsset(uint64_t objectId)
+	AssetObject* Container::GetAsset(ObjectId objectId)
 	{
-		return m_assets[objectId];
+		return m_assets[objectId.ToUint64()];
 	}
 }
