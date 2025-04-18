@@ -4,8 +4,7 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
-#include <iomanip>
-#include <sstream>
+#include "Core/String/BytesToHexa.h"
 
 namespace Systems
 {
@@ -29,9 +28,7 @@ namespace Systems
 
 	std::string NewAssetId::ToString() const
 	{
-		std::stringstream ss;
-		ss << std::hex << std::setfill('0') << std::setw(16) << m_id;
-		return ss.str();
+		Core::Uint64ToHexa(m_id);
 	}
 
 	bool NewAssetId::operator<(NewAssetId other) const

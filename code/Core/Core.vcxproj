@@ -109,6 +109,8 @@
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
+    <ClCompile Include="Sid\Sid.cpp" />
+    <ClCompile Include="String\BytesToHexa.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Callbacks\CallbackId.h" />
@@ -133,6 +135,7 @@
     <ClInclude Include="Math\Vec4f.h" />
     <ClInclude Include="Sid\Sid.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="String\BytesToHexa.h" />
     <ClInclude Include="Tree\Tree.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
