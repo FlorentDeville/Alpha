@@ -32,9 +32,9 @@ namespace Systems
 		END_REFLECTION()
 	};
 
-	template<typename T, typename... Args> T* CreateObject(Args...)
+	template<typename T, typename... Args> T* CreateObject(Args... args)
 	{
-		T* pNewObject = new T(Args...);
+		T* pNewObject = new T(std::forward<Args>(args)...);
 
 		const TypeDescriptor* pType = TypeResolver<T>::GetConstType();
 		pNewObject->SetTypeDescriptor(pType);
