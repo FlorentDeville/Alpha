@@ -288,7 +288,7 @@ namespace Systems
 			virtualName.reserve(VIRTUAL_NAME_MAX_LENGTH);
 			std::getline(file, virtualName, separator);
 
-			std::getline(file, line, separator);
+			std::getline(file, line);
 			uint64_t classNameSid = Core::HexaToUint64(line);
 
 			NewAssetId assetId(id);
