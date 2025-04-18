@@ -9,13 +9,13 @@ namespace Systems
 	AssetMetadata::AssetMetadata()
 		: m_id()
 		, m_virtualName()
-		, m_className()
+		, m_classSid()
 	{ }
 
-	AssetMetadata::AssetMetadata(NewAssetId id, const std::string& virtualName, Core::Sid className)
+	AssetMetadata::AssetMetadata(NewAssetId id, const std::string& virtualName, Core::Sid classSid)
 		: m_id(id)
 		, m_virtualName(virtualName)
-		, m_className(className)
+		, m_classSid(classSid)
 	{ }
 
 	AssetMetadata::~AssetMetadata()
@@ -31,8 +31,8 @@ namespace Systems
 		return m_virtualName;
 	}
 
-	Core::Sid AssetMetadata::GetClassName() const
+	Core::Sid AssetMetadata::GetClassSid() const
 	{
-		return m_className;
+		return m_classSid;
 	}
 }

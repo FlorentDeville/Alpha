@@ -16,16 +16,16 @@ namespace Systems
 	{
 	public:
 		AssetMetadata();
-		AssetMetadata(NewAssetId id, const std::string& virtualName, Core::Sid className);
+		AssetMetadata(NewAssetId id, const std::string& virtualName, Core::Sid classSid);
 		~AssetMetadata();
 
 		NewAssetId GetAssetId() const;
 		const std::string GetVirtualName() const;
-		Core::Sid GetClassName() const;
+		Core::Sid GetClassSid() const;
 
 	private:
 		NewAssetId m_id;
 		std::string m_virtualName;
-		Core::Sid m_className;
+		Core::Sid m_classSid;
 	};
 }
