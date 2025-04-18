@@ -4,6 +4,7 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
+#include "Importer/FbxImporter/FbxImporter.h"
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Process.h"
@@ -25,10 +26,16 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
+#include "Systems/Container/Container.h"
+#include "Systems/Container/ContainerMgr.h"
 #include "Systems/Loader.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Icon.h"
+#include "Widgets/Menu.h"
+#include "Widgets/MenuBar.h"
+#include "Widgets/MenuItem.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/SplitHorizontal.h"
@@ -42,12 +49,35 @@
 
 namespace Editors
 {
+	static void Imports()
+	{
+		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+
+		std::vector<std::string> sourceFiles;
+		sourceFiles.push_back("C:\\Workspace\\Alpha_data\\source_assets\\chimney.fbx");
+
+		for (const std::string& source : sourceFiles)
+		{
+			Systems::MeshAsset* pMesh = Systems::CreateNewAsset<Systems::MeshAsset>();
+			FbxImporter::FbxImporter importer;
+			importer.Import(source, *pMesh);
+	
+			Systems::Container* pContainer = containerMgr.CreateContainer(source.c_str());
+			pContainer->AddAsset(pMesh);
+
+			Systems::AssetMetadata metadata(pMesh->GetId(), source, pMesh->GetTypeDescriptor()->GetSid());
+			assetMgr.RegisterAssetMetadata(metadata);
+
+			containerMgr.SaveContainer(pContainer->GetId());
+		}
+
+		assetMgr.SaveMetadataTable();
+	}
+
 	MeshEntry::MeshEntry()
-		: m_rawFilename()
-		, m_binFilename()
-		, m_displayName()
-		, m_meshId()
-		, m_assetId()
+		: m_displayName()
+		, m_mesh()
 	{}
 
 	MaterialEntry::MaterialEntry()
@@ -68,7 +98,6 @@ namespace Editors
 		, m_allEntryButton()
 		, m_pLogWidget(nullptr)
 		, m_allMaterials()
-		, m_meshRawDb()
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -83,8 +112,6 @@ namespace Editors
 	{
 		m_blender = parameter.m_blender;
 		m_editorScriptsPath = parameter.m_editorScriptsPath;
-
-		LoadRawDb(parameter.m_rawBlenderPath + "\\db.txt", m_meshRawDb);
 
 		Rendering::Texture* pImportIconTexture;
 		Rendering::TextureMgr::Get().CreateTexture(&pImportIconTexture, m_importIconTextureId);
@@ -117,11 +144,28 @@ namespace Editors
 			}
 		}
 
+		//create the menu bar
+		Widgets::Layout* pInternalLayout = new Widgets::Layout();
+		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
+		pViewportTab->AddWidget(pInternalLayout);
+
+		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
+		pInternalLayout->AddWidget(pMenuBar);
+
+		//create the file menu
+		{
+			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
+
+			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
+			pNewItem->OnClick([this]() { Imports(); });
+		}
+
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(400);
-		pViewportTab->AddWidget(pSplit);
+		pInternalLayout->AddWidget(pSplit);
 
 		//create left viewport
 		Widgets::Viewport* pViewport = new Widgets::Viewport();
@@ -137,18 +181,17 @@ namespace Editors
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
-		const std::vector<Systems::Asset*>& allMeshes = Systems::AssetMgr::Get().GetMeshes();
-		for(const Systems::Asset* pAsset : allMeshes)
+		std::vector<Systems::AssetMetadata*> allMeshes;
+		Systems::AssetMgr::Get().GetAssets<Systems::MeshAsset>(allMeshes);
+
+		for(const Systems::AssetMetadata* pMetadata : allMeshes)
 		{
 			m_allMeshes.push_back(MeshEntry());
 
 			MeshEntry& newEntry = m_allMeshes.back();
-
-			const std::string& rawPath = parameter.m_rawBlenderPath + "\\" + m_meshRawDb[pAsset->GetId()];
-			newEntry.m_rawFilename = rawPath;
-			newEntry.m_binFilename = pAsset->GetPath();
-			newEntry.m_displayName = pAsset->GetVirtualName();
-			newEntry.m_assetId = pAsset->GetId();
+			newEntry.m_displayName = pMetadata->GetVirtualName();
+			newEntry.m_id = pMetadata->GetAssetId();
+			newEntry.m_mesh = nullptr;
 		}
 
 		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -329,7 +372,7 @@ namespace Editors
 			const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(m_materialId);
 			renderer.BindMaterial(*pMaterial, mvpMatrix);
 
-			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(entry.m_meshId);
+			const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();// Rendering::MeshMgr::Get().GetMesh(entry.m_meshId);
 			renderer.RenderMesh(*pMesh);
 		}
 
@@ -343,9 +386,11 @@ namespace Editors
 
 	void MeshEditor::LoadMesh(MeshEntry& entry)
 	{
-		Rendering::Mesh* pCubeMesh = nullptr;
-		Rendering::MeshMgr::Get().CreateMesh(&pCubeMesh, entry.m_meshId);
-		Systems::Loader::Get().LoadMesh(entry.m_binFilename, *pCubeMesh);
+		Systems::ContainerId cid = entry.m_id.GetContainerId();
+		Systems::Container* pContainer = Systems::ContainerMgr::Get().LoadContainer(cid);
+		Systems::AssetObject* pAsset = pContainer->GetAsset(entry.m_id.GetObjectId());
+
+		entry.m_mesh = static_cast<Systems::MeshAsset*>(pAsset);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
@@ -363,7 +408,7 @@ namespace Editors
 		MeshEntry& entry = m_allMeshes[entryIndex];
 		
 		//load the mesh if necessary
-		if (entry.m_meshId == Rendering::MeshId::INVALID)
+		if (!entry.m_mesh)
 		{
 			LoadMesh(entry);
 		}
@@ -374,37 +419,22 @@ namespace Editors
 	bool MeshEditor::OnMeshImportClicked(int entryIndex)
 	{
 		MeshEntry& entry = m_allMeshes[entryIndex];
+		if (!entry.m_mesh)
+			LoadMesh(entry);
 
-		//re export the json file
-		std::string importCommandline = m_blender;
-		importCommandline += " " + entry.m_rawFilename;
-		importCommandline += " --background";
-		importCommandline += " --python " + m_editorScriptsPath + "\\export_mesh.py";
-		importCommandline += " -- --id " + entry.m_assetId.ToString();
-
-		OutputDebugString(importCommandline.c_str());
-
-		Process importProcess(importCommandline);
-		importProcess.OnStdOut([this](const std::string& msg) -> bool { m_pLogWidget->AppendText(msg.c_str()); return true; });
-		importProcess.OnStdErr([this](const std::string& msg) -> bool { m_pLogWidget->AppendText(msg.c_str()); return true; });
-
-		bool started = importProcess.Run();
-		if (!started)
+		if (!entry.m_mesh)
 		{
-			OutputDebugString("Failed to start process\n");
+			m_pLogWidget->AppendText("Failed to load asset.");
+			return true;
 		}
 
-		importProcess.Wait();
-
-		//reload the mesh
-		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
-		Rendering::Mesh* pNewMesh = nullptr;
-		Rendering::MeshId newMeshId;
-
-		meshMgr.CreateMesh(&pNewMesh, newMeshId);
-		Systems::Loader::Get().LoadMesh(entry.m_binFilename, *pNewMesh);
-
-		entry.m_meshId = newMeshId;
+		FbxImporter::FbxImporter importer;
+		bool res = importer.Import(entry.m_mesh->GetSourceFile(), *entry.m_mesh);
+		if (!res)
+		{
+			m_pLogWidget->AppendText("Failed to import asset.");
+			return true;
+		}
 
 		return true;
 	}
