@@ -5,10 +5,13 @@
 #pragma once
 
 #include "Core/Singleton.h"
+
 #include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 #include "Systems/Assets/NewAssetId.h"
+#include "Systems/Reflection/ReflectionMgr.h"
+#include "Systems/Reflection/TypeDescriptor.h"
 
 #include <map>
 #include <string>
@@ -42,6 +45,8 @@ namespace Systems
 		const std::vector<Asset*>& GetShaders() const;
 		const std::vector<Asset*>& GetLevels() const;
 
+		template<typename T> void GetAssets(std::vector<AssetMetadata*>& metadata);
+
 		bool SaveTableOfContent() const;
 
 		bool SaveMetadataTable() const;
@@ -73,4 +78,14 @@ namespace Systems
 		std::string GetMetadataTableFilePath() const;
 	};
 
+	template<typename T> void AssetMgr::GetAssets(std::vector<AssetMetadata*>& metadata)
+	{
+		Core::Sid sid = TypeResolver<T>::GetConstType()->GetSid();
+
+		for (std::pair<const NewAssetId, AssetMetadata>& pair : m_metadata)
+		{
+			if (pair.second.GetClassSid() == sid)
+				metadata.push_back(&pair.second);
+		}
+	}
 }
