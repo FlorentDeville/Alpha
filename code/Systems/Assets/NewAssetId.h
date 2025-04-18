@@ -25,6 +25,9 @@ namespace Systems
 
 		std::string ToString() const;
 
+		ContainerId GetContainerId() const;
+		uint64_t GetObjectId() const;
+
 		bool operator<(NewAssetId other) const;
 
 		static const NewAssetId INVALID;

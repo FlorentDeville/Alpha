@@ -26,9 +26,19 @@ namespace Systems
 	NewAssetId::~NewAssetId()
 	{ }
 
+	ContainerId NewAssetId::GetContainerId() const
+	{
+		return ContainerId(m_id & 0x00FFFFFFFFFFFFFF);
+	}
+
+	uint64_t NewAssetId::GetObjectId() const
+	{
+		return (m_id & 0xFF00000000000000) >> 56;
+	}
+
 	std::string NewAssetId::ToString() const
 	{
-		Core::Uint64ToHexa(m_id);
+		return Core::Uint64ToHexa(m_id);
 	}
 
 	bool NewAssetId::operator<(NewAssetId other) const
