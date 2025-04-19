@@ -227,19 +227,8 @@ namespace Core
 
 			ReadNextToken();
 			firstCharacter = m_token[0];
-
-			if (firstCharacter == ',')
-			{
-				keepReading = true;
-			}
-			else if (firstCharacter == ']')
-			{
-				keepReading = false;
-			}
-			else
-			{
-				assert(false);
-			}
+			if (firstCharacter == ']')
+				break;
 		}
 	}
 
