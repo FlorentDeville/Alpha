@@ -148,15 +148,22 @@ namespace Core
 		}
 		else if (nextChar == '-' || std::isdigit(nextChar))
 		{
-			m_token = "";
-			m_token += m_line.get();
+			const int BUFFER_SIZE = 32;
+			char buffer[BUFFER_SIZE] = { '\0' };
 
+			buffer[0] = m_line.get();
+			
+			int currentIndex = 1;
 			char readChar = m_line.peek();
 			while (readChar != '\r' && readChar != '\n' && readChar != '\t' && readChar != ' ' && readChar != ',' && readChar != '}' && readChar != ']' && !m_line.eof())
 			{
-				m_token += m_line.get();
+				assert(currentIndex < BUFFER_SIZE - 1);
+				buffer[currentIndex] = m_line.get();
 				readChar = m_line.peek();
+				++currentIndex;
+
 			}
+			m_token = buffer;
 		}
 		else if (nextChar == ',')
 		{
