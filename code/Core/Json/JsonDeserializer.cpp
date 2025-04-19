@@ -192,25 +192,26 @@ namespace Core
 		while (keepReading)
 		{
 			ReadNextToken();
+			char firstCharacter = m_token[0];
 
-			if (m_token[0] == '{')
+			if (firstCharacter == '{')
 			{
 				JsonObject* pNewObject = new JsonObject();
 				output.AddElement(pNewObject);
 				ReadObject(*pNewObject);
 			}
-			else if (m_token[0] == '-' || std::isdigit(m_token[0]))
+			else if (firstCharacter == '-' || std::isdigit(firstCharacter))
 			{
 				double value = std::stod(m_token);
 				output.AddElement(value);
 			}
-			else if (m_token[0] == '[')
+			else if (firstCharacter == '[')
 			{
 				JsonArray* pArray = new JsonArray();
 				output.AddElement(pArray);
 				ReadArray(*pArray);
 			}
-			else if (m_token[0] == '"')
+			else if (firstCharacter == '"')
 			{
 				std::string value = m_token.substr(1, m_token.size() - 2);
 				output.AddElement(value);
@@ -225,12 +226,13 @@ namespace Core
 			}
 
 			ReadNextToken();
+			firstCharacter = m_token[0];
 
-			if (m_token[0] == ',')
+			if (firstCharacter == ',')
 			{
 				keepReading = true;
 			}
-			else if (m_token[0] == ']')
+			else if (firstCharacter == ']')
 			{
 				keepReading = false;
 			}
