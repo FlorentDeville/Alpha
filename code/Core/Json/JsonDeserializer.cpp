@@ -201,9 +201,7 @@ namespace Core
 			}
 			else if (m_token[0] == '-' || std::isdigit(m_token[0]))
 			{
-				std::istringstream valueStream(m_token);
-				double value;
-				valueStream >> value;
+				double value = std::stod(m_token);
 				output.AddElement(value);
 			}
 			else if (m_token[0] == '[')
@@ -268,9 +266,7 @@ namespace Core
 			}
 			else if (m_token[0] == '-' || std::isdigit(m_token[0]))
 			{
-				std::istringstream valueStream(m_token);
-				double value;
-				valueStream >> value;
+				double value = std::stod(m_token);
 				output.AddMember(memberName, value);
 			}
 			else if (m_token[0] == '[')
