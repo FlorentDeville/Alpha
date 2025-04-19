@@ -8,6 +8,7 @@
 #include "Core/Json/JsonObject.h"
 
 #include <assert.h>
+#include <string_view>
 
 namespace Core
 {
@@ -32,7 +33,7 @@ namespace Core
 		return output;
 	}
 
-	void StripLeadingAndTrailingWhitespace(std::string& str)
+	void StripLeadingAndTrailingWhitespace(std::string_view& str)
 	{
 		size_t firstNonWhitespace = str.find_first_not_of(" \r\n\t");
 		size_t lastNonWhitespace = str.find_last_not_of(" \r\n\t");
@@ -41,8 +42,7 @@ namespace Core
 	}
 
 	JsonDeserializer::JsonDeserializer()
-		: m_stream()
-		, m_line()
+		: m_document()
 		, m_token()
 	{}
 
@@ -51,7 +51,7 @@ namespace Core
 
 	bool JsonDeserializer::Deserialize(const std::string& input, JsonObject& output)
 	{
-		m_stream.str(input);
+		m_document = std::string_view(input.c_str(), input.size());
 
 		bool continueReading = true;
 		while (continueReading)
@@ -71,115 +71,109 @@ namespace Core
 
 	bool JsonDeserializer::ReadNextToken()
 	{
-		if (m_line.eof() || m_line.rdbuf()->in_avail() == 0)
+		if(m_document.empty())
 		{
-			if (m_stream.eof() || m_stream.rdbuf()->in_avail() == 0)
+			m_token.clear();
+			return false;
+		}
+
+		bool readNextChar = true;
+		while (readNextChar)
+		{
+			char nextChar = m_document.front();
+			switch (nextChar)
 			{
-				m_token.clear();
-				return false;
+			case '\n':
+			case '\r':
+			case '\t':
+			case ' ':
+			{
+				m_document = m_document.substr(1);
 			}
+			break;
 
-			std::string line;
-			std::getline(m_stream, line);
-			StripLeadingAndTrailingWhitespace(line);
-
-			if (line.empty())
-				return ReadNextToken();
-
-			m_line.clear();
-			m_line.str(line);
-		}
-
-		char nextChar = m_line.peek();
-		if (nextChar == '{')
-		{
-			std::getline(m_line, m_token, '{');
-			m_token = "{";
-		}
-		else if (nextChar == '}')
-		{
-			std::getline(m_line, m_token, '}');
-			m_token = "}";
-		}
-		else if (nextChar == '"')
-		{
-			//read the string
-			std::getline(m_line, m_token, '"'); //start quote
-
-			bool lastQuoteFound = false;
-			while (!lastQuoteFound)
+			case '{':
+			case '}':
+			case ':':
+			case '[':
+			case ']':
+			case ',':
 			{
-				std::string tempToken;
-				std::getline(m_line, tempToken, '"');
+				m_token = nextChar;
+				m_document = m_document.substr(1);
+				readNextChar = false;
+			}
+			break;
 
-				m_token += tempToken;
-
-				if (tempToken.size() > 0)
+			case '-':
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+			{
+				int currentIndex = 1;
+				char readChar = m_document[currentIndex];
+				while (readChar != '\r' && readChar != '\n' && readChar != '\t' && readChar != ' ' && readChar != ',' && readChar != '}' && readChar != ']')
 				{
-					char escapeCharacter = tempToken[tempToken.size() - 1];
-					if (escapeCharacter != '\\')
-						lastQuoteFound = true;
-					else
-						m_token += "\"";
+					++currentIndex;
+					readChar = m_document[currentIndex];
+
 				}
+
+				m_token = m_document.substr(0, currentIndex);
+				m_document = m_document.substr(currentIndex);
+				
+				readNextChar = false;
 			}
-			
-			m_token = "\"" + m_token + "\"";
-		}
-		else if (nextChar == ':')
-		{
-			std::getline(m_line, m_token, ':');
-			m_token = ":";
-		}
-		else if (nextChar == '[')
-		{
-			std::getline(m_line, m_token, '[');
-			m_token = "[";
-		}
-		else if (nextChar == ']')
-		{
-			std::getline(m_line, m_token, ']');
-			m_token = "]";
-		}
-		else if (nextChar == ' ')
-		{
-			std::getline(m_line, m_token, ' ');
-			return ReadNextToken();
-		}
-		else if (nextChar == '-' || std::isdigit(nextChar))
-		{
-			const int BUFFER_SIZE = 32;
-			char buffer[BUFFER_SIZE] = { '\0' };
+			break;
 
-			buffer[0] = m_line.get();
-			
-			int currentIndex = 1;
-			char readChar = m_line.peek();
-			while (readChar != '\r' && readChar != '\n' && readChar != '\t' && readChar != ' ' && readChar != ',' && readChar != '}' && readChar != ']' && !m_line.eof())
+			case '"':
 			{
-				assert(currentIndex < BUFFER_SIZE - 1);
-				buffer[currentIndex] = m_line.get();
-				readChar = m_line.peek();
-				++currentIndex;
+				size_t lastDoubleQuote = 0;
+				size_t offset = 1;
+				bool lastQuoteFound = false;
+				while (!lastQuoteFound)
+				{
+					lastDoubleQuote = m_document.find_first_of('"', 1);
+					char previousChar = m_document[lastDoubleQuote - 1];
+					if (previousChar != '\\')
+						break;
 
+					offset = lastDoubleQuote + 1;
+				}
+
+				size_t endCharIndex = lastDoubleQuote + 1;
+				m_token = m_document.substr(0, endCharIndex);
+				m_document = m_document.substr(endCharIndex);
+				readNextChar = false;
 			}
-			m_token = buffer;
-		}
-		else if (nextChar == ',')
-		{
-			m_token = m_line.get();
-		}
-		else
-		{
-			// keyword like true, false, null
-			m_token = "";
-			m_token += m_line.get();
+			break;
 
-			char readChar = m_line.peek();
-			while (readChar != '\r' && readChar != '\n' && readChar != '\t' && readChar != ' ' && readChar != ',' && readChar != '}' && readChar != ']' && !m_line.eof())
+			default:
 			{
-				m_token += m_line.get();
-				readChar = m_line.peek();
+				// keyword like true, false, null
+				m_token = "";
+				m_token += m_document.front();
+
+				int currentIndex = 1;
+				char readChar = m_document[currentIndex];
+				while (readChar != '\r' && readChar != '\n' && readChar != '\t' && readChar != ' ' && readChar != ',' && readChar != '}' && readChar != ']')
+				{
+					m_token += readChar;
+					++currentIndex;
+					readChar = m_document[currentIndex];
+				}
+
+				m_document = m_document.substr(currentIndex);
+				readNextChar = false;
+			}
+			break;
 			}
 		}
 

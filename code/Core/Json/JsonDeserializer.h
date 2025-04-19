@@ -5,7 +5,6 @@
 #pragma once
 
 #include <string>
-#include <sstream>
 
 namespace Core
 {
@@ -21,8 +20,7 @@ namespace Core
 		bool Deserialize(const std::string& input, JsonObject& output);
 
 	private:
-		std::istringstream m_stream;
-		std::istringstream m_line;
+		std::string_view m_document;
 		std::string m_token;
 
 		bool ReadNextToken();
