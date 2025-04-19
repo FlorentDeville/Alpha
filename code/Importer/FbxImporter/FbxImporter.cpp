@@ -35,7 +35,7 @@ namespace FbxImporter
 		bool res = Visit(pRoot);
 
 		delete[] pFileContent;
-		if (!res)
+		if (!res || m_indices.GetSize() == 0)
 			return false;
 			
 
