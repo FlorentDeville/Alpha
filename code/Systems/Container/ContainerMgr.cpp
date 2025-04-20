@@ -86,11 +86,22 @@ namespace Systems
 		//first let's read the file
 		{
 			std::string filename = MakeFilename(cid);
-			std::ifstream fileStream(filename);
-			std::stringstream ss;
-			ss << fileStream.rdbuf();
-			fileContent = ss.str();
-			fileStream.close();
+
+			FILE* pFile = nullptr;
+			fopen_s(&pFile, filename.c_str(), "rb");
+			if (!pFile)
+				return nullptr;
+
+			fseek(pFile, 0, SEEK_END);
+			size_t fileSize = ftell(pFile);
+			fseek(pFile, 0, SEEK_SET);
+
+			fileContent.resize(fileSize);
+			size_t sizeRead = fread(&fileContent[0], sizeof(char), fileSize, pFile);
+			fclose(pFile);
+
+			if (sizeRead != fileSize)
+				return nullptr;
 		}
 
 		Core::JsonObject json;
