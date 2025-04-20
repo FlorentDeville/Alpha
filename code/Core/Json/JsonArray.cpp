@@ -10,8 +10,9 @@
 namespace Core
 {
 	JsonArray::JsonArray()
-		: m_elements()
-	{}
+	{
+		m_elements.reserve(4);
+	}
 
 	JsonArray::~JsonArray()
 	{
