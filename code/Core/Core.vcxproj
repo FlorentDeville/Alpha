@@ -109,6 +109,8 @@
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
+    <ClCompile Include="Memory\Allocator.cpp" />
+    <ClCompile Include="Memory\LinearAllocator.cpp" />
     <ClCompile Include="Sid\Sid.cpp" />
     <ClCompile Include="String\BytesToHexa.cpp" />
   </ItemGroup>
@@ -133,6 +135,8 @@
     <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
+    <ClInclude Include="Memory\Allocator.h" />
+    <ClInclude Include="Memory\LinearAllocator.h" />
     <ClInclude Include="Sid\Sid.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="String\BytesToHexa.h" />
