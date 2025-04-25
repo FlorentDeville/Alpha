@@ -8,6 +8,7 @@
 #include "Core/Json/JsonObject.h"
 
 #include <assert.h>
+#include <charconv>
 #include <string_view>
 
 namespace Core
@@ -196,7 +197,8 @@ namespace Core
 			}
 			else if (firstCharacter == '-' || std::isdigit(firstCharacter))
 			{
-				double value = std::stod(m_token);
+				double value = 0;
+				std::from_chars(m_token.c_str(), m_token.c_str() + m_token.size(), value);
 				output.AddElement(value);
 			}
 			else if (firstCharacter == '[')
@@ -251,7 +253,8 @@ namespace Core
 			}
 			else if (m_token[0] == '-' || std::isdigit(m_token[0]))
 			{
-				double value = std::stod(m_token);
+				double value = 0;
+				std::from_chars(m_token.c_str(), m_token.c_str() + m_token.size(), value);
 				output.AddMember(memberName, value);
 			}
 			else if (m_token[0] == '[')
