@@ -176,5 +176,8 @@
     <ClInclude Include="Memory\AllocatorJanitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Memory\MemoryMacro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

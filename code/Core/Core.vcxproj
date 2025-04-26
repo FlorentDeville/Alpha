@@ -143,6 +143,7 @@
     <ClInclude Include="Memory\AllocatorJanitor.h" />
     <ClInclude Include="Memory\AllocatorStack.h" />
     <ClInclude Include="Memory\LinearAllocator.h" />
+    <ClInclude Include="Memory\MemoryMacro.h" />
     <ClInclude Include="Memory\MemoryPool.h" />
     <ClInclude Include="Memory\MemoryPoolMgr.h" />
     <ClInclude Include="Sid\Sid.h" />
