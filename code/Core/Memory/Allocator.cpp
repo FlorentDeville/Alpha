@@ -32,6 +32,8 @@ namespace Core
 		// For example 4 is 0b0000 0100 and 4 - 1 is 0b0000 0011.
 		// Masking off the bits set to 1 in pPtr will create an aligned address. So I need to flip the bits again
 		// before masking.
+		if (alignment == 0)
+			return 0;
 
 		uint64_t alignMinusOne = alignment - 1;
 		uint64_t flipAlignMinusOne = ~alignMinusOne;
