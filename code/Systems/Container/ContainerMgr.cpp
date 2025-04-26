@@ -7,6 +7,9 @@
 #include "Core/Json/JsonDeserializer.h"
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonSerializer.h"
+#include "Core/Memory/AllocatorJanitor.h"
+#include "Core/Memory/MemoryPool.h"
+#include "Core/Memory/MemoryPoolMgr.h"
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Container/Container.h"
@@ -30,6 +33,9 @@ namespace Systems
 	void ContainerMgr::Init(const std::string& root)
 	{
 		m_root = root;
+
+		const Core::MemoryPool* pPool = Core::MemoryPoolMgr::Get().GetPool(MAKESID("Json"));
+		m_jsonAllocator.Init(pPool->GetStartPtr(), pPool->GetSize());
 	}
 
 	void ContainerMgr::Shutdown()
@@ -104,20 +110,25 @@ namespace Systems
 				return nullptr;
 		}
 
-		Core::JsonObject json;
-		Core::JsonDeserializer deser;
-		bool res = deser.Deserialize(fileContent, json);
-		if (!res)
-			return nullptr;
+		{
+			Core::AllocatorJanitor jsonAllocJanitor(&m_jsonAllocator);
 
-		Container* pContainer = new Container();
-		ContainerJsonDeserializer containerDeser;
-		res = containerDeser.Deserialize(json, *pContainer);
-		if (!res)
-			return nullptr;
+			Core::JsonObject json;
+			Core::JsonDeserializer deser;
+			bool res = deser.Deserialize(fileContent, json);
+			if (!res)
+				return nullptr;
 
-		m_containerMap[pContainer->GetId()] = pContainer;
-		return pContainer;
+			Container* pContainer = new Container();
+			ContainerJsonDeserializer containerDeser;
+			res = containerDeser.Deserialize(json, *pContainer);
+			if (!res)
+				return nullptr;
+
+			m_containerMap[pContainer->GetId()] = pContainer;
+
+			return pContainer;
+		}
 	}
 
 	bool ContainerMgr::SaveContainer(ContainerId cid)

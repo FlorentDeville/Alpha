@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Memory/LinearAllocator.h"
+
 #include "Core/Singleton.h"
 
 #include <map>
@@ -32,6 +34,7 @@ namespace Systems
 	private:
 		std::string m_root;
 		std::map<ContainerId, Container*> m_containerMap;
+		Core::LinearAllocator m_jsonAllocator;
 
 		std::string MakeDirectory(ContainerId cid);
 		std::string MakeFilename(ContainerId cid);
