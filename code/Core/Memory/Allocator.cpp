@@ -14,7 +14,7 @@ namespace Core
 	Allocator::~Allocator()
 	{ }
 
-	uint8_t Allocator::ComputeAlignmentOffset(const void* pPtr, uint8_t alignment) const
+	uint16_t Allocator::ComputeAlignmentOffset(const void* pPtr, uint16_t alignment) const
 	{
 		// Alignment must be a power of 2 so only 1 bit is set to 1, all others are 0. So alignment - 1
 		// flips the 1 into a 0 and flips the folling 0 into a 1.
@@ -32,6 +32,6 @@ namespace Core
 
 		uint64_t offset = alignment - (reinterpret_cast<const uint64_t>(pPtr) - maskedAddress);
 		//uint8_t offset = static_cast<uint8_t>(maskedAddress - reinterpret_cast<const uint64_t>(pPtr));
-		return static_cast<uint8_t>(offset);
+		return static_cast<uint16_t>(offset);
 	}
 }

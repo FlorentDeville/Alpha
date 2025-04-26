@@ -14,9 +14,9 @@ namespace Core
 	LinearAllocator::~LinearAllocator()
 	{ }
 
-	void* LinearAllocator::Allocate(size_t size, uint8_t alignment)
+	void* LinearAllocator::Allocate(size_t size, uint16_t alignment)
 	{
-		uint8_t offset = ComputeAlignmentOffset(m_pTop, alignment);
+		uint16_t offset = ComputeAlignmentOffset(m_pTop, alignment);
 
 		if (m_pTop + offset + size >= m_pStart + m_size)
 			return nullptr;

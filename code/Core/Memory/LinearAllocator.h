@@ -14,7 +14,7 @@ namespace Core
 		LinearAllocator(void* pStart, size_t size);
 		~LinearAllocator();
 
-		void* Allocate(size_t size, uint8_t alignment) override;
+		void* Allocate(size_t size, uint16_t alignment) override;
 
 		//Doesn't do anything for a linear allocator. You can only release the entire memory using Clear.
 		void Free(void* pPtr) override;
