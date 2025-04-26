@@ -28,4 +28,9 @@ namespace Core
 	{
 		m_stack.pop();
 	}
+
+	Allocator* AllocatorStack::GetTopAllocator() const
+	{
+		return m_stack.top();
+	}
 }

@@ -24,6 +24,8 @@ namespace Core
 		void Push(Allocator* pAllocator);
 		void Pop();
 
+		Allocator* GetTopAllocator() const;
+
 	private:
 		std::stack<Allocator*> m_stack;
 	};
