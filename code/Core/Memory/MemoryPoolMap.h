@@ -5,7 +5,6 @@
 #pragma once
 
 #include "Core/Sid/Sid.h"
-#include "Core/Singleton.h"
 
 #include <map>
 
@@ -13,21 +12,14 @@ namespace Core
 {
 	class MemoryPool;
 
-	class MemoryPoolMgr : public Singleton<MemoryPoolMgr>
+	//extern std::map<Sid, MemoryPool> g_PoolMap;
+
+	class MemoryPoolMap
 	{
 	public:
-		MemoryPoolMgr();
-		~MemoryPoolMgr();
+		static void AllocateAllPools();
+		static void FreeAllPools();
 
-		void Init() override;
-		void Shutdown() override;
-
-		void AllocateAllPools();
-		void FreeAllPools();
-
-		MemoryPool* GetPool(Core::Sid sid) const;
-
-	private:
-		std::map<Core::Sid, MemoryPool*> m_pools;
+		static const MemoryPool& GetPool(Core::Sid sid);
 	};
 }

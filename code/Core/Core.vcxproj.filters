@@ -78,7 +78,7 @@
     <ClCompile Include="Memory\MemoryPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\MemoryPoolMgr.cpp">
+    <ClCompile Include="Memory\MemoryPoolMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Memory\AllocatorJanitor.cpp">
@@ -167,7 +167,7 @@
     <ClInclude Include="Memory\AllocatorStack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\MemoryPoolMgr.h">
+    <ClInclude Include="Memory\MemoryPoolMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Memory\MemoryPool.h">

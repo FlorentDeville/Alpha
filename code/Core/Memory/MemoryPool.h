@@ -11,7 +11,8 @@ namespace Core
 	class MemoryPool
 	{
 	public:
-		MemoryPool(size_t size, uint16_t alignment);
+		MemoryPool();
+		MemoryPool(size_t size);
 		~MemoryPool();
 
 		void Allocate();
@@ -19,11 +20,9 @@ namespace Core
 
 		void* GetStartPtr() const;
 		size_t GetSize() const;
-		uint16_t GetAlignment() const;
 
 	private:
 		void* m_pStart;
 		size_t m_size;
-		uint16_t m_alignment;
 	};
 }

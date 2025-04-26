@@ -114,7 +114,7 @@
     <ClCompile Include="Memory\AllocatorStack.cpp" />
     <ClCompile Include="Memory\LinearAllocator.cpp" />
     <ClCompile Include="Memory\MemoryPool.cpp" />
-    <ClCompile Include="Memory\MemoryPoolMgr.cpp" />
+    <ClCompile Include="Memory\MemoryPoolMap.cpp" />
     <ClCompile Include="Sid\Sid.cpp" />
     <ClCompile Include="String\BytesToHexa.cpp" />
   </ItemGroup>
@@ -145,7 +145,7 @@
     <ClInclude Include="Memory\LinearAllocator.h" />
     <ClInclude Include="Memory\MemoryMacro.h" />
     <ClInclude Include="Memory\MemoryPool.h" />
-    <ClInclude Include="Memory\MemoryPoolMgr.h" />
+    <ClInclude Include="Memory\MemoryPoolMap.h" />
     <ClInclude Include="Sid\Sid.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="String\BytesToHexa.h" />

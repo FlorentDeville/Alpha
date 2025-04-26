@@ -19,7 +19,7 @@
 #include "Core/Memory/AllocatorStack.h"
 #include "Core/Memory/LinearAllocator.h"
 #include "Core/Memory/MemoryPool.h"
-#include "Core/Memory/MemoryPoolMgr.h"
+#include "Core/Memory/MemoryPoolMap.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -618,16 +618,14 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	std::string binPath = buffer;
 	size_t lastSlash = binPath.find_last_of('\\');
 	binPath = binPath.substr(0, lastSlash);
-
-	Core::MemoryPoolMgr& memoryPoolMgr = Core::MemoryPoolMgr::InitSingleton();
-	memoryPoolMgr.Init();
-	memoryPoolMgr.AllocateAllPools();
+	
+	Core::MemoryPoolMap::AllocateAllPools();
 
 	Core::AllocatorStack& allocatorStack = Core::AllocatorStack::InitSingleton();
 	allocatorStack.Init();
 
-	Core::MemoryPool* pRootPool = memoryPoolMgr.GetPool(MAKESID("Root"));
-	Core::LinearAllocator rootAllocator(pRootPool->GetStartPtr(), pRootPool->GetSize());
+	const Core::MemoryPool& rootPool = Core::MemoryPoolMap::GetPool(MAKESID("Root"));
+	Core::LinearAllocator rootAllocator(rootPool.GetStartPtr(), rootPool.GetSize());
 	allocatorStack.Push(&rootAllocator);
 
 	Configuration configuration;
@@ -743,9 +741,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	allocatorStack.Shutdown();
 	Core::AllocatorStack::ReleaseSingleton();
 
-	memoryPoolMgr.FreeAllPools();
-	memoryPoolMgr.Shutdown();
-	memoryPoolMgr.ReleaseSingleton();
-
+	Core::MemoryPoolMap::FreeAllPools();
+	
 	return 0;
 }

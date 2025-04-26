@@ -9,7 +9,7 @@
 #include "Core/Json/JsonSerializer.h"
 #include "Core/Memory/AllocatorJanitor.h"
 #include "Core/Memory/MemoryPool.h"
-#include "Core/Memory/MemoryPoolMgr.h"
+#include "Core/Memory/MemoryPoolMap.h"
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Container/Container.h"
@@ -34,8 +34,8 @@ namespace Systems
 	{
 		m_root = root;
 
-		const Core::MemoryPool* pPool = Core::MemoryPoolMgr::Get().GetPool(MAKESID("Json"));
-		m_jsonAllocator.Init(pPool->GetStartPtr(), pPool->GetSize());
+		const Core::MemoryPool& pPool = Core::MemoryPoolMap::GetPool(MAKESID("Json"));
+		m_jsonAllocator.Init(pPool.GetStartPtr(), pPool.GetSize());
 	}
 
 	void ContainerMgr::Shutdown()
