@@ -15,6 +15,7 @@
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
+#include "Core/Memory/AllocatorJanitor.h"
 #include "Core/Memory/AllocatorStack.h"
 #include "Core/Memory/LinearAllocator.h"
 #include "Core/Memory/MemoryPool.h"
@@ -624,8 +625,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Core::AllocatorStack& allocatorStack = Core::AllocatorStack::InitSingleton();
 	allocatorStack.Init();
-	Core::MemoryPool* pRootPool = memoryPoolMgr.GetPool(MAKESID("Root"));
 
+	Core::MemoryPool* pRootPool = memoryPoolMgr.GetPool(MAKESID("Root"));
 	Core::LinearAllocator rootAllocator(pRootPool->GetStartPtr(), pRootPool->GetSize());
 	allocatorStack.Push(&rootAllocator);
 

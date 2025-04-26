@@ -111,7 +111,7 @@ namespace Systems
 		}
 
 		{
-			Core::AllocatorJanitor jsonAllocJanitor(&m_jsonAllocator);
+			//Core::AllocatorJanitor jsonAllocJanitor(&m_jsonAllocator);
 
 			Core::JsonObject json;
 			Core::JsonDeserializer deser;
