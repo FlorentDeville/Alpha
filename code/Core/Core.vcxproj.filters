@@ -81,6 +81,9 @@
     <ClCompile Include="Memory\MemoryPoolMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Memory\AllocatorJanitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -168,6 +171,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Memory\MemoryPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\AllocatorJanitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

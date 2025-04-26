@@ -110,6 +110,7 @@
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
     <ClCompile Include="Memory\Allocator.cpp" />
+    <ClCompile Include="Memory\AllocatorJanitor.cpp" />
     <ClCompile Include="Memory\AllocatorStack.cpp" />
     <ClCompile Include="Memory\LinearAllocator.cpp" />
     <ClCompile Include="Memory\MemoryPool.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
     <ClInclude Include="Memory\Allocator.h" />
+    <ClInclude Include="Memory\AllocatorJanitor.h" />
     <ClInclude Include="Memory\AllocatorStack.h" />
     <ClInclude Include="Memory\LinearAllocator.h" />
     <ClInclude Include="Memory\MemoryPool.h" />
