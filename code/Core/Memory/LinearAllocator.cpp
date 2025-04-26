@@ -6,6 +6,11 @@
 
 namespace Core
 {
+	LinearAllocator::LinearAllocator()
+		: Allocator()
+		, m_pTop(nullptr)
+	{ }
+
 	LinearAllocator::LinearAllocator(void* pStart, size_t size)
 		: Allocator(pStart, size)
 		, m_pTop(reinterpret_cast<char*>(pStart))
@@ -13,6 +18,12 @@ namespace Core
 
 	LinearAllocator::~LinearAllocator()
 	{ }
+
+	void LinearAllocator::Init(void* pStart, size_t size)
+	{
+		Allocator::Init(pStart, size);
+		m_pTop = reinterpret_cast<char*>(pStart);
+	}
 
 	void* LinearAllocator::Allocate(size_t size, uint16_t alignment)
 	{

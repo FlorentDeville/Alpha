@@ -11,8 +11,11 @@ namespace Core
 	class Allocator
 	{
 	public:
+		Allocator();
 		Allocator(void* pStart, size_t size);
 		virtual ~Allocator();
+
+		virtual void Init(void* pStart, size_t size);
 
 		virtual void* Allocate(size_t size, uint16_t alignment) = 0;
 		virtual void Free(void* pPtr) = 0;

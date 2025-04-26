@@ -6,6 +6,11 @@
 
 namespace Core
 {
+	Allocator::Allocator()
+		: m_pStart(nullptr)
+		, m_size()
+	{ }
+
 	Allocator::Allocator(void* pStart, size_t size)
 		: m_pStart(reinterpret_cast<char*>(pStart))
 		, m_size(size)
@@ -13,6 +18,12 @@ namespace Core
 
 	Allocator::~Allocator()
 	{ }
+
+	void Allocator::Init(void* pStart, size_t size)
+	{
+		m_pStart = reinterpret_cast<char*>(pStart);
+		m_size = size;
+	}
 
 	uint16_t Allocator::ComputeAlignmentOffset(const void* pPtr, uint16_t alignment) const
 	{

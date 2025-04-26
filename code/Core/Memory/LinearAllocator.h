@@ -11,8 +11,11 @@ namespace Core
 	class LinearAllocator : public Allocator
 	{
 	public:
+		LinearAllocator();
 		LinearAllocator(void* pStart, size_t size);
 		~LinearAllocator();
+
+		void Init(void* pStart, size_t size) override;
 
 		void* Allocate(size_t size, uint16_t alignment) override;
 
