@@ -45,12 +45,12 @@ namespace Core
 
 		bool GetValueAsBool() const;
 		double GetValueAsDouble() const;
-		std::string GetValueAsString() const;
+		const std::string& GetValueAsString() const;
 		JsonArray* GetValueAsArray() const;
 		JsonObject* GetValueAsObject() const;
 
 	private:
 		JsonType m_type;
-		std::variant<double, std::string, bool, JsonArray*, JsonObject*> m_value;
+		std::variant<double, std::string*, bool, JsonArray*, JsonObject*> m_value;
 	};
 }
