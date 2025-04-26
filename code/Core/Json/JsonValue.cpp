@@ -101,7 +101,12 @@ namespace Core
 	void JsonValue::Set(const char* value)
 	{
 		m_type = JsonType::String;
-		m_value = value;
+		
+		std::string* pString = std::get<std::string*>(m_value);
+		if (pString)
+			*pString = value;
+		else
+			m_value = new std::string(value);
 	}
 
 	void JsonValue::Set(const std::string& value)
