@@ -6,6 +6,7 @@
 
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonValue.h"
+#include "Core/Memory/MemoryMacro.h"
 
 namespace Core
 {
@@ -17,50 +18,50 @@ namespace Core
 	JsonArray::~JsonArray()
 	{
 		for (JsonValue* pValue : m_elements)
-			delete pValue;
+			DELETE(pValue);
 
 		m_elements.clear();
 	}
 
 	void JsonArray::AddElement(int32_t value)
 	{
-		JsonValue* pNewValue = new JsonValue(value);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(value);
 		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(float value)
 	{
-		JsonValue* pNewValue = new JsonValue(value);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(value);
 		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(double value)
 	{
-		JsonValue* pNewValue = new JsonValue(value);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(value);
 		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(bool value)
 	{
-		JsonValue* pNewValue = new JsonValue(value);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(value);
 		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(const std::string& value)
 	{
-		JsonValue* pNewValue = new JsonValue(value);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(value);
 		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(JsonObject* pValue)
 	{
-		JsonValue* pNewValue = new JsonValue(pValue);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(pValue);
 		m_elements.push_back(pNewValue);
 	}
 
 	void JsonArray::AddElement(JsonArray* pValue)
 	{
-		JsonValue* pNewValue = new JsonValue(pValue);
+		JsonValue* pNewValue = MAKENEW(JsonValue)(pValue);
 		m_elements.push_back(pNewValue);
 	}
 
@@ -71,8 +72,8 @@ namespace Core
 
 	Core::JsonObject* JsonArray::AddObject()
 	{
-		Core::JsonObject* pObj = new Core::JsonObject();
-		JsonValue* pNewValue = new JsonValue(pObj);
+		Core::JsonObject* pObj = MAKENEW(Core::JsonObject)();
+		JsonValue* pNewValue = MAKENEW(JsonValue)(pObj);
 		m_elements.push_back(pNewValue);
 		
 		return pObj;

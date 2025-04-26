@@ -6,6 +6,7 @@
 
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonMember.h"
+#include "Core/Memory/MemoryMacro.h"
 
 #include <assert.h>
 
@@ -18,71 +19,71 @@ namespace Core
 	JsonObject::~JsonObject()
 	{
 		for (JsonMember* pMember : m_members)
-			delete pMember;
+			DELETE(pMember);
 
 		m_members.clear();
 	}
 
 	void JsonObject::AddMember(const std::string& name, int32_t value)
 	{
-		JsonMember* pNewMember = new JsonMember(name, value);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, value);
 		m_members.push_back(pNewMember);
 	}
 
 	void JsonObject::AddMember(const std::string& name, uint64_t value)
 	{
-		JsonMember* pNewMember = new JsonMember(name, value);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, value);
 		m_members.push_back(pNewMember);
 	}
 
 	void JsonObject::AddMember(const std::string& name, float value)
 	{
-		JsonMember* pNewMember = new JsonMember(name, value);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, value);
 		m_members.push_back(pNewMember);
 	}
 
 	void JsonObject::AddMember(const std::string& name, double value)
 	{
-		JsonMember* pNewMember = new JsonMember(name, value);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, value);
 		m_members.push_back(pNewMember);
 	}
 
 	void JsonObject::AddMember(const std::string& name, bool value)
 	{
-		JsonMember* pNewMember = new JsonMember(name, value);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, value);
 		m_members.push_back(pNewMember);
 	}
 
 	void JsonObject::AddMember(const std::string& name, const char* pValue)
 	{
-		JsonMember* pNewMember = new JsonMember(name, pValue);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, pValue);
 		m_members.push_back(pNewMember);
 	}
 
 	void JsonObject::AddMember(const std::string& name, const std::string& value)
 	{
-		JsonMember* pNewMember = new JsonMember(name, value);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, value);
 		m_members.push_back(pNewMember);
 	}
 
 	JsonValue* JsonObject::AddMember(const std::string& name)
 	{
-		JsonMember* pNewMember = new JsonMember(name);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name);
 		m_members.push_back(pNewMember);
 		return &(pNewMember->GetValue());
 	}
 
 	void JsonObject::AddNullMember(const std::string& name)
 	{
-		JsonMember* pNewMember = new JsonMember(name);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name);
 		m_members.push_back(pNewMember);
 	}
 
 	JsonObject* JsonObject::AddObject(const std::string& name)
 	{
-		JsonObject* pNewObject = new JsonObject();
+		JsonObject* pNewObject = MAKENEW(JsonObject)();
 
-		JsonMember* pNewMember = new JsonMember(name, pNewObject);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, pNewObject);
 		m_members.push_back(pNewMember);
 
 		return pNewObject;
@@ -90,9 +91,9 @@ namespace Core
 
 	JsonArray* JsonObject::AddArray(const std::string& name)
 	{
-		JsonArray* pNewArray = new JsonArray();
+		JsonArray* pNewArray = MAKENEW(JsonArray)();
 		
-		JsonMember* pNewMember = new JsonMember(name, pNewArray);
+		JsonMember* pNewMember = MAKENEW(JsonMember)(name, pNewArray);
 		m_members.push_back(pNewMember);
 
 		return pNewArray;

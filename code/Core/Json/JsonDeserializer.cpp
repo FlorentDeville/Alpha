@@ -6,6 +6,7 @@
 
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonObject.h"
+#include "Core/Memory/MemoryMacro.h"
 
 #include <assert.h>
 #include <charconv>
@@ -191,7 +192,8 @@ namespace Core
 
 			if (firstCharacter == '{')
 			{
-				JsonObject* pNewObject = new JsonObject();
+				JsonObject* pNewObject = MAKENEW(JsonObject)();
+
 				output.AddElement(pNewObject);
 				ReadObject(*pNewObject);
 			}

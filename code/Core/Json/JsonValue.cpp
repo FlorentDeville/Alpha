@@ -6,6 +6,7 @@
 
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonObject.h"
+#include "Core/Memory/MemoryMacro.h"
 
 namespace Core
 {
@@ -132,13 +133,13 @@ namespace Core
 		if (m_type == JsonType::Array)
 		{
 			JsonArray* pArray = std::get<JsonArray*>(m_value);
-			delete pArray;
+			DELETE(pArray);
 			m_value = static_cast<JsonArray*>(nullptr);
 		}
 		else if (m_type == JsonType::Object)
 		{
 			JsonObject* pObject = std::get<JsonObject*>(m_value);
-			delete pObject;
+			DELETE(pObject);
 			m_value = static_cast<JsonObject*>(nullptr);
 		}
 		else if (m_type == JsonType::String)
