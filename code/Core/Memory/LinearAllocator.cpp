@@ -4,6 +4,8 @@
 
 #include "Core/Memory/LinearAllocator.h"
 
+#include <cassert>
+
 namespace Core
 {
 	LinearAllocator::LinearAllocator()
@@ -30,7 +32,10 @@ namespace Core
 		uint16_t offset = ComputeAlignmentOffset(m_pTop, alignment);
 
 		if (m_pTop + offset + size >= m_pStart + m_size)
+		{
+			assert(false && "Out of memory");
 			return nullptr;
+		}
 
 		char* newPtr = m_pTop + offset;
 		m_pTop = newPtr + size;
