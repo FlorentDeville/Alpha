@@ -31,7 +31,7 @@ namespace Core
 		m_pools[SID("Root")] = new MemoryPool(1 GB, DEFAULT_ALIGNMENT);
 
 
-		m_pools[SID("Json")] = new MemoryPool(1 KB, DEFAULT_ALIGNMENT);
+		m_pools[SID("Json")] = new MemoryPool(1 GB, DEFAULT_ALIGNMENT);
 	}
 
 	void MemoryPoolMgr::Shutdown()
