@@ -47,13 +47,13 @@ namespace Core
 	JsonValue::JsonValue(const char* pValue)
 		: m_type(JsonType::String)
 	{
-		m_value = pValue;
+		m_value = new std::string(pValue);
 	}
 
 	JsonValue::JsonValue(const std::string& value)
 		: m_type(JsonType::String)
 	{
-		m_value = value;
+		m_value = new std::string(value);
 	}
 
 	JsonValue::JsonValue(JsonObject* pValue)
@@ -101,13 +101,18 @@ namespace Core
 	void JsonValue::Set(const char* value)
 	{
 		m_type = JsonType::String;
-		m_value = value;
+		
+		std::string* pString = std::get<std::string*>(m_value);
+		if (pString)
+			*pString = value;
+		else
+			m_value = new std::string(value);
 	}
 
 	void JsonValue::Set(const std::string& value)
 	{
 		m_type = JsonType::String;
-		m_value = value;
+		m_value = new std::string(value);
 	}
 
 	void JsonValue::Set(JsonArray* pValue)
@@ -136,6 +141,12 @@ namespace Core
 			delete pObject;
 			m_value = static_cast<JsonObject*>(nullptr);
 		}
+		else if (m_type == JsonType::String)
+		{
+			std::string* pString = std::get<std::string*>(m_value);
+			delete pString;
+			m_value = static_cast<std::string*>(nullptr);
+		}
 	}
 
 	JsonType JsonValue::GetType() const
@@ -153,9 +164,10 @@ namespace Core
 		return std::get<double>(m_value);
 	}
 
-	std::string JsonValue::GetValueAsString() const
+	const std::string& JsonValue::GetValueAsString() const
 	{
-		return std::get<std::string>(m_value);
+		const std::string* pString = std::get<std::string*>(m_value);
+		return *pString;
 	}
 
 	JsonArray* JsonValue::GetValueAsArray() const
