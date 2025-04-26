@@ -47,7 +47,7 @@ namespace Core
 	JsonValue::JsonValue(const char* pValue)
 		: m_type(JsonType::String)
 	{
-		m_value = pValue;
+		m_value = new std::string(pValue);
 	}
 
 	JsonValue::JsonValue(const std::string& value)
