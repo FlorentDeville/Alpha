@@ -626,7 +626,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	allocatorStack.Init();
 	Core::MemoryPool* pRootPool = memoryPoolMgr.GetPool(MAKESID("Root"));
 
-	Core::LinearAllocator rootAllocator(pRootPool->GetStartPtr(), pRootPool->GetAlignment());
+	Core::LinearAllocator rootAllocator(pRootPool->GetStartPtr(), pRootPool->GetSize());
 	allocatorStack.Push(&rootAllocator);
 
 	Configuration configuration;
