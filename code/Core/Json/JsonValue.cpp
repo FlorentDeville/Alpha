@@ -48,13 +48,13 @@ namespace Core
 	JsonValue::JsonValue(const char* pValue)
 		: m_type(JsonType::String)
 	{
-		m_value = new std::string(pValue);
+		m_value = MAKENEW(std::string)(pValue);
 	}
 
 	JsonValue::JsonValue(const std::string& value)
 		: m_type(JsonType::String)
 	{
-		m_value = new std::string(value);
+		m_value = MAKENEW(std::string)(value);
 	}
 
 	JsonValue::JsonValue(JsonObject* pValue)
@@ -107,13 +107,13 @@ namespace Core
 		if (pString)
 			*pString = value;
 		else
-			m_value = new std::string(value);
+			m_value = MAKENEW(std::string)(value);
 	}
 
 	void JsonValue::Set(const std::string& value)
 	{
 		m_type = JsonType::String;
-		m_value = new std::string(value);
+		m_value = MAKENEW(std::string)(value);
 	}
 
 	void JsonValue::Set(JsonArray* pValue)
@@ -145,7 +145,7 @@ namespace Core
 		else if (m_type == JsonType::String)
 		{
 			std::string* pString = std::get<std::string*>(m_value);
-			delete pString;
+			DELETE(pString);
 			m_value = static_cast<std::string*>(nullptr);
 		}
 	}
