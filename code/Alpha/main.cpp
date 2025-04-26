@@ -15,6 +15,10 @@
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
+#include "Core/Memory/AllocatorStack.h"
+#include "Core/Memory/LinearAllocator.h"
+#include "Core/Memory/MemoryPool.h"
+#include "Core/Memory/MemoryPoolMgr.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -614,6 +618,17 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	size_t lastSlash = binPath.find_last_of('\\');
 	binPath = binPath.substr(0, lastSlash);
 
+	Core::MemoryPoolMgr& memoryPoolMgr = Core::MemoryPoolMgr::InitSingleton();
+	memoryPoolMgr.Init();
+	memoryPoolMgr.AllocateAllPools();
+
+	Core::AllocatorStack& allocatorStack = Core::AllocatorStack::InitSingleton();
+	allocatorStack.Init();
+	Core::MemoryPool* pRootPool = memoryPoolMgr.GetPool(MAKESID("Root"));
+
+	Core::LinearAllocator rootAllocator(pRootPool->GetStartPtr(), pRootPool->GetAlignment());
+	allocatorStack.Push(&rootAllocator);
+
 	Configuration configuration;
 	std::string configurationFilename = binPath + "\\config.ini";
 	configuration.Load(binPath, configurationFilename);
@@ -723,6 +738,13 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Rendering::RenderModule::ReleaseSingleton();
 	Editors::LevelEditorModule::ReleaseSingleton();
 	AppResources::ResourcesMgr::ReleaseSingleton();
+
+	allocatorStack.Shutdown();
+	Core::AllocatorStack::ReleaseSingleton();
+
+	memoryPoolMgr.FreeAllPools();
+	memoryPoolMgr.Shutdown();
+	memoryPoolMgr.ReleaseSingleton();
 
 	return 0;
 }
