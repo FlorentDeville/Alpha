@@ -28,7 +28,7 @@ namespace Core
 
 		~Array()
 		{
-			for (int ii = 0; ii < m_size; ++ii)
+			for (uint32_t ii = 0; ii < m_size; ++ii)
 				m_pStart[m_size].~T();
 
 			delete[] m_pStart;
@@ -58,20 +58,20 @@ namespace Core
 			++m_size;
 		}
 
-		int32_t GetSize() const override
+		uint32_t GetSize() const override
 		{
 			return m_size;
 		}
 
-		void* GetElement(int32_t index) override
+		void* GetElement(uint32_t index) override
 		{
-			assert(index >= 0 && index < m_size);
+			assert(index < m_size);
 			return &m_pStart[index];
 		}
 
-		const void* GetConstElement(int32_t index) const override
+		const void* GetConstElement(uint32_t index) const override
 		{
-			assert(index >= 0 && index < m_size);
+			assert(index < m_size);
 			return &m_pStart[index];
 		}
 
@@ -85,9 +85,9 @@ namespace Core
 			return m_pStart;
 		}
 
-		T& operator[](int32_t index)
+		T& operator[](uint32_t index)
 		{
-			assert(index >= 0 && index < m_size);
+			assert(index < m_size);
 			return m_pStart[index];
 		}
 
@@ -102,22 +102,22 @@ namespace Core
 			source.m_reservedSize = 0;
 		}
 
-		void Resize(int32_t newSize) override;
+		void Resize(uint32_t newSize) override;
 
-		void Reserve(int32_t index, bool allowShrink = false);
+		void Reserve(uint32_t index, bool allowShrink = false);
 
 	private:
-		int32_t m_size; // number of element used
-		int32_t m_reservedSize; // number of element allocated
+		uint32_t m_size; // number of element used
+		uint32_t m_reservedSize; // number of element allocated
 		T* m_pStart;
 
 	};
 
-	template<typename T> void Array<T>::Resize(int32_t newSize)
+	template<typename T> void Array<T>::Resize(uint32_t newSize)
 	{
 		if (newSize < m_size)
 		{
-			for (int ii = newSize; ii < m_size; ++ii)
+			for (uint32_t ii = newSize; ii < m_size; ++ii)
 				m_pStart[ii].~T();
 		}
 
@@ -127,14 +127,14 @@ namespace Core
 		m_size = newSize;
 	}
 
-	template<typename T> void Array<T>::Reserve(int32_t newSize, bool allowShrink)
+	template<typename T> void Array<T>::Reserve(uint32_t newSize, bool allowShrink)
 	{
 		if (m_reservedSize > newSize && !allowShrink)
 			return;
 
 		if (m_size > newSize)
 		{
-			for (int ii = newSize; ii < m_size; ++ii)
+			for (uint32_t ii = newSize; ii < m_size; ++ii)
 				m_pStart[ii].~T();
 
 			m_size = newSize;
