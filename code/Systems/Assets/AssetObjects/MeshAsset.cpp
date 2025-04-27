@@ -130,9 +130,9 @@ namespace Systems
 
 		for (int ii = 0; ii < vertexCount; ++ii)
 		{
-			int32_t positionIndex = vertexCount * 3;
-			int32_t uvIndex = vertexCount * 2;
-			int32_t colorIndex = vertexCount * 4;
+			int32_t positionIndex = ii * 3;
+			int32_t uvIndex = ii * 2;
+			int32_t colorIndex = ii * 4;
 
 			Rendering::VertexGeneric& vertex = vertices[ii];
 
