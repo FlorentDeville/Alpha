@@ -186,7 +186,14 @@ namespace Systems
 		Core::Sid upgradeType = pType->GetUpgradeType();
 		if (upgradeType != Core::INVALID_SID)
 		{
-			//TypeDescriptor* pUpgradeType = ReflectionMgr::Get().GetType()
+			const TypeDescriptor* pUpgradeType = ReflectionMgr::Get().GetType(upgradeType);
+			Object* pUpgradeObject = reinterpret_cast<Object*>(pUpgradeType->Construct());
+			pUpgradeObject->SetTypeDescriptor(pUpgradeType);
+
+			pType->Upgrade(*ppObject, pUpgradeObject);
+
+			pType->Destruct(*ppObject);
+			*ppObject = pUpgradeObject;
 		}
 
 		return true;
