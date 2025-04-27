@@ -43,11 +43,11 @@ namespace Systems
 
 	void MeshAsset::PostLoad()
 	{
-		int vertexCount = static_cast<int>(m_position.GetSize());
+		uint32_t vertexCount = m_position.GetSize();
 		std::vector<Rendering::VertexGeneric> vertices;
 		vertices.resize(vertexCount);
 
-		for (int ii = 0; ii < vertexCount; ++ii)
+		for (uint32_t ii = 0; ii < vertexCount; ++ii)
 		{
 			const Core::Vec4f& pos = m_position[ii];
 			const Core::Vec4f& uv = m_uv[ii];
@@ -122,17 +122,17 @@ namespace Systems
 
 	void MeshAsset_v2::PostLoad()
 	{
-		int indexCount = static_cast<int>(m_indices.GetSize());
-		int vertexCount = indexCount;
+		uint32_t indexCount = m_indices.GetSize();
+		uint32_t vertexCount = indexCount;
 
 		std::vector<Rendering::VertexGeneric> vertices;
 		vertices.resize(vertexCount);
 
-		for (int ii = 0; ii < vertexCount; ++ii)
+		for (uint32_t ii = 0; ii < vertexCount; ++ii)
 		{
-			int32_t positionIndex = ii * 3;
-			int32_t uvIndex = ii * 2;
-			int32_t colorIndex = ii * 4;
+			uint32_t positionIndex = ii * 3;
+			uint32_t uvIndex = ii * 2;
+			uint32_t colorIndex = ii * 4;
 
 			Rendering::VertexGeneric& vertex = vertices[ii];
 
@@ -153,7 +153,7 @@ namespace Systems
 
 		Core::Array<float> dstPos;
 		dstPos.Reserve(srcIndices.GetSize() * 3);
-		for (int32_t ii = 0; ii < srcPos.GetSize(); ++ii)
+		for (uint32_t ii = 0; ii < srcPos.GetSize(); ++ii)
 		{
 			const Core::Vec4f& src = srcPos[ii];
 			dstPos.PushBack(src.GetX());
@@ -163,7 +163,7 @@ namespace Systems
 
 		Core::Array<float> dstUv;
 		dstUv.Reserve(srcIndices.GetSize() * 2);
-		for (int32_t ii = 0; ii < srcUv.GetSize(); ++ii)
+		for (uint32_t ii = 0; ii < srcUv.GetSize(); ++ii)
 		{
 			const Core::Vec4f& src = srcUv[ii];
 			dstUv.PushBack(src.GetX());
@@ -172,7 +172,7 @@ namespace Systems
 
 		Core::Array<float> dstColor;
 		dstPos.Reserve(srcIndices.GetSize() * 4);
-		for (int32_t ii = 0; ii < srcColor.GetSize(); ++ii)
+		for (uint32_t ii = 0; ii < srcColor.GetSize(); ++ii)
 		{
 			const Core::Vec4f& src = srcColor[ii];
 			dstColor.PushBack(src.GetX());
@@ -183,7 +183,7 @@ namespace Systems
 
 		Core::Array<uint16_t> dstIndices;
 		dstIndices.Reserve(srcIndices.GetSize());
-		for (int32_t ii = 0; ii < srcIndices.GetSize(); ++ii)
+		for (uint32_t ii = 0; ii < srcIndices.GetSize(); ++ii)
 		{
 			dstIndices.PushBack(srcIndices[ii]);
 		}
