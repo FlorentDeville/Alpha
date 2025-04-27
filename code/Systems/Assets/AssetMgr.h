@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/AssetId.h"
@@ -20,6 +21,7 @@
 namespace Systems
 {
 	class Asset;
+	class NewAssetType;
 
 	class AssetMgr : public Core::Singleton<AssetMgr>
 	{
@@ -35,6 +37,7 @@ namespace Systems
 		const Asset* CreateAsset(AssetType type, const std::string& name);
 
 		bool RegisterAssetMetadata(AssetMetadata& metadata);
+		void RegisterAssetType(const std::string& name);
 
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
@@ -45,7 +48,9 @@ namespace Systems
 		const std::vector<Asset*>& GetShaders() const;
 		const std::vector<Asset*>& GetLevels() const;
 
-		template<typename T> void GetAssets(std::vector<AssetMetadata*>& metadata);
+		const NewAssetType& GetAssetType(Core::Sid sid) const;
+
+		void GetAssets(Core::Sid assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const;
 
 		bool SaveTableOfContent() const;
 
@@ -68,6 +73,12 @@ namespace Systems
 		// New asset system using containers
 		std::map<NewAssetId, AssetMetadata> m_metadata;
 
+		// New asset types. the type is saved as a string in the metadata table.
+		// It is different from the asset object type. An asset object type can be upgraded and renamed,
+		// but the underlying asset type is the same. So to not resave entirely the metadata table when renaming
+		// a class, the asset type is separated.
+		std::map<Core::Sid, NewAssetType> m_assetTypes;
+
 		std::vector<Asset*>& Internal_GetAssets(AssetType type);
 
 		std::string ConstructAssetPath(AssetId id, AssetType type) const;
@@ -77,15 +88,4 @@ namespace Systems
 
 		std::string GetMetadataTableFilePath() const;
 	};
-
-	template<typename T> void AssetMgr::GetAssets(std::vector<AssetMetadata*>& metadata)
-	{
-		Core::Sid sid = TypeResolver<T>::GetConstType()->GetSid();
-
-		for (std::pair<const NewAssetId, AssetMetadata>& pair : m_metadata)
-		{
-			if (pair.second.GetClassSid() == sid)
-				metadata.push_back(&pair.second);
-		}
-	}
 }

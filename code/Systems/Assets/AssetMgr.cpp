@@ -8,6 +8,7 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetType.h"
+#include "Systems/Assets/AssetType/NewAssetType.h"
 
 #include <assert.h>
 #include <fstream>
@@ -41,6 +42,8 @@ namespace Systems
 		m_root = root;
 
 		InitAssetTypeDescription();
+
+		RegisterAssetType("Mesh");
 
 		LoadTableOfContent();
 		LoadMetadataTable();
@@ -79,6 +82,12 @@ namespace Systems
 		m_metadata[metadata.GetAssetId()] = metadata;
 
 		return true;
+	}
+
+	void AssetMgr::RegisterAssetType(const std::string& name)
+	{
+		Core::Sid sid = SID(name);
+		m_assetTypes[sid] = NewAssetType(name, sid);
 	}
 
 	const Asset* AssetMgr::GetAsset(AssetId id) const
@@ -149,6 +158,28 @@ namespace Systems
 		return m_levels;
 	}
 
+	const NewAssetType& AssetMgr::GetAssetType(Core::Sid sid) const
+	{
+		std::map<const Core::Sid, NewAssetType>::const_iterator it = m_assetTypes.find(sid);
+		if (it == m_assetTypes.cend())
+		{
+			assert(false && "Failed to find asset type");
+			static NewAssetType ret;
+			return ret;
+		}
+
+		return it->second;
+	}
+
+	void AssetMgr::GetAssets(Core::Sid assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const
+	{
+		for(const std::pair<const NewAssetId, AssetMetadata>& pair : m_metadata)
+		{
+			if (pair.second.GetAssetType() == assetTypeSid)
+				metadata.PushBack(&pair.second);
+		}
+	}
+
 	bool AssetMgr::SaveTableOfContent() const
 	{
 		std::string tocFilename = m_root + "\\toc.txt";
@@ -178,7 +209,8 @@ namespace Systems
 		{
 			const AssetMetadata& metadata = pair.second;
 			std::string aid = metadata.GetAssetId().ToString();
-			file << aid << "," << metadata.GetVirtualName() << "," << Core::ToString(metadata.GetClassSid()) << std::endl;
+			const Systems::NewAssetType& type = GetAssetType(metadata.GetAssetType());
+			file << aid << "," << metadata.GetVirtualName() << "," << type.GetName() << std::endl;
 		}
 
 		file.close();
@@ -279,7 +311,6 @@ namespace Systems
 			if (line.empty())
 				continue;
 
-
 			//parse a single line
 			uint64_t id = Core::HexaToUint64(line);
 
@@ -289,12 +320,11 @@ namespace Systems
 			std::getline(file, virtualName, separator);
 
 			std::getline(file, line);
-			uint64_t classNameSid = Core::HexaToUint64(line);
+			Core::Sid assetTypeSid = SID(line);
 
 			NewAssetId assetId(id);
-			Core::Sid className(classNameSid);
 
-			AssetMetadata metadata(assetId, virtualName, className);
+			AssetMetadata metadata(assetId, virtualName, assetTypeSid);
 			m_metadata[assetId] = metadata;
 		}
 
