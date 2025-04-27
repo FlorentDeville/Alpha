@@ -89,6 +89,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("float"):
+		{
+			float* pValue = reinterpret_cast<float*>(ptr);
+			*pValue = static_cast<float>(jsonFieldValue.GetValueAsDouble());
+		}
+		break;
+
 		case SID("Systems::AssetId"):
 		{
 			Systems::AssetId* pValue = reinterpret_cast<Systems::AssetId*>(ptr);
@@ -181,6 +188,20 @@ namespace Systems
 			return false;
 
 		(*ppObject)->PostLoad();
+
+		//upgrade the type if necessary
+		Core::Sid upgradeType = pType->GetUpgradeType();
+		if (upgradeType != Core::INVALID_SID)
+		{
+			const TypeDescriptor* pUpgradeType = ReflectionMgr::Get().GetType(upgradeType);
+			Object* pUpgradeObject = reinterpret_cast<Object*>(pUpgradeType->Construct());
+			pUpgradeObject->SetTypeDescriptor(pUpgradeType);
+
+			pType->Upgrade(*ppObject, pUpgradeObject);
+
+			pType->Destruct(*ppObject);
+			*ppObject = pUpgradeObject;
+		}
 
 		return true;
 	}

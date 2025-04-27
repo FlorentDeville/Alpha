@@ -21,15 +21,15 @@ namespace FbxImporter
 	class FbxImporter
 	{
 	public:
-		bool Import(const std::string& fbxFilename, Systems::MeshAsset& mesh);
+		bool Import(const std::string& fbxFilename, Systems::MeshAsset_v2& mesh);
 
 	private:
 		bool Visit(const ofbx::Object*);
 		bool ImportMesh(const ofbx::Mesh* pMesh);
 
-		Core::Array<Core::Vec4f> m_position;
-		Core::Array<Core::Vec4f> m_uv;
-		Core::Array<Core::Vec4f> m_color;
+		Core::Array<float> m_position;
+		Core::Array<float> m_uv;
+		Core::Array<float> m_color;
 
 		Core::Array<uint16_t> m_indices;
 	};

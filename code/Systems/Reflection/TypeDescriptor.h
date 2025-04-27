@@ -22,11 +22,13 @@ namespace Systems
 		FieldDescriptor* AddField();
 
 		void SetBaseType(const std::string& baseTypeName);
+		void SetUpgradeType(Core::Sid upgradeType);
 
 		const std::string& GetName() const;
 		Core::Sid GetSid() const;
 		const std::vector<FieldDescriptor>& GetFields() const;
 		const TypeDescriptor* GetBaseType() const;
+		Core::Sid GetUpgradeType() const;
 
 		// True if this class inehrits from Object.
 		bool IsObject() const;
@@ -43,13 +45,16 @@ namespace Systems
 		// Delete an object of the type.
 		void (*Destruct)(void*);
 
+		//Function to call to upgrade this type to the type m_upgradeType
+		void (*Upgrade)(const void* src, void* dst);
+
 	private:
 		std::string m_name;
+		std::vector<FieldDescriptor> m_fields;
 		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
-		std::vector<FieldDescriptor> m_fields;
-
-
+		Core::Sid m_upgradeType; // Sid of the type this class should be upgraded to
+		
 	};
 }

@@ -108,4 +108,9 @@ public: \
 
 // Macro to add a base type to the current type
 #define ADD_BASETYPE(BASETYPE) pType->SetBaseType(#BASETYPE);
+
+// Macro the set the upgrade type
+#define ADD_UPGRADE_TYPE(TYPE, FUNC) \
+	pType->SetUpgradeType(MAKESID(#TYPE)); \
+	pType->Upgrade = [](const void* pSrc, void* pDst) { FUNC(static_cast<const ClassType*>(pSrc), static_cast<TYPE*>(pDst)); };
 	

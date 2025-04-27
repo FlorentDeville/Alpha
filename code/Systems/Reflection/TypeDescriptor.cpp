@@ -12,6 +12,7 @@ namespace Systems
 		: m_name(name)
 		, m_size(size)
 		, m_pBaseType(nullptr)
+		, m_upgradeType(Core::INVALID_SID)
 	{
 		m_sid = Core::MakeSid(name);
 	}
@@ -28,6 +29,11 @@ namespace Systems
 		ReflectionMgr& reflectionMgr = ReflectionMgr::Get();
 		TypeDescriptor* pBaseType = reflectionMgr.GetOrAddType(baseTypeName);
 		m_pBaseType = pBaseType;
+	}
+
+	void TypeDescriptor::SetUpgradeType(Core::Sid upgradeType)
+	{
+		m_upgradeType = upgradeType;
 	}
 
 	const std::string& TypeDescriptor::GetName() const
@@ -48,6 +54,11 @@ namespace Systems
 	const TypeDescriptor* TypeDescriptor::GetBaseType() const
 	{
 		return m_pBaseType;
+	}
+
+	Core::Sid TypeDescriptor::GetUpgradeType() const
+	{
+		return m_upgradeType;
 	}
 
 	bool TypeDescriptor::IsObject() const

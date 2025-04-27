@@ -13,6 +13,7 @@
 #include "Rendering/Texture/TextureId.h"
 
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include "DirectXMath.h"
@@ -24,11 +25,6 @@
 namespace Rendering
 {
 	class RenderTarget;
-}
-
-namespace Systems
-{
-	class MeshAsset;
 }
 
 namespace Widgets
@@ -117,5 +113,7 @@ namespace Editors
 		void OnMeshEntryClicked(int entryIndex);
 		bool OnMeshImportClicked(int entryIndex);
 		bool OnMaterialClicked(int entryIndex);
+
+		bool OnSaveSelectedMeshClicked();
 	};
 }
