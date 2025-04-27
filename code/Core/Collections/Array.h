@@ -91,9 +91,9 @@ namespace Core
 			return m_pStart[index];
 		}
 
-		const T& operator[](int32_t index) const
+		const T& operator[](uint32_t index) const
 		{
-			assert(index >= 0 && index < m_size);
+			assert(index < m_size);
 			return m_pStart[index];
 		}
 
