@@ -57,7 +57,7 @@ namespace FbxImporter
 			return false;
 			
 
-		mesh.Init(fbxFilename, m_position, m_uv, m_color, m_indices);
+		mesh.Init(fbxFilename, std::move(m_position), std::move(m_uv), std::move(m_color), std::move(m_indices));
 
 		return res;
 	}
@@ -132,11 +132,17 @@ namespace FbxImporter
 						//fbx represents everything in centimeters. Divide by 100 to get it in meters
 						pos = pos * 0.01f;
 
-						m_position.PushBack(pos);
+						m_position.PushBack(pos.GetX());
+						m_position.PushBack(pos.GetY());
+						m_position.PushBack(pos.GetZ());
 
-						//m_color.push_back(Core::Vec4f(color.x, color.y, color.z, color.w));
-						m_color.PushBack(Core::Vec4f(0, 0, 0, 0));
-						m_uv.PushBack(Core::Vec4f(uv.x, uv.y, 0, 0));
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+
+						m_uv.PushBack(uv.x);
+						m_uv.PushBack(uv.y);
 					}
 
 					{
@@ -153,11 +159,17 @@ namespace FbxImporter
 						//fbx represents everything in centimeters. Divide by 100 to get it in meters
 						pos = pos * 0.01f;
 
-						m_position.PushBack(pos);
+						m_position.PushBack(pos.GetX());
+						m_position.PushBack(pos.GetY());
+						m_position.PushBack(pos.GetZ());
 
-						//m_color.push_back(Core::Vec4f(color.x, color.y, color.z, color.w));
-						m_color.PushBack(Core::Vec4f(0, 0, 0, 0));
-						m_uv.PushBack(Core::Vec4f(uv.x, uv.y, 0, 0));
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+
+						m_uv.PushBack(uv.x);
+						m_uv.PushBack(uv.y);
 					}
 
 					{
@@ -174,11 +186,17 @@ namespace FbxImporter
 						//fbx represents everything in centimeters. Divide by 100 to get it in meters
 						pos = pos * 0.01f;
 
-						m_position.PushBack(pos);
+						m_position.PushBack(pos.GetX());
+						m_position.PushBack(pos.GetY());
+						m_position.PushBack(pos.GetZ());
 
-						//m_color.push_back(Core::Vec4f(color.x, color.y, color.z, color.w));
-						m_color.PushBack(Core::Vec4f(0, 0, 0, 0));
-						m_uv.PushBack(Core::Vec4f(uv.x, uv.y, 0, 0));
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+						m_color.PushBack(0);
+
+						m_uv.PushBack(uv.x);
+						m_uv.PushBack(uv.y);
 					}
 
 					m_indices.PushBack(internalVertexIndex);
