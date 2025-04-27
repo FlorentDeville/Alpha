@@ -182,6 +182,13 @@ namespace Systems
 
 		(*ppObject)->PostLoad();
 
+		//upgrade the type if necessary
+		Core::Sid upgradeType = pType->GetUpgradeType();
+		if (upgradeType != Core::INVALID_SID)
+		{
+			//TypeDescriptor* pUpgradeType = ReflectionMgr::Get().GetType()
+		}
+
 		return true;
 	}
 
