@@ -28,5 +28,6 @@ namespace Systems
 
 		Systems::AssetObject::RegisterReflection();
 		Systems::MeshAsset::RegisterReflection();
+		Systems::MeshAsset_v2::RegisterReflection();
 	}
 }
