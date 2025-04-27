@@ -42,7 +42,7 @@ namespace Systems
 		{
 			TypeDescriptor* pType = new TypeDescriptor(name, sizeof(T));
 			m_typeDb[name] = pType;
-			m_sidToType[SID(name.c_str())] = pType;
+			m_sidToType[SID(name)] = pType;
 			return pType;
 		}
 		else
