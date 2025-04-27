@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "Core/Collections/String.h"
+#include "Core/Collections/StringView.h"
+
 #include <string>
 
 namespace Core
@@ -20,8 +23,8 @@ namespace Core
 		bool Deserialize(const std::string& input, JsonObject& output);
 
 	private:
-		std::string_view m_document;
-		std::string m_token;
+		StringView m_document;
+		String m_token;
 
 		bool ReadNextToken();
 

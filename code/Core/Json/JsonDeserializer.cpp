@@ -52,7 +52,7 @@ namespace Core
 
 	bool JsonDeserializer::Deserialize(const std::string& input, JsonObject& output)
 	{
-		m_document = std::string_view(input.c_str(), input.size());
+		m_document = StringView(input.c_str(), static_cast<uint32_t>(input.size()));
 
 		bool continueReading = true;
 		while (continueReading)
@@ -72,16 +72,16 @@ namespace Core
 
 	bool JsonDeserializer::ReadNextToken()
 	{
-		if(m_document.empty())
+		if(m_document.Empty())
 		{
-			m_token.clear();
+			m_token.Clear();
 			return false;
 		}
 
 		bool readNextChar = true;
 		while (readNextChar)
 		{
-			char nextChar = m_document.front();
+			char nextChar = m_document.Front();
 			switch (nextChar)
 			{
 			case '\n':
@@ -89,7 +89,7 @@ namespace Core
 			case '\t':
 			case ' ':
 			{
-				m_document = m_document.substr(1);
+				m_document = m_document.Substr(1);
 			}
 			break;
 
@@ -101,7 +101,7 @@ namespace Core
 			case ',':
 			{
 				m_token = nextChar;
-				m_document = m_document.substr(1);
+				m_document = m_document.Substr(1);
 				readNextChar = false;
 			}
 			break;
@@ -127,8 +127,8 @@ namespace Core
 
 				}
 
-				m_token = m_document.substr(0, currentIndex);
-				m_document = m_document.substr(currentIndex);
+				m_token = m_document.Substr(0, currentIndex);
+				m_document = m_document.Substr(currentIndex);
 				
 				readNextChar = false;
 			}
@@ -136,12 +136,12 @@ namespace Core
 
 			case '"':
 			{
-				size_t lastDoubleQuote = 0;
-				size_t offset = 1;
+				uint32_t lastDoubleQuote = 0;
+				uint32_t offset = 1;
 				bool lastQuoteFound = false;
 				while (!lastQuoteFound)
 				{
-					lastDoubleQuote = m_document.find_first_of('"', 1);
+					lastDoubleQuote = m_document.FindFirstOf('"', 1);
 					char previousChar = m_document[lastDoubleQuote - 1];
 					if (previousChar != '\\')
 						break;
@@ -149,9 +149,9 @@ namespace Core
 					offset = lastDoubleQuote + 1;
 				}
 
-				size_t endCharIndex = lastDoubleQuote + 1;
-				m_token = m_document.substr(0, endCharIndex);
-				m_document = m_document.substr(endCharIndex);
+				uint32_t endCharIndex = lastDoubleQuote + 1;
+				m_token = m_document.Substr(0, endCharIndex);
+				m_document = m_document.Substr(endCharIndex);
 				readNextChar = false;
 			}
 			break;
@@ -159,19 +159,16 @@ namespace Core
 			default:
 			{
 				// keyword like true, false, null
-				m_token = "";
-				m_token += m_document.front();
-
 				int currentIndex = 1;
 				char readChar = m_document[currentIndex];
 				while (readChar != '\r' && readChar != '\n' && readChar != '\t' && readChar != ' ' && readChar != ',' && readChar != '}' && readChar != ']')
 				{
-					m_token += readChar;
 					++currentIndex;
 					readChar = m_document[currentIndex];
 				}
 
-				m_document = m_document.substr(currentIndex);
+				m_token = m_document.Substr(0, currentIndex);
+				m_document = m_document.Substr(currentIndex);
 				readNextChar = false;
 			}
 			break;
@@ -198,7 +195,7 @@ namespace Core
 			else if (firstCharacter == '-' || std::isdigit(firstCharacter))
 			{
 				double value = 0;
-				std::from_chars(m_token.c_str(), m_token.c_str() + m_token.size(), value);
+				std::from_chars(m_token.GetData(), m_token.GetData() + m_token.GetSize(), value);
 				output.AddElement(value);
 			}
 			else if (firstCharacter == '[')
@@ -209,7 +206,8 @@ namespace Core
 			}
 			else if (firstCharacter == '"')
 			{
-				std::string value = m_token.substr(1, m_token.size() - 2);
+				String str = m_token.Substr(1, m_token.GetSize() - 2);
+				std::string value(str.GetData(), str.GetSize());
 				output.AddElement(value);
 			}
 			else if (m_token == "true")
@@ -235,7 +233,8 @@ namespace Core
 		while (keepReading)
 		{
 			keepReading = ReadNextToken();
-			std::string memberName = m_token.substr(1, m_token.size() - 2);
+			String str = m_token.Substr(1, m_token.GetSize() - 2);
+			std::string memberName(str.GetData(), str.GetSize());
 
 			if (!keepReading)
 				assert(false);
@@ -254,7 +253,7 @@ namespace Core
 			else if (m_token[0] == '-' || std::isdigit(m_token[0]))
 			{
 				double value = 0;
-				std::from_chars(m_token.c_str(), m_token.c_str() + m_token.size(), value);
+				std::from_chars(m_token.GetData(), m_token.GetData() + m_token.GetSize(), value);
 				output.AddMember(memberName, value);
 			}
 			else if (m_token[0] == '[')
@@ -264,7 +263,8 @@ namespace Core
 			}
 			else if (m_token[0] == '"')
 			{
-				std::string value = m_token.substr(1, m_token.size() - 2);
+				String str = m_token.Substr(1, m_token.GetSize() - 2);
+				std::string value(str.GetData(), str.GetSize());
 				std::string unescapedString = UnescapeString(value);
 				output.AddMember(memberName, unescapedString);
 			}
