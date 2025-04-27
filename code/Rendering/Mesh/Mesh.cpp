@@ -172,6 +172,18 @@ namespace Rendering
 
 	void Mesh::LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 	{
+		if (m_pVertexBuffer)
+		{
+			m_pVertexBuffer->Release();
+			m_pVertexBuffer = nullptr;
+		}
+
+		if (m_pIndexBuffer)
+		{
+			m_pIndexBuffer->Release();
+			m_pIndexBuffer = nullptr;
+		}
+
 		m_indicesCount = indicesCount;
 		m_verticesCount = verticesCount;
 
