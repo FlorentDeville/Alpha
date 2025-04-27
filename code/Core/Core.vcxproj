@@ -95,6 +95,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Callbacks\CallbackId.cpp" />
+    <ClCompile Include="Collections\String.cpp" />
+    <ClCompile Include="Collections\StringView.cpp" />
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Json\JsonArray.cpp" />
@@ -118,6 +120,8 @@
     <ClInclude Include="Callbacks\CallbackMacro.h" />
     <ClInclude Include="Collections\Array.h" />
     <ClInclude Include="Collections\BaseArray.h" />
+    <ClInclude Include="Collections\String.h" />
+    <ClInclude Include="Collections\StringView.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Json\JsonArray.h" />

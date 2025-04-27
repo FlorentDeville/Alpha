@@ -28,14 +28,7 @@ namespace Core
 
 		~Array()
 		{
-			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[m_size].~T();
-
-			delete[] m_pStart;
-			m_pStart = nullptr;
-
-			m_size = 0;
-			m_reservedSize = 0;
+			Clear();
 		}
 
 		void PushBack(const T& item)
@@ -112,7 +105,9 @@ namespace Core
 
 		void Reserve(uint32_t index, bool allowShrink = false);
 
-	private:
+		void Clear();
+
+	protected:
 		uint32_t m_size; // number of element used
 		uint32_t m_reservedSize; // number of element allocated
 		T* m_pStart;
@@ -153,5 +148,17 @@ namespace Core
 		m_pStart = pNewArray;
 
 		m_reservedSize = newSize;
+	}
+
+	template<typename T> void Array<T>::Clear()
+	{
+		for (uint32_t ii = 0; ii < m_size; ++ii)
+			m_pStart[m_size].~T();
+
+		delete[] m_pStart;
+		m_pStart = nullptr;
+
+		m_size = 0;
+		m_reservedSize = 0;
 	}
 }
