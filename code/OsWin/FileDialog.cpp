@@ -12,7 +12,7 @@ namespace Os
 	bool OpenFileDialog(std::string& filename, const std::string& extension)
 	{
         const int FILENAME_LENGTH = 260;
-        filename.resize(FILENAME_LENGTH, '\0');
+        char rawFilename[FILENAME_LENGTH] = { '\0' };
 
         OPENFILENAME ofn;       // common dialog box structure
         HWND hwnd = NULL;              // owner window is null
@@ -21,7 +21,7 @@ namespace Os
         ZeroMemory(&ofn, sizeof(OPENFILENAME));
         ofn.lStructSize = sizeof(OPENFILENAME);
         ofn.hwndOwner = hwnd;
-        ofn.lpstrFile = &filename[0];
+        ofn.lpstrFile = rawFilename;
         ofn.nMaxFile = FILENAME_LENGTH;
         ofn.lpstrFilter = "All Files (*.*)\0*.*\0";
         ofn.nFilterIndex = 1;
@@ -29,8 +29,11 @@ namespace Os
 
         // Display the Open dialog box
         if (GetOpenFileName(&ofn) == TRUE)
+        {
+            filename = rawFilename;
             return true;
-        else
-            return false;
+        }
+        
+        return false;
 	}
 }
