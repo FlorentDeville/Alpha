@@ -33,6 +33,7 @@
     <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
     <ClInclude Include="Assets\NewAssetId.h" />
     <ClInclude Include="Container\ObjectId.h" />
+    <ClInclude Include="Assets\AssetType\NewAssetType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -63,5 +64,6 @@
     <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />
     <ClCompile Include="Assets\NewAssetId.cpp" />
     <ClCompile Include="Container\ObjectId.cpp" />
+    <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
   </ItemGroup>
 </Project>

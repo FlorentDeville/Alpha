@@ -64,7 +64,7 @@ namespace Editors
 		Systems::Container* pContainer = containerMgr.CreateContainer(filename.c_str());
 		pContainer->AddAsset(pMesh);
 
-		Systems::AssetMetadata metadata(pMesh->GetId(), filename, pMesh->GetTypeDescriptor()->GetSid());
+		Systems::AssetMetadata metadata(pMesh->GetId(), filename, MAKESID("Mesh"));
 		assetMgr.RegisterAssetMetadata(metadata);
 
 		containerMgr.SaveContainer(pContainer->GetId());
@@ -178,11 +178,12 @@ namespace Editors
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		//create the list of meshes
-		std::vector<Systems::AssetMetadata*> allMeshes;
-		Systems::AssetMgr::Get().GetAssets<Systems::MeshAsset>(allMeshes);
+		Core::Array<const Systems::AssetMetadata*> allMeshes;
+		Systems::AssetMgr::Get().GetAssets(MAKESID("Mesh"), allMeshes);
 
-		for(const Systems::AssetMetadata* pMetadata : allMeshes)
+		for(uint32_t ii = 0; ii < allMeshes.GetSize(); ++ii)
 		{
+			const Systems::AssetMetadata* pMetadata = allMeshes[ii];
 			m_allMeshes.push_back(MeshEntry());
 
 			MeshEntry& newEntry = m_allMeshes.back();
