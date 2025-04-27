@@ -21,6 +21,7 @@ namespace Systems
 			assert(false); //this type is already registered and can't be registered again manually
 
 		m_typeDb[typeName] = pType;
+		m_sidToType[pType->GetSid()] = pType;
 	}
 
 	TypeDescriptor* ReflectionMgr::GetOrAddType(const std::string& name)
@@ -31,6 +32,8 @@ namespace Systems
 
 		TypeDescriptor* pType = new TypeDescriptor(name, 0);
 		m_typeDb[name] = pType;
+		m_sidToType[SID(name.c_str())] = pType;
+
 		return pType;
 	}
 
@@ -43,6 +46,18 @@ namespace Systems
 			return nullptr;
 		}
 			
+		return it->second;
+	}
+
+	const TypeDescriptor* ReflectionMgr::GetType(const Core::Sid sidType) const
+	{
+		std::map<Core::Sid, TypeDescriptor*>::const_iterator it = m_sidToType.find(sidType);
+		if (it == m_sidToType.end())
+		{
+			assert(false && "The type does not exist");
+			return nullptr;
+		}
+
 		return it->second;
 	}
 }
