@@ -21,7 +21,7 @@ namespace FbxImporter
 	class FbxImporter
 	{
 	public:
-		bool Import(const std::string& fbxFilename, Systems::MeshAsset& mesh);
+		bool Import(const std::string& fbxFilename, Systems::MeshAsset_v2& mesh);
 
 	private:
 		bool Visit(const ofbx::Object*);

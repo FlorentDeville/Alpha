@@ -26,7 +26,7 @@ namespace FbxImporter
 	}
 
 
-	bool FbxImporter::Import(const std::string& fbxFilename, Systems::MeshAsset& mesh)
+	bool FbxImporter::Import(const std::string& fbxFilename, Systems::MeshAsset_v2& mesh)
 	{
 		FILE* pFileHandle = nullptr;
 		fopen_s(&pFileHandle, fbxFilename.c_str(), "rb");
