@@ -91,6 +91,12 @@ namespace Core
 			return m_pStart[index];
 		}
 
+		const T& operator[](int32_t index) const
+		{
+			assert(index >= 0 && index < m_size);
+			return m_pStart[index];
+		}
+
 		void operator=(Array&& source)
 		{
 			m_pStart = source.m_pStart;
