@@ -6,7 +6,7 @@
 
 namespace Systems
 {
-	MeshAsset::MeshAsset()
+	MeshAsset_v1::MeshAsset_v1()
 		: AssetObject()
 		, m_sourceFile()
 		, m_position()
@@ -16,10 +16,10 @@ namespace Systems
 		, m_mesh()
 	{}
 
-	MeshAsset::~MeshAsset()
+	MeshAsset_v1::~MeshAsset_v1()
 	{}
 
-	void MeshAsset::Init(const std::string& sourceFile, Core::Array<Core::Vec4f>& pos, Core::Array<Core::Vec4f>& uv, Core::Array<Core::Vec4f>& color,
+	void MeshAsset_v1::Init(const std::string& sourceFile, Core::Array<Core::Vec4f>& pos, Core::Array<Core::Vec4f>& uv, Core::Array<Core::Vec4f>& color,
 		Core::Array<uint16_t>& indices)
 	{
 		m_sourceFile = sourceFile;
@@ -31,17 +31,17 @@ namespace Systems
 		PostLoad();
 	}
 
-	const std::string& MeshAsset::GetSourceFile() const
+	const std::string& MeshAsset_v1::GetSourceFile() const
 	{
 		return m_sourceFile;
 	}
 
-	const Rendering::Mesh* MeshAsset::GetRenderingMesh() const
+	const Rendering::Mesh* MeshAsset_v1::GetRenderingMesh() const
 	{
 		return &m_mesh;
 	}
 
-	void MeshAsset::PostLoad()
+	void MeshAsset_v1::PostLoad()
 	{
 		uint32_t vertexCount = m_position.GetSize();
 		std::vector<Rendering::VertexGeneric> vertices;
@@ -64,22 +64,22 @@ namespace Systems
 		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.GetData(), indexCount);
 	}
 
-	const Core::Array<Core::Vec4f>& MeshAsset::GetPositions() const
+	const Core::Array<Core::Vec4f>& MeshAsset_v1::GetPositions() const
 	{
 		return m_position;
 	}
 
-	const Core::Array<Core::Vec4f>& MeshAsset::GetUvs() const
+	const Core::Array<Core::Vec4f>& MeshAsset_v1::GetUvs() const
 	{
 		return m_uv;
 	}
 
-	const Core::Array<Core::Vec4f>& MeshAsset::GetColors() const
+	const Core::Array<Core::Vec4f>& MeshAsset_v1::GetColors() const
 	{
 		return m_color;
 	}
 
-	const Core::Array<uint16_t>& MeshAsset::GetIndices() const
+	const Core::Array<uint16_t>& MeshAsset_v1::GetIndices() const
 	{
 		return m_indices;
 	}
@@ -144,7 +144,7 @@ namespace Systems
 		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.GetData(), indexCount);
 	}
 
-	void UpgradeMeshAssetV1ToV2(const MeshAsset* pMeshV1, MeshAsset_v2* pMeshV2)
+	void UpgradeMeshAssetV1ToV2(const MeshAsset_v1* pMeshV1, MeshAsset_v2* pMeshV2)
 	{
 		const Core::Array<Core::Vec4f>& srcPos = pMeshV1->GetPositions();
 		const Core::Array<Core::Vec4f>& srcUv = pMeshV1->GetUvs();

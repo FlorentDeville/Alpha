@@ -13,6 +13,7 @@
 #include "Rendering/Texture/TextureId.h"
 
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include "DirectXMath.h"
@@ -24,11 +25,6 @@
 namespace Rendering
 {
 	class RenderTarget;
-}
-
-namespace Systems
-{
-	class MeshAsset_v2;
 }
 
 namespace Widgets
@@ -46,7 +42,7 @@ namespace Editors
 	public:
 		std::string m_displayName;		//name of the mesh in the editor
 		Systems::NewAssetId m_id;
-		Systems::MeshAsset_v2* m_mesh;
+		Systems::MeshAsset* m_mesh;
 		
 		MeshEntry();
 	};

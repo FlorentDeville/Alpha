@@ -27,7 +27,7 @@ namespace Systems
 		Systems::TransformComponent::RegisterReflection();
 
 		Systems::AssetObject::RegisterReflection();
-		Systems::MeshAsset::RegisterReflection();
+		Systems::MeshAsset_v1::RegisterReflection();
 		Systems::MeshAsset_v2::RegisterReflection();
 	}
 }

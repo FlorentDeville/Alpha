@@ -14,16 +14,16 @@
 
 namespace Systems
 {
-	class MeshAsset;
+	class MeshAsset_v1;
 	class MeshAsset_v2;
-	void UpgradeMeshAssetV1ToV2(const MeshAsset* pMeshV1, MeshAsset_v2* pMeshV2);
+	void UpgradeMeshAssetV1ToV2(const MeshAsset_v1* pMeshV1, MeshAsset_v2* pMeshV2);
 
-	ENABLE_REFLECTION_WITH_NS(Systems, MeshAsset)
-	class MeshAsset : public AssetObject
+	ENABLE_REFLECTION_WITH_NS(Systems, MeshAsset_v1)
+	class MeshAsset_v1 : public AssetObject
 	{
 	public:
-		MeshAsset();
-		~MeshAsset();
+		MeshAsset_v1();
+		~MeshAsset_v1();
 
 		void Init(const std::string& sourceFile, Core::Array<Core::Vec4f>& pos, Core::Array<Core::Vec4f>& uv, Core::Array<Core::Vec4f>& color,
 			Core::Array<uint16_t>& indices);
@@ -54,7 +54,7 @@ namespace Systems
 		//The low level mesh used by the renderer
 		Rendering::Mesh m_mesh;
 
-		START_REFLECTION(Systems::MeshAsset)
+		START_REFLECTION(Systems::MeshAsset_v1)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFile)
 			ADD_FIELD(m_position)
@@ -104,4 +104,6 @@ namespace Systems
 			ADD_FIELD(m_indices)
 		END_REFLECTION()
 	};
+
+	using MeshAsset = MeshAsset_v2;
 }
