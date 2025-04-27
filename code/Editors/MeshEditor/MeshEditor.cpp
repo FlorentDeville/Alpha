@@ -156,6 +156,9 @@ namespace Editors
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
 			pNewItem->OnClick([this]() { Imports(); });
+
+			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
+			pSaveItem->OnClick([this]() { OnSaveSelectedMeshClicked(); });
 		}
 
 		//create the split
@@ -441,6 +444,17 @@ namespace Editors
 	{
 		const MaterialEntry& materialEntry = m_allMaterials[entryIndex];
 		m_materialId = materialEntry.m_materialId;
+
+		return true;
+	}
+
+	bool MeshEditor::OnSaveSelectedMeshClicked()
+	{
+		if (m_selectedMesh == -1)
+			return true;
+
+		const MeshEntry& entry = m_allMeshes[m_selectedMesh];
+		Systems::ContainerMgr::Get().SaveContainer(entry.m_id.GetContainerId());
 
 		return true;
 	}

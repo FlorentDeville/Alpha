@@ -117,5 +117,7 @@ namespace Editors
 		void OnMeshEntryClicked(int entryIndex);
 		bool OnMeshImportClicked(int entryIndex);
 		bool OnMaterialClicked(int entryIndex);
+
+		bool OnSaveSelectedMeshClicked();
 	};
 }
