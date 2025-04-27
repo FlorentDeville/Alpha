@@ -111,21 +111,29 @@ namespace Systems
 		}
 
 		{
-			//Core::AllocatorJanitor jsonAllocJanitor(&m_jsonAllocator);
+			Core::AllocatorJanitor jsonAllocJanitor(&m_jsonAllocator);
 
 			Core::JsonObject json;
 			Core::JsonDeserializer deser;
 			bool res = deser.Deserialize(fileContent, json);
 			if (!res)
+			{
+				m_jsonAllocator.Clear();
 				return nullptr;
+			}
 
 			Container* pContainer = new Container();
 			ContainerJsonDeserializer containerDeser;
 			res = containerDeser.Deserialize(json, *pContainer);
 			if (!res)
+			{
+				m_jsonAllocator.Clear();
 				return nullptr;
+			}
 
 			m_containerMap[pContainer->GetId()] = pContainer;
+			
+			m_jsonAllocator.Clear();
 
 			return pContainer;
 		}
