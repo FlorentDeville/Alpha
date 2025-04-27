@@ -56,8 +56,8 @@
 	{ \
 	public: \
 		static const std::string& GetTypename() { static const std::string typeName = #TYPE; return typeName; } \
-		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetType(GetTypename()); } \
-		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetType(GetTypename()); } \
+		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
 	};
 
 // Macro to specialize the template class TypeResolver inside the Systems namespace

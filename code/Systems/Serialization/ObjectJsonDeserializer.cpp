@@ -172,7 +172,7 @@ namespace Systems
 		}
 
 		//now create the object
-		TypeDescriptor* pType = ReflectionMgr::Get().GetType(objectTypename);
+		const TypeDescriptor* pType = ReflectionMgr::Get().GetType(objectTypename);
 		*ppObject = reinterpret_cast<Object*>(pType->Construct());
 		(*ppObject)->SetTypeDescriptor(pType);
 

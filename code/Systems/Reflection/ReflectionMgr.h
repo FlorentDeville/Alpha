@@ -25,10 +25,14 @@ namespace Systems
 		template<typename T> TypeDescriptor* RegisterType(const std::string& name);
 		void RegisterType(TypeDescriptor* pType);
 
-		TypeDescriptor* GetType(const std::string& name);
+		TypeDescriptor* GetOrAddType(const std::string& name);
+
+		const TypeDescriptor* GetType(const std::string& name) const;
+		const TypeDescriptor* GetType(const Core::Sid sidType) const;
 
 	private:
 		std::map<std::string, TypeDescriptor*> m_typeDb;
+		std::map<Core::Sid, TypeDescriptor*> m_sidToType;
 	};
 
 	template<typename T> TypeDescriptor* ReflectionMgr::RegisterType(const std::string& name)
@@ -38,6 +42,7 @@ namespace Systems
 		{
 			TypeDescriptor* pType = new TypeDescriptor(name, sizeof(T));
 			m_typeDb[name] = pType;
+			m_sidToType[SID(name.c_str())] = pType;
 			return pType;
 		}
 		else
