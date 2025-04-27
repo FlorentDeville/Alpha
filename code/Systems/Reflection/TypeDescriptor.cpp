@@ -26,7 +26,7 @@ namespace Systems
 	void TypeDescriptor::SetBaseType(const std::string& baseTypeName)
 	{
 		ReflectionMgr& reflectionMgr = ReflectionMgr::Get();
-		TypeDescriptor* pBaseType = reflectionMgr.GetType(baseTypeName);
+		TypeDescriptor* pBaseType = reflectionMgr.GetOrAddType(baseTypeName);
 		m_pBaseType = pBaseType;
 	}
 

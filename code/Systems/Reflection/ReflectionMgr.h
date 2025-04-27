@@ -25,7 +25,9 @@ namespace Systems
 		template<typename T> TypeDescriptor* RegisterType(const std::string& name);
 		void RegisterType(TypeDescriptor* pType);
 
-		TypeDescriptor* GetType(const std::string& name);
+		TypeDescriptor* GetOrAddType(const std::string& name);
+
+		const TypeDescriptor* GetType(const std::string& name) const;
 
 	private:
 		std::map<std::string, TypeDescriptor*> m_typeDb;

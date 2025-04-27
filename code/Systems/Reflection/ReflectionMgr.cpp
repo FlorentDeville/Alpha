@@ -23,7 +23,7 @@ namespace Systems
 		m_typeDb[typeName] = pType;
 	}
 
-	TypeDescriptor* ReflectionMgr::GetType(const std::string& name)
+	TypeDescriptor* ReflectionMgr::GetOrAddType(const std::string& name)
 	{
 		std::map<std::string, TypeDescriptor*>::iterator it = m_typeDb.find(name);
 		if (it != m_typeDb.end())
@@ -32,5 +32,17 @@ namespace Systems
 		TypeDescriptor* pType = new TypeDescriptor(name, 0);
 		m_typeDb[name] = pType;
 		return pType;
+	}
+
+	const TypeDescriptor* ReflectionMgr::GetType(const std::string& name) const
+	{
+		std::map<std::string, TypeDescriptor*>::const_iterator it = m_typeDb.find(name);
+		if (it == m_typeDb.end())
+		{
+			assert(false && "The type does not exist");
+			return nullptr;
+		}
+			
+		return it->second;
 	}
 }

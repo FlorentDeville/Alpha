@@ -19,8 +19,8 @@ namespace Systems
 	{
 	public:
 		static const std::string& GetTypename() { static const std::string typeName = "Core::Array"; return typeName; }
-		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetType(GetTypename()); }
-		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetType(GetTypename()); }
+		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); }
+		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); }
 	};
 
 	void RegisterCoreTypesToReflection();
