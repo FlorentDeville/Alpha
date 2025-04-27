@@ -46,7 +46,7 @@ namespace Editors
 	public:
 		std::string m_displayName;		//name of the mesh in the editor
 		Systems::NewAssetId m_id;
-		Systems::MeshAsset* m_mesh;
+		Systems::MeshAsset_v2* m_mesh;
 		
 		MeshEntry();
 	};

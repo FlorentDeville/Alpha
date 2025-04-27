@@ -57,7 +57,7 @@ namespace Editors
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
-		Systems::MeshAsset* pMesh = Systems::CreateNewAsset<Systems::MeshAsset>();
+		Systems::MeshAsset_v2* pMesh = Systems::CreateNewAsset<Systems::MeshAsset_v2>();
 		FbxImporter::FbxImporter importer;
 		importer.Import(filename, *pMesh);
 	
@@ -388,7 +388,7 @@ namespace Editors
 		Systems::Container* pContainer = Systems::ContainerMgr::Get().LoadContainer(cid);
 		Systems::AssetObject* pAsset = pContainer->GetAsset(entry.m_id.GetObjectId());
 
-		entry.m_mesh = static_cast<Systems::MeshAsset*>(pAsset);
+		entry.m_mesh = static_cast<Systems::MeshAsset_v2*>(pAsset);
 	}
 
 	void MeshEditor::OnMeshEntryClicked(int entryIndex)
