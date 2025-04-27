@@ -91,6 +91,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("float"):
+		{
+			const float* pValue = reinterpret_cast<const float*>(pFieldPtr);
+			SerializeData(*pValue, value);
+		}
+		break;
+
 		case SID("Systems::AssetId"):
 		{
 			const Systems::AssetId* pAssetId = reinterpret_cast<const Systems::AssetId*>(pFieldPtr);
