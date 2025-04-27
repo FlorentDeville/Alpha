@@ -28,7 +28,7 @@ namespace Rendering
 
 namespace Systems
 {
-	class MeshAsset;
+	class MeshAsset_v2;
 }
 
 namespace Widgets
