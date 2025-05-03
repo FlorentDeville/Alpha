@@ -37,6 +37,9 @@ namespace Editors
 	{
 		Rendering::TextureMgr::Get().DeleteTexture(m_collapsedIcon);
 		Rendering::TextureMgr::Get().DeleteTexture(m_expandedIcon);
+
+		delete m_pModel;
+		m_pModel = nullptr;
 	}
 
 	void TreeWidget::SetModel(BaseModel* pModel)
