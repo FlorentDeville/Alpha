@@ -6,6 +6,7 @@
 
 #include "Core/Singleton.h"
 
+#include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/TypeDescriptor.h"
 
 #include <assert.h>
@@ -52,12 +53,4 @@ namespace Systems
 			return pType;
 		}
 	}
-
-	template<typename T> class TypeResolver
-	{
-	public:
-		static const std::string& GetTypename();
-		static const TypeDescriptor* GetConstType();
-		static TypeDescriptor* GetType();
-	};
 }

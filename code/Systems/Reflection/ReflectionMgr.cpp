@@ -11,7 +11,15 @@ namespace Systems
 	{ }
 
 	ReflectionMgr::~ReflectionMgr()
-	{ }
+	{
+		for (std::pair<const std::string, TypeDescriptor*>& pair : m_typeDb)
+		{
+			delete pair.second;
+		}
+
+		m_typeDb.clear();
+		m_sidToType.clear();
+	}
 
 	void ReflectionMgr::RegisterType(TypeDescriptor* pType)
 	{

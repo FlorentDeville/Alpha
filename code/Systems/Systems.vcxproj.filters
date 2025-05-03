@@ -34,6 +34,7 @@
     <ClInclude Include="Assets\NewAssetId.h" />
     <ClInclude Include="Container\ObjectId.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
+    <ClInclude Include="Reflection\TypeResolver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />

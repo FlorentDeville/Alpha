@@ -9,6 +9,7 @@
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionUtils.h"
+#include "Systems/Reflection/TypeResolver.h"
 
 #include <string>
 

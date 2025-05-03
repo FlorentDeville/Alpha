@@ -39,6 +39,7 @@
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
     <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Reflection\TypeDescriptor.h" />
+    <ClInclude Include="Reflection\TypeResolver.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
     <ClInclude Include="Serialization\ContainerJsonSerializer.h" />
     <ClInclude Include="Serialization\ObjectHeader.h" />
