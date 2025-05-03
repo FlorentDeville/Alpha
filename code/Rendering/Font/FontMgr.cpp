@@ -18,8 +18,11 @@ namespace Rendering
 
 	FontMgr::~FontMgr()
 	{
-		for (const Font* pFont : m_fonts)
+		for (Font* pFont : m_fonts)
+		{
+			pFont->Release();
 			delete pFont;
+		}
 	}
 
 	bool FontMgr::CreateFont(Font** ppFont, FontId& id)
