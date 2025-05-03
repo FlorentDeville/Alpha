@@ -612,6 +612,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 {
 #ifdef _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+	// The output window will print the memory leak with an allocation number. Use this number here to break in the debugger during the allocation.
+	//_crtBreakAlloc = 5683;
 #endif // DEBUG
 
 	//CommandLine cmd;
