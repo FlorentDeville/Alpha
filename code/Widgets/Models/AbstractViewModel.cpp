@@ -14,7 +14,10 @@ namespace Widgets
 	{}
 
 	AbstractViewModel::~AbstractViewModel()
-	{}
+	{
+		delete m_pSelectionModel;
+		m_pSelectionModel = nullptr;
+	}
 
 	ModelIndex AbstractViewModel::CreateIndex(int row, int column, void* pData) const
 	{
