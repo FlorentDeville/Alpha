@@ -70,6 +70,13 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/TableView.h"
 
+#ifdef _DEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif // DEBUG
+
+
 //#pragma optimize("", off)
 
 SysWindow* g_pWindow = nullptr;
@@ -603,6 +610,10 @@ void CreateMainWindow(const Configuration& configuration)
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
 {
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // DEBUG
+
 	//CommandLine cmd;
 	//cmd.AddArgument("-dataroot", "", CommandLine::ARG_TYPE::STRING, CommandLine::ARG_ACTION::STORE, &g_dataRoot, "Path of the data folder.");
 	//cmd.Parse(lpCmdLine);
@@ -715,6 +726,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	delete g_pWindow;
 
 	Systems::Loader::ReleaseSingleton();
+	containerMgr.Shutdown();
+	Systems::ContainerMgr::ReleaseSingleton();
 	Systems::AssetMgr::ReleaseSingleton();
 
 	render.Release();
@@ -723,6 +736,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Rendering::RenderModule::ReleaseSingleton();
 	Editors::LevelEditorModule::ReleaseSingleton();
 	AppResources::ResourcesMgr::ReleaseSingleton();
+
+	Systems::ReflectionMgr::ReleaseSingleton();
 
 	return 0;
 }
