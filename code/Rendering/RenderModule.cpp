@@ -478,7 +478,8 @@ namespace Rendering
 
 		char lastChar = -1; // no last character to start with
 
-		float x = startingX;
+		float xInScreenSpace = startingX;
+		float xInPixel = uiPos.x;
 
 		for (int i = 0; i < text.size(); ++i)
 		{
@@ -518,7 +519,7 @@ namespace Rendering
 			float char_height = static_cast<float>(fc->m_height) / m_mainResolution.y * 2.f;
 
 			Rendering::VertexText& pVertexText = vert[info.m_characterCount];
-			pVertexText.Position.x = x + ((xoffset + kerning) * scale.x);
+			pVertexText.Position.x = xInScreenSpace + ((xoffset + kerning) * scale.x);
 			pVertexText.Position.y = y - (yoffset * scale.y);
 			pVertexText.Position.z = char_width * scale.x;
 			pVertexText.Position.w = char_height * scale.y;
@@ -530,12 +531,17 @@ namespace Rendering
 			pVertexText.Z = uiPos.z / (farCameraPlane - nearCameraPlane);
 
 			float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
-			x += advance * scale.x;
+			xInScreenSpace += advance * scale.x;
 
+			xInPixel += fc->m_xadvance * scale.x;
+
+			float convertxInPixel = (xInPixel * 2 / m_mainResolution.x) - 1;
 			lastChar = c;
 
 			//we are out of bounds, ignore the last character setup
-			if (pVertexText.Position.x + pVertexText.Position.z > scissorXMax)
+			//do not do this test with the screen coordinate. I loose accuracy over time. All this
+			//code should use pixels and convert to screen coordinate at the last moment.
+			if (convertxInPixel > scissorXMax)
 				return i - 1;
 
 			info.m_characterCount++;
