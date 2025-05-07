@@ -44,6 +44,7 @@ namespace Systems
 		InitAssetTypeDescription();
 
 		RegisterAssetType("Mesh");
+		RegisterAssetType("Material");
 
 		LoadTableOfContent();
 		LoadMetadataTable();
