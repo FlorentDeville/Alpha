@@ -30,11 +30,13 @@
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
+    <ClInclude Include="ShaderEditor\ShaderEditorModule.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Component\ComponentModel.h" />
     <ClInclude Include="Widgets\Component\ComponentWidget.h" />
     <ClInclude Include="Widgets\Dialog\AssetDialog.h" />
+    <ClInclude Include="Widgets\Dialog\UserInputDialog.h" />
     <ClInclude Include="Widgets\Entity\EntityModel.h" />
     <ClInclude Include="Widgets\Entity\EntityWidget.h" />
     <ClInclude Include="Widgets\List\Models\AssetListModel.h" />
@@ -62,10 +64,12 @@
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="RawDb.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
+    <ClCompile Include="ShaderEditor\ShaderEditorModule.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
     <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp" />
+    <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp" />
     <ClCompile Include="Widgets\Entity\EntityModel.cpp" />
     <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
     <ClCompile Include="Widgets\List\Models\AssetListModel.cpp" />

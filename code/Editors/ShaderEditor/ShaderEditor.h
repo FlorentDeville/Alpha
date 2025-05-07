@@ -62,6 +62,10 @@ namespace Editors
 
 		RawDb m_shaderRawDb;
 
+		void CreateMenu(Widgets::Widget* pParent);
+
+		void OnMenuFile_NewShader_Clicked();
+
 		bool OnShaderEntryClicked(int index);
 		bool OnCompileClicked();
 	};

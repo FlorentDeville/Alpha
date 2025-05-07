@@ -4,11 +4,17 @@
 
 #include "Editors/ShaderEditor/ShaderEditor.h"
 
+#include "Editors/ShaderEditor/ShaderEditorModule.h"
+#include "Editors/Widgets/Dialog/UserInputDialog.h"
+
 #include "OsWin/Process.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Menu.h"
+#include "Widgets/MenuBar.h"
+#include "Widgets/MenuItem.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
@@ -37,11 +43,11 @@ namespace Editors
 
 	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
 	{
-		m_dataShaderPath = parameter.m_dataShaderPath;
+		/*m_dataShaderPath = parameter.m_dataShaderPath;
 		m_shaderCompilerPath = parameter.m_shaderCompilerPath;
-		m_rawShaderPath = parameter.m_rawShaderPath;
+		m_rawShaderPath = parameter.m_rawShaderPath;*/
 
-		LoadRawDb(parameter.m_rawShaderPath + "\\db.txt", m_shaderRawDb);
+		//LoadRawDb(parameter.m_rawShaderPath + "\\db.txt", m_shaderRawDb);
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -55,12 +61,19 @@ namespace Editors
 			parameter.m_pParent->AddWidget(pViewportTab);
 		}
 
+		Widgets::Layout* pInternalLayout = new Widgets::Layout();
+		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
+		pViewportTab->AddWidget(pInternalLayout);
+
+		CreateMenu(pInternalLayout);
+
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(500);
 
-		pViewportTab->AddWidget(pSplit);
+		pInternalLayout->AddWidget(pSplit);
 
 		//create the list of shaders
 		for(const std::pair<Systems::AssetId, std::string>& it : m_shaderRawDb)
@@ -135,6 +148,31 @@ namespace Editors
 
 	void ShaderEditor::Render()
 	{}
+
+	void ShaderEditor::CreateMenu(Widgets::Widget* pParent)
+	{
+		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
+		pParent->AddWidget(pMenuBar);
+
+		//create the file menu
+		{
+			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
+
+			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
+			pNewItem->OnClick([this]() { OnMenuFile_NewShader_Clicked(); });
+
+			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Selected Shader");
+			//pSaveItem->OnClick([this]() { OnSaveSelectedMeshClicked(); });
+		}
+	}
+
+	void ShaderEditor::OnMenuFile_NewShader_Clicked()
+	{
+		//modal windows are automatically deleted when closed,so no need to delete the dialog.
+		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
+		pDialog->OnInputValidated([](const std::string& input) { ShaderEditorModule::Get().NewShader(input); });
+		pDialog->Open();
+	}
 
 	bool ShaderEditor::OnShaderEntryClicked(int index)
 	{
