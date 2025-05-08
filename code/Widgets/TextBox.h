@@ -31,6 +31,7 @@ namespace Widgets
 		const std::string& GetText() const;
 
 		EVENT_DECL(Validate, void(const std::string& value))
+		EVENT_DECL(Escape, void())
 
 	private:
 		enum State

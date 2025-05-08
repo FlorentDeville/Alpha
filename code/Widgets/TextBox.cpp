@@ -186,6 +186,10 @@ namespace Widgets
 				{
 					m_onValidate(m_text);
 				}
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Esc)
+				{
+					m_onEscape();
+				}
 				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Home)
 				{
 					if (m_cursorPosition != 0)
