@@ -34,6 +34,7 @@ namespace Editors
 		m_pTextBox->SetSize(DirectX::XMUINT2(0, 20));
 		m_pTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		m_pTextBox->OnValidate([this](const std::string& text) { m_onInputValidated(text); });
+		m_pTextBox->OnEscape([this]() { Close(); });
 		pVLayout->AddWidget(m_pTextBox);
 
 		//ok cancel button
@@ -45,7 +46,6 @@ namespace Editors
 		Widgets::Button* pOkButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
 		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "Ok");
 		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
-		//pOkLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 		pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 		pOkButton->AddWidget(pOkLabel);
 		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
@@ -53,14 +53,14 @@ namespace Editors
 
 		pHLayout->AddWidget(pOkButton);
 
-		//Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
-		//Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
-		//pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
-		//pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-		//pCancelButton->AddWidget(pCancelLabel);
-		//pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		//pCancelButton->OnClick([this]() { OnCancel(); });
-		//pHLayout->AddWidget(pCancelButton);
+		Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
+		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
+		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+		pCancelButton->AddWidget(pCancelLabel);
+		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pCancelButton->OnClick([this]() { OnCancel(); });
+		pHLayout->AddWidget(pCancelButton);
 	}
 
 	UserInputDialog::~UserInputDialog()
@@ -69,6 +69,7 @@ namespace Editors
 	void UserInputDialog::Open()
 	{
 		Widgets::WidgetMgr::Get().OpenModalWindow(this);
+		m_pTextBox->SetFocus();
 	}
 
 	void UserInputDialog::Close() const
