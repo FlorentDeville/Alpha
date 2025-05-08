@@ -9,6 +9,8 @@
 
 #include "OsWin/Process.h"
 
+#include "Systems/Assets/AssetMgr.h"
+
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -24,18 +26,12 @@
 
 namespace Editors
 {
-	ShaderEntry::ShaderEntry()
-		: m_rawFilename()
-		, m_assetId()
-	{}
-
 	ShaderEditor::ShaderEditor()
 		: Core::Singleton<ShaderEditor>()
 		, m_allShaders()
 		, m_pShaderListLayout(nullptr)
 		, m_selectedShader(-1)
 		, m_pLogText(nullptr)
-		, m_shaderRawDb()
 	{}
 
 	ShaderEditor::~ShaderEditor()
@@ -43,12 +39,6 @@ namespace Editors
 
 	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
 	{
-		/*m_dataShaderPath = parameter.m_dataShaderPath;
-		m_shaderCompilerPath = parameter.m_shaderCompilerPath;
-		m_rawShaderPath = parameter.m_rawShaderPath;*/
-
-		//LoadRawDb(parameter.m_rawShaderPath + "\\db.txt", m_shaderRawDb);
-
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
 		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(parameter.m_pParent);
@@ -75,33 +65,13 @@ namespace Editors
 
 		pInternalLayout->AddWidget(pSplit);
 
-		//create the list of shaders
-		for(const std::pair<Systems::AssetId, std::string>& it : m_shaderRawDb)
-		{
-			m_allShaders.push_back(ShaderEntry());
-			m_allShaders.back().m_rawFilename = it.second;
-			m_allShaders.back().m_assetId = Systems::AssetId(it.first);
-		}
-
 		//create a button and label per shader
 		m_pShaderListLayout = new Widgets::Layout(0, 0, 0, 0);
 		m_pShaderListLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		m_pShaderListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pSplit->AddLeftPanel(m_pShaderListLayout);
 
-		for (int ii = 0; ii < m_allShaders.size(); ++ii)
-		{
-			const ShaderEntry& entry = m_allShaders[ii];
-
-			const std::string& shaderName = entry.m_rawFilename;
-			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, ii]() -> bool { return OnShaderEntryClicked(ii); });
-			m_pShaderListLayout->AddWidget(pButton);
-
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, shaderName);
-			pButton->AddWidget(pLabel);
-		}
+		CreateShadersList();
 
 		//right panel : add option layout
 		Widgets::Layout* pRightPanelLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -170,7 +140,11 @@ namespace Editors
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
-		pDialog->OnInputValidated([](const std::string& input) { ShaderEditorModule::Get().NewShader(input); });
+		pDialog->OnInputValidated([this](const std::string& input) 
+			{ 
+				ShaderEditorModule::Get().NewShader(input); 
+				CreateShadersList();
+			});
 		pDialog->Open();
 	}
 
@@ -196,73 +170,105 @@ namespace Editors
 
 	bool ShaderEditor::OnCompileClicked()
 	{
-		if (m_selectedShader == -1)
-			return true;
+		//if (m_selectedShader == -1)
+		//	return true;
 
-		const ShaderEntry& shader = m_allShaders[m_selectedShader];
+		//const ShaderEntry& shader = m_allShaders[m_selectedShader];
 
-		const char* PS_EXT = ".ps.hlsl";
-		const char* VS_EXT = ".vs.hlsl";
-		const char* RS_EXT = ".rs.hlsl";
+		//const char* PS_EXT = ".ps.hlsl";
+		//const char* VS_EXT = ".vs.hlsl";
+		//const char* RS_EXT = ".rs.hlsl";
 
-		size_t extensionSize = strlen(PS_EXT);
+		//size_t extensionSize = strlen(PS_EXT);
 
-		std::string extension = shader.m_rawFilename.substr(shader.m_rawFilename.size() - extensionSize);
-		size_t nameStartPos = shader.m_rawFilename.find_last_of('\\');
-		std::string shaderName = shader.m_rawFilename.substr(nameStartPos + 1, shader.m_rawFilename.size() - extensionSize - nameStartPos - 1);
-		std::string shaderTypeExtension = extension.substr(1, 2);
-		std::string outputName = m_dataShaderPath + "\\" + shader.m_assetId.ToString();
+		//std::string extension = shader.m_rawFilename.substr(shader.m_rawFilename.size() - extensionSize);
+		//size_t nameStartPos = shader.m_rawFilename.find_last_of('\\');
+		//std::string shaderName = shader.m_rawFilename.substr(nameStartPos + 1, shader.m_rawFilename.size() - extensionSize - nameStartPos - 1);
+		//std::string shaderTypeExtension = extension.substr(1, 2);
+		//std::string outputName = m_dataShaderPath + "\\" + shader.m_assetId.ToString();
 
 
-		std::string input = m_rawShaderPath + "\\" + shader.m_rawFilename;
+		//std::string input = m_rawShaderPath + "\\" + shader.m_rawFilename;
 
-		//create the command line
-		std::string cmdline = m_shaderCompilerPath;
+		////create the command line
+		//std::string cmdline = m_shaderCompilerPath;
 
-		if (strcmp(RS_EXT, extension.c_str()) == 0) //root signature
-		{
-			cmdline += " /E\"RS\"";
-			cmdline += " /T\"rootsig_1_1\"";
-		}
-		else if (strcmp(PS_EXT, extension.c_str()) == 0)
-		{
-			cmdline += " /E\"main\"";
-			cmdline += " /T\"ps_5_1\"";
-		}
-		else if (strcmp(VS_EXT, extension.c_str()) == 0)
-		{
-			cmdline += " /E\"main\"";
-			cmdline += " /T\"vs_5_1\"";
-		}
-		else
-		{
-			assert(false && " Unknown shader type");
-		}
+		//if (strcmp(RS_EXT, extension.c_str()) == 0) //root signature
+		//{
+		//	cmdline += " /E\"RS\"";
+		//	cmdline += " /T\"rootsig_1_1\"";
+		//}
+		//else if (strcmp(PS_EXT, extension.c_str()) == 0)
+		//{
+		//	cmdline += " /E\"main\"";
+		//	cmdline += " /T\"ps_5_1\"";
+		//}
+		//else if (strcmp(VS_EXT, extension.c_str()) == 0)
+		//{
+		//	cmdline += " /E\"main\"";
+		//	cmdline += " /T\"vs_5_1\"";
+		//}
+		//else
+		//{
+		//	assert(false && " Unknown shader type");
+		//}
 
-		cmdline += " /Fo\"" + outputName + "\"";
-		cmdline += " /nologo";
-		cmdline += " \"" + input + "\"";
+		//cmdline += " /Fo\"" + outputName + "\"";
+		//cmdline += " /nologo";
+		//cmdline += " \"" + input + "\"";
 
-		m_pLogText->AppendText(cmdline + "\n");
-		{
-			const int BUFFER_LENGTH = 1024;
-			char buffer[BUFFER_LENGTH] = { '\0' };
-			snprintf(buffer, BUFFER_LENGTH, "%s\n", cmdline.c_str());
-			OutputDebugString(buffer);
-		}
+		//m_pLogText->AppendText(cmdline + "\n");
+		//{
+		//	const int BUFFER_LENGTH = 1024;
+		//	char buffer[BUFFER_LENGTH] = { '\0' };
+		//	snprintf(buffer, BUFFER_LENGTH, "%s\n", cmdline.c_str());
+		//	OutputDebugString(buffer);
+		//}
 
-		Process shaderCompileProcess(cmdline);
-		shaderCompileProcess.OnStdOut([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
-		shaderCompileProcess.OnStdErr([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
+		//Process shaderCompileProcess(cmdline);
+		//shaderCompileProcess.OnStdOut([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
+		//shaderCompileProcess.OnStdErr([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
 
-		bool started = shaderCompileProcess.Run();
-		if (!started)
-		{
-			OutputDebugString("Failed to start process");
-			return true;
-		}
+		//bool started = shaderCompileProcess.Run();
+		//if (!started)
+		//{
+		//	OutputDebugString("Failed to start process");
+		//	return true;
+		//}
 
-		shaderCompileProcess.Wait();
+		//shaderCompileProcess.Wait();
 		return true;
+	}
+
+	void ShaderEditor::CreateShadersList()
+	{
+		m_allShaders.clear();
+		m_pShaderListLayout->DeleteAllChildren();
+
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+
+		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
+			{
+				if (metadata.GetAssetType() != MAKESID("Material"))
+					return;
+
+				m_allShaders.push_back(ShaderEntry());
+				ShaderEntry& entry = m_allShaders.back();
+				entry.m_id = metadata.GetAssetId();
+				entry.m_name = metadata.GetVirtualName();
+			});
+
+		for (int ii = 0; ii < m_allShaders.size(); ++ii)
+		{
+			const ShaderEntry& entry = m_allShaders[ii];
+
+			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
+			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+			pButton->OnClick([this, ii]() -> bool { return OnShaderEntryClicked(ii); });
+			m_pShaderListLayout->AddWidget(pButton);
+
+			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, entry.m_name);
+			pButton->AddWidget(pLabel);
+		}
 	}
 }
