@@ -14,6 +14,7 @@
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/TypeDescriptor.h"
 
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>
@@ -41,6 +42,8 @@ namespace Systems
 
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
+
+		void ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const;
 
 		const std::vector<Asset*>& GetMeshes() const;
 		const std::vector<Asset*>& GetMaterials() const;
