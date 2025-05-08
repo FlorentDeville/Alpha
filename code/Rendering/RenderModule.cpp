@@ -471,14 +471,14 @@ namespace Rendering
 		float y = 2 - (uiPos.y * 2 / m_mainResolution.y) - 1;
 
 		float scissorXMax = static_cast<float>(scissor.x + scissor.z);
-		scissorXMax = (scissorXMax * 2 / m_mainResolution.x) - 1;
 
 		// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
 		Rendering::VertexText* vert = (Rendering::VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
 
 		char lastChar = -1; // no last character to start with
 
-		float x = startingX;
+		float xInScreenSpace = startingX;
+		float xInPixel = uiPos.x;
 
 		for (int i = 0; i < text.size(); ++i)
 		{
@@ -518,7 +518,7 @@ namespace Rendering
 			float char_height = static_cast<float>(fc->m_height) / m_mainResolution.y * 2.f;
 
 			Rendering::VertexText& pVertexText = vert[info.m_characterCount];
-			pVertexText.Position.x = x + ((xoffset + kerning) * scale.x);
+			pVertexText.Position.x = xInScreenSpace + ((xoffset + kerning) * scale.x);
 			pVertexText.Position.y = y - (yoffset * scale.y);
 			pVertexText.Position.z = char_width * scale.x;
 			pVertexText.Position.w = char_height * scale.y;
@@ -530,12 +530,15 @@ namespace Rendering
 			pVertexText.Z = uiPos.z / (farCameraPlane - nearCameraPlane);
 
 			float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
-			x += advance * scale.x;
+			xInScreenSpace += advance * scale.x;
+
+			xInPixel += fc->m_xadvance * scale.x;
 
 			lastChar = c;
 
 			//we are out of bounds, ignore the last character setup
-			if (pVertexText.Position.x + pVertexText.Position.z > scissorXMax)
+			//do not do this test with the screen coordinate. I loose accuracy over time.
+			if (xInPixel > scissorXMax)
 				return i - 1;
 
 			info.m_characterCount++;
