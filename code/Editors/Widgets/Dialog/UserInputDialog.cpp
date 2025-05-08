@@ -33,8 +33,8 @@ namespace Editors
 		m_pTextBox = new Widgets::TextBox();
 		m_pTextBox->SetSize(DirectX::XMUINT2(0, 20));
 		m_pTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		m_pTextBox->OnValidate([this](const std::string& text) { m_onInputValidated(text); });
-		m_pTextBox->OnEscape([this]() { Close(); });
+		m_pTextBox->OnValidate([this](const std::string& text) { OnOk(); });
+		m_pTextBox->OnEscape([this]() { OnCancel(); });
 		pVLayout->AddWidget(m_pTextBox);
 
 		//ok cancel button
