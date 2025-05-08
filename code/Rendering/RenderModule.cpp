@@ -471,7 +471,6 @@ namespace Rendering
 		float y = 2 - (uiPos.y * 2 / m_mainResolution.y) - 1;
 
 		float scissorXMax = static_cast<float>(scissor.x + scissor.z);
-		scissorXMax = (scissorXMax * 2 / m_mainResolution.x) - 1;
 
 		// cast the gpu virtual address to a textvertex, so we can directly store our vertices there
 		Rendering::VertexText* vert = (Rendering::VertexText*)info.m_textVBGPUAddress[m_currentBackBufferIndex];
@@ -535,13 +534,11 @@ namespace Rendering
 
 			xInPixel += fc->m_xadvance * scale.x;
 
-			float convertxInPixel = (xInPixel * 2 / m_mainResolution.x) - 1;
 			lastChar = c;
 
 			//we are out of bounds, ignore the last character setup
-			//do not do this test with the screen coordinate. I loose accuracy over time. All this
-			//code should use pixels and convert to screen coordinate at the last moment.
-			if (convertxInPixel > scissorXMax)
+			//do not do this test with the screen coordinate. I loose accuracy over time.
+			if (xInPixel > scissorXMax)
 				return i - 1;
 
 			info.m_characterCount++;
