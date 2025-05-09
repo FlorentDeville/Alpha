@@ -16,6 +16,7 @@ namespace Editors
 	{
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
+		m_pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
 		AddWidget(m_pInternalLayout);
 	}
 
@@ -30,10 +31,14 @@ namespace Editors
 
 		Widgets::Layout* pPropertyLayout = new Widgets::Layout();
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
+		pPropertyLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_FIT);
 
 		m_pInternalLayout->AddWidget(pPropertyLayout);
 
-		pPropertyLayout->AddWidget(new Widgets::Label(pProperty->GetName()));
+		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
+		pLabel->SetSizeStyle(Widgets::Widget::FIT);
+
+		pPropertyLayout->AddWidget(pLabel);
 		pPropertyLayout->AddWidget(pProperty->GetEditingWidget());
 	}
 
