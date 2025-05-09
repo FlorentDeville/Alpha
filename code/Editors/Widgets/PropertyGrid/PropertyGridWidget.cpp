@@ -38,7 +38,12 @@ namespace Editors
 		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
 		pLabel->SetSizeStyle(Widgets::Widget::FIT);
 
+		Widgets::Container* pSpacer = new Widgets::Container(10, 0);
+		pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		
+
 		pPropertyLayout->AddWidget(pLabel);
+		pPropertyLayout->AddWidget(pSpacer);
 		pPropertyLayout->AddWidget(pProperty->GetEditingWidget());
 	}
 
