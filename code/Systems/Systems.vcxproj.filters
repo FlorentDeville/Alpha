@@ -35,6 +35,7 @@
     <ClInclude Include="Container\ObjectId.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
     <ClInclude Include="Reflection\TypeResolver.h" />
+    <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -66,5 +67,6 @@
     <ClCompile Include="Assets\NewAssetId.cpp" />
     <ClCompile Include="Container\ObjectId.cpp" />
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
   </ItemGroup>
 </Project>

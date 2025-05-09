@@ -105,6 +105,12 @@
     <ClInclude Include="Widgets\Dialog\AssetDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderEditor\ShaderEditorModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\Dialog\UserInputDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -192,6 +198,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderEditor\ShaderEditorModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

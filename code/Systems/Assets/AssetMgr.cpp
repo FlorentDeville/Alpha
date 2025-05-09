@@ -44,6 +44,7 @@ namespace Systems
 		InitAssetTypeDescription();
 
 		RegisterAssetType("Mesh");
+		RegisterAssetType("Material");
 
 		LoadTableOfContent();
 		LoadMetadataTable();
@@ -131,6 +132,12 @@ namespace Systems
 		//we should never reach this
 		assert(false);
 		return m_meshes;
+	}
+
+	void AssetMgr::ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const
+	{
+		for (const std::pair<Systems::NewAssetId, Systems::AssetMetadata>& pair : m_metadata)
+			function(pair.second);
 	}
 
 	const std::vector<Asset*>& AssetMgr::GetMeshes() const

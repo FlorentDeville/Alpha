@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Core/Singleton.h"
-#include "Editors/RawDb.h"
+#include "Systems/Assets/NewAssetId.h"
 
 #include <string>
 #include <vector>
@@ -22,10 +22,8 @@ namespace Editors
 	class ShaderEntry
 	{
 	public:
-		std::string m_rawFilename;
-		Systems::AssetId m_assetId;
-
-		ShaderEntry();
+		std::string m_name;
+		Systems::NewAssetId m_id;
 	};
 
 	class ShaderEditorParameter
@@ -56,13 +54,13 @@ namespace Editors
 		Widgets::Text* m_pLogText;
 		int m_selectedShader;
 
-		std::string m_rawShaderPath;
-		std::string m_dataShaderPath;
-		std::string m_shaderCompilerPath;
+		void CreateMenu(Widgets::Widget* pParent);
 
-		RawDb m_shaderRawDb;
+		void OnMenuFile_NewShader_Clicked();
 
 		bool OnShaderEntryClicked(int index);
 		bool OnCompileClicked();
+
+		void CreateShadersList();
 	};
 }
