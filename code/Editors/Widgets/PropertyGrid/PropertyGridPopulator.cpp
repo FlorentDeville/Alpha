@@ -37,9 +37,7 @@ namespace Editors
 
 				const std::string* pValue = field.GetDataPtr<std::string>(pObject);
 				pTextBox->SetText(*pValue);
-				
 				pEditingWidget = pTextBox;
-				
 			}
 			break;
 
@@ -50,5 +48,7 @@ namespace Editors
 			PropertyGridItem* pItem = new PropertyGridItem(field.GetName(), pEditingWidget);
 			pWidget->AddProperty(pItem);
 		}
+
+		pWidget->ResizeChildren();
 	}
 }
