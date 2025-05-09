@@ -10,6 +10,7 @@
 #include "Systems/Objects/Object.h"
 
 #include "Widgets/TextBox.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Editors
 {
@@ -49,6 +50,6 @@ namespace Editors
 			pWidget->AddProperty(pItem);
 		}
 
-		pWidget->ResizeChildren();
+		Widgets::WidgetMgr::Get().RequestResize();
 	}
 }
