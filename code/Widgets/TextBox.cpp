@@ -46,6 +46,9 @@ namespace Widgets
 
 		OnFocusGained([this](const FocusEvent& ev) { OnGetFocusCallback(); });
 		OnFocusLost([this](const FocusEvent& ev) { OnLoseFocusCallback(); });
+
+		SetSize(DirectX::XMUINT2(0, 20));
+		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 	}
 
 	TextBox::~TextBox()
