@@ -21,8 +21,7 @@ namespace Editors
 
 	PropertyGridWidget::~PropertyGridWidget()
 	{
-		for (PropertyGridItem* pProperty : m_properties)
-			delete pProperty;
+		ClearAllItems();
 	}
 
 	void PropertyGridWidget::AddProperty(PropertyGridItem* pProperty)
@@ -36,5 +35,15 @@ namespace Editors
 
 		pPropertyLayout->AddWidget(new Widgets::Label(pProperty->GetName()));
 		pPropertyLayout->AddWidget(pProperty->GetEditingWidget());
+	}
+
+	void PropertyGridWidget::ClearAllItems()
+	{
+		for (PropertyGridItem* pProperty : m_properties)
+			delete pProperty;
+
+		m_properties.clear();
+
+		m_pInternalLayout->DeleteAllChildren();
 	}
 }

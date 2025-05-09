@@ -19,6 +19,8 @@ namespace Widgets
 
 namespace Editors
 {
+	class PropertyGridWidget;
+
 	class ShaderEntry
 	{
 	public:
@@ -52,6 +54,8 @@ namespace Editors
 
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;
+		PropertyGridWidget* m_pPropertyGrid;
+
 		int m_selectedShader;
 
 		void CreateMenu(Widgets::Widget* pParent);

@@ -25,6 +25,8 @@ namespace Editors
 
 		void AddProperty(PropertyGridItem* pProperty);
 
+		void ClearAllItems();
+
 	private:
 		std::vector<PropertyGridItem*> m_properties;
 

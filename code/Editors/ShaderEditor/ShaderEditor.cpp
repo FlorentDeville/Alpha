@@ -6,10 +6,15 @@
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "OsWin/Process.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Container/Container.h"
+#include "Systems/Container/ContainerMgr.h"
+#include "Systems/Objects/AssetObject.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -107,10 +112,24 @@ namespace Editors
 			pButton->AddWidget(pLabel);
 		}
 
+		{
+			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
+			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+			pRightPanelLayout->AddWidget(pButton);
+			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Button");
+			pButton->AddWidget(pLabel);
+		}
+
+		//add property grid
+		{
+			m_pPropertyGrid = new PropertyGridWidget();
+			pRightPanelLayout->AddWidget(m_pPropertyGrid);
+		}
+
 		//add log label
 		m_pLogText = new Widgets::Text(1, "");
-		m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pRightPanelLayout->AddWidget(m_pLogText);
+		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		//pRightPanelLayout->AddWidget(m_pLogText);
 	}
 
 	void ShaderEditor::Update()
@@ -164,6 +183,29 @@ namespace Editors
 		pButton->Select();
 
 		m_selectedShader = index;
+
+		m_pPropertyGrid->ClearAllItems();
+
+		{
+			const ShaderEntry& entry = m_allShaders[m_selectedShader];
+
+			Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+			Systems::Container* pContainer = containerMgr.GetContainer(entry.m_id.GetContainerId());
+			if (!pContainer)
+			{
+				pContainer = containerMgr.LoadContainer(entry.m_id.GetContainerId());
+			}
+
+			if (!pContainer)
+				return true;
+
+			Systems::AssetObject* pObject = pContainer->GetAsset(entry.m_id.GetObjectId());
+			if (!pObject)
+				return true;
+
+			PropertyGridPopulator populator;
+			populator.Populate(m_pPropertyGrid, pObject);
+		}
 
 		return true;
 	}
