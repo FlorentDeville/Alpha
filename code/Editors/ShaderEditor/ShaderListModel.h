@@ -31,10 +31,13 @@ namespace Editors
 
 		// Specific functions
 		void AddRow(const Systems::AssetMetadata* pMetadata);
+		
+		void SetShaderModified(Systems::NewAssetId id);
+		void ClearShaderModified(Systems::NewAssetId id);
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
-		Widgets::ModelIndex GetIndex(const Systems::MaterialAsset* pMaterial) const;
+		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 
 	private:
 		struct CachedShaderData
@@ -47,5 +50,7 @@ namespace Editors
 		std::vector<CachedShaderData> m_cache;
 
 		void AddToCache(const Systems::AssetMetadata* pMetadata);
+
+		int FindCacheIndex(Systems::NewAssetId id) const;
 	};
 }

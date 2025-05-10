@@ -16,6 +16,7 @@ namespace Editors
 	{
 		Id = 0,
 		Name,
+		Modified,
 
 		Count
 	};
@@ -85,6 +86,15 @@ namespace Editors
 			return pData->m_virtualName;
 			break;
 
+		case Column::Modified:
+		{
+			if (pData->m_modified)
+				return "*";
+			else
+				return "";
+		}
+			break;
+
 		default:
 			return "";
 			break;
@@ -100,24 +110,45 @@ namespace Editors
 		CommitInsertRows(row, 1, Widgets::ModelIndex());
 	}
 
+	void ShaderListModel::SetShaderModified(Systems::NewAssetId id)
+	{
+		int cacheIndex = FindCacheIndex(id);
+		if (cacheIndex == -1)
+			return;
+
+		if (m_cache[cacheIndex].m_modified)
+			return;
+
+		m_cache[cacheIndex].m_modified = true;
+		m_onDataChanged(GetIndex(cacheIndex, Column::Modified, Widgets::ModelIndex()));
+	}
+
+	void ShaderListModel::ClearShaderModified(Systems::NewAssetId id)
+	{
+		int cacheIndex = FindCacheIndex(id);
+		if (cacheIndex == -1)
+			return;
+
+		if (!m_cache[cacheIndex].m_modified)
+			return;
+
+		m_cache[cacheIndex].m_modified = false;
+		m_onDataChanged(GetIndex(cacheIndex, Column::Modified, Widgets::ModelIndex()));
+	}
+
 	Systems::NewAssetId ShaderListModel::GetAssetId(const Widgets::ModelIndex& index) const
 	{
 		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
 		return pData->m_id;
 	}
 
-	Widgets::ModelIndex ShaderListModel::GetIndex(const Systems::MaterialAsset* pMaterial) const
+	Widgets::ModelIndex ShaderListModel::GetIndex(Systems::NewAssetId id) const
 	{
-		for (size_t ii = 0; ii < m_cache.size(); ++ii)
-		{
-			const CachedShaderData& data = m_cache[ii];
-			if (data.m_id != pMaterial->GetId())
-				continue;
-			
-			return GetIndex(static_cast<int>(ii), 0, Widgets::ModelIndex());
-		}
+		int index = FindCacheIndex(id);
+		if(index == -1)
+			return Widgets::ModelIndex();
 		
-		return Widgets::ModelIndex();
+		return GetIndex(index, 0, Widgets::ModelIndex());
 	}
 
 	void ShaderListModel::AddToCache(const Systems::AssetMetadata* pMetadata)
@@ -127,5 +158,17 @@ namespace Editors
 		data.m_id = pMetadata->GetAssetId();
 		data.m_virtualName = pMetadata->GetVirtualName();
 		data.m_modified = false;
+	}
+
+	int ShaderListModel::FindCacheIndex(Systems::NewAssetId id) const
+	{
+		for (size_t ii = 0; ii < m_cache.size(); ++ii)
+		{
+			const CachedShaderData& data = m_cache[ii];
+			if (data.m_id == id)
+				return static_cast<int>(ii);
+		}
+		
+		return -1;
 	}
 }

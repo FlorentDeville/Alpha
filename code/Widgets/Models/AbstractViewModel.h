@@ -35,6 +35,8 @@ namespace Widgets
 		//call this after inserting new rows in the model
 		void CommitInsertRows(int start, int count, const ModelIndex& parent);
 
+		EVENT_DECL(DataChanged, void(const ModelIndex& index))
+
 	private:
 		SelectionModel* m_pSelectionModel;
 

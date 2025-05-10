@@ -54,6 +54,7 @@ namespace Widgets
 
 		m_pModel = pModel;
 		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
+		m_pModel->OnDataChanged([this](const ModelIndex& index) { OnDataChanged_SelectionModel(index); });
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected) { OnSelectionChanged_SelectionModel(selected, deselected); });
@@ -184,6 +185,16 @@ namespace Widgets
 		}
 	}
 
+	void TableView::OnDataChanged_SelectionModel(const ModelIndex& index)
+	{
+		Label* pLabel = GetItem(index.GetRow(), index.GetColumn(), index.GetParent());
+		if (!pLabel)
+			return;
+
+		std::string value = m_pModel->GetData(index);
+		pLabel->SetText(value);
+	}
+
 	Widgets::Layout* TableView::CreateItem(int row, int columnCount, const ModelIndex& parent)
 	{
 		Layout* pRowLayout = new Layout();
@@ -222,5 +233,24 @@ namespace Widgets
 		}
 
 		return pRowLayout;
+	}
+
+	Label* TableView::GetItem(int row, int column, const ModelIndex& parent)
+	{
+		if (parent.IsValid())
+			return nullptr;
+
+		Widget* pRow = m_pLayout->GetChildren()[row];
+		if (!pRow)
+			return nullptr;
+
+		Layout* pRowLayout = static_cast<Layout*>(pRow);
+		
+		Widget* pCell = pRowLayout->GetChildren()[column];
+		if (!pCell)
+			return nullptr;
+
+		Label* pLabel = static_cast<Label*>(pCell);
+		return pLabel;
 	}
 }

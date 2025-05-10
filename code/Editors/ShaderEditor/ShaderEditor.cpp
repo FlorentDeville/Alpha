@@ -176,7 +176,7 @@ namespace Editors
 				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 
 				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
-				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial);
+				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial->GetId());
 				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
 				Widgets::SelectionRow selection(start, end);
 

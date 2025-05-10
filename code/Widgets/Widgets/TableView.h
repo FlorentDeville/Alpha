@@ -14,6 +14,7 @@
 namespace Widgets
 {
 	class AbstractViewModel;
+	class Label;
 	class Layout;
 	class ModelIndex;
 	class SelectionRow;
@@ -44,15 +45,17 @@ namespace Widgets
 
 		void CreateView();
 
-		void OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int itemIndex);
-		void OnMouseDoubleClick_ItemLayout(const Widgets::MouseEvent& ev, int row);
+		void OnMouseDown_ItemLayout(const MouseEvent& ev, int itemIndex);
+		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, int row);
 
 		void SetSelectedRowStyle(int row);
 		void SetDeselectedRowStyle(int row);
 
 		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
+		void OnDataChanged_SelectionModel(const ModelIndex& index);
 
-		Widgets::Layout* CreateItem(int row, int columnCount, const ModelIndex& parent);
+		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent);
+		Label* GetItem(int row, int column, const ModelIndex& parent);
 	};
 }
