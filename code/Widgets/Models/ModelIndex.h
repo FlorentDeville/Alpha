@@ -31,11 +31,11 @@ namespace Widgets
 		bool operator!=(const ModelIndex& other) const;
 
 	private:
-		ModelIndex(int row, int column, void* pData, const AbstractViewModel* pModel);
+		ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel);
 
 		int m_row;
 		int m_column;
-		void* m_pData;
+		const void* m_pData;
 		const AbstractViewModel* m_pModel;
 	};
 }

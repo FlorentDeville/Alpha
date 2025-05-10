@@ -21,7 +21,7 @@ namespace Widgets
 		AbstractViewModel();
 		virtual ~AbstractViewModel();
 
-		ModelIndex CreateIndex(int row, int column, void* pData) const;
+		ModelIndex CreateIndex(int row, int column, const void* pData) const;
 
 		virtual ModelIndex GetParent(const ModelIndex& child) const = 0;
 		virtual ModelIndex GetIndex(int row, int column, const ModelIndex& parent) const = 0;

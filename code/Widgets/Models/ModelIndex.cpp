@@ -69,7 +69,7 @@ namespace Widgets
 		return !(*this == other);
 	}
 
-	ModelIndex::ModelIndex(int row, int column, void* pData, const AbstractViewModel* pModel)
+	ModelIndex::ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel)
 		: m_row(row)
 		, m_column(column)
 		, m_pData(pData)

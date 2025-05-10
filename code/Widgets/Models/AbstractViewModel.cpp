@@ -19,7 +19,7 @@ namespace Widgets
 		m_pSelectionModel = nullptr;
 	}
 
-	ModelIndex AbstractViewModel::CreateIndex(int row, int column, void* pData) const
+	ModelIndex AbstractViewModel::CreateIndex(int row, int column, const void* pData) const
 	{
 		return ModelIndex(row, column, pData, this);
 	}
