@@ -134,6 +134,11 @@ namespace Editors
 		m_pLogText = new Widgets::Text(1, "");
 		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		//pRightPanelLayout->AddWidget(m_pLogText);
+
+		ShaderEditorModule::Get().OnShaderCreated([this](const Systems::AssetMetadata* pMetadata)
+			{
+				m_pShaderListModel->AddRow(pMetadata);
+			});
 	}
 
 	void ShaderEditor::Update()
@@ -166,7 +171,6 @@ namespace Editors
 		pDialog->OnInputValidated([this](const std::string& input) 
 			{ 
 				ShaderEditorModule::Get().NewShader(input); 
-				CreateShadersList();
 			});
 		pDialog->Open();
 	}
