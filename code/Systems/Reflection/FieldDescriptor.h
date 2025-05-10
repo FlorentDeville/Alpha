@@ -37,6 +37,7 @@ namespace Systems
 		void* GetDataPtr(void* pObj) const;
 
 		template<typename T> const T* GetDataPtr(const void* pObj) const;
+		template<typename T> T* GetDataPtr(void* pObj) const;
 
 	private:
 		std::string m_name;
@@ -53,6 +54,11 @@ namespace Systems
 	template<typename T> const T* FieldDescriptor::GetDataPtr(const void* pObj) const
 	{
 		return reinterpret_cast<const T*>(GetDataPtr(pObj));
+	}
+
+	template<typename T> T* FieldDescriptor::GetDataPtr(void* pObj) const
+	{
+		return reinterpret_cast<T*>(GetDataPtr(pObj));
 	}
 
 	template<typename FIELD_TYPE> class FieldInitializer
