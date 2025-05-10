@@ -11,6 +11,19 @@
 
 namespace Editors
 {
+	void ShaderEditorModule::Init()
+	{
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+
+		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
+			{
+				if (metadata.GetAssetType() != MAKESID("Material"))
+					return;
+
+				m_allShaders.push_back(metadata.GetAssetId());
+			});
+	}
+
 	bool ShaderEditorModule::NewShader(const std::string& virtualName)
 	{
 		Systems::MaterialAsset* pNewMaterial = Systems::CreateNewAsset<Systems::MaterialAsset>();
@@ -32,6 +45,8 @@ namespace Editors
 		if (!res)
 			return false;
 
+		m_allShaders.push_back(pNewMaterial->GetId());
+
 		return true;
 	}
 
@@ -40,5 +55,10 @@ namespace Editors
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		bool res = containerMgr.SaveContainer(id.GetContainerId());
 		return res;
+	}
+
+	const std::vector<Systems::NewAssetId>& ShaderEditorModule::GetAllShaders() const
+	{
+		return m_allShaders;
 	}
 }
