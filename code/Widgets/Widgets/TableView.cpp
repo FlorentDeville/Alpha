@@ -55,6 +55,9 @@ namespace Widgets
 		m_pModel = pModel;
 		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
 
+		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
+		pSelectionModel->OnSelectionChanged([this](const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected) { OnSelectionChanged_SelectionModel(selected, deselected); });
+
 		CreateView();
 	}
 
@@ -168,6 +171,19 @@ namespace Widgets
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
+	void TableView::OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected)
+	{
+		for (const SelectionRow& deselectedRow : deselected)
+		{
+			SetDeselectedRowStyle(deselectedRow.GetStartIndex().GetRow());
+		}
+
+		for (const SelectionRow& selectedRow : selected)
+		{
+			SetSelectedRowStyle(selectedRow.GetStartIndex().GetRow());
+		}
+	}
+
 	Widgets::Layout* TableView::CreateItem(int row, int columnCount, const ModelIndex& parent)
 	{
 		Layout* pRowLayout = new Layout();
@@ -182,8 +198,6 @@ namespace Widgets
 		{
 			pRowLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
 		}
-
-		//m_pLayout->AddWidget(pRowLayout);
 
 		for (int jj = 0; jj < columnCount; ++jj)
 		{

@@ -16,6 +16,7 @@ namespace Widgets
 	class AbstractViewModel;
 	class Layout;
 	class ModelIndex;
+	class SelectionRow;
 
 	class TableView : public Widget
 	{
@@ -50,6 +51,7 @@ namespace Widgets
 		void SetDeselectedRowStyle(int row);
 
 		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
+		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 
 		Widgets::Layout* CreateItem(int row, int columnCount, const ModelIndex& parent);
 	};
