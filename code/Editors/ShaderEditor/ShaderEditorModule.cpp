@@ -47,6 +47,8 @@ namespace Editors
 
 		m_allShaders.push_back(pNewMaterial->GetId());
 
+		m_onShaderCreated(&materialMetadata);
+
 		return true;
 	}
 

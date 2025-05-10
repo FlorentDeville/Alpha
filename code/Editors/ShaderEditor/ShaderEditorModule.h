@@ -6,10 +6,17 @@
 
 #include "Core/Singleton.h"
 
+#include "Core/Callbacks/CallbackMacro.h"
+
 #include "Systems/Assets/NewAssetId.h"
 
 #include <string>
 #include <vector>
+
+namespace Systems
+{
+	class AssetMetadata;
+}
 
 namespace Editors
 {
@@ -22,6 +29,8 @@ namespace Editors
 		bool SaveShader(Systems::NewAssetId id);
 
 		const std::vector<Systems::NewAssetId>& GetAllShaders() const;
+
+		EVENT_DECL(ShaderCreated, void(Systems::AssetMetadata* pMetadata));
 
 	private:
 		std::vector<Systems::NewAssetId> m_allShaders;
