@@ -56,13 +56,19 @@ namespace Editors
 		return CreateIndex(row, column, &data);
 	}
 
-	int ShaderListModel::GetRowCount(const Widgets::ModelIndex& index)
+	int ShaderListModel::GetRowCount(const Widgets::ModelIndex& parent)
 	{
+		if (parent.IsValid())
+			return 0;
+
 		return static_cast<int>(m_cache.size());
 	}
 
-	int ShaderListModel::GetColumnCount(const Widgets::ModelIndex&) const
+	int ShaderListModel::GetColumnCount(const Widgets::ModelIndex& parent) const
 	{
+		if (parent.IsValid())
+			return 0;
+
 		return Column::Count;
 	}
 

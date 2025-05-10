@@ -21,12 +21,14 @@ namespace Editors
 		ShaderListModel();
 		~ShaderListModel();
 
-		Widgets::ModelIndex GetParent(const Widgets::ModelIndex&) const;
-		Widgets::ModelIndex GetIndex(int row, int column, const Widgets::ModelIndex& parent) const;
-		int GetRowCount(const Widgets::ModelIndex& index);
-		int GetColumnCount(const Widgets::ModelIndex&) const;
-		std::string GetData(const Widgets::ModelIndex&);
+		// Override base class functions
+		Widgets::ModelIndex GetParent(const Widgets::ModelIndex& index) const override;
+		Widgets::ModelIndex GetIndex(int row, int column, const Widgets::ModelIndex& parent) const override;
+		int GetRowCount(const Widgets::ModelIndex& parent) override;
+		int GetColumnCount(const Widgets::ModelIndex& parent) const override;
+		std::string GetData(const Widgets::ModelIndex& index) override;
 
+		// Specific functions
 		void AddRow(const Systems::AssetMetadata* pMetadata);
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
