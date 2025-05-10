@@ -39,6 +39,11 @@ namespace Editors
 				const std::string* pValue = field.GetDataPtr<std::string>(pObject);
 				pTextBox->SetText(*pValue);
 				pEditingWidget = pTextBox;
+
+				pTextBox->OnValidate([&field, pObject, pTextBox](const std::string& value)
+					{ 
+						*(field.GetDataPtr<std::string>(pObject)) = value; 
+					});
 			}
 			break;
 
