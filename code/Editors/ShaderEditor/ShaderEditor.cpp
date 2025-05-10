@@ -150,8 +150,8 @@ namespace Editors
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
 			pNewItem->OnClick([this]() { OnMenuFile_NewShader_Clicked(); });
 
-			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Selected Shader");
-			//pSaveItem->OnClick([this]() { OnSaveSelectedMeshClicked(); });
+			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
+			pSaveItem->OnClick([this]() { OnMenuFile_Save_Clicked(); });
 		}
 	}
 
@@ -165,6 +165,16 @@ namespace Editors
 				CreateShadersList();
 			});
 		pDialog->Open();
+	}
+
+	void ShaderEditor::OnMenuFile_Save_Clicked()
+	{
+		if (m_selectedShader == -1)
+			return;
+
+		const ShaderEntry& entry = m_allShaders[m_selectedShader];
+		ShaderEditorModule::Get().SaveShader(entry.m_id);
+		
 	}
 
 	bool ShaderEditor::OnShaderEntryClicked(int index)

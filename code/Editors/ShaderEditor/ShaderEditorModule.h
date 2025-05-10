@@ -6,6 +6,8 @@
 
 #include "Core/Singleton.h"
 
+#include "Systems/Assets/NewAssetId.h"
+
 #include <string>
 
 namespace Editors
@@ -15,5 +17,6 @@ namespace Editors
 	public:
 
 		bool NewShader(const std::string& virtualName);
+		bool SaveShader(Systems::NewAssetId id);
 	};
 }

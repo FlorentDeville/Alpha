@@ -61,6 +61,7 @@ namespace Editors
 		void CreateMenu(Widgets::Widget* pParent);
 
 		void OnMenuFile_NewShader_Clicked();
+		void OnMenuFile_Save_Clicked();
 
 		bool OnShaderEntryClicked(int index);
 		bool OnCompileClicked();
