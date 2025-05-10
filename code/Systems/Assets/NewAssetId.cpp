@@ -45,4 +45,14 @@ namespace Systems
 	{
 		return m_id < other.m_id;
 	}
+
+	bool NewAssetId::operator==(NewAssetId other) const
+	{
+		return m_id == other.m_id;
+	}
+
+	bool NewAssetId::operator!=(NewAssetId other) const
+	{
+		return !(*this == other);
+	}
 }
