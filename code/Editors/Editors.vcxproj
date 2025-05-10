@@ -31,6 +31,7 @@
     <ClInclude Include="RawDb.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
     <ClInclude Include="ShaderEditor\ShaderEditorModule.h" />
+    <ClInclude Include="ShaderEditor\ShaderListModel.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Component\ComponentModel.h" />
@@ -68,6 +69,7 @@
     <ClCompile Include="RawDb.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditorModule.cpp" />
+    <ClCompile Include="ShaderEditor\ShaderListModel.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
     <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />

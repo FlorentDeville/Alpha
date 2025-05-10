@@ -20,13 +20,7 @@ namespace Widgets
 namespace Editors
 {
 	class PropertyGridWidget;
-
-	class ShaderEntry
-	{
-	public:
-		std::string m_name;
-		Systems::NewAssetId m_id;
-	};
+	class ShaderListModel;
 
 	class ShaderEditorParameter
 	{
@@ -49,12 +43,10 @@ namespace Editors
 		void Render();
 
 	private:
-
-		std::vector<ShaderEntry> m_allShaders;
-
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;
 		PropertyGridWidget* m_pPropertyGrid;
+		ShaderListModel* m_pShaderListModel;
 
 		int m_selectedShader;
 
@@ -63,7 +55,7 @@ namespace Editors
 		void OnMenuFile_NewShader_Clicked();
 		void OnMenuFile_Save_Clicked();
 
-		bool OnShaderEntryClicked(int index);
+		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();
 
 		void CreateShadersList();
