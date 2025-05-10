@@ -26,9 +26,6 @@ namespace Editors
 	{
 	public:
 		Widgets::Widget* m_pParent;
-		std::string m_rawShaderPath;
-		std::string m_dataShaderPath;
-		std::string m_shaderCompilerPath;
 	};
 
 	class ShaderEditor : public Core::Singleton<ShaderEditor>
@@ -47,8 +44,6 @@ namespace Editors
 		Widgets::Text* m_pLogText;
 		PropertyGridWidget* m_pPropertyGrid;
 		ShaderListModel* m_pShaderListModel;
-
-		int m_selectedShader;
 
 		void CreateMenu(Widgets::Widget* pParent);
 

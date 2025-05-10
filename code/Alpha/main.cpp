@@ -566,9 +566,6 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::ShaderEditorParameter shaderEditorParameter;
 	shaderEditorParameter.m_pParent = pMiddleTabContainer;
-	shaderEditorParameter.m_dataShaderPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kShader);
-	shaderEditorParameter.m_rawShaderPath = configuration.m_rawShadersPath;
-	shaderEditorParameter.m_shaderCompilerPath = configuration.m_shaderCompiler;
 	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
 
 #ifdef _DEBUG

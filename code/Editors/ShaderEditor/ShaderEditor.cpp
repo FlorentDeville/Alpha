@@ -38,7 +38,6 @@ namespace Editors
 	ShaderEditor::ShaderEditor()
 		: Core::Singleton<ShaderEditor>()
 		, m_pShaderListLayout(nullptr)
-		, m_selectedShader(-1)
 		, m_pLogText(nullptr)
 		, m_pPropertyGrid(nullptr)
 		, m_pShaderListModel(nullptr)
@@ -210,11 +209,6 @@ namespace Editors
 
 	bool ShaderEditor::OnCompileClicked()
 	{
-		//if (m_selectedShader == -1)
-		//	return true;
-
-		//const ShaderEntry& shader = m_allShaders[m_selectedShader];
-
 		//const char* PS_EXT = ".ps.hlsl";
 		//const char* VS_EXT = ".vs.hlsl";
 		//const char* RS_EXT = ".rs.hlsl";
