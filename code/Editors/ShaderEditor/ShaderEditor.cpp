@@ -297,18 +297,20 @@ namespace Editors
 		m_allShaders.clear();
 		m_pShaderListLayout->DeleteAllChildren();
 
+		const std::vector<Systems::NewAssetId>& allShaders = ShaderEditorModule::Get().GetAllShaders();
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
-		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
-			{
-				if (metadata.GetAssetType() != MAKESID("Material"))
-					return;
+		for (Systems::NewAssetId id : allShaders)
+		{
+			const Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
+			if (!pMetadata)
+				continue;
 
-				m_allShaders.push_back(ShaderEntry());
-				ShaderEntry& entry = m_allShaders.back();
-				entry.m_id = metadata.GetAssetId();
-				entry.m_name = metadata.GetVirtualName();
-			});
+			m_allShaders.push_back(ShaderEntry());
+			ShaderEntry& entry = m_allShaders.back();
+			entry.m_id = pMetadata->GetAssetId();
+			entry.m_name = pMetadata->GetVirtualName();
+		}
 
 		for (int ii = 0; ii < m_allShaders.size(); ++ii)
 		{
