@@ -8,6 +8,7 @@
 
 #include "Core/Callbacks/CallbackMacro.h"
 
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include <string>
@@ -25,7 +26,7 @@ namespace Editors
 	public:
 		void Init() override;
 
-		bool NewShader(const std::string& virtualName);
+		Systems::MaterialAsset* NewShader(const std::string& virtualName);
 		bool SaveShader(Systems::NewAssetId id);
 
 		const std::vector<Systems::NewAssetId>& GetAllShaders() const;

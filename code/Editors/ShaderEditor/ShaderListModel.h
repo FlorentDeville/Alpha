@@ -6,6 +6,7 @@
 
 #include "Widgets/Models/AbstractViewModel.h"
 
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 namespace Systems
@@ -32,6 +33,8 @@ namespace Editors
 		void AddRow(const Systems::AssetMetadata* pMetadata);
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
+
+		Widgets::ModelIndex GetIndex(const Systems::MaterialAsset* pMaterial) const;
 
 	private:
 		struct CachedShaderData

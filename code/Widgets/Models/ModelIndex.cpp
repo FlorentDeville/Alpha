@@ -46,6 +46,11 @@ namespace Widgets
 		return m_pModel->GetIndex(row, column, *this);
 	}
 
+	ModelIndex ModelIndex::GetSiblingAtColumn(int column) const
+	{
+		return m_pModel->GetIndex(m_row, column, GetParent());
+	}
+
 	const void* ModelIndex::GetConstDataPointer() const
 	{
 		return m_pData;

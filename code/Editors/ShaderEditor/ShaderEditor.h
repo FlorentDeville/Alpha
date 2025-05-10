@@ -45,6 +45,8 @@ namespace Editors
 		PropertyGridWidget* m_pPropertyGrid;
 		ShaderListModel* m_pShaderListModel;
 
+		Systems::NewAssetId m_selectedMaterialId;
+
 		void CreateMenu(Widgets::Widget* pParent);
 
 		void OnMenuFile_NewShader_Clicked();

@@ -23,6 +23,8 @@ namespace Widgets
 		ModelIndex GetParent() const;
 		ModelIndex GetIndex(int row, int column) const;
 
+		ModelIndex GetSiblingAtColumn(int column) const;
+
 		const void* GetConstDataPointer() const;
 
 		const AbstractViewModel* GetConstModel() const;

@@ -41,6 +41,7 @@ namespace Editors
 		, m_pLogText(nullptr)
 		, m_pPropertyGrid(nullptr)
 		, m_pShaderListModel(nullptr)
+		, m_selectedMaterialId(Systems::NewAssetId::INVALID)
 	{}
 
 	ShaderEditor::~ShaderEditor()
@@ -170,7 +171,16 @@ namespace Editors
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
 		pDialog->OnInputValidated([this](const std::string& input) 
 			{ 
-				ShaderEditorModule::Get().NewShader(input); 
+				Systems::MaterialAsset* pMaterial = ShaderEditorModule::Get().NewShader(input);
+
+				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+
+				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
+				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial);
+				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
+				Widgets::SelectionRow selection(start, end);
+
+				pSelectionModel->SetSelectionRow(selection);
 			});
 		pDialog->Open();
 	}
@@ -298,6 +308,10 @@ namespace Editors
 
 				const Widgets::SelectionRow& row = selected[0];
 				Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
+				if (m_selectedMaterialId == id)
+					return;
+
+				m_selectedMaterialId = id;
 				OnShaderEntryClicked(id);
 			});
 	}

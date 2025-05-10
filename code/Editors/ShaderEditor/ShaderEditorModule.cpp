@@ -5,7 +5,6 @@
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 
@@ -24,7 +23,7 @@ namespace Editors
 			});
 	}
 
-	bool ShaderEditorModule::NewShader(const std::string& virtualName)
+	Systems::MaterialAsset* ShaderEditorModule::NewShader(const std::string& virtualName)
 	{
 		Systems::MaterialAsset* pNewMaterial = Systems::CreateNewAsset<Systems::MaterialAsset>();
 
@@ -33,23 +32,23 @@ namespace Editors
 		pContainer->AddAsset(pNewMaterial);
 		bool res = containerMgr.SaveContainer(pContainer->GetId());
 		if (!res)
-			return false;
+			return nullptr;
 
 		Systems::AssetMetadata materialMetadata(pNewMaterial->GetId(), virtualName, MAKESID("Material"));
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 		res = assetMgr.RegisterAssetMetadata(materialMetadata);
 		if (!res)
-			return false;
+			return nullptr;
 
 		res = assetMgr.SaveMetadataTable();
 		if (!res)
-			return false;
+			return nullptr;
 
 		m_allShaders.push_back(pNewMaterial->GetId());
 
 		m_onShaderCreated(&materialMetadata);
 
-		return true;
+		return pNewMaterial;
 	}
 
 	bool ShaderEditorModule::SaveShader(Systems::NewAssetId id)

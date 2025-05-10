@@ -106,6 +106,20 @@ namespace Editors
 		return pData->m_id;
 	}
 
+	Widgets::ModelIndex ShaderListModel::GetIndex(const Systems::MaterialAsset* pMaterial) const
+	{
+		for (size_t ii = 0; ii < m_cache.size(); ++ii)
+		{
+			const CachedShaderData& data = m_cache[ii];
+			if (data.m_id != pMaterial->GetId())
+				continue;
+			
+			return GetIndex(static_cast<int>(ii), 0, Widgets::ModelIndex());
+		}
+		
+		return Widgets::ModelIndex();
+	}
+
 	void ShaderListModel::AddToCache(const Systems::AssetMetadata* pMetadata)
 	{
 		m_cache.push_back(CachedShaderData());
