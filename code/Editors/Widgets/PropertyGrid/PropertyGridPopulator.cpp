@@ -40,9 +40,10 @@ namespace Editors
 				pTextBox->SetText(*pValue);
 				pEditingWidget = pTextBox;
 
-				pTextBox->OnValidate([&field, pObject, pTextBox](const std::string& value)
+				pTextBox->OnValidate([this, &field, pObject, pTextBox](const std::string& value)
 					{ 
 						*(field.GetDataPtr<std::string>(pObject)) = value; 
+						m_onDataChanged(pObject, &field);
 					});
 			}
 			break;

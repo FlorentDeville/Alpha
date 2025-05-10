@@ -4,8 +4,11 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackMacro.h"
+
 namespace Systems
 {
+	class FieldDescriptor;
 	class Object;
 }
 
@@ -13,6 +16,7 @@ namespace Editors
 {
 	class PropertyGridWidget;
 
+	//This class should be turned into a model
 	class PropertyGridPopulator
 	{
 	public:
@@ -20,5 +24,7 @@ namespace Editors
 		~PropertyGridPopulator();
 
 		void Populate(PropertyGridWidget* pWidget, Systems::Object* pObject);
+
+		EVENT_DECL(DataChanged, void(Systems::Object* pObject, const Systems::FieldDescriptor* pField))
 	};
 }
