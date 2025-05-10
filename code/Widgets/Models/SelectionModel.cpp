@@ -34,8 +34,18 @@ namespace Widgets
 
 	void SelectionModel::SetSelectionRow(const SelectionRow& row)
 	{
+		std::vector<SelectionRow> deselect;
+		deselect.reserve(m_selectedRows.size());
+		for (SelectionRow& oldSelectedRow : m_selectedRows)
+			deselect.push_back(oldSelectedRow);
+
 		m_selectedRows.clear();
 		m_selectedRows.push_back(row);
+
+		std::vector<SelectionRow> select;
+		select.push_back(row);
+
+		m_onSelectionChanged(select, deselect);
 	}
 
 	void SelectionModel::SelectRow(const SelectionRow& row)
@@ -44,10 +54,19 @@ namespace Widgets
 			return;
 
 		m_selectedRows.push_back(row);
+
+		std::vector<SelectionRow> select;
+		select.push_back(row);
+		std::vector<SelectionRow> deselect;
+		m_onSelectionChanged(select, deselect);
 	}
 
 	void SelectionModel::DeselectRow(const SelectionRow& row)
 	{
+		std::vector<SelectionRow> select;
+		std::vector<SelectionRow> deselect;
+
+		bool found = false;
 		for(std::list<SelectionRow>::const_iterator it = m_selectedRows.cbegin(); it != m_selectedRows.cend(); ++it)
 		{
 			const SelectionRow& selectedRow = *it;
@@ -55,9 +74,14 @@ namespace Widgets
 			if (selectedRow != row)
 				continue;
 
+			deselect.push_back(selectedRow);
 			m_selectedRows.erase(it);
-			return;
+			found = true;
+			break;
 		}
+
+		if (found)
+			m_onSelectionChanged(select, deselect);
 	}
 
 	void SelectionModel::CommitInsertRows(int start, int count, const ModelIndex& parent)

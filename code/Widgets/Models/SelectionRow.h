@@ -9,7 +9,8 @@
 namespace Widgets
 {
 	/*
-	* Represent a single selected row.
+	* Represent consecutive selected cells. StartIndex is the top left cell, EndIndex is the bottom right cell.
+	* The common use is to represent a single row.
 	*/
 	class SelectionRow
 	{
