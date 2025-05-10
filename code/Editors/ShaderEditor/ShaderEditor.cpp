@@ -166,6 +166,7 @@ namespace Editors
 			pNewItem->OnClick([this]() { OnMenuFile_NewShader_Clicked(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
+			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { OnMenuFile_Save_Clicked(); });
 		}
 	}
