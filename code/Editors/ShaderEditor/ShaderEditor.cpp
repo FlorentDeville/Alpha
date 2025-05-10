@@ -5,6 +5,7 @@
 #include "Editors/ShaderEditor/ShaderEditor.h"
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
+#include "Editors/ShaderEditor/ShaderListModel.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -22,10 +23,13 @@
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
+#include "Widgets/Widgets/TableView.h"
 
 #include <filesystem>
 
@@ -33,14 +37,18 @@ namespace Editors
 {
 	ShaderEditor::ShaderEditor()
 		: Core::Singleton<ShaderEditor>()
-		, m_allShaders()
 		, m_pShaderListLayout(nullptr)
-		, m_selectedShader(-1)
 		, m_pLogText(nullptr)
+		, m_pPropertyGrid(nullptr)
+		, m_pShaderListModel(nullptr)
+		, m_selectedMaterialId(Systems::NewAssetId::INVALID)
+		, m_pPropertyGridPopulator(new PropertyGridPopulator())
 	{}
 
 	ShaderEditor::~ShaderEditor()
-	{}
+	{
+		delete m_pPropertyGridPopulator;
+	}
 
 	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
 	{
@@ -72,7 +80,7 @@ namespace Editors
 
 		//create a button and label per shader
 		m_pShaderListLayout = new Widgets::Layout(0, 0, 0, 0);
-		m_pShaderListLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		m_pShaderListLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		m_pShaderListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pSplit->AddLeftPanel(m_pShaderListLayout);
 
@@ -124,12 +132,19 @@ namespace Editors
 		{
 			m_pPropertyGrid = new PropertyGridWidget();
 			pRightPanelLayout->AddWidget(m_pPropertyGrid);
+
+			m_pPropertyGridPopulator->OnDataChanged([this](Systems::Object* pObject, const Systems::FieldDescriptor* pField) {PropertyGridPopulator_OnDataChanged(pObject, pField); });
 		}
 
 		//add log label
 		m_pLogText = new Widgets::Text(1, "");
 		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		//pRightPanelLayout->AddWidget(m_pLogText);
+
+		ShaderEditorModule::Get().OnShaderCreated([this](const Systems::AssetMetadata* pMetadata)
+			{
+				m_pShaderListModel->AddRow(pMetadata);
+			});
 	}
 
 	void ShaderEditor::Update()
@@ -151,6 +166,7 @@ namespace Editors
 			pNewItem->OnClick([this]() { OnMenuFile_NewShader_Clicked(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
+			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { OnMenuFile_Save_Clicked(); });
 		}
 	}
@@ -161,72 +177,59 @@ namespace Editors
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
 		pDialog->OnInputValidated([this](const std::string& input) 
 			{ 
-				ShaderEditorModule::Get().NewShader(input); 
-				CreateShadersList();
+				Systems::MaterialAsset* pMaterial = ShaderEditorModule::Get().NewShader(input);
+
+				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+
+				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
+				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial->GetId());
+				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
+				Widgets::SelectionRow selection(start, end);
+
+				pSelectionModel->SetSelectionRow(selection);
 			});
 		pDialog->Open();
 	}
 
 	void ShaderEditor::OnMenuFile_Save_Clicked()
 	{
-		if (m_selectedShader == -1)
+		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
+		if (selection.empty())
 			return;
 
-		const ShaderEntry& entry = m_allShaders[m_selectedShader];
-		ShaderEditorModule::Get().SaveShader(entry.m_id);
-		
+		const Widgets::SelectionRow& row = selection.front();
+		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
+		ShaderEditorModule::Get().SaveShader(id);
+
+		m_pShaderListModel->ClearShaderModified(id);
 	}
 
-	bool ShaderEditor::OnShaderEntryClicked(int index)
+	bool ShaderEditor::OnShaderEntryClicked(Systems::NewAssetId id)
 	{
-		//deselect all buttons
-		const std::vector<Widgets::Widget*>& allButtons = m_pShaderListLayout->GetChildren();
-		for (Widgets::Widget* pWidget : allButtons)
-		{
-			Widgets::Button* pButton = static_cast<Widgets::Button*>(pWidget);
-			pButton->Unselect();
-		}
-
-		//select newly clicked button
-		Widgets::Widget* pSelectedButton = allButtons[index];
-		Widgets::Button* pButton = static_cast<Widgets::Button*>(pSelectedButton);
-		pButton->Select();
-
-		m_selectedShader = index;
-
 		m_pPropertyGrid->ClearAllItems();
 
+		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
+		if (!pContainer)
 		{
-			const ShaderEntry& entry = m_allShaders[m_selectedShader];
-
-			Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-			Systems::Container* pContainer = containerMgr.GetContainer(entry.m_id.GetContainerId());
-			if (!pContainer)
-			{
-				pContainer = containerMgr.LoadContainer(entry.m_id.GetContainerId());
-			}
-
-			if (!pContainer)
-				return true;
-
-			Systems::AssetObject* pObject = pContainer->GetAsset(entry.m_id.GetObjectId());
-			if (!pObject)
-				return true;
-
-			PropertyGridPopulator populator;
-			populator.Populate(m_pPropertyGrid, pObject);
+			pContainer = containerMgr.LoadContainer(id.GetContainerId());
 		}
+
+		if (!pContainer)
+			return true;
+
+		Systems::AssetObject* pObject = pContainer->GetAsset(id.GetObjectId());
+		if (!pObject)
+			return true;
+
+		m_pPropertyGridPopulator->Populate(m_pPropertyGrid, pObject);
 
 		return true;
 	}
 
 	bool ShaderEditor::OnCompileClicked()
 	{
-		//if (m_selectedShader == -1)
-		//	return true;
-
-		//const ShaderEntry& shader = m_allShaders[m_selectedShader];
-
 		//const char* PS_EXT = ".ps.hlsl";
 		//const char* VS_EXT = ".vs.hlsl";
 		//const char* RS_EXT = ".rs.hlsl";
@@ -292,35 +295,37 @@ namespace Editors
 		return true;
 	}
 
+	void ShaderEditor::PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField)
+	{
+		Systems::AssetObject* pAsset = static_cast<Systems::AssetObject*>(pObject);
+		m_pShaderListModel->SetShaderModified(pAsset->GetId());
+	}
+
 	void ShaderEditor::CreateShadersList()
 	{
-		m_allShaders.clear();
-		m_pShaderListLayout->DeleteAllChildren();
+		Widgets::TableView* pTableView = new Widgets::TableView();
+		pTableView->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pShaderListLayout->AddWidget(pTableView);
 
-		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		m_pShaderListModel = new ShaderListModel();
+		pTableView->SetModel(m_pShaderListModel);
 
-		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
+		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 			{
-				if (metadata.GetAssetType() != MAKESID("Material"))
+				if (selected.size() == 0)
+				{
+					m_pPropertyGrid->ClearAllItems();
+					return;
+				}
+
+				const Widgets::SelectionRow& row = selected[0];
+				Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
+				if (m_selectedMaterialId == id)
 					return;
 
-				m_allShaders.push_back(ShaderEntry());
-				ShaderEntry& entry = m_allShaders.back();
-				entry.m_id = metadata.GetAssetId();
-				entry.m_name = metadata.GetVirtualName();
+				m_selectedMaterialId = id;
+				OnShaderEntryClicked(id);
 			});
-
-		for (int ii = 0; ii < m_allShaders.size(); ++ii)
-		{
-			const ShaderEntry& entry = m_allShaders[ii];
-
-			Widgets::Button* pButton = new Widgets::Button(0, 20, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, ii]() -> bool { return OnShaderEntryClicked(ii); });
-			m_pShaderListLayout->AddWidget(pButton);
-
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, entry.m_name);
-			pButton->AddWidget(pLabel);
-		}
 	}
 }

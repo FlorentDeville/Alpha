@@ -43,6 +43,8 @@ namespace Systems
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
 
+		const AssetMetadata* GetMetadata(NewAssetId id) const;
+
 		void ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const;
 
 		const std::vector<Asset*>& GetMeshes() const;

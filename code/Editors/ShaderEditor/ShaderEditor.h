@@ -10,6 +10,12 @@
 #include <string>
 #include <vector>
 
+namespace Systems
+{
+	class FieldDescriptor;
+	class Object;
+}
+
 namespace Widgets
 {
 	class Layout;
@@ -19,22 +25,14 @@ namespace Widgets
 
 namespace Editors
 {
+	class PropertyGridPopulator;
 	class PropertyGridWidget;
-
-	class ShaderEntry
-	{
-	public:
-		std::string m_name;
-		Systems::NewAssetId m_id;
-	};
+	class ShaderListModel;
 
 	class ShaderEditorParameter
 	{
 	public:
 		Widgets::Widget* m_pParent;
-		std::string m_rawShaderPath;
-		std::string m_dataShaderPath;
-		std::string m_shaderCompilerPath;
 	};
 
 	class ShaderEditor : public Core::Singleton<ShaderEditor>
@@ -49,22 +47,25 @@ namespace Editors
 		void Render();
 
 	private:
-
-		std::vector<ShaderEntry> m_allShaders;
-
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;
-		PropertyGridWidget* m_pPropertyGrid;
 
-		int m_selectedShader;
+		PropertyGridWidget* m_pPropertyGrid;
+		PropertyGridPopulator* m_pPropertyGridPopulator;
+
+		ShaderListModel* m_pShaderListModel;
+
+		Systems::NewAssetId m_selectedMaterialId;
 
 		void CreateMenu(Widgets::Widget* pParent);
 
 		void OnMenuFile_NewShader_Clicked();
 		void OnMenuFile_Save_Clicked();
 
-		bool OnShaderEntryClicked(int index);
+		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();
+
+		void PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField);
 
 		void CreateShadersList();
 	};

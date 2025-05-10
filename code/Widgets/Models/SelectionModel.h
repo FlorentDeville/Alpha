@@ -4,7 +4,10 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackMacro.h"
+
 #include <list>
+#include <vector>
 
 namespace Widgets
 {
@@ -30,6 +33,8 @@ namespace Widgets
 		void SetSelectionRow(const SelectionRow& row);
 		void SelectRow(const SelectionRow& row);
 		void DeselectRow(const SelectionRow& row);
+
+		EVENT_DECL(SelectionChanged, void(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected));
 
 	private:
 		std::list<SelectionRow> m_selectedRows;

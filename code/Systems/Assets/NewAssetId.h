@@ -30,6 +30,8 @@ namespace Systems
 		ObjectId GetObjectId() const;
 
 		bool operator<(NewAssetId other) const;
+		bool operator==(NewAssetId other) const;
+		bool operator!=(NewAssetId other) const;
 
 		static const NewAssetId INVALID;
 	private:

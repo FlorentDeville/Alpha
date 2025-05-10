@@ -134,6 +134,15 @@ namespace Systems
 		return m_meshes;
 	}
 
+	const AssetMetadata* AssetMgr::GetMetadata(NewAssetId id) const
+	{
+		std::map<NewAssetId, AssetMetadata>::const_iterator it = m_metadata.find(id);
+		if (it == m_metadata.cend())
+			return nullptr;
+
+		return &it->second;
+	}
+
 	void AssetMgr::ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const
 	{
 		for (const std::pair<Systems::NewAssetId, Systems::AssetMetadata>& pair : m_metadata)

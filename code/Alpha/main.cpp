@@ -20,6 +20,7 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/ShaderEditor/ShaderEditor.h"
+#include "Editors/ShaderEditor/ShaderEditorModule.h"
 #include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Inputs/InputMgr.h"
@@ -565,9 +566,6 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::ShaderEditorParameter shaderEditorParameter;
 	shaderEditorParameter.m_pParent = pMiddleTabContainer;
-	shaderEditorParameter.m_dataShaderPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kShader);
-	shaderEditorParameter.m_rawShaderPath = configuration.m_rawShadersPath;
-	shaderEditorParameter.m_shaderCompilerPath = configuration.m_shaderCompiler;
 	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
 
 #ifdef _DEBUG
@@ -688,7 +686,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	levelEditorModule.Init();
 
 	Editors::MeshEditor::InitSingleton();
-	Editors::ShaderEditor::InitSingleton();
+	Editors::ShaderEditorModule& shaderEditorModule = Editors::ShaderEditorModule::InitSingleton();
+	shaderEditorModule.Init();
+
+	Editors::ShaderEditor& shaderEditor = Editors::ShaderEditor::InitSingleton();
+	shaderEditor.Init();
 
 	LoadContent(configuration);
 
@@ -710,6 +712,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		Inputs::InputMgr::Get().ClearAllStates();
 	}
 
+	shaderEditorModule.Shutdown();
+	Editors::ShaderEditorModule::ReleaseSingleton();
+
+	shaderEditor.Shutdown();
 	Editors::ShaderEditor::ReleaseSingleton();
 	Editors::MeshEditor::ReleaseSingleton();
 

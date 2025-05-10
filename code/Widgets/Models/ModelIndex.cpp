@@ -46,6 +46,11 @@ namespace Widgets
 		return m_pModel->GetIndex(row, column, *this);
 	}
 
+	ModelIndex ModelIndex::GetSiblingAtColumn(int column) const
+	{
+		return m_pModel->GetIndex(m_row, column, GetParent());
+	}
+
 	const void* ModelIndex::GetConstDataPointer() const
 	{
 		return m_pData;
@@ -69,7 +74,7 @@ namespace Widgets
 		return !(*this == other);
 	}
 
-	ModelIndex::ModelIndex(int row, int column, void* pData, const AbstractViewModel* pModel)
+	ModelIndex::ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel)
 		: m_row(row)
 		, m_column(column)
 		, m_pData(pData)
