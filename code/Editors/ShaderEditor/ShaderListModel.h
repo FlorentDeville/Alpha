@@ -8,6 +8,11 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
+namespace Systems
+{
+	class AssetMetadata;
+}
+
 namespace Editors
 {
 	class ShaderListModel : public Widgets::AbstractViewModel
@@ -22,6 +27,8 @@ namespace Editors
 		int GetColumnCount(const Widgets::ModelIndex&) const;
 		std::string GetData(const Widgets::ModelIndex&);
 
+		void AddRow(const Systems::AssetMetadata* pMetadata);
+
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
 	private:
@@ -33,5 +40,7 @@ namespace Editors
 		};
 
 		std::vector<CachedShaderData> m_cache;
+
+		void AddToCache(const Systems::AssetMetadata* pMetadata);
 	};
 }

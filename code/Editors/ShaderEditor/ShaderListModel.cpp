@@ -29,12 +29,7 @@ namespace Editors
 		for (Systems::NewAssetId id : allShaders)
 		{
 			const Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
-
-			m_cache.push_back(CachedShaderData());
-			CachedShaderData& data = m_cache.back();
-			data.m_id = id;
-			data.m_virtualName = pMetadata->GetVirtualName();
-			data.m_modified = false;
+			AddToCache(pMetadata);
 		}
 	}
 
@@ -90,9 +85,27 @@ namespace Editors
 		}
 	}
 
+	void ShaderListModel::AddRow(const Systems::AssetMetadata* pMetadata)
+	{
+		int row = static_cast<int>(m_cache.size());
+		
+		AddToCache(pMetadata);
+		
+		CommitInsertRows(row, 1, Widgets::ModelIndex());
+	}
+
 	Systems::NewAssetId ShaderListModel::GetAssetId(const Widgets::ModelIndex& index) const
 	{
 		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
 		return pData->m_id;
+	}
+
+	void ShaderListModel::AddToCache(const Systems::AssetMetadata* pMetadata)
+	{
+		m_cache.push_back(CachedShaderData());
+		CachedShaderData& data = m_cache.back();
+		data.m_id = pMetadata->GetAssetId();
+		data.m_virtualName = pMetadata->GetVirtualName();
+		data.m_modified = false;
 	}
 }
