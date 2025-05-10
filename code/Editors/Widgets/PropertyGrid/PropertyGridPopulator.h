@@ -4,19 +4,21 @@
 
 #pragma once
 
-#include "Core/Singleton.h"
-
-#include "Systems/Assets/NewAssetId.h"
-
-#include <string>
+namespace Systems
+{
+	class Object;
+}
 
 namespace Editors
 {
-	class ShaderEditorModule : public Core::Singleton<ShaderEditorModule>
+	class PropertyGridWidget;
+
+	class PropertyGridPopulator
 	{
 	public:
+		PropertyGridPopulator();
+		~PropertyGridPopulator();
 
-		bool NewShader(const std::string& virtualName);
-		bool SaveShader(Systems::NewAssetId id);
+		void Populate(PropertyGridWidget* pWidget, Systems::Object* pObject);
 	};
 }

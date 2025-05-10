@@ -34,4 +34,11 @@ namespace Editors
 
 		return true;
 	}
+
+	bool ShaderEditorModule::SaveShader(Systems::NewAssetId id)
+	{
+		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+		bool res = containerMgr.SaveContainer(id.GetContainerId());
+		return res;
+	}
 }
