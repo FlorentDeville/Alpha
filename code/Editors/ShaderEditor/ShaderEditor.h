@@ -10,6 +10,12 @@
 #include <string>
 #include <vector>
 
+namespace Systems
+{
+	class FieldDescriptor;
+	class Object;
+}
+
 namespace Widgets
 {
 	class Layout;
@@ -19,6 +25,7 @@ namespace Widgets
 
 namespace Editors
 {
+	class PropertyGridPopulator;
 	class PropertyGridWidget;
 	class ShaderListModel;
 
@@ -42,7 +49,10 @@ namespace Editors
 	private:
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;
+
 		PropertyGridWidget* m_pPropertyGrid;
+		PropertyGridPopulator* m_pPropertyGridPopulator;
+
 		ShaderListModel* m_pShaderListModel;
 
 		Systems::NewAssetId m_selectedMaterialId;
@@ -54,6 +64,8 @@ namespace Editors
 
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();
+
+		void PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField);
 
 		void CreateShadersList();
 	};

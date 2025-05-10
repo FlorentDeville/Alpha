@@ -42,10 +42,13 @@ namespace Editors
 		, m_pPropertyGrid(nullptr)
 		, m_pShaderListModel(nullptr)
 		, m_selectedMaterialId(Systems::NewAssetId::INVALID)
+		, m_pPropertyGridPopulator(new PropertyGridPopulator())
 	{}
 
 	ShaderEditor::~ShaderEditor()
-	{}
+	{
+		delete m_pPropertyGridPopulator;
+	}
 
 	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
 	{
@@ -129,6 +132,8 @@ namespace Editors
 		{
 			m_pPropertyGrid = new PropertyGridWidget();
 			pRightPanelLayout->AddWidget(m_pPropertyGrid);
+
+			m_pPropertyGridPopulator->OnDataChanged([this](Systems::Object* pObject, const Systems::FieldDescriptor* pField) {PropertyGridPopulator_OnDataChanged(pObject, pField); });
 		}
 
 		//add log label
@@ -195,6 +200,8 @@ namespace Editors
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 		ShaderEditorModule::Get().SaveShader(id);
+
+		m_pShaderListModel->ClearShaderModified(id);
 	}
 
 	bool ShaderEditor::OnShaderEntryClicked(Systems::NewAssetId id)
@@ -215,8 +222,7 @@ namespace Editors
 		if (!pObject)
 			return true;
 
-		PropertyGridPopulator populator;
-		populator.Populate(m_pPropertyGrid, pObject);
+		m_pPropertyGridPopulator->Populate(m_pPropertyGrid, pObject);
 
 		return true;
 	}
@@ -286,6 +292,12 @@ namespace Editors
 
 		//shaderCompileProcess.Wait();
 		return true;
+	}
+
+	void ShaderEditor::PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField)
+	{
+		Systems::AssetObject* pAsset = static_cast<Systems::AssetObject*>(pObject);
+		m_pShaderListModel->SetShaderModified(pAsset->GetId());
 	}
 
 	void ShaderEditor::CreateShadersList()
