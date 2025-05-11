@@ -5,6 +5,7 @@
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 
@@ -56,6 +57,20 @@ namespace Editors
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		bool res = containerMgr.SaveContainer(id.GetContainerId());
 		return res;
+	}
+
+	bool ShaderEditorModule::DeleteShader(Systems::NewAssetId id)
+	{
+		bool res = Systems::AssetUtil::DeleteAsset(id);
+		if (!res)
+			return false;
+
+		std::vector<Systems::NewAssetId>::const_iterator it = std::find(m_allShaders.cbegin(), m_allShaders.cend(), id);
+		if (it == m_allShaders.cend())
+			return true;
+
+		m_allShaders.erase(it);
+		return true;
 	}
 
 	const std::vector<Systems::NewAssetId>& ShaderEditorModule::GetAllShaders() const
