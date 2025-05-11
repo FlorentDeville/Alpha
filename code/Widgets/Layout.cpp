@@ -31,6 +31,13 @@ namespace Widgets
 		, m_defaultStyle()
 	{}
 
+	Layout::Layout(Direction dir, Widget::SIZE_STYLE sizeStyle)
+		: Layout()
+	{
+		m_dir = dir;
+		SetSizeStyle(sizeStyle);
+	}
+
 	Layout::~Layout()
 	{}
 
