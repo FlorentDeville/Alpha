@@ -330,6 +330,7 @@ namespace Editors
 			{
 				if (selected.size() == 0)
 				{
+					m_selectedMaterialId = Systems::NewAssetId::INVALID;
 					m_pPropertyGrid->ClearAllItems();
 					return;
 				}
