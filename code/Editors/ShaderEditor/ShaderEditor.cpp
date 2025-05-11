@@ -137,7 +137,7 @@ namespace Editors
 		}
 
 		//add log label
-		m_pLogText = new Widgets::Text(1, "");
+		//m_pLogText = new Widgets::Text(1, "");
 		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		//pRightPanelLayout->AddWidget(m_pLogText);
 
