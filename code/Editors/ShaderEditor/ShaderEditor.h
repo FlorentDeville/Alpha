@@ -61,6 +61,7 @@ namespace Editors
 
 		void OnMenuFile_NewShader_Clicked();
 		void OnMenuFile_Save_Clicked();
+		void MenuFile_Delete_OnClicked();
 
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();

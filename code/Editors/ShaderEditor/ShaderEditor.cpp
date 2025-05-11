@@ -6,6 +6,7 @@
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 #include "Editors/ShaderEditor/ShaderListModel.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -168,6 +169,10 @@ namespace Editors
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
 			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { OnMenuFile_Save_Clicked(); });
+
+			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Shader");
+			pDeleteItem->SetShortcut("Del");
+			pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
 		}
 	}
 
@@ -203,6 +208,16 @@ namespace Editors
 		ShaderEditorModule::Get().SaveShader(id);
 
 		m_pShaderListModel->ClearShaderModified(id);
+	}
+
+	void ShaderEditor::MenuFile_Delete_OnClicked()
+	{
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		//Ask confirmation
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
+		pDialog->Open();
 	}
 
 	bool ShaderEditor::OnShaderEntryClicked(Systems::NewAssetId id)
