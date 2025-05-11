@@ -21,8 +21,7 @@ namespace Editors
 		UserInputDialog(const std::string& title);
 		~UserInputDialog();
 
-		void Open();
-		void Close() const;
+		void Open() override;
 
 		EVENT_DECL(InputValidated, void(const std::string& userInput))
 

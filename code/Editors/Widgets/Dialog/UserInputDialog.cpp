@@ -72,11 +72,6 @@ namespace Editors
 		m_pTextBox->SetFocus();
 	}
 
-	void UserInputDialog::Close() const
-	{
-		Widgets::WidgetMgr::Get().CloseModalWindow();
-	}
-
 	void UserInputDialog::OnOk()
 	{
 		m_onInputValidated(m_pTextBox->GetText());
