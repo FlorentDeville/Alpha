@@ -37,6 +37,7 @@ namespace Editors
 		int GetRowCount(const Widgets::ModelIndex& parent) const override;
 		int GetColumnCount(const Widgets::ModelIndex& parent) const override;
 		std::string GetData(const Widgets::ModelIndex& index) override;
+		std::string GetHeaderData(int column) override;
 
 		// Specific functions
 		void AddRow(const Systems::AssetMetadata* pMetadata);
