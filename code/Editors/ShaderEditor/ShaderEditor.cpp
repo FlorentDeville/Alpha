@@ -14,6 +14,7 @@
 #include "OsWin/Process.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
@@ -164,6 +165,7 @@ namespace Editors
 			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
+			pNewItem->SetShortcut("Ctrl+N");
 			pNewItem->OnClick([this]() { MenuFile_NewShader_OnClicked(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
@@ -323,6 +325,7 @@ namespace Editors
 			return;
 
 		//first delete it for real
+		Systems::AssetUtil::DeleteAsset(m_selectedMaterialId);
 
 		//then delete it from the model
 		m_pShaderListModel->RemoveRow(m_selectedMaterialId);
