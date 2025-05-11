@@ -164,11 +164,11 @@ namespace Editors
 			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
-			pNewItem->OnClick([this]() { OnMenuFile_NewShader_Clicked(); });
+			pNewItem->OnClick([this]() { MenuFile_NewShader_OnClicked(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
 			pSaveItem->SetShortcut("Ctrl+S");
-			pSaveItem->OnClick([this]() { OnMenuFile_Save_Clicked(); });
+			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
 
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Shader");
 			pDeleteItem->SetShortcut("Del");
@@ -176,7 +176,7 @@ namespace Editors
 		}
 	}
 
-	void ShaderEditor::OnMenuFile_NewShader_Clicked()
+	void ShaderEditor::MenuFile_NewShader_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
@@ -196,7 +196,7 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void ShaderEditor::OnMenuFile_Save_Clicked()
+	void ShaderEditor::MenuFile_Save_OnClicked()
 	{
 		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
