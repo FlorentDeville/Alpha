@@ -40,5 +40,6 @@ namespace Widgets
 		std::list<SelectionRow> m_selectedRows;
 
 		void CommitInsertRows(int start, int count, const ModelIndex& parent);
+		void RemoveRows(int start, int count, const ModelIndex& parent);
 	};
 }

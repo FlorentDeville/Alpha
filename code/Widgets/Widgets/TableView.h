@@ -45,17 +45,22 @@ namespace Widgets
 
 		void CreateView();
 
-		void OnMouseDown_ItemLayout(const MouseEvent& ev, int itemIndex);
-		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, int row);
+		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
+		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 
 		void SetSelectedRowStyle(int row);
 		void SetDeselectedRowStyle(int row);
 
 		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
+		void OnRemoveRows(int start, int count, const ModelIndex& parent);
+
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 		void OnDataChanged_SelectionModel(const ModelIndex& index);
 
 		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent);
 		Label* GetItem(int row, int column, const ModelIndex& parent);
+		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
+
+		int GetRowIndex(const Layout* pLayout) const;
 	};
 }

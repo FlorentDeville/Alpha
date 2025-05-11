@@ -19,7 +19,7 @@ namespace Editors
 
 		Widgets::ModelIndex GetParent(const Widgets::ModelIndex& child) const override;
 		Widgets::ModelIndex GetIndex(int row, int column, const Widgets::ModelIndex& parent) const override;
-		int GetRowCount(const Widgets::ModelIndex& parent) override;
+		int GetRowCount(const Widgets::ModelIndex& parent) const override;
 		int GetColumnCount(const Widgets::ModelIndex& parent) const override;
 
 		std::string GetData(const Widgets::ModelIndex& idx) override;

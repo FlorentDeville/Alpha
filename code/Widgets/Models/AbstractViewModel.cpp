@@ -34,4 +34,10 @@ namespace Widgets
 		m_onCommitInsertRows(start, count, parent);
 		m_pSelectionModel->CommitInsertRows(start, count, parent);
 	}
+
+	void AbstractViewModel::RemoveRows(int start, int count, const ModelIndex& parent)
+	{
+		m_onRemoveRows(start, count, parent);
+		m_pSelectionModel->RemoveRows(start, count, parent);
+	}
 }

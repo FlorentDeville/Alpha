@@ -123,6 +123,9 @@
     <ClInclude Include="ShaderEditor\ShaderListModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\Dialog\OkCancelDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -228,6 +231,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderEditor\ShaderListModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

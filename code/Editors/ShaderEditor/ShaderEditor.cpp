@@ -6,6 +6,7 @@
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 #include "Editors/ShaderEditor/ShaderListModel.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -13,6 +14,7 @@
 #include "OsWin/Process.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
@@ -163,15 +165,20 @@ namespace Editors
 			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
-			pNewItem->OnClick([this]() { OnMenuFile_NewShader_Clicked(); });
+			pNewItem->SetShortcut("Ctrl+N");
+			pNewItem->OnClick([this]() { MenuFile_NewShader_OnClicked(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
 			pSaveItem->SetShortcut("Ctrl+S");
-			pSaveItem->OnClick([this]() { OnMenuFile_Save_Clicked(); });
+			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
+
+			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Shader");
+			pDeleteItem->SetShortcut("Del");
+			pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
 		}
 	}
 
-	void ShaderEditor::OnMenuFile_NewShader_Clicked()
+	void ShaderEditor::MenuFile_NewShader_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
@@ -191,7 +198,7 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void ShaderEditor::OnMenuFile_Save_Clicked()
+	void ShaderEditor::MenuFile_Save_OnClicked()
 	{
 		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
@@ -203,6 +210,17 @@ namespace Editors
 		ShaderEditorModule::Get().SaveShader(id);
 
 		m_pShaderListModel->ClearShaderModified(id);
+	}
+
+	void ShaderEditor::MenuFile_Delete_OnClicked()
+	{
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		//Ask confirmation
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
+		pDialog->OnOk([this]() { DeleteSelectedShader(); });
+		pDialog->Open();
 	}
 
 	bool ShaderEditor::OnShaderEntryClicked(Systems::NewAssetId id)
@@ -301,6 +319,18 @@ namespace Editors
 		m_pShaderListModel->SetShaderModified(pAsset->GetId());
 	}
 
+	void ShaderEditor::DeleteSelectedShader()
+	{
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		//first delete it for real
+		Systems::AssetUtil::DeleteAsset(m_selectedMaterialId);
+
+		//then delete it from the model
+		m_pShaderListModel->RemoveRow(m_selectedMaterialId);
+	}
+
 	void ShaderEditor::CreateShadersList()
 	{
 		Widgets::TableView* pTableView = new Widgets::TableView();
@@ -315,6 +345,7 @@ namespace Editors
 			{
 				if (selected.size() == 0)
 				{
+					m_selectedMaterialId = Systems::NewAssetId::INVALID;
 					m_pPropertyGrid->ClearAllItems();
 					return;
 				}

@@ -70,6 +70,41 @@ namespace Systems
 		return pContainer;
 	}
 
+	bool ContainerMgr::DeleteContainer(ContainerId cid)
+	{
+		//delete the container file
+		std::string rawFilename = MakeFilename(cid);
+		std::filesystem::path filename(rawFilename);
+		std::error_code error;
+		std::filesystem::remove(filename, error);
+
+		//delete empty folders
+		std::filesystem::path root(m_root);
+		if(m_root.back() == '\\')
+			root = root.parent_path();
+
+		std::filesystem::path parentPath = filename.parent_path();
+		while (parentPath != filename && parentPath != root)
+		{
+			bool deleted = std::filesystem::remove(parentPath, error);
+			if (!deleted)
+				break;
+
+			filename = parentPath;
+			parentPath = filename.parent_path();
+		}
+
+		//delete the container
+		Container* pContainer = GetContainer(cid);
+		if (pContainer)
+			delete pContainer;
+
+		//remove the container from the manager
+		m_containerMap.erase(cid);
+
+		return true;
+	}
+
 	Container* ContainerMgr::GetContainer(ContainerId cid)
 	{
 		std::map<ContainerId, Container*>::const_iterator it = m_containerMap.find(cid);

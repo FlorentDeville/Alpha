@@ -143,6 +143,12 @@ namespace Systems
 		return &it->second;
 	}
 
+	bool AssetMgr::DeleteMetadata(NewAssetId id)
+	{
+		m_metadata.erase(id);
+		return true;
+	}
+
 	void AssetMgr::ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const
 	{
 		for (const std::pair<Systems::NewAssetId, Systems::AssetMetadata>& pair : m_metadata)
