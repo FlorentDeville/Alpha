@@ -75,13 +75,17 @@ namespace Systems
 		//delete the container file
 		std::string rawFilename = MakeFilename(cid);
 		std::filesystem::path filename(rawFilename);
-		std::filesystem::remove(filename);
+		std::error_code error;
+		std::filesystem::remove(filename, error);
 
 		//delete empty folders
+		std::filesystem::path root(m_root);
+		if(m_root.back() == '\\')
+			root = root.parent_path();
+
 		std::filesystem::path parentPath = filename.parent_path();
-		while (parentPath != filename && parentPath != m_root)
+		while (parentPath != filename && parentPath != root)
 		{
-			std::error_code error;
 			bool deleted = std::filesystem::remove(parentPath, error);
 			if (!deleted)
 				break;
