@@ -40,11 +40,15 @@ namespace Widgets
 		Color m_evenRowBackgroundColor;
 		Color m_hoverBackgroundColor;
 		Color m_selectedBorderColor;
+		Color m_headerBackgroundColor;
 
 		Layout* m_pLayout;
 
 		bool m_multiSelectionEnabled;
 
+		DirectX::XMUINT2 m_cellDefaultSize;
+
+		void CreateHeader();
 		void CreateView();
 
 		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);

@@ -92,6 +92,28 @@ namespace Editors
 		}
 	}
 
+	std::string ShaderListModel::GetHeaderData(int column)
+	{
+		switch (column)
+		{
+		case Columns::Id:
+			return "Id";
+			break;
+
+		case Columns::Name:
+			return "Name";
+			break;
+
+		case Columns::Modified:
+			return "Modified";
+			break;
+
+		default:
+			return "";
+			break;
+		}
+	}
+
 	void ShaderListModel::AddRow(const Systems::AssetMetadata* pMetadata)
 	{
 		int row = static_cast<int>(m_cache.size());

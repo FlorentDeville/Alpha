@@ -23,7 +23,9 @@ namespace Widgets
 		, m_evenRowBackgroundColor(0.16f, 0.16f, 0.16f, 1.f)
 		, m_hoverBackgroundColor(0.24f, 0.24f, 0.24f, 1.f)
 		, m_selectedBorderColor(0.44f, 0.44f, 0.44f, 1.f)
+		, m_headerBackgroundColor(0.08f, 0.08f, 0.08f, 1.f)
 		, m_multiSelectionEnabled(false)
+		, m_cellDefaultSize(75, 20)
 	{
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
@@ -60,6 +62,7 @@ namespace Widgets
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected) { OnSelectionChanged_SelectionModel(selected, deselected); });
 
+		CreateHeader();
 		CreateView();
 	}
 
@@ -85,6 +88,37 @@ namespace Widgets
 			size.x = width;
 			pCell->SetSize(size);
 		}
+	}
+
+	void TableView::CreateHeader()
+	{
+		Layout* pHeaderLayout = new Layout();
+		pHeaderLayout->SetSpace(DirectX::XMINT2(5, 0));
+		pHeaderLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
+		pHeaderLayout->SetDirection(Layout::Horizontal);
+		pHeaderLayout->GetDefaultStyle().SetBackgroundColor(m_headerBackgroundColor);
+		pHeaderLayout->GetHoverStyle().SetBackgroundColor(m_headerBackgroundColor);
+
+		int columnCount = m_pModel->GetColumnCount(Widgets::ModelIndex());
+		for (int jj = 0; jj < columnCount; ++jj)
+		{
+			std::string data = m_pModel->GetHeaderData(jj);
+
+			Label* pLabel = new Label(data);
+			if (jj != columnCount - 1)
+			{
+				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+				pLabel->SetSize(m_cellDefaultSize);
+			}
+			else
+			{
+				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+			}
+
+			pHeaderLayout->AddWidget(pLabel);
+		}
+
+		m_pLayout->AddWidget(pHeaderLayout);
 	}
 
 	void TableView::CreateView()
@@ -155,7 +189,7 @@ namespace Widgets
 
 	void TableView::SetSelectedRowStyle(int row)
 	{
-		Widgets::Layout* pLayout = static_cast<Widgets::Layout*>(m_pLayout->GetChildren()[row]);
+		Widgets::Layout* pLayout = GetRowWidget(row, 0, Widgets::ModelIndex());
 		pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pLayout->GetDefaultStyle().ShowBorder(true);
 		pLayout->GetDefaultStyle().SetBorderColor(m_selectedBorderColor);
@@ -167,7 +201,7 @@ namespace Widgets
 
 	void TableView::SetDeselectedRowStyle(int row)
 	{
-		Widget* pWidget = m_pLayout->GetChildren()[row];
+		Widget* pWidget = GetRowWidget(row, 0, Widgets::ModelIndex());
 		Layout* pLayout = static_cast<Layout*>(pWidget);
 
 		if (row % 2 == 0)
@@ -269,7 +303,7 @@ namespace Widgets
 			if (jj != columnCount - 1)
 			{
 				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				pLabel->SetSize(DirectX::XMUINT2(75, 20));
+				pLabel->SetSize(m_cellDefaultSize);
 			}
 			else
 			{
@@ -301,7 +335,7 @@ namespace Widgets
 		if (parent.IsValid())
 			return nullptr;
 
-		Widget* pRow = m_pLayout->GetChildren()[row];
+		Widget* pRow = m_pLayout->GetChildren()[row + 1]; //+1 because the first row is the header
 		if (!pRow)
 			return nullptr;
 
@@ -318,6 +352,7 @@ namespace Widgets
 			return -1;
 
 		int index = static_cast<int>(std::distance(children.cbegin(), it));
+		index = index - 1; //-1 because the first row is the header
 		return index;
 	}
 }
