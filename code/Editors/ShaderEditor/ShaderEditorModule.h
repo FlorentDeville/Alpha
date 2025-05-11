@@ -28,6 +28,7 @@ namespace Editors
 
 		Systems::MaterialAsset* NewShader(const std::string& virtualName);
 		bool SaveShader(Systems::NewAssetId id);
+		bool DeleteShader(Systems::NewAssetId id);
 
 		const std::vector<Systems::NewAssetId>& GetAllShaders() const;
 
