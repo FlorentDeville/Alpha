@@ -29,6 +29,7 @@ namespace Widgets
 		virtual int GetColumnCount(const ModelIndex& parent) const = 0;
 
 		virtual std::string GetData(const ModelIndex& idx) = 0;
+		virtual std::string GetHeaderData(int columnIndex);
 
 		SelectionModel* GetSelectionModel();
 

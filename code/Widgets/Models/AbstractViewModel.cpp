@@ -24,6 +24,11 @@ namespace Widgets
 		return ModelIndex(row, column, pData, this);
 	}
 
+	std::string AbstractViewModel::GetHeaderData(int columnIndex)
+	{
+		return "";
+	}
+
 	SelectionModel* AbstractViewModel::GetSelectionModel()
 	{
 		return m_pSelectionModel;
