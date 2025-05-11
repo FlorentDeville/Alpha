@@ -26,6 +26,9 @@ namespace Systems
 		Container* CreateContainer(const char* seed);
 		Container* GetContainer(ContainerId cid);
 
+		// Delete the container from memory and disk.
+		bool DeleteContainer(ContainerId cid);
+
 		Container* LoadContainer(ContainerId cid);
 		bool SaveContainer(ContainerId cid);
 

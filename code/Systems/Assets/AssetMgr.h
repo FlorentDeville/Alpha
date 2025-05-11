@@ -44,6 +44,7 @@ namespace Systems
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
 
 		const AssetMetadata* GetMetadata(NewAssetId id) const;
+		bool DeleteMetadata(NewAssetId id);
 
 		void ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const;
 
