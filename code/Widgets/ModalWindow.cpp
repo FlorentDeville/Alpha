@@ -27,7 +27,6 @@ namespace Widgets
 		
 		Container::AddWidget(m_pInnerLayout);
 
-		const int TITLE_HEIGHT = 20;
 		Container* pLabelContainer = new Container(0, TITLE_HEIGHT);
 		pLabelContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pLabelContainer->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 1.f));
@@ -77,4 +76,13 @@ namespace Widgets
 		m_pContent->DeleteChild(pWidget);
 	}
 
+	void ModalWindow::Open()
+	{
+		Widgets::WidgetMgr::Get().OpenModalWindow(this);
+	}
+
+	void ModalWindow::Close()
+	{
+		Widgets::WidgetMgr::Get().CloseModalWindow();
+	}
 }

@@ -25,6 +25,12 @@ namespace Widgets
 		void AddWidget(Widget* pWidget) override;
 		void DeleteChild(Widget* pWidget) override;
 
+		virtual void Open();
+		virtual void Close();
+
+		// Height of the title bar of the modal window
+		const int TITLE_HEIGHT = 20;
+
 	private:
 		Widgets::Layout* m_pInnerLayout;
 		Widgets::Label* m_pTitleLabel;
