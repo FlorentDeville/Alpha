@@ -68,6 +68,8 @@ namespace Editors
 
 		void PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField);
 
+		void DeleteSelectedShader();
+
 		void CreateShadersList();
 	};
 }

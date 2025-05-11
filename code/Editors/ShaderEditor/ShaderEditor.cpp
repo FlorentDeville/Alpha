@@ -217,6 +217,7 @@ namespace Editors
 
 		//Ask confirmation
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
+		pDialog->OnOk([this]() { DeleteSelectedShader(); });
 		pDialog->Open();
 	}
 
@@ -314,6 +315,17 @@ namespace Editors
 	{
 		Systems::AssetObject* pAsset = static_cast<Systems::AssetObject*>(pObject);
 		m_pShaderListModel->SetShaderModified(pAsset->GetId());
+	}
+
+	void ShaderEditor::DeleteSelectedShader()
+	{
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		//first delete it for real
+
+		//then delete it from the model
+		m_pShaderListModel->RemoveRow(m_selectedMaterialId);
 	}
 
 	void ShaderEditor::CreateShadersList()
