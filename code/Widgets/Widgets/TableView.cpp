@@ -54,6 +54,7 @@ namespace Widgets
 
 		m_pModel = pModel;
 		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
+		m_pModel->OnRemoveRows([this](int start, int count, const ModelIndex& parent) { OnRemoveRows(start, count, parent); });
 		m_pModel->OnDataChanged([this](const ModelIndex& index) { OnDataChanged_SelectionModel(index); });
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
@@ -81,13 +82,17 @@ namespace Widgets
 		}
 	}
 
-	void TableView::OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, int row)
+	void TableView::OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout)
 	{
 		if (!ev.HasButton(MouseButton::LeftButton))
 			return;
 
+		int row = GetRowIndex(pRowLayout);
+		if (row < 0)
+			return;
+
 		ModelIndex start = m_pModel->GetIndex(row, 0, ModelIndex());
-		ModelIndex end = m_pModel->GetIndex(row, m_pModel->GetColumnCount(ModelIndex()), ModelIndex());
+		ModelIndex end = m_pModel->GetIndex(row, m_pModel->GetColumnCount(ModelIndex()) - 1, ModelIndex());
 		SelectionRow clickedRow(start, end);
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
@@ -119,8 +124,12 @@ namespace Widgets
 		}
 	}
 
-	void TableView::OnMouseDoubleClick_ItemLayout(const Widgets::MouseEvent& ev, int row)
+	void TableView::OnMouseDoubleClick_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout)
 	{
+		int row = GetRowIndex(pRowLayout);
+		if (row < 0)
+			return;
+
 		ModelIndex idx = m_pModel->GetIndex(row, 0, ModelIndex());
 		m_onItemDoubleClick(idx);
 	}
@@ -172,10 +181,29 @@ namespace Widgets
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
+	void TableView::OnRemoveRows(int start, int count, const ModelIndex& parent)
+	{
+		if (parent.IsValid())
+			return;
+
+		Layout* pLayout = GetRowWidget(start, 0, parent);
+		if (!pLayout)
+			return;
+
+		m_pLayout->DeleteChild(pLayout);
+	}
+
 	void TableView::OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected)
 	{
 		for (const SelectionRow& deselectedRow : deselected)
 		{
+			//if the row was removed, it's possible deselected contains an out of range index
+			size_t childrenCount = m_pLayout->GetChildren().size();
+			int row = deselectedRow.GetStartIndex().GetRow();
+			
+			if (row < 0 || row >= childrenCount)
+				continue;
+
 			SetDeselectedRowStyle(deselectedRow.GetStartIndex().GetRow());
 		}
 
@@ -202,8 +230,8 @@ namespace Widgets
 		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
 		pRowLayout->SetDirection(Layout::Horizontal);
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
-		pRowLayout->OnMouseDown([this, row](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, row); });
-		pRowLayout->OnMouseDoubleClick([this, row](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, row); });
+		pRowLayout->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, pRowLayout); });
+		pRowLayout->OnMouseDoubleClick([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, pRowLayout); });
 
 		if (row % 2 == 0)
 		{
@@ -237,6 +265,20 @@ namespace Widgets
 
 	Label* TableView::GetItem(int row, int column, const ModelIndex& parent)
 	{
+		Layout* pRowLayout = GetRowWidget(row, column, parent);
+		if (!pRowLayout)
+			return nullptr;
+
+		Widget* pCell = pRowLayout->GetChildren()[column];
+		if (!pCell)
+			return nullptr;
+
+		Label* pLabel = static_cast<Label*>(pCell);
+		return pLabel;
+	}
+
+	Layout* TableView::GetRowWidget(int row, int column, const ModelIndex& parent)
+	{
 		if (parent.IsValid())
 			return nullptr;
 
@@ -245,12 +287,18 @@ namespace Widgets
 			return nullptr;
 
 		Layout* pRowLayout = static_cast<Layout*>(pRow);
-		
-		Widget* pCell = pRowLayout->GetChildren()[column];
-		if (!pCell)
-			return nullptr;
+		return pRowLayout;
+	}
 
-		Label* pLabel = static_cast<Label*>(pCell);
-		return pLabel;
+	int TableView::GetRowIndex(const Layout* pLayout) const
+	{
+		const std::vector<Widgets::Widget*> children = m_pLayout->GetChildren();
+		std::vector<Widgets::Widget*>::const_iterator it = std::find(children.cbegin(), children.cend(), pLayout);
+
+		if (it == children.cend())
+			return -1;
+
+		int index = static_cast<int>(std::distance(children.cbegin(), it));
+		return index;
 	}
 }

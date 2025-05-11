@@ -25,7 +25,7 @@ namespace Widgets
 
 		virtual ModelIndex GetParent(const ModelIndex& child) const = 0;
 		virtual ModelIndex GetIndex(int row, int column, const ModelIndex& parent) const = 0;
-		virtual int GetRowCount(const ModelIndex& parent) = 0;
+		virtual int GetRowCount(const ModelIndex& parent) const = 0;
 		virtual int GetColumnCount(const ModelIndex& parent) const = 0;
 
 		virtual std::string GetData(const ModelIndex& idx) = 0;
@@ -35,6 +35,9 @@ namespace Widgets
 		//call this after inserting new rows in the model
 		void CommitInsertRows(int start, int count, const ModelIndex& parent);
 
+		//call this after removing the rows from the model
+		void RemoveRows(int start, int count, const ModelIndex& parent);
+
 		EVENT_DECL(DataChanged, void(const ModelIndex& index))
 
 	private:
@@ -42,5 +45,6 @@ namespace Widgets
 
 		//Used only by widgets. they need to be friend with this class.
 		PRIVATE_EVENT_DECL(CommitInsertRows, void(int start, int count, const ModelIndex& parent))
+		PRIVATE_EVENT_DECL(RemoveRows, void(int start, int count, const ModelIndex& parent))
 	};
 }

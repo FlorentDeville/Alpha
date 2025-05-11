@@ -57,7 +57,7 @@ namespace Editors
 		return CreateIndex(row, column, &data);
 	}
 
-	int ShaderListModel::GetRowCount(const Widgets::ModelIndex& parent)
+	int ShaderListModel::GetRowCount(const Widgets::ModelIndex& parent) const
 	{
 		if (parent.IsValid())
 			return 0;
@@ -108,6 +108,18 @@ namespace Editors
 		AddToCache(pMetadata);
 		
 		CommitInsertRows(row, 1, Widgets::ModelIndex());
+	}
+
+	void ShaderListModel::RemoveRow(Systems::NewAssetId id)
+	{
+		int cacheIndex = FindCacheIndex(id);
+		if (cacheIndex < 0)
+			return;
+
+		std::vector<CachedShaderData>::const_iterator it = m_cache.cbegin() + cacheIndex;
+		m_cache.erase(it);
+
+		RemoveRows(cacheIndex, 1, Widgets::ModelIndex());
 	}
 
 	void ShaderListModel::SetShaderModified(Systems::NewAssetId id)

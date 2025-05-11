@@ -55,7 +55,7 @@ namespace Editors
 		return CreateIndex(row, column, pAsset);
 	}
 
-	int AssetListModel::GetRowCount(const Widgets::ModelIndex& parent)
+	int AssetListModel::GetRowCount(const Widgets::ModelIndex& parent) const
 	{
 		//only root has children
 		if (parent.IsValid())

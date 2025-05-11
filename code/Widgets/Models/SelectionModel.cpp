@@ -106,4 +106,56 @@ namespace Widgets
 			selectedRow = SelectionRow(newStart, newEnd);
 		}
 	}
+
+	void SelectionModel::RemoveRows(int start, int count, const ModelIndex& parent)
+	{
+		std::vector<Widgets::SelectionRow> select;
+		std::vector<Widgets::SelectionRow> deselect;
+
+		for (std::list<SelectionRow>::iterator it = m_selectedRows.begin(); it != m_selectedRows.end(); ++it)
+		{
+			SelectionRow& selectedRow = *it;
+
+			if (selectedRow.GetParent() != parent)
+				continue;
+
+			ModelIndex startIndex = selectedRow.GetStartIndex();
+			if (startIndex.GetRow() < start)
+				continue;
+
+			const AbstractViewModel* pModel = startIndex.GetConstModel();
+			int rowCount = pModel->GetRowCount(parent);
+
+			//the model is empty
+			if (rowCount == 0)
+			{
+				deselect.push_back(selectedRow);
+				continue;
+			}
+
+			//the last row was removed, deselect it and select the last one
+			ModelIndex endIndex = selectedRow.GetEndIndex();
+			if (endIndex.GetRow() >= rowCount)
+			{
+				deselect.push_back(selectedRow);
+
+				
+				int lastRowIndex = pModel->GetRowCount(parent) - 1;
+				ModelIndex lastRowStart = pModel->GetIndex(lastRowIndex, startIndex.GetColumn(), parent);
+				ModelIndex lastRowEnd = pModel->GetIndex(lastRowIndex, endIndex.GetColumn(), parent);
+
+				select.push_back(Widgets::SelectionRow(lastRowStart, lastRowEnd));
+
+				continue;
+			}
+	
+			select.push_back(selectedRow);
+		}
+
+		m_selectedRows.clear();
+		for(const Widgets::SelectionRow& row : select)
+			m_selectedRows.push_back(row);
+
+		m_onSelectionChanged(select, deselect);
+	}
 }
