@@ -37,6 +37,7 @@
     <ClInclude Include="Widgets\Component\ComponentModel.h" />
     <ClInclude Include="Widgets\Component\ComponentWidget.h" />
     <ClInclude Include="Widgets\Dialog\AssetDialog.h" />
+    <ClInclude Include="Widgets\Dialog\OkCancelDialog.h" />
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h" />
     <ClInclude Include="Widgets\Entity\EntityModel.h" />
     <ClInclude Include="Widgets\Entity\EntityWidget.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
     <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp" />
+    <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp" />
     <ClCompile Include="Widgets\Entity\EntityModel.cpp" />
     <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
