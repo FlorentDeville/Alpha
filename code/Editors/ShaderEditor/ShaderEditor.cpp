@@ -339,6 +339,7 @@ namespace Editors
 
 		m_pShaderListModel = new ShaderListModel();
 		pTableView->SetModel(m_pShaderListModel);
+		pTableView->SetColumnWidth(ShaderListModel::Columns::Name, 200);
 
 		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)

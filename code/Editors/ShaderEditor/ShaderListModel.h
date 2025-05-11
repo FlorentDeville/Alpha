@@ -19,6 +19,15 @@ namespace Editors
 	class ShaderListModel : public Widgets::AbstractViewModel
 	{
 	public:
+		enum Columns
+		{
+			Id = 0,
+			Name,
+			Modified,
+
+			Count
+		};
+
 		ShaderListModel();
 		~ShaderListModel();
 

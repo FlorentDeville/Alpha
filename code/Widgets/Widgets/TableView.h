@@ -28,6 +28,8 @@ namespace Widgets
 		void SetModel(AbstractViewModel* pModel);
 
 		void SetMultiSelection(bool enable);
+
+		void SetColumnWidth(int column, int width);
 		
 		EVENT_DECL(ItemDoubleClick, void(const ModelIndex& idx))
 

@@ -68,6 +68,25 @@ namespace Widgets
 		m_multiSelectionEnabled = enable;
 	}
 
+	void TableView::SetColumnWidth(int column, int width)
+	{
+		if (!m_pModel)
+			return;
+
+		int columnCount = m_pModel->GetColumnCount(Widgets::ModelIndex());
+		if (column < 0 || column >= columnCount)
+			return;
+
+		std::vector<Widgets::Widget*> rows = m_pLayout->GetChildren();
+		for (Widgets::Widget* pRow : rows)
+		{
+			Widgets::Widget* pCell = pRow->GetChildren()[column];
+			DirectX::XMUINT2 size = pCell->GetSize();
+			size.x = width;
+			pCell->SetSize(size);
+		}
+	}
+
 	void TableView::CreateView()
 	{
 		ModelIndex root;

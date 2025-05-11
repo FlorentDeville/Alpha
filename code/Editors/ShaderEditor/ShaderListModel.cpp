@@ -12,15 +12,6 @@
 
 namespace Editors
 {
-	enum Column
-	{
-		Id = 0,
-		Name,
-		Modified,
-
-		Count
-	};
-
 	ShaderListModel::ShaderListModel()
 		: AbstractViewModel()
 	{
@@ -50,7 +41,7 @@ namespace Editors
 		if (row < 0 || row >= m_cache.size())
 			return Widgets::ModelIndex();
 
-		if (column < 0 || column >= Column::Count)
+		if (column < 0 || column >= Columns::Count)
 			return Widgets::ModelIndex();
 
 		const CachedShaderData& data = m_cache[row];
@@ -70,7 +61,7 @@ namespace Editors
 		if (parent.IsValid())
 			return 0;
 
-		return Column::Count;
+		return Columns::Count;
 	}
 
 	std::string ShaderListModel::GetData(const Widgets::ModelIndex& index)
@@ -78,15 +69,15 @@ namespace Editors
 		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
 		switch (index.GetColumn())
 		{
-		case Column::Id:
+		case Columns::Id:
 			return pData->m_id.ToString();
 			break;
 
-		case Column::Name:
+		case Columns::Name:
 			return pData->m_virtualName;
 			break;
 
-		case Column::Modified:
+		case Columns::Modified:
 		{
 			if (pData->m_modified)
 				return "*";
@@ -132,7 +123,7 @@ namespace Editors
 			return;
 
 		m_cache[cacheIndex].m_modified = true;
-		m_onDataChanged(GetIndex(cacheIndex, Column::Modified, Widgets::ModelIndex()));
+		m_onDataChanged(GetIndex(cacheIndex, Columns::Modified, Widgets::ModelIndex()));
 	}
 
 	void ShaderListModel::ClearShaderModified(Systems::NewAssetId id)
@@ -145,7 +136,7 @@ namespace Editors
 			return;
 
 		m_cache[cacheIndex].m_modified = false;
-		m_onDataChanged(GetIndex(cacheIndex, Column::Modified, Widgets::ModelIndex()));
+		m_onDataChanged(GetIndex(cacheIndex, Columns::Modified, Widgets::ModelIndex()));
 	}
 
 	Systems::NewAssetId ShaderListModel::GetAssetId(const Widgets::ModelIndex& index) const
