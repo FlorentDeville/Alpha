@@ -489,7 +489,7 @@ namespace Rendering
 			// character not in font char set
 			if (fc == nullptr)
 			{
-				OutputDebugString("WARNING : Character not found in the font");
+				OutputDebugString("WARNING : Character not found in the font\n");
 				break;
 			}
 
@@ -500,7 +500,7 @@ namespace Rendering
 			// don't overflow the buffer. In your app if this is true, you can implement a resize of your text vertex buffer
 			if (info.m_characterCount >= info.m_bufferSize)
 			{
-				OutputDebugString("WARNING : Too many characters rendered");
+				OutputDebugString("WARNING : Too many characters rendered\n");
 			}
 
 			float kerning = 0.0f;
