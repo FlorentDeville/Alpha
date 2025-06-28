@@ -28,6 +28,7 @@ namespace Widgets
 		, m_currentState(DEFAULT)
 		, m_cursorPosition(0)
 		, m_cursorLastBlinkChange(0)
+		, m_text()
 	{
 		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1));
 		m_hoverStyle.SetBorderColor(DirectX::XMVectorSet(0.6f, 0.6f, 0.6f, 1));
