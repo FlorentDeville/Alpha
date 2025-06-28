@@ -222,7 +222,6 @@ namespace Widgets
 					m_text.insert(m_cursorPosition, textToCopy.c_str(), textToCopy.size());
 					m_cursorPosition += static_cast<int>(textToCopy.size());
 					ComputeCursorPosition();
-					return true;
 				}
 			}
 			return true;
