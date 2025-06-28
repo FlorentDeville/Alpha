@@ -27,6 +27,7 @@ namespace Editors
 	Systems::MaterialAsset* ShaderEditorModule::NewShader(const std::string& virtualName)
 	{
 		Systems::MaterialAsset* pNewMaterial = Systems::CreateNewAsset<Systems::MaterialAsset>();
+		assert(pNewMaterial);
 
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::Container* pContainer = containerMgr.CreateContainer(virtualName.c_str());

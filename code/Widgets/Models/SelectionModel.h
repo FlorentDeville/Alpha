@@ -39,7 +39,15 @@ namespace Widgets
 	private:
 		std::list<SelectionRow> m_selectedRows;
 
+		// Store the list of rows deselected in BeforeRemoveRows
+		std::vector<SelectionRow> m_deselectedRowsWhenDelete;
+
 		void CommitInsertRows(int start, int count, const ModelIndex& parent);
-		void RemoveRows(int start, int count, const ModelIndex& parent);
+
+		// Called before the row is removed from the widgets
+		void BeforeRemoveRows(int start, int count, const ModelIndex& parent);
+
+		// Called after the row is removed fro the widgets
+		void AfterRemoveRows(int start, int count, const ModelIndex& parent);
 	};
 }

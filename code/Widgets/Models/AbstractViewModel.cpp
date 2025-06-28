@@ -42,8 +42,8 @@ namespace Widgets
 
 	void AbstractViewModel::RemoveRows(int start, int count, const ModelIndex& parent)
 	{
-		//delesect the row before removing it.
-		m_pSelectionModel->RemoveRows(start, count, parent);
+		m_pSelectionModel->BeforeRemoveRows(start, count, parent);
 		m_onRemoveRows(start, count, parent);
+		m_pSelectionModel->AfterRemoveRows(start, count, parent);
 	}
 }

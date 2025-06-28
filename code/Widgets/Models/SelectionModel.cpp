@@ -107,55 +107,77 @@ namespace Widgets
 		}
 	}
 
-	void SelectionModel::RemoveRows(int start, int count, const ModelIndex& parent)
+	void SelectionModel::BeforeRemoveRows(int start, int count, const ModelIndex& parent)
 	{
-		std::vector<Widgets::SelectionRow> select;
-		std::vector<Widgets::SelectionRow> deselect;
-
-		for (std::list<SelectionRow>::iterator it = m_selectedRows.begin(); it != m_selectedRows.end(); ++it)
+		std::list<SelectionRow>::const_iterator it = m_selectedRows.cbegin();
+		while(it != m_selectedRows.cend())
 		{
-			SelectionRow& selectedRow = *it;
+			const SelectionRow& selectedRow = *it;
 
 			if (selectedRow.GetParent() != parent)
+			{
+				++it;
 				continue;
+			}
 
 			ModelIndex startIndex = selectedRow.GetStartIndex();
 			if (startIndex.GetRow() < start)
-				continue;
-
-			const AbstractViewModel* pModel = startIndex.GetConstModel();
-			int rowCount = pModel->GetRowCount(parent);
-
-			//the model is empty
-			if (rowCount == 0)
 			{
-				deselect.push_back(selectedRow);
+				++it;
 				continue;
 			}
 
-			//the last row was removed, deselect it and select the last one
-			ModelIndex endIndex = selectedRow.GetEndIndex();
-			if (endIndex.GetRow() >= rowCount)
+			//pretend a SelectionRow is only a single row for now
+			if (startIndex.GetRow() >= start + count)
 			{
-				deselect.push_back(selectedRow);
-
-				
-				int lastRowIndex = pModel->GetRowCount(parent) - 1;
-				ModelIndex lastRowStart = pModel->GetIndex(lastRowIndex, startIndex.GetColumn(), parent);
-				ModelIndex lastRowEnd = pModel->GetIndex(lastRowIndex, endIndex.GetColumn(), parent);
-
-				select.push_back(Widgets::SelectionRow(lastRowStart, lastRowEnd));
-
+				++it;
 				continue;
 			}
-	
-			select.push_back(selectedRow);
+
+			m_deselectedRowsWhenDelete.push_back(selectedRow);
+			it = m_selectedRows.erase(it);
 		}
 
-		m_selectedRows.clear();
-		for(const Widgets::SelectionRow& row : select)
-			m_selectedRows.push_back(row);
+		std::vector<Widgets::SelectionRow> select;
+		m_onSelectionChanged(select, m_deselectedRowsWhenDelete);
+	}
 
+	void SelectionModel::AfterRemoveRows(int start, int count, const ModelIndex& parent)
+	{
+		if (parent.IsValid())
+			return;
+
+		std::vector<Widgets::SelectionRow> select;
+
+		//now the widgets are deleted so select the row after the row being deleted
+		for (const SelectionRow& oldSelectedRow : m_deselectedRowsWhenDelete)
+		{
+			ModelIndex index = oldSelectedRow.GetStartIndex();
+			const AbstractViewModel* pModel = index.GetConstModel();
+			int rowCount = pModel->GetRowCount(parent);
+
+			if (IsRowSelected(oldSelectedRow))
+				continue;
+
+			int oldRow = oldSelectedRow.GetStartIndex().GetRow();
+			if (oldRow >= 0 && oldRow < rowCount)
+			{
+				m_selectedRows.push_back(oldSelectedRow);
+				select.push_back(oldSelectedRow);
+				continue;
+			}
+
+			if (oldRow >= rowCount && rowCount > 0)
+			{
+				ModelIndex index = pModel->GetIndex(rowCount - 1, 0, parent);
+				m_selectedRows.push_back(SelectionRow(index, index));
+				select.push_back(SelectionRow(index, index));
+			}
+		}
+
+		std::vector<Widgets::SelectionRow> deselect;
 		m_onSelectionChanged(select, deselect);
+
+		m_deselectedRowsWhenDelete.clear();
 	}
 }

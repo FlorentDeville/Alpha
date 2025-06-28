@@ -201,8 +201,7 @@ namespace Widgets
 
 	void TableView::SetDeselectedRowStyle(int row)
 	{
-		Widget* pWidget = GetRowWidget(row, 0, Widgets::ModelIndex());
-		Layout* pLayout = static_cast<Layout*>(pWidget);
+		Layout* pLayout = GetRowWidget(row, 0, Widgets::ModelIndex());
 
 		if (row % 2 == 0)
 			pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
