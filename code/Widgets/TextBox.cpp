@@ -4,6 +4,8 @@
 
 #include "Widgets/TextBox.h"
 
+#include "OsWin/Clipboard.h"
+#include "OsWin/Input.h"
 #include "OsWin/VirtualKeyCode.h"
 
 #include "Widgets/Events/BaseEvent.h"
@@ -209,6 +211,18 @@ namespace Widgets
 						m_cursorPosition = static_cast<int>(m_text.size());
 						ComputeCursorPosition();
 					}
+				}
+				else if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Vk_V && Os::IsKeyDown(Os::VKeyCodes::LeftControl)) // ctrl+v
+				{
+					std::string textToCopy;
+					bool res = Os::GetClipboardAsText(textToCopy);
+					if (!res)
+						return true;
+
+					m_text.insert(m_cursorPosition, textToCopy.c_str(), textToCopy.size());
+					m_cursorPosition += static_cast<int>(textToCopy.size());
+					ComputeCursorPosition();
+					return true;
 				}
 			}
 			return true;
