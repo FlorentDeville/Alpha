@@ -17,6 +17,6 @@ enum MessageId
 	M_MouseRUp,
 	M_VirtualKeyDown,	//Virtual Key : the message is the virtual key code
 	M_VirtualKeyUp,		//Virtual Key : the message is the virtual key code
-	M_CharKeyDown,		//Character key : the message is the character
+	M_CharKeyDown,		//Character key : the message is the character. Only handles printable characters
 	M_Count
 };
