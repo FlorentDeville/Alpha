@@ -228,7 +228,9 @@ namespace Widgets
 		for (int ii = start; ii < start + count; ++ii)
 		{
 			Layout* pRowLayout = CreateItem(ii, columnCount, root);
-			m_pLayout->InsertWidget(pRowLayout, ii);
+
+			int layoutIndex = GetRowLayoutIndex(ii);
+			m_pLayout->InsertWidget(pRowLayout, layoutIndex);
 		}
 
 		Widgets::WidgetMgr::Get().RequestResize();
@@ -335,7 +337,8 @@ namespace Widgets
 		if (parent.IsValid())
 			return nullptr;
 
-		Widget* pRow = m_pLayout->GetChildren()[row + 1]; //+1 because the first row is the header
+		int layoutIndex = GetRowLayoutIndex(row);
+		Widget* pRow = m_pLayout->GetChildren()[layoutIndex]; //+1 because the first row is the header
 		if (!pRow)
 			return nullptr;
 
@@ -354,5 +357,10 @@ namespace Widgets
 		int index = static_cast<int>(std::distance(children.cbegin(), it));
 		index = index - 1; //-1 because the first row is the header
 		return index;
+	}
+
+	int TableView::GetRowLayoutIndex(int row) const
+	{
+		return row + 1; //+1 because the first row is the header.
 	}
 }

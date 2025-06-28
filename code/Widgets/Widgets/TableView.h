@@ -68,5 +68,8 @@ namespace Widgets
 		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
 
 		int GetRowIndex(const Layout* pLayout) const;
+
+		// Convert a row index into the widget index.
+		int GetRowLayoutIndex(int row) const;
 	};
 }
