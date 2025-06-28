@@ -16,5 +16,5 @@ Root Signature : List of resources the shaders need.
 
 Descriptor Heap : memory where to allocate the root descriptor.
 
-Sampler : resource to tell the gpu how to read a compute a color from uv coordinates and a texture.
+Sampler : resource to tell the gpu how to read and compute a color from uv coordinates and a texture.
 
