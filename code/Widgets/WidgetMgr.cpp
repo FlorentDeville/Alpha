@@ -427,6 +427,11 @@ namespace Widgets
 		case M_VirtualKeyUp:
 		case M_CharKeyDown:
 		{
+			//The first 32 characters of the ascii table are unprintable characters, so ignore them.
+			const int UNPRINTABLE_ASCII_CHARACTER = 32;
+			if (msg.m_high < UNPRINTABLE_ASCII_CHARACTER)
+				break;
+
 			if (m_pFocusedWidget)
 			{
 				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
