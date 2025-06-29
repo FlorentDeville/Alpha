@@ -96,6 +96,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("char"):
+		{
+			char* pValue = reinterpret_cast<char*>(ptr);
+			*pValue = static_cast<char>(jsonFieldValue.GetValueAsDouble());
+		}
+		break;
+
 		case SID("Systems::AssetId"):
 		{
 			Systems::AssetId* pValue = reinterpret_cast<Systems::AssetId*>(ptr);
