@@ -66,6 +66,8 @@ namespace Editors
 
 				D3D12_ROOT_PARAMETER rootParameter;
 				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+
+				//this might need to be a descriptor table
 				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
 				rootParameter.Descriptor.RegisterSpace = bind.Space;
 				if (shaderType == SHADER_TYPE::Pixel)
