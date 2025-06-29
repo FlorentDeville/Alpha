@@ -17,8 +17,23 @@ namespace Systems
 		return m_sourceFilePS;
 	}
 
+	const std::string& MaterialAsset_v1::GetSourceFileVs() const
+	{
+		return m_sourceFileVS;
+	}
+
 	Core::Array<char>& MaterialAsset_v1::GetPsBlob()
 	{
 		return m_psBlob;
+	}
+
+	Core::Array<char>& MaterialAsset_v1::GetVsBlob()
+	{
+		return m_vsBlob;
+	}
+
+	Core::Array<char>& MaterialAsset_v1::GetRsBlob()
+	{
+		return m_rsBlob;
 	}
 }

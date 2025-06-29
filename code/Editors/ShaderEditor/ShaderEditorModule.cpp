@@ -13,6 +13,40 @@
 
 namespace Editors
 {
+	bool CompileSingleShader(const std::string& filename, Core::Array<char>& bytecode)
+	{
+		const std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
+		ShaderCompiler compiler;
+		bool res = compiler.CompileShader(filename, tempCsoFile);
+		if (!res)
+			return false;
+
+		//load the cso file
+		FILE* pFile = nullptr;
+		fopen_s(&pFile, tempCsoFile.c_str(), "rb");
+		if (!pFile)
+			return false;
+
+		fseek(pFile, 0, SEEK_END);
+		uint64_t size = ftell(pFile);
+		fseek(pFile, 0, SEEK_SET);
+		if (size == -1L)
+			return false;
+
+		bytecode.Resize(static_cast<uint32_t>(size));
+
+		size_t bytesRead = fread(bytecode.GetData(), sizeof(char), size, pFile);
+		if (bytesRead != size)
+		{
+			int endOfFile = feof(pFile);
+			return false;
+		}
+
+		fclose(pFile);
+
+		return true;
+	}
+
 	void ShaderEditorModule::Init()
 	{
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
@@ -92,28 +126,11 @@ namespace Editors
 		if (!pMaterial)
 			return false;
 
-		const std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
-		ShaderCompiler Compiler;
-		bool res = Compiler.CompileShader(pMaterial->GetSourceFilePs(), tempCsoFile);
+		CompileSingleShader(pMaterial->GetSourceFileVs(), pMaterial->GetVsBlob());
+		CompileSingleShader(pMaterial->GetSourceFilePs(), pMaterial->GetPsBlob());
 
-		//load the cso file
-		FILE* pFile = nullptr;
-		fopen_s(&pFile, tempCsoFile.c_str(), "r");
-		if (!pFile)
-			return false;
-
-		fseek(pFile, 0, SEEK_END);
-		uint64_t size = ftell(pFile);
-		fseek(pFile, 0, SEEK_SET);
-		if (size == -1L)
-			return false;
-
-		Core::Array<char>& blob = pMaterial->GetPsBlob();
-		blob.Resize(static_cast<uint32_t>(size));
-
-		size_t bytesRead = fread(blob.GetData(), sizeof(char), size, pFile);
-		if (bytesRead != size)
-			return false;
+		ShaderCompiler compiler;
+		bool res = compiler.GenerateRootSignature(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), pMaterial->GetRsBlob());
 
 		return res;
 	}
