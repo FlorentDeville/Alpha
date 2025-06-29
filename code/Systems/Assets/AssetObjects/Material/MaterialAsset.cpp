@@ -11,4 +11,14 @@ namespace Systems
 		, m_sourceFileRS()
 		, m_sourceFileVS()
 	{ }
+
+	const std::string& MaterialAsset_v1::GetSourceFilePs() const
+	{
+		return m_sourceFilePS;
+	}
+
+	Core::Array<char>& MaterialAsset_v1::GetPsBlob()
+	{
+		return m_psBlob;
+	}
 }

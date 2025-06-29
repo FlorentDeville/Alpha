@@ -32,6 +32,8 @@ namespace Editors
 
 		const std::vector<Systems::NewAssetId>& GetAllShaders() const;
 
+		bool CompileShader(Systems::NewAssetId id);
+
 		EVENT_DECL(ShaderCreated, void(Systems::AssetMetadata* pMetadata));
 
 	private:

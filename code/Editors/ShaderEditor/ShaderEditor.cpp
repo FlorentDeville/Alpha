@@ -248,68 +248,16 @@ namespace Editors
 
 	bool ShaderEditor::OnCompileClicked()
 	{
-		//const char* PS_EXT = ".ps.hlsl";
-		//const char* VS_EXT = ".vs.hlsl";
-		//const char* RS_EXT = ".rs.hlsl";
+		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
+		if (selection.empty())
+			return true;
 
-		//size_t extensionSize = strlen(PS_EXT);
+		const Widgets::SelectionRow& row = selection.front();
+		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
-		//std::string extension = shader.m_rawFilename.substr(shader.m_rawFilename.size() - extensionSize);
-		//size_t nameStartPos = shader.m_rawFilename.find_last_of('\\');
-		//std::string shaderName = shader.m_rawFilename.substr(nameStartPos + 1, shader.m_rawFilename.size() - extensionSize - nameStartPos - 1);
-		//std::string shaderTypeExtension = extension.substr(1, 2);
-		//std::string outputName = m_dataShaderPath + "\\" + shader.m_assetId.ToString();
+		ShaderEditorModule::Get().CompileShader(id);
 
-
-		//std::string input = m_rawShaderPath + "\\" + shader.m_rawFilename;
-
-		////create the command line
-		//std::string cmdline = m_shaderCompilerPath;
-
-		//if (strcmp(RS_EXT, extension.c_str()) == 0) //root signature
-		//{
-		//	cmdline += " /E\"RS\"";
-		//	cmdline += " /T\"rootsig_1_1\"";
-		//}
-		//else if (strcmp(PS_EXT, extension.c_str()) == 0)
-		//{
-		//	cmdline += " /E\"main\"";
-		//	cmdline += " /T\"ps_5_1\"";
-		//}
-		//else if (strcmp(VS_EXT, extension.c_str()) == 0)
-		//{
-		//	cmdline += " /E\"main\"";
-		//	cmdline += " /T\"vs_5_1\"";
-		//}
-		//else
-		//{
-		//	assert(false && " Unknown shader type");
-		//}
-
-		//cmdline += " /Fo\"" + outputName + "\"";
-		//cmdline += " /nologo";
-		//cmdline += " \"" + input + "\"";
-
-		//m_pLogText->AppendText(cmdline + "\n");
-		//{
-		//	const int BUFFER_LENGTH = 1024;
-		//	char buffer[BUFFER_LENGTH] = { '\0' };
-		//	snprintf(buffer, BUFFER_LENGTH, "%s\n", cmdline.c_str());
-		//	OutputDebugString(buffer);
-		//}
-
-		//Process shaderCompileProcess(cmdline);
-		//shaderCompileProcess.OnStdOut([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
-		//shaderCompileProcess.OnStdErr([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
-
-		//bool started = shaderCompileProcess.Run();
-		//if (!started)
-		//{
-		//	OutputDebugString("Failed to start process");
-		//	return true;
-		//}
-
-		//shaderCompileProcess.Wait();
 		return true;
 	}
 

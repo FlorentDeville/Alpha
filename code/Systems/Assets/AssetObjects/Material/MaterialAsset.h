@@ -15,6 +15,10 @@ namespace Systems
 	public:
 		MaterialAsset_v1();
 
+		const std::string& GetSourceFilePs() const;
+
+		Core::Array<char>& GetPsBlob();
+
 	private:
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;
