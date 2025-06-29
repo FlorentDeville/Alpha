@@ -69,10 +69,10 @@
 // Macro to register a type
 #define REGISTER_TYPE(TYPE) Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE)
 
-#define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME) \
+#define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
 	{ \
 		Systems::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
-		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute::None); \
+		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute::ATTRIBUTE); \
 	}
 
 // Macro to put first before the class
@@ -104,7 +104,8 @@ public: \
 #define END_REFLECTION() }
 
 // Macro to add a field to the reflection
-#define ADD_FIELD(FIELD_NAME) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME)
+#define ADD_FIELD(FIELD_NAME) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, None)
+#define ADD_FIELD_ATTR(FIELD_NAME, ATTRIBUTE) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, ATTRIBUTE)
 
 // Macro to add a base type to the current type
 #define ADD_BASETYPE(BASETYPE) pType->SetBaseType(#BASETYPE);
