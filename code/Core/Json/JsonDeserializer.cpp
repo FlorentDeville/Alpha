@@ -220,6 +220,10 @@ namespace Core
 			{
 				output.AddElement(false);
 			}
+			else if (firstCharacter == ']') //empty array
+			{
+				break;
+			}
 
 			ReadNextToken();
 			firstCharacter = m_token[0];
