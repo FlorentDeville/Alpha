@@ -58,4 +58,10 @@ namespace Systems
 	{
 		return reinterpret_cast<char*>(pObj) + m_offset;
 	}
+
+	bool FieldDescriptor::IsEditable() const
+	{
+		bool doNotEdit = m_attribute & FieldAttribute::DoNotEdit;
+		return !doNotEdit;
+	}
 }
