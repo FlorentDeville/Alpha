@@ -369,7 +369,7 @@ namespace Editors
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
-			if (pMaterial)
+			if (pMaterial && pMaterial->IsValidforRendering())
 			{
 				renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix);
 			}

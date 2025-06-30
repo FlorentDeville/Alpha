@@ -116,4 +116,9 @@ namespace Systems
 			m_pPipelineState->Init_Generic(*m_pRs, *m_pVs, *m_pPs);
 		}
 	}
+
+	bool MaterialAsset_v1::IsValidforRendering() const
+	{
+		return m_pPipelineState && m_pRs;
+	}
 }

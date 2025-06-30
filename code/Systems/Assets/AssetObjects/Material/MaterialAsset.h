@@ -37,6 +37,8 @@ namespace Systems
 
 		void UpdateRenderingObjects();
 
+		bool IsValidforRendering() const;
+
 	private:
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;
