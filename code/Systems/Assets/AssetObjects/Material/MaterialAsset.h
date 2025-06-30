@@ -42,7 +42,6 @@ namespace Systems
 	private:
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;
-		std::string m_sourceFileRS;
 
 		Core::Array<char> m_psBlob;
 		Core::Array<char> m_vsBlob;
@@ -58,7 +57,6 @@ namespace Systems
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
 			ADD_FIELD(m_sourceFileVS)
-			ADD_FIELD(m_sourceFileRS)
 			ADD_FIELD_ATTR(m_psBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_vsBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_rsBlob, DoNotEdit)

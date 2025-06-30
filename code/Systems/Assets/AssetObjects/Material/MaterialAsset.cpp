@@ -12,7 +12,6 @@ namespace Systems
 {
 	MaterialAsset_v1::MaterialAsset_v1()
 		: m_sourceFilePS()
-		, m_sourceFileRS()
 		, m_sourceFileVS()
 		, m_pVs(nullptr)
 		, m_pPs(nullptr)
