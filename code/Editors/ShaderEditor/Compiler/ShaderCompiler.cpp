@@ -250,6 +250,7 @@ namespace Editors
 		if (res != S_OK)
 		{
 			char* pError = static_cast<char*>(pErrorBlob->GetBufferPointer());
+			OutputDebugString(pError);
 			return false;
 		}
 
