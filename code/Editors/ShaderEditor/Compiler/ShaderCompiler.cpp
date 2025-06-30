@@ -44,10 +44,11 @@ namespace Editors
 				pCBuffer->GetDesc(&bufferDesc);
 
 				D3D12_ROOT_PARAMETER rootParameter;
-				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;//D3D12_ROOT_PARAMETER_TYPE_CBV;
+				//rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;//D3D12_ROOT_PARAMETER_TYPE_CBV;
+				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
 				rootParameter.Descriptor.RegisterSpace = bind.Space;
-				rootParameter.Constants.Num32BitValues = bufferDesc.Size / 4;
+				//rootParameter.Constants.Num32BitValues = bufferDesc.Size / 4;
 				if (shaderType == SHADER_TYPE::Pixel)
 					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 				else if (shaderType == SHADER_TYPE::Vertex)

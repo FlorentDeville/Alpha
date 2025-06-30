@@ -371,7 +371,8 @@ namespace Editors
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
 			if (pMaterial && pMaterial->IsValidforRendering())
 			{
-				renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix);
+				//renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix);
+				renderer.BindMaterial2(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix);
 			}
 
 			const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
