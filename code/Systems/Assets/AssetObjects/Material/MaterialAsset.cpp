@@ -17,6 +17,7 @@ namespace Systems
 		, m_pVs(nullptr)
 		, m_pPs(nullptr)
 		, m_pRs(nullptr)
+		, m_pPipelineState(nullptr)
 	{ }
 
 	MaterialAsset_v1::~MaterialAsset_v1()
