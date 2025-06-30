@@ -4,6 +4,8 @@
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 
+#include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
+
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Container/Container.h"
@@ -11,6 +13,40 @@
 
 namespace Editors
 {
+	bool CompileSingleShader(const std::string& filename, Core::Array<char>& bytecode)
+	{
+		const std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
+		ShaderCompiler compiler;
+		bool res = compiler.CompileShader(filename, tempCsoFile);
+		if (!res)
+			return false;
+
+		//load the cso file
+		FILE* pFile = nullptr;
+		fopen_s(&pFile, tempCsoFile.c_str(), "rb");
+		if (!pFile)
+			return false;
+
+		fseek(pFile, 0, SEEK_END);
+		uint64_t size = ftell(pFile);
+		fseek(pFile, 0, SEEK_SET);
+		if (size == -1L)
+			return false;
+
+		bytecode.Resize(static_cast<uint32_t>(size));
+
+		size_t bytesRead = fread(bytecode.GetData(), sizeof(char), size, pFile);
+		if (bytesRead != size)
+		{
+			int endOfFile = feof(pFile);
+			return false;
+		}
+
+		fclose(pFile);
+
+		return true;
+	}
+
 	void ShaderEditorModule::Init()
 	{
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
@@ -77,5 +113,29 @@ namespace Editors
 	const std::vector<Systems::NewAssetId>& ShaderEditorModule::GetAllShaders() const
 	{
 		return m_allShaders;
+	}
+
+	bool ShaderEditorModule::CompileShader(Systems::NewAssetId id)
+	{
+		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
+		if (!pContainer)
+			return false;
+
+		Systems::MaterialAsset* pMaterial = static_cast<Systems::MaterialAsset*>(pContainer->GetAsset(id.GetObjectId()));
+		if (!pMaterial)
+			return false;
+
+		CompileSingleShader(pMaterial->GetSourceFileVs(), pMaterial->GetVsBlob());
+		CompileSingleShader(pMaterial->GetSourceFilePs(), pMaterial->GetPsBlob());
+
+		ShaderCompiler compiler;
+		bool res = compiler.GenerateRootSignature(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), pMaterial->GetRsBlob());
+		if (!res)
+			return false;
+
+		pMaterial->UpdateRenderingObjects();
+
+		return res;
 	}
 }

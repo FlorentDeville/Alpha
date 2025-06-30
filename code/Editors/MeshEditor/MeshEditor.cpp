@@ -26,6 +26,8 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
@@ -78,8 +80,7 @@ namespace Editors
 	{}
 
 	MaterialEntry::MaterialEntry()
-		: m_name()
-		, m_materialId()
+		: m_Id()
 	{}
 
 	MeshEditor::MeshEditor()
@@ -87,7 +88,7 @@ namespace Editors
 		, m_pRenderTarget(nullptr)
 		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
-		, m_materialId(Rendering::MaterialId::INVALID)
+		, m_materialId()
 		, m_aspectRatio(0.f)
 		, m_enableViewportControl(false)
 		, m_firstFrameMouseDown(true)
@@ -256,37 +257,34 @@ namespace Editors
 		pTabContainer->SetSelectedTab(0);
 
 		//load all material
-		const std::vector<Systems::Asset*>& allMaterials = Systems::AssetMgr::Get().GetMaterials();
-		for(const Systems::Asset* pAssetMaterial : allMaterials)
-		{
-			//load material
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-			Rendering::Material* pMaterial = nullptr;
-			Rendering::MaterialId materialId;
-			materialMgr.CreateMaterial(&pMaterial, materialId);
-			Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
-			//create entry
-			int materialIndex = static_cast<int>(m_allMaterials.size());
-			m_allMaterials.push_back(MaterialEntry());
-			MaterialEntry& materialEntry = m_allMaterials.back();
-			materialEntry.m_materialId = materialId;
-			materialEntry.m_name = pAssetMaterial->GetVirtualName();
-			
-			//material widget
-			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, materialIndex]() -> bool { return OnMaterialClicked(materialIndex); });
-			pMaterialLayout->AddWidget(pButton);
+		assetMgr.ForEachMetadata([this, pMaterialLayout](const Systems::AssetMetadata& metadata)
+			{
+				if (metadata.GetAssetType() != MAKESID("Material"))
+					return;
 
-			const int LABEL_OFFSET_X = 10;
-			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, materialEntry.m_name);
-			pButton->AddWidget(pLabel);
-		}
+				//create entry
+				int materialIndex = static_cast<int>(m_allMaterials.size());
+				m_allMaterials.push_back(MaterialEntry());
+				MaterialEntry& materialEntry = m_allMaterials.back();
+				materialEntry.m_Id = metadata.GetAssetId();
+				Systems::AssetUtil::LoadAsset(materialEntry.m_Id);
+
+				//material widget
+				Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
+				pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+				pButton->OnClick([this, materialIndex]() -> bool { return OnMaterialClicked(materialIndex); });
+				pMaterialLayout->AddWidget(pButton);
+
+				const int LABEL_OFFSET_X = 10;
+				Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, metadata.GetVirtualName());
+				pButton->AddWidget(pLabel);
+			});
 
 		//by default use the first material
 		if(!m_allMaterials.empty())
-			m_materialId = m_allMaterials.front().m_materialId;
+			m_materialId = m_allMaterials.front().m_Id;
 	}
 
 	void MeshEditor::Update()
@@ -370,10 +368,13 @@ namespace Editors
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-			const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(m_materialId);
-			renderer.BindMaterial(*pMaterial, mvpMatrix);
+			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
+			if (pMaterial && pMaterial->IsValidforRendering())
+			{
+				renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix);
+			}
 
-			const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();// Rendering::MeshMgr::Get().GetMesh(entry.m_meshId);
+			const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
 			renderer.RenderMesh(*pMesh);
 		}
 
@@ -443,7 +444,7 @@ namespace Editors
 	bool MeshEditor::OnMaterialClicked(int entryIndex)
 	{
 		const MaterialEntry& materialEntry = m_allMaterials[entryIndex];
-		m_materialId = materialEntry.m_materialId;
+		m_materialId = materialEntry.m_Id;
 
 		return true;
 	}

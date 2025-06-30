@@ -98,6 +98,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("char"):
+		{
+			const char* pValue = reinterpret_cast<const char*>(pFieldPtr);
+			SerializeData(*pValue, value);
+		}
+		break;
+
 		case SID("Systems::AssetId"):
 		{
 			const Systems::AssetId* pAssetId = reinterpret_cast<const Systems::AssetId*>(pFieldPtr);

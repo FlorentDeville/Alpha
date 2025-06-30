@@ -56,6 +56,7 @@ namespace Rendering
 		void EndMainScene();
 
 		void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
+		void BindMaterial(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp);
 		void RenderMesh(const Rendering::Mesh& mesh);
 
 		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);

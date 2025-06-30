@@ -280,6 +280,14 @@ namespace Rendering
 		}
 	}
 
+	void RenderModule::BindMaterial(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp)
+	{
+		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());
+		m_pRenderCommandList->SetGraphicsRootSignature(rs.GetRootSignature());
+
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
+	}
+
 	void RenderModule::RenderMesh(const Rendering::Mesh& mesh)
 	{
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

@@ -27,6 +27,9 @@ namespace Editors
 		const std::vector<Systems::FieldDescriptor>& fields = pType->GetFields();
 		for (const Systems::FieldDescriptor& field : fields)
 		{
+			if (!field.IsEditable())
+				continue;
+
 			Widgets::Widget* pEditingWidget = nullptr;
 
 			const Systems::TypeDescriptor* pFieldType = field.GetType();

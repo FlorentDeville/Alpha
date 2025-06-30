@@ -9,6 +9,11 @@
 
 namespace Rendering
 {
+	Shader::Shader()
+		: m_pBlob(nullptr)
+		, m_path()
+	{ }
+
 	Shader::Shader(const std::string& path)
 		: m_pBlob(nullptr)
 		, m_path(path)
@@ -21,6 +26,20 @@ namespace Rendering
 	{
 		if (m_pBlob)
 			m_pBlob->Release();
+	}
+
+	bool Shader::LoadFromMemory(const Core::Array<char>& bytecode)
+	{
+		if (m_pBlob)
+			m_pBlob->Release();
+
+		HRESULT res = D3DCreateBlob(bytecode.GetSize(), &m_pBlob);
+		if (res != S_OK)
+			return false;
+
+		memcpy(m_pBlob->GetBufferPointer(), bytecode.GetData(), bytecode.GetSize());
+
+		return true;
 	}
 
 	ID3DBlob* Shader::GetBlob() const

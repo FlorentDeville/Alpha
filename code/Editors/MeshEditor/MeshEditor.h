@@ -50,8 +50,7 @@ namespace Editors
 	class MaterialEntry
 	{
 	public:
-		std::string m_name;
-		Rendering::MaterialId m_materialId;
+		Systems::NewAssetId m_Id;
 
 		MaterialEntry();
 	};
@@ -92,7 +91,7 @@ namespace Editors
 
 		int m_selectedMesh; //id in m_allMeshes, -1 if nothing selected
 
-		Rendering::MaterialId m_materialId; //material to use to render the mesh
+		Systems::NewAssetId m_materialId; //material to use to render the mesh
 
 		Rendering::TextureId m_importIconTextureId;
 
