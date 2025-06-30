@@ -44,7 +44,7 @@ namespace Editors
 				pCBuffer->GetDesc(&bufferDesc);
 
 				D3D12_ROOT_PARAMETER rootParameter;
-				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;//D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
 				rootParameter.Descriptor.RegisterSpace = bind.Space;
 				rootParameter.Constants.Num32BitValues = bufferDesc.Size / 4;

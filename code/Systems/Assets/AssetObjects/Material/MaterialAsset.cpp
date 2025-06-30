@@ -38,6 +38,16 @@ namespace Systems
 		return m_sourceFileVS;
 	}
 
+	const Rendering::RootSignature* MaterialAsset_v1::GetRootSignature() const
+	{
+		return m_pRs;
+	}
+
+	const Rendering::PipelineState* MaterialAsset_v1::GetPipelineState() const
+	{
+		return m_pPipelineState;
+	}
+
 	Core::Array<char>& MaterialAsset_v1::GetPsBlob()
 	{
 		return m_psBlob;
