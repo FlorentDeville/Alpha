@@ -36,6 +36,7 @@ class CommandQueue;
 namespace Rendering
 {
 	class Camera;
+	class ConstantBufferPool;
 	class Material;
 	class Mesh;
 	class RenderTarget;
@@ -57,6 +58,7 @@ namespace Rendering
 
 		void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
 		void BindMaterial(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp);
+		void BindMaterial2(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp);
 		void RenderMesh(const Rendering::Mesh& mesh);
 
 		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
@@ -140,6 +142,8 @@ namespace Rendering
 		float m_clearColor[4];
 
 		Camera* m_pCamera;
+
+		ConstantBufferPool* m_pConstantBufferPool;
 
 	public:
 		UINT m_currentBackBufferIndex;
