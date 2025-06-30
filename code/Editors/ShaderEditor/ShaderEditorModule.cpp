@@ -131,6 +131,10 @@ namespace Editors
 
 		ShaderCompiler compiler;
 		bool res = compiler.GenerateRootSignature(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), pMaterial->GetRsBlob());
+		if (!res)
+			return false;
+
+		pMaterial->UpdateRenderingObjects();
 
 		return res;
 	}
