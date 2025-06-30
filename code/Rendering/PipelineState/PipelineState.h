@@ -11,6 +11,9 @@ struct ID3D12PipelineState;
 
 namespace Rendering
 {
+	class RootSignature;
+	class Shader;
+
 	class PipelineState
 	{
 	public:
@@ -25,6 +28,7 @@ namespace Rendering
 
 		//this is the generic pipeline state for meshes containing every vertex attributes
 		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps);
 
 		ID3D12PipelineState* GetPipelineState() const;
 		RootSignatureId GetRootSignatureId() const;

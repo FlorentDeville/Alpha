@@ -7,13 +7,18 @@
 #include <string>
 #include <d3d12.h>
 
+#include "Core/Collections/Array.h"
+
 namespace Rendering
 {
 	class Shader
 	{
 	public:
+		Shader();
 		Shader(const std::string& path);
 		~Shader();
+
+		bool LoadFromMemory(const Core::Array<char>& blob);
 
 		ID3DBlob* GetBlob() const;
 

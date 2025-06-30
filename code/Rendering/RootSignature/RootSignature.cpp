@@ -11,6 +11,11 @@
 
 namespace Rendering
 {
+	RootSignature::RootSignature()
+		: m_path()
+		, m_pRootSignature(nullptr)
+	{ }
+
 	RootSignature::RootSignature(const std::string& path)
 		: m_path(path)
 		, m_pRootSignature(nullptr)
@@ -43,5 +48,17 @@ namespace Rendering
 	ID3D12RootSignature* RootSignature::GetRootSignature() const
 	{
 		return m_pRootSignature;
+	}
+
+	bool RootSignature::LoadFromMemory(const Core::Array<char>& bytecode)
+	{
+		if (m_pRootSignature)
+			m_pRootSignature->Release();
+
+		HRESULT res = RenderModule::Get().GetDevice()->CreateRootSignature(0, bytecode.GetData(), bytecode.GetSize(), IID_PPV_ARGS(&m_pRootSignature));
+		if (res != S_OK)
+			return false;
+
+		return true;
 	}
 }
