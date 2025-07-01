@@ -5,6 +5,7 @@
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
+#include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
@@ -31,5 +32,6 @@ namespace Systems
 		Systems::MaterialAsset_v1::RegisterReflection();
 		Systems::MeshAsset_v1::RegisterReflection();
 		Systems::MeshAsset_v2::RegisterReflection();
+		Systems::MaterialParameterDescription::RegisterReflection();
 	}
 }

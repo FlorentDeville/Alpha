@@ -5,6 +5,8 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+
+#include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Objects/AssetObject.h"
 
 namespace Rendering
@@ -43,9 +45,14 @@ namespace Systems
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;
 
+		//Not editable variables
 		Core::Array<char> m_psBlob;
 		Core::Array<char> m_vsBlob;
 		Core::Array<char> m_rsBlob;
+
+		bool m_hasPerObjectParameters;
+		bool m_hasPerFrameParameters;
+		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
 
 		//No reflected variables
 		Rendering::Shader* m_pVs;
@@ -60,6 +67,9 @@ namespace Systems
 			ADD_FIELD_ATTR(m_psBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_vsBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_rsBlob, DoNotEdit)
+			ADD_FIELD_ATTR(m_hasPerObjectParameters, DoNotEdit)
+			ADD_FIELD_ATTR(m_hasPerFrameParameters, DoNotEdit)
+			ADD_FIELD_ATTR(m_perMaterialParameters, DoNotEdit)
 		END_REFLECTION()
 	};
 
