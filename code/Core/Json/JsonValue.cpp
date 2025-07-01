@@ -179,4 +179,9 @@ namespace Core
 	{
 		return std::get<JsonObject*>(m_value);
 	}
+
+	bool JsonValue::IsNull() const
+	{
+		return m_type == JsonType::Null;
+	}
 }

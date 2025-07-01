@@ -105,6 +105,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("bool"):
+		{
+			const bool* pValue = reinterpret_cast<const bool*>(pFieldPtr);
+			SerializeData(*pValue, value);
+		}
+		break;
+
 		case SID("Systems::AssetId"):
 		{
 			const Systems::AssetId* pAssetId = reinterpret_cast<const Systems::AssetId*>(pFieldPtr);

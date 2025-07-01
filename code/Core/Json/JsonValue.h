@@ -49,6 +49,8 @@ namespace Core
 		JsonArray* GetValueAsArray() const;
 		JsonObject* GetValueAsObject() const;
 
+		bool IsNull() const;
+
 	private:
 		JsonType m_type;
 		std::variant<double, std::string*, bool, JsonArray*, JsonObject*> m_value;

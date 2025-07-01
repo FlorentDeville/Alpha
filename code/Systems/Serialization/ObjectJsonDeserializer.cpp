@@ -103,6 +103,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("bool"):
+		{
+			bool* pValue = reinterpret_cast<bool*>(ptr);
+			*pValue = static_cast<char>(jsonFieldValue.GetValueAsBool());
+		}
+		break;
+
 		case SID("Systems::AssetId"):
 		{
 			Systems::AssetId* pValue = reinterpret_cast<Systems::AssetId*>(ptr);
@@ -219,6 +226,9 @@ namespace Systems
 		for (const FieldDescriptor& field : fields)
 		{
 			const Core::JsonValue& jsonValue = jsonObject->GetMember(field.GetName());
+			if (jsonValue.IsNull())
+				continue;
+
 			void* pFieldPtr = field.GetDataPtr(pObject);
 			bool res = DeserializeField(jsonValue, field.GetType(), &field, pFieldPtr);
 			if (!res)
