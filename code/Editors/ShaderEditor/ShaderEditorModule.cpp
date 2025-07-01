@@ -4,6 +4,7 @@
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 
+#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
 #include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
 
 #include "Systems/Assets/AssetMgr.h"
@@ -131,6 +132,11 @@ namespace Editors
 
 		ShaderCompiler compiler;
 		bool res = compiler.GenerateRootSignature(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), pMaterial->GetRsBlob());
+		if (!res)
+			return false;
+
+		MaterialParameters parameters;
+		res = compiler.GenerateMaterialParameters(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), parameters);
 		if (!res)
 			return false;
 

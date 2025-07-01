@@ -129,6 +129,9 @@
     <ClInclude Include="ShaderEditor\Compiler\ShaderCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderEditor\Compiler\MaterialParameters.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -240,6 +243,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderEditor\Compiler\ShaderCompiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderEditor\Compiler\MaterialParameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

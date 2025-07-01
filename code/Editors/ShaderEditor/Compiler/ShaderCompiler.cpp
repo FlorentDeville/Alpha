@@ -4,6 +4,7 @@
 
 #include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
 
+#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
 #include "OsWin/Process.h"
 
 #include <assert.h>
@@ -103,6 +104,80 @@ namespace Editors
 			default:
 				return false;
 				break;
+			}
+		}
+
+		return true;
+	}
+
+	bool GeneratePerMaterialParameters(ID3D12ShaderReflectionConstantBuffer* pConstantBuffer, const D3D12_SHADER_BUFFER_DESC& bufferDesc, MaterialParameters& parameters)
+	{
+		parameters.m_perMaterialParameters.reserve(bufferDesc.Variables);
+		for (uint32_t ii = 0; ii < bufferDesc.Variables; ++ii)
+		{
+			ID3D12ShaderReflectionVariable* pVariable = pConstantBuffer->GetVariableByIndex(ii);
+
+			D3D12_SHADER_VARIABLE_DESC variableDesc;
+			HRESULT res = pVariable->GetDesc(&variableDesc);
+			if (res != S_OK)
+				return false;
+
+			ID3D12ShaderReflectionType* pType = pVariable->GetType();
+			if (!pType)
+				return false;
+
+			D3D12_SHADER_TYPE_DESC typeDesc;
+			res = pType->GetDesc(&typeDesc);
+			if (res != S_OK)
+				return false;
+
+			MaterialParameter parameter;
+			parameter.m_name = variableDesc.Name;
+			parameter.m_offset = variableDesc.StartOffset;
+			parameter.m_size = variableDesc.Size;
+			parameter.m_type = SID(typeDesc.Name);
+			parameters.m_perMaterialParameters.push_back(parameter);
+		}
+		
+		return true;
+	}
+
+	bool GenerateMaterialParameters(ID3D12ShaderReflection* pReflector, MaterialParameters& parameters)
+	{
+		D3D12_SHADER_DESC shaderDesc;
+		HRESULT res = pReflector->GetDesc(&shaderDesc);
+		if (res != S_OK)
+			return false;
+
+		for (uint32_t ii = 0; ii < shaderDesc.ConstantBuffers; ++ii)
+		{
+			ID3D12ShaderReflectionConstantBuffer* pConstantBuffer = pReflector->GetConstantBufferByIndex(ii);
+			if (!pConstantBuffer)
+				return false;
+
+			D3D12_SHADER_BUFFER_DESC bufferDesc;
+			res = pConstantBuffer->GetDesc(&bufferDesc);
+			if (res != S_OK)
+				return false;
+
+			if (strcmp(bufferDesc.Name, "PerObject") == 0)
+			{
+				parameters.m_hasPerObjectParameters = true;
+				continue;
+			}
+			
+			if (strcmp(bufferDesc.Name, "PerFrame") == 0)
+			{
+				parameters.m_hasPerFrameParameters = true;
+				continue;
+			}
+
+			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && !parameters.m_hasPerMaterialParameters)
+			{
+				parameters.m_hasPerMaterialParameters = true;
+				bool paramRes = GeneratePerMaterialParameters(pConstantBuffer, bufferDesc, parameters);
+				if (!paramRes)
+					return false;
 			}
 		}
 
@@ -259,6 +334,39 @@ namespace Editors
 		memcpy(rs.GetData(), pBlob->GetBufferPointer(), pBlob->GetBufferSize());
 
 		pBlob->Release();
+
+		return true;
+	}
+
+	bool ShaderCompiler::GenerateMaterialParameters(const Core::Array<char>& ps, const Core::Array<char>& vs, MaterialParameters& parameters)
+	{
+		//vertex shader
+		{
+			ID3D12ShaderReflection* pReflector = nullptr;
+			HRESULT res = D3DReflect(vs.GetData(), vs.GetSize(), IID_ID3D12ShaderReflection, (void**)&pReflector);
+			if (res != S_OK)
+				return false;
+
+			bool paramResult = Editors::GenerateMaterialParameters(pReflector, parameters);
+			pReflector->Release();
+
+			if (!paramResult)
+				return false;
+		}
+
+		//pixel shader
+		{
+			ID3D12ShaderReflection* pReflector = nullptr;
+			HRESULT res = D3DReflect(ps.GetData(), ps.GetSize(), IID_ID3D12ShaderReflection, (void**)&pReflector);
+			if (res != S_OK)
+				return false;
+
+			bool paramResult = Editors::GenerateMaterialParameters(pReflector, parameters);
+			pReflector->Release();
+
+			if (!paramResult)
+				return false;
+		}
 
 		return true;
 	}
