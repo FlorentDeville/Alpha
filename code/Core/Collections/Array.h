@@ -29,7 +29,7 @@ namespace Core
 		~Array()
 		{
 			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[m_size].~T();
+				m_pStart[ii].~T();
 
 			delete[] m_pStart;
 			m_pStart = nullptr;
