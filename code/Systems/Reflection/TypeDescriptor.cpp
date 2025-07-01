@@ -14,6 +14,15 @@ namespace Systems
 		, m_pBaseType(nullptr)
 		, m_upgradeType(Core::INVALID_SID)
 	{
+		Init(name, size);
+	}
+
+	void TypeDescriptor::Init(const std::string& name, uint64_t size)
+	{
+		m_name = name;
+		m_size = size;
+		m_pBaseType = nullptr;
+		m_upgradeType = Core::INVALID_SID;
 		m_sid = Core::MakeSid(name);
 	}
 

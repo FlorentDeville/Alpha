@@ -19,6 +19,8 @@ namespace Systems
 	public:
 		TypeDescriptor(const std::string& name, uint64_t size);
 
+		void Init(const std::string& name, uint64_t size);
+
 		FieldDescriptor* AddField();
 
 		void SetBaseType(const std::string& baseTypeName);
