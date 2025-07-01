@@ -256,7 +256,11 @@ namespace Editors
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
-		ShaderEditorModule::Get().CompileShader(id);
+		bool res = ShaderEditorModule::Get().CompileShader(id);
+		if (!res)
+			return true;
+
+		m_pShaderListModel->SetShaderModified(id);
 
 		return true;
 	}
