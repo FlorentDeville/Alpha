@@ -141,18 +141,33 @@ namespace Systems
 		m_hasPerFrameParameters = enable;
 	}
 
-	void MaterialAsset_v1::SetPerFrameRootSignatureParameterIndex(int index)
+	void MaterialAsset_v1::SetPerFrameRootSignatureParameterIndex(uint32_t index)
 	{
 		m_perFrameCBufferRootSignatureIndex = index;
 	}
 
-	void MaterialAsset_v1::SetPerObjectRootSignatureParameterIndex(int index)
+	void MaterialAsset_v1::SetPerObjectRootSignatureParameterIndex(uint32_t index)
 	{
 		m_perObjectCBufferRootSignatureIndex = index;
 	}
 
-	void MaterialAsset_v1::SetPerMaterialRootSignatureParameterIndex(int index)
+	void MaterialAsset_v1::SetPerMaterialRootSignatureParameterIndex(uint32_t index)
 	{
 		m_perMaterialCBufferRootSignatureIndex = index;
+	}
+
+	uint32_t MaterialAsset_v1::GetPerFrameRootSignatureParameterIndex() const
+	{
+		return m_perFrameCBufferRootSignatureIndex;
+	}
+
+	uint32_t MaterialAsset_v1::GetPerObjectRootSignatureParameterIndex() const
+	{
+		return m_perObjectCBufferRootSignatureIndex;
+	}
+
+	uint32_t MaterialAsset_v1::GetPerMaterialRootSignatureParameterIndex() const
+	{
+		return m_perMaterialCBufferRootSignatureIndex;
 	}
 }

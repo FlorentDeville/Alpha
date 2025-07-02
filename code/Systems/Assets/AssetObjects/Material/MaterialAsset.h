@@ -46,9 +46,13 @@ namespace Systems
 		void SetHasPerObjectParameters(bool enable);
 		void SetHasPerFrameParameters(bool enable);
 
-		void SetPerFrameRootSignatureParameterIndex(int index);
-		void SetPerObjectRootSignatureParameterIndex(int index);
-		void SetPerMaterialRootSignatureParameterIndex(int index);
+		void SetPerFrameRootSignatureParameterIndex(uint32_t index);
+		void SetPerObjectRootSignatureParameterIndex(uint32_t index);
+		void SetPerMaterialRootSignatureParameterIndex(uint32_t index);
+
+		uint32_t GetPerFrameRootSignatureParameterIndex() const;
+		uint32_t GetPerObjectRootSignatureParameterIndex() const;
+		uint32_t GetPerMaterialRootSignatureParameterIndex() const;
 
 	private:
 		std::string m_sourceFilePS;
@@ -60,13 +64,13 @@ namespace Systems
 		Core::Array<char> m_rsBlob;
 
 		bool m_hasPerObjectParameters;
-		int m_perObjectCBufferRootSignatureIndex;
+		uint32_t m_perObjectCBufferRootSignatureIndex;
 
 		bool m_hasPerFrameParameters;
-		int m_perFrameCBufferRootSignatureIndex;
+		uint32_t m_perFrameCBufferRootSignatureIndex;
 
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
-		int m_perMaterialCBufferRootSignatureIndex;
+		uint32_t m_perMaterialCBufferRootSignatureIndex;
 
 		//No reflected variables
 		Rendering::Shader* m_pVs;
