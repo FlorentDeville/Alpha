@@ -143,6 +143,49 @@ namespace Editors
 		}
 		break;
 
+		case SID("uint32_t"):
+		{
+			Widgets::TextBox* pTextBox = new Widgets::TextBox();
+
+			uint32_t* pValue = reinterpret_cast<uint32_t*>(pData);
+			
+			const int BUFFER_SIZE = 64;
+			char buffer[BUFFER_SIZE] = { '\0' };
+			sprintf_s(buffer, BUFFER_SIZE, "%d", *pValue);
+			pTextBox->SetText(buffer);
+			pEditingWidget = pTextBox;
+
+			pTextBox->OnValidate([this, pValue](const std::string& value)
+				{
+					char* pEnd = nullptr;
+					*pValue = std::strtoul(value.c_str(), &pEnd, 10);
+					m_onDataChanged();
+				});
+
+			pEditingWidget = pTextBox;
+		}
+		break;
+
+		case SID("Core::Sid"):
+		{
+			Widgets::TextBox* pTextBox = new Widgets::TextBox();
+
+			Core::Sid* pValue = reinterpret_cast<Core::Sid*>(pData);
+
+			std::string strSid = Core::ToString(*pValue);
+			pTextBox->SetText(strSid);
+			pEditingWidget = pTextBox;
+
+			pTextBox->OnValidate([this, pValue](const std::string& value)
+				{
+					*pValue = Core::MakeSid(value);
+					m_onDataChanged();
+				});
+
+			pEditingWidget = pTextBox;
+		}
+		break;
+
 		default:
 			break;
 		}
