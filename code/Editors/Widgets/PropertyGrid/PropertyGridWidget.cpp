@@ -8,6 +8,7 @@
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Widgets/TableViewStyle.h"
 
 namespace Editors
 {
@@ -34,6 +35,13 @@ namespace Editors
 		Widgets::Layout* pPropertyLayout = new Widgets::Layout();
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
 		pPropertyLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_FIT);
+
+		if (m_pInternalLayout->GetChildrenCount() % 2 == 0)
+			pPropertyLayout->GetDefaultStyle().SetBackgroundColor(Widgets::TableViewStyle::s_evenRowBackgroundColor);
+		else
+			pPropertyLayout->GetDefaultStyle().SetBackgroundColor(Widgets::TableViewStyle::s_oddRowBackgroundColor);
+
+		pPropertyLayout->GetHoverStyle().SetBackgroundColor(Widgets::TableViewStyle::s_hoverBackgroundColor);
 
 		m_pInternalLayout->AddWidget(pPropertyLayout);
 
