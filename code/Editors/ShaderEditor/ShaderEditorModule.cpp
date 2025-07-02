@@ -140,6 +140,23 @@ namespace Editors
 		if (!res)
 			return false;
 
+		pMaterial->SetHasPerFrameParameters(parameters.m_hasPerFrameParameters);
+		pMaterial->SetHasPerObjectParameters(parameters.m_hasPerObjectParameters);
+
+		Core::Array<Systems::MaterialParameterDescription>& matParamDesc = pMaterial->GetMaterialParameterDescription();
+		matParamDesc.Resize(0);
+		matParamDesc.Reserve(static_cast<uint32_t>(parameters.m_perMaterialParameters.size()));
+		for (const MaterialParameter& param : parameters.m_perMaterialParameters)
+		{
+			Systems::MaterialParameterDescription newParamDesc;
+			newParamDesc.m_name = param.m_name;
+			newParamDesc.m_offset = param.m_offset;
+			newParamDesc.m_size = param.m_size;
+			newParamDesc.m_type = param.m_type;
+
+			matParamDesc.PushBack(newParamDesc);
+		}
+
 		pMaterial->UpdateRenderingObjects();
 
 		return res;

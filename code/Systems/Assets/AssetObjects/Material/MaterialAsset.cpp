@@ -62,6 +62,11 @@ namespace Systems
 		return m_rsBlob;
 	}
 
+	Core::Array<MaterialParameterDescription>& MaterialAsset_v1::GetMaterialParameterDescription()
+	{
+		return m_perMaterialParameters;
+	}
+
 	void MaterialAsset_v1::PostLoad()
 	{
 		UpdateRenderingObjects();
@@ -116,8 +121,18 @@ namespace Systems
 		}
 	}
 
-	bool MaterialAsset_v1::IsValidforRendering() const
+	bool MaterialAsset_v1::IsValidForRendering() const
 	{
 		return m_pPipelineState && m_pRs;
+	}
+
+	void MaterialAsset_v1::SetHasPerObjectParameters(bool enable)
+	{
+		m_hasPerObjectParameters = enable;
+	}
+
+	void MaterialAsset_v1::SetHasPerFrameParameters(bool enable)
+	{
+		m_hasPerFrameParameters = enable;
 	}
 }

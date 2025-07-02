@@ -35,11 +35,16 @@ namespace Systems
 		Core::Array<char>& GetVsBlob();
 		Core::Array<char>& GetRsBlob();
 
+		Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription();
+
 		void PostLoad() override;
 
 		void UpdateRenderingObjects();
 
-		bool IsValidforRendering() const;
+		bool IsValidForRendering() const;
+
+		void SetHasPerObjectParameters(bool enable);
+		void SetHasPerFrameParameters(bool enable);
 
 	private:
 		std::string m_sourceFilePS;
@@ -69,7 +74,7 @@ namespace Systems
 			ADD_FIELD_ATTR(m_rsBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_hasPerObjectParameters, DoNotEdit)
 			ADD_FIELD_ATTR(m_hasPerFrameParameters, DoNotEdit)
-			ADD_FIELD_ATTR(m_perMaterialParameters, DoNotEdit)
+			ADD_FIELD(m_perMaterialParameters)
 		END_REFLECTION()
 	};
 
