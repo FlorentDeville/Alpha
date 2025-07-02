@@ -132,6 +132,12 @@
     <ClInclude Include="ShaderEditor\Compiler\MaterialParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -246,6 +252,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderEditor\Compiler\MaterialParameters.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

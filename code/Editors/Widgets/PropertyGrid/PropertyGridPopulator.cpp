@@ -5,6 +5,7 @@
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Systems/Objects/Object.h"
@@ -22,17 +23,37 @@ namespace Editors
 	{ }
 
 	PropertyGridPopulator::~PropertyGridPopulator()
-	{ }
+	{
+		for (const std::pair<Core::Sid, PropertyGridItemFactory*>& pair : m_factories)
+		{
+			delete pair.second;
+		}
 
-	void PropertyGridPopulator::Populate(PropertyGridWidget* pWidget, Systems::Object* pObject)
+		m_factories.clear();
+	}
+
+	void PropertyGridPopulator::Init(PropertyGridWidget* pWidget)
 	{
 		m_pPropertyGridWidget = pWidget;
+	}
 
+	void PropertyGridPopulator::Populate(Systems::Object* pObject)
+	{
 		const Systems::TypeDescriptor* pType = pObject->GetTypeDescriptor();
 
 		CreatePropertiesForClassMember(pType, pObject, 0);
 
 		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	void PropertyGridPopulator::RegisterItemFactory(Core::Sid typenameSid, PropertyGridItemFactory* pFactory)
+	{
+		pFactory->Init(m_pPropertyGridWidget, this);
+
+		if(PropertyGridItemFactory* pFactory = GetFactory(typenameSid))
+			delete pFactory;
+		
+		m_factories[typenameSid] = pFactory;
 	}
 
 	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth)
@@ -55,7 +76,11 @@ namespace Editors
 			const int BUFFER_SIZE = 8;
 			char buffer[BUFFER_SIZE] = { '\0' };
 			sprintf_s(buffer, "[%d]", ii);
-			if (pElementType->GetSid() == CONSTSID("Core::Array"))
+			if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
+			{
+				pFactory->CreateItems(pElementType, pElement, depth + 1);
+			}
+			else if (pElementType->GetSid() == CONSTSID("Core::Array"))
 			{
 				assert(false); //don't support array of arrays for now
 			}
@@ -191,5 +216,14 @@ namespace Editors
 		}
 
 		return pEditingWidget;
+	}
+
+	PropertyGridItemFactory* PropertyGridPopulator::GetFactory(Core::Sid typeSid) const
+	{
+		std::map<Core::Sid, PropertyGridItemFactory*>::const_iterator it = m_factories.find(typeSid);
+		if (it != m_factories.cend())
+			return it->second;
+
+		return nullptr;
 	}
 }

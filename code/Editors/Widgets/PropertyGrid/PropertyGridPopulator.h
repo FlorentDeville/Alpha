@@ -5,6 +5,9 @@
 #pragma once
 
 #include "Core/Callbacks/CallbackMacro.h"
+#include "Core/Sid/Sid.h"
+
+#include <map>
 
 namespace Systems
 {
@@ -20,16 +23,20 @@ namespace Widgets
 
 namespace Editors
 {
+	class PropertyGridItemFactory;
 	class PropertyGridWidget;
 
-	//This class should be turned into a model
 	class PropertyGridPopulator
 	{
 	public:
 		PropertyGridPopulator();
 		~PropertyGridPopulator();
 
-		void Populate(PropertyGridWidget* pWidget, Systems::Object* pObject);
+		void Init(PropertyGridWidget* pWidget);
+
+		void Populate(Systems::Object* pObject);
+
+		void RegisterItemFactory(Core::Sid typenameSid, PropertyGridItemFactory* pFactory);
 
 		EVENT_DECL(DataChanged, void())
 
@@ -38,6 +45,11 @@ namespace Editors
 		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData);
 		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
+		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
+
 		PropertyGridWidget* m_pPropertyGridWidget;
+
+		//Map of type name sid to item factory
+		std::map<Core::Sid, PropertyGridItemFactory*> m_factories;
 	};
 }
