@@ -10,6 +10,12 @@ namespace Systems
 {
 	class FieldDescriptor;
 	class Object;
+	class TypeDescriptor;
+}
+
+namespace Widgets
+{
+	class Widget;
 }
 
 namespace Editors
@@ -25,6 +31,13 @@ namespace Editors
 
 		void Populate(PropertyGridWidget* pWidget, Systems::Object* pObject);
 
-		EVENT_DECL(DataChanged, void(Systems::Object* pObject, const Systems::FieldDescriptor* pField))
+		EVENT_DECL(DataChanged, void())
+
+	private:
+		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr);
+		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData);
+		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData);
+
+		PropertyGridWidget* m_pPropertyGridWidget;
 	};
 }

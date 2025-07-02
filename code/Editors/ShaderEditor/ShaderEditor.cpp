@@ -135,7 +135,7 @@ namespace Editors
 			m_pPropertyGrid = new PropertyGridWidget();
 			pRightPanelLayout->AddWidget(m_pPropertyGrid);
 
-			m_pPropertyGridPopulator->OnDataChanged([this](Systems::Object* pObject, const Systems::FieldDescriptor* pField) {PropertyGridPopulator_OnDataChanged(pObject, pField); });
+			m_pPropertyGridPopulator->OnDataChanged([this]() {PropertyGridPopulator_OnDataChanged(); });
 		}
 
 		//add log label
@@ -265,10 +265,9 @@ namespace Editors
 		return true;
 	}
 
-	void ShaderEditor::PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField)
+	void ShaderEditor::PropertyGridPopulator_OnDataChanged()
 	{
-		Systems::AssetObject* pAsset = static_cast<Systems::AssetObject*>(pObject);
-		m_pShaderListModel->SetShaderModified(pAsset->GetId());
+		m_pShaderListModel->SetShaderModified(m_selectedMaterialId);
 	}
 
 	void ShaderEditor::DeleteSelectedShader()
