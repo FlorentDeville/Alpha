@@ -293,23 +293,18 @@ namespace Rendering
 		}
 	}
 
+	void RenderModule::BindMaterial(const PipelineState& pso, const RootSignature& rs)
+	{
+		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());
+		m_pRenderCommandList->SetGraphicsRootSignature(rs.GetRootSignature());
+	}
+
 	void RenderModule::BindMaterial(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp)
 	{
 		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());
 		m_pRenderCommandList->SetGraphicsRootSignature(rs.GetRootSignature());
 
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
-	}
-
-	void RenderModule::BindMaterial2(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp, uint32_t rootParamIndex)
-	{
-		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(rs.GetRootSignature());
-
-		int poolIndex = m_pLinearCBufferPool->GetFreeConstantBufferIndex();
-		m_pLinearCBufferPool->Copy(poolIndex, &wvp, sizeof(wvp));
-
-		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pLinearCBufferPool->GetGpuAddress(poolIndex));
 	}
 
 	void RenderModule::BindCBuffer(uint32_t rootParamIndex, int poolIndex)

@@ -372,7 +372,15 @@ namespace Editors
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
-				renderer.BindMaterial2(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix, pMaterial->GetPerObjectRootSignatureParameterIndex());
+				renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature());
+
+				if (pMaterial->HasPerObjectParameters())
+				{
+					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
+					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
+					pCBufferPool->Copy(poolIndex, &mvpMatrix, sizeof(mvpMatrix));
+					renderer.BindCBuffer(pMaterial->GetPerObjectRootSignatureParameterIndex(), poolIndex);
+				}
 
 				Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = pMaterial->GetMaterialParameterDescription();
 				if (perMaterialParam.GetSize() > 0)

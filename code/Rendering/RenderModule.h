@@ -57,8 +57,8 @@ namespace Rendering
 		void EndMainScene();
 
 		void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
+		void BindMaterial(const PipelineState& pso, const RootSignature& rs);
 		void BindMaterial(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp);
-		void BindMaterial2(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp, uint32_t rootParamIndex);
 
 		void BindCBuffer(uint32_t rootParamIndex, int poolIndex);
 

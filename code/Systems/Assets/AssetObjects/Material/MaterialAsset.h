@@ -46,6 +46,9 @@ namespace Systems
 		void SetHasPerObjectParameters(bool enable);
 		void SetHasPerFrameParameters(bool enable);
 
+		bool HasPerObjectParameters() const;
+		bool HasPerFrameParameters() const;
+
 		void SetPerFrameRootSignatureParameterIndex(uint32_t index);
 		void SetPerObjectRootSignatureParameterIndex(uint32_t index);
 		void SetPerMaterialRootSignatureParameterIndex(uint32_t index);
