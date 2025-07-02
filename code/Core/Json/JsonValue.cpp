@@ -74,6 +74,12 @@ namespace Core
 		m_value = static_cast<double>(value);
 	}
 
+	void JsonValue::Set(uint32_t value)
+	{
+		m_type = JsonType::Number;
+		m_value = static_cast<double>(value);
+	}
+
 	void JsonValue::Set(uint64_t value)
 	{
 		m_type = JsonType::Number;

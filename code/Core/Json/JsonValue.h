@@ -30,6 +30,7 @@ namespace Core
 		explicit JsonValue(JsonObject* pValue);
 
 		void Set(int32_t value);
+		void Set(uint32_t value);
 		void Set(uint64_t value);
 		void Set(float value);
 		void Set(double value);
