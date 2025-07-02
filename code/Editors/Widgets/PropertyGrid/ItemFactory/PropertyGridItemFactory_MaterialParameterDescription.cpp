@@ -47,6 +47,7 @@ namespace Editors
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
+			pLayout->SetTransparent(true);
 
 			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
@@ -64,6 +65,7 @@ namespace Editors
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
+			pLayout->SetTransparent(true);
 
 			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));

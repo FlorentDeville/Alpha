@@ -21,6 +21,7 @@ namespace Widgets
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
 		, m_hoverStyle()
+		, m_transparent(false)
 	{}
 
 	Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -29,6 +30,7 @@ namespace Widgets
 		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
+		, m_transparent(false)
 	{}
 
 	Layout::Layout(Direction dir, Widget::SIZE_STYLE sizeStyle)
@@ -43,31 +45,34 @@ namespace Widgets
 
 	void Layout::Draw(const DirectX::XMFLOAT2& windowSize)
 	{
-		LayoutStyle* pCurrentStyle = &m_defaultStyle;
-		if (m_hover)
-			pCurrentStyle = &m_hoverStyle;
-
-		DirectX::XMMATRIX wvp;
-		ComputeWVPMatrix(windowSize, wvp);
-		int valueShowBorder = pCurrentStyle->m_showBorder ? 1 : 0;
-		float rect[2] = { (float)m_size.x, (float)m_size.y };
-
+		if (!m_transparent)
 		{
-			WidgetMgr& widgetMgr = WidgetMgr::Get();
-			Rendering::RenderModule& render = Rendering::RenderModule::Get();
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+			LayoutStyle* pCurrentStyle = &m_defaultStyle;
+			if (m_hover)
+				pCurrentStyle = &m_hoverStyle;
 
-			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
-			render.BindMaterial(*pMaterial, wvp);
+			DirectX::XMMATRIX wvp;
+			ComputeWVPMatrix(windowSize, wvp);
+			int valueShowBorder = pCurrentStyle->m_showBorder ? 1 : 0;
+			float rect[2] = { (float)m_size.x, (float)m_size.y };
 
-			render.SetConstantBuffer(1, sizeof(pCurrentStyle->m_backgroundColor), &pCurrentStyle->m_backgroundColor, 0);
-			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-			render.SetConstantBuffer(3, sizeof(pCurrentStyle->m_borderColor), &pCurrentStyle->m_borderColor, 0);
-			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
-			render.SetConstantBuffer(5, sizeof(pCurrentStyle->m_borderSize), &pCurrentStyle->m_borderSize, 0);
+			{
+				WidgetMgr& widgetMgr = WidgetMgr::Get();
+				Rendering::RenderModule& render = Rendering::RenderModule::Get();
+				Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
-			render.RenderMesh(*pMesh);
+				const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+				render.BindMaterial(*pMaterial, wvp);
+
+				render.SetConstantBuffer(1, sizeof(pCurrentStyle->m_backgroundColor), &pCurrentStyle->m_backgroundColor, 0);
+				render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+				render.SetConstantBuffer(3, sizeof(pCurrentStyle->m_borderColor), &pCurrentStyle->m_borderColor, 0);
+				render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
+				render.SetConstantBuffer(5, sizeof(pCurrentStyle->m_borderSize), &pCurrentStyle->m_borderSize, 0);
+
+				const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
+				render.RenderMesh(*pMesh);
+			}
 		}
 
 		for (Widget* pWidget : m_children)
@@ -238,6 +243,11 @@ namespace Widgets
 	void Layout::SetSpace(const DirectX::XMINT2& space)
 	{
 		m_space = space;
+	}
+
+	void Layout::SetTransparent(bool transparent)
+	{
+		m_transparent = transparent;
 	}
 
 	LayoutStyle& Layout::GetDefaultStyle()
