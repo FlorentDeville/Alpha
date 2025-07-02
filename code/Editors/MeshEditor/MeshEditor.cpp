@@ -11,6 +11,7 @@
 #include "OsWin/Resource.h"
 
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -376,9 +377,10 @@ namespace Editors
 
 				if (pMaterial->HasPerObjectParameters())
 				{
+					Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
 					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-					pCBufferPool->Copy(poolIndex, &mvpMatrix, sizeof(mvpMatrix));
+					pCBufferPool->Copy(poolIndex, &perObjectData, sizeof(Rendering::PerObjectCBuffer));
 					renderer.BindCBuffer(pMaterial->GetPerObjectRootSignatureParameterIndex(), poolIndex);
 				}
 
