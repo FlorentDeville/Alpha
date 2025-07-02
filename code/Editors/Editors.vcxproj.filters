@@ -138,6 +138,9 @@
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderEditor\Compiler\RootSignatureDescription.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">

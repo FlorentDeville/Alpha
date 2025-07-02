@@ -30,6 +30,7 @@
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
     <ClInclude Include="ShaderEditor\Compiler\MaterialParameters.h" />
+    <ClInclude Include="ShaderEditor\Compiler\RootSignatureDescription.h" />
     <ClInclude Include="ShaderEditor\Compiler\ShaderCompiler.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
     <ClInclude Include="ShaderEditor\ShaderEditorModule.h" />
