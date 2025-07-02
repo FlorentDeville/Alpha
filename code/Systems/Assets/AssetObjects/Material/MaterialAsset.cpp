@@ -17,6 +17,11 @@ namespace Systems
 		, m_pPs(nullptr)
 		, m_pRs(nullptr)
 		, m_pPipelineState(nullptr)
+		, m_hasPerFrameParameters(false)
+		, m_hasPerObjectParameters(false)
+		, m_perFrameCBufferRootSignatureIndex(0)
+		, m_perObjectCBufferRootSignatureIndex(0)
+		, m_perMaterialCBufferRootSignatureIndex(0)
 	{ }
 
 	MaterialAsset_v1::~MaterialAsset_v1()
@@ -134,5 +139,20 @@ namespace Systems
 	void MaterialAsset_v1::SetHasPerFrameParameters(bool enable)
 	{
 		m_hasPerFrameParameters = enable;
+	}
+
+	void MaterialAsset_v1::SetPerFrameRootSignatureParameterIndex(int index)
+	{
+		m_perFrameCBufferRootSignatureIndex = index;
+	}
+
+	void MaterialAsset_v1::SetPerObjectRootSignatureParameterIndex(int index)
+	{
+		m_perObjectCBufferRootSignatureIndex = index;
+	}
+
+	void MaterialAsset_v1::SetPerMaterialRootSignatureParameterIndex(int index)
+	{
+		m_perMaterialCBufferRootSignatureIndex = index;
 	}
 }
