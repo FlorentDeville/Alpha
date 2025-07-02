@@ -10,7 +10,7 @@
 #include "OsWin/FileDialog.h"
 #include "OsWin/Resource.h"
 
-#include "Rendering/ConstantBufferPool/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"

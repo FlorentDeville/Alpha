@@ -2,7 +2,7 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Rendering/ConstantBufferPool/ConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/ConstantBufferPool.h"
 
 #include "Core/Helper.h"
 #include "Rendering/RenderModule.h"

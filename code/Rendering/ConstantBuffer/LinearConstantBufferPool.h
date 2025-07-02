@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Rendering/ConstantBufferPool/ConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/ConstantBufferPool.h"
 
 namespace Rendering
 {

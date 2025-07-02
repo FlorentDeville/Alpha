@@ -16,7 +16,7 @@
 
 #include "Rendering/BaseShape.h"
 #include "Rendering/Camera.h"
-#include "Rendering/ConstantBufferPool/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Material/Material.h"

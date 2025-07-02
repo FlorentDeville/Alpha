@@ -99,10 +99,10 @@
     <ClInclude Include="BaseShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBufferPool\ConstantBufferPool.h">
+    <ClInclude Include="ConstantBuffer\ConstantBufferPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBufferPool\LinearConstantBufferPool.h">
+    <ClInclude Include="ConstantBuffer\LinearConstantBufferPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,10 +188,10 @@
     <ClCompile Include="BaseShape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConstantBufferPool\ConstantBufferPool.cpp">
+    <ClCompile Include="ConstantBuffer\ConstantBufferPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConstantBufferPool\LinearConstantBufferPool.cpp">
+    <ClCompile Include="ConstantBuffer\LinearConstantBufferPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
