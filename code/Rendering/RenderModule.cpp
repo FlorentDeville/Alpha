@@ -303,7 +303,7 @@ namespace Rendering
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
 	}
 
-	void RenderModule::BindMaterial2(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp)
+	void RenderModule::BindMaterial2(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp, uint32_t rootParamIndex)
 	{
 		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());
 		m_pRenderCommandList->SetGraphicsRootSignature(rs.GetRootSignature());
@@ -311,7 +311,7 @@ namespace Rendering
 		int poolIndex = m_pConstantBufferPool->GetFreeConstantBufferIndex();
 		m_pConstantBufferPool->Copy(poolIndex, &wvp, sizeof(wvp));
 
-		m_pRenderCommandList->SetGraphicsRootConstantBufferView(0, m_pConstantBufferPool->GetGpuAddress(poolIndex));
+		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pConstantBufferPool->GetGpuAddress(poolIndex));
 	}
 
 	void RenderModule::RenderMesh(const Rendering::Mesh& mesh)
