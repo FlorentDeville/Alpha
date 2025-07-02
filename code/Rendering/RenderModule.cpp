@@ -16,7 +16,7 @@
 
 #include "Rendering/BaseShape.h"
 #include "Rendering/Camera.h"
-#include "Rendering/ConstantBufferPool/ConstantBufferPool.h"
+#include "Rendering/ConstantBufferPool/LinearConstantBufferPool.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Material/Material.h"
@@ -59,7 +59,7 @@ namespace Rendering
 		, m_pRenderCommandList(nullptr)
 		, m_pCamera(nullptr)
 		, m_pCubeMesh(nullptr)
-		, m_pConstantBufferPool(nullptr)
+		, m_pLinearCBufferPool(nullptr)
 	{
 		m_clearColor[0] = 0.4f;
 		m_clearColor[1] = 0.6f;
@@ -110,10 +110,10 @@ namespace Rendering
 
 		ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pMainDepthBuffer, m_mainDSV);
 
-		m_pConstantBufferPool = new ConstantBufferPool();
+		m_pLinearCBufferPool = new LinearConstantBufferPool();
 		const int CBUFFER_SIZE = 256;
 		const int CBUFFER_COUNT = 100;
-		m_pConstantBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
+		m_pLinearCBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
 
 		//Render target for the game
 		m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
@@ -196,10 +196,10 @@ namespace Rendering
 		m_pDebugInterface->Release();
 #endif
 
-		if (m_pConstantBufferPool)
+		if (m_pLinearCBufferPool)
 		{
-			delete m_pConstantBufferPool;
-			m_pConstantBufferPool = nullptr;
+			delete m_pLinearCBufferPool;
+			m_pLinearCBufferPool = nullptr;
 		}
 
 		for (ID3D12Resource* pBackBuffer : m_pBackBuffers)
@@ -234,13 +234,11 @@ namespace Rendering
 		//new render command list
 		m_pRenderCommandList = m_pRenderCommandQueue->GetCommandList();
 
-		m_pConstantBufferPool->PreRender();
+		m_pLinearCBufferPool->FreeAll();
 	}
 
 	void RenderModule::PostRender()
-	{
-		m_pConstantBufferPool->PostRender();
-	}
+	{ }
 
 	void RenderModule::BeginMainScene()
 	{
@@ -308,15 +306,15 @@ namespace Rendering
 		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());
 		m_pRenderCommandList->SetGraphicsRootSignature(rs.GetRootSignature());
 
-		int poolIndex = m_pConstantBufferPool->GetFreeConstantBufferIndex();
-		m_pConstantBufferPool->Copy(poolIndex, &wvp, sizeof(wvp));
+		int poolIndex = m_pLinearCBufferPool->GetFreeConstantBufferIndex();
+		m_pLinearCBufferPool->Copy(poolIndex, &wvp, sizeof(wvp));
 
-		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pConstantBufferPool->GetGpuAddress(poolIndex));
+		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pLinearCBufferPool->GetGpuAddress(poolIndex));
 	}
 
 	void RenderModule::BindCBuffer(uint32_t rootParamIndex, int poolIndex)
 	{
-		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pConstantBufferPool->GetGpuAddress(poolIndex));
+		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pLinearCBufferPool->GetGpuAddress(poolIndex));
 	}
 
 	void RenderModule::RenderMesh(const Rendering::Mesh& mesh)
@@ -660,9 +658,9 @@ namespace Rendering
 		return pRenderTarget->m_textureId;
 	}
 
-	ConstantBufferPool* RenderModule::GetConstantBufferPool()
+	LinearConstantBufferPool* RenderModule::GetLinearCBufferPool()
 	{
-		return m_pConstantBufferPool;
+		return m_pLinearCBufferPool;
 	}
 
 	CommandQueue* RenderModule::GetRenderCommandQueue()

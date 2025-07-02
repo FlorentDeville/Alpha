@@ -17,7 +17,6 @@ namespace Rendering
 		, m_pDescriptorHeap(nullptr)
 		, m_elementSize(0)
 		, m_elementCount(0)
-		, m_current(0)
 		, m_pResourcePtr(nullptr)
 	{ }
 
@@ -86,25 +85,6 @@ namespace Rendering
 
 			pDevice->CreateConstantBufferView(&cbvDesc, cpuDescHandle);
 		}
-	}
-
-	void ConstantBufferPool::PreRender()
-	{
-		m_current = 0;
-	}
-
-	void ConstantBufferPool::PostRender()
-	{
-
-	}
-
-	int ConstantBufferPool::GetFreeConstantBufferIndex()
-	{
-		assert(m_current < m_elementCount);
-
-		int ret = m_current;
-		++m_current;
-		return ret;
 	}
 
 	D3D12_GPU_VIRTUAL_ADDRESS ConstantBufferPool::GetGpuAddress(int poolIndex)

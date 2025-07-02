@@ -10,7 +10,7 @@
 #include "OsWin/FileDialog.h"
 #include "OsWin/Resource.h"
 
-#include "Rendering/ConstantBufferPool/ConstantBufferPool.h"
+#include "Rendering/ConstantBufferPool/LinearConstantBufferPool.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -377,7 +377,7 @@ namespace Editors
 				Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = pMaterial->GetMaterialParameterDescription();
 				if (perMaterialParam.GetSize() > 0)
 				{
-					Rendering::ConstantBufferPool* pCBufferPool = renderer.GetConstantBufferPool();
+					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
 
 					for(uint32_t ii = 0; ii < perMaterialParam.GetSize(); ++ii)

@@ -36,7 +36,7 @@ class CommandQueue;
 namespace Rendering
 {
 	class Camera;
-	class ConstantBufferPool;
+	class LinearConstantBufferPool;
 	class Material;
 	class Mesh;
 	class RenderTarget;
@@ -96,7 +96,7 @@ namespace Rendering
 
 		Rendering::TextureId GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const;
 
-		ConstantBufferPool* GetConstantBufferPool();
+		LinearConstantBufferPool* GetLinearCBufferPool();
 
 		//Temp functions
 		CommandQueue* GetRenderCommandQueue();
@@ -148,7 +148,8 @@ namespace Rendering
 
 		Camera* m_pCamera;
 
-		ConstantBufferPool* m_pConstantBufferPool;
+		//CBuffer pool being reset every frame used for PerFrame cbuffer.
+		LinearConstantBufferPool* m_pLinearCBufferPool;
 
 	public:
 		UINT m_currentBackBufferIndex;
