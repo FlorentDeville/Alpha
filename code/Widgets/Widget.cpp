@@ -333,6 +333,12 @@ namespace Widgets
 		m_size = size;
 	}
 
+	void Widget::SetWidth(uint32_t width)
+	{
+		m_defaultSize.x = width;
+		m_size.x = width;
+	}
+
 	void Widget::SetFocus()
 	{
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
@@ -421,6 +427,11 @@ namespace Widgets
 	const std::vector<Widget*>& Widget::GetChildren() const
 	{
 		return m_children;
+	}
+
+	uint32_t Widget::GetChildrenCount() const
+	{
+		return static_cast<uint32_t>(m_children.size());
 	}
 
 	Widget* Widget::GetParent()
