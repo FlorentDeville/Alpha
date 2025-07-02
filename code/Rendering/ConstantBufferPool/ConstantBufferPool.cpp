@@ -118,4 +118,11 @@ namespace Rendering
 
 		memcpy(pDest, pData, size);
 	}
+
+	void ConstantBufferPool::Copy(int poolIndex, uint64_t offset, const void* pData, uint64_t size)
+	{
+		char* pDest = m_pResourcePtr + (m_elementSize * poolIndex) + offset;
+
+		memcpy(pDest, pData, size);
+	}
 }

@@ -314,6 +314,11 @@ namespace Rendering
 		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pConstantBufferPool->GetGpuAddress(poolIndex));
 	}
 
+	void RenderModule::BindCBuffer(uint32_t rootParamIndex, int poolIndex)
+	{
+		m_pRenderCommandList->SetGraphicsRootConstantBufferView(rootParamIndex, m_pConstantBufferPool->GetGpuAddress(poolIndex));
+	}
+
 	void RenderModule::RenderMesh(const Rendering::Mesh& mesh)
 	{
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -653,6 +658,11 @@ namespace Rendering
 	Rendering::TextureId RenderModule::GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const
 	{
 		return pRenderTarget->m_textureId;
+	}
+
+	ConstantBufferPool* RenderModule::GetConstantBufferPool()
+	{
+		return m_pConstantBufferPool;
 	}
 
 	CommandQueue* RenderModule::GetRenderCommandQueue()

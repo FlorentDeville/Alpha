@@ -28,7 +28,11 @@ namespace Rendering
 		int GetFreeConstantBufferIndex();
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress(int poolIndex);
 
+		//Copy pData into the constant buffer at index poolIndex
 		void Copy(int poolIndex, const void* pData, uint64_t size);
+
+		//Copy pData in the constant buffer at index poolIndex. offset is the starting byte inside the constant buffer
+		void Copy(int poolIndex, uint64_t offset, const void* pData, uint64_t size);
 
 	private:
 		//Size of a single constant buffer
