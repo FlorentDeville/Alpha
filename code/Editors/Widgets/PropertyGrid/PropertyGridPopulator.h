@@ -38,6 +38,8 @@ namespace Editors
 
 		void RegisterItemFactory(Core::Sid typenameSid, PropertyGridItemFactory* pFactory);
 
+		void SendDataChangedEvent();
+
 		EVENT_DECL(DataChanged, void())
 
 	private:

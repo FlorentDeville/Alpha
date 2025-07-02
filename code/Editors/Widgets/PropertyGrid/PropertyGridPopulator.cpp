@@ -56,6 +56,11 @@ namespace Editors
 		m_factories[typenameSid] = pFactory;
 	}
 
+	void PropertyGridPopulator::SendDataChangedEvent()
+	{
+		m_onDataChanged();
+	}
+
 	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth)
 	{
 		Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pArrayPtr);

@@ -6,6 +6,11 @@
 
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 
+namespace Widgets
+{
+	class TextBox;
+}
+
 namespace Editors
 {
 	class PropertyGridItemFactory_MaterialParameterDescription : public PropertyGridItemFactory
@@ -15,5 +20,8 @@ namespace Editors
 		~PropertyGridItemFactory_MaterialParameterDescription();
 
 		void CreateItems(const Systems::TypeDescriptor* pType, void* pData, int depth) override;
+
+	private:
+		Widgets::TextBox* CreateSingleFloatWidget(float* pData);
 	};
 }
