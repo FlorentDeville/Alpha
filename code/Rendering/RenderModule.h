@@ -36,6 +36,7 @@ class CommandQueue;
 namespace Rendering
 {
 	class Camera;
+	class ConstantBufferPool;
 	class Material;
 	class Mesh;
 	class RenderTarget;
@@ -57,6 +58,10 @@ namespace Rendering
 
 		void BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp);
 		void BindMaterial(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp);
+		void BindMaterial2(const PipelineState& pso, const RootSignature& rs, const DirectX::XMMATRIX& wvp, uint32_t rootParamIndex);
+
+		void BindCBuffer(uint32_t rootParamIndex, int poolIndex);
+
 		void RenderMesh(const Rendering::Mesh& mesh);
 
 		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
@@ -90,6 +95,8 @@ namespace Rendering
 		Rendering::DescriptorHeap* CreateDSVHeap();
 
 		Rendering::TextureId GetRenderTargetTextureId(const Rendering::RenderTarget* pRenderTarget) const;
+
+		ConstantBufferPool* GetConstantBufferPool();
 
 		//Temp functions
 		CommandQueue* GetRenderCommandQueue();
@@ -140,6 +147,8 @@ namespace Rendering
 		float m_clearColor[4];
 
 		Camera* m_pCamera;
+
+		ConstantBufferPool* m_pConstantBufferPool;
 
 	public:
 		UINT m_currentBackBufferIndex;

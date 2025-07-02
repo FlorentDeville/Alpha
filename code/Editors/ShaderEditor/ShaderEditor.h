@@ -66,7 +66,7 @@ namespace Editors
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();
 
-		void PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField);
+		void PropertyGridPopulator_OnDataChanged();
 
 		void DeleteSelectedShader();
 

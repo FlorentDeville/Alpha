@@ -8,6 +8,7 @@
 
 #include "3rdparty/xxh64/xxh64.hpp"
 
+#define CONSTSID(LiteralString) MAKESID(LiteralString)
 #define MAKESID(LiteralString) [&]() { constexpr Core::Sid sid = Core::MakeSid(LiteralString); return sid; } ()
 #define SID(LiteralString) Core::MakeSid(LiteralString)
 

@@ -12,5 +12,6 @@ namespace Systems
 	{
 		REGISTER_TYPE(Core::Vec4f);
 		REGISTER_TYPE(Core::Mat44f);
+		REGISTER_TYPE(Core::Sid);
 	}
 }

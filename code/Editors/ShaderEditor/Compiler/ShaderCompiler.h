@@ -10,6 +10,9 @@
 
 namespace Editors
 {
+	class MaterialParameters;
+	class RootSignatureDescription;
+
 	class ShaderCompiler
 	{
 	public:
@@ -18,7 +21,9 @@ namespace Editors
 
 		bool CompileShader(const std::string& shaderSourceFilePath, const std::string& outputFile);
 
-		bool GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, Core::Array<char>& rs);
+		bool GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, RootSignatureDescription& rs);
+
+		bool GenerateMaterialParameters(const Core::Array<char>& ps, const Core::Array<char>& vs, MaterialParameters& parameters);
 
 	private:
 		std::string m_shaderCompilerPath;

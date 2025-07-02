@@ -49,7 +49,7 @@ namespace Systems
 		else
 		{
 			TypeDescriptor* pType = it->second;
-			new (pType) TypeDescriptor(name, sizeof(T));
+			pType->Init(name, sizeof(T));
 			return pType;
 		}
 	}

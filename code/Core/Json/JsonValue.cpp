@@ -74,6 +74,12 @@ namespace Core
 		m_value = static_cast<double>(value);
 	}
 
+	void JsonValue::Set(uint32_t value)
+	{
+		m_type = JsonType::Number;
+		m_value = static_cast<double>(value);
+	}
+
 	void JsonValue::Set(uint64_t value)
 	{
 		m_type = JsonType::Number;
@@ -178,5 +184,10 @@ namespace Core
 	JsonObject* JsonValue::GetValueAsObject() const
 	{
 		return std::get<JsonObject*>(m_value);
+	}
+
+	bool JsonValue::IsNull() const
+	{
+		return m_type == JsonType::Null;
 	}
 }

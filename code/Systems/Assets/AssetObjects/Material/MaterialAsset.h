@@ -5,6 +5,8 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+
+#include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Objects/AssetObject.h"
 
 namespace Rendering
@@ -33,19 +35,42 @@ namespace Systems
 		Core::Array<char>& GetVsBlob();
 		Core::Array<char>& GetRsBlob();
 
+		Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription();
+
 		void PostLoad() override;
 
 		void UpdateRenderingObjects();
 
-		bool IsValidforRendering() const;
+		bool IsValidForRendering() const;
+
+		void SetHasPerObjectParameters(bool enable);
+		void SetHasPerFrameParameters(bool enable);
+
+		void SetPerFrameRootSignatureParameterIndex(uint32_t index);
+		void SetPerObjectRootSignatureParameterIndex(uint32_t index);
+		void SetPerMaterialRootSignatureParameterIndex(uint32_t index);
+
+		uint32_t GetPerFrameRootSignatureParameterIndex() const;
+		uint32_t GetPerObjectRootSignatureParameterIndex() const;
+		uint32_t GetPerMaterialRootSignatureParameterIndex() const;
 
 	private:
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;
 
+		//Not editable variables
 		Core::Array<char> m_psBlob;
 		Core::Array<char> m_vsBlob;
 		Core::Array<char> m_rsBlob;
+
+		bool m_hasPerObjectParameters;
+		uint32_t m_perObjectCBufferRootSignatureIndex;
+
+		bool m_hasPerFrameParameters;
+		uint32_t m_perFrameCBufferRootSignatureIndex;
+
+		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
+		uint32_t m_perMaterialCBufferRootSignatureIndex;
 
 		//No reflected variables
 		Rendering::Shader* m_pVs;
@@ -60,6 +85,13 @@ namespace Systems
 			ADD_FIELD_ATTR(m_psBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_vsBlob, DoNotEdit)
 			ADD_FIELD_ATTR(m_rsBlob, DoNotEdit)
+			ADD_FIELD_ATTR(m_hasPerObjectParameters, DoNotEdit)
+			ADD_FIELD_ATTR(m_perObjectCBufferRootSignatureIndex, DoNotEdit)
+			ADD_FIELD_ATTR(m_hasPerFrameParameters, DoNotEdit)
+			ADD_FIELD_ATTR(m_perFrameCBufferRootSignatureIndex, DoNotEdit)
+			ADD_FIELD(m_perMaterialParameters)
+			ADD_FIELD_ATTR(m_perMaterialCBufferRootSignatureIndex, DoNotEdit)
+
 		END_REFLECTION()
 	};
 

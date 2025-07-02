@@ -8,6 +8,7 @@
 #include "Editors/ShaderEditor/ShaderListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_MaterialParameterDescription.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -135,7 +136,11 @@ namespace Editors
 			m_pPropertyGrid = new PropertyGridWidget();
 			pRightPanelLayout->AddWidget(m_pPropertyGrid);
 
-			m_pPropertyGridPopulator->OnDataChanged([this](Systems::Object* pObject, const Systems::FieldDescriptor* pField) {PropertyGridPopulator_OnDataChanged(pObject, pField); });
+			m_pPropertyGridPopulator->Init(m_pPropertyGrid);
+			m_pPropertyGridPopulator->OnDataChanged([this]() {PropertyGridPopulator_OnDataChanged(); });
+
+			Core::Sid typenameSid = Systems::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
+			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());
 		}
 
 		//add log label
@@ -241,7 +246,7 @@ namespace Editors
 		if (!pObject)
 			return true;
 
-		m_pPropertyGridPopulator->Populate(m_pPropertyGrid, pObject);
+		m_pPropertyGridPopulator->Populate(pObject);
 
 		return true;
 	}
@@ -256,15 +261,18 @@ namespace Editors
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
-		ShaderEditorModule::Get().CompileShader(id);
+		bool res = ShaderEditorModule::Get().CompileShader(id);
+		if (!res)
+			return true;
+
+		m_pShaderListModel->SetShaderModified(id);
 
 		return true;
 	}
 
-	void ShaderEditor::PropertyGridPopulator_OnDataChanged(Systems::Object* pObject, const Systems::FieldDescriptor* pField)
+	void ShaderEditor::PropertyGridPopulator_OnDataChanged()
 	{
-		Systems::AssetObject* pAsset = static_cast<Systems::AssetObject*>(pObject);
-		m_pShaderListModel->SetShaderModified(pAsset->GetId());
+		m_pShaderListModel->SetShaderModified(m_selectedMaterialId);
 	}
 
 	void ShaderEditor::DeleteSelectedShader()

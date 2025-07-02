@@ -4,6 +4,8 @@
 
 #include "Editors/ShaderEditor/ShaderEditorModule.h"
 
+#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
+#include "Editors/ShaderEditor/Compiler/RootSignatureDescription.h"
 #include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
 
 #include "Systems/Assets/AssetMgr.h"
@@ -129,10 +131,46 @@ namespace Editors
 		CompileSingleShader(pMaterial->GetSourceFileVs(), pMaterial->GetVsBlob());
 		CompileSingleShader(pMaterial->GetSourceFilePs(), pMaterial->GetPsBlob());
 
+		RootSignatureDescription rootSignatureDesc;
+		rootSignatureDesc.m_pRootSignatureBlob = &pMaterial->GetRsBlob();
 		ShaderCompiler compiler;
-		bool res = compiler.GenerateRootSignature(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), pMaterial->GetRsBlob());
+		bool res = compiler.GenerateRootSignature(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), rootSignatureDesc);
 		if (!res)
 			return false;
+
+		std::map<std::string, int>::const_iterator it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("PerMaterial");
+		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
+			pMaterial->SetPerMaterialRootSignatureParameterIndex(it->second);
+
+		it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("PerObject");
+		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
+			pMaterial->SetPerObjectRootSignatureParameterIndex(it->second);
+
+		it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("PerFrame");
+		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
+			pMaterial->SetPerFrameRootSignatureParameterIndex(it->second);
+
+		MaterialParameters parameters;
+		res = compiler.GenerateMaterialParameters(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), parameters);
+		if (!res)
+			return false;
+
+		pMaterial->SetHasPerFrameParameters(parameters.m_hasPerFrameParameters);
+		pMaterial->SetHasPerObjectParameters(parameters.m_hasPerObjectParameters);
+
+		Core::Array<Systems::MaterialParameterDescription>& matParamDesc = pMaterial->GetMaterialParameterDescription();
+		matParamDesc.Resize(0);
+		matParamDesc.Reserve(static_cast<uint32_t>(parameters.m_perMaterialParameters.size()));
+		for (const MaterialParameter& param : parameters.m_perMaterialParameters)
+		{
+			Systems::MaterialParameterDescription newParamDesc;
+			newParamDesc.m_name = param.m_name;
+			newParamDesc.m_offset = param.m_offset;
+			newParamDesc.m_size = param.m_size;
+			newParamDesc.m_type = param.m_type;
+			newParamDesc.m_strType = param.m_strType;
+			matParamDesc.PushBack(newParamDesc);
+		}
 
 		pMaterial->UpdateRenderingObjects();
 

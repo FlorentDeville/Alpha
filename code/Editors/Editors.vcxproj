@@ -29,6 +29,8 @@
     <ClInclude Include="Property.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
+    <ClInclude Include="ShaderEditor\Compiler\MaterialParameters.h" />
+    <ClInclude Include="ShaderEditor\Compiler\RootSignatureDescription.h" />
     <ClInclude Include="ShaderEditor\Compiler\ShaderCompiler.h" />
     <ClInclude Include="ShaderEditor\ShaderEditor.h" />
     <ClInclude Include="ShaderEditor\ShaderEditorModule.h" />
@@ -44,8 +46,10 @@
     <ClInclude Include="Widgets\Entity\EntityWidget.h" />
     <ClInclude Include="Widgets\List\Models\AssetListModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
+    <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridPopulator.h" />
+    <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridWidget.h" />
     <ClInclude Include="Widgets\Tree\LevelTreeModel.h" />
     <ClInclude Include="Widgets\Tree\TreeWidget.h" />
@@ -69,6 +73,7 @@
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="RawDb.cpp" />
+    <ClCompile Include="ShaderEditor\Compiler\MaterialParameters.cpp" />
     <ClCompile Include="ShaderEditor\Compiler\ShaderCompiler.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditor.cpp" />
     <ClCompile Include="ShaderEditor\ShaderEditorModule.cpp" />
@@ -83,8 +88,10 @@
     <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
     <ClCompile Include="Widgets\List\Models\AssetListModel.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridPopulator.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridWidget.cpp" />
     <ClCompile Include="Widgets\Tree\LevelTreeModel.cpp" />
     <ClCompile Include="Widgets\Tree\TreeWidget.cpp" />

@@ -8,6 +8,7 @@
 
 #include <assert.h>
 #include <cstring>
+#include <utility>
 
 namespace Core
 {
@@ -21,15 +22,20 @@ namespace Core
 			, m_reservedSize(0)
 		{}
 
-		Array(Array&& source)
+		Array(const Array& source)
 		{
 			*this = source;
+		}
+
+		Array(Array&& source)
+		{
+			*this = std::move(source);
 		}
 
 		~Array()
 		{
 			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[m_size].~T();
+				m_pStart[ii].~T();
 
 			delete[] m_pStart;
 			m_pStart = nullptr;
@@ -95,6 +101,12 @@ namespace Core
 		{
 			assert(index < m_size);
 			return m_pStart[index];
+		}
+
+		void operator=(const Array& source)
+		{
+			Resize(source.GetSize());
+			memcpy(m_pStart, source.m_pStart, sizeof(T) * m_size);
 		}
 
 		void operator=(Array&& source)

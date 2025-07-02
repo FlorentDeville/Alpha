@@ -8,6 +8,7 @@
 #include "Core/Json/JsonMember.h"
 #include "Core/Json/JsonObject.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/NewAssetId.h"
@@ -82,6 +83,13 @@ namespace Systems
 		}
 		break;
 
+		case SID("uint32_t"):
+		{
+			uint32_t* pValue = reinterpret_cast<uint32_t*>(ptr);
+			*pValue = static_cast<uint32_t>(jsonFieldValue.GetValueAsDouble());
+		}
+		break;
+
 		case SID("uint16_t"):
 		{
 			uint16_t* pValue = reinterpret_cast<uint16_t*>(ptr);
@@ -100,6 +108,13 @@ namespace Systems
 		{
 			char* pValue = reinterpret_cast<char*>(ptr);
 			*pValue = static_cast<char>(jsonFieldValue.GetValueAsDouble());
+		}
+		break;
+
+		case SID("bool"):
+		{
+			bool* pValue = reinterpret_cast<bool*>(ptr);
+			*pValue = static_cast<char>(jsonFieldValue.GetValueAsBool());
 		}
 		break;
 
@@ -143,6 +158,15 @@ namespace Systems
 
 			for (int ii = 0; ii < 4; ++ii)
 				pValue->Set(ii, static_cast<float>(pJsonArray->GetElement(ii)->GetValueAsDouble()));
+		}
+		break;
+
+		case SID("Core::Sid"):
+		{
+			Core::Sid* pValue = reinterpret_cast<Core::Sid*>(ptr);
+
+			const std::string& strSid = jsonFieldValue.GetValueAsString();
+			*pValue = Core::HexaToUint64(strSid);
 		}
 		break;
 
@@ -219,6 +243,9 @@ namespace Systems
 		for (const FieldDescriptor& field : fields)
 		{
 			const Core::JsonValue& jsonValue = jsonObject->GetMember(field.GetName());
+			if (jsonValue.IsNull())
+				continue;
+
 			void* pFieldPtr = field.GetDataPtr(pObject);
 			bool res = DeserializeField(jsonValue, field.GetType(), &field, pFieldPtr);
 			if (!res)

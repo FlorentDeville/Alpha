@@ -112,8 +112,6 @@ namespace Core
 				return member->GetConstValue();
 		}
 
-		assert(false);
-		
 		static JsonValue DummyValue;
 		return DummyValue;
 	}

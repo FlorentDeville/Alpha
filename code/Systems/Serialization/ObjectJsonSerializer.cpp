@@ -10,6 +10,7 @@
 
 #include "Core/Collections/BaseArray.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/NewAssetId.h"
@@ -83,6 +84,13 @@ namespace Systems
 			SerializeData(*pValue, value);
 		}
 		break;
+
+		case SID("uint32_t"):
+		{
+			const uint32_t* pValue = reinterpret_cast<const uint32_t*>(pFieldPtr);
+			SerializeData(*pValue, value);
+		}
+		break;
 		
 		case SID("uint16_t"):
 		{
@@ -101,6 +109,13 @@ namespace Systems
 		case SID("char"):
 		{
 			const char* pValue = reinterpret_cast<const char*>(pFieldPtr);
+			SerializeData(*pValue, value);
+		}
+		break;
+
+		case SID("bool"):
+		{
+			const bool* pValue = reinterpret_cast<const bool*>(pFieldPtr);
 			SerializeData(*pValue, value);
 		}
 		break;
@@ -130,6 +145,14 @@ namespace Systems
 		{
 			const Core::Vec4f* pVec = reinterpret_cast<const Core::Vec4f*>(pFieldPtr);
 			SerializeData(*pVec, value);
+		}
+		break;
+
+		case SID("Core::Sid"):
+		{
+			const Core::Sid* pSid = reinterpret_cast<const Core::Sid*>(pFieldPtr);
+			std::string strSid = Core::Uint64ToHexa(*pSid);
+			SerializeData(strSid, value);
 		}
 		break;
 

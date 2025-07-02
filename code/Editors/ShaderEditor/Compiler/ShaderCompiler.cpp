@@ -4,6 +4,8 @@
 
 #include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
 
+#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
+#include "Editors/ShaderEditor/Compiler/RootSignatureDescription.h"
 #include "OsWin/Process.h"
 
 #include <assert.h>
@@ -12,6 +14,13 @@
 
 namespace Editors
 {
+	struct RootParameterDescription
+	{
+		D3D12_ROOT_PARAMETER m_dx12RootParameter;
+		std::string name;
+		int index;
+	};
+
 	enum SHADER_TYPE
 	{
 		Pixel,
@@ -20,7 +29,7 @@ namespace Editors
 		Count
 	};
 
-	bool GetRootSignatureParameters(ID3D12ShaderReflection* pReflector, std::vector<D3D12_ROOT_PARAMETER>& rootParameters,
+	bool GetRootSignatureParameters(ID3D12ShaderReflection* pReflector, std::vector<RootParameterDescription>& rootParameters,
 		std::vector<D3D12_STATIC_SAMPLER_DESC>& sampleParameters, SHADER_TYPE shaderType)
 	{
 		D3D12_SHADER_DESC shaderDesc;
@@ -39,32 +48,40 @@ namespace Editors
 			{
 			case D3D_SIT_CBUFFER:
 			{
+				RootParameterDescription rootParamDesc;
+				rootParamDesc.name = bind.Name;
+				rootParamDesc.index = static_cast<int>(rootParameters.size());
+
 				ID3D12ShaderReflectionConstantBuffer* pCBuffer = pReflector->GetConstantBufferByName(bind.Name);
 				D3D12_SHADER_BUFFER_DESC bufferDesc;
 				pCBuffer->GetDesc(&bufferDesc);
 
-				D3D12_ROOT_PARAMETER rootParameter;
-				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;//D3D12_ROOT_PARAMETER_TYPE_CBV;
+				D3D12_ROOT_PARAMETER& rootParameter = rootParamDesc.m_dx12RootParameter;
+				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
 				rootParameter.Descriptor.RegisterSpace = bind.Space;
-				rootParameter.Constants.Num32BitValues = bufferDesc.Size / 4;
+
 				if (shaderType == SHADER_TYPE::Pixel)
 					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 				else if (shaderType == SHADER_TYPE::Vertex)
 					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-				rootParameters.push_back(rootParameter);
+				rootParameters.push_back(rootParamDesc);
 			}
 
 				break;
 
 			case D3D_SIT_TEXTURE:
 			{
+				RootParameterDescription rootParamDesc;
+				rootParamDesc.name = bind.Name;
+				rootParamDesc.index = static_cast<int>(rootParameters.size());
+
 				ID3D12ShaderReflectionConstantBuffer* pCBuffer = pReflector->GetConstantBufferByName(bind.Name);
 				D3D12_SHADER_BUFFER_DESC bufferDesc;
 				pCBuffer->GetDesc(&bufferDesc);
 
-				D3D12_ROOT_PARAMETER rootParameter;
+				D3D12_ROOT_PARAMETER& rootParameter = rootParamDesc.m_dx12RootParameter;
 				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 
 				//this might need to be a descriptor table
@@ -75,7 +92,7 @@ namespace Editors
 				else if (shaderType == SHADER_TYPE::Vertex)
 					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-				rootParameters.push_back(rootParameter);
+				rootParameters.push_back(rootParamDesc);
 			}
 				break;
 
@@ -108,6 +125,81 @@ namespace Editors
 		return true;
 	}
 
+	bool GeneratePerMaterialParameters(ID3D12ShaderReflectionConstantBuffer* pConstantBuffer, const D3D12_SHADER_BUFFER_DESC& bufferDesc, MaterialParameters& parameters)
+	{
+		parameters.m_perMaterialParameters.reserve(bufferDesc.Variables);
+		for (uint32_t ii = 0; ii < bufferDesc.Variables; ++ii)
+		{
+			ID3D12ShaderReflectionVariable* pVariable = pConstantBuffer->GetVariableByIndex(ii);
+
+			D3D12_SHADER_VARIABLE_DESC variableDesc;
+			HRESULT res = pVariable->GetDesc(&variableDesc);
+			if (res != S_OK)
+				return false;
+
+			ID3D12ShaderReflectionType* pType = pVariable->GetType();
+			if (!pType)
+				return false;
+
+			D3D12_SHADER_TYPE_DESC typeDesc;
+			res = pType->GetDesc(&typeDesc);
+			if (res != S_OK)
+				return false;
+
+			MaterialParameter parameter;
+			parameter.m_name = variableDesc.Name;
+			parameter.m_offset = variableDesc.StartOffset;
+			parameter.m_size = variableDesc.Size;
+			parameter.m_type = SID(typeDesc.Name);
+			parameter.m_strType = typeDesc.Name;
+			parameters.m_perMaterialParameters.push_back(parameter);
+		}
+		
+		return true;
+	}
+
+	bool GenerateMaterialParameters(ID3D12ShaderReflection* pReflector, MaterialParameters& parameters)
+	{
+		D3D12_SHADER_DESC shaderDesc;
+		HRESULT res = pReflector->GetDesc(&shaderDesc);
+		if (res != S_OK)
+			return false;
+
+		for (uint32_t ii = 0; ii < shaderDesc.ConstantBuffers; ++ii)
+		{
+			ID3D12ShaderReflectionConstantBuffer* pConstantBuffer = pReflector->GetConstantBufferByIndex(ii);
+			if (!pConstantBuffer)
+				return false;
+
+			D3D12_SHADER_BUFFER_DESC bufferDesc;
+			res = pConstantBuffer->GetDesc(&bufferDesc);
+			if (res != S_OK)
+				return false;
+
+			if (strcmp(bufferDesc.Name, "PerObject") == 0)
+			{
+				parameters.m_hasPerObjectParameters = true;
+				continue;
+			}
+			
+			if (strcmp(bufferDesc.Name, "PerFrame") == 0)
+			{
+				parameters.m_hasPerFrameParameters = true;
+				continue;
+			}
+
+			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && !parameters.m_hasPerMaterialParameters)
+			{
+				parameters.m_hasPerMaterialParameters = true;
+				bool paramRes = GeneratePerMaterialParameters(pConstantBuffer, bufferDesc, parameters);
+				if (!paramRes)
+					return false;
+			}
+		}
+
+		return true;
+	}
+
 	ShaderCompiler::ShaderCompiler()
 		: m_shaderCompilerPath("C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\fxc.exe")
 	{ }
@@ -124,14 +216,9 @@ namespace Editors
 		size_t extensionSize = strlen(PS_EXT);
 
 		std::string extension = shaderSourceFilePath.substr(shaderSourceFilePath.size() - extensionSize);
-		/*size_t nameStartPos = shaderSourceFilePath.find_last_of('\\');
-		std::string shaderName = shaderSourceFilePath.substr(nameStartPos + 1, shaderSourceFilePath.size() - extensionSize - nameStartPos - 1);
-		std::string shaderTypeExtension = extension.substr(1, 2);
 
-		std::string outputName = outputFolder + "\\" + shader.m_assetId.ToString();*/
 		std::string outputName = outputFile;
 
-		//std::string input = m_rawShaderPath + "\\" + shader.m_rawFilename;
 		std::string input = shaderSourceFilePath;
 
 		//create the command line
@@ -204,9 +291,9 @@ namespace Editors
 		return !error;
 	}
 
-	bool ShaderCompiler::GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, Core::Array<char>& rs)
+	bool ShaderCompiler::GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, RootSignatureDescription& rs)
 	{
-		std::vector<D3D12_ROOT_PARAMETER> rootParameters;
+		std::vector<RootParameterDescription> rootParametersDescription;
 		std::vector< D3D12_STATIC_SAMPLER_DESC> staticSamples;
 
 		//vertex shader
@@ -216,7 +303,7 @@ namespace Editors
 			if (res != S_OK)
 				return false;
 
-			GetRootSignatureParameters(pReflector, rootParameters, staticSamples, SHADER_TYPE::Vertex);
+			GetRootSignatureParameters(pReflector, rootParametersDescription, staticSamples, SHADER_TYPE::Vertex);
 			pReflector->Release();
 		}
 
@@ -227,7 +314,7 @@ namespace Editors
 			if (res != S_OK)
 				return false;
 
-			GetRootSignatureParameters(pReflector, rootParameters, staticSamples, SHADER_TYPE::Pixel);
+			GetRootSignatureParameters(pReflector, rootParametersDescription, staticSamples, SHADER_TYPE::Pixel);
 			pReflector->Release();
 		}
 
@@ -238,7 +325,16 @@ namespace Editors
 		rootSignatureDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 		rootSignatureDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-		rootSignatureDesc.NumParameters = static_cast<UINT>(rootParameters.size());
+		rootSignatureDesc.NumParameters = static_cast<UINT>(rootParametersDescription.size());
+
+		std::vector<D3D12_ROOT_PARAMETER> rootParameters;
+		rootParameters.reserve(rootParametersDescription.size());
+		for (const RootParameterDescription& desc : rootParametersDescription)
+		{
+			rs.m_cBufferRootSignatureIndex[desc.name] = static_cast<int>(rootParameters.size());
+			rootParameters.push_back(desc.m_dx12RootParameter);
+		}
+
 		rootSignatureDesc.pParameters = rootParameters.data();
 
 		rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(staticSamples.size());
@@ -254,10 +350,43 @@ namespace Editors
 			return false;
 		}
 
-		rs.Resize(static_cast<uint32_t>(pBlob->GetBufferSize()));
-		memcpy(rs.GetData(), pBlob->GetBufferPointer(), pBlob->GetBufferSize());
+		rs.m_pRootSignatureBlob->Resize(static_cast<uint32_t>(pBlob->GetBufferSize()));
+		memcpy(rs.m_pRootSignatureBlob->GetData(), pBlob->GetBufferPointer(), pBlob->GetBufferSize());
 
 		pBlob->Release();
+
+		return true;
+	}
+
+	bool ShaderCompiler::GenerateMaterialParameters(const Core::Array<char>& ps, const Core::Array<char>& vs, MaterialParameters& parameters)
+	{
+		//vertex shader
+		{
+			ID3D12ShaderReflection* pReflector = nullptr;
+			HRESULT res = D3DReflect(vs.GetData(), vs.GetSize(), IID_ID3D12ShaderReflection, (void**)&pReflector);
+			if (res != S_OK)
+				return false;
+
+			bool paramResult = Editors::GenerateMaterialParameters(pReflector, parameters);
+			pReflector->Release();
+
+			if (!paramResult)
+				return false;
+		}
+
+		//pixel shader
+		{
+			ID3D12ShaderReflection* pReflector = nullptr;
+			HRESULT res = D3DReflect(ps.GetData(), ps.GetSize(), IID_ID3D12ShaderReflection, (void**)&pReflector);
+			if (res != S_OK)
+				return false;
+
+			bool paramResult = Editors::GenerateMaterialParameters(pReflector, parameters);
+			pReflector->Release();
+
+			if (!paramResult)
+				return false;
+		}
 
 		return true;
 	}

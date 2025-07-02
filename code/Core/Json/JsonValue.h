@@ -30,6 +30,7 @@ namespace Core
 		explicit JsonValue(JsonObject* pValue);
 
 		void Set(int32_t value);
+		void Set(uint32_t value);
 		void Set(uint64_t value);
 		void Set(float value);
 		void Set(double value);
@@ -48,6 +49,8 @@ namespace Core
 		const std::string& GetValueAsString() const;
 		JsonArray* GetValueAsArray() const;
 		JsonObject* GetValueAsObject() const;
+
+		bool IsNull() const;
 
 	private:
 		JsonType m_type;
