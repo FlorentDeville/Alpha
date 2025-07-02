@@ -118,6 +118,7 @@ namespace Widgets
 		void SetY(int32_t y);
 
 		void SetSize(const DirectX::XMUINT2& size);
+		void SetWidth(uint32_t width);
 
 		void SetFocus();
 
@@ -145,6 +146,8 @@ namespace Widgets
 		bool HasFocus() const;
 
 		const std::vector<Widget*>& GetChildren() const;
+		uint32_t GetChildrenCount() const;
+
 		Widget* GetParent();
 
 		bool IsInside(uint32_t screenX, uint32_t screenY) const;

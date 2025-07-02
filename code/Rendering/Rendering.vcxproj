@@ -14,7 +14,9 @@
     <ClInclude Include="BaseShape.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommandQueue.h" />
-    <ClInclude Include="ConstantBufferPool\ConstantBufferPool.h" />
+    <ClInclude Include="ConstantBuffer\ConstantBufferPool.h" />
+    <ClInclude Include="ConstantBuffer\LinearConstantBufferPool.h" />
+    <ClInclude Include="ConstantBuffer\PerObjectCBuffer.h" />
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="Font\Font.h" />
     <ClInclude Include="Font\FontId.h" />
@@ -45,7 +47,9 @@
     <ClCompile Include="BaseShape.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
-    <ClCompile Include="ConstantBufferPool\ConstantBufferPool.cpp" />
+    <ClCompile Include="ConstantBuffer\ConstantBufferPool.cpp" />
+    <ClCompile Include="ConstantBuffer\LinearConstantBufferPool.cpp" />
+    <ClCompile Include="ConstantBuffer\PerObjectCBuffer.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="Font\Font.cpp" />
     <ClCompile Include="Font\FontId.cpp" />

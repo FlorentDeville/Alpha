@@ -31,5 +31,9 @@ namespace Editors
 		std::vector<PropertyGridItem*> m_properties;
 
 		Widgets::Layout* m_pInternalLayout;
+
+		//Width of the name column
+		uint32_t m_nameColumnWidth;
+		uint32_t m_rowHeight;
 	};
 }

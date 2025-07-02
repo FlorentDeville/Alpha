@@ -141,6 +141,16 @@ namespace Systems
 		m_hasPerFrameParameters = enable;
 	}
 
+	bool MaterialAsset_v1::HasPerObjectParameters() const
+	{
+		return m_hasPerObjectParameters;
+	}
+
+	bool MaterialAsset_v1::HasPerFrameParameters() const
+	{
+		return m_hasPerFrameParameters;
+	}
+
 	void MaterialAsset_v1::SetPerFrameRootSignatureParameterIndex(uint32_t index)
 	{
 		m_perFrameCBufferRootSignatureIndex = index;

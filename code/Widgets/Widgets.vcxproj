@@ -54,6 +54,7 @@
     <ClInclude Include="Widgets\AbstractClickable.h" />
     <ClInclude Include="Widgets\Frame.h" />
     <ClInclude Include="Widgets\TableView.h" />
+    <ClInclude Include="Widgets\TableViewStyle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Widgets\AbstractClickable.cpp" />
     <ClCompile Include="Widgets\Frame.cpp" />
     <ClCompile Include="Widgets\TableView.cpp" />
+    <ClCompile Include="Widgets\TableViewStyle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">

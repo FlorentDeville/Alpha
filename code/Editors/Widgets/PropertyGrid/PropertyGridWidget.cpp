@@ -8,11 +8,14 @@
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Widgets/TableViewStyle.h"
 
 namespace Editors
 {
 	PropertyGridWidget::PropertyGridWidget()
 		: Widgets::Container()
+		, m_nameColumnWidth(200)
+		, m_rowHeight(20)
 	{
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
@@ -33,24 +36,37 @@ namespace Editors
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
 		pPropertyLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_FIT);
 
+		if (m_pInternalLayout->GetChildrenCount() % 2 == 0)
+			pPropertyLayout->GetDefaultStyle().SetBackgroundColor(Widgets::TableViewStyle::s_evenRowBackgroundColor);
+		else
+			pPropertyLayout->GetDefaultStyle().SetBackgroundColor(Widgets::TableViewStyle::s_oddRowBackgroundColor);
+
+		pPropertyLayout->GetHoverStyle().SetBackgroundColor(Widgets::TableViewStyle::s_hoverBackgroundColor);
+
 		m_pInternalLayout->AddWidget(pPropertyLayout);
 
-		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
-		pLabel->SetSizeStyle(Widgets::Widget::FIT);
+		int nameColumnWidth = m_nameColumnWidth;
 
 		if (depth != 0)
 		{
 			const int OFFSET_DEPTH = 10;
-			Widgets::Container* pSpacer = new Widgets::Container(OFFSET_DEPTH * depth, 0);
+			uint32_t containerWidth = OFFSET_DEPTH * depth;
+			Widgets::Widget* pSpacer = new Widgets::Widget(containerWidth, 0, 0, 0);
 			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 			pPropertyLayout->AddWidget(pSpacer);
+
+			nameColumnWidth -= containerWidth;
 		}
+
+		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
+		pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pLabel->SetSize(DirectX::XMUINT2(nameColumnWidth, m_rowHeight));
 
 		pPropertyLayout->AddWidget(pLabel);
 
 		if (pProperty->GetEditingWidget())
 		{
-			Widgets::Container* pSpacer = new Widgets::Container(10, 0);
+			Widgets::Widget* pSpacer = new Widgets::Widget(10, 0, 0, 0);
 			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 
 			pPropertyLayout->AddWidget(pSpacer);

@@ -10,7 +10,8 @@
 #include "OsWin/FileDialog.h"
 #include "OsWin/Resource.h"
 
-#include "Rendering/ConstantBufferPool/ConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -372,12 +373,21 @@ namespace Editors
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
-				renderer.BindMaterial2(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature(), mvpMatrix, pMaterial->GetPerObjectRootSignatureParameterIndex());
+				renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature());
+
+				if (pMaterial->HasPerObjectParameters())
+				{
+					Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
+					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
+					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
+					pCBufferPool->Copy(poolIndex, &perObjectData, sizeof(Rendering::PerObjectCBuffer));
+					renderer.BindCBuffer(pMaterial->GetPerObjectRootSignatureParameterIndex(), poolIndex);
+				}
 
 				Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = pMaterial->GetMaterialParameterDescription();
 				if (perMaterialParam.GetSize() > 0)
 				{
-					Rendering::ConstantBufferPool* pCBufferPool = renderer.GetConstantBufferPool();
+					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
 
 					for(uint32_t ii = 0; ii < perMaterialParam.GetSize(); ++ii)

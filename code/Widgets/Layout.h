@@ -36,6 +36,7 @@ namespace Widgets
 
 		void SetDirection(Direction dir);
 		void SetSpace(const DirectX::XMINT2& space);
+		void SetTransparent(bool transparent); //if true, the layout doesn't display any background nor border
 
 		LayoutStyle& GetDefaultStyle();
 		LayoutStyle& GetHoverStyle();
@@ -49,5 +50,7 @@ namespace Widgets
 
 		LayoutStyle m_defaultStyle;
 		LayoutStyle m_hoverStyle;
+
+		bool m_transparent; //if true, the layout doesn't display any background nor border
 	};
 }

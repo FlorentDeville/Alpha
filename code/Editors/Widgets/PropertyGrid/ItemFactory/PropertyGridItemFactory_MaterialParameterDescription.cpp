@@ -46,13 +46,12 @@ namespace Editors
 			Widgets::Layout* pLayout = new Widgets::Layout();
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
+			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
+			pLayout->SetTransparent(true);
 
 			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
-			pLayout->AddWidget(new Widgets::Container(SPACE, 20));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(new Widgets::Container(SPACE, 20));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(new Widgets::Container(SPACE, 20));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
 			pWidget = pLayout;
 		}
@@ -65,11 +64,11 @@ namespace Editors
 			Widgets::Layout* pLayout = new Widgets::Layout();
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
+			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
+			pLayout->SetTransparent(true);
 
 			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
-			pLayout->AddWidget(new Widgets::Container(SPACE, 20));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(new Widgets::Container(SPACE, 20));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
 			pWidget = pLayout;
 		}
@@ -85,8 +84,6 @@ namespace Editors
 		default:
 			break;
 		}
-
-		
 
 		PropertyGridItem* pItem = new PropertyGridItem(pMatParamDesc->m_name, pWidget);
 		m_pPropertyGridWidget->AddProperty(pItem, depth);
