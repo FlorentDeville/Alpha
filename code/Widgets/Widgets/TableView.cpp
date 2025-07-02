@@ -9,6 +9,7 @@
 #include "Widgets/Models/ModelIndex.h"
 #include "Widgets/Models/SelectionModel.h"
 #include "Widgets/Models/SelectionRow.h"
+#include "Widgets/Widgets/TableViewStyle.h"
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -19,11 +20,11 @@ namespace Widgets
 	TableView::TableView()
 		: Widget()
 		, m_pModel(nullptr)
-		, m_oddRowBackgroundColor(0.12f, 0.12f, 0.12f, 1.f)
-		, m_evenRowBackgroundColor(0.16f, 0.16f, 0.16f, 1.f)
-		, m_hoverBackgroundColor(0.24f, 0.24f, 0.24f, 1.f)
-		, m_selectedBorderColor(0.44f, 0.44f, 0.44f, 1.f)
-		, m_headerBackgroundColor(0.08f, 0.08f, 0.08f, 1.f)
+		, m_oddRowBackgroundColor(TableViewStyle::s_oddRowBackgroundColor)
+		, m_evenRowBackgroundColor(TableViewStyle::s_evenRowBackgroundColor)
+		, m_hoverBackgroundColor(TableViewStyle::s_hoverBackgroundColor)
+		, m_selectedBorderColor(TableViewStyle::s_selectedBorderColor)
+		, m_headerBackgroundColor(TableViewStyle::s_headerBackgroundColor)
 		, m_multiSelectionEnabled(false)
 		, m_cellDefaultSize(75, 20)
 	{

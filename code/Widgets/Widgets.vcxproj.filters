@@ -144,6 +144,9 @@
     <ClInclude Include="Models\SelectionRow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\TableViewStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">
@@ -249,6 +252,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Models\SelectionRow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\TableViewStyle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
