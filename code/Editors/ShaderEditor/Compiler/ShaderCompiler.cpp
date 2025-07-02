@@ -136,6 +136,7 @@ namespace Editors
 			parameter.m_offset = variableDesc.StartOffset;
 			parameter.m_size = variableDesc.Size;
 			parameter.m_type = SID(typeDesc.Name);
+			parameter.m_strType = typeDesc.Name;
 			parameters.m_perMaterialParameters.push_back(parameter);
 		}
 		

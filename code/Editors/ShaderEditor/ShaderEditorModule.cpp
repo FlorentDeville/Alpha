@@ -153,7 +153,7 @@ namespace Editors
 			newParamDesc.m_offset = param.m_offset;
 			newParamDesc.m_size = param.m_size;
 			newParamDesc.m_type = param.m_type;
-
+			newParamDesc.m_strType = param.m_strType;
 			matParamDesc.PushBack(newParamDesc);
 		}
 
