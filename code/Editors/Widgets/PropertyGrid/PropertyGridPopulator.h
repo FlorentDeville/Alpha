@@ -34,9 +34,9 @@ namespace Editors
 		EVENT_DECL(DataChanged, void())
 
 	private:
-		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr);
+		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth);
 		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData);
-		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData);
+		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 	};

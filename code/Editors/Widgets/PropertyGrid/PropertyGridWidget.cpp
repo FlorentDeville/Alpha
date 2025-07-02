@@ -25,7 +25,7 @@ namespace Editors
 		ClearAllItems();
 	}
 
-	void PropertyGridWidget::AddProperty(PropertyGridItem* pProperty)
+	void PropertyGridWidget::AddProperty(PropertyGridItem* pProperty, int depth)
 	{
 		m_properties.push_back(pProperty);
 
@@ -37,6 +37,14 @@ namespace Editors
 
 		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
 		pLabel->SetSizeStyle(Widgets::Widget::FIT);
+
+		if (depth != 0)
+		{
+			const int OFFSET_DEPTH = 10;
+			Widgets::Container* pSpacer = new Widgets::Container(OFFSET_DEPTH * depth, 0);
+			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+			pPropertyLayout->AddWidget(pSpacer);
+		}
 
 		pPropertyLayout->AddWidget(pLabel);
 

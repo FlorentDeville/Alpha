@@ -13,6 +13,8 @@
 #include "Widgets/TextBox.h"
 #include "Widgets/WidgetMgr.h"
 
+#include <stdio.h>
+
 namespace Editors
 {
 	PropertyGridPopulator::PropertyGridPopulator()
@@ -28,12 +30,12 @@ namespace Editors
 
 		const Systems::TypeDescriptor* pType = pObject->GetTypeDescriptor();
 
-		CreatePropertiesForClassMember(pType, pObject);
+		CreatePropertiesForClassMember(pType, pObject, 0);
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr)
+	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth)
 	{
 		Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pArrayPtr);
 
@@ -52,8 +54,7 @@ namespace Editors
 
 			const int BUFFER_SIZE = 8;
 			char buffer[BUFFER_SIZE] = { '\0' };
-			_itoa_s(ii, buffer, BUFFER_SIZE, 10);
-
+			sprintf_s(buffer, "[%d]", ii);
 			if (pElementType->GetSid() == CONSTSID("Core::Array"))
 			{
 				assert(false); //don't support array of arrays for now
@@ -61,9 +62,9 @@ namespace Editors
 			else if (pElementType->IsClass())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(buffer, nullptr);
-				m_pPropertyGridWidget->AddProperty(pItem);
+				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
-				CreatePropertiesForClassMember(pElementType, pElement);
+				CreatePropertiesForClassMember(pElementType, pElement, depth + 1);
 			}
 			else //pod
 			{
@@ -71,12 +72,12 @@ namespace Editors
 
 				
 				PropertyGridItem* pItem = new PropertyGridItem(buffer, pWidget);
-				m_pPropertyGridWidget->AddProperty(pItem);
+				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData)
+	void PropertyGridPopulator::CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth)
 	{
 		const std::vector<Systems::FieldDescriptor>& members = pFieldType->GetFields();
 		for (const Systems::FieldDescriptor& member : members)
@@ -96,23 +97,23 @@ namespace Editors
 			if (memberType->GetSid() == CONSTSID("Core::Array"))
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), nullptr);
-				m_pPropertyGridWidget->AddProperty(pItem);
+				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
-				CreatePropertiesForArrayElements(&member, pMemberPtr);
+				CreatePropertiesForArrayElements(&member, pMemberPtr, depth + 1);
 			}
 			else if (memberType->IsClass())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem);
 
-				CreatePropertiesForClassMember(memberType, pMemberPtr);
+				CreatePropertiesForClassMember(memberType, pMemberPtr, depth + 1);
 			}
 			else //pod
 			{
 				Widgets::Widget* pWidget = CreateWidgetForPODField(memberType, pMemberPtr);
 
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), pWidget);
-				m_pPropertyGridWidget->AddProperty(pItem);
+				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
 
