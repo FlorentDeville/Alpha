@@ -8,6 +8,7 @@
 
 #include <assert.h>
 #include <cstring>
+#include <iterator>
 #include <utility>
 
 namespace Core
@@ -15,6 +16,31 @@ namespace Core
 	template<typename T> class Array : public BaseArray
 	{
 	public:
+
+		class Iterator
+		{
+		public:
+			using value_type = T;
+			using pointer = T*;
+			using reference = T&;
+			using difference_type = std::ptrdiff_t;
+			using iterator_category = std::forward_iterator_tag;
+
+			Iterator(pointer pPtr);
+
+			reference operator*() const;
+			pointer operator->() const;
+
+			Iterator& operator++();
+			Iterator& operator++(int);
+
+			bool operator==(const Iterator& other) const;
+			bool operator!=(const Iterator& other) const;
+
+		private:
+			pointer m_pPtr;
+		};
+
 		Array()
 			: BaseArray()
 			, m_pStart(nullptr)
@@ -124,6 +150,12 @@ namespace Core
 
 		void Reserve(uint32_t index, bool allowShrink = false);
 
+		//function to work with stl algorithms
+		Iterator begin();
+		Iterator end();
+		const Iterator cbegin() const;
+		const Iterator cend() const;
+
 	private:
 		uint32_t m_size; // number of element used
 		uint32_t m_reservedSize; // number of element allocated
@@ -165,5 +197,62 @@ namespace Core
 		m_pStart = pNewArray;
 
 		m_reservedSize = newSize;
+	}
+
+	template<typename T> Array<T>::Iterator::Iterator(pointer pPtr)
+		: m_pPtr(pPtr)
+	{ }
+
+	template<typename T> typename Array<T>::Iterator Array<T>::begin()
+	{
+		return Iterator(m_pStart);
+	}
+
+	template<typename T> typename Array<T>::Iterator Array<T>::end()
+	{
+		return Iterator(m_pStart + m_size);
+	}
+
+	template<typename T> const typename Array<T>::Iterator Array<T>::cbegin() const
+	{
+		return Iterator(m_pStart);
+	}
+
+	template<typename T> const typename Array<T>::Iterator Array<T>::cend() const
+	{
+		return Iterator(m_pStart + m_size);
+	}
+
+	template<typename T> typename Array<T>::Iterator::reference Array<T>::Iterator::operator*() const
+	{
+		return *m_pPtr;
+	}
+
+	template<typename T> typename Array<T>::Iterator::pointer Array<T>::Iterator::operator->() const
+	{
+		return m_pPtr;
+	}
+
+	template<typename T> typename Array<T>::Iterator& Array<T>::Iterator::operator++()
+	{
+		++m_pPtr;
+		return *this;
+	}
+
+	template<typename T> typename Array<T>::Iterator& Array<T>::Iterator::operator++(int)
+	{
+		Iterator temp = *this;
+		++m_pPtr;
+		return temp;
+	}
+
+	template<typename T> bool Array<T>::Iterator::operator==(const Iterator& other) const
+	{
+		return m_pPtr == other.m_pPtr;
+	}
+
+	template<typename T> bool Array<T>::Iterator::operator!=(const Iterator& other) const
+	{
+		return !(*this == other);
 	}
 }
