@@ -24,7 +24,7 @@
     <ClInclude Include="MeshEditor\MeshEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialEditor\ShaderEditor.h">
+    <ClInclude Include="MaterialEditor\MaterialEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RawDb.h">
@@ -152,7 +152,7 @@
     <ClCompile Include="MeshEditor\MeshEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialEditor\ShaderEditor.cpp">
+    <ClCompile Include="MaterialEditor\MaterialEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RawDb.cpp">

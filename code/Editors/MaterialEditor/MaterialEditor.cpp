@@ -2,7 +2,7 @@
 /* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/MaterialEditor/ShaderEditor.h"
+#include "Editors/MaterialEditor/MaterialEditor.h"
 
 #include "Editors/MaterialEditor/ShaderEditorModule.h"
 #include "Editors/MaterialEditor/ShaderListModel.h"
