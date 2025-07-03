@@ -313,6 +313,9 @@ namespace Editors
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
 		bool res = ShaderEditorModule::Get().CompileShader(id);
+
+		RefreshPropertyGrid();
+
 		if (!res)
 			return true;
 
@@ -481,5 +484,29 @@ namespace Editors
 
 		if (m_cameraDistance < MIN_DISTANCE)
 			m_cameraDistance = MIN_DISTANCE;
+	}
+
+	void MaterialEditor::RefreshPropertyGrid()
+	{
+		m_pPropertyGrid->ClearAllItems();
+
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+		Systems::Container* pContainer = containerMgr.GetContainer(m_selectedMaterialId.GetContainerId());
+		if (!pContainer)
+		{
+			pContainer = containerMgr.LoadContainer(m_selectedMaterialId.GetContainerId());
+		}
+
+		if (!pContainer)
+			return;
+
+		Systems::AssetObject* pObject = pContainer->GetAsset(m_selectedMaterialId.GetObjectId());
+		if (!pObject)
+			return;
+
+		m_pPropertyGridPopulator->Populate(pObject);
 	}
 }
