@@ -19,13 +19,13 @@ namespace Widgets
 		Viewport_v2(int width, int height);
 		~Viewport_v2();
 
-		virtual void Render(); //Render everything inside this function
-
 		void ClearDepthBuffer();
 
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 		DirectX::XMVECTOR Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
+
+		EVENT_DECL(Render, void()) //Do all your rendering inside this event
 
 	protected:
 		int m_width;

@@ -130,6 +130,8 @@ namespace Editors
 		m_pGizmoWidget = new GizmoWidget();
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
+
+		OnRender([this]() { Render(); });
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()

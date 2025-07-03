@@ -38,9 +38,6 @@ namespace Widgets
 		delete m_pRenderTarget;
 	}
 
-	void Viewport_v2::Render()
-	{}
-
 	void Viewport_v2::ClearDepthBuffer()
 	{
 		m_pRenderTarget->ClearDepthBuffer();
@@ -153,7 +150,7 @@ namespace Widgets
 	void Viewport_v2::Internal_Render()
 	{
 		m_pRenderTarget->BeginScene();
-		Render();
+		m_onRender();
 		m_pRenderTarget->EndScene();
 	}
 }
