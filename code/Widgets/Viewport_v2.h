@@ -34,7 +34,7 @@ namespace Widgets
 		float m_aspectRatio;
 
 	private:
-		Rendering::RenderTarget* m_pRenderTarget; //the render target where this voewport will do the rendering
+		Rendering::RenderTarget* m_pRenderTarget; //the render target where this viewport will do the rendering
 
 		void Internal_Render() override;
 	};
