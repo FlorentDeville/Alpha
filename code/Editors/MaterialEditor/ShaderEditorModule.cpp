@@ -172,13 +172,23 @@ namespace Editors
 			newParamDesc.m_strType = param.m_strType;
 
 			//if a parameter with the same name and size already exists, keep its value
+			bool copyValue = false;
 			const Core::Array<Systems::MaterialParameterDescription>::Iterator it = std::find_if(existingMatParamArray.cbegin(), existingMatParamArray.cend(), [&param](Systems::MaterialParameterDescription& oldParam) { return param.m_name == oldParam.m_name; });
 			if (it != existingMatParamArray.cend())
 			{
 				if (it->m_size == param.m_size)
 				{
-					newParamDesc.m_value = std::move(it->m_value);
+					copyValue = true;
 				}
+			}
+
+			if (copyValue)
+			{
+				newParamDesc.m_value = std::move(it->m_value);
+			}
+			else
+			{
+				newParamDesc.m_value.Resize(param.m_size, 0);
 			}
 			newMatParamDescArray.PushBack(newParamDesc);
 		}
