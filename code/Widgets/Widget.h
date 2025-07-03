@@ -96,12 +96,12 @@ namespace Widgets
 		Widget(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		virtual ~Widget();
 
-		virtual void Update(uint64_t dt);	//Handle events and propagate to children
+		virtual void Update(uint64_t dt); //Real time update called every frame.
 		virtual void Draw(const DirectX::XMFLOAT2& windowSize);	//Draw the widgets using the gfx api.
 
 		virtual void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 
-		virtual bool Handle(const BaseEvent& event);
+		virtual bool Handle(const BaseEvent& event); //Handle events and propagate to children
 
 		virtual void AddWidget(Widget* pWidget);
 		virtual void InsertWidget(Widget* pWidget, int position);
