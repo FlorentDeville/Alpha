@@ -21,10 +21,13 @@ namespace Widgets
 
 		void ClearDepthBuffer();
 
+		void Update(uint64_t dt) override;
+
 		void Draw(const DirectX::XMFLOAT2& windowSize) override;
 
 		DirectX::XMVECTOR Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
 
+		EVENT_DECL(Update, void(uint64_t)) //Real time update called every frame
 		EVENT_DECL(Render, void()) //Do all your rendering inside this event
 
 	protected:
@@ -35,6 +38,8 @@ namespace Widgets
 
 	private:
 		Rendering::RenderTarget* m_pRenderTarget; //the render target where this viewport will do the rendering
+
+		bool m_updateEnabled; //true if the update event should be called
 
 		void Internal_Render() override;
 	};
