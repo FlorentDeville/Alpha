@@ -20,10 +20,17 @@ namespace Systems
 		static AssetObject* LoadAsset(NewAssetId id);
 
 		template<class T> static T* GetAsset(NewAssetId id);
+
+		template<class T> static T* LoadAsset(NewAssetId id);
 	};
 
 	template<class T> T* AssetUtil::GetAsset(NewAssetId id)
 	{
 		return static_cast<T*>(GetAsset(id));
+	}
+
+	template<class T> T* AssetUtil::LoadAsset(NewAssetId id)
+	{
+		return static_cast<T*>(LoadAsset(id));
 	}
 }
