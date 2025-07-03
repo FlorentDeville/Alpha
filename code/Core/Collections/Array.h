@@ -137,6 +137,13 @@ namespace Core
 
 		void operator=(Array&& source)
 		{
+			//clean up existing memory
+			for (uint32_t ii = 0; ii < m_size; ++ii)
+				m_pStart[ii].~T();
+
+			delete[] m_pStart;
+
+			//now do the move
 			m_pStart = source.m_pStart;
 			m_size = source.m_size;
 			m_reservedSize = source.m_reservedSize;
