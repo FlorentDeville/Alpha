@@ -89,5 +89,7 @@ namespace Editors
 
 		void Viewport_OnRender();
 		void Viewport_OnUpdate(uint64_t dt);
+
+		void RefreshPropertyGrid();
 	};
 }
