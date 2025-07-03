@@ -154,6 +154,7 @@ namespace Core
 		}
 
 		void Resize(uint32_t newSize) override;
+		void Resize(uint32_t newSize, const T& value);
 
 		void Reserve(uint32_t index, bool allowShrink = false);
 
@@ -182,6 +183,18 @@ namespace Core
 			Reserve(newSize);
 
 		m_size = newSize;
+	}
+
+	template<typename T> void Array<T>::Resize(uint32_t newSize, const T& value)
+	{
+		uint32_t oldSize = m_size;
+		Resize(newSize);
+
+		if (m_size > oldSize)
+		{
+			for(uint32_t ii = oldSize; ii < m_size; ++ii)
+				memcpy(m_pStart + (sizeof(T) * ii), &value, sizeof(value));
+		}
 	}
 
 	template<typename T> void Array<T>::Reserve(uint32_t newSize, bool allowShrink)
