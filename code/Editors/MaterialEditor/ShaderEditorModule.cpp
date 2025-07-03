@@ -158,9 +158,10 @@ namespace Editors
 		pMaterial->SetHasPerFrameParameters(parameters.m_hasPerFrameParameters);
 		pMaterial->SetHasPerObjectParameters(parameters.m_hasPerObjectParameters);
 
-		Core::Array<Systems::MaterialParameterDescription>& matParamDesc = pMaterial->GetMaterialParameterDescription();
-		matParamDesc.Resize(0);
-		matParamDesc.Reserve(static_cast<uint32_t>(parameters.m_perMaterialParameters.size()));
+		Core::Array<Systems::MaterialParameterDescription>& existingMatParamArray = pMaterial->GetMaterialParameterDescription();
+
+		Core::Array<Systems::MaterialParameterDescription> newMatParamDescArray;
+		newMatParamDescArray.Reserve(static_cast<uint32_t>(parameters.m_perMaterialParameters.size()));
 		for (const MaterialParameter& param : parameters.m_perMaterialParameters)
 		{
 			Systems::MaterialParameterDescription newParamDesc;
@@ -169,8 +170,21 @@ namespace Editors
 			newParamDesc.m_size = param.m_size;
 			newParamDesc.m_type = param.m_type;
 			newParamDesc.m_strType = param.m_strType;
-			matParamDesc.PushBack(newParamDesc);
+
+			//first try to find if a parameter with this name exists already
+			bool copyValue = false;
+			Core::Array<Systems::MaterialParameterDescription>::Iterator it = std::find_if(existingMatParamArray.cbegin(), existingMatParamArray.cend(), [&param](Systems::MaterialParameterDescription& oldParam) { return param.m_name == oldParam.m_name; });
+			if (it != existingMatParamArray.cend()) //parameter used to exist, check if it has hte same size
+			{
+				if (it->m_size == param.m_size)
+				{
+					newParamDesc.m_value = std::move(it->m_value);
+				}
+			}
+			newMatParamDescArray.PushBack(newParamDesc);
 		}
+
+		existingMatParamArray = std::move(newMatParamDescArray);
 
 		pMaterial->UpdateRenderingObjects();
 
