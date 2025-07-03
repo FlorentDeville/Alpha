@@ -171,10 +171,9 @@ namespace Editors
 			newParamDesc.m_type = param.m_type;
 			newParamDesc.m_strType = param.m_strType;
 
-			//first try to find if a parameter with this name exists already
-			bool copyValue = false;
-			Core::Array<Systems::MaterialParameterDescription>::Iterator it = std::find_if(existingMatParamArray.cbegin(), existingMatParamArray.cend(), [&param](Systems::MaterialParameterDescription& oldParam) { return param.m_name == oldParam.m_name; });
-			if (it != existingMatParamArray.cend()) //parameter used to exist, check if it has hte same size
+			//if a parameter with the same name and size already exists, keep its value
+			const Core::Array<Systems::MaterialParameterDescription>::Iterator it = std::find_if(existingMatParamArray.cbegin(), existingMatParamArray.cend(), [&param](Systems::MaterialParameterDescription& oldParam) { return param.m_name == oldParam.m_name; });
+			if (it != existingMatParamArray.cend())
 			{
 				if (it->m_size == param.m_size)
 				{
