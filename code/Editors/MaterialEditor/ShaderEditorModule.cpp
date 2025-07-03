@@ -2,11 +2,11 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/ShaderEditor/ShaderEditorModule.h"
+#include "Editors/MaterialEditor/ShaderEditorModule.h"
 
-#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
-#include "Editors/ShaderEditor/Compiler/RootSignatureDescription.h"
-#include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
+#include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
+#include "Editors/MaterialEditor/Compiler/RootSignatureDescription.h"
+#include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"

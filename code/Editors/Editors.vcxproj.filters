@@ -24,7 +24,7 @@
     <ClInclude Include="MeshEditor\MeshEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderEditor\ShaderEditor.h">
+    <ClInclude Include="MaterialEditor\ShaderEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RawDb.h">
@@ -105,7 +105,7 @@
     <ClInclude Include="Widgets\Dialog\AssetDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderEditor\ShaderEditorModule.h">
+    <ClInclude Include="MaterialEditor\ShaderEditorModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h">
@@ -120,16 +120,16 @@
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridPopulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderEditor\ShaderListModel.h">
+    <ClInclude Include="MaterialEditor\ShaderListModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Dialog\OkCancelDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderEditor\Compiler\ShaderCompiler.h">
+    <ClInclude Include="MaterialEditor\Compiler\ShaderCompiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderEditor\Compiler\MaterialParameters.h">
+    <ClInclude Include="MaterialEditor\Compiler\MaterialParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h">
@@ -138,7 +138,7 @@
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderEditor\Compiler\RootSignatureDescription.h">
+    <ClInclude Include="MaterialEditor\Compiler\RootSignatureDescription.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -152,7 +152,7 @@
     <ClCompile Include="MeshEditor\MeshEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderEditor\ShaderEditor.cpp">
+    <ClCompile Include="MaterialEditor\ShaderEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RawDb.cpp">
@@ -230,7 +230,7 @@
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderEditor\ShaderEditorModule.cpp">
+    <ClCompile Include="MaterialEditor\ShaderEditorModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp">
@@ -245,16 +245,16 @@
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridPopulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderEditor\ShaderListModel.cpp">
+    <ClCompile Include="MaterialEditor\ShaderListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderEditor\Compiler\ShaderCompiler.cpp">
+    <ClCompile Include="MaterialEditor\Compiler\ShaderCompiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderEditor\Compiler\MaterialParameters.cpp">
+    <ClCompile Include="MaterialEditor\Compiler\MaterialParameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp">

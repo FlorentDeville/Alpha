@@ -19,8 +19,8 @@
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/MeshEditor/MeshEditor.h"
-#include "Editors/ShaderEditor/ShaderEditor.h"
-#include "Editors/ShaderEditor/ShaderEditorModule.h"
+#include "Editors/MaterialEditor/ShaderEditor.h"
+#include "Editors/MaterialEditor/ShaderEditorModule.h"
 #include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Inputs/InputMgr.h"

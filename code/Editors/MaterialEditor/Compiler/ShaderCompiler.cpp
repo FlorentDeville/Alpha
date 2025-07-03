@@ -2,10 +2,10 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/ShaderEditor/Compiler/ShaderCompiler.h"
+#include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
 
-#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
-#include "Editors/ShaderEditor/Compiler/RootSignatureDescription.h"
+#include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
+#include "Editors/MaterialEditor/Compiler/RootSignatureDescription.h"
 #include "OsWin/Process.h"
 
 #include <assert.h>

@@ -2,7 +2,7 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/ShaderEditor/Compiler/MaterialParameters.h"
+#include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
 
 namespace Editors
 {

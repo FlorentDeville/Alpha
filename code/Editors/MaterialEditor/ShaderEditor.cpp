@@ -2,10 +2,10 @@
 /* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/ShaderEditor/ShaderEditor.h"
+#include "Editors/MaterialEditor/ShaderEditor.h"
 
-#include "Editors/ShaderEditor/ShaderEditorModule.h"
-#include "Editors/ShaderEditor/ShaderListModel.h"
+#include "Editors/MaterialEditor/ShaderEditorModule.h"
+#include "Editors/MaterialEditor/ShaderListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_MaterialParameterDescription.h"
