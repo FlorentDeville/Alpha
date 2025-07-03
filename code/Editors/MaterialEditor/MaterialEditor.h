@@ -29,19 +29,19 @@ namespace Editors
 	class PropertyGridWidget;
 	class ShaderListModel;
 
-	class ShaderEditorParameter
+	class MaterialEditorParameter
 	{
 	public:
 		Widgets::Widget* m_pParent;
 	};
 
-	class ShaderEditor : public Core::Singleton<ShaderEditor>
+	class MaterialEditor : public Core::Singleton<MaterialEditor>
 	{
 	public:
-		ShaderEditor();
-		~ShaderEditor();
+		MaterialEditor();
+		~MaterialEditor();
 
-		void CreateEditor(const ShaderEditorParameter& parameter);
+		void CreateEditor(const MaterialEditorParameter& parameter);
 
 		void Update();
 		void Render();

@@ -394,7 +394,7 @@ void Update()
 	std::chrono::milliseconds dtMs = std::chrono::duration_cast<std::chrono::milliseconds>(dt);
 
 	Editors::MeshEditor::Get().Update();
-	Editors::ShaderEditor::Get().Update();
+	Editors::MaterialEditor::Get().Update();
 	GameMgr::Get().Update();
 	Widgets::WidgetMgr::Get().Update(dtMs.count());
 }
@@ -415,7 +415,7 @@ void Render()
 
 	//render the level editor
 	Editors::MeshEditor::Get().Render();
-	Editors::ShaderEditor::Get().Render();
+	Editors::MaterialEditor::Get().Render();
 
 	widgetsModule.Render(); //render all the viewports
 
@@ -564,9 +564,9 @@ void CreateMainWindow(const Configuration& configuration)
 	meshEditorParameter.m_blender = configuration.m_blender;
 	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
 
-	Editors::ShaderEditorParameter shaderEditorParameter;
-	shaderEditorParameter.m_pParent = pMiddleTabContainer;
-	Editors::ShaderEditor::Get().CreateEditor(shaderEditorParameter);
+	Editors::MaterialEditorParameter materialEditorParameter;
+	materialEditorParameter.m_pParent = pMiddleTabContainer;
+	Editors::MaterialEditor::Get().CreateEditor(materialEditorParameter);
 
 #ifdef _DEBUG
 	{
@@ -689,8 +689,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::ShaderEditorModule& shaderEditorModule = Editors::ShaderEditorModule::InitSingleton();
 	shaderEditorModule.Init();
 
-	Editors::ShaderEditor& shaderEditor = Editors::ShaderEditor::InitSingleton();
-	shaderEditor.Init();
+	Editors::MaterialEditor& materialEditor = Editors::MaterialEditor::InitSingleton();
+	materialEditor.Init();
 
 	LoadContent(configuration);
 
@@ -715,8 +715,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	shaderEditorModule.Shutdown();
 	Editors::ShaderEditorModule::ReleaseSingleton();
 
-	shaderEditor.Shutdown();
-	Editors::ShaderEditor::ReleaseSingleton();
+	materialEditor.Shutdown();
+	Editors::MaterialEditor::ReleaseSingleton();
 	Editors::MeshEditor::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();

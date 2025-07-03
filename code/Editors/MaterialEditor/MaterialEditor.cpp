@@ -38,8 +38,8 @@
 
 namespace Editors
 {
-	ShaderEditor::ShaderEditor()
-		: Core::Singleton<ShaderEditor>()
+	MaterialEditor::MaterialEditor()
+		: Core::Singleton<MaterialEditor>()
 		, m_pShaderListLayout(nullptr)
 		, m_pLogText(nullptr)
 		, m_pPropertyGrid(nullptr)
@@ -48,12 +48,12 @@ namespace Editors
 		, m_pPropertyGridPopulator(new PropertyGridPopulator())
 	{}
 
-	ShaderEditor::~ShaderEditor()
+	MaterialEditor::~MaterialEditor()
 	{
 		delete m_pPropertyGridPopulator;
 	}
 
-	void ShaderEditor::CreateEditor(const ShaderEditorParameter& parameter)
+	void MaterialEditor::CreateEditor(const MaterialEditorParameter& parameter)
 	{
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -154,13 +154,13 @@ namespace Editors
 			});
 	}
 
-	void ShaderEditor::Update()
+	void MaterialEditor::Update()
 	{}
 
-	void ShaderEditor::Render()
+	void MaterialEditor::Render()
 	{}
 
-	void ShaderEditor::CreateMenu(Widgets::Widget* pParent)
+	void MaterialEditor::CreateMenu(Widgets::Widget* pParent)
 	{
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 		pParent->AddWidget(pMenuBar);
@@ -183,7 +183,7 @@ namespace Editors
 		}
 	}
 
-	void ShaderEditor::MenuFile_NewShader_OnClicked()
+	void MaterialEditor::MenuFile_NewShader_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
@@ -203,7 +203,7 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void ShaderEditor::MenuFile_Save_OnClicked()
+	void MaterialEditor::MenuFile_Save_OnClicked()
 	{
 		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
@@ -217,7 +217,7 @@ namespace Editors
 		m_pShaderListModel->ClearShaderModified(id);
 	}
 
-	void ShaderEditor::MenuFile_Delete_OnClicked()
+	void MaterialEditor::MenuFile_Delete_OnClicked()
 	{
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
@@ -228,7 +228,7 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	bool ShaderEditor::OnShaderEntryClicked(Systems::NewAssetId id)
+	bool MaterialEditor::OnShaderEntryClicked(Systems::NewAssetId id)
 	{
 		m_pPropertyGrid->ClearAllItems();
 
@@ -251,7 +251,7 @@ namespace Editors
 		return true;
 	}
 
-	bool ShaderEditor::OnCompileClicked()
+	bool MaterialEditor::OnCompileClicked()
 	{
 		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
@@ -270,12 +270,12 @@ namespace Editors
 		return true;
 	}
 
-	void ShaderEditor::PropertyGridPopulator_OnDataChanged()
+	void MaterialEditor::PropertyGridPopulator_OnDataChanged()
 	{
 		m_pShaderListModel->SetShaderModified(m_selectedMaterialId);
 	}
 
-	void ShaderEditor::DeleteSelectedShader()
+	void MaterialEditor::DeleteSelectedShader()
 	{
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
@@ -287,7 +287,7 @@ namespace Editors
 		m_pShaderListModel->RemoveRow(m_selectedMaterialId);
 	}
 
-	void ShaderEditor::CreateShadersList()
+	void MaterialEditor::CreateShadersList()
 	{
 		Widgets::TableView* pTableView = new Widgets::TableView();
 		pTableView->SetSizeStyle(Widgets::Widget::STRETCH);
