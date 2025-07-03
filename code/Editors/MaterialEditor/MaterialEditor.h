@@ -5,7 +5,10 @@
 #pragma once
 
 #include "Core/Singleton.h"
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
+
+#include <DirectXMath.h>
 
 #include <string>
 #include <vector>
@@ -57,6 +60,18 @@ namespace Editors
 
 		Systems::NewAssetId m_selectedMaterialId;
 
+		//camera
+		float m_cameraDistance;
+		float m_aspectRatio;
+		DirectX::XMVECTOR m_cameraTarget;
+		DirectX::XMVECTOR m_cameraEuler;
+
+		//viewport inputs (mouse and keyboard)
+		bool m_firstFrameMouseDown;
+		DirectX::XMUINT2 m_mousePreviousPos;
+
+		Systems::MeshAsset* m_pMesh; //mesh to render in the viewport
+
 		void CreateMenu(Widgets::Widget* pParent);
 
 		void MenuFile_NewShader_OnClicked();
@@ -71,5 +86,8 @@ namespace Editors
 		void DeleteSelectedShader();
 
 		void CreateShadersList();
+
+		void Viewport_OnRender();
+		void Viewport_OnUpdate(uint64_t dt);
 	};
 }

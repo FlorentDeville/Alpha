@@ -18,7 +18,7 @@ namespace Editors
 		LevelEditorViewportWidget(int width, int height);
 		~LevelEditorViewportWidget();
 
-		void Render() override;
+		void Render();
 		void Update(uint64_t dt) override;
 
 		void SetEnableViewportControl(bool enable);

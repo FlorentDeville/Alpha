@@ -28,9 +28,14 @@ namespace Widgets
 		: Widget()
 		, m_width(width)
 		, m_height(height)
+		, m_updateEnabled(false)
 	{
 		m_pRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
 		m_aspectRatio = m_width / static_cast<float>(m_height);
+
+		OnFocusGained([this](const Widgets::FocusEvent&) { m_updateEnabled = true; });
+		OnFocusLost([this](const Widgets::FocusEvent&) { m_updateEnabled = false; });
+		OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { SetFocus(); return true; });
 	}
 
 	Viewport_v2::~Viewport_v2()
@@ -38,12 +43,15 @@ namespace Widgets
 		delete m_pRenderTarget;
 	}
 
-	void Viewport_v2::Render()
-	{}
-
 	void Viewport_v2::ClearDepthBuffer()
 	{
 		m_pRenderTarget->ClearDepthBuffer();
+	}
+
+	void Viewport_v2::Update(uint64_t dt)
+	{
+		if(m_updateEnabled)
+			m_onUpdate(dt);
 	}
 
 	void Viewport_v2::Draw(const DirectX::XMFLOAT2& windowSize)
@@ -153,7 +161,7 @@ namespace Widgets
 	void Viewport_v2::Internal_Render()
 	{
 		m_pRenderTarget->BeginScene();
-		Render();
+		m_onRender();
 		m_pRenderTarget->EndScene();
 	}
 }

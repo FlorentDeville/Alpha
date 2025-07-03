@@ -12,13 +12,20 @@
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
+#include "Inputs/InputMgr.h"
+
 #include "OsWin/Process.h"
+
+#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/PerObjectCBuffer.cpp"
+#include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -48,7 +55,15 @@ namespace Editors
 		, m_pShaderListModel(nullptr)
 		, m_selectedMaterialId(Systems::NewAssetId::INVALID)
 		, m_pPropertyGridPopulator(new PropertyGridPopulator())
-	{}
+		, m_cameraDistance(10)
+		, m_aspectRatio(0.f)
+		, m_pMesh(nullptr)
+		, m_firstFrameMouseDown(true)
+		, m_mousePreviousPos()
+	{
+		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
+		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
+	}
 
 	MaterialEditor::~MaterialEditor()
 	{
@@ -99,11 +114,14 @@ namespace Editors
 
 		//add viewport
 		{
-			//create left viewport
-			Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(1080, 789);
+			const int WIDTH = 1080;
+			const int HEIGHT = 789;
+			m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
+
+			Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(WIDTH, HEIGHT);
 			pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-			//pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_enableViewportControl = true; });
-			//pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_enableViewportControl = false; });
+			pViewport->OnRender([this]() { Viewport_OnRender(); });
+			pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
 			pHSplit->AddTopPanel(pViewport);
 		}
 
@@ -170,6 +188,21 @@ namespace Editors
 			{
 				m_pShaderListModel->AddRow(pMetadata);
 			});
+
+
+		//find the cube to render in the viewport
+		Systems::AssetMetadata metadataCube;
+		Systems::AssetMgr::Get().ForEachMetadata([&metadataCube](const Systems::AssetMetadata& metadata)
+			{
+				if (metadata.GetAssetType() != CONSTSID("Mesh"))
+					return;
+
+				std::string meshName = "base_cube.fbx";
+				if (metadata.GetVirtualName().compare(metadata.GetVirtualName().size() - meshName.size(), meshName.size(), meshName) == 0)
+					metadataCube = metadata;
+			});
+
+		m_pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(metadataCube.GetAssetId());
 	}
 
 	void MaterialEditor::Update()
@@ -333,5 +366,120 @@ namespace Editors
 				m_selectedMaterialId = id;
 				OnShaderEntryClicked(id);
 			});
+	}
+
+	void MaterialEditor::Viewport_OnRender()
+	{
+		if (!m_pMesh)
+			return;
+
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		//world
+		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+
+		//view
+		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
+		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
+
+		//calculate the camera position
+		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
+		DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 0, m_cameraDistance, 1));
+		DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
+		DirectX::XMVECTOR cameraPosition = DirectX::XMVector3Transform(m_cameraTarget, txPos);
+
+
+		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
+		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
+
+		//projection
+		const float fov = 45.f;
+		float nearDistance = 0.1f;
+		float fovRad = DirectX::XMConvertToRadians(fov);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
+
+		//RENDER
+		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
+		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
+
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+
+		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
+		if (pMaterial && pMaterial->IsValidForRendering())
+		{
+			renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature());
+
+			if (pMaterial->HasPerObjectParameters())
+			{
+				Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
+				Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
+				int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
+				pCBufferPool->Copy(poolIndex, &perObjectData, sizeof(Rendering::PerObjectCBuffer));
+				renderer.BindCBuffer(pMaterial->GetPerObjectRootSignatureParameterIndex(), poolIndex);
+			}
+
+			Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = pMaterial->GetMaterialParameterDescription();
+			if (perMaterialParam.GetSize() > 0)
+			{
+				Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
+				int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
+
+				for (uint32_t ii = 0; ii < perMaterialParam.GetSize(); ++ii)
+				{
+					const Systems::MaterialParameterDescription& pParam = perMaterialParam[ii];
+
+					if (pParam.m_value.GetSize() == 0)
+						continue;
+
+					pCBufferPool->Copy(poolIndex, pParam.m_offset, pParam.m_value.GetData(), pParam.m_size);
+				}
+				renderer.BindCBuffer(pMaterial->GetPerMaterialRootSignatureParameterIndex(), poolIndex);
+			}
+
+			const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
+			renderer.RenderMesh(*pMesh);
+		}
+	}
+
+	void MaterialEditor::Viewport_OnUpdate(uint64_t dt)
+	{
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseLeftButtonDown())
+		{
+			DirectX::XMUINT2 mousePosition;
+			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+			if (m_firstFrameMouseDown)
+			{
+				m_mousePreviousPos = mousePosition;
+				m_firstFrameMouseDown = false;
+			}
+
+			DirectX::XMINT2 delta;
+			delta.x = m_mousePreviousPos.x - mousePosition.x;
+			delta.y = m_mousePreviousPos.y - mousePosition.y;
+
+			const float ROTATION_SPEED = 0.01f;
+			DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+
+			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+
+			m_mousePreviousPos = mousePosition;
+		}
+		else if (!m_firstFrameMouseDown)
+		{
+			m_firstFrameMouseDown = true;
+		}
+
+		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+		const float CAMERA_DISTANCE_SPEED = 0.05f;
+		const float MIN_DISTANCE = 2;
+		if (mouseWheelDistance != 0)
+			m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+
+		if (m_cameraDistance < MIN_DISTANCE)
+			m_cameraDistance = MIN_DISTANCE;
 	}
 }
