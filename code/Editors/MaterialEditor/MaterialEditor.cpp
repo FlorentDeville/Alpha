@@ -28,10 +28,12 @@
 #include "Widgets/MenuItem.h"
 #include "Widgets/Models/SelectionModel.h"
 #include "Widgets/Models/SelectionRow.h"
+#include "Widgets/SplitHorizontal.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
+#include "Widgets/Viewport_v2.h"
 #include "Widgets/Widgets/TableView.h"
 
 #include <filesystem>
@@ -60,7 +62,7 @@ namespace Editors
 		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(parameter.m_pParent);
 		if (pTabContainer)
 		{
-			pTabContainer->AddTab("Shader", pViewportTab);
+			pTabContainer->AddTab("Material", pViewportTab);
 		}
 		else
 		{
@@ -89,12 +91,28 @@ namespace Editors
 
 		CreateShadersList();
 
+		//create the horizontal split between the viewport and the property grid
+		Widgets::SplitHorizontal* pHSplit = new Widgets::SplitHorizontal();
+		pHSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pHSplit->SetTopPanelHeight(500);
+		pSplit->AddRightPanel(pHSplit);
+
+		//add viewport
+		{
+			//create left viewport
+			Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(1080, 789);
+			pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+			//pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_enableViewportControl = true; });
+			//pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_enableViewportControl = false; });
+			pHSplit->AddTopPanel(pViewport);
+		}
+
 		//right panel : add option layout
 		Widgets::Layout* pRightPanelLayout = new Widgets::Layout(0, 0, 0, 0);
 		pRightPanelLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pRightPanelLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pSplit->AddRightPanel(pRightPanelLayout);
-
+		pHSplit->AddBottomPanel(pRightPanelLayout);
+		
 		//horizontal layout for buttons
 		Widgets::Layout* pButtonLayout = new Widgets::Layout(0, 20, 0, 0);
 		pButtonLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
