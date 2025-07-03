@@ -66,6 +66,10 @@ namespace Editors
 		DirectX::XMVECTOR m_cameraTarget;
 		DirectX::XMVECTOR m_cameraEuler;
 
+		//viewport inputs (mouse and keyboard)
+		bool m_firstFrameMouseDown;
+		DirectX::XMUINT2 m_mousePreviousPos;
+
 		Systems::MeshAsset* m_pMesh; //mesh to render in the viewport
 
 		void CreateMenu(Widgets::Widget* pParent);
@@ -84,5 +88,6 @@ namespace Editors
 		void CreateShadersList();
 
 		void Viewport_OnRender();
+		void Viewport_OnUpdate(uint64_t dt);
 	};
 }
