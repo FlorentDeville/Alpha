@@ -152,7 +152,7 @@ namespace Editors
 
 		it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("CBufferLights");
 		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
-			pMaterial->SetPerFrameRootSignatureParameterIndex(it->second);
+			pMaterial->SetLightsRootSignatureParameterIndex(it->second);
 
 		MaterialParameters parameters;
 		res = compiler.GenerateMaterialParameters(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), parameters);
