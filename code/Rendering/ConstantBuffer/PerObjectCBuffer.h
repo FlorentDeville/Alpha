@@ -13,9 +13,9 @@ namespace Rendering
 	class PerObjectCBuffer
 	{
 	public:
-		PerObjectCBuffer(const DirectX::XMMATRIX& worldViewProj);
+		PerObjectCBuffer(const DirectX::XMMATRIX& world);
 
 	private:
-		DirectX::XMMATRIX m_worldViewProj;
+		DirectX::XMMATRIX m_world;
 	};
 }

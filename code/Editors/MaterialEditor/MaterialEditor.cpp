@@ -415,7 +415,7 @@ namespace Editors
 		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
 		if (pMaterial && pMaterial->IsValidForRendering())
 		{
-			Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
+			Rendering::PerObjectCBuffer perObjectData(world);
 			Rendering::PerFrameCBuffer perFrameData(view, projection);
 
 			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData);
