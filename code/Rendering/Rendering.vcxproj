@@ -16,6 +16,7 @@
     <ClInclude Include="CommandQueue.h" />
     <ClInclude Include="ConstantBuffer\ConstantBufferPool.h" />
     <ClInclude Include="ConstantBuffer\LinearConstantBufferPool.h" />
+    <ClInclude Include="ConstantBuffer\PerFrameCBuffer.h" />
     <ClInclude Include="ConstantBuffer\PerObjectCBuffer.h" />
     <ClInclude Include="DescriptorHeap.h" />
     <ClInclude Include="Font\Font.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="CommandQueue.cpp" />
     <ClCompile Include="ConstantBuffer\ConstantBufferPool.cpp" />
     <ClCompile Include="ConstantBuffer\LinearConstantBufferPool.cpp" />
+    <ClCompile Include="ConstantBuffer\PerFrameCBuffer.cpp" />
     <ClCompile Include="ConstantBuffer\PerObjectCBuffer.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
     <ClCompile Include="Font\Font.cpp" />
