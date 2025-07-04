@@ -377,7 +377,10 @@ namespace Editors
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
 				Rendering::PerObjectCBuffer perObjectData(world);
-				Rendering::PerFrameCBuffer perFrameData(view, projection);
+
+				DirectX::XMFLOAT3 cameraPosFloat3;
+				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 				
 				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
 				Rendering::LightsCBuffer lights(dirLight);

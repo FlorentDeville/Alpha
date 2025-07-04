@@ -6,8 +6,9 @@
 
 namespace Rendering
 {
-	PerFrameCBuffer::PerFrameCBuffer(const DirectX::XMMATRIX& view, DirectX::XMMATRIX& proj)
+	PerFrameCBuffer::PerFrameCBuffer(const DirectX::XMMATRIX& view, DirectX::XMMATRIX& proj, const DirectX::XMFLOAT3& cameraPos)
 		: m_viewMatrix(view)
 		, m_projMatrix(proj)
+		, m_cameraPosition(cameraPos)
 	{ }
 }

@@ -11,10 +11,11 @@ namespace Rendering
 	class PerFrameCBuffer
 	{
 	public:
-		PerFrameCBuffer(const DirectX::XMMATRIX& view, DirectX::XMMATRIX& proj);
+		PerFrameCBuffer(const DirectX::XMMATRIX& view, DirectX::XMMATRIX& proj, const DirectX::XMFLOAT3& cameraPos);
 
 	private:
 		DirectX::XMMATRIX m_viewMatrix;
 		DirectX::XMMATRIX m_projMatrix;
+		DirectX::XMFLOAT3 m_cameraPosition;
 	};
 }
