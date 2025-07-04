@@ -19,9 +19,11 @@ namespace Systems
 		, m_pPipelineState(nullptr)
 		, m_hasPerFrameParameters(false)
 		, m_hasPerObjectParameters(false)
+		, m_hasLightsParameters(false)
 		, m_perFrameCBufferRootSignatureIndex(0)
 		, m_perObjectCBufferRootSignatureIndex(0)
 		, m_perMaterialCBufferRootSignatureIndex(0)
+		, m_lightsCBufferRootSignatureIndex(0)
 	{ }
 
 	MaterialAsset_v1::~MaterialAsset_v1()
@@ -151,6 +153,11 @@ namespace Systems
 		return m_hasPerFrameParameters;
 	}
 
+	bool MaterialAsset_v1::HasLightsParameters() const
+	{
+		return m_hasLightsParameters;
+	}
+
 	void MaterialAsset_v1::SetPerFrameRootSignatureParameterIndex(uint32_t index)
 	{
 		m_perFrameCBufferRootSignatureIndex = index;
@@ -166,6 +173,11 @@ namespace Systems
 		m_perMaterialCBufferRootSignatureIndex = index;
 	}
 
+	void MaterialAsset_v1::SetLightsRootSignatureParameterIndex(uint32_t index)
+	{
+		m_lightsCBufferRootSignatureIndex = index;
+	}
+
 	uint32_t MaterialAsset_v1::GetPerFrameRootSignatureParameterIndex() const
 	{
 		return m_perFrameCBufferRootSignatureIndex;
@@ -179,5 +191,10 @@ namespace Systems
 	uint32_t MaterialAsset_v1::GetPerMaterialRootSignatureParameterIndex() const
 	{
 		return m_perMaterialCBufferRootSignatureIndex;
+	}
+
+	uint32_t MaterialAsset_v1::GetLightsRootSignatureParameterIndex() const
+	{
+		return m_lightsCBufferRootSignatureIndex;
 	}
 }

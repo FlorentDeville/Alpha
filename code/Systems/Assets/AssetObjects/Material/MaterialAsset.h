@@ -48,14 +48,17 @@ namespace Systems
 
 		bool HasPerObjectParameters() const;
 		bool HasPerFrameParameters() const;
+		bool HasLightsParameters() const;
 
 		void SetPerFrameRootSignatureParameterIndex(uint32_t index);
 		void SetPerObjectRootSignatureParameterIndex(uint32_t index);
 		void SetPerMaterialRootSignatureParameterIndex(uint32_t index);
+		void SetLightsRootSignatureParameterIndex(uint32_t index);
 
 		uint32_t GetPerFrameRootSignatureParameterIndex() const;
 		uint32_t GetPerObjectRootSignatureParameterIndex() const;
 		uint32_t GetPerMaterialRootSignatureParameterIndex() const;
+		uint32_t GetLightsRootSignatureParameterIndex() const;
 
 	private:
 		std::string m_sourceFilePS;
@@ -71,6 +74,9 @@ namespace Systems
 
 		bool m_hasPerFrameParameters;
 		uint32_t m_perFrameCBufferRootSignatureIndex;
+
+		bool m_hasLightsParameters;
+		int32_t m_lightsCBufferRootSignatureIndex;
 
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
 		uint32_t m_perMaterialCBufferRootSignatureIndex;
@@ -92,6 +98,8 @@ namespace Systems
 			ADD_FIELD_ATTR(m_perObjectCBufferRootSignatureIndex, DoNotEdit)
 			ADD_FIELD_ATTR(m_hasPerFrameParameters, DoNotEdit)
 			ADD_FIELD_ATTR(m_perFrameCBufferRootSignatureIndex, DoNotEdit)
+			ADD_FIELD_ATTR(m_hasLightsParameters, DoNotEdit)
+			ADD_FIELD_ATTR(m_lightsCBufferRootSignatureIndex, DoNotEdit)
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD_ATTR(m_perMaterialCBufferRootSignatureIndex, DoNotEdit)
 
