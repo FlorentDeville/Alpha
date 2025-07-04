@@ -52,6 +52,7 @@ namespace FbxImporter
 		const ofbx::Object* pRoot = pScene->getRoot();
 		bool res = Visit(pRoot);
 
+		pScene->destroy();
 		delete[] pFileContent;
 		if (!res || m_indices.GetSize() == 0)
 			return false;
