@@ -17,6 +17,7 @@
 #include "OsWin/Process.h"
 
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/PerFrameCBuffer.cpp"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.cpp"
 #include "Rendering/RenderModule.h"
 
@@ -415,7 +416,9 @@ namespace Editors
 		if (pMaterial && pMaterial->IsValidForRendering())
 		{
 			Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
-			Systems::MaterialRendering::Bind(*pMaterial, perObjectData);
+			Rendering::PerFrameCBuffer perFrameData(view, projection);
+
+			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData);
 
 			const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
 			renderer.RenderMesh(*pMesh);

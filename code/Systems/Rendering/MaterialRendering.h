@@ -9,6 +9,7 @@
 namespace Rendering
 {
 	class PerObjectCBuffer;
+	class PerFrameCBuffer;
 }
 
 namespace Systems
@@ -16,6 +17,7 @@ namespace Systems
 	class MaterialRendering
 	{
 	public:
-		static void Bind(const MaterialAsset& material, const Rendering::PerObjectCBuffer& perObjectCBuffer);
+		static void Bind(const MaterialAsset& material, const Rendering::PerObjectCBuffer& perObjectCBuffer,
+			const Rendering::PerFrameCBuffer& perFrameCBuffer);
 	};
 }

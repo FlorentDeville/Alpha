@@ -5,12 +5,14 @@
 #include "Systems/Rendering/MaterialRendering.h"
 
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/RenderModule.h"
 
 namespace Systems
 {
-	void MaterialRendering::Bind(const MaterialAsset& material, const Rendering::PerObjectCBuffer& perObjectCBuffer)
+	void MaterialRendering::Bind(const MaterialAsset& material, const Rendering::PerObjectCBuffer& perObjectCBuffer, 
+		const Rendering::PerFrameCBuffer& perFrameCBuffer)
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -21,6 +23,14 @@ namespace Systems
 			Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 			int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
 			pCBufferPool->Copy(poolIndex, &perObjectCBuffer, sizeof(Rendering::PerObjectCBuffer));
+			renderer.BindCBuffer(material.GetPerObjectRootSignatureParameterIndex(), poolIndex);
+		}
+
+		if (material.HasPerFrameParameters())
+		{
+			Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
+			int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
+			pCBufferPool->Copy(poolIndex, &perFrameCBuffer, sizeof(Rendering::PerFrameCBuffer));
 			renderer.BindCBuffer(material.GetPerObjectRootSignatureParameterIndex(), poolIndex);
 		}
 
