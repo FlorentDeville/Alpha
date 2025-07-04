@@ -401,10 +401,10 @@ namespace Editors
 					}
 					renderer.BindCBuffer(pMaterial->GetPerMaterialRootSignatureParameterIndex(), poolIndex);
 				}
-			}
 
-			const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
-			renderer.RenderMesh(*pMesh);
+				const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
+				renderer.RenderMesh(*pMesh);
+			}
 		}
 
 		m_pRenderTarget->EndScene();
