@@ -16,9 +16,10 @@
 
 #include "OsWin/Process.h"
 
+#include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
-#include "Rendering/ConstantBuffer/PerFrameCBuffer.cpp"
-#include "Rendering/ConstantBuffer/PerObjectCBuffer.cpp"
+#include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
+#include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
@@ -418,7 +419,10 @@ namespace Editors
 			Rendering::PerObjectCBuffer perObjectData(world);
 			Rendering::PerFrameCBuffer perFrameData(view, projection);
 
-			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData);
+			Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+			Rendering::LightsCBuffer lights(dirLight);
+
+			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
 			const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
 			renderer.RenderMesh(*pMesh);

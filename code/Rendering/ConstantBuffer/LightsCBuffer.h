@@ -35,7 +35,7 @@ namespace Rendering
 
 	// This is the structure representing the lights const buffer. It needs to match the structure passed to shaders
 	// and defined in includes\CBufferLights.hlsl.
-	struct LightsCBuffer
+	class LightsCBuffer
 	{
 	public:
 		LightsCBuffer(const Light& light);
