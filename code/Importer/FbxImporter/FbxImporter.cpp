@@ -57,7 +57,7 @@ namespace FbxImporter
 			return false;
 			
 
-		mesh.Init(fbxFilename, std::move(m_position), std::move(m_uv), std::move(m_color), std::move(m_indices));
+		mesh.Init(fbxFilename, std::move(m_position), std::move(m_uv), std::move(m_color), std::move(m_normal), std::move(m_indices));
 
 		return res;
 	}
@@ -100,6 +100,7 @@ namespace FbxImporter
 		ofbx::Vec3Attributes positions = data.getPositions();
 		ofbx::Vec2Attributes uvs = data.getUVs(0);
 		ofbx::Vec4Attributes colors = data.getColors();
+		ofbx::Vec3Attributes normals = data.getNormals();
 
 		int partitionCount = data.getPartitionCount();
 
@@ -118,11 +119,12 @@ namespace FbxImporter
 				for (int triangleIndex = 0; triangleIndex < triangleCount; ++triangleIndex)
 				{
 					//first vertex of the triangle is always the same
-					uint16_t internalVertexIndex = static_cast<uint16_t>(m_position.GetSize());
+					uint16_t internalVertexIndex = static_cast<uint16_t>(m_position.GetSize()) / 3;
 
 					{
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[vertexStart]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[vertexStart]];
+						ofbx::Vec3 normal = normals.values[normals.indices[vertexStart]];
 						//ofbx::Vec4 color = colors.values[colors.indices[vertexStart]];
 
 						
@@ -143,12 +145,17 @@ namespace FbxImporter
 
 						m_uv.PushBack(uv.x);
 						m_uv.PushBack(uv.y);
+
+						m_normal.PushBack(normal.x);
+						m_normal.PushBack(normal.y);
+						m_normal.PushBack(normal.z);
 					}
 
 					{
 						int secondVertexIndex = vertexStart + triangleIndex + 1;
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[secondVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[secondVertexIndex]];
+						ofbx::Vec3 normal = normals.values[normals.indices[secondVertexIndex]];
 						//ofbx::Vec4 color = colors.values[colors.indices[secondVertexIndex]];
 
 						size_t internalVertexIndex = m_position.GetSize();
@@ -170,12 +177,17 @@ namespace FbxImporter
 
 						m_uv.PushBack(uv.x);
 						m_uv.PushBack(uv.y);
+
+						m_normal.PushBack(normal.x);
+						m_normal.PushBack(normal.y);
+						m_normal.PushBack(normal.z);
 					}
 
 					{
 						int lastVertexIndex = vertexStart + triangleIndex + 2;
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[lastVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[lastVertexIndex]];
+						ofbx::Vec3 normal = normals.values[normals.indices[lastVertexIndex]];
 						//ofbx::Vec4 color = colors.values[colors.indices[lastVertexIndex]];
 
 						size_t internalVertexIndex = m_position.GetSize();
@@ -197,6 +209,10 @@ namespace FbxImporter
 
 						m_uv.PushBack(uv.x);
 						m_uv.PushBack(uv.y);
+
+						m_normal.PushBack(normal.x);
+						m_normal.PushBack(normal.y);
+						m_normal.PushBack(normal.z);
 					}
 
 					m_indices.PushBack(internalVertexIndex);

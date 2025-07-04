@@ -34,6 +34,7 @@ namespace Rendering
 		DirectX::XMFLOAT3 Position;
 		DirectX::XMFLOAT3 Color;
 		DirectX::XMFLOAT2 Uv;
+		DirectX::XMFLOAT3 Normal;
 	};
 
 	struct VertexText
