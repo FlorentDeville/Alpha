@@ -31,7 +31,7 @@ namespace Systems
 			Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 			int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
 			pCBufferPool->Copy(poolIndex, &perFrameCBuffer, sizeof(Rendering::PerFrameCBuffer));
-			renderer.BindCBuffer(material.GetPerObjectRootSignatureParameterIndex(), poolIndex);
+			renderer.BindCBuffer(material.GetPerFrameRootSignatureParameterIndex(), poolIndex);
 		}
 
 		const Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = material.GetMaterialParameterDescription();
