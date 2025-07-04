@@ -22,10 +22,11 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/MeshAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
-#include "Systems/Assets/AssetObjects/MeshAsset.h"
+#include "Systems/Rendering/MaterialRendering.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -413,34 +414,8 @@ namespace Editors
 		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
 		if (pMaterial && pMaterial->IsValidForRendering())
 		{
-			renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature());
-
-			if (pMaterial->HasPerObjectParameters())
-			{
-				Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
-				Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
-				int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-				pCBufferPool->Copy(poolIndex, &perObjectData, sizeof(Rendering::PerObjectCBuffer));
-				renderer.BindCBuffer(pMaterial->GetPerObjectRootSignatureParameterIndex(), poolIndex);
-			}
-
-			Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = pMaterial->GetMaterialParameterDescription();
-			if (perMaterialParam.GetSize() > 0)
-			{
-				Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
-				int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-
-				for (uint32_t ii = 0; ii < perMaterialParam.GetSize(); ++ii)
-				{
-					const Systems::MaterialParameterDescription& pParam = perMaterialParam[ii];
-
-					if (pParam.m_value.GetSize() == 0)
-						continue;
-
-					pCBufferPool->Copy(poolIndex, pParam.m_offset, pParam.m_value.GetData(), pParam.m_size);
-				}
-				renderer.BindCBuffer(pMaterial->GetPerMaterialRootSignatureParameterIndex(), poolIndex);
-			}
+			Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
+			Systems::MaterialRendering::Bind(*pMaterial, perObjectData);
 
 			const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
 			renderer.RenderMesh(*pMesh);
