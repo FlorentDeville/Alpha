@@ -36,6 +36,7 @@ namespace Systems
 		Core::Array<char>& GetRsBlob();
 
 		Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription();
+		const Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription() const;
 
 		void PostLoad() override;
 

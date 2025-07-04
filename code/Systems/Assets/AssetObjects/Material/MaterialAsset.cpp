@@ -74,6 +74,11 @@ namespace Systems
 		return m_perMaterialParameters;
 	}
 
+	const Core::Array<MaterialParameterDescription>& MaterialAsset_v1::GetMaterialParameterDescription() const
+	{
+		return m_perMaterialParameters;
+	}
+
 	void MaterialAsset_v1::PostLoad()
 	{
 		UpdateRenderingObjects();
