@@ -150,6 +150,10 @@ namespace Editors
 		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
 			pMaterial->SetPerFrameRootSignatureParameterIndex(it->second);
 
+		it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("CBufferLights");
+		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
+			pMaterial->SetPerFrameRootSignatureParameterIndex(it->second);
+
 		MaterialParameters parameters;
 		res = compiler.GenerateMaterialParameters(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), parameters);
 		if (!res)
@@ -157,6 +161,7 @@ namespace Editors
 
 		pMaterial->SetHasPerFrameParameters(parameters.m_hasPerFrameParameters);
 		pMaterial->SetHasPerObjectParameters(parameters.m_hasPerObjectParameters);
+		pMaterial->SetHasLightsParameters(parameters.m_hasLightsCBufferParameters);
 
 		Core::Array<Systems::MaterialParameterDescription>& existingMatParamArray = pMaterial->GetMaterialParameterDescription();
 
