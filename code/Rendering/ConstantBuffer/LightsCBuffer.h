@@ -28,9 +28,9 @@ namespace Rendering
 		DirectX::XMFLOAT3 m_position;
 		char m_padding0[4];
 		DirectX::XMFLOAT3 m_direction;
-		char m_padding1[4];
 		float m_coneAngle;
 		LightType m_type;
+		char m_padding1[12];
 	};
 
 	// This is the structure representing the lights const buffer. It needs to match the structure passed to shaders
