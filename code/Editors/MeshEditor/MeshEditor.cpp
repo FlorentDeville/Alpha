@@ -418,7 +418,17 @@ namespace Editors
 	void MeshEditor::LoadMesh(MeshEntry& entry)
 	{
 		Systems::ContainerId cid = entry.m_id.GetContainerId();
-		Systems::Container* pContainer = Systems::ContainerMgr::Get().LoadContainer(cid);
+
+		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+
+
+		Systems::Container* pContainer = containerMgr.GetContainer(cid);
+		if(!pContainer)
+			pContainer = containerMgr.LoadContainer(cid);
+
+		if (!pContainer)
+			return;
+
 		Systems::AssetObject* pAsset = pContainer->GetAsset(entry.m_id.GetObjectId());
 
 		entry.m_mesh = static_cast<Systems::MeshAsset*>(pAsset);
