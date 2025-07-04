@@ -30,6 +30,7 @@ namespace FbxImporter
 		Core::Array<float> m_position;
 		Core::Array<float> m_uv;
 		Core::Array<float> m_color;
+		Core::Array<float> m_normal;
 
 		Core::Array<uint16_t> m_indices;
 	};
