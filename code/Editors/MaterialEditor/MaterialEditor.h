@@ -46,9 +46,6 @@ namespace Editors
 
 		void CreateEditor(const MaterialEditorParameter& parameter);
 
-		void Update();
-		void Render();
-
 	private:
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;

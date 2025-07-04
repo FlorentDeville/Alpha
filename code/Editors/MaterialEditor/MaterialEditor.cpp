@@ -208,12 +208,6 @@ namespace Editors
 		m_pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(metadataCube.GetAssetId());
 	}
 
-	void MaterialEditor::Update()
-	{}
-
-	void MaterialEditor::Render()
-	{}
-
 	void MaterialEditor::CreateMenu(Widgets::Widget* pParent)
 	{
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
