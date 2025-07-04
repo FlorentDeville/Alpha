@@ -143,6 +143,11 @@ namespace Systems
 		m_hasPerFrameParameters = enable;
 	}
 
+	void MaterialAsset_v1::SetHasLightsParameters(bool enable)
+	{
+		m_hasLightsParameters = enable;
+	}
+
 	bool MaterialAsset_v1::HasPerObjectParameters() const
 	{
 		return m_hasPerObjectParameters;

@@ -45,6 +45,7 @@ namespace Systems
 
 		void SetHasPerObjectParameters(bool enable);
 		void SetHasPerFrameParameters(bool enable);
+		void SetHasLightsParameters(bool enable);
 
 		bool HasPerObjectParameters() const;
 		bool HasPerFrameParameters() const;
