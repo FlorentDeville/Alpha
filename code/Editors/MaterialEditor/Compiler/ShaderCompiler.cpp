@@ -187,6 +187,12 @@ namespace Editors
 				parameters.m_hasPerFrameParameters = true;
 				continue;
 			}
+			
+			if (strcmp(bufferDesc.Name, "CBufferLights") == 0)
+			{
+				parameters.m_hasLightsCBufferParameters = true;
+				continue;
+			}
 
 			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && !parameters.m_hasPerMaterialParameters)
 			{

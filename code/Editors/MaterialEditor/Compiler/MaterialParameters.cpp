@@ -10,6 +10,7 @@ namespace Editors
 		: m_hasPerFrameParameters(false)
 		, m_hasPerObjectParameters(false)
 		, m_hasPerMaterialParameters(false)
+		, m_hasLightsCBufferParameters(false)
 		, m_perMaterialParameters()
 	{ }
 }

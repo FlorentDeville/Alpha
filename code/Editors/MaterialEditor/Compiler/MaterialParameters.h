@@ -29,6 +29,7 @@ namespace Editors
 		bool m_hasPerObjectParameters;
 		bool m_hasPerFrameParameters;
 		bool m_hasPerMaterialParameters;
+		bool m_hasLightsCBufferParameters;
 
 		std::vector<MaterialParameter> m_perMaterialParameters;
 	};
