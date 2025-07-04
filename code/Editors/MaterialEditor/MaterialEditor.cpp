@@ -200,7 +200,7 @@ namespace Editors
 				if (metadata.GetAssetType() != CONSTSID("Mesh"))
 					return;
 
-				std::string meshName = "base_cube.fbx";
+				std::string meshName = "base_sphere.fbx";
 				if (metadata.GetVirtualName().compare(metadata.GetVirtualName().size() - meshName.size(), meshName.size(), meshName) == 0)
 					metadataCube = metadata;
 			});
