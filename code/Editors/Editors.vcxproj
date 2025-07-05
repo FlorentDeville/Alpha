@@ -33,7 +33,7 @@
     <ClInclude Include="MaterialEditor\Compiler\RootSignatureDescription.h" />
     <ClInclude Include="MaterialEditor\Compiler\ShaderCompiler.h" />
     <ClInclude Include="MaterialEditor\MaterialEditor.h" />
-    <ClInclude Include="MaterialEditor\ShaderEditorModule.h" />
+    <ClInclude Include="MaterialEditor\MaterialEditorModule.h" />
     <ClInclude Include="MaterialEditor\ShaderListModel.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
@@ -76,7 +76,7 @@
     <ClCompile Include="MaterialEditor\Compiler\MaterialParameters.cpp" />
     <ClCompile Include="MaterialEditor\Compiler\ShaderCompiler.cpp" />
     <ClCompile Include="MaterialEditor\MaterialEditor.cpp" />
-    <ClCompile Include="MaterialEditor\ShaderEditorModule.cpp" />
+    <ClCompile Include="MaterialEditor\MaterialEditorModule.cpp" />
     <ClCompile Include="MaterialEditor\ShaderListModel.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
     <ClCompile Include="Widgets\Component\ComponentModel.cpp" />

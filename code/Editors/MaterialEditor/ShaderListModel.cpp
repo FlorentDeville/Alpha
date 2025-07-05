@@ -4,7 +4,7 @@
 
 #include "Editors/MaterialEditor/ShaderListModel.h"
 
-#include "Editors/MaterialEditor/ShaderEditorModule.h"
+#include "Editors/MaterialEditor/MaterialEditorModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
 

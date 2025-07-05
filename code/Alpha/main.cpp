@@ -20,7 +20,7 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
-#include "Editors/MaterialEditor/ShaderEditorModule.h"
+#include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Inputs/InputMgr.h"

@@ -4,7 +4,7 @@
 
 #include "Editors/MaterialEditor/MaterialEditor.h"
 
-#include "Editors/MaterialEditor/ShaderEditorModule.h"
+#include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/MaterialEditor/ShaderListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"

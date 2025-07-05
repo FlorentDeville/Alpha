@@ -105,7 +105,7 @@
     <ClInclude Include="Widgets\Dialog\AssetDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialEditor\ShaderEditorModule.h">
+    <ClInclude Include="MaterialEditor\MaterialEditorModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h">
@@ -230,7 +230,7 @@
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialEditor\ShaderEditorModule.cpp">
+    <ClCompile Include="MaterialEditor\MaterialEditorModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp">
