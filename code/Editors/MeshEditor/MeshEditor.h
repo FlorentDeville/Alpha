@@ -22,11 +22,6 @@
 #include <vector>
 #include <string>
 
-namespace Rendering
-{
-	class RenderTarget;
-}
-
 namespace Widgets
 {
 	class Button;
@@ -74,9 +69,6 @@ namespace Editors
 
 		void CreateEditor(const MeshEditorParameter& parameter);
 
-		void Update();
-		void Render();
-
 	private:
 		//camera position
 		float m_cameraDistance;
@@ -84,8 +76,6 @@ namespace Editors
 		DirectX::XMVECTOR m_cameraTarget;
 		DirectX::XMVECTOR m_cameraEuler;
 		
-		Rendering::RenderTarget* m_pRenderTarget;
-
 		std::vector<MeshEntry> m_allMeshes;
 		std::vector<MaterialEntry> m_allMaterials;
 
@@ -95,7 +85,6 @@ namespace Editors
 
 		Rendering::TextureId m_importIconTextureId;
 
-		bool m_enableViewportControl;
 		DirectX::XMUINT2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
 
@@ -114,5 +103,8 @@ namespace Editors
 		bool OnMaterialClicked(int entryIndex);
 
 		bool OnSaveSelectedMeshClicked();
+
+		void Viewport_OnUpdate();
+		void Viewport_OnRender();
 	};
 }

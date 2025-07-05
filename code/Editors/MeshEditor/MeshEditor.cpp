@@ -20,7 +20,6 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/TextureMgr.h"
@@ -50,7 +49,7 @@
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
-#include "Widgets/Viewport.h"
+#include "Widgets/Viewport_v2.h"
 
 namespace Editors
 {
@@ -90,12 +89,10 @@ namespace Editors
 
 	MeshEditor::MeshEditor()
 		: Core::Singleton<MeshEditor>()
-		, m_pRenderTarget(nullptr)
 		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
 		, m_materialId()
 		, m_aspectRatio(0.f)
-		, m_enableViewportControl(false)
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos(0, 0)
 		, m_allEntryButton()
@@ -107,9 +104,7 @@ namespace Editors
 	}
 
 	MeshEditor::~MeshEditor()
-	{
-		delete m_pRenderTarget;
-	}
+	{ }
 
 	void MeshEditor::CreateEditor(const MeshEditorParameter& parameter)
 	{
@@ -126,12 +121,6 @@ namespace Editors
 		uint32_t dataSize;
 		Os::Resource::GetResource(sysId, type, &pData, dataSize);
 		pImportIconTexture->Init(pData, dataSize);
-
-		//create the render target
-		const int width = 1280;
-		const int height = 720;
-		m_aspectRatio = width / static_cast<float>(height);
-		m_pRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
 
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
@@ -174,11 +163,13 @@ namespace Editors
 		pInternalLayout->AddWidget(pSplit);
 
 		//create left viewport
-		Widgets::Viewport* pViewport = new Widgets::Viewport();
+		const int VIEWPORT_WIDTH = 1280;
+		const int VIEWPORT_HEIGHT = 720;
+		m_aspectRatio = VIEWPORT_WIDTH / static_cast<float>(VIEWPORT_HEIGHT);
+		Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pViewport->OnGetRenderTargetTexture([this]() -> Rendering::TextureId { return Rendering::RenderModule::Get().GetRenderTargetTextureId(m_pRenderTarget); });
-		pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_enableViewportControl = true; });
-		pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_enableViewportControl = false; });
+		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
+		pViewport->OnRender([this]() { Viewport_OnRender(); });
 		pSplit->AddRightPanel(pViewport);
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials
@@ -292,109 +283,6 @@ namespace Editors
 			m_materialId = m_allMaterials.front().m_Id;
 	}
 
-	void MeshEditor::Update()
-	{
-		if (m_enableViewportControl)
-		{
-			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
-			if (inputs.IsMouseLeftButtonDown())
-			{
-				DirectX::XMUINT2 mousePosition;
-				inputs.GetMousePosition(mousePosition.x, mousePosition.y);
-				if (m_firstFrameMouseDown)
-				{
-					m_mousePreviousPos = mousePosition;
-					m_firstFrameMouseDown = false;
-				}
-
-				DirectX::XMINT2 delta;
-				delta.x = m_mousePreviousPos.x - mousePosition.x;
-				delta.y = m_mousePreviousPos.y - mousePosition.y;
-
-				const float ROTATION_SPEED = 0.01f;
-				DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
-
-				m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
-
-				m_mousePreviousPos = mousePosition;
-			}
-			else if (!m_firstFrameMouseDown)
-			{
-				m_firstFrameMouseDown = true;
-			}
-
-			int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
-			const float CAMERA_DISTANCE_SPEED = 0.05f;
-			const float MIN_DISTANCE = 2;
-			if (mouseWheelDistance != 0)
-				m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
-
-			if (m_cameraDistance < MIN_DISTANCE)
-				m_cameraDistance = MIN_DISTANCE;
-		}
-	}
-
-	void MeshEditor::Render()
-	{
-		m_pRenderTarget->BeginScene();
-
-		//world
-		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
-
-		//view
-		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
-
-		//calculate the camera position
-		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
-		DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 0, m_cameraDistance, 1));
-		DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVector3Transform(m_cameraTarget, txPos);
-		
-
-		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
-		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
-
-		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
-
-		//projection
-		const float fov = 45.f;
-		float nearDistance = 0.1f;
-		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
-
-		//RENDER
-		if (m_selectedMesh != -1)
-		{
-			const MeshEntry& entry = m_allMeshes[m_selectedMesh];
-
-			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
-			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
-
-			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
-
-			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
-			if (pMaterial && pMaterial->IsValidForRendering())
-			{
-				Rendering::PerObjectCBuffer perObjectData(world);
-
-				DirectX::XMFLOAT3 cameraPosFloat3;
-				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
-				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
-				
-				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
-				Rendering::LightsCBuffer lights(dirLight);
-
-				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
-
-				const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
-				renderer.RenderMesh(*pMesh);
-			}
-		}
-
-		m_pRenderTarget->EndScene();
-	}
-
 	void MeshEditor::ShowMesh(int entryIndex)
 	{
 		m_selectedMesh = entryIndex;
@@ -482,5 +370,101 @@ namespace Editors
 		Systems::ContainerMgr::Get().SaveContainer(entry.m_id.GetContainerId());
 
 		return true;
+	}
+
+	void MeshEditor::Viewport_OnUpdate()
+	{
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		if (inputs.IsMouseLeftButtonDown())
+		{
+			DirectX::XMUINT2 mousePosition;
+			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+			if (m_firstFrameMouseDown)
+			{
+				m_mousePreviousPos = mousePosition;
+				m_firstFrameMouseDown = false;
+			}
+
+			DirectX::XMINT2 delta;
+			delta.x = m_mousePreviousPos.x - mousePosition.x;
+			delta.y = m_mousePreviousPos.y - mousePosition.y;
+
+			const float ROTATION_SPEED = 0.01f;
+			DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+
+			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+
+			m_mousePreviousPos = mousePosition;
+		}
+		else if (!m_firstFrameMouseDown)
+		{
+			m_firstFrameMouseDown = true;
+		}
+
+		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+		const float CAMERA_DISTANCE_SPEED = 0.05f;
+		const float MIN_DISTANCE = 2;
+		if (mouseWheelDistance != 0)
+			m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+
+		if (m_cameraDistance < MIN_DISTANCE)
+			m_cameraDistance = MIN_DISTANCE;
+	}
+
+	void MeshEditor::Viewport_OnRender()
+	{
+		//world
+		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+
+		//view
+		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
+		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
+
+		//calculate the camera position
+		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
+		DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 0, m_cameraDistance, 1));
+		DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
+		DirectX::XMVECTOR cameraPosition = DirectX::XMVector3Transform(m_cameraTarget, txPos);
+
+
+		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
+		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
+
+		//projection
+		const float fov = 45.f;
+		float nearDistance = 0.1f;
+		float fovRad = DirectX::XMConvertToRadians(fov);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
+
+		//RENDER
+		if (m_selectedMesh != -1)
+		{
+			const MeshEntry& entry = m_allMeshes[m_selectedMesh];
+
+			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
+			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
+
+			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+
+			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
+			if (pMaterial && pMaterial->IsValidForRendering())
+			{
+				Rendering::PerObjectCBuffer perObjectData(world);
+
+				DirectX::XMFLOAT3 cameraPosFloat3;
+				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+
+				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+				Rendering::LightsCBuffer lights(dirLight);
+
+				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
+
+				const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
+				renderer.RenderMesh(*pMesh);
+			}
+		}
 	}
 }
