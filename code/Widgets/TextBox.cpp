@@ -113,7 +113,10 @@ namespace Widgets
 			const int textYOffset = 0;
 			DirectX::XMFLOAT3 uiPos((float)m_absPos.x + textXOffset, (float)m_absPos.y + textYOffset, (float)m_absPos.z - 1);
 			DirectX::XMUINT4 localScissor(m_absPos.x + textXOffset, m_absPos.y, m_size.x - (2 * textXOffset), m_size.y);
-			Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+
+			int32_t bottom = localScissor.y + localScissor.w;
+			if(bottom <= scissor.bottom)
+				Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 		}
 
 		Widgets::Widget::Draw(windowSize, scissor);	

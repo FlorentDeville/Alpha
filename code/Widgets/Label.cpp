@@ -59,12 +59,17 @@ namespace Widgets
 		localScissorRect.top = m_absPos.y;
 		localScissorRect.bottom = m_absPos.y + m_size.y;
 
+		//Discard the text if it goes out of the scissor vertically. I still send the
+		//render request if it goes out horizontally because the rendering will only discard the
+		//characters outside.
+		if (localScissorRect.bottom > scissor.bottom)
+			return;
+
 		//intersect the scissor with the box of the widget
 		if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
 		if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
 		if (localScissorRect.right > scissor.right) localScissorRect.right = scissor.right;
-		if (localScissorRect.bottom > scissor.bottom) localScissorRect.bottom = scissor.bottom;
-		
+
 		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
 			return;
 
