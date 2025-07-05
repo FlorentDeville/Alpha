@@ -4,6 +4,7 @@
 
 #include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
 
+#include "Core/Log/LogModule.h"
 #include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
 #include "Editors/MaterialEditor/Compiler/RootSignatureDescription.h"
 #include "OsWin/Process.h"
@@ -235,20 +236,20 @@ namespace Editors
 		cmdline += " /nologo";
 		cmdline += " \"" + input + "\"";
 
-		//m_pLogText->AppendText(cmdline + "\n");
+		Core::LogModule& log = Core::LogModule::Get();
 		{
 			const int BUFFER_LENGTH = 1024;
 			char buffer[BUFFER_LENGTH] = { '\0' };
 			snprintf(buffer, BUFFER_LENGTH, "%s\n", cmdline.c_str());
+			log.LogInfo(cmdline);
 			OutputDebugString(buffer);
 		}
 
 		Process shaderCompileProcess(cmdline);
-		//shaderCompileProcess.OnStdOut([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
-		//shaderCompileProcess.OnStdErr([this](const std::string& msg) -> bool { m_pLogText->AppendText(msg); return true; });
 
 		shaderCompileProcess.OnStdOut([this](const std::string& msg) -> bool 
 			{ 
+				Core::LogModule::Get().LogInfo(msg);
 				const int BUFFER_LENGTH = 1024;
 				char buffer[BUFFER_LENGTH] = { '\0' };
 				snprintf(buffer, BUFFER_LENGTH, "%s\n", msg.c_str());
@@ -259,6 +260,7 @@ namespace Editors
 		bool error = false;
 		shaderCompileProcess.OnStdErr([this, &error](const std::string& msg) -> bool 
 			{ 
+				Core::LogModule::Get().LogError(msg);
 				const int BUFFER_LENGTH = 1024;
 				char buffer[BUFFER_LENGTH] = { '\0' };
 				snprintf(buffer, BUFFER_LENGTH, "%s\n", msg.c_str());
@@ -270,11 +272,18 @@ namespace Editors
 		bool started = shaderCompileProcess.Run();
 		if (!started)
 		{
+			log.LogError("Failed to start process");
 			OutputDebugString("Failed to start process");
 			return false;
 		}
 
 		shaderCompileProcess.Wait();
+
+		if (error)
+			log.LogError("Shader compilation failed.");
+		else
+			log.LogInfo("Shader compiled with success.");
+
 		return !error;
 	}
 
