@@ -335,9 +335,14 @@ namespace Editors
 
 		std::vector<D3D12_ROOT_PARAMETER> rootParameters;
 		rootParameters.reserve(rootParametersDescription.size());
+		rs.m_parameters.reserve(rootParametersDescription.size());
 		for (const RootParameterDescription& desc : rootParametersDescription)
 		{
-			rs.m_cBufferRootSignatureIndex[desc.name] = static_cast<int>(rootParameters.size());
+			RootSigParameterIndex paramIndex;
+			paramIndex.m_cbufferName = desc.name;
+			paramIndex.m_rootSigParamIndex = static_cast<int>(rootParameters.size());
+			rs.m_parameters.push_back(paramIndex);
+
 			rootParameters.push_back(desc.m_dx12RootParameter);
 		}
 

@@ -11,12 +11,18 @@
 
 namespace Editors
 {
+	struct RootSigParameterIndex
+	{
+		std::string m_cbufferName;
+		int m_rootSigParamIndex;
+	};
+
 	class RootSignatureDescription
 	{
 	public:
 		Core::Array<char>* m_pRootSignatureBlob;
 
-		//Map between a cbuffer name and it's index in the root signature.
-		std::map<std::string, int> m_cBufferRootSignatureIndex;
+		//List of cbuffer name and its index in the root signature.
+		std::vector<RootSigParameterIndex> m_parameters;
 	};
 }

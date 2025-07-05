@@ -17,13 +17,6 @@ namespace Systems
 		, m_pPs(nullptr)
 		, m_pRs(nullptr)
 		, m_pPipelineState(nullptr)
-		, m_hasPerFrameParameters(false)
-		, m_hasPerObjectParameters(false)
-		, m_hasLightsParameters(false)
-		, m_perFrameCBufferRootSignatureIndex(0)
-		, m_perObjectCBufferRootSignatureIndex(0)
-		, m_perMaterialCBufferRootSignatureIndex(0)
-		, m_lightsCBufferRootSignatureIndex(0)
 	{ }
 
 	MaterialAsset_v1::~MaterialAsset_v1()
@@ -77,6 +70,16 @@ namespace Systems
 	const Core::Array<MaterialParameterDescription>& MaterialAsset_v1::GetMaterialParameterDescription() const
 	{
 		return m_perMaterialParameters;
+	}
+
+	Core::Array<MaterialCBufferBindingInfo>& MaterialAsset_v1::GetBindingInfoArray()
+	{
+		return m_bindingInfoArray;
+	}
+
+	const Core::Array<MaterialCBufferBindingInfo>& MaterialAsset_v1::GetBindingInfoArray() const
+	{
+		return m_bindingInfoArray;
 	}
 
 	void MaterialAsset_v1::PostLoad()
@@ -136,75 +139,5 @@ namespace Systems
 	bool MaterialAsset_v1::IsValidForRendering() const
 	{
 		return m_pPipelineState && m_pRs;
-	}
-
-	void MaterialAsset_v1::SetHasPerObjectParameters(bool enable)
-	{
-		m_hasPerObjectParameters = enable;
-	}
-
-	void MaterialAsset_v1::SetHasPerFrameParameters(bool enable)
-	{
-		m_hasPerFrameParameters = enable;
-	}
-
-	void MaterialAsset_v1::SetHasLightsParameters(bool enable)
-	{
-		m_hasLightsParameters = enable;
-	}
-
-	bool MaterialAsset_v1::HasPerObjectParameters() const
-	{
-		return m_hasPerObjectParameters;
-	}
-
-	bool MaterialAsset_v1::HasPerFrameParameters() const
-	{
-		return m_hasPerFrameParameters;
-	}
-
-	bool MaterialAsset_v1::HasLightsParameters() const
-	{
-		return m_hasLightsParameters;
-	}
-
-	void MaterialAsset_v1::SetPerFrameRootSignatureParameterIndex(uint32_t index)
-	{
-		m_perFrameCBufferRootSignatureIndex = index;
-	}
-
-	void MaterialAsset_v1::SetPerObjectRootSignatureParameterIndex(uint32_t index)
-	{
-		m_perObjectCBufferRootSignatureIndex = index;
-	}
-
-	void MaterialAsset_v1::SetPerMaterialRootSignatureParameterIndex(uint32_t index)
-	{
-		m_perMaterialCBufferRootSignatureIndex = index;
-	}
-
-	void MaterialAsset_v1::SetLightsRootSignatureParameterIndex(uint32_t index)
-	{
-		m_lightsCBufferRootSignatureIndex = index;
-	}
-
-	uint32_t MaterialAsset_v1::GetPerFrameRootSignatureParameterIndex() const
-	{
-		return m_perFrameCBufferRootSignatureIndex;
-	}
-
-	uint32_t MaterialAsset_v1::GetPerObjectRootSignatureParameterIndex() const
-	{
-		return m_perObjectCBufferRootSignatureIndex;
-	}
-
-	uint32_t MaterialAsset_v1::GetPerMaterialRootSignatureParameterIndex() const
-	{
-		return m_perMaterialCBufferRootSignatureIndex;
-	}
-
-	uint32_t MaterialAsset_v1::GetLightsRootSignatureParameterIndex() const
-	{
-		return m_lightsCBufferRootSignatureIndex;
 	}
 }
