@@ -24,7 +24,7 @@ namespace Widgets
 
 		Container* AddTab(const std::string& header, Tab* pTab);
 
-		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
 
 		void SetSelectedTab(int index);
 

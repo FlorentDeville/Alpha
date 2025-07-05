@@ -18,7 +18,7 @@ namespace Widgets
 		Label(int32_t locX, int32_t locY, float scale, const std::string& text);
 		virtual ~Label();
 
-		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
 
 		void ReComputeSize(const DirectX::XMUINT2& parentSize) override;
 		void ReComputeSize_PostChildren() override;

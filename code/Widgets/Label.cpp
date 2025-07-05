@@ -43,11 +43,11 @@ namespace Widgets
 	Label::~Label()
 	{}
 
-	void Label::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Label::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
-		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
-		Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+		DirectX::XMUINT4 localScissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
+		Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 	}
 
 	void Label::ReComputeSize(const DirectX::XMUINT2& parentSize)

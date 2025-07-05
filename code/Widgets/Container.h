@@ -18,7 +18,7 @@ namespace Widgets
 		Container(int width, int height);
 		~Container();
 
-		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
 
 		void ResizeChildren() override;
 

@@ -31,7 +31,7 @@ Split::Split(bool isVerticalSplit)
 Split::~Split()
 {}
 
-void Split::Draw(const DirectX::XMFLOAT2& windowSize)
+void Split::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 {
 	DirectX::XMMATRIX mvpMatrix;
 	ComputeWVPMatrix(windowSize, mvpMatrix);
@@ -60,7 +60,7 @@ void Split::Draw(const DirectX::XMFLOAT2& windowSize)
 	const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 	render.RenderMesh(*pMesh);
 
-	Widget::Draw(windowSize);
+	Widget::Draw(windowSize, scissor);
 }
 
 bool Split::Handle(const BaseEvent& ev)

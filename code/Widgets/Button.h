@@ -22,7 +22,7 @@ namespace Widgets
 
 		virtual ~Button();
 
-		void Draw(const DirectX::XMFLOAT2& windowSize) override;
+		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
 
 		bool Handle(const BaseEvent& event) override;
 

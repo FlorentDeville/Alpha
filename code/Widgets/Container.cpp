@@ -28,7 +28,7 @@ namespace Widgets
 	Container::~Container()
 	{}
 
-	void Container::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Container::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
@@ -37,14 +37,23 @@ namespace Widgets
 		Rendering::RenderModule& render = Rendering::RenderModule::Get();
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
-		{
-			D3D12_RECT rect;
-			rect.left = m_absPos.x;
-			rect.right = m_absPos.x + m_size.x;
-			rect.top = m_absPos.y;
-			rect.bottom = m_absPos.y + m_size.y;
-			render.SetScissorRectangle(rect);
-		}
+		
+		D3D12_RECT localScissorRect;
+		localScissorRect.left = m_absPos.x;
+		localScissorRect.right = m_absPos.x + m_size.x;
+		localScissorRect.top = m_absPos.y;
+		localScissorRect.bottom = m_absPos.y + m_size.y;
+
+		//intersection with the parent scissor
+		if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
+		if (localScissorRect.right > scissor.right) localScissorRect.right = scissor.right;
+		if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
+		if (localScissorRect.bottom > scissor.bottom) localScissorRect.bottom = scissor.bottom;
+
+		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
+			return;
+
+		render.SetScissorRectangle(localScissorRect);
 
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 		render.BindMaterial(*pMaterial, mvpMatrix);
@@ -63,7 +72,7 @@ namespace Widgets
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		render.RenderMesh(*pMesh);
 
-		Widget::Draw(windowSize);
+		Widget::Draw(windowSize, localScissorRect);
 
 		{
 			D3D12_RECT windowRect;

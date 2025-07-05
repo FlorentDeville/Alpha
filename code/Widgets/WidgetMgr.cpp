@@ -269,7 +269,14 @@ namespace Widgets
 			DirectX::XMFLOAT2 windowSize;
 			windowSize.x = static_cast<float>(m_pRoot->GetSize().x);
 			windowSize.y = static_cast<float>(m_pRoot->GetSize().y);
-			m_pRoot->Draw(windowSize);
+
+			D3D12_RECT scissor;
+			scissor.left = 0;
+			scissor.right = static_cast<LONG>(windowSize.x);
+			scissor.top = 0;
+			scissor.bottom = static_cast<LONG>(windowSize.y);
+
+			m_pRoot->Draw(windowSize, scissor);
 		}
 	}
 

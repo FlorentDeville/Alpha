@@ -54,7 +54,7 @@ namespace Widgets
 			m_onUpdate(dt);
 	}
 
-	void Viewport_v2::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Viewport_v2::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		WidgetMgr& widgetMgr = WidgetMgr::Get();

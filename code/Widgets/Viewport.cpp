@@ -27,7 +27,7 @@ namespace Widgets
 	Viewport::~Viewport()
 	{}
 
-	void Viewport::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Viewport::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		const Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().GetPipelineState(WidgetMgr::Get().m_widgetViewportPsoId);

@@ -107,17 +107,17 @@ namespace Widgets
 
 	}
 
-	void MenuBar::Draw(const DirectX::XMFLOAT2& windowSize)
+	void MenuBar::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		//Widget::Draw(windowSize);
-		m_pLayout->Draw(windowSize);
+		m_pLayout->Draw(windowSize, scissor);
 
 		for (Menu* pMenu : m_menusArray)
 		{
 			if (!pMenu->IsEnabled())
 				continue;
 
-			pMenu->Draw(windowSize);
+			pMenu->Draw(windowSize, scissor);
 		}
 	}
 

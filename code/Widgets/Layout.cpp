@@ -43,7 +43,7 @@ namespace Widgets
 	Layout::~Layout()
 	{}
 
-	void Layout::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Layout::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		if (!m_transparent)
 		{
@@ -80,7 +80,7 @@ namespace Widgets
 			if (!pWidget->IsEnabled())
 				continue;
 
-			pWidget->Draw(windowSize);
+			pWidget->Draw(windowSize, scissor);
 		}
 	}
 

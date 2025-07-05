@@ -58,7 +58,7 @@ namespace Widgets
 	Icon::~Icon()
 	{}
 
-	void Icon::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Icon::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);
