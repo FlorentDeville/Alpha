@@ -279,11 +279,6 @@ namespace Editors
 
 		shaderCompileProcess.Wait();
 
-		if (error)
-			log.LogError("Shader compilation failed.");
-		else
-			log.LogInfo("Shader compiled with success.");
-
 		return !error;
 	}
 
