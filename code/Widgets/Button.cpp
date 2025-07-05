@@ -63,7 +63,7 @@ namespace Widgets
 	Button::~Button()
 	{}
 
-	void Button::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Button::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		ButtonStyle* pCurrentStyle = &m_defaultStyle;
 		if (m_hover)
@@ -95,7 +95,7 @@ namespace Widgets
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		render.RenderMesh(*pMesh);
 
-		Widget::Draw(windowSize);
+		Widget::Draw(windowSize, scissor);
 	}
 
 	bool Button::Handle(const BaseEvent& ev)

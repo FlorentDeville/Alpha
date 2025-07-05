@@ -52,7 +52,7 @@ namespace Widgets
 	void Widget::Update(uint64_t dt)
 	{}
 
-	void Widget::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Widget::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		if (!IsEnabled())
 			return;
@@ -60,7 +60,7 @@ namespace Widgets
 		for (Widget* pChild : m_children)
 		{
 			if(pChild->IsEnabled())
-				pChild->Draw(windowSize);
+				pChild->Draw(windowSize, scissor);
 		}
 	}
 

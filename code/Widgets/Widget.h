@@ -8,6 +8,7 @@
 #include <vector>
 
 #include <DirectXMath.h>
+#include <d3d12.h>
 #include <functional>
 #include "MessageId.h"
 
@@ -97,7 +98,11 @@ namespace Widgets
 		virtual ~Widget();
 
 		virtual void Update(uint64_t dt); //Real time update called every frame.
-		virtual void Draw(const DirectX::XMFLOAT2& windowSize);	//Draw the widgets using the gfx api.
+
+		// Draw the widgets using the gfx api.
+		// windowSize : size of the entire window
+		// scissor : rectangle from which the widgets must be cropped.
+		virtual void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor);
 
 		virtual void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 

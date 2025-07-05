@@ -77,9 +77,9 @@ namespace Widgets
 		return pTitleContainer;
 	}
 
-	void TabContainer::Draw(const DirectX::XMFLOAT2& windowSize)
+	void TabContainer::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
-		Widget::Draw(windowSize);
+		Widget::Draw(windowSize, scissor);
 	}
 
 	void TabContainer::SetSelectedTab(int index)

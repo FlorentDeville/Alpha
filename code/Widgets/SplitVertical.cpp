@@ -86,9 +86,9 @@ namespace Widgets
 		}
 	}
 
-	void SplitVertical::Draw(const DirectX::XMFLOAT2& windowSize)
+	void SplitVertical::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
-		Widget::Draw(windowSize);
+		Widget::Draw(windowSize, scissor);
 	}
 
 	void SplitVertical::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)

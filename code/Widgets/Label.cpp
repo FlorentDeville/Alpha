@@ -36,6 +36,12 @@ namespace Widgets
 		, m_fontScale(scale)
 		, m_text(text)
 	{
+		Rendering::FontId fontId = WidgetMgr::Get().GetUIFontId();
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);
+		DirectX::XMUINT2 size;
+		pFont->ComputeRect(text, size);
+		SetSize(size);
+
 		SetSizeStyle(Widget::HSIZE_STRETCH);
 		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
@@ -43,11 +49,32 @@ namespace Widgets
 	Label::~Label()
 	{}
 
-	void Label::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Label::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
-		DirectX::XMUINT4 scissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
-		Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), scissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+
+		D3D12_RECT localScissorRect;
+		localScissorRect.left = m_absPos.x;
+		localScissorRect.right = m_absPos.x + m_size.x;
+		localScissorRect.top = m_absPos.y;
+		localScissorRect.bottom = m_absPos.y + m_size.y;
+
+		//Discard the text if it goes out of the scissor vertically. I still send the
+		//render request if it goes out horizontally because the rendering will only discard the
+		//characters outside.
+		if (localScissorRect.bottom > scissor.bottom)
+			return;
+
+		//intersect the scissor with the box of the widget
+		if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
+		if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
+		if (localScissorRect.right > scissor.right) localScissorRect.right = scissor.right;
+
+		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
+			return;
+
+		DirectX::XMUINT4 localScissor(localScissorRect.left, localScissorRect.top, localScissorRect.right - localScissorRect.left, localScissorRect.bottom - localScissorRect.top);
+		Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 	}
 
 	void Label::ReComputeSize(const DirectX::XMUINT2& parentSize)

@@ -28,16 +28,32 @@ namespace Widgets
 	Container::~Container()
 	{}
 
-	void Container::Draw(const DirectX::XMFLOAT2& windowSize)
+	void Container::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
 
-		//DirectX::XMVECTOR color = m_backgroundColor;
-
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		Rendering::RenderModule& render = Rendering::RenderModule::Get();
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+		
+		D3D12_RECT localScissorRect;
+		localScissorRect.left = m_absPos.x;
+		localScissorRect.right = m_absPos.x + m_size.x;
+		localScissorRect.top = m_absPos.y;
+		localScissorRect.bottom = m_absPos.y + m_size.y;
+
+		//intersection with the parent scissor
+		if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
+		if (localScissorRect.right > scissor.right) localScissorRect.right = scissor.right;
+		if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
+		if (localScissorRect.bottom > scissor.bottom) localScissorRect.bottom = scissor.bottom;
+
+		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
+			return;
+
+		render.SetScissorRectangle(localScissorRect);
 
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 		render.BindMaterial(*pMaterial, mvpMatrix);
@@ -51,13 +67,21 @@ namespace Widgets
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 		render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-		//m_borderWidth = 3;
 		render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
 
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		render.RenderMesh(*pMesh);
 
-		Widget::Draw(windowSize);
+		Widget::Draw(windowSize, localScissorRect);
+
+		{
+			D3D12_RECT windowRect;
+			windowRect.left = 0;
+			windowRect.right = (LONG)windowSize.x;
+			windowRect.top = 0;
+			windowRect.bottom = (LONG)windowSize.y;
+			render.SetScissorRectangle(windowRect);
+		}
 	}
 
 	void Container::ResizeChildren()
