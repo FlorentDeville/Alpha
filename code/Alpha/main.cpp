@@ -15,9 +15,11 @@
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
+#include "Core/Log/LogModule.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/LogEditor/LogEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
@@ -562,6 +564,10 @@ void CreateMainWindow(const Configuration& configuration)
 	materialEditorParameter.m_pParent = pMiddleTabContainer;
 	Editors::MaterialEditor::Get().CreateEditor(materialEditorParameter);
 
+	Editors::LogEditorParameter logEditorParameter;
+	logEditorParameter.m_pParent = pMiddleTabContainer;
+	Editors::LogEditor::Get().CreateEditor(logEditorParameter);
+
 #ifdef _DEBUG
 	{
 		Widgets::Tab* pTab = new Widgets::Tab();
@@ -629,6 +635,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Systems::RegisterCoreTypesToReflection();
 	Systems::RegisterSystemsTypesToReflection();
 
+	Core::LogModule& logModule = Core::LogModule::InitSingleton();
+	logModule.Init();
+	logModule.LogInfo("Engine Alpha 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>");
+
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();
 
@@ -686,6 +696,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MaterialEditor& materialEditor = Editors::MaterialEditor::InitSingleton();
 	materialEditor.Init();
 
+	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
+	logEditor.Init();
+
 	LoadContent(configuration);
 
 	CreateMainWindow(configuration);
@@ -705,6 +718,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		Render();
 		Inputs::InputMgr::Get().ClearAllStates();
 	}
+
+	logEditor.Shutdown();
+	Editors::LogEditor::ReleaseSingleton();
 
 	materialEditorModule.Shutdown();
 	Editors::MaterialEditorModule::ReleaseSingleton();
@@ -739,6 +755,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Rendering::RenderModule::ReleaseSingleton();
 	Editors::LevelEditorModule::ReleaseSingleton();
 	AppResources::ResourcesMgr::ReleaseSingleton();
+
+	logModule.Shutdown();
+	Core::LogModule::ReleaseSingleton();
 
 	Systems::ReflectionMgr::ReleaseSingleton();
 

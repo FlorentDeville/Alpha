@@ -128,8 +128,13 @@ namespace Editors
 		if (!pMaterial)
 			return false;
 
-		CompileSingleShader(pMaterial->GetSourceFileVs(), pMaterial->GetVsBlob());
-		CompileSingleShader(pMaterial->GetSourceFilePs(), pMaterial->GetPsBlob());
+		bool shaderCompiled = CompileSingleShader(pMaterial->GetSourceFileVs(), pMaterial->GetVsBlob());
+		if (!shaderCompiled)
+			return false;
+
+		shaderCompiled = CompileSingleShader(pMaterial->GetSourceFilePs(), pMaterial->GetPsBlob());
+		if (!shaderCompiled)
+			return false;
 
 		RootSignatureDescription rootSignatureDesc;
 		rootSignatureDesc.m_pRootSignatureBlob = &pMaterial->GetRsBlob();

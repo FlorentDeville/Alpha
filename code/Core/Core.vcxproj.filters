@@ -66,6 +66,9 @@
     <ClCompile Include="String\BytesToHexa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Log\LogModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -138,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="String\BytesToHexa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\LogModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
