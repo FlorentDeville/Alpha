@@ -15,6 +15,7 @@
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
+#include "Core/Log/LogModule.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -629,6 +630,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Systems::RegisterCoreTypesToReflection();
 	Systems::RegisterSystemsTypesToReflection();
 
+	Core::LogModule& logModule = Core::LogModule::InitSingleton();
+	logModule.Init();
+	logModule.LogInfo("Engine Alpha © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>");
+
 	AppResources::ResourcesMgr& resourcesMgr = AppResources::ResourcesMgr::InitSingleton();
 	resourcesMgr.Init();
 
@@ -739,6 +744,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Rendering::RenderModule::ReleaseSingleton();
 	Editors::LevelEditorModule::ReleaseSingleton();
 	AppResources::ResourcesMgr::ReleaseSingleton();
+
+	logModule.Shutdown();
+	Core::LogModule::ReleaseSingleton();
 
 	Systems::ReflectionMgr::ReleaseSingleton();
 

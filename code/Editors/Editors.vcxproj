@@ -26,6 +26,7 @@
     <ClInclude Include="LevelEditor\Widgets\GizmoWidget.h" />
     <ClInclude Include="LevelEditor\Widgets\LevelEditorTab.h" />
     <ClInclude Include="LevelEditor\Widgets\LevelEditorViewportWidget.h" />
+    <ClInclude Include="Log\LogModule.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
