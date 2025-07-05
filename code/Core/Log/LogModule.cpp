@@ -45,4 +45,9 @@ namespace Core
 	{
 		Log(Error, text);
 	}
+
+	const Core::Array<LogModule::LogEntry>& LogModule::GetAllLogEntries() const
+	{
+		return m_logEntryArray;
+	}
 }

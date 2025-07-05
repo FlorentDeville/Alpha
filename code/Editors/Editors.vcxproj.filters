@@ -144,6 +144,9 @@
     <ClInclude Include="Log\LogModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LogEditor\LogEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -264,6 +267,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LogEditor\LogEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

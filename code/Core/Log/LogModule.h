@@ -40,6 +40,8 @@ namespace Core
 		void LogWarn(const std::string& text);
 		void LogError(const std::string& text);
 
+		const Core::Array<LogEntry>& GetAllLogEntries() const;
+
 		EVENT_DECL(LogAdded, void(const LogEntry& entry))
 
 	private:
