@@ -322,6 +322,11 @@ namespace Rendering
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 	}
 
+	void RenderModule::SetScissorRectangle(const D3D12_RECT& rect)
+	{
+		m_pRenderCommandList->RSSetScissorRects(1, &rect);
+	}
+
 	void RenderModule::RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
 	{
 		RenderBaseShape(m_pCylinderMesh, world, color);

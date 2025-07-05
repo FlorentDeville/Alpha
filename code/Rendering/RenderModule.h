@@ -64,6 +64,8 @@ namespace Rendering
 
 		void RenderMesh(const Rendering::Mesh& mesh);
 
+		void SetScissorRectangle(const D3D12_RECT& rect);
+
 		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
