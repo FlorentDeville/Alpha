@@ -33,11 +33,18 @@ namespace Widgets
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
 
-		//DirectX::XMVECTOR color = m_backgroundColor;
-
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		Rendering::RenderModule& render = Rendering::RenderModule::Get();
 		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+		{
+			D3D12_RECT rect;
+			rect.left = m_absPos.x;
+			rect.right = m_absPos.x + m_size.x;
+			rect.top = m_absPos.y;
+			rect.bottom = m_absPos.y + m_size.y;
+			render.SetScissorRectangle(rect);
+		}
 
 		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 		render.BindMaterial(*pMaterial, mvpMatrix);
@@ -51,13 +58,21 @@ namespace Widgets
 		float rect[2] = { (float)m_size.x, (float)m_size.y };
 		render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-		//m_borderWidth = 3;
 		render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
 
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 		render.RenderMesh(*pMesh);
 
 		Widget::Draw(windowSize);
+
+		{
+			D3D12_RECT windowRect;
+			windowRect.left = 0;
+			windowRect.right = (LONG)windowSize.x;
+			windowRect.top = 0;
+			windowRect.bottom = (LONG)windowSize.y;
+			render.SetScissorRectangle(windowRect);
+		}
 	}
 
 	void Container::ResizeChildren()
