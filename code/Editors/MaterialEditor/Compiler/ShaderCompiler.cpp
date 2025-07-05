@@ -176,27 +176,8 @@ namespace Editors
 			if (res != S_OK)
 				return false;
 
-			if (strcmp(bufferDesc.Name, "PerObject") == 0)
+			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && parameters.m_perMaterialParameters.empty())
 			{
-				parameters.m_hasPerObjectParameters = true;
-				continue;
-			}
-			
-			if (strcmp(bufferDesc.Name, "PerFrame") == 0)
-			{
-				parameters.m_hasPerFrameParameters = true;
-				continue;
-			}
-			
-			if (strcmp(bufferDesc.Name, "CBufferLights") == 0)
-			{
-				parameters.m_hasLightsCBufferParameters = true;
-				continue;
-			}
-
-			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && !parameters.m_hasPerMaterialParameters)
-			{
-				parameters.m_hasPerMaterialParameters = true;
 				bool paramRes = GeneratePerMaterialParameters(pConstantBuffer, bufferDesc, parameters);
 				if (!paramRes)
 					return false;
