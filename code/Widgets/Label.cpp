@@ -36,6 +36,12 @@ namespace Widgets
 		, m_fontScale(scale)
 		, m_text(text)
 	{
+		Rendering::FontId fontId = WidgetMgr::Get().GetUIFontId();
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);
+		DirectX::XMUINT2 size;
+		pFont->ComputeRect(text, size);
+		SetSize(size);
+
 		SetSizeStyle(Widget::HSIZE_STRETCH);
 		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
@@ -46,7 +52,23 @@ namespace Widgets
 	void Label::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
-		DirectX::XMUINT4 localScissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
+
+		D3D12_RECT localScissorRect;
+		localScissorRect.left = m_absPos.x;
+		localScissorRect.right = m_absPos.x + m_size.x;
+		localScissorRect.top = m_absPos.y;
+		localScissorRect.bottom = m_absPos.y + m_size.y;
+
+		//intersect the scissor with the box of the widget
+		if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
+		if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
+		if (localScissorRect.right > scissor.right) localScissorRect.right = scissor.right;
+		if (localScissorRect.bottom > scissor.bottom) localScissorRect.bottom = scissor.bottom;
+		
+		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
+			return;
+
+		DirectX::XMUINT4 localScissor(localScissorRect.left, localScissorRect.top, localScissorRect.right - localScissorRect.left, localScissorRect.bottom - localScissorRect.top);
 		Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 	}
 
