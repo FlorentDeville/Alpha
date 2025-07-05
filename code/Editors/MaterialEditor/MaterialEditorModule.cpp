@@ -49,7 +49,7 @@ namespace Editors
 		return true;
 	}
 
-	void ShaderEditorModule::Init()
+	void MaterialEditorModule::Init()
 	{
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
@@ -62,7 +62,7 @@ namespace Editors
 			});
 	}
 
-	Systems::MaterialAsset* ShaderEditorModule::NewShader(const std::string& virtualName)
+	Systems::MaterialAsset* MaterialEditorModule::NewShader(const std::string& virtualName)
 	{
 		Systems::MaterialAsset* pNewMaterial = Systems::CreateNewAsset<Systems::MaterialAsset>();
 		assert(pNewMaterial);
@@ -91,14 +91,14 @@ namespace Editors
 		return pNewMaterial;
 	}
 
-	bool ShaderEditorModule::SaveShader(Systems::NewAssetId id)
+	bool MaterialEditorModule::SaveShader(Systems::NewAssetId id)
 	{
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		bool res = containerMgr.SaveContainer(id.GetContainerId());
 		return res;
 	}
 
-	bool ShaderEditorModule::DeleteShader(Systems::NewAssetId id)
+	bool MaterialEditorModule::DeleteShader(Systems::NewAssetId id)
 	{
 		bool res = Systems::AssetUtil::DeleteAsset(id);
 		if (!res)
@@ -112,12 +112,12 @@ namespace Editors
 		return true;
 	}
 
-	const std::vector<Systems::NewAssetId>& ShaderEditorModule::GetAllShaders() const
+	const std::vector<Systems::NewAssetId>& MaterialEditorModule::GetAllShaders() const
 	{
 		return m_allShaders;
 	}
 
-	bool ShaderEditorModule::CompileShader(Systems::NewAssetId id)
+	bool MaterialEditorModule::CompileShader(Systems::NewAssetId id)
 	{
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());

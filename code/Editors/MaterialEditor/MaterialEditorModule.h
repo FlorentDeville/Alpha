@@ -21,7 +21,7 @@ namespace Systems
 
 namespace Editors
 {
-	class ShaderEditorModule : public Core::Singleton<ShaderEditorModule>
+	class MaterialEditorModule : public Core::Singleton<MaterialEditorModule>
 	{
 	public:
 		void Init() override;

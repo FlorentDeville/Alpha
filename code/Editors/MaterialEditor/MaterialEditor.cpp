@@ -187,7 +187,7 @@ namespace Editors
 		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		//pRightPanelLayout->AddWidget(m_pLogText);
 
-		ShaderEditorModule::Get().OnShaderCreated([this](const Systems::AssetMetadata* pMetadata)
+		MaterialEditorModule::Get().OnShaderCreated([this](const Systems::AssetMetadata* pMetadata)
 			{
 				m_pShaderListModel->AddRow(pMetadata);
 			});
@@ -237,7 +237,7 @@ namespace Editors
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
 		pDialog->OnInputValidated([this](const std::string& input) 
 			{ 
-				Systems::MaterialAsset* pMaterial = ShaderEditorModule::Get().NewShader(input);
+				Systems::MaterialAsset* pMaterial = MaterialEditorModule::Get().NewShader(input);
 
 				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 
@@ -260,7 +260,7 @@ namespace Editors
 
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
-		ShaderEditorModule::Get().SaveShader(id);
+		MaterialEditorModule::Get().SaveShader(id);
 
 		m_pShaderListModel->ClearShaderModified(id);
 	}
@@ -309,7 +309,7 @@ namespace Editors
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
-		bool res = ShaderEditorModule::Get().CompileShader(id);
+		bool res = MaterialEditorModule::Get().CompileShader(id);
 
 		RefreshPropertyGrid();
 

@@ -16,7 +16,7 @@ namespace Editors
 		: AbstractViewModel()
 	{
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		const ShaderEditorModule& module = ShaderEditorModule::Get();
+		const MaterialEditorModule& module = MaterialEditorModule::Get();
 		const std::vector<Systems::NewAssetId>& allShaders = module.GetAllShaders();
 		for (Systems::NewAssetId id : allShaders)
 		{

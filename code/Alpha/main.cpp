@@ -684,8 +684,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	levelEditorModule.Init();
 
 	Editors::MeshEditor::InitSingleton();
-	Editors::ShaderEditorModule& shaderEditorModule = Editors::ShaderEditorModule::InitSingleton();
-	shaderEditorModule.Init();
+	Editors::MaterialEditorModule& materialEditorModule = Editors::MaterialEditorModule::InitSingleton();
+	materialEditorModule.Init();
 
 	Editors::MaterialEditor& materialEditor = Editors::MaterialEditor::InitSingleton();
 	materialEditor.Init();
@@ -710,8 +710,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		Inputs::InputMgr::Get().ClearAllStates();
 	}
 
-	shaderEditorModule.Shutdown();
-	Editors::ShaderEditorModule::ReleaseSingleton();
+	materialEditorModule.Shutdown();
+	Editors::MaterialEditorModule::ReleaseSingleton();
 
 	materialEditor.Shutdown();
 	Editors::MaterialEditor::ReleaseSingleton();
