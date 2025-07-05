@@ -26,10 +26,6 @@ namespace Editors
 	public:
 		MaterialParameters();
 
-		bool m_hasPerObjectParameters;
-		bool m_hasPerFrameParameters;
-		bool m_hasPerMaterialParameters;
-
 		std::vector<MaterialParameter> m_perMaterialParameters;
 	};
 }

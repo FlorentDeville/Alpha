@@ -138,25 +138,41 @@ namespace Editors
 		if (!res)
 			return false;
 
-		std::map<std::string, int>::const_iterator it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("PerMaterial");
-		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
-			pMaterial->SetPerMaterialRootSignatureParameterIndex(it->second);
+		Core::Array<Systems::MaterialCBufferBindingInfo>& bindingInfoArray = pMaterial->GetBindingInfoArray();
+		bindingInfoArray.Reserve(static_cast<uint32_t>(rootSignatureDesc.m_parameters.size()));
+		for (const RootSigParameterIndex& paramIndex : rootSignatureDesc.m_parameters)
+		{
+			Systems::MaterialCBufferBindingInfo bindingInfo;
 
-		it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("PerObject");
-		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
-			pMaterial->SetPerObjectRootSignatureParameterIndex(it->second);
+			if (paramIndex.m_cbufferName == "PerMaterial")
+			{
+				bindingInfo.m_type = Systems::CBufferType::PerMaterial;
+			}
+			else if (paramIndex.m_cbufferName == "PerObject")
+			{
+				bindingInfo.m_type = Systems::CBufferType::PerObject;
+			}
+			else if (paramIndex.m_cbufferName == "PerFrame")
+			{
+				bindingInfo.m_type = Systems::CBufferType::PerFrame;
+			}
+			else if (paramIndex.m_cbufferName == "CBufferLights")
+			{
+				bindingInfo.m_type = Systems::CBufferType::Lights;
+			}
+			else
+			{
+				continue;
+			}
 
-		it = rootSignatureDesc.m_cBufferRootSignatureIndex.find("PerFrame");
-		if (it != rootSignatureDesc.m_cBufferRootSignatureIndex.cend())
-			pMaterial->SetPerFrameRootSignatureParameterIndex(it->second);
+			bindingInfo.m_sigRootParamIndex = paramIndex.m_rootSigParamIndex;
+			bindingInfoArray.PushBack(bindingInfo);
+		}
 
 		MaterialParameters parameters;
 		res = compiler.GenerateMaterialParameters(pMaterial->GetPsBlob(), pMaterial->GetVsBlob(), parameters);
 		if (!res)
 			return false;
-
-		pMaterial->SetHasPerFrameParameters(parameters.m_hasPerFrameParameters);
-		pMaterial->SetHasPerObjectParameters(parameters.m_hasPerObjectParameters);
 
 		Core::Array<Systems::MaterialParameterDescription>& existingMatParamArray = pMaterial->GetMaterialParameterDescription();
 

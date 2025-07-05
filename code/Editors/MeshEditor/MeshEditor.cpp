@@ -10,7 +10,9 @@
 #include "OsWin/FileDialog.h"
 #include "OsWin/Resource.h"
 
+#include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/Material/Material.h"
 #include "Rendering/Material/MaterialMgr.h"
@@ -34,6 +36,7 @@
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Loader.h"
+#include "Systems/Rendering/MaterialRendering.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Icon.h"
@@ -373,34 +376,16 @@ namespace Editors
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
-				renderer.BindMaterial(*pMaterial->GetPipelineState(), *pMaterial->GetRootSignature());
+				Rendering::PerObjectCBuffer perObjectData(world);
 
-				if (pMaterial->HasPerObjectParameters())
-				{
-					Rendering::PerObjectCBuffer perObjectData(mvpMatrix);
-					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
-					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-					pCBufferPool->Copy(poolIndex, &perObjectData, sizeof(Rendering::PerObjectCBuffer));
-					renderer.BindCBuffer(pMaterial->GetPerObjectRootSignatureParameterIndex(), poolIndex);
-				}
+				DirectX::XMFLOAT3 cameraPosFloat3;
+				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+				
+				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+				Rendering::LightsCBuffer lights(dirLight);
 
-				Core::Array<Systems::MaterialParameterDescription>& perMaterialParam = pMaterial->GetMaterialParameterDescription();
-				if (perMaterialParam.GetSize() > 0)
-				{
-					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
-					int poolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-
-					for(uint32_t ii = 0; ii < perMaterialParam.GetSize(); ++ii)
-					{
-						const Systems::MaterialParameterDescription& pParam = perMaterialParam[ii];
-
-						if (pParam.m_value.GetSize() == 0)
-							continue;
-
-						pCBufferPool->Copy(poolIndex, pParam.m_offset, pParam.m_value.GetData(), pParam.m_size);
-					}
-					renderer.BindCBuffer(pMaterial->GetPerMaterialRootSignatureParameterIndex(), poolIndex);
-				}
+				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
 				const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
 				renderer.RenderMesh(*pMesh);

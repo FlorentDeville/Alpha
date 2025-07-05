@@ -176,21 +176,8 @@ namespace Editors
 			if (res != S_OK)
 				return false;
 
-			if (strcmp(bufferDesc.Name, "PerObject") == 0)
+			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && parameters.m_perMaterialParameters.empty())
 			{
-				parameters.m_hasPerObjectParameters = true;
-				continue;
-			}
-			
-			if (strcmp(bufferDesc.Name, "PerFrame") == 0)
-			{
-				parameters.m_hasPerFrameParameters = true;
-				continue;
-			}
-
-			if (strcmp(bufferDesc.Name, "PerMaterial") == 0 && !parameters.m_hasPerMaterialParameters)
-			{
-				parameters.m_hasPerMaterialParameters = true;
 				bool paramRes = GeneratePerMaterialParameters(pConstantBuffer, bufferDesc, parameters);
 				if (!paramRes)
 					return false;
@@ -329,9 +316,14 @@ namespace Editors
 
 		std::vector<D3D12_ROOT_PARAMETER> rootParameters;
 		rootParameters.reserve(rootParametersDescription.size());
+		rs.m_parameters.reserve(rootParametersDescription.size());
 		for (const RootParameterDescription& desc : rootParametersDescription)
 		{
-			rs.m_cBufferRootSignatureIndex[desc.name] = static_cast<int>(rootParameters.size());
+			RootSigParameterIndex paramIndex;
+			paramIndex.m_cbufferName = desc.name;
+			paramIndex.m_rootSigParamIndex = static_cast<int>(rootParameters.size());
+			rs.m_parameters.push_back(paramIndex);
+
 			rootParameters.push_back(desc.m_dx12RootParameter);
 		}
 

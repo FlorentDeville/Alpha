@@ -111,7 +111,7 @@ namespace Rendering
 		ResizeDepthBuffer(mainResolution.x, mainResolution.y, &m_pMainDepthBuffer, m_mainDSV);
 
 		m_pLinearCBufferPool = new LinearConstantBufferPool();
-		const int CBUFFER_SIZE = 256;
+		const int CBUFFER_SIZE = 512;
 		const int CBUFFER_COUNT = 100;
 		m_pLinearCBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
 

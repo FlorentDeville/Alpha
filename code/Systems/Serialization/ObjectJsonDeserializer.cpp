@@ -76,6 +76,13 @@ namespace Systems
 
 		switch (pFieldType->GetSid())
 		{
+		case SID("int8_t"):
+		{
+			int8_t* pValue = reinterpret_cast<int8_t*>(ptr);
+			*pValue = static_cast<int8_t>(jsonFieldValue.GetValueAsDouble());
+		}
+		break;
+
 		case SID("int32_t"):
 		{
 			int32_t* pValue = reinterpret_cast<int32_t*>(ptr);

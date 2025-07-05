@@ -6,7 +6,7 @@
 
 namespace Rendering
 {
-	PerObjectCBuffer::PerObjectCBuffer(const DirectX::XMMATRIX& worldViewProj)
-		: m_worldViewProj(worldViewProj)
+	PerObjectCBuffer::PerObjectCBuffer(const DirectX::XMMATRIX& world)
+		: m_world(world)
 	{ }
 }

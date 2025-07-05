@@ -394,7 +394,6 @@ void Update()
 	std::chrono::milliseconds dtMs = std::chrono::duration_cast<std::chrono::milliseconds>(dt);
 
 	Editors::MeshEditor::Get().Update();
-	Editors::MaterialEditor::Get().Update();
 	GameMgr::Get().Update();
 	Widgets::WidgetMgr::Get().Update(dtMs.count());
 }
@@ -415,7 +414,6 @@ void Render()
 
 	//render the level editor
 	Editors::MeshEditor::Get().Render();
-	Editors::MaterialEditor::Get().Render();
 
 	widgetsModule.Render(); //render all the viewports
 

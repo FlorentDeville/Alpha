@@ -160,7 +160,11 @@ namespace Core
 
 		//function to work with stl algorithms
 		Iterator begin();
+		const Iterator begin() const;
+
 		Iterator end();
+		const Iterator end() const;
+
 		const Iterator cbegin() const;
 		const Iterator cend() const;
 
@@ -228,7 +232,17 @@ namespace Core
 		return Iterator(m_pStart);
 	}
 
+	template<typename T> typename const Array<T>::Iterator Array<T>::begin() const
+	{
+		return Iterator(m_pStart);
+	}
+
 	template<typename T> typename Array<T>::Iterator Array<T>::end()
+	{
+		return Iterator(m_pStart + m_size);
+	}
+
+	template<typename T> typename const Array<T>::Iterator Array<T>::end() const
 	{
 		return Iterator(m_pStart + m_size);
 	}

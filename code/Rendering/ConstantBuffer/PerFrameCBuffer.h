@@ -8,14 +8,14 @@
 
 namespace Rendering
 {
-	// This is the structure repsrenting the per object const buffer. It needs to match the structure passed to shaders
-	// and defined in includes\CBufferPerObject.hlsl.
-	class PerObjectCBuffer
+	class PerFrameCBuffer
 	{
 	public:
-		PerObjectCBuffer(const DirectX::XMMATRIX& world);
+		PerFrameCBuffer(const DirectX::XMMATRIX& view, DirectX::XMMATRIX& proj, const DirectX::XMFLOAT3& cameraPos);
 
 	private:
-		DirectX::XMMATRIX m_world;
+		DirectX::XMMATRIX m_viewMatrix;
+		DirectX::XMMATRIX m_projMatrix;
+		DirectX::XMFLOAT3 m_cameraPosition;
 	};
 }
