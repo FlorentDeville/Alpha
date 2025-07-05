@@ -8,6 +8,7 @@
 
 namespace Systems
 {
+	DEFINE_TYPE_RESOLVER(int8_t)
 	DEFINE_TYPE_RESOLVER(int32_t)
 	DEFINE_TYPE_RESOLVER(uint32_t)
 	DEFINE_TYPE_RESOLVER(uint16_t)

@@ -78,6 +78,13 @@ namespace Systems
 
 		switch (pDescription->GetSid())
 		{
+		case SID("int8_t"):
+		{
+			const int8_t* pValue = reinterpret_cast<const int8_t*>(pFieldPtr);
+			SerializeData(*pValue, value);
+		}
+		break;
+
 		case SID("int32_t"):
 		{
 			const int32_t* pValue = reinterpret_cast<const int32_t*>(pFieldPtr);
