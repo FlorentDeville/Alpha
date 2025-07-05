@@ -72,6 +72,10 @@ namespace Rendering
 
     FontChar* Font::GetChar(char c) const
     {
+        // all ascii characters below 32 don't have a visual representation
+        if (c < 32)
+            c = ' ';
+
         for (int i = 0; i < m_numCharacters; ++i)
         {
             if (c == (char)m_CharList[i].m_id)
