@@ -76,7 +76,7 @@ namespace Editors
 		if (!res)
 			return nullptr;
 
-		Systems::AssetMetadata materialMetadata(pNewMaterial->GetId(), virtualName, MAKESID("Material"));
+		Systems::AssetMetadata materialMetadata(pNewMaterial->GetId(), virtualName, Systems::MaterialAsset::GetAssetTypeNameSid());
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 		res = assetMgr.RegisterAssetMetadata(materialMetadata);
 		if (!res)
