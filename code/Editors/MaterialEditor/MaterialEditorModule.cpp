@@ -4,6 +4,8 @@
 
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
 #include "Editors/MaterialEditor/Compiler/RootSignatureDescription.h"
 #include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
@@ -217,6 +219,9 @@ namespace Editors
 		existingMatParamArray = std::move(newMatParamDescArray);
 
 		pMaterial->UpdateRenderingObjects();
+		
+		if (res)
+			Core::LogModule::Get().LogInfo("Material compiled successfully.");
 
 		return res;
 	}
