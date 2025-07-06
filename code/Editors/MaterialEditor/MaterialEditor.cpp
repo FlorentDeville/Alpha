@@ -11,6 +11,7 @@
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_MaterialParameterDescription.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
+#include "Editors/Widgets/StatusBar/StatusBar.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -87,10 +88,18 @@ namespace Editors
 			parameter.m_pParent->AddWidget(pViewportTab);
 		}
 
+		Widgets::Layout* pOutsideLayout = new Widgets::Layout();
+		pOutsideLayout->SetDirection(Widgets::Layout::Vertical_Reverse);
+		pOutsideLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pViewportTab->AddWidget(pOutsideLayout);
+
+		StatusBar* pStatusBar = new StatusBar();
+		pOutsideLayout->AddWidget(pStatusBar);
+
 		Widgets::Layout* pInternalLayout = new Widgets::Layout();
 		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		pViewportTab->AddWidget(pInternalLayout);
+		pOutsideLayout->AddWidget(pInternalLayout);
 
 		CreateMenu(pInternalLayout);
 
