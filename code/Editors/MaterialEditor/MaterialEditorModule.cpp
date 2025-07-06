@@ -60,7 +60,7 @@ namespace Editors
 				if (metadata.GetAssetType() != MAKESID("Material"))
 					return;
 
-				m_allShaders.push_back(metadata.GetAssetId());
+				m_allMaterials.push_back(metadata.GetAssetId());
 			});
 	}
 
@@ -86,9 +86,9 @@ namespace Editors
 		if (!res)
 			return nullptr;
 
-		m_allShaders.push_back(pNewMaterial->GetId());
+		m_allMaterials.push_back(pNewMaterial->GetId());
 
-		m_onShaderCreated(&materialMetadata);
+		m_onMaterialCreated(&materialMetadata);
 
 		return pNewMaterial;
 	}
@@ -106,17 +106,17 @@ namespace Editors
 		if (!res)
 			return false;
 
-		std::vector<Systems::NewAssetId>::const_iterator it = std::find(m_allShaders.cbegin(), m_allShaders.cend(), id);
-		if (it == m_allShaders.cend())
+		std::vector<Systems::NewAssetId>::const_iterator it = std::find(m_allMaterials.cbegin(), m_allMaterials.cend(), id);
+		if (it == m_allMaterials.cend())
 			return true;
 
-		m_allShaders.erase(it);
+		m_allMaterials.erase(it);
 		return true;
 	}
 
-	const std::vector<Systems::NewAssetId>& MaterialEditorModule::GetAllShaders() const
+	const std::vector<Systems::NewAssetId>& MaterialEditorModule::GetAllMaterials() const
 	{
-		return m_allShaders;
+		return m_allMaterials;
 	}
 
 	bool MaterialEditorModule::CompileMaterial(Systems::NewAssetId id)

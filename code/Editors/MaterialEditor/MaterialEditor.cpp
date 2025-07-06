@@ -196,7 +196,7 @@ namespace Editors
 		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		//pRightPanelLayout->AddWidget(m_pLogText);
 
-		MaterialEditorModule::Get().OnShaderCreated([this](const Systems::AssetMetadata* pMetadata)
+		MaterialEditorModule::Get().OnMaterialCreated([this](const Systems::AssetMetadata* pMetadata)
 			{
 				m_pShaderListModel->AddRow(pMetadata);
 			});

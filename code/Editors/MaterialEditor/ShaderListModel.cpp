@@ -17,7 +17,7 @@ namespace Editors
 	{
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 		const MaterialEditorModule& module = MaterialEditorModule::Get();
-		const std::vector<Systems::NewAssetId>& allShaders = module.GetAllShaders();
+		const std::vector<Systems::NewAssetId>& allShaders = module.GetAllMaterials();
 		for (Systems::NewAssetId id : allShaders)
 		{
 			const Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);

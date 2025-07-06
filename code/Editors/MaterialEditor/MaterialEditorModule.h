@@ -30,13 +30,13 @@ namespace Editors
 		bool SaveMaterial(Systems::NewAssetId id);
 		bool DeleteMaterial(Systems::NewAssetId id);
 
-		const std::vector<Systems::NewAssetId>& GetAllShaders() const;
+		const std::vector<Systems::NewAssetId>& GetAllMaterials() const;
 
 		bool CompileMaterial(Systems::NewAssetId id);
 
-		EVENT_DECL(ShaderCreated, void(Systems::AssetMetadata* pMetadata));
+		EVENT_DECL(MaterialCreated, void(Systems::AssetMetadata* pMetadata));
 
 	private:
-		std::vector<Systems::NewAssetId> m_allShaders;
+		std::vector<Systems::NewAssetId> m_allMaterials;
 	};
 }
