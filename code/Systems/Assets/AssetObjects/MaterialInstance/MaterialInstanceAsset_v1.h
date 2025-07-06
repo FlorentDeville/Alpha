@@ -19,6 +19,8 @@ namespace Systems
 		MaterialInstanceAsset_v1();
 		~MaterialInstanceAsset_v1();
 
+		static const std::string& GetAssetTypeName();
+		static Core::Sid GetAssetTypeNameSid();
 
 	private:
 		NewAssetId m_material;
