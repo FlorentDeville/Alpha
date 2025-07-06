@@ -48,6 +48,9 @@ namespace Systems
 
 		bool IsValidForRendering() const;
 
+		static const std::string& GetAssetTypeName();
+		static Core::Sid GetAssetTypeNameSid();
+
 	private:
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;

@@ -154,6 +154,18 @@ namespace Systems
 		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.GetData(), indexCount);
 	}
 
+	const std::string& MeshAsset_v2::GetAssetTypeName()
+	{
+		static std::string name = "Mesh";
+		return name;
+	}
+
+	Core::Sid MeshAsset_v2::GetAssetTypeNameSid()
+	{
+		static Core::Sid sid = SID(GetAssetTypeName());
+		return sid;
+	}
+
 	void UpgradeMeshAssetV1ToV2(const MeshAsset_v1* pMeshV1, MeshAsset_v2* pMeshV2)
 	{
 		const Core::Array<Core::Vec4f>& srcPos = pMeshV1->GetPositions();

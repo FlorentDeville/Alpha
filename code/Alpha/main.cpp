@@ -644,6 +644,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Systems::AssetMgr& assetMgr = Systems::AssetMgr::InitSingleton();
 	assetMgr.Init(configuration.m_dataRoot);
+	assetMgr.RegisterAssetType<Systems::MeshAsset>();
+	assetMgr.RegisterAssetType<Systems::MaterialAsset>();
+	assetMgr.LoadMetadataTable();
+	
 
 	Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::InitSingleton();
 	std::string containerRoot = configuration.m_dataRoot;

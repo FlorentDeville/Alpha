@@ -43,11 +43,7 @@ namespace Systems
 
 		InitAssetTypeDescription();
 
-		RegisterAssetType("Mesh");
-		RegisterAssetType("Material");
-
 		LoadTableOfContent();
-		LoadMetadataTable();
 
 		return true;
 	}
@@ -83,12 +79,6 @@ namespace Systems
 		m_metadata[metadata.GetAssetId()] = metadata;
 
 		return true;
-	}
-
-	void AssetMgr::RegisterAssetType(const std::string& name)
-	{
-		Core::Sid sid = SID(name);
-		m_assetTypes[sid] = NewAssetType(name, sid);
 	}
 
 	const Asset* AssetMgr::GetAsset(AssetId id) const
