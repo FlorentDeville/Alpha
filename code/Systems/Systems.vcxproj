@@ -17,6 +17,7 @@
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
+    <ClInclude Include="Assets\AssetObjects\Material\MaterialInstanceAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
     <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
     <ClInclude Include="Assets\AssetType.h" />
@@ -57,6 +58,7 @@
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Material\MaterialInstanceAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />

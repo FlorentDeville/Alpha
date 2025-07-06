@@ -40,6 +40,7 @@
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
     <ClInclude Include="Rendering\MaterialRendering.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
+    <ClInclude Include="Assets\AssetObjects\Material\MaterialInstanceAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -74,5 +75,6 @@
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Rendering\MaterialRendering.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Material\MaterialInstanceAsset.cpp" />
   </ItemGroup>
 </Project>
