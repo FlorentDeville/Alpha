@@ -26,13 +26,13 @@ namespace Editors
 	public:
 		void Init() override;
 
-		Systems::MaterialAsset* NewShader(const std::string& virtualName);
-		bool SaveShader(Systems::NewAssetId id);
-		bool DeleteShader(Systems::NewAssetId id);
+		Systems::MaterialAsset* NewMaterial(const std::string& virtualName);
+		bool SaveMaterial(Systems::NewAssetId id);
+		bool DeleteMaterial(Systems::NewAssetId id);
 
 		const std::vector<Systems::NewAssetId>& GetAllShaders() const;
 
-		bool CompileShader(Systems::NewAssetId id);
+		bool CompileMaterial(Systems::NewAssetId id);
 
 		EVENT_DECL(ShaderCreated, void(Systems::AssetMetadata* pMetadata));
 

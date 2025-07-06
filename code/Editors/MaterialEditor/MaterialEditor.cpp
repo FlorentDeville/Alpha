@@ -246,7 +246,7 @@ namespace Editors
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
 		pDialog->OnInputValidated([this](const std::string& input) 
 			{ 
-				Systems::MaterialAsset* pMaterial = MaterialEditorModule::Get().NewShader(input);
+				Systems::MaterialAsset* pMaterial = MaterialEditorModule::Get().NewMaterial(input);
 
 				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 
@@ -269,7 +269,7 @@ namespace Editors
 
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
-		MaterialEditorModule::Get().SaveShader(id);
+		MaterialEditorModule::Get().SaveMaterial(id);
 
 		m_pShaderListModel->ClearShaderModified(id);
 	}
@@ -318,7 +318,7 @@ namespace Editors
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
-		bool res = MaterialEditorModule::Get().CompileShader(id);
+		bool res = MaterialEditorModule::Get().CompileMaterial(id);
 
 		RefreshPropertyGrid();
 
