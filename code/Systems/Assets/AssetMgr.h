@@ -9,6 +9,7 @@
 
 #include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetType.h"
+#include "Systems/Assets/AssetType/NewAssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Reflection/ReflectionMgr.h"
@@ -22,7 +23,6 @@
 namespace Systems
 {
 	class Asset;
-	class NewAssetType;
 
 	class AssetMgr : public Core::Singleton<AssetMgr>
 	{
@@ -38,7 +38,7 @@ namespace Systems
 		const Asset* CreateAsset(AssetType type, const std::string& name);
 
 		bool RegisterAssetMetadata(AssetMetadata& metadata);
-		void RegisterAssetType(const std::string& name);
+		template <typename T> void RegisterAssetType();
 
 		const Asset* GetAsset(AssetId id) const;
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
@@ -61,6 +61,7 @@ namespace Systems
 		bool SaveTableOfContent() const;
 
 		bool SaveMetadataTable() const;
+		bool LoadMetadataTable();
 
 	private:
 		std::string m_root; //location of toc.txt
@@ -90,8 +91,14 @@ namespace Systems
 		std::string ConstructAssetPath(AssetId id, AssetType type) const;
 
 		bool LoadTableOfContent();
-		bool LoadMetadataTable();
 
 		std::string GetMetadataTableFilePath() const;
 	};
+
+	template <typename T> void AssetMgr::RegisterAssetType()
+	{
+		const std::string& name = T::GetAssetTypeName();
+		Core::Sid sid = T::GetAssetTypeNameSid();
+		m_assetTypes[sid] = NewAssetType(name, sid);
+	}
 }

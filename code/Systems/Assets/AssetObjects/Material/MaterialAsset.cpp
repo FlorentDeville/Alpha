@@ -140,4 +140,16 @@ namespace Systems
 	{
 		return m_pPipelineState && m_pRs;
 	}
+
+	const std::string& MaterialAsset_v1::GetAssetTypeName()
+	{
+		static std::string name = "Material";
+		return name;
+	}
+
+	Core::Sid MaterialAsset_v1::GetAssetTypeNameSid()
+	{
+		static Core::Sid sid = SID(GetAssetTypeName());
+		return sid;
+	}
 }
