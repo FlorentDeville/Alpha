@@ -23,6 +23,8 @@ namespace Editors
 		m_pLabel = new Widgets::Label();
 		AddWidget(m_pLabel);
 
+		SetText("The status bar is alive!");
+
 		Core::LogModule::Get().OnLogAdded([this](const Core::LogModule::LogEntry& entry) { SetText(entry.m_text); });
 	}
 
