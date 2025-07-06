@@ -155,6 +155,7 @@ namespace Widgets
 				break;
 
 			case Vertical:
+			case Vertical_Reverse:
 				pWidget->SetY(pos);
 				if (m_defaultStyle.m_showBorder)
 					pWidget->SetX(m_defaultStyle.m_borderSize);
@@ -182,6 +183,24 @@ namespace Widgets
 
 				pos -= pWidget->GetWidth() - m_space.x;
 				pWidget->SetX(pos);
+
+				// Do not call Resize because it will change the size. 
+				// I only need ReComputePosition to compute the absolute position and ResizeChildren to recursively recompute the absolute position of children.
+				pWidget->ReComputePosition(m_absPos, contentSize);
+				pWidget->ResizeChildren();
+			}
+		}
+		else if (m_dir == Vertical_Reverse)
+		{
+			pos = contentSize.y;
+
+			for (Widget* pWidget : m_children)
+			{
+				if (!pWidget->IsEnabled())
+					continue;
+
+				pos -= pWidget->GetHeight() - m_space.y;
+				pWidget->SetY(pos);
 
 				// Do not call Resize because it will change the size. 
 				// I only need ReComputePosition to compute the absolute position and ResizeChildren to recursively recompute the absolute position of children.

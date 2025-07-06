@@ -12,7 +12,7 @@
 namespace Widgets
 {
 	Label::Label()
-		: Widget(0, 0, 0, 0)
+		: Widget(0, 20, 0, 0)
 		, m_fontScale(1)
 		, m_text()
 	{

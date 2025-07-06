@@ -17,7 +17,7 @@ namespace Widgets
 			Horizontal,				//left to right
 			Horizontal_Reverse,		//right to left
 			Vertical,				//top to bottom
-			//Vertical_Reverse		//bottom to top
+			Vertical_Reverse		//bottom to top
 		};
 
 		Layout();
