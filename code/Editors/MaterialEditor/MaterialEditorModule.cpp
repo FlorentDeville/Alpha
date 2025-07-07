@@ -78,10 +78,18 @@ namespace Editors
 		return pNewMaterial;
 	}
 
-	Systems::MaterialInstanceAsset* MaterialEditorModule::NewMaterialInstance(const std::string& virtualName)
+	Systems::MaterialInstanceAsset* MaterialEditorModule::NewMaterialInstance(const std::string& virtualName, Systems::NewAssetId baseMaterialId)
 	{
 		Systems::MaterialInstanceAsset* pNewMaterialInstance = Systems::AssetUtil::CreateAsset<Systems::MaterialInstanceAsset>(virtualName);
 		if (!pNewMaterialInstance)
+			return nullptr;
+
+		Systems::MaterialAsset* pBaseMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(baseMaterialId);
+		if (!pBaseMaterial)
+			return nullptr;
+
+		bool res = pNewMaterialInstance->InitialiseFromBaseMaterial(*pBaseMaterial);
+		if (!res)
 			return nullptr;
 
 		m_allMaterials.push_back(pNewMaterialInstance->GetId());

@@ -13,6 +13,16 @@ namespace Systems
 	MaterialInstanceAsset_v1::~MaterialInstanceAsset_v1()
 	{ }
 
+	bool MaterialInstanceAsset_v1::InitialiseFromBaseMaterial(Systems::MaterialAsset& baseMaterial)
+	{
+		m_material = baseMaterial.GetId();
+
+		const Core::Array<MaterialParameterDescription>& parameters = baseMaterial.GetMaterialParameterDescription();
+		m_perMaterialParameters = parameters;
+
+		return true;
+	}
+
 	const std::string& MaterialInstanceAsset_v1::GetAssetTypeName()
 	{
 		static std::string name = "MaterialInstance";

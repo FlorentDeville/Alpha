@@ -28,7 +28,7 @@ namespace Editors
 		void Init() override;
 
 		Systems::MaterialAsset* NewMaterial(const std::string& virtualName);
-		Systems::MaterialInstanceAsset* NewMaterialInstance(const std::string& virtualName);
+		Systems::MaterialInstanceAsset* NewMaterialInstance(const std::string& virtualName, Systems::NewAssetId baseMaterialId);
 
 		bool SaveMaterial(Systems::NewAssetId id);
 		bool DeleteMaterial(Systems::NewAssetId id);
