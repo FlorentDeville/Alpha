@@ -57,7 +57,8 @@ namespace Editors
 
 		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
 			{
-				if (metadata.GetAssetType() != MAKESID("Material"))
+				if (metadata.GetAssetType() != Systems::MaterialAsset::GetAssetTypeNameSid() &&
+					metadata.GetAssetType() != Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
 					return;
 
 				m_allMaterials.push_back(metadata.GetAssetId());

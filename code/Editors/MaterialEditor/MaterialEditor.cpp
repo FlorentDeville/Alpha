@@ -4,6 +4,8 @@
 
 #include "Editors/MaterialEditor/MaterialEditor.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/MaterialEditor/ShaderListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
@@ -26,6 +28,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/MeshAsset.h"
+//#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
@@ -162,21 +165,21 @@ namespace Editors
 
 		//add open button
 		{
-			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
-			//pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			pButtonLayout->AddWidget(pButton);
+			//Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
+			//pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
+			////pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
+			//pButtonLayout->AddWidget(pButton);
 
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
-			pButton->AddWidget(pLabel);
+			//Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
+			//pButton->AddWidget(pLabel);
 		}
 
 		{
-			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
+			/*Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 			pRightPanelLayout->AddWidget(pButton);
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Button");
-			pButton->AddWidget(pLabel);
+			pButton->AddWidget(pLabel);*/
 		}
 
 		//add property grid
@@ -191,14 +194,15 @@ namespace Editors
 			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());
 		}
 
-		//add log label
-		//m_pLogText = new Widgets::Text(1, "");
-		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		//pRightPanelLayout->AddWidget(m_pLogText);
-
 		MaterialEditorModule::Get().OnMaterialCreated([this](const Systems::AssetMetadata* pMetadata)
 			{
 				m_pShaderListModel->AddRow(pMetadata);
+			});
+
+		MaterialEditorModule::Get().OnMaterialInstanceCreated([this](const Systems::AssetMetadata* pMetadata)
+			{
+				m_pShaderListModel->AddRow(pMetadata);
+				m_pShaderListModel->SetShaderModified(pMetadata->GetAssetId());
 			});
 
 
@@ -230,6 +234,9 @@ namespace Editors
 			pNewItem->SetShortcut("Ctrl+N");
 			pNewItem->OnClick([this]() { MenuFile_NewMaterial_OnClicked(); });
 
+			Widgets::MenuItem* pNewInstanceItem = pFileMenu->AddMenuItem("New Material Instance...");
+			pNewInstanceItem->OnClick([this]() { MenuFile_NewMaterialInstance_OnClicked(); });
+
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Material");
 			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
@@ -256,6 +263,36 @@ namespace Editors
 				Widgets::SelectionRow selection(start, end);
 
 				pSelectionModel->SetSelectionRow(selection);
+			});
+		pDialog->Open();
+	}
+
+	void MaterialEditor::MenuFile_NewMaterialInstance_OnClicked()
+	{
+		//check first if the currently selected material is a base material
+		const Systems::AssetMetadata* pBaseMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		if (!pBaseMetadata)
+			return;
+
+		if (pBaseMetadata->GetAssetType() != Systems::MaterialAsset::GetAssetTypeNameSid())
+		{
+			Core::LogModule::Get().LogError("The selected material is not a base material.");
+			return;
+		}
+
+		UserInputDialog* pDialog = new UserInputDialog("New material instance name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				Systems::MaterialInstanceAsset* pMaterial = MaterialEditorModule::Get().NewMaterialInstance(input, m_selectedMaterialId);
+
+				/*Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+
+				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
+				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial->GetId());
+				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
+				Widgets::SelectionRow selection(start, end);
+
+				pSelectionModel->SetSelectionRow(selection);*/
 			});
 		pDialog->Open();
 	}
@@ -383,6 +420,9 @@ namespace Editors
 			return;
 
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+			return;
+
+		if (!Systems::AssetUtil::IsA<Systems::MaterialAsset>(m_selectedMaterialId))
 			return;
 
 		//world

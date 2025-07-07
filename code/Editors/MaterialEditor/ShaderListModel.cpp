@@ -7,6 +7,8 @@
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
 #include "Widgets/Models/ModelIndex.h"
 
@@ -77,6 +79,10 @@ namespace Editors
 			return pData->m_virtualName;
 			break;
 
+		case Columns::Base:
+			return pData->m_baseMaterial;
+			break;
+
 		case Columns::Modified:
 		{
 			if (pData->m_modified)
@@ -102,6 +108,10 @@ namespace Editors
 
 		case Columns::Name:
 			return "Name";
+			break;
+
+		case Columns::Base:
+			return "Base";
 			break;
 
 		case Columns::Modified:
@@ -183,6 +193,18 @@ namespace Editors
 		data.m_id = pMetadata->GetAssetId();
 		data.m_virtualName = pMetadata->GetVirtualName();
 		data.m_modified = false;
+		data.m_baseMaterial = "";
+
+		if (pMetadata->GetAssetType() == Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
+		{
+			Systems::MaterialInstanceAsset* pAsset = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(pMetadata->GetAssetId());
+			if (pAsset)
+			{
+				Systems::NewAssetId baseId = pAsset->GetBaseMaterialId();
+				if (const Systems::AssetMetadata* pBaseMetadata = Systems::AssetMgr::Get().GetMetadata(baseId))
+					data.m_baseMaterial = pBaseMetadata->GetVirtualName();
+			}
+		}
 	}
 
 	int ShaderListModel::FindCacheIndex(Systems::NewAssetId id) const
