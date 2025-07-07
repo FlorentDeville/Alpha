@@ -66,31 +66,30 @@ namespace Editors
 
 	Systems::MaterialAsset* MaterialEditorModule::NewMaterial(const std::string& virtualName)
 	{
-		Systems::MaterialAsset* pNewMaterial = Systems::CreateNewAsset<Systems::MaterialAsset>();
-		assert(pNewMaterial);
-
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.CreateContainer(virtualName.c_str());
-		pContainer->AddAsset(pNewMaterial);
-		bool res = containerMgr.SaveContainer(pContainer->GetId());
-		if (!res)
-			return nullptr;
-
-		Systems::AssetMetadata materialMetadata(pNewMaterial->GetId(), virtualName, Systems::MaterialAsset::GetAssetTypeNameSid());
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		res = assetMgr.RegisterAssetMetadata(materialMetadata);
-		if (!res)
-			return nullptr;
-
-		res = assetMgr.SaveMetadataTable();
-		if (!res)
+		Systems::MaterialAsset* pNewMaterial = Systems::AssetUtil::CreateAsset<Systems::MaterialAsset>(virtualName);
+		if (!pNewMaterial)
 			return nullptr;
 
 		m_allMaterials.push_back(pNewMaterial->GetId());
 
-		m_onMaterialCreated(&materialMetadata);
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pNewMaterial->GetId());
+		m_onMaterialCreated(pMetadata);
 
 		return pNewMaterial;
+	}
+
+	Systems::MaterialInstanceAsset* MaterialEditorModule::NewMaterialInstance(const std::string& virtualName)
+	{
+		Systems::MaterialInstanceAsset* pNewMaterialInstance = Systems::AssetUtil::CreateAsset<Systems::MaterialInstanceAsset>(virtualName);
+		if (!pNewMaterialInstance)
+			return nullptr;
+
+		m_allMaterials.push_back(pNewMaterialInstance->GetId());
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pNewMaterialInstance->GetId());
+		m_onMaterialInstanceCreated(pMetadata);
+
+		return pNewMaterialInstance;
 	}
 
 	bool MaterialEditorModule::SaveMaterial(Systems::NewAssetId id)

@@ -9,6 +9,7 @@
 #include "Core/Callbacks/CallbackMacro.h"
 
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include <string>
@@ -27,6 +28,8 @@ namespace Editors
 		void Init() override;
 
 		Systems::MaterialAsset* NewMaterial(const std::string& virtualName);
+		Systems::MaterialInstanceAsset* NewMaterialInstance(const std::string& virtualName);
+
 		bool SaveMaterial(Systems::NewAssetId id);
 		bool DeleteMaterial(Systems::NewAssetId id);
 
@@ -34,7 +37,8 @@ namespace Editors
 
 		bool CompileMaterial(Systems::NewAssetId id);
 
-		EVENT_DECL(MaterialCreated, void(Systems::AssetMetadata* pMetadata));
+		EVENT_DECL(MaterialCreated, void(const Systems::AssetMetadata* pMetadata));
+		EVENT_DECL(MaterialInstanceCreated, void(const Systems::AssetMetadata* pMetadata));
 
 	private:
 		std::vector<Systems::NewAssetId> m_allMaterials;
