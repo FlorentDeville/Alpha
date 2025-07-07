@@ -226,21 +226,21 @@ namespace Editors
 		{
 			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 
-			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
+			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Material...");
 			pNewItem->SetShortcut("Ctrl+N");
-			pNewItem->OnClick([this]() { MenuFile_NewShader_OnClicked(); });
+			pNewItem->OnClick([this]() { MenuFile_NewMaterial_OnClicked(); });
 
-			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
+			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Material");
 			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
 
-			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Shader");
+			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
 			pDeleteItem->SetShortcut("Del");
 			pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
 		}
 	}
 
-	void MaterialEditor::MenuFile_NewShader_OnClicked()
+	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
