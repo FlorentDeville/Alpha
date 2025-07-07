@@ -23,6 +23,11 @@ namespace Systems
 		return true;
 	}
 
+	NewAssetId MaterialInstanceAsset_v1::GetBaseMaterialId() const
+	{
+		return m_material;
+	}
+
 	const std::string& MaterialInstanceAsset_v1::GetAssetTypeName()
 	{
 		static std::string name = "MaterialInstance";

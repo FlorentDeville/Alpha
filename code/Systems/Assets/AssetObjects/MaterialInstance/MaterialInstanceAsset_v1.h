@@ -22,6 +22,8 @@ namespace Systems
 
 		bool InitialiseFromBaseMaterial(MaterialAsset& baseMaterial);
 
+		NewAssetId GetBaseMaterialId() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
