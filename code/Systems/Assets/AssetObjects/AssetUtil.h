@@ -28,6 +28,8 @@ namespace Systems
 		template<class T> static T* LoadAsset(NewAssetId id);
 
 		template<class T> static T* CreateAsset(const std::string& virtualName);
+
+		template<class T> static bool IsA(NewAssetId id);
 	};
 
 	template<class T> T* AssetUtil::GetAsset(NewAssetId id)
@@ -64,5 +66,17 @@ namespace Systems
 			return nullptr;
 
 		return pAsset;
+	}
+
+	template<class T> bool AssetUtil::IsA(NewAssetId id)
+	{
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		if (pMetadata->GetAssetType() == T::GetAssetTypeNameSid())
+			return true;
+
+		return false;
 	}
 }
