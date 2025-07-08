@@ -162,25 +162,6 @@ namespace Editors
 			pButton->AddWidget(pLabel);
 		}
 
-		//add open button
-		{
-			//Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			//pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
-			////pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			//pButtonLayout->AddWidget(pButton);
-
-			//Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
-			//pButton->AddWidget(pLabel);
-		}
-
-		{
-			/*Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
-			pRightPanelLayout->AddWidget(pButton);
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Button");
-			pButton->AddWidget(pLabel);*/
-		}
-
 		//add property grid
 		{
 			m_pPropertyGrid = new PropertyGridWidget();
@@ -202,6 +183,11 @@ namespace Editors
 			{
 				m_pMaterialListModel->AddRow(pMetadata);
 				m_pMaterialListModel->SetShaderModified(pMetadata->GetAssetId());
+			});
+
+		MaterialEditorModule::Get().OnMaterialRenamed([this](const Systems::AssetMetadata& metadata, const std::string& oldName)
+			{
+				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
 
 
