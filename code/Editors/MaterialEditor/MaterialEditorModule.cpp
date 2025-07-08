@@ -53,7 +53,16 @@ namespace Editors
 
 	void MaterialEditorModule::Init()
 	{
-		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		
+		assetMgr.OnAssetRenamed([this](const Systems::AssetMetadata& metadata, const std::string& oldName)
+			{
+				if (metadata.GetAssetType() != Systems::MaterialAsset::GetAssetTypeNameSid() &&
+					metadata.GetAssetType() != Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
+					return;
+
+				m_onMaterialRenamed(metadata, oldName);
+			});
 
 		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
 			{
@@ -99,6 +108,15 @@ namespace Editors
 		m_onMaterialInstanceCreated(pMetadata);
 
 		return pNewMaterialInstance;
+	}
+
+	void MaterialEditorModule::RenameMaterial(Systems::NewAssetId id, const std::string newName)
+	{
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		assetMgr.RenameAsset(id, newName);
+		assetMgr.SaveMetadataTable();
+
+		//Do not call m_onMaterialRenamed here. It will be called when AssetManager::OnAssetRenamed will be called.
 	}
 
 	bool MaterialEditorModule::SaveMaterial(Systems::NewAssetId id)
