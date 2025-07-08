@@ -142,6 +142,24 @@ namespace Editors
 		std::vector<CachedShaderData>::const_iterator it = m_cache.cbegin() + cacheIndex;
 		m_cache.erase(it);
 
+		if (Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id))
+		{
+			if (pMetadata->GetAssetType() == Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
+			{
+				Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
+				if (pMaterialInstance)
+				{
+					std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(pMaterialInstance->GetBaseMaterialId());
+					if (it != m_baseToInstance.end())
+					{
+						Core::Array<Systems::NewAssetId>::Iterator newEndIt = std::remove(it->second.begin(), it->second.end(), id);
+						uint64_t size = std::distance(it->second.begin(), newEndIt);
+						it->second.Resize(static_cast<uint32_t>(size));
+					}
+				}
+			}
+		}
+
 		RemoveRows(cacheIndex, 1, Widgets::ModelIndex());
 	}
 
@@ -169,6 +187,38 @@ namespace Editors
 
 		m_cache[cacheIndex].m_modified = false;
 		m_onDataChanged(GetIndex(cacheIndex, Columns::Modified, Widgets::ModelIndex()));
+	}
+
+	void MaterialListModel::OnMaterialRenamed(const Systems::AssetMetadata& metadata)
+	{
+		//first update the cache
+		int cacheIndex = FindCacheIndex(metadata.GetAssetId());
+		if (cacheIndex == -1)
+			return;
+
+		m_cache[cacheIndex].m_virtualName = metadata.GetVirtualName();
+
+		Widgets::ModelIndex index = GetIndex(metadata.GetAssetId());
+		index = index.GetSiblingAtColumn(Columns::Name);
+		m_onDataChanged(index);
+
+		//now update the base name for the material instance
+		std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(metadata.GetAssetId());
+		if (it != m_baseToInstance.end())
+		{
+			Core::Array<Systems::NewAssetId>& materialInstanceArray = it->second;
+			for (const Systems::NewAssetId materialInstanceId : materialInstanceArray)
+			{
+				int materialInstanceCacheIndex = FindCacheIndex(materialInstanceId);
+				if (materialInstanceCacheIndex == -1)
+					continue;
+
+				m_cache[materialInstanceCacheIndex].m_baseMaterial = metadata.GetVirtualName();
+				Widgets::ModelIndex materialInstanceModelIndex = GetIndex(materialInstanceId);
+				materialInstanceModelIndex = materialInstanceModelIndex.GetSiblingAtColumn(Columns::Base);
+				m_onDataChanged(materialInstanceModelIndex);
+			}
+		}
 	}
 
 	Systems::NewAssetId MaterialListModel::GetAssetId(const Widgets::ModelIndex& index) const
@@ -202,7 +252,10 @@ namespace Editors
 			{
 				Systems::NewAssetId baseId = pAsset->GetBaseMaterialId();
 				if (const Systems::AssetMetadata* pBaseMetadata = Systems::AssetMgr::Get().GetMetadata(baseId))
+				{
 					data.m_baseMaterial = pBaseMetadata->GetVirtualName();
+					m_baseToInstance[baseId].PushBack(pMetadata->GetAssetId());
+				}
 			}
 		}
 	}

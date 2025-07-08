@@ -71,6 +71,12 @@ namespace Widgets
 				m_vkeyCodes[m_keyCount] = Os::VKeyCodes::Delete;
 				++m_keyCount;
 			}
+			else if (strlen(token) > 1 && token[0] == 'F') //F keys, F1, F2, etc
+			{
+				int number = atoi(token + 1) - 1;
+				m_vkeyCodes[m_keyCount] = Os::VKeyCodes::Vk_F1 + number;
+				++m_keyCount;
+			}
 			else if (strlen(token) == 1) //single character
 			{
 				char singleCharacter = token[0];

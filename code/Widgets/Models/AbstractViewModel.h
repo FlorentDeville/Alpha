@@ -39,6 +39,7 @@ namespace Widgets
 		//call this after removing the rows from the model
 		void RemoveRows(int start, int count, const ModelIndex& parent);
 
+		//Event called when the model has changed a value and the view needs to be refreshed.
 		EVENT_DECL(DataChanged, void(const ModelIndex& index))
 
 	private:

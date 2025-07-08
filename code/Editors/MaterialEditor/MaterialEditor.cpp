@@ -162,25 +162,6 @@ namespace Editors
 			pButton->AddWidget(pLabel);
 		}
 
-		//add open button
-		{
-			//Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			//pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
-			////pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			//pButtonLayout->AddWidget(pButton);
-
-			//Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
-			//pButton->AddWidget(pLabel);
-		}
-
-		{
-			/*Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
-			pRightPanelLayout->AddWidget(pButton);
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Button");
-			pButton->AddWidget(pLabel);*/
-		}
-
 		//add property grid
 		{
 			m_pPropertyGrid = new PropertyGridWidget();
@@ -202,6 +183,11 @@ namespace Editors
 			{
 				m_pMaterialListModel->AddRow(pMetadata);
 				m_pMaterialListModel->SetShaderModified(pMetadata->GetAssetId());
+			});
+
+		MaterialEditorModule::Get().OnMaterialRenamed([this](const Systems::AssetMetadata& metadata, const std::string& oldName)
+			{
+				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
 
 
@@ -239,6 +225,10 @@ namespace Editors
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Material");
 			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
+
+			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename Material");
+			pRenameItem->SetShortcut("F2");
+			pRenameItem->OnClick([this]() { MenuFile_Rename_OnClicked(); });
 
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
 			pDeleteItem->SetShortcut("Del");
@@ -318,6 +308,22 @@ namespace Editors
 		//Ask confirmation
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
 		pDialog->OnOk([this]() { DeleteSelectedShader(); });
+		pDialog->Open();
+	}
+
+	void MaterialEditor::MenuFile_Rename_OnClicked()
+	{
+		if (!m_selectedMaterialId.IsValid())
+		{
+			Core::LogModule::Get().LogError("You need to select a material to rename.");
+			return;
+		}
+
+		UserInputDialog* pDialog = new UserInputDialog("New name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				MaterialEditorModule::Get().RenameMaterial(m_selectedMaterialId, input);
+			});
 		pDialog->Open();
 	}
 

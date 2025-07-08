@@ -133,6 +133,15 @@ namespace Systems
 		return &it->second;
 	}
 
+	AssetMetadata* AssetMgr::GetMetadata(NewAssetId id)
+	{
+		std::map<NewAssetId, AssetMetadata>::iterator it = m_metadata.find(id);
+		if (it == m_metadata.cend())
+			return nullptr;
+
+		return &it->second;
+	}
+
 	bool AssetMgr::DeleteMetadata(NewAssetId id)
 	{
 		m_metadata.erase(id);
@@ -190,6 +199,18 @@ namespace Systems
 			if (pair.second.GetAssetType() == assetTypeSid)
 				metadata.PushBack(&pair.second);
 		}
+	}
+
+	void AssetMgr::RenameAsset(NewAssetId id, const std::string& newName)
+	{
+		AssetMetadata* pMetadata = GetMetadata(id);
+		if (!pMetadata)
+			return;
+
+		std::string oldName = pMetadata->GetVirtualName();
+		pMetadata->SetVirtualName(newName);
+
+		m_onAssetRenamed(*pMetadata, oldName);
 	}
 
 	bool AssetMgr::SaveTableOfContent() const

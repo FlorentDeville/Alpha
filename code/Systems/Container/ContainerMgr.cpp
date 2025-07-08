@@ -56,7 +56,7 @@ namespace Systems
 		{
 			++ii;
 			++startSid;
-			ContainerId cid(startSid);
+			cid = ContainerId(startSid);
 			it = m_containerMap.find(cid);
 		}
 

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Collections/Array.h"
 #include "Core/Singleton.h"
 
@@ -23,6 +24,7 @@
 namespace Systems
 {
 	class Asset;
+	class AssetMetadata;
 
 	class AssetMgr : public Core::Singleton<AssetMgr>
 	{
@@ -44,6 +46,8 @@ namespace Systems
 		const std::vector<Asset*>& GetAssets(AssetType type) const;
 
 		const AssetMetadata* GetMetadata(NewAssetId id) const;
+		AssetMetadata* GetMetadata(NewAssetId id);
+
 		bool DeleteMetadata(NewAssetId id);
 
 		void ForEachMetadata(std::function<void(const Systems::AssetMetadata& metadata)> function) const;
@@ -58,10 +62,14 @@ namespace Systems
 
 		void GetAssets(Core::Sid assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const;
 
+		void RenameAsset(NewAssetId id, const std::string& newName);
+
 		bool SaveTableOfContent() const;
 
 		bool SaveMetadataTable() const;
 		bool LoadMetadataTable();
+		
+		EVENT_DECL(AssetRenamed, void(const AssetMetadata& metadata, const std::string& oldName))
 
 	private:
 		std::string m_root; //location of toc.txt

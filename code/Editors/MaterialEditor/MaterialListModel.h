@@ -47,6 +47,8 @@ namespace Editors
 		void SetShaderModified(Systems::NewAssetId id);
 		void ClearShaderModified(Systems::NewAssetId id);
 
+		void OnMaterialRenamed(const Systems::AssetMetadata& metadata);
+
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
@@ -61,6 +63,9 @@ namespace Editors
 		};
 
 		std::vector<CachedShaderData> m_cache;
+
+		//Map between base material and all the instance material using it as a base
+		std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>> m_baseToInstance;
 
 		void AddToCache(const Systems::AssetMetadata* pMetadata);
 
