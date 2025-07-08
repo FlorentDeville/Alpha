@@ -13,11 +13,12 @@ namespace Systems
 	MaterialInstanceAsset_v1::~MaterialInstanceAsset_v1()
 	{ }
 
-	bool MaterialInstanceAsset_v1::InitialiseFromBaseMaterial(Systems::MaterialAsset& baseMaterial)
+	bool MaterialInstanceAsset_v1::InitialiseFromBaseMaterial(Systems::MaterialAsset* pBaseMaterial)
 	{
-		m_material = baseMaterial.GetId();
+		m_pBaseMaterial = pBaseMaterial;
+		m_material = pBaseMaterial->GetId();
 
-		const Core::Array<MaterialParameterDescription>& parameters = baseMaterial.GetMaterialParameterDescription();
+		const Core::Array<MaterialParameterDescription>& parameters = pBaseMaterial->GetMaterialParameterDescription();
 		m_perMaterialParameters = parameters;
 
 		return true;

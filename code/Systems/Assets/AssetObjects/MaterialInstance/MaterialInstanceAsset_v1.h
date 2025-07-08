@@ -20,7 +20,7 @@ namespace Systems
 		MaterialInstanceAsset_v1();
 		~MaterialInstanceAsset_v1();
 
-		bool InitialiseFromBaseMaterial(MaterialAsset& baseMaterial);
+		bool InitialiseFromBaseMaterial(MaterialAsset* pBaseMaterial);
 
 		NewAssetId GetBaseMaterialId() const;
 
@@ -30,6 +30,11 @@ namespace Systems
 	private:
 		NewAssetId m_material;
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
+
+		//Non-reflected data
+
+		//Cached pointer to the base material
+		Systems::MaterialAsset* m_pBaseMaterial;
 
 		START_REFLECTION(Systems::MaterialInstanceAsset_v1)
 			ADD_BASETYPE(Systems::AssetObject)

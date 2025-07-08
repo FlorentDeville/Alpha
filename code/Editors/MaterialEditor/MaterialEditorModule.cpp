@@ -89,7 +89,7 @@ namespace Editors
 		if (!pBaseMaterial)
 			return nullptr;
 
-		bool res = pNewMaterialInstance->InitialiseFromBaseMaterial(*pBaseMaterial);
+		bool res = pNewMaterialInstance->InitialiseFromBaseMaterial(pBaseMaterial);
 		if (!res)
 			return nullptr;
 
