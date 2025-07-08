@@ -35,4 +35,9 @@ namespace Systems
 	{
 		return m_assetType;
 	}
+
+	void AssetMetadata::SetVirtualName(const std::string& virtualName)
+	{
+		m_virtualName = virtualName;
+	}
 }

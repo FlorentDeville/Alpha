@@ -23,6 +23,8 @@ namespace Systems
 		const std::string GetVirtualName() const;
 		Core::Sid GetAssetType() const;
 
+		void SetVirtualName(const std::string& virtualName);
+
 	private:
 		NewAssetId m_id;
 		std::string m_virtualName;
