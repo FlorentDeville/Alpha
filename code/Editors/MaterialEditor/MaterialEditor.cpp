@@ -240,6 +240,10 @@ namespace Editors
 			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
 
+			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename Material");
+			pRenameItem->SetShortcut("F2");
+			pRenameItem->OnClick([this]() { MenuFile_Rename_OnClicked(); });
+
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
 			pDeleteItem->SetShortcut("Del");
 			pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
@@ -318,6 +322,22 @@ namespace Editors
 		//Ask confirmation
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
 		pDialog->OnOk([this]() { DeleteSelectedShader(); });
+		pDialog->Open();
+	}
+
+	void MaterialEditor::MenuFile_Rename_OnClicked()
+	{
+		if (!m_selectedMaterialId.IsValid())
+		{
+			Core::LogModule::Get().LogError("You need to select a material to rename.");
+			return;
+		}
+
+		UserInputDialog* pDialog = new UserInputDialog("New name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				MaterialEditorModule::Get().RenameMaterial(m_selectedMaterialId, input);
+			});
 		pDialog->Open();
 	}
 
