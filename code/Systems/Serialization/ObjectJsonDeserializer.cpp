@@ -143,9 +143,7 @@ namespace Systems
 			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(ptr);
 
 			std::string valueStr = jsonFieldValue.GetValueAsString();
-			std::stringstream ss(valueStr);
-			size_t value = 0;
-			ss >> value;
+			uint64_t value = Core::HexaToUint64(valueStr);
 
 			new (pValue) Systems::AssetId(value);
 		}

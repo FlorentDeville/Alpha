@@ -49,6 +49,7 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Loader.h"
 
@@ -646,6 +647,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.Init(configuration.m_dataRoot);
 	assetMgr.RegisterAssetType<Systems::MeshAsset>();
 	assetMgr.RegisterAssetType<Systems::MaterialAsset>();
+	assetMgr.RegisterAssetType<Systems::MaterialInstanceAsset>();
 	assetMgr.LoadMetadataTable();
 	
 

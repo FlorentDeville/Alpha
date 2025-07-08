@@ -9,6 +9,7 @@
 #include "Core/Callbacks/CallbackMacro.h"
 
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include <string>
@@ -26,17 +27,20 @@ namespace Editors
 	public:
 		void Init() override;
 
-		Systems::MaterialAsset* NewShader(const std::string& virtualName);
-		bool SaveShader(Systems::NewAssetId id);
-		bool DeleteShader(Systems::NewAssetId id);
+		Systems::MaterialAsset* NewMaterial(const std::string& virtualName);
+		Systems::MaterialInstanceAsset* NewMaterialInstance(const std::string& virtualName, Systems::NewAssetId baseMaterialId);
 
-		const std::vector<Systems::NewAssetId>& GetAllShaders() const;
+		bool SaveMaterial(Systems::NewAssetId id);
+		bool DeleteMaterial(Systems::NewAssetId id);
 
-		bool CompileShader(Systems::NewAssetId id);
+		const std::vector<Systems::NewAssetId>& GetAllMaterials() const;
 
-		EVENT_DECL(ShaderCreated, void(Systems::AssetMetadata* pMetadata));
+		bool CompileMaterial(Systems::NewAssetId id);
+
+		EVENT_DECL(MaterialCreated, void(const Systems::AssetMetadata* pMetadata));
+		EVENT_DECL(MaterialInstanceCreated, void(const Systems::AssetMetadata* pMetadata));
 
 	private:
-		std::vector<Systems::NewAssetId> m_allShaders;
+		std::vector<Systems::NewAssetId> m_allMaterials;
 	};
 }

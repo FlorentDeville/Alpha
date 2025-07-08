@@ -4,6 +4,8 @@
 
 #include "Editors/MaterialEditor/MaterialEditor.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/MaterialEditor/ShaderListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
@@ -26,6 +28,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/MeshAsset.h"
+//#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
@@ -162,21 +165,21 @@ namespace Editors
 
 		//add open button
 		{
-			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
-			//pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
-			pButtonLayout->AddWidget(pButton);
+			//Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
+			//pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
+			////pButton->OnClick([this, ii](int x, int y) -> bool { OnMeshEntryClicked(ii); return true; });
+			//pButtonLayout->AddWidget(pButton);
 
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
-			pButton->AddWidget(pLabel);
+			//Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Open...");
+			//pButton->AddWidget(pLabel);
 		}
 
 		{
-			Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
+			/*Widgets::Button* pButton = new Widgets::Button(50, 0, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 			pRightPanelLayout->AddWidget(pButton);
 			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Button");
-			pButton->AddWidget(pLabel);
+			pButton->AddWidget(pLabel);*/
 		}
 
 		//add property grid
@@ -191,14 +194,15 @@ namespace Editors
 			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());
 		}
 
-		//add log label
-		//m_pLogText = new Widgets::Text(1, "");
-		//m_pLogText->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		//pRightPanelLayout->AddWidget(m_pLogText);
-
-		MaterialEditorModule::Get().OnShaderCreated([this](const Systems::AssetMetadata* pMetadata)
+		MaterialEditorModule::Get().OnMaterialCreated([this](const Systems::AssetMetadata* pMetadata)
 			{
 				m_pShaderListModel->AddRow(pMetadata);
+			});
+
+		MaterialEditorModule::Get().OnMaterialInstanceCreated([this](const Systems::AssetMetadata* pMetadata)
+			{
+				m_pShaderListModel->AddRow(pMetadata);
+				m_pShaderListModel->SetShaderModified(pMetadata->GetAssetId());
 			});
 
 
@@ -226,27 +230,30 @@ namespace Editors
 		{
 			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
 
-			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Shader...");
+			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Material...");
 			pNewItem->SetShortcut("Ctrl+N");
-			pNewItem->OnClick([this]() { MenuFile_NewShader_OnClicked(); });
+			pNewItem->OnClick([this]() { MenuFile_NewMaterial_OnClicked(); });
 
-			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Shader");
+			Widgets::MenuItem* pNewInstanceItem = pFileMenu->AddMenuItem("New Material Instance...");
+			pNewInstanceItem->OnClick([this]() { MenuFile_NewMaterialInstance_OnClicked(); });
+
+			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Material");
 			pSaveItem->SetShortcut("Ctrl+S");
 			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
 
-			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Shader");
+			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
 			pDeleteItem->SetShortcut("Del");
 			pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
 		}
 	}
 
-	void MaterialEditor::MenuFile_NewShader_OnClicked()
+	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
 		pDialog->OnInputValidated([this](const std::string& input) 
 			{ 
-				Systems::MaterialAsset* pMaterial = MaterialEditorModule::Get().NewShader(input);
+				Systems::MaterialAsset* pMaterial = MaterialEditorModule::Get().NewMaterial(input);
 
 				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
 
@@ -260,6 +267,36 @@ namespace Editors
 		pDialog->Open();
 	}
 
+	void MaterialEditor::MenuFile_NewMaterialInstance_OnClicked()
+	{
+		//check first if the currently selected material is a base material
+		const Systems::AssetMetadata* pBaseMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		if (!pBaseMetadata)
+			return;
+
+		if (pBaseMetadata->GetAssetType() != Systems::MaterialAsset::GetAssetTypeNameSid())
+		{
+			Core::LogModule::Get().LogError("The selected material is not a base material.");
+			return;
+		}
+
+		UserInputDialog* pDialog = new UserInputDialog("New material instance name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				Systems::MaterialInstanceAsset* pMaterial = MaterialEditorModule::Get().NewMaterialInstance(input, m_selectedMaterialId);
+
+				/*Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+
+				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
+				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial->GetId());
+				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
+				Widgets::SelectionRow selection(start, end);
+
+				pSelectionModel->SetSelectionRow(selection);*/
+			});
+		pDialog->Open();
+	}
+
 	void MaterialEditor::MenuFile_Save_OnClicked()
 	{
 		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
@@ -269,7 +306,7 @@ namespace Editors
 
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
-		MaterialEditorModule::Get().SaveShader(id);
+		MaterialEditorModule::Get().SaveMaterial(id);
 
 		m_pShaderListModel->ClearShaderModified(id);
 	}
@@ -318,7 +355,7 @@ namespace Editors
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
 
-		bool res = MaterialEditorModule::Get().CompileShader(id);
+		bool res = MaterialEditorModule::Get().CompileMaterial(id);
 
 		RefreshPropertyGrid();
 
@@ -416,22 +453,47 @@ namespace Editors
 
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
-		if (pMaterial && pMaterial->IsValidForRendering())
+		bool isBaseMaterial = Systems::AssetUtil::IsA<Systems::MaterialAsset>(m_selectedMaterialId);
+		if (isBaseMaterial)
 		{
-			Rendering::PerObjectCBuffer perObjectData(world);
+			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
+			if (pMaterial && pMaterial->IsValidForRendering())
+			{
+				Rendering::PerObjectCBuffer perObjectData(world);
 
-			DirectX::XMFLOAT3 cameraPosFloat3;
-			DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
-			Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+				DirectX::XMFLOAT3 cameraPosFloat3;
+				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-			Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
-			Rendering::LightsCBuffer lights(dirLight);
+				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+				Rendering::LightsCBuffer lights(dirLight);
 
-			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
+				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
-			const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
-			renderer.RenderMesh(*pMesh);
+				const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
+				renderer.RenderMesh(*pMesh);
+			}
+		}
+		else if (Systems::AssetUtil::IsA<Systems::MaterialInstanceAsset>(m_selectedMaterialId))
+		{
+			const Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(m_selectedMaterialId);
+			const Systems::MaterialAsset* pMaterial = pMaterialInstance->GetBaseMaterial();
+			if (pMaterial && pMaterial->IsValidForRendering())
+			{
+				Rendering::PerObjectCBuffer perObjectData(world);
+
+				DirectX::XMFLOAT3 cameraPosFloat3;
+				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+
+				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+				Rendering::LightsCBuffer lights(dirLight);
+
+				Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
+
+				const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
+				renderer.RenderMesh(*pMesh);
+			}
 		}
 	}
 

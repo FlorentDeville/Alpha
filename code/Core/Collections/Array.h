@@ -131,8 +131,19 @@ namespace Core
 
 		void operator=(const Array& source)
 		{
+			//clean up existing memory
+			for (uint32_t ii = 0; ii < m_size; ++ii)
+				m_pStart[ii].~T();
+
+			delete[] m_pStart;
+
+			m_size = 0;
+			m_reservedSize = 0;
+
 			Resize(source.GetSize());
-			memcpy(m_pStart, source.m_pStart, sizeof(T) * m_size);
+
+			for (uint32_t ii = 0; ii < m_size; ++ii)
+				m_pStart[ii] = source[ii];
 		}
 
 		void operator=(Array&& source)
@@ -196,8 +207,11 @@ namespace Core
 
 		if (m_size > oldSize)
 		{
-			for(uint32_t ii = oldSize; ii < m_size; ++ii)
-				memcpy(m_pStart + (sizeof(T) * ii), &value, sizeof(value));
+			for (uint32_t ii = oldSize; ii < m_size; ++ii)
+			{
+				// m_pStart is a T*, so I can just increase the pointer
+				memcpy(m_pStart + ii, &value, sizeof(value));
+			}
 		}
 	}
 

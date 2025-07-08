@@ -71,7 +71,8 @@ namespace Editors
 
 		void CreateMenu(Widgets::Widget* pParent);
 
-		void MenuFile_NewShader_OnClicked();
+		void MenuFile_NewMaterial_OnClicked();
+		void MenuFile_NewMaterialInstance_OnClicked();
 		void MenuFile_Save_OnClicked();
 		void MenuFile_Delete_OnClicked();
 

@@ -23,6 +23,7 @@ namespace Editors
 		{
 			Id = 0,
 			Name,
+			Base,
 			Modified,
 
 			Count
@@ -55,6 +56,7 @@ namespace Editors
 		{
 			Systems::NewAssetId m_id;
 			std::string m_virtualName;
+			std::string m_baseMaterial; //only for material instance
 			bool m_modified;
 		};
 

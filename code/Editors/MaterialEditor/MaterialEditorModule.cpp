@@ -57,69 +57,77 @@ namespace Editors
 
 		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
 			{
-				if (metadata.GetAssetType() != MAKESID("Material"))
+				if (metadata.GetAssetType() != Systems::MaterialAsset::GetAssetTypeNameSid() &&
+					metadata.GetAssetType() != Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
 					return;
 
-				m_allShaders.push_back(metadata.GetAssetId());
+				m_allMaterials.push_back(metadata.GetAssetId());
 			});
 	}
 
-	Systems::MaterialAsset* MaterialEditorModule::NewShader(const std::string& virtualName)
+	Systems::MaterialAsset* MaterialEditorModule::NewMaterial(const std::string& virtualName)
 	{
-		Systems::MaterialAsset* pNewMaterial = Systems::CreateNewAsset<Systems::MaterialAsset>();
-		assert(pNewMaterial);
-
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.CreateContainer(virtualName.c_str());
-		pContainer->AddAsset(pNewMaterial);
-		bool res = containerMgr.SaveContainer(pContainer->GetId());
-		if (!res)
+		Systems::MaterialAsset* pNewMaterial = Systems::AssetUtil::CreateAsset<Systems::MaterialAsset>(virtualName);
+		if (!pNewMaterial)
 			return nullptr;
 
-		Systems::AssetMetadata materialMetadata(pNewMaterial->GetId(), virtualName, MAKESID("Material"));
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		res = assetMgr.RegisterAssetMetadata(materialMetadata);
-		if (!res)
-			return nullptr;
+		m_allMaterials.push_back(pNewMaterial->GetId());
 
-		res = assetMgr.SaveMetadataTable();
-		if (!res)
-			return nullptr;
-
-		m_allShaders.push_back(pNewMaterial->GetId());
-
-		m_onShaderCreated(&materialMetadata);
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pNewMaterial->GetId());
+		m_onMaterialCreated(pMetadata);
 
 		return pNewMaterial;
 	}
 
-	bool MaterialEditorModule::SaveShader(Systems::NewAssetId id)
+	Systems::MaterialInstanceAsset* MaterialEditorModule::NewMaterialInstance(const std::string& virtualName, Systems::NewAssetId baseMaterialId)
+	{
+		Systems::MaterialInstanceAsset* pNewMaterialInstance = Systems::AssetUtil::CreateAsset<Systems::MaterialInstanceAsset>(virtualName);
+		if (!pNewMaterialInstance)
+			return nullptr;
+
+		Systems::MaterialAsset* pBaseMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(baseMaterialId);
+		if (!pBaseMaterial)
+			return nullptr;
+
+		bool res = pNewMaterialInstance->InitialiseFromBaseMaterial(pBaseMaterial);
+		if (!res)
+			return nullptr;
+
+		m_allMaterials.push_back(pNewMaterialInstance->GetId());
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pNewMaterialInstance->GetId());
+		m_onMaterialInstanceCreated(pMetadata);
+
+		return pNewMaterialInstance;
+	}
+
+	bool MaterialEditorModule::SaveMaterial(Systems::NewAssetId id)
 	{
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		bool res = containerMgr.SaveContainer(id.GetContainerId());
 		return res;
 	}
 
-	bool MaterialEditorModule::DeleteShader(Systems::NewAssetId id)
+	bool MaterialEditorModule::DeleteMaterial(Systems::NewAssetId id)
 	{
 		bool res = Systems::AssetUtil::DeleteAsset(id);
 		if (!res)
 			return false;
 
-		std::vector<Systems::NewAssetId>::const_iterator it = std::find(m_allShaders.cbegin(), m_allShaders.cend(), id);
-		if (it == m_allShaders.cend())
+		std::vector<Systems::NewAssetId>::const_iterator it = std::find(m_allMaterials.cbegin(), m_allMaterials.cend(), id);
+		if (it == m_allMaterials.cend())
 			return true;
 
-		m_allShaders.erase(it);
+		m_allMaterials.erase(it);
 		return true;
 	}
 
-	const std::vector<Systems::NewAssetId>& MaterialEditorModule::GetAllShaders() const
+	const std::vector<Systems::NewAssetId>& MaterialEditorModule::GetAllMaterials() const
 	{
-		return m_allShaders;
+		return m_allMaterials;
 	}
 
-	bool MaterialEditorModule::CompileShader(Systems::NewAssetId id)
+	bool MaterialEditorModule::CompileMaterial(Systems::NewAssetId id)
 	{
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());

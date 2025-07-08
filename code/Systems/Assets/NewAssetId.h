@@ -29,6 +29,8 @@ namespace Systems
 		ContainerId GetContainerId() const;
 		ObjectId GetObjectId() const;
 
+		bool IsValid() const;
+
 		bool operator<(NewAssetId other) const;
 		bool operator==(NewAssetId other) const;
 		bool operator!=(NewAssetId other) const;
