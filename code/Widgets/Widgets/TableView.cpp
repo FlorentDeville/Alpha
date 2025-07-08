@@ -27,6 +27,7 @@ namespace Widgets
 		, m_headerBackgroundColor(TableViewStyle::s_headerBackgroundColor)
 		, m_multiSelectionEnabled(false)
 		, m_cellDefaultSize(75, 20)
+		, m_columnWidth()
 	{
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
@@ -63,6 +64,8 @@ namespace Widgets
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected) { OnSelectionChanged_SelectionModel(selected, deselected); });
 
+		m_columnWidth.Resize(static_cast<uint32_t>(m_pModel->GetColumnCount(Widgets::ModelIndex())), m_cellDefaultSize.x);
+
 		CreateHeader();
 		CreateView();
 	}
@@ -80,6 +83,11 @@ namespace Widgets
 		int columnCount = m_pModel->GetColumnCount(Widgets::ModelIndex());
 		if (column < 0 || column >= columnCount)
 			return;
+
+		if (m_columnWidth.GetSize() < static_cast<uint32_t>(columnCount))
+			m_columnWidth.Resize(columnCount, m_cellDefaultSize.x);
+
+		m_columnWidth[column] = width;
 
 		std::vector<Widgets::Widget*> rows = m_pLayout->GetChildren();
 		for (Widgets::Widget* pRow : rows)
@@ -305,7 +313,8 @@ namespace Widgets
 			if (jj != columnCount - 1)
 			{
 				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				pLabel->SetSize(m_cellDefaultSize);
+				DirectX::XMUINT2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
+				pLabel->SetSize(cellSize);
 			}
 			else
 			{

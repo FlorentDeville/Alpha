@@ -6,10 +6,10 @@
 
 #include "Core/Callbacks/CallbackMacro.h"
 
+#include "Core/Collections/Array.h"
+
 #include "Widgets/Tools/Color.h"
 #include "Widgets/Widget.h"
-
-#include <map>
 
 namespace Widgets
 {
@@ -47,6 +47,8 @@ namespace Widgets
 		bool m_multiSelectionEnabled;
 
 		DirectX::XMUINT2 m_cellDefaultSize;
+
+		Core::Array<uint32_t> m_columnWidth;
 
 		void CreateHeader();
 		void CreateView();
