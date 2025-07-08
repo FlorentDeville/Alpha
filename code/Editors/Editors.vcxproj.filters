@@ -120,7 +120,7 @@
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridPopulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialEditor\ShaderListModel.h">
+    <ClInclude Include="MaterialEditor\MaterialListModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Dialog\OkCancelDialog.h">
@@ -254,7 +254,7 @@
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridPopulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialEditor\ShaderListModel.cpp">
+    <ClCompile Include="MaterialEditor\MaterialListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp">

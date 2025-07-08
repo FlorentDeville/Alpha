@@ -7,7 +7,7 @@
 #include "Core/Log/LogModule.h"
 
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
-#include "Editors/MaterialEditor/ShaderListModel.h"
+#include "Editors/MaterialEditor/MaterialListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_MaterialParameterDescription.h"
@@ -28,7 +28,6 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/MeshAsset.h"
-//#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
