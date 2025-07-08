@@ -58,7 +58,7 @@ namespace Editors
 		, m_pShaderListLayout(nullptr)
 		, m_pLogText(nullptr)
 		, m_pPropertyGrid(nullptr)
-		, m_pShaderListModel(nullptr)
+		, m_pMaterialListModel(nullptr)
 		, m_selectedMaterialId(Systems::NewAssetId::INVALID)
 		, m_pPropertyGridPopulator(new PropertyGridPopulator())
 		, m_cameraDistance(10)
@@ -195,13 +195,13 @@ namespace Editors
 
 		MaterialEditorModule::Get().OnMaterialCreated([this](const Systems::AssetMetadata* pMetadata)
 			{
-				m_pShaderListModel->AddRow(pMetadata);
+				m_pMaterialListModel->AddRow(pMetadata);
 			});
 
 		MaterialEditorModule::Get().OnMaterialInstanceCreated([this](const Systems::AssetMetadata* pMetadata)
 			{
-				m_pShaderListModel->AddRow(pMetadata);
-				m_pShaderListModel->SetShaderModified(pMetadata->GetAssetId());
+				m_pMaterialListModel->AddRow(pMetadata);
+				m_pMaterialListModel->SetShaderModified(pMetadata->GetAssetId());
 			});
 
 
@@ -254,10 +254,10 @@ namespace Editors
 			{ 
 				Systems::MaterialAsset* pMaterial = MaterialEditorModule::Get().NewMaterial(input);
 
-				Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+				Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
 
-				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
-				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial->GetId());
+				int columnCount = m_pMaterialListModel->GetColumnCount(Widgets::ModelIndex());
+				Widgets::ModelIndex start = m_pMaterialListModel->GetIndex(pMaterial->GetId());
 				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
 				Widgets::SelectionRow selection(start, end);
 
@@ -298,16 +298,16 @@ namespace Editors
 
 	void MaterialEditor::MenuFile_Save_OnClicked()
 	{
-		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
 		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
 		if (selection.empty())
 			return;
 
 		const Widgets::SelectionRow& row = selection.front();
-		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
+		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
 		MaterialEditorModule::Get().SaveMaterial(id);
 
-		m_pShaderListModel->ClearShaderModified(id);
+		m_pMaterialListModel->ClearShaderModified(id);
 	}
 
 	void MaterialEditor::MenuFile_Delete_OnClicked()
@@ -346,13 +346,13 @@ namespace Editors
 
 	bool MaterialEditor::OnCompileClicked()
 	{
-		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
 		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
 		if (selection.empty())
 			return true;
 
 		const Widgets::SelectionRow& row = selection.front();
-		Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
+		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
 
 		bool res = MaterialEditorModule::Get().CompileMaterial(id);
 
@@ -361,14 +361,14 @@ namespace Editors
 		if (!res)
 			return true;
 
-		m_pShaderListModel->SetShaderModified(id);
+		m_pMaterialListModel->SetShaderModified(id);
 
 		return true;
 	}
 
 	void MaterialEditor::PropertyGridPopulator_OnDataChanged()
 	{
-		m_pShaderListModel->SetShaderModified(m_selectedMaterialId);
+		m_pMaterialListModel->SetShaderModified(m_selectedMaterialId);
 	}
 
 	void MaterialEditor::DeleteSelectedShader()
@@ -380,7 +380,7 @@ namespace Editors
 		Systems::AssetUtil::DeleteAsset(m_selectedMaterialId);
 
 		//then delete it from the model
-		m_pShaderListModel->RemoveRow(m_selectedMaterialId);
+		m_pMaterialListModel->RemoveRow(m_selectedMaterialId);
 	}
 
 	void MaterialEditor::CreateShadersList()
@@ -389,11 +389,11 @@ namespace Editors
 		pTableView->SetSizeStyle(Widgets::Widget::STRETCH);
 		m_pShaderListLayout->AddWidget(pTableView);
 
-		m_pShaderListModel = new ShaderListModel();
-		pTableView->SetModel(m_pShaderListModel);
-		pTableView->SetColumnWidth(ShaderListModel::Columns::Name, 200);
+		m_pMaterialListModel = new MaterialListModel();
+		pTableView->SetModel(m_pMaterialListModel);
+		pTableView->SetColumnWidth(MaterialListModel::Columns::Name, 200);
 
-		Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 			{
 				if (selected.size() == 0)
@@ -404,7 +404,7 @@ namespace Editors
 				}
 
 				const Widgets::SelectionRow& row = selected[0];
-				Systems::NewAssetId id = m_pShaderListModel->GetAssetId(row.GetStartIndex());
+				Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
 				if (m_selectedMaterialId == id)
 					return;
 

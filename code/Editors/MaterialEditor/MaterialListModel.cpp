@@ -14,7 +14,7 @@
 
 namespace Editors
 {
-	ShaderListModel::ShaderListModel()
+	MaterialListModel::MaterialListModel()
 		: AbstractViewModel()
 	{
 		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
@@ -27,15 +27,15 @@ namespace Editors
 		}
 	}
 
-	ShaderListModel::~ShaderListModel()
+	MaterialListModel::~MaterialListModel()
 	{ }
 
-	Widgets::ModelIndex ShaderListModel::GetParent(const Widgets::ModelIndex&) const
+	Widgets::ModelIndex MaterialListModel::GetParent(const Widgets::ModelIndex&) const
 	{
 		return Widgets::ModelIndex(); //there is no parent in arrays
 	}
 
-	Widgets::ModelIndex ShaderListModel::GetIndex(int row, int column, const Widgets::ModelIndex& parent) const
+	Widgets::ModelIndex MaterialListModel::GetIndex(int row, int column, const Widgets::ModelIndex& parent) const
 	{
 		if (parent.IsValid())
 			return Widgets::ModelIndex();
@@ -50,7 +50,7 @@ namespace Editors
 		return CreateIndex(row, column, &data);
 	}
 
-	int ShaderListModel::GetRowCount(const Widgets::ModelIndex& parent) const
+	int MaterialListModel::GetRowCount(const Widgets::ModelIndex& parent) const
 	{
 		if (parent.IsValid())
 			return 0;
@@ -58,7 +58,7 @@ namespace Editors
 		return static_cast<int>(m_cache.size());
 	}
 
-	int ShaderListModel::GetColumnCount(const Widgets::ModelIndex& parent) const
+	int MaterialListModel::GetColumnCount(const Widgets::ModelIndex& parent) const
 	{
 		if (parent.IsValid())
 			return 0;
@@ -66,7 +66,7 @@ namespace Editors
 		return Columns::Count;
 	}
 
-	std::string ShaderListModel::GetData(const Widgets::ModelIndex& index)
+	std::string MaterialListModel::GetData(const Widgets::ModelIndex& index)
 	{
 		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
 		switch (index.GetColumn())
@@ -98,7 +98,7 @@ namespace Editors
 		}
 	}
 
-	std::string ShaderListModel::GetHeaderData(int column)
+	std::string MaterialListModel::GetHeaderData(int column)
 	{
 		switch (column)
 		{
@@ -124,7 +124,7 @@ namespace Editors
 		}
 	}
 
-	void ShaderListModel::AddRow(const Systems::AssetMetadata* pMetadata)
+	void MaterialListModel::AddRow(const Systems::AssetMetadata* pMetadata)
 	{
 		int row = static_cast<int>(m_cache.size());
 		
@@ -133,7 +133,7 @@ namespace Editors
 		CommitInsertRows(row, 1, Widgets::ModelIndex());
 	}
 
-	void ShaderListModel::RemoveRow(Systems::NewAssetId id)
+	void MaterialListModel::RemoveRow(Systems::NewAssetId id)
 	{
 		int cacheIndex = FindCacheIndex(id);
 		if (cacheIndex < 0)
@@ -145,7 +145,7 @@ namespace Editors
 		RemoveRows(cacheIndex, 1, Widgets::ModelIndex());
 	}
 
-	void ShaderListModel::SetShaderModified(Systems::NewAssetId id)
+	void MaterialListModel::SetShaderModified(Systems::NewAssetId id)
 	{
 		int cacheIndex = FindCacheIndex(id);
 		if (cacheIndex == -1)
@@ -158,7 +158,7 @@ namespace Editors
 		m_onDataChanged(GetIndex(cacheIndex, Columns::Modified, Widgets::ModelIndex()));
 	}
 
-	void ShaderListModel::ClearShaderModified(Systems::NewAssetId id)
+	void MaterialListModel::ClearShaderModified(Systems::NewAssetId id)
 	{
 		int cacheIndex = FindCacheIndex(id);
 		if (cacheIndex == -1)
@@ -171,13 +171,13 @@ namespace Editors
 		m_onDataChanged(GetIndex(cacheIndex, Columns::Modified, Widgets::ModelIndex()));
 	}
 
-	Systems::NewAssetId ShaderListModel::GetAssetId(const Widgets::ModelIndex& index) const
+	Systems::NewAssetId MaterialListModel::GetAssetId(const Widgets::ModelIndex& index) const
 	{
 		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
 		return pData->m_id;
 	}
 
-	Widgets::ModelIndex ShaderListModel::GetIndex(Systems::NewAssetId id) const
+	Widgets::ModelIndex MaterialListModel::GetIndex(Systems::NewAssetId id) const
 	{
 		int index = FindCacheIndex(id);
 		if(index == -1)
@@ -186,7 +186,7 @@ namespace Editors
 		return GetIndex(index, 0, Widgets::ModelIndex());
 	}
 
-	void ShaderListModel::AddToCache(const Systems::AssetMetadata* pMetadata)
+	void MaterialListModel::AddToCache(const Systems::AssetMetadata* pMetadata)
 	{
 		m_cache.push_back(CachedShaderData());
 		CachedShaderData& data = m_cache.back();
@@ -207,7 +207,7 @@ namespace Editors
 		}
 	}
 
-	int ShaderListModel::FindCacheIndex(Systems::NewAssetId id) const
+	int MaterialListModel::FindCacheIndex(Systems::NewAssetId id) const
 	{
 		for (size_t ii = 0; ii < m_cache.size(); ++ii)
 		{

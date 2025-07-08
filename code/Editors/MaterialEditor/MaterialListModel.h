@@ -16,7 +16,7 @@ namespace Systems
 
 namespace Editors
 {
-	class ShaderListModel : public Widgets::AbstractViewModel
+	class MaterialListModel : public Widgets::AbstractViewModel
 	{
 	public:
 		enum Columns
@@ -29,8 +29,8 @@ namespace Editors
 			Count
 		};
 
-		ShaderListModel();
-		~ShaderListModel();
+		MaterialListModel();
+		~MaterialListModel();
 
 		// Override base class functions
 		Widgets::ModelIndex GetParent(const Widgets::ModelIndex& index) const override;

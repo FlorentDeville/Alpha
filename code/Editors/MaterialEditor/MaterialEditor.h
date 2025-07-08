@@ -30,7 +30,7 @@ namespace Editors
 {
 	class PropertyGridPopulator;
 	class PropertyGridWidget;
-	class ShaderListModel;
+	class MaterialListModel;
 
 	class MaterialEditorParameter
 	{
@@ -53,7 +53,7 @@ namespace Editors
 		PropertyGridWidget* m_pPropertyGrid;
 		PropertyGridPopulator* m_pPropertyGridPopulator;
 
-		ShaderListModel* m_pShaderListModel;
+		MaterialListModel* m_pMaterialListModel;
 
 		Systems::NewAssetId m_selectedMaterialId;
 
