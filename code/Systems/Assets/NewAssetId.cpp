@@ -36,6 +36,11 @@ namespace Systems
 		return ObjectId((m_id & 0xFF00000000000000) >> 56);
 	}
 
+	bool NewAssetId::IsValid() const
+	{
+		return *this != NewAssetId::INVALID;
+	}
+
 	std::string NewAssetId::ToString() const
 	{
 		return Core::Uint64ToHexa(m_id);
