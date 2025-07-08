@@ -24,6 +24,10 @@ namespace Systems
 
 		NewAssetId GetBaseMaterialId() const;
 
+		const Systems::MaterialAsset* GetBaseMaterial() const;
+
+		const Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
@@ -34,7 +38,7 @@ namespace Systems
 		//Non-reflected data
 
 		//Cached pointer to the base material
-		Systems::MaterialAsset* m_pBaseMaterial;
+		mutable Systems::MaterialAsset* m_pBaseMaterial;
 
 		START_REFLECTION(Systems::MaterialInstanceAsset_v1)
 			ADD_BASETYPE(Systems::AssetObject)

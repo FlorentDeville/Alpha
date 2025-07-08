@@ -4,10 +4,13 @@
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset_v1.h"
 
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
+
 namespace Systems
 {
 	MaterialInstanceAsset_v1::MaterialInstanceAsset_v1()
 		: AssetObject()
+		, m_pBaseMaterial(nullptr)
 	{ }
 
 	MaterialInstanceAsset_v1::~MaterialInstanceAsset_v1()
@@ -27,6 +30,19 @@ namespace Systems
 	NewAssetId MaterialInstanceAsset_v1::GetBaseMaterialId() const
 	{
 		return m_material;
+	}
+
+	const Systems::MaterialAsset* MaterialInstanceAsset_v1::GetBaseMaterial() const
+	{
+		if (!m_pBaseMaterial && m_material.IsValid())
+			m_pBaseMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_material);
+
+		return m_pBaseMaterial;
+	}
+
+	const Core::Array<MaterialParameterDescription>& MaterialInstanceAsset_v1::GetMaterialParameterDescription() const
+	{
+		return m_perMaterialParameters;
 	}
 
 	const std::string& MaterialInstanceAsset_v1::GetAssetTypeName()
