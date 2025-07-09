@@ -382,11 +382,16 @@ namespace Editors
 		if (!m_selectedMaterialId.IsValid())
 			return;
 
-		//first delete it for real
-		MaterialEditorModule::Get().DeleteMaterial(m_selectedMaterialId);
+		//removing the row will change m_selectedMaterialId, so store it.
+		Systems::NewAssetId materialToDelete = m_selectedMaterialId;
 
-		//then delete it from the model
-		m_pMaterialListModel->RemoveRow(m_selectedMaterialId);
+		//first delete it from the model cause the model can need the material
+		m_pMaterialListModel->RemoveRow(materialToDelete);
+
+		//then delete it for real
+		MaterialEditorModule::Get().DeleteMaterial(materialToDelete);
+
+		
 	}
 
 	void MaterialEditor::CreateShadersList()

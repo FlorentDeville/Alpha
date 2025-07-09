@@ -14,6 +14,8 @@
 
 namespace Editors
 {
+	static const char* MISSING_BASE_MATERIAL_LABEL = "__MISSING__";
+
 	MaterialListModel::MaterialListModel()
 		: AbstractViewModel()
 	{
@@ -142,9 +144,10 @@ namespace Editors
 		std::vector<CachedShaderData>::const_iterator it = m_cache.cbegin() + cacheIndex;
 		m_cache.erase(it);
 
-		if (Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id))
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if(pMetadata)
 		{
-			if (pMetadata->GetAssetType() == Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
+			if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
 			{
 				Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
 				if (pMaterialInstance)
@@ -152,15 +155,34 @@ namespace Editors
 					std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(pMaterialInstance->GetBaseMaterialId());
 					if (it != m_baseToInstance.end())
 					{
-						Core::Array<Systems::NewAssetId>::Iterator newEndIt = std::remove(it->second.begin(), it->second.end(), id);
-						uint64_t size = std::distance(it->second.begin(), newEndIt);
-						it->second.Resize(static_cast<uint32_t>(size));
+						it->second.Erase(id);
 					}
 				}
 			}
 		}
 
 		RemoveRows(cacheIndex, 1, Widgets::ModelIndex());
+
+		//update the other rows after deletion so the indices are correct
+		if (pMetadata->IsA<Systems::MaterialAsset>())
+		{
+			std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(pMetadata->GetAssetId());
+			if (it != m_baseToInstance.end())
+			{
+				for (Systems::NewAssetId instanceId : it->second)
+				{
+					int cacheIndex = FindCacheIndex(instanceId);
+					if (cacheIndex == -1)
+						continue;
+
+					m_cache[cacheIndex].m_baseMaterial = MISSING_BASE_MATERIAL_LABEL;
+
+					Widgets::ModelIndex instanceModelIndex = GetIndex(instanceId);
+					instanceModelIndex = instanceModelIndex.GetSiblingAtColumn(Columns::Base);
+					m_onDataChanged(instanceModelIndex);
+				}
+			}
+		}
 	}
 
 	void MaterialListModel::SetShaderModified(Systems::NewAssetId id)
@@ -258,7 +280,7 @@ namespace Editors
 				}
 				else
 				{
-					data.m_baseMaterial = "__MISSING__";
+					data.m_baseMaterial = MISSING_BASE_MATERIAL_LABEL;
 				}
 			}
 		}
