@@ -26,7 +26,7 @@ namespace Editors
 	class MaterialEditorModule : public Core::Singleton<MaterialEditorModule>
 	{
 	public:
-		void Init() override;
+		void Init(const std::string& dataFolder);
 
 		Systems::MaterialAsset* NewMaterial(const std::string& virtualName);
 		Systems::MaterialInstanceAsset* NewMaterialInstance(const std::string& virtualName, Systems::NewAssetId baseMaterialId);
@@ -63,5 +63,7 @@ namespace Editors
 
 		std::vector<Systems::NewAssetId> m_allMaterials;
 		BaseToInstanceCache m_instancesMaterialCache;
+
+		std::string m_autoGenShaderFolder;
 	};
 }
