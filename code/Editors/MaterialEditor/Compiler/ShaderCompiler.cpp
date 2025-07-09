@@ -197,9 +197,9 @@ namespace Editors
 
 	bool ShaderCompiler::CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile)
 	{
-		const char* PS_EXT = ".ps.hlsl";
-		const char* VS_EXT = ".vs.hlsl";
-		const char* RS_EXT = ".rs.hlsl";
+		const char* PS_EXT = "ps.hlsl";
+		const char* VS_EXT = "vs.hlsl";
+		const char* RS_EXT = "rs.hlsl";
 
 		size_t extensionSize = strlen(PS_EXT);
 
