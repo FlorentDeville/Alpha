@@ -245,7 +245,7 @@ namespace Editors
 		data.m_modified = false;
 		data.m_baseMaterial = "";
 
-		if (pMetadata->GetAssetType() == Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
+		if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
 		{
 			Systems::MaterialInstanceAsset* pAsset = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(pMetadata->GetAssetId());
 			if (pAsset)
@@ -255,6 +255,10 @@ namespace Editors
 				{
 					data.m_baseMaterial = pBaseMetadata->GetVirtualName();
 					m_baseToInstance[baseId].PushBack(pMetadata->GetAssetId());
+				}
+				else
+				{
+					data.m_baseMaterial = "__MISSING__";
 				}
 			}
 		}
