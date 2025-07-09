@@ -1,5 +1,5 @@
 /********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #pragma once
@@ -79,6 +79,7 @@ namespace Editors
 
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();
+		bool OnNewHlslClicked();
 
 		void PropertyGridPopulator_OnDataChanged();
 
