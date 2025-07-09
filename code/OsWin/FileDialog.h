@@ -9,4 +9,6 @@
 namespace Os
 {
 	bool OpenFileDialog(std::string& filename, const std::string& extension = "");
+
+	bool SelectFolderDialog(const std::string& title, std::string& folder);
 }
