@@ -12,6 +12,7 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -46,6 +47,21 @@ namespace Editors
 		EVENT_DECL(MaterialRenamed, void(const Systems::AssetMetadata& metadata, const std::string& oldName));
 
 	private:
+
+		class BaseToInstanceCache
+		{
+		public:
+
+			void AddMaterialInstance(Systems::NewAssetId id);
+			void RemoveMaterialInstance(Systems::NewAssetId id);
+
+			const Core::Array<Systems::NewAssetId>& GetMaterialInstances(Systems::NewAssetId baseMaterialId) const;
+
+		private:
+			std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>> m_baseToInstances;
+		};
+
 		std::vector<Systems::NewAssetId> m_allMaterials;
+		BaseToInstanceCache m_instancesMaterialCache;
 	};
 }

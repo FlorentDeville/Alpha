@@ -25,9 +25,16 @@ namespace Systems
 
 		void SetVirtualName(const std::string& virtualName);
 
+		template<typename T> bool IsA() const;
+
 	private:
 		NewAssetId m_id;
 		std::string m_virtualName;
 		Core::Sid m_assetType;
 	};
+
+	template<typename T> bool AssetMetadata::IsA() const
+	{
+		return m_assetType == T::GetAssetTypeNameSid();
+	}
 }

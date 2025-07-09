@@ -274,14 +274,14 @@ namespace Editors
 			{
 				Systems::MaterialInstanceAsset* pMaterial = MaterialEditorModule::Get().NewMaterialInstance(input, m_selectedMaterialId);
 
-				/*Widgets::SelectionModel* pSelectionModel = m_pShaderListModel->GetSelectionModel();
+				Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
 
-				int columnCount = m_pShaderListModel->GetColumnCount(Widgets::ModelIndex());
-				Widgets::ModelIndex start = m_pShaderListModel->GetIndex(pMaterial->GetId());
+				int columnCount = m_pMaterialListModel->GetColumnCount(Widgets::ModelIndex());
+				Widgets::ModelIndex start = m_pMaterialListModel->GetIndex(pMaterial->GetId());
 				Widgets::ModelIndex end = start.GetSiblingAtColumn(columnCount - 1);
 				Widgets::SelectionRow selection(start, end);
 
-				pSelectionModel->SetSelectionRow(selection);*/
+				pSelectionModel->SetSelectionRow(selection);
 			});
 		pDialog->Open();
 	}
@@ -379,14 +379,19 @@ namespace Editors
 
 	void MaterialEditor::DeleteSelectedShader()
 	{
-		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+		if (!m_selectedMaterialId.IsValid())
 			return;
 
-		//first delete it for real
-		Systems::AssetUtil::DeleteAsset(m_selectedMaterialId);
+		//removing the row will change m_selectedMaterialId, so store it.
+		Systems::NewAssetId materialToDelete = m_selectedMaterialId;
 
-		//then delete it from the model
-		m_pMaterialListModel->RemoveRow(m_selectedMaterialId);
+		//first delete it from the model cause the model can need the material
+		m_pMaterialListModel->RemoveRow(materialToDelete);
+
+		//then delete it for real
+		MaterialEditorModule::Get().DeleteMaterial(materialToDelete);
+
+		
 	}
 
 	void MaterialEditor::CreateShadersList()
