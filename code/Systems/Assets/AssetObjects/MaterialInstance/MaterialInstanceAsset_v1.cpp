@@ -18,12 +18,20 @@ namespace Systems
 
 	bool MaterialInstanceAsset_v1::InitialiseFromBaseMaterial(Systems::MaterialAsset* pBaseMaterial)
 	{
-		m_pBaseMaterial = pBaseMaterial;
-		m_material = pBaseMaterial->GetId();
+		if (pBaseMaterial)
+		{
+			m_pBaseMaterial = pBaseMaterial;
+			m_material = pBaseMaterial->GetId();
 
-		const Core::Array<MaterialParameterDescription>& parameters = pBaseMaterial->GetMaterialParameterDescription();
-		m_perMaterialParameters = parameters;
-
+			const Core::Array<MaterialParameterDescription>& parameters = pBaseMaterial->GetMaterialParameterDescription();
+			m_perMaterialParameters = parameters;
+		}
+		else
+		{
+			m_pBaseMaterial = nullptr;
+			m_material = Systems::NewAssetId::INVALID;
+			m_perMaterialParameters.Clear();
+		}
 		return true;
 	}
 
