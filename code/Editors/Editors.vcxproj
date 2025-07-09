@@ -29,6 +29,7 @@
     <ClInclude Include="LogEditor\LogEditor.h" />
     <ClInclude Include="Log\LogModule.h" />
     <ClInclude Include="MaterialEditor\ShaderAutoGen.h" />
+    <ClInclude Include="MaterialEditor\ShaderTemplate.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="RawDb.h" />
@@ -76,6 +77,7 @@
     <ClCompile Include="LevelEditor\Widgets\LevelEditorViewportWidget.cpp" />
     <ClCompile Include="LogEditor\LogEditor.cpp" />
     <ClCompile Include="MaterialEditor\ShaderAutoGen.cpp" />
+    <ClCompile Include="MaterialEditor\ShaderTemplate.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="RawDb.cpp" />

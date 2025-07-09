@@ -37,6 +37,16 @@ namespace Systems
 		return m_sourceFileVS;
 	}
 
+	void MaterialAsset_v1::SetSourceFilePs(const std::string& psFilename)
+	{
+		m_sourceFilePS = psFilename;
+	}
+
+	void MaterialAsset_v1::SetSourceFileVs(const std::string& vsFilename)
+	{
+		m_sourceFileVS = vsFilename;
+	}
+
 	const Rendering::RootSignature* MaterialAsset_v1::GetRootSignature() const
 	{
 		return m_pRs;

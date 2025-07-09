@@ -153,6 +153,9 @@
     <ClInclude Include="MaterialEditor\ShaderAutoGen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialEditor\ShaderTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -282,6 +285,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MaterialEditor\ShaderAutoGen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialEditor\ShaderTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,9 +6,13 @@
 
 #include <string>
 
-namespace Os
+namespace Editors
 {
-	bool OpenFileDialog(std::string& filename, const std::string& extension = "");
+	class ShaderTemplate
+	{
+	public:
+		static void WriteVertexShaderTemplate(const std::string& filename);
 
-	bool SelectFolderDialog(const std::string& title, std::string& folder);
+		static void WritePixelShaderTemplate(const std::string& filename);
+	};
 }

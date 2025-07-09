@@ -8,6 +8,7 @@
 
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/MaterialEditor/MaterialListModel.h"
+#include "Editors/MaterialEditor/ShaderTemplate.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_MaterialParameterDescription.h"
@@ -18,6 +19,7 @@
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Process.h"
+#include "OsWin/FileDialog.h"
 
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
@@ -147,19 +149,21 @@ namespace Editors
 		
 		//horizontal layout for buttons
 		Widgets::Layout* pButtonLayout = new Widgets::Layout(0, 20, 0, 0);
-		pButtonLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pButtonLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 		pButtonLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
 		pRightPanelLayout->AddWidget(pButtonLayout);
 
+		{
+			Widgets::Button* pButton = new Widgets::Button("New HLSL");
+			pButton->OnClick([this]() -> bool { return OnNewHlslClicked(); });
+			pButtonLayout->AddWidget(pButton);
+		}
+
 		//add compile button
 		{
-			Widgets::Button* pButton = new Widgets::Button(60, 0, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::VSIZE_STRETCH);
+			Widgets::Button* pButton = new Widgets::Button("Compile");
 			pButton->OnClick([this]() -> bool { return OnCompileClicked(); });
 			pButtonLayout->AddWidget(pButton);
-
-			Widgets::Label* pLabel = new Widgets::Label(0, 0, 1, "Compile");
-			pButton->AddWidget(pLabel);
 		}
 
 		//add property grid
@@ -368,6 +372,39 @@ namespace Editors
 			return true;
 
 		m_pMaterialListModel->SetShaderModified(id);
+
+		return true;
+	}
+
+	bool MaterialEditor::OnNewHlslClicked()
+	{
+		std::string folder;
+		bool res = Os::SelectFolderDialog("Select folder where to store the hlsl files", folder);
+		if (!res)
+			return true;
+
+		std::string vertexFile = folder + "\\vs.hlsl";
+		ShaderTemplate::WriteVertexShaderTemplate(vertexFile);
+
+		std::string pixelFile = folder + "\\ps.hlsl";
+		ShaderTemplate::WritePixelShaderTemplate(pixelFile);
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		if (!pMetadata)
+			return true;
+
+		if (!pMetadata->IsA<Systems::MaterialAsset>())
+			return true;
+
+		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_selectedMaterialId);
+		if (!pMaterial)
+			return false;
+
+		pMaterial->SetSourceFileVs(vertexFile);
+		pMaterial->SetSourceFilePs(pixelFile);
+
+		RefreshPropertyGrid();
+		m_pMaterialListModel->SetShaderModified(m_selectedMaterialId);
 
 		return true;
 	}
