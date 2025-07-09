@@ -207,6 +207,7 @@ namespace Editors
 			return false;
 
 		Core::Array<Systems::MaterialCBufferBindingInfo>& bindingInfoArray = pMaterial->GetBindingInfoArray();
+		bindingInfoArray.Clear();
 		bindingInfoArray.Reserve(static_cast<uint32_t>(rootSignatureDesc.m_parameters.size()));
 		for (const RootSigParameterIndex& paramIndex : rootSignatureDesc.m_parameters)
 		{
