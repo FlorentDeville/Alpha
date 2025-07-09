@@ -379,11 +379,11 @@ namespace Editors
 
 	void MaterialEditor::DeleteSelectedShader()
 	{
-		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+		if (!m_selectedMaterialId.IsValid())
 			return;
 
 		//first delete it for real
-		Systems::AssetUtil::DeleteAsset(m_selectedMaterialId);
+		MaterialEditorModule::Get().DeleteMaterial(m_selectedMaterialId);
 
 		//then delete it from the model
 		m_pMaterialListModel->RemoveRow(m_selectedMaterialId);

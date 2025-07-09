@@ -66,11 +66,15 @@ namespace Editors
 
 		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata)
 			{
-				if (metadata.GetAssetType() != Systems::MaterialAsset::GetAssetTypeNameSid() &&
-					metadata.GetAssetType() != Systems::MaterialInstanceAsset::GetAssetTypeNameSid())
-					return;
-
-				m_allMaterials.push_back(metadata.GetAssetId());
+				if (metadata.IsA<Systems::MaterialAsset>())
+				{
+					m_allMaterials.push_back(metadata.GetAssetId());
+				}
+				else if (metadata.IsA<Systems::MaterialInstanceAsset>())
+				{
+					m_allMaterials.push_back(metadata.GetAssetId());
+					m_instancesMaterialCache.AddMaterialInstance(metadata.GetAssetId());
+				}
 			});
 	}
 
@@ -103,6 +107,7 @@ namespace Editors
 			return nullptr;
 
 		m_allMaterials.push_back(pNewMaterialInstance->GetId());
+		m_instancesMaterialCache.AddMaterialInstance(pNewMaterialInstance->GetId());
 
 		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pNewMaterialInstance->GetId());
 		m_onMaterialInstanceCreated(pMetadata);
@@ -128,15 +133,36 @@ namespace Editors
 
 	bool MaterialEditorModule::DeleteMaterial(Systems::NewAssetId id)
 	{
-		bool res = Systems::AssetUtil::DeleteAsset(id);
-		if (!res)
-			return false;
-
+		//first clean the caches
 		std::vector<Systems::NewAssetId>::const_iterator it = std::find(m_allMaterials.cbegin(), m_allMaterials.cend(), id);
 		if (it == m_allMaterials.cend())
 			return true;
 
 		m_allMaterials.erase(it);
+
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (pMetadata)
+		{
+			if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
+			{
+				m_instancesMaterialCache.RemoveMaterialInstance(id);
+			}
+			else if (pMetadata->IsA<Systems::MaterialAsset>())
+			{
+				const Core::Array<Systems::NewAssetId>& instancesArray = m_instancesMaterialCache.GetMaterialInstances(id);
+				for (Systems::NewAssetId instanceId : instancesArray)
+				{
+					if(Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(instanceId))
+						pInstance->InitialiseFromBaseMaterial(nullptr);
+				}
+			}
+		}
+
+		//now remove the asset for real
+		bool res = Systems::AssetUtil::DeleteAsset(id);
+		if (!res)
+			return false;
+		
 		return true;
 	}
 
@@ -250,5 +276,45 @@ namespace Editors
 			Core::LogModule::Get().LogInfo("Material compiled successfully.");
 
 		return res;
+	}
+
+	void MaterialEditorModule::BaseToInstanceCache::AddMaterialInstance(Systems::NewAssetId id)
+	{
+		const Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
+		if (!pInstance)
+			return;
+
+		if (!pInstance->GetBaseMaterialId().IsValid())
+			return;
+
+		m_baseToInstances[pInstance->GetBaseMaterialId()].PushBack(id);
+	}
+
+	void MaterialEditorModule::BaseToInstanceCache::RemoveMaterialInstance(Systems::NewAssetId id)
+	{
+		const Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
+		if (!pInstance)
+			return;
+
+		if (!pInstance->GetBaseMaterialId().IsValid())
+			return;
+
+		std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstances.find(pInstance->GetBaseMaterialId());
+		if (it == m_baseToInstances.end())
+			return;
+
+		Core::Array<Systems::NewAssetId>& instancesArray = it->second;
+		instancesArray.Erase(id);
+	}
+
+	const Core::Array<Systems::NewAssetId>& MaterialEditorModule::BaseToInstanceCache::GetMaterialInstances(Systems::NewAssetId baseMaterialId) const
+	{
+		static Core::Array<Systems::NewAssetId> defaultRet;
+
+		std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::const_iterator it = m_baseToInstances.find(baseMaterialId);
+		if (it == m_baseToInstances.cend())
+			return defaultRet;
+
+		return it->second;
 	}
 }
