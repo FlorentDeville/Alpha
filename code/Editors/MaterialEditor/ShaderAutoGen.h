@@ -15,5 +15,11 @@ namespace Editors
 
 	private:
 		static void WriteCBufferPerFrameHeaderFile(const std::string& folder);
+
+		static void WriteCBufferPerObjectHeaderFile(const std::string& folder);
+		
+		static void WriteCBufferLightsHeaderFile(const std::string& folder);
+
+		static void WriteBaseTypesHeaderFile(const std::string& folder);
 	};
 }

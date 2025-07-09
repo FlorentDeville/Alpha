@@ -59,7 +59,7 @@ namespace Editors
 		if (m_autoGenShaderFolder.back() != '\\' || m_autoGenShaderFolder.back() != '/')
 			m_autoGenShaderFolder += '\\';
 
-		m_autoGenShaderFolder += "intermediate\\autogenshader\\";
+		m_autoGenShaderFolder += "intermediate\\autogenshaders\\";
 		ShaderAutoGen::WriteAllHeaderFiles(m_autoGenShaderFolder);
 
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
