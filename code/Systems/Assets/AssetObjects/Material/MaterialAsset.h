@@ -29,6 +29,9 @@ namespace Systems
 		const std::string& GetSourceFilePs() const;
 		const std::string& GetSourceFileVs() const;
 
+		void SetSourceFilePs(const std::string& psFilename);
+		void SetSourceFileVs(const std::string& vsFilename);
+
 		const Rendering::RootSignature* GetRootSignature() const;
 		const Rendering::PipelineState* GetPipelineState() const;
 
