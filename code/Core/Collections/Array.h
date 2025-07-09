@@ -60,14 +60,7 @@ namespace Core
 
 		~Array()
 		{
-			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[ii].~T();
-
-			delete[] m_pStart;
-			m_pStart = nullptr;
-
-			m_size = 0;
-			m_reservedSize = 0;
+			Clear();
 		}
 
 		void PushBack(const T& item)
@@ -169,6 +162,11 @@ namespace Core
 
 		void Reserve(uint32_t index, bool allowShrink = false);
 
+		void Clear();
+
+		//Erase the first element equal to value and return the number of element erased.
+		uint32_t Erase(const T& value);
+
 		//function to work with stl algorithms
 		Iterator begin();
 		const Iterator begin() const;
@@ -235,6 +233,28 @@ namespace Core
 		m_pStart = pNewArray;
 
 		m_reservedSize = newSize;
+	}
+
+	template<typename T> void Array<T>::Clear()
+	{
+		for (uint32_t ii = 0; ii < m_reservedSize; ++ii)
+			m_pStart[ii].~T();
+
+		delete[] m_pStart;
+
+		m_reservedSize = 0;
+		m_size = 0;
+		m_pStart = nullptr;
+	}
+
+	template<typename T> uint32_t Array<T>::Erase(const T& value)
+	{
+		Iterator newEndIt = std::remove(begin(), end(), value);
+		uint64_t erasedCount = std::distance(newEndIt, end());
+		uint64_t size = std::distance(begin(), newEndIt);
+		Resize(static_cast<uint32_t>(size));
+
+		return static_cast<uint32_t>(erasedCount);
 	}
 
 	template<typename T> Array<T>::Iterator::Iterator(pointer pPtr)
