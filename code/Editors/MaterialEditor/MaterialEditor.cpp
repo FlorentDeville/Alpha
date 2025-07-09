@@ -403,6 +403,9 @@ namespace Editors
 		pMaterial->SetSourceFileVs(vertexFile);
 		pMaterial->SetSourceFilePs(pixelFile);
 
+		RefreshPropertyGrid();
+		m_pMaterialListModel->SetShaderModified(m_selectedMaterialId);
+
 		return true;
 	}
 
