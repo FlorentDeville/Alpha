@@ -9,6 +9,7 @@
 #include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
 #include "Editors/MaterialEditor/Compiler/RootSignatureDescription.h"
 #include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
+#include "Editors/MaterialEditor/ShaderAutoGen.h"
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
@@ -17,11 +18,11 @@
 
 namespace Editors
 {
-	bool CompileSingleShader(const std::string& filename, Core::Array<char>& bytecode)
+	static bool CompileSingleShader(const std::string& filename, const std::string& includePath, Core::Array<char>& bytecode)
 	{
 		const std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
 		ShaderCompiler compiler;
-		bool res = compiler.CompileShader(filename, tempCsoFile);
+		bool res = compiler.CompileShader(filename, includePath, tempCsoFile);
 		if (!res)
 			return false;
 
@@ -51,8 +52,16 @@ namespace Editors
 		return true;
 	}
 
-	void MaterialEditorModule::Init()
+	void MaterialEditorModule::Init(const std::string& dataFolder)
 	{
+		//Generate all the shader header files
+		m_autoGenShaderFolder = dataFolder;
+		if (m_autoGenShaderFolder.back() != '\\' || m_autoGenShaderFolder.back() != '/')
+			m_autoGenShaderFolder += '\\';
+
+		m_autoGenShaderFolder += "intermediate\\autogenshader\\";
+		ShaderAutoGen::WriteAllHeaderFiles(m_autoGenShaderFolder);
+
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 		
 		assetMgr.OnAssetRenamed([this](const Systems::AssetMetadata& metadata, const std::string& oldName)
@@ -182,11 +191,11 @@ namespace Editors
 		if (!pMaterial)
 			return false;
 
-		bool shaderCompiled = CompileSingleShader(pMaterial->GetSourceFileVs(), pMaterial->GetVsBlob());
+		bool shaderCompiled = CompileSingleShader(pMaterial->GetSourceFileVs(), m_autoGenShaderFolder, pMaterial->GetVsBlob());
 		if (!shaderCompiled)
 			return false;
 
-		shaderCompiled = CompileSingleShader(pMaterial->GetSourceFilePs(), pMaterial->GetPsBlob());
+		shaderCompiled = CompileSingleShader(pMaterial->GetSourceFilePs(), m_autoGenShaderFolder, pMaterial->GetPsBlob());
 		if (!shaderCompiled)
 			return false;
 

@@ -195,7 +195,7 @@ namespace Editors
 	ShaderCompiler::~ShaderCompiler()
 	{ }
 
-	bool ShaderCompiler::CompileShader(const std::string& shaderSourceFilePath, const std::string& outputFile)
+	bool ShaderCompiler::CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile)
 	{
 		const char* PS_EXT = ".ps.hlsl";
 		const char* VS_EXT = ".vs.hlsl";
@@ -235,6 +235,8 @@ namespace Editors
 		cmdline += " /Fo\"" + outputName + "\"";
 		cmdline += " /nologo";
 		cmdline += " \"" + input + "\"";
+
+		cmdline += " /I " + includePath;
 
 		Core::LogModule& log = Core::LogModule::Get();
 		{

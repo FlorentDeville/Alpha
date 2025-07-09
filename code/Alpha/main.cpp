@@ -697,7 +697,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Editors::MeshEditor::InitSingleton();
 	Editors::MaterialEditorModule& materialEditorModule = Editors::MaterialEditorModule::InitSingleton();
-	materialEditorModule.Init();
+	materialEditorModule.Init(configuration.m_dataRoot);
 
 	Editors::MaterialEditor& materialEditor = Editors::MaterialEditor::InitSingleton();
 	materialEditor.Init();
