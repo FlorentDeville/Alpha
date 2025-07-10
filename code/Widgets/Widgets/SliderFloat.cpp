@@ -45,32 +45,10 @@ namespace Widgets
 		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor);
 		m_pSlider->SetX(CalculateSliderLocalX());
 
-		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) 
-			{ 
-				m_pSlider->GetDefaultStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor); 
-			});
-
-		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) 
-			{ 
-				m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor); 
-			});
-
-		m_pSlider->OnMouseDown([this](const Widgets::MouseEvent& ev) 
-			{ 
-				if (m_isSliderDragging)
-					return;
-
-				m_isSliderDragging = true;
-				m_mouseDragPreviousX = ev.GetX(); 
-
-				m_pSlider->CaptureMouse();
-			});
-
-		m_pSlider->OnMouseUp([this](const Widgets::MouseEvent& ev) 
-			{ 
-				m_isSliderDragging = false;
-				m_pSlider->ReleaseMouse();
-			});
+		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) { Slider_OnMouseEnter(); });
+		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) { Slider_OnMouseEnter(); });
+		m_pSlider->OnMouseDown([this](const Widgets::MouseEvent& ev) { Slider_OnMouseDown(ev); });
+		m_pSlider->OnMouseUp([this](const Widgets::MouseEvent& ev) { Slider_OnMouseUp(); });
 
 		AddWidget(m_pSlider);
 
@@ -78,26 +56,9 @@ namespace Widgets
 		m_pTextbox->Disable();
 		m_pTextbox->SetText(std::to_string(m_currentValue));
 		m_pTextbox->SetSize(DirectX::XMUINT2(100, 20));
-		m_pTextbox->OnValidate([this](const std::string& strValue)
-			{
-				char* pEnd = nullptr;
-				float value = std::strtof(strValue.c_str(), &pEnd);
-
-				float oldValue = m_currentValue;
-				if (pEnd)
-				{
-					m_currentValue = value;
-				}
-
-				bool valueChanged = oldValue != m_currentValue;
-				TransitionTextToSlider(valueChanged);
-			});
+		m_pTextbox->OnValidate([this](const std::string& strValue) { TextBox_OnValidate(strValue); });
 		m_pTextbox->OnEscape([this]() { TransitionTextToSlider(false); });
-		m_pTextbox->OnFocusLost([this](const FocusEvent&)
-			{
-				if (m_mode != Slider)
-					TransitionTextToSlider(false);
-			});
+		m_pTextbox->OnFocusLost([this](const FocusEvent&) { TextBox_OnFocusLost(); });
 
 		AddWidget(m_pTextbox);
 
@@ -269,5 +230,56 @@ namespace Widgets
 		m_pTextbox->SetText(std::to_string(m_currentValue));
 		m_pSlider->Disable();
 		m_mode = Text;
+	}
+
+	void SliderFloat::Slider_OnMouseEnter()
+	{
+		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor);
+	}
+
+	void SliderFloat::Slider_OnMouseExit()
+	{
+		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor);
+	}
+
+	void SliderFloat::Slider_OnMouseDown(const MouseEvent& ev)
+	{
+		if (m_isSliderDragging)
+			return;
+
+		m_isSliderDragging = true;
+		m_mouseDragPreviousX = ev.GetX();
+
+		m_pSlider->CaptureMouse();
+	}
+
+	void SliderFloat::Slider_OnMouseUp()
+	{
+		m_isSliderDragging = false;
+		m_pSlider->ReleaseMouse();
+	}
+
+	void SliderFloat::TextBox_OnValidate(const std::string& strValue)
+	{
+		char* pEnd = nullptr;
+		float value = std::strtof(strValue.c_str(), &pEnd);
+
+		float oldValue = m_currentValue;
+		if (pEnd)
+		{
+			m_currentValue = value;
+		}
+
+		bool valueChanged = oldValue != m_currentValue;
+		TransitionTextToSlider(valueChanged);
+	}
+
+	void SliderFloat::TextBox_OnFocusLost()
+	{
+		if (m_mode != Slider)
+		{
+			TransitionTextToSlider(false);
+			m_hover = false;
+		}
 	}
 }

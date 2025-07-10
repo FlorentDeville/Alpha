@@ -58,5 +58,13 @@ namespace Widgets
 
 		void TransitionTextToSlider(bool valueChanged);
 		void TransitionSliderToText();
+
+		void Slider_OnMouseEnter();
+		void Slider_OnMouseExit();
+		void Slider_OnMouseDown(const MouseEvent& ev);
+		void Slider_OnMouseUp();
+
+		void TextBox_OnValidate(const std::string& value);
+		void TextBox_OnFocusLost();
 	};
 }
