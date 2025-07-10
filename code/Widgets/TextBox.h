@@ -15,6 +15,13 @@ namespace Widgets
 	class TextBox : public Widget
 	{
 	public:
+		enum TextAlignment
+		{
+			Left,
+			Center,
+			Right
+		};
+
 		TextBox();
 		~TextBox();
 
@@ -27,6 +34,7 @@ namespace Widgets
 		bool Handle(const BaseEvent& ev) override;
 
 		void SetText(const std::string& text);
+		void SetTextAlignment(TextAlignment alignment);
 
 		const std::string& GetText() const;
 
@@ -54,10 +62,17 @@ namespace Widgets
 		int m_cursorPosition;
 		
 		uint64_t m_cursorLastBlinkChange;
+		
+		TextAlignment m_textAlignment;
+
+		DirectX::XMUINT2 m_textLocalPos;
 
 		bool OnGetFocusCallback();
 		bool OnLoseFocusCallback();
 
 		void ComputeCursorPosition();
+		void ComputeTextLocalPosition();
+
+		void DrawText(const D3D12_RECT& scissor);
 	};
 }

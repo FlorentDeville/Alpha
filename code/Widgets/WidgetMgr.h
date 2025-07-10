@@ -35,6 +35,7 @@ namespace Widgets
 	class Container;
 	class Layout;
 	class Shortcut;
+	class SliderFloat;
 	class Split;
 	class TextBox;
 	class Viewport;
@@ -57,6 +58,7 @@ namespace Widgets
 		friend class Widgets::Container;
 		friend class Widgets::Icon;
 		friend class Widgets::Layout;
+		friend class Widgets::SliderFloat;
 		friend class Widgets::Split;
 		friend class Widgets::TextBox;
 		friend class Widgets::Viewport;
