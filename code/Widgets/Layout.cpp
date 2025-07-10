@@ -61,6 +61,8 @@ namespace Widgets
 				Rendering::RenderModule& render = Rendering::RenderModule::Get();
 				Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
+				render.SetScissorRectangle(scissor);
+
 				const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
 				render.BindMaterial(*pMaterial, wvp);
 
