@@ -85,6 +85,50 @@ namespace Editors
 			pColorWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
 			pLayout->AddWidget(pColorWidget);
 
+			pRedChannel->OnValidate([pColorWidget](const std::string& value)
+				{
+					char* pEnd = nullptr;
+					float f = std::strtof(value.c_str(), &pEnd);
+					if (value.c_str() != pEnd)
+					{
+						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[0] = f;
+					}
+
+				});
+
+			pGreenChannel->OnValidate([pColorWidget](const std::string& value)
+				{
+					char* pEnd = nullptr;
+					float f = std::strtof(value.c_str(), &pEnd);
+					if (value.c_str() != pEnd)
+					{
+						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[1] = f;
+					}
+
+				});
+
+			pBlueChannel->OnValidate([pColorWidget](const std::string& value)
+				{
+					char* pEnd = nullptr;
+					float f = std::strtof(value.c_str(), &pEnd);
+					if (value.c_str() != pEnd)
+					{
+						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[2] = f;
+					}
+
+				});
+
+			pAlphaChannel->OnValidate([pColorWidget](const std::string& value)
+				{
+					char* pEnd = nullptr;
+					float f = std::strtof(value.c_str(), &pEnd);
+					if (value.c_str() != pEnd)
+					{
+						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[3] = f;
+					}
+
+				});
+
 			pWidget = pLayout;
 		}
 		break;

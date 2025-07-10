@@ -23,6 +23,8 @@ namespace Widgets
 		void SetBorderColor(const Color& borderColor);
 		void ShowBorder(bool showBorder);
 
+		Color& GetBackgroundColor();
+
 	private:
 		Color m_backgroundColor;
 		Color m_borderColor;

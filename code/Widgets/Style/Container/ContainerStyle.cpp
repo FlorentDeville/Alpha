@@ -36,4 +36,9 @@ namespace Widgets
 	{
 		m_showBorder = showBorder;
 	}
+
+	Color& ContainerStyle::GetBackgroundColor()
+	{
+		return m_backgroundColor;
+	}
 }
