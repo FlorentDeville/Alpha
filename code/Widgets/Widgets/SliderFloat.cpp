@@ -56,6 +56,7 @@ namespace Widgets
 		m_pTextbox->Disable();
 		m_pTextbox->SetText(std::to_string(m_currentValue));
 		m_pTextbox->SetSize(DirectX::XMUINT2(100, 20));
+		m_pTextbox->SetTextAlignment(TextBox::Center);
 		m_pTextbox->OnValidate([this](const std::string& strValue) { TextBox_OnValidate(strValue); });
 		m_pTextbox->OnEscape([this]() { TransitionTextToSlider(false); });
 		m_pTextbox->OnFocusLost([this](const FocusEvent&) { TextBox_OnFocusLost(); });
