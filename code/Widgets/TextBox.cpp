@@ -31,6 +31,8 @@ namespace Widgets
 		, m_cursorPosition(0)
 		, m_cursorLastBlinkChange(0)
 		, m_text()
+		, m_textAlignment(Left)
+		, m_textLocalPos()
 	{
 		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1));
 		m_hoverStyle.SetBorderColor(DirectX::XMVectorSet(0.6f, 0.6f, 0.6f, 1));
@@ -108,15 +110,7 @@ namespace Widgets
 		}
 
 		{
-			float fontScale = 1.f;
-			const int textXOffset = 5;
-			const int textYOffset = 0;
-			DirectX::XMFLOAT3 uiPos((float)m_absPos.x + textXOffset, (float)m_absPos.y + textYOffset, (float)m_absPos.z - 1);
-			DirectX::XMUINT4 localScissor(m_absPos.x + textXOffset, m_absPos.y, m_size.x - (2 * textXOffset), m_size.y);
-
-			int32_t bottom = localScissor.y + localScissor.w;
-			if(bottom <= scissor.bottom)
-				Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+			DrawText(scissor);
 		}
 
 		Widgets::Widget::Draw(windowSize, scissor);	
@@ -242,6 +236,7 @@ namespace Widgets
 
 				m_text.insert(m_cursorPosition, 1, newChar);
 				++m_cursorPosition;
+				ComputeTextLocalPosition();
 				ComputeCursorPosition();
 				return true;
 			}		
@@ -259,12 +254,17 @@ namespace Widgets
 	void TextBox::SetText(const std::string& text)
 	{
 		m_text = text;
+		ComputeTextLocalPosition();
 	}
 
-	//void TextBox::OnValidate(const OnValidateCallback& callback)
-	//{
-	//	m_onValidateCallback = callback;
-	//}
+	void TextBox::SetTextAlignment(TextAlignment alignment)
+	{
+		if (m_textAlignment != alignment)
+		{
+			m_textAlignment = alignment;
+			ComputeTextLocalPosition();
+		}
+	}
 
 	const std::string& TextBox::GetText() const
 	{
@@ -291,7 +291,8 @@ namespace Widgets
 
 	void TextBox::ComputeCursorPosition()
 	{
-		DirectX::XMINT2 cursorOffset(4, 2);
+		DirectX::XMINT2 cursorOffset(-1, 2);
+		
 		Rendering::FontId fid = WidgetMgr::Get().GetUIFontId();
 		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fid);
 
@@ -299,9 +300,63 @@ namespace Widgets
 		DirectX::XMUINT2 textSize;
 		pFont->ComputeRect(textToCursor, textSize);
 
-		int xPosition = cursorOffset.x + textSize.x;
+		int xPosition = cursorOffset.x + m_textLocalPos.x + textSize.x;
 
-		m_pCursorIcon->SetX(cursorOffset.x + textSize.x);
+		m_pCursorIcon->SetX(xPosition);
 		m_pCursorIcon->Resize(m_absPos, m_size);
+	}
+
+	void TextBox::ComputeTextLocalPosition()
+	{
+		const int textXOffset = 5;
+		const int textYOffset = 0;
+
+		switch (m_textAlignment)
+		{
+		case Left:
+		{
+			m_textLocalPos.x = textXOffset;
+			m_textLocalPos.y = textYOffset;
+		}
+		break;
+
+		case Center:
+		{
+			m_textLocalPos.y = textYOffset;
+
+			DirectX::XMUINT2 textRect;
+			const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
+			pFont->ComputeRect(m_text, textRect);
+
+			float halfWidth = static_cast<float>(m_size.x * 0.5f);
+			float halfTextWidth = static_cast<float>(textRect.x * 0.5f);
+			m_textLocalPos.x = static_cast<uint32_t>(halfWidth - halfTextWidth);
+		}
+		break;
+
+		case Right:
+		{
+			m_textLocalPos.y = textYOffset;
+
+			DirectX::XMUINT2 textRect;
+			const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
+			pFont->ComputeRect(m_text, textRect);
+
+			m_textLocalPos.x = m_size.x - textRect.x;
+		}
+		break;
+
+		}
+	}
+
+	void TextBox::DrawText(const D3D12_RECT& scissor)
+	{
+		float fontScale = 1.f;
+		DirectX::XMFLOAT3 uiPos((float)m_absPos.x + m_textLocalPos.x, (float)m_absPos.y + m_textLocalPos.y, (float)m_absPos.z - 1);
+		DirectX::XMUINT4 localScissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
+
+		int32_t bottom = localScissor.y + localScissor.w;
+		if (bottom <= scissor.bottom)
+			Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 	}
 }
