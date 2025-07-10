@@ -60,6 +60,8 @@ namespace Editors
 		{
 			float* pFloat = reinterpret_cast<float*>(pMatParamDesc->m_value.GetData());
 
+			Widgets::Color currentColor(pFloat[0], pFloat[1], pFloat[2], pFloat[3]);
+
 			Widgets::Layout* pLayout = new Widgets::Layout();
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
@@ -77,6 +79,11 @@ namespace Editors
 
 			Widgets::TextBox* pAlphaChannel = CreateSingleFloatWidget(++pFloat);
 			pLayout->AddWidget(pAlphaChannel);
+
+			Widgets::Container* pColorWidget = new Widgets::Container(20, 20);
+			pColorWidget->GetDefaultStyle().SetBackgroundColor(currentColor);
+			pColorWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
+			pLayout->AddWidget(pColorWidget);
 
 			pWidget = pLayout;
 		}
