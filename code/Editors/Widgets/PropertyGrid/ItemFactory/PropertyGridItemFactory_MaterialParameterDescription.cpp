@@ -12,6 +12,7 @@
 
 #include "Widgets/Layout.h"
 #include "Widgets/TextBox.h"
+#include "Widgets/Widgets/SliderFloat.h"
 
 #include <cstdlib>
 
@@ -68,16 +69,16 @@ namespace Editors
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
 			pLayout->SetTransparent(true);
 
-			Widgets::TextBox* pRedChannel = CreateSingleFloatWidget(pFloat);
+			Widgets::SliderFloat* pRedChannel = new Widgets::SliderFloat(0, 1, pFloat[0]);
 			pLayout->AddWidget(pRedChannel);
 
-			Widgets::TextBox* pGreenChannel = CreateSingleFloatWidget(++pFloat);
+			Widgets::SliderFloat* pGreenChannel = new Widgets::SliderFloat(0, 1, pFloat[1]);
 			pLayout->AddWidget(pGreenChannel);
 
-			Widgets::TextBox* pBlueChannel = CreateSingleFloatWidget(++pFloat);
+			Widgets::SliderFloat* pBlueChannel = new Widgets::SliderFloat(0, 1, pFloat[2]);
 			pLayout->AddWidget(pBlueChannel);
 
-			Widgets::TextBox* pAlphaChannel = CreateSingleFloatWidget(++pFloat);
+			Widgets::SliderFloat* pAlphaChannel = new Widgets::SliderFloat(0, 1, pFloat[2]);
 			pLayout->AddWidget(pAlphaChannel);
 
 			Widgets::Container* pColorWidget = new Widgets::Container(20, 20);
@@ -85,48 +86,36 @@ namespace Editors
 			pColorWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
 			pLayout->AddWidget(pColorWidget);
 
-			pRedChannel->OnValidate([pColorWidget](const std::string& value)
+			pRedChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
-					char* pEnd = nullptr;
-					float f = std::strtof(value.c_str(), &pEnd);
-					if (value.c_str() != pEnd)
-					{
-						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[0] = f;
-					}
+					pFloat[0] = value;
+					m_pPopulator->SendDataChangedEvent();
 
+					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[0] = value;
 				});
 
-			pGreenChannel->OnValidate([pColorWidget](const std::string& value)
+			pGreenChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
-					char* pEnd = nullptr;
-					float f = std::strtof(value.c_str(), &pEnd);
-					if (value.c_str() != pEnd)
-					{
-						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[1] = f;
-					}
+					pFloat[1] = value;
+					m_pPopulator->SendDataChangedEvent();
 
+					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[1] = value;
 				});
 
-			pBlueChannel->OnValidate([pColorWidget](const std::string& value)
+			pBlueChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
-					char* pEnd = nullptr;
-					float f = std::strtof(value.c_str(), &pEnd);
-					if (value.c_str() != pEnd)
-					{
-						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[2] = f;
-					}
+					pFloat[2] = value;
+					m_pPopulator->SendDataChangedEvent();
 
+					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[2] = value;
 				});
 
-			pAlphaChannel->OnValidate([pColorWidget](const std::string& value)
+			pAlphaChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
-					char* pEnd = nullptr;
-					float f = std::strtof(value.c_str(), &pEnd);
-					if (value.c_str() != pEnd)
-					{
-						pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[3] = f;
-					}
+					pFloat[3] = value;
+					m_pPopulator->SendDataChangedEvent();
 
+					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[3] = value;
 				});
 
 			pWidget = pLayout;
