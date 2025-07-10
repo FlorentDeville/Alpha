@@ -194,6 +194,7 @@ namespace Widgets
 		switch (event.m_id)
 		{
 		case EventType::kMouseEnter:
+			m_hover = true;
 			if (m_onMouseEnter)
 			{
 				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
@@ -203,6 +204,7 @@ namespace Widgets
 			break;
 
 		case EventType::kMouseExit:
+			m_hover = false;
 			if (m_onMouseExit)
 			{
 				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
