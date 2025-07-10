@@ -40,6 +40,7 @@
     <ClInclude Include="Style\Button\ButtonStyle.h" />
     <ClInclude Include="Style\Container\ContainerStyle.h" />
     <ClInclude Include="Style\Layout\LayoutStyle.h" />
+    <ClInclude Include="Style\SliderFloat\SliderFloatStyle.h" />
     <ClInclude Include="Style\TextBox\TextBoxStyle.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="TabContainer.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="WidgetMgr.h" />
     <ClInclude Include="Widgets\AbstractClickable.h" />
     <ClInclude Include="Widgets\Frame.h" />
+    <ClInclude Include="Widgets\SliderFloat.h" />
     <ClInclude Include="Widgets\TableView.h" />
     <ClInclude Include="Widgets\TableViewStyle.h" />
   </ItemGroup>
@@ -78,6 +80,7 @@
     <ClCompile Include="Style\Button\ButtonStyle.cpp" />
     <ClCompile Include="Style\Container\ContainerStyle.cpp" />
     <ClCompile Include="Style\Layout\LayoutStyle.cpp" />
+    <ClCompile Include="Style\SliderFloat\SlideFloatStyle.cpp" />
     <ClCompile Include="Style\TextBox\TextBoxStyle.cpp" />
     <ClCompile Include="Tab.cpp" />
     <ClCompile Include="TabContainer.cpp" />
@@ -91,6 +94,7 @@
     <ClCompile Include="WidgetMgr.cpp" />
     <ClCompile Include="Widgets\AbstractClickable.cpp" />
     <ClCompile Include="Widgets\Frame.cpp" />
+    <ClCompile Include="Widgets\SliderFloat.cpp" />
     <ClCompile Include="Widgets\TableView.cpp" />
     <ClCompile Include="Widgets\TableViewStyle.cpp" />
   </ItemGroup>

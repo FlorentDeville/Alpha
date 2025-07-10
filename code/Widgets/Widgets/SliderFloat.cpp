@@ -1,0 +1,155 @@
+/********************************************************************/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#include "Widgets/Widgets/SliderFloat.h"
+
+#include "Rendering/Font/FontMgr.h"
+#include "Rendering/Material/MaterialMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/RenderModule.h"
+
+#include "Widgets/Container.h"
+#include "Widgets/Label.h"
+#include "Widgets/WidgetMgr.h"
+
+namespace Widgets
+{
+	SliderFloat::SliderFloat(float minValue, float maxValue, float currentValue)
+		: Widget(100, 20, 0, 0)
+		, m_minValue(minValue)
+		, m_maxValue(maxValue)
+		, m_currentValue(currentValue)
+	{
+		m_defaultStyle.SetBackgroundColor(Widgets::Color(0.22f, 0.22f, 0.22f));
+		m_defaultStyle.SetBorderColor(Widgets::Color(0.26f, 0.26f, 0.26f));
+		m_defaultStyle.SetShowBorder(true);
+		m_defaultStyle.SetBorderSize(1);
+		m_defaultStyle.SetSliderColor(Widgets::Color(77, 77, 77));
+
+		m_hoverStyle.SetBackgroundColor(Widgets::Color(0.12f, 0.12f, 0.12f));
+		m_hoverStyle.SetBorderColor(Widgets::Color(0.6f, 0.6f, 0.6f));
+		m_hoverStyle.SetBorderSize(1);
+		m_hoverStyle.SetShowBorder(true);
+
+		m_hoverSliderStyle = m_hoverStyle;
+		m_hoverSliderStyle.SetSliderColor(Widgets::Color(153, 153, 153));
+
+		//first make the slider
+		m_pSlider = new Container(10, 18);
+		m_pSlider->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor);
+	
+		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) { m_pSlider->GetDefaultStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor); });
+		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) { m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor); });
+
+		AddWidget(m_pSlider);
+	}
+
+	SliderFloat::~SliderFloat()
+	{
+
+	}
+
+	//bool SliderFloat::Handle(const BaseEvent& ev)
+	//{
+	//	switch (ev.m_id)
+	//	{
+	//	case EventType::kMouseEnter:
+	//	{
+	//		m_hover = true;
+	//		return true;
+	//	}
+	//	break;
+
+	//	case EventType::kMouseExit:
+	//	{
+	//		m_hover = false;
+	//		return true;
+	//	}
+	//	break;
+
+	//	default:
+	//		return Widget::Handle(ev);
+	//		break;
+	//	}
+
+	//	return false;
+	//}
+
+	void SliderFloat::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	{
+		//draw background
+		{
+			DirectX::XMMATRIX mvpMatrix;
+			ComputeWVPMatrix(windowSize, mvpMatrix);
+
+			WidgetMgr& widgetMgr = WidgetMgr::Get();
+			Rendering::RenderModule& render = Rendering::RenderModule::Get();
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+
+			D3D12_RECT localScissorRect;
+			localScissorRect.left = m_absPos.x;
+			localScissorRect.right = m_absPos.x + m_size.x;
+			localScissorRect.top = m_absPos.y;
+			localScissorRect.bottom = m_absPos.y + m_size.y;
+
+			//intersection with the parent scissor
+			if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
+			if (localScissorRect.right > scissor.right) localScissorRect.right = scissor.right;
+			if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
+			if (localScissorRect.bottom > scissor.bottom) localScissorRect.bottom = scissor.bottom;
+
+			if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
+				return;
+
+			render.SetScissorRectangle(localScissorRect);
+
+			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+			render.BindMaterial(*pMaterial, mvpMatrix);
+
+			SliderFloatStyle* currentStyle = &m_defaultStyle;
+			if (m_hover)
+				currentStyle = &m_hoverStyle;
+
+			int valueShowBorder = currentStyle->m_showBorder ? 1 : 0;
+			float rect[2] = { (float)m_size.x, (float)m_size.y };
+
+			render.SetConstantBuffer(1, sizeof(currentStyle->m_backgroundColor), &currentStyle->m_backgroundColor, 0);
+			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+			render.SetConstantBuffer(3, sizeof(currentStyle->m_borderColor), &currentStyle->m_borderColor, 0);
+			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
+			render.SetConstantBuffer(5, sizeof(currentStyle->m_borderSize), &currentStyle->m_borderSize, 0);
+
+			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
+			render.RenderMesh(*pMesh);
+		}
+
+		Widget::Draw(windowSize, scissor);
+
+		{
+			//All of this should be cached
+			std::string strValue = std::to_string(m_currentValue);
+
+			const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
+			DirectX::XMUINT2 textRect;
+			pFont->ComputeRect(strValue, textRect);
+			// until here at least
+
+			float fontScale = 1.f;
+			const int textXOffset = 5;
+			const int textYOffset = 0;
+
+			//center the text
+			float x = (float)m_absPos.x + m_size.x * 0.5f - textRect.x * 0.5f;
+			float y = (float)m_absPos.y + m_size.y * 0.5f - textRect.y * 0.5f;
+			DirectX::XMFLOAT3 uiPos(x, y, (float)m_absPos.z - 2);
+			DirectX::XMUINT4 localScissor(scissor.left, scissor.top, scissor.right - scissor.left, scissor.bottom - scissor.top);
+
+			//int32_t bottom = localScissor.y + localScissor.w;
+			//if (bottom <= scissor.bottom)
+			Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+		}
+	}
+}
