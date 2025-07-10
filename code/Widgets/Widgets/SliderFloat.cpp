@@ -110,17 +110,9 @@ namespace Widgets
 
 	void SliderFloat::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
-		//draw background
+		//compute local scissor
+		D3D12_RECT localScissorRect;
 		{
-			DirectX::XMMATRIX mvpMatrix;
-			ComputeWVPMatrix(windowSize, mvpMatrix);
-
-			WidgetMgr& widgetMgr = WidgetMgr::Get();
-			Rendering::RenderModule& render = Rendering::RenderModule::Get();
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-
-
-			D3D12_RECT localScissorRect;
 			localScissorRect.left = m_absPos.x;
 			localScissorRect.right = m_absPos.x + m_size.x;
 			localScissorRect.top = m_absPos.y;
@@ -134,6 +126,16 @@ namespace Widgets
 
 			if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
 				return;
+		}
+
+		//draw background
+		{
+			DirectX::XMMATRIX mvpMatrix;
+			ComputeWVPMatrix(windowSize, mvpMatrix);
+
+			WidgetMgr& widgetMgr = WidgetMgr::Get();
+			Rendering::RenderModule& render = Rendering::RenderModule::Get();
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 
 			render.SetScissorRectangle(localScissorRect);
 
@@ -176,11 +178,13 @@ namespace Widgets
 			float x = (float)m_absPos.x + m_size.x * 0.5f - textRect.x * 0.5f;
 			float y = (float)m_absPos.y + m_size.y * 0.5f - textRect.y * 0.5f;
 			DirectX::XMFLOAT3 uiPos(x, y, (float)m_absPos.z - 2);
-			DirectX::XMUINT4 localScissor(scissor.left, scissor.top, scissor.right - scissor.left, scissor.bottom - scissor.top);
 
-			//int32_t bottom = localScissor.y + localScissor.w;
-			//if (bottom <= scissor.bottom)
-			Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+			//compute a local scissor being the intersection of the 
+			DirectX::XMUINT4 localScissor(localScissorRect.left, localScissorRect.top, localScissorRect.right - localScissorRect.left, localScissorRect.bottom - localScissorRect.top);
+
+			int32_t bottom = static_cast<int32_t>(y) + textRect.y;
+			if (bottom <= localScissorRect.bottom)
+				Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 		}
 	}
 
