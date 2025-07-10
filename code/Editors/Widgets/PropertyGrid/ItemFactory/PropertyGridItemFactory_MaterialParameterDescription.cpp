@@ -66,10 +66,18 @@ namespace Editors
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
 			pLayout->SetTransparent(true);
 
-			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
+			Widgets::TextBox* pRedChannel = CreateSingleFloatWidget(pFloat);
+			pLayout->AddWidget(pRedChannel);
+
+			Widgets::TextBox* pGreenChannel = CreateSingleFloatWidget(++pFloat);
+			pLayout->AddWidget(pGreenChannel);
+
+			Widgets::TextBox* pBlueChannel = CreateSingleFloatWidget(++pFloat);
+			pLayout->AddWidget(pBlueChannel);
+
+			Widgets::TextBox* pAlphaChannel = CreateSingleFloatWidget(++pFloat);
+			pLayout->AddWidget(pAlphaChannel);
+
 			pWidget = pLayout;
 		}
 		break;
