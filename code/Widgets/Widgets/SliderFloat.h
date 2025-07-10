@@ -10,6 +10,7 @@
 namespace Widgets
 {
 	class Container;
+	class TextBox;
 
 	class SliderFloat : public Widget
 	{
@@ -26,11 +27,22 @@ namespace Widgets
 
 	private:
 
+		enum InputMode
+		{
+			Slider,		//the user can drag the slider to change the value
+			Text,		//the user can type value
+
+			Count
+		};
+
 		float m_minValue;
 		float m_maxValue;
 		float m_currentValue;
 
+		InputMode m_mode;
+
 		Container* m_pSlider;
+		TextBox* m_pTextbox;
 
 		bool m_isSliderDragging;
 		int m_mouseDragPreviousX;
@@ -40,5 +52,11 @@ namespace Widgets
 		SliderFloatStyle m_hoverSliderStyle;
 
 		int CalculateSliderLocalX();
+
+		void DrawBackground(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor);
+		void DrawSliderText(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor);
+
+		void TransitionTextToSlider(bool valueChanged);
+		void TransitionSliderToText();
 	};
 }

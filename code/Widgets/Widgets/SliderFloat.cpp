@@ -11,6 +11,7 @@
 
 #include "Widgets/Container.h"
 #include "Widgets/Label.h"
+#include "Widgets/TextBox.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -22,6 +23,7 @@ namespace Widgets
 		, m_currentValue(currentValue)
 		, m_isSliderDragging(false)
 		, m_mouseDragPreviousX(0)
+		, m_mode(Slider)
 	{
 		m_defaultStyle.SetBackgroundColor(Widgets::Color(0.22f, 0.22f, 0.22f));
 		m_defaultStyle.SetBorderColor(Widgets::Color(0.26f, 0.26f, 0.26f));
@@ -71,6 +73,38 @@ namespace Widgets
 			});
 
 		AddWidget(m_pSlider);
+
+		m_pTextbox = new TextBox();
+		m_pTextbox->Disable();
+		m_pTextbox->SetText(std::to_string(m_currentValue));
+		m_pTextbox->SetSize(DirectX::XMUINT2(100, 20));
+		m_pTextbox->OnValidate([this](const std::string& strValue)
+			{
+				char* pEnd = nullptr;
+				float value = std::strtof(strValue.c_str(), &pEnd);
+
+				float oldValue = m_currentValue;
+				if (pEnd)
+				{
+					m_currentValue = value;
+				}
+
+				bool valueChanged = oldValue != m_currentValue;
+				TransitionTextToSlider(valueChanged);
+			});
+		m_pTextbox->OnEscape([this]() { TransitionTextToSlider(false); });
+		m_pTextbox->OnFocusLost([this](const FocusEvent&)
+			{
+				if (m_mode != Slider)
+					TransitionTextToSlider(false);
+			});
+
+		AddWidget(m_pTextbox);
+
+		OnMouseDown([this](const MouseEvent& ev) 
+			{ 
+				TransitionSliderToText();
+			});
 	}
 
 	SliderFloat::~SliderFloat()
@@ -128,64 +162,25 @@ namespace Widgets
 				return;
 		}
 
-		//draw background
+		switch (m_mode)
 		{
-			DirectX::XMMATRIX mvpMatrix;
-			ComputeWVPMatrix(windowSize, mvpMatrix);
-
-			WidgetMgr& widgetMgr = WidgetMgr::Get();
-			Rendering::RenderModule& render = Rendering::RenderModule::Get();
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-
-			render.SetScissorRectangle(localScissorRect);
-
-			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
-			render.BindMaterial(*pMaterial, mvpMatrix);
-
-			SliderFloatStyle* currentStyle = &m_defaultStyle;
-			if (m_hover)
-				currentStyle = &m_hoverStyle;
-
-			int valueShowBorder = currentStyle->m_showBorder ? 1 : 0;
-			float rect[2] = { (float)m_size.x, (float)m_size.y };
-
-			render.SetConstantBuffer(1, sizeof(currentStyle->m_backgroundColor), &currentStyle->m_backgroundColor, 0);
-			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-			render.SetConstantBuffer(3, sizeof(currentStyle->m_borderColor), &currentStyle->m_borderColor, 0);
-			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
-			render.SetConstantBuffer(5, sizeof(currentStyle->m_borderSize), &currentStyle->m_borderSize, 0);
-
-			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
-			render.RenderMesh(*pMesh);
-		}
-
-		Widget::Draw(windowSize, scissor);
-
+		case Slider:
 		{
-			//All of this should be cached
-			std::string strValue = std::to_string(m_currentValue);
+			DrawBackground(windowSize, localScissorRect);
 
-			const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
-			DirectX::XMUINT2 textRect;
-			pFont->ComputeRect(strValue, textRect);
-			// until here at least
+			Widget::Draw(windowSize, scissor);
 
-			float fontScale = 1.f;
-			const int textXOffset = 5;
-			const int textYOffset = 0;
-
-			//center the text
-			float x = (float)m_absPos.x + m_size.x * 0.5f - textRect.x * 0.5f;
-			float y = (float)m_absPos.y + m_size.y * 0.5f - textRect.y * 0.5f;
-			DirectX::XMFLOAT3 uiPos(x, y, (float)m_absPos.z - 2);
-
-			//compute a local scissor being the intersection of the 
-			DirectX::XMUINT4 localScissor(localScissorRect.left, localScissorRect.top, localScissorRect.right - localScissorRect.left, localScissorRect.bottom - localScissorRect.top);
-
-			int32_t bottom = static_cast<int32_t>(y) + textRect.y;
-			if (bottom <= localScissorRect.bottom)
-				Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+			DrawSliderText(windowSize, localScissorRect);
 		}
+		break;
+
+		case Text:
+		{
+			Widget::Draw(windowSize, scissor);
+		}
+		break;
+		}
+		
 	}
 
 	int SliderFloat::CalculateSliderLocalX()
@@ -193,5 +188,86 @@ namespace Widgets
 		float range = m_maxValue - m_minValue;
 		float positionRatio = ((m_currentValue / range) * (m_size.x - m_pSlider->GetWidth() - 2)) + 1; //-2 for the borders
 		return static_cast<int>(positionRatio);
+	}
+
+	void SliderFloat::DrawBackground(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor)
+	{
+		DirectX::XMMATRIX mvpMatrix;
+		ComputeWVPMatrix(windowSize, mvpMatrix);
+
+		WidgetMgr& widgetMgr = WidgetMgr::Get();
+		Rendering::RenderModule& render = Rendering::RenderModule::Get();
+		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+		render.SetScissorRectangle(localScissor);
+
+		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+		render.BindMaterial(*pMaterial, mvpMatrix);
+
+		SliderFloatStyle* currentStyle = &m_defaultStyle;
+		if (m_hover)
+			currentStyle = &m_hoverStyle;
+
+		int valueShowBorder = currentStyle->m_showBorder ? 1 : 0;
+		float rect[2] = { (float)m_size.x, (float)m_size.y };
+
+		render.SetConstantBuffer(1, sizeof(currentStyle->m_backgroundColor), &currentStyle->m_backgroundColor, 0);
+		render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+		render.SetConstantBuffer(3, sizeof(currentStyle->m_borderColor), &currentStyle->m_borderColor, 0);
+		render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
+		render.SetConstantBuffer(5, sizeof(currentStyle->m_borderSize), &currentStyle->m_borderSize, 0);
+
+		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
+		render.RenderMesh(*pMesh);
+	}
+
+	void SliderFloat::DrawSliderText(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor)
+	{
+		//All of this should be cached
+		std::string strValue = std::to_string(m_currentValue);
+
+		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
+		DirectX::XMUINT2 textRect;
+		pFont->ComputeRect(strValue, textRect);
+		// until here at least
+
+		float fontScale = 1.f;
+		const int textXOffset = 5;
+		const int textYOffset = 0;
+
+		//center the text
+		float x = (float)m_absPos.x + m_size.x * 0.5f - textRect.x * 0.5f;
+		float y = (float)m_absPos.y + m_size.y * 0.5f - textRect.y * 0.5f;
+		DirectX::XMFLOAT3 uiPos(x, y, (float)m_absPos.z - 2);
+
+		//compute a local scissor being the intersection of the 
+		DirectX::XMUINT4 localScissorText(localScissor.left, localScissor.top, localScissor.right - localScissor.left, localScissor.bottom - localScissor.top);
+
+		int32_t bottom = static_cast<int32_t>(y) + textRect.y;
+		if (bottom <= localScissor.bottom)
+			Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissorText, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+	}
+
+	void SliderFloat::TransitionTextToSlider(bool valueChanged)
+	{
+		m_mode = Slider;
+		m_pTextbox->Disable();
+		m_pSlider->Enable();
+
+		if (valueChanged)
+		{
+			m_pSlider->SetX(CalculateSliderLocalX());
+			m_pSlider->ReComputePosition(m_absPos, m_size);
+			m_onValidate(m_currentValue);
+		}
+	}
+
+	void SliderFloat::TransitionSliderToText()
+	{
+		m_pTextbox->Enable();
+		m_pTextbox->ReComputePosition(m_absPos, m_size);
+		m_pTextbox->SetText(std::to_string(m_currentValue));
+		m_pSlider->Disable();
+		m_mode = Text;
 	}
 }
