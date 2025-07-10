@@ -19,7 +19,10 @@ namespace Widgets
 
 		//bool Handle(const BaseEvent& ev) override;
 
+		void Update(uint64_t dt) override;
 		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+
+		EVENT_DECL(Validate, void(const float value))
 
 	private:
 
@@ -29,8 +32,13 @@ namespace Widgets
 
 		Container* m_pSlider;
 
+		bool m_isSliderDragging;
+		int m_mouseDragPreviousX;
+
 		SliderFloatStyle m_defaultStyle;
 		SliderFloatStyle m_hoverStyle;
 		SliderFloatStyle m_hoverSliderStyle;
+
+		int CalculateSliderLocalX();
 	};
 }

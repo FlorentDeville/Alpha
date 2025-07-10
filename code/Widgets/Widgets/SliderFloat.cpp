@@ -20,6 +20,8 @@ namespace Widgets
 		, m_minValue(minValue)
 		, m_maxValue(maxValue)
 		, m_currentValue(currentValue)
+		, m_isSliderDragging(false)
+		, m_mouseDragPreviousX(0)
 	{
 		m_defaultStyle.SetBackgroundColor(Widgets::Color(0.22f, 0.22f, 0.22f));
 		m_defaultStyle.SetBorderColor(Widgets::Color(0.26f, 0.26f, 0.26f));
@@ -37,11 +39,36 @@ namespace Widgets
 
 		//first make the slider
 		m_pSlider = new Container(10, 18);
-		m_pSlider->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+		m_pSlider->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::MIDDLE);
 		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor);
-	
-		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) { m_pSlider->GetDefaultStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor); });
-		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) { m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor); });
+		m_pSlider->SetX(CalculateSliderLocalX());
+
+		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) 
+			{ 
+				m_pSlider->GetDefaultStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor); 
+			});
+
+		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) 
+			{ 
+				m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor); 
+			});
+
+		m_pSlider->OnMouseDown([this](const Widgets::MouseEvent& ev) 
+			{ 
+				if (m_isSliderDragging)
+					return;
+
+				m_isSliderDragging = true;
+				m_mouseDragPreviousX = ev.GetX(); 
+
+				m_pSlider->CaptureMouse();
+			});
+
+		m_pSlider->OnMouseUp([this](const Widgets::MouseEvent& ev) 
+			{ 
+				m_isSliderDragging = false;
+				m_pSlider->ReleaseMouse();
+			});
 
 		AddWidget(m_pSlider);
 	}
@@ -51,31 +78,35 @@ namespace Widgets
 
 	}
 
-	//bool SliderFloat::Handle(const BaseEvent& ev)
-	//{
-	//	switch (ev.m_id)
-	//	{
-	//	case EventType::kMouseEnter:
-	//	{
-	//		m_hover = true;
-	//		return true;
-	//	}
-	//	break;
+	void SliderFloat::Update(uint64_t dt)
+	{
+		if (!m_isSliderDragging)
+			return;
 
-	//	case EventType::kMouseExit:
-	//	{
-	//		m_hover = false;
-	//		return true;
-	//	}
-	//	break;
+		float oldCurrentValue = m_currentValue;
 
-	//	default:
-	//		return Widget::Handle(ev);
-	//		break;
-	//	}
+		DirectX::XMINT2 currentMousePosition = WidgetMgr::Get().GetCursorPosition();
+		int displacement = currentMousePosition.x - m_mouseDragPreviousX;
+		float ratio = static_cast<float>(displacement) / static_cast<float>(m_size.x);
+		float range = m_maxValue - m_minValue;
+		float offset = range * ratio;
+		
+		m_currentValue += offset;
+		if (m_currentValue > m_maxValue)
+			m_currentValue = m_maxValue;
+		else if (m_currentValue < m_minValue)
+			m_currentValue = m_minValue;
 
-	//	return false;
-	//}
+		if (m_currentValue != oldCurrentValue)
+		{
+			m_pSlider->SetX(CalculateSliderLocalX());
+			m_pSlider->ReComputePosition(m_absPos, m_size);
+
+			m_mouseDragPreviousX = currentMousePosition.x;
+
+			m_onValidate(m_currentValue);
+		}
+	}
 
 	void SliderFloat::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
 	{
@@ -151,5 +182,12 @@ namespace Widgets
 			//if (bottom <= scissor.bottom)
 			Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 		}
+	}
+
+	int SliderFloat::CalculateSliderLocalX()
+	{
+		float range = m_maxValue - m_minValue;
+		float positionRatio = ((m_currentValue / range) * (m_size.x - m_pSlider->GetWidth() - 2)) + 1; //-2 for the borders
+		return static_cast<int>(positionRatio);
 	}
 }
