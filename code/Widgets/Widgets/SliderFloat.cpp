@@ -29,7 +29,7 @@ namespace Widgets
 		m_defaultStyle.SetBorderColor(Widgets::Color(0.26f, 0.26f, 0.26f));
 		m_defaultStyle.SetShowBorder(true);
 		m_defaultStyle.SetBorderSize(1);
-		m_defaultStyle.SetSliderColor(Widgets::Color(77, 77, 77));
+		m_defaultStyle.SetSliderColor(Widgets::Color(120, 120, 120));
 
 		m_hoverStyle.SetBackgroundColor(Widgets::Color(0.12f, 0.12f, 0.12f));
 		m_hoverStyle.SetBorderColor(Widgets::Color(0.6f, 0.6f, 0.6f));
@@ -37,7 +37,7 @@ namespace Widgets
 		m_hoverStyle.SetShowBorder(true);
 
 		m_hoverSliderStyle = m_hoverStyle;
-		m_hoverSliderStyle.SetSliderColor(Widgets::Color(153, 153, 153));
+		m_hoverSliderStyle.SetSliderColor(Widgets::Color(170, 170, 170));
 
 		//first make the slider
 		m_pSlider = new Container(10, 18);
@@ -46,7 +46,7 @@ namespace Widgets
 		m_pSlider->SetX(CalculateSliderLocalX());
 
 		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) { Slider_OnMouseEnter(); });
-		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) { Slider_OnMouseEnter(); });
+		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) { Slider_OnMouseExit(); });
 		m_pSlider->OnMouseDown([this](const Widgets::MouseEvent& ev) { Slider_OnMouseDown(ev); });
 		m_pSlider->OnMouseUp([this](const Widgets::MouseEvent& ev) { Slider_OnMouseUp(); });
 
