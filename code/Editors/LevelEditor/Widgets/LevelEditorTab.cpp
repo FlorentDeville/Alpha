@@ -213,7 +213,7 @@ namespace Editors
 		pFrame->AddWidget(pLayout);
 
 		m_pEntityNameLabel = new Widgets::Label();
-		m_pEntityNameLabel->SetSize(DirectX::XMUINT2(0, 20));
+		m_pEntityNameLabel->SetSize(Core::UInt2(0, 20));
 		pLayout->AddWidget(m_pEntityNameLabel);
 
 		m_pEntityModel = new EntityModel(nullptr);
@@ -267,7 +267,7 @@ namespace Editors
 	{
 		//show a modal window to enter the entity name
 		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Entity Name");
-		pWindow->SetSize(DirectX::XMUINT2(500, 70));
+		pWindow->SetSize(Core::UInt2(500, 70));
 		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
 		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
@@ -279,7 +279,7 @@ namespace Editors
 
 		//text box for the name of the entity
 		Widgets::TextBox* pNameTextBox = new Widgets::TextBox();
-		pNameTextBox->SetSize(DirectX::XMUINT2(0, 20));
+		pNameTextBox->SetSize(Core::UInt2(0, 20));
 		pNameTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 
 		pNameTextBox->OnValidate([this, callback](const std::string& value) -> bool

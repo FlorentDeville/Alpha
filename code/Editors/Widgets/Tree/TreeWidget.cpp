@@ -93,7 +93,7 @@ namespace Editors
 		Widgets::Layout* pItemLayout = new Widgets::Layout();
 		pItemLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pItemLayout->SetDirection(Widgets::Layout::Horizontal);
-		pItemLayout->SetSize(DirectX::XMUINT2(0, ITEM_HEIGHT));
+		pItemLayout->SetSize(Core::UInt2(0, ITEM_HEIGHT));
 		pParentLayout->AddWidget(pItemLayout);
 
 		//children layout
@@ -109,7 +109,7 @@ namespace Editors
 		{
 			Widgets::Icon* pIcon = new Widgets::Icon();
 			pIcon->SetY(4);
-			pIcon->SetSize(DirectX::XMUINT2(12, 12));
+			pIcon->SetSize(Core::UInt2(12, 12));
 			pIcon->SetTextureId(m_expandedIcon);
 			pIcon->OnMouseDown([this, pChildrenLayout, pIcon](const Widgets::MouseEvent& ev) { OnMouseDown_CollapseIcon(ev, pChildrenLayout, pIcon); });
 			pItemLayout->AddWidget(pIcon);
@@ -140,7 +140,7 @@ namespace Editors
 		pItemLayout->AddWidget(pButton);
 
 		Widgets::Label* pItemLabel = new Widgets::Label(0, 0, 1, pModel->GetData(0));
-		pItemLabel->SetSize(DirectX::XMUINT2(0, ITEM_HEIGHT));
+		pItemLabel->SetSize(Core::UInt2(0, ITEM_HEIGHT));
 		pButton->AddWidget(pItemLabel);
 
 		//recursively create widgets for children

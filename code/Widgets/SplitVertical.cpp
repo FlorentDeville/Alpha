@@ -53,7 +53,7 @@ namespace Widgets
 			dt.x = currentMousePosition.x - m_pSplit->GetPreviousCursorPosition().x;
 			dt.y = currentMousePosition.y - m_pSplit->GetPreviousCursorPosition().y;
 
-			DirectX::XMUINT2 leftContainerSize = m_pLeftContainer->GetSize();
+			Core::UInt2 leftContainerSize = m_pLeftContainer->GetSize();
 
 			//prevent overflow cause leftContainerSize is unsigned
 			if (-dt.x > (int)leftContainerSize.x)
@@ -65,7 +65,7 @@ namespace Widgets
 			if (leftContainerSize.x < MIN_SIZE)
 				return;
 
-			DirectX::XMUINT2 rightContainerSize = m_pRightContainer->GetSize();
+			Core::UInt2 rightContainerSize = m_pRightContainer->GetSize();
 
 			//prevent overflow cause leftContainerSize is unsigned
 			if (dt.x > (int)rightContainerSize.x)
@@ -91,9 +91,9 @@ namespace Widgets
 		Widget::Draw(windowSize, scissor);
 	}
 
-	void SplitVertical::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void SplitVertical::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
-		const DirectX::XMUINT2 oldSize = m_size;
+		const Core::UInt2 oldSize = m_size;
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
 
@@ -108,7 +108,7 @@ namespace Widgets
 			else
 				leftContainerRatio = m_pLeftContainer->GetSize().x / static_cast<float>(parentSize.x);
 
-			DirectX::XMUINT2 leftcontainerNewSize = m_pLeftContainer->GetSize();
+			Core::UInt2 leftcontainerNewSize = m_pLeftContainer->GetSize();
 			leftcontainerNewSize.x = static_cast<uint32_t>(leftContainerRatio * m_size.x);
 			m_pLeftContainer->SetSize(leftcontainerNewSize);
 		}
@@ -122,9 +122,9 @@ namespace Widgets
 
 		case KeepRightSize:
 		{
-			DirectX::XMUINT2 oldRightContainerSize = m_pRightContainer->GetSize();
+			Core::UInt2 oldRightContainerSize = m_pRightContainer->GetSize();
 			int leftContainerWidth = m_size.x - oldRightContainerSize.x - m_pSplit->GetWidth();
-			m_pLeftContainer->SetSize(DirectX::XMUINT2(leftContainerWidth, 0));
+			m_pLeftContainer->SetSize(Core::UInt2(leftContainerWidth, 0));
 		}
 		break;
 		}
@@ -151,14 +151,14 @@ namespace Widgets
 
 	void SplitVertical::SetLeftPanelWidth(int width)
 	{
-		DirectX::XMUINT2 size = m_pLeftContainer->GetSize();
+		Core::UInt2 size = m_pLeftContainer->GetSize();
 		size.x = width;
 		m_pLeftContainer->SetSize(size);
 	}
 
 	void SplitVertical::SetRightPanelWidth(int width)
 	{
-		DirectX::XMUINT2 size = m_pRightContainer->GetSize();
+		Core::UInt2 size = m_pRightContainer->GetSize();
 		size.x = width;
 		m_pRightContainer->SetSize(size);
 	}

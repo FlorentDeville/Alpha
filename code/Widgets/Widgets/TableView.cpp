@@ -93,7 +93,7 @@ namespace Widgets
 		for (Widgets::Widget* pRow : rows)
 		{
 			Widgets::Widget* pCell = pRow->GetChildren()[column];
-			DirectX::XMUINT2 size = pCell->GetSize();
+			Core::UInt2 size = pCell->GetSize();
 			size.x = width;
 			pCell->SetSize(size);
 		}
@@ -313,7 +313,7 @@ namespace Widgets
 			if (jj != columnCount - 1)
 			{
 				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				DirectX::XMUINT2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
+				Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
 				pLabel->SetSize(cellSize);
 			}
 			else

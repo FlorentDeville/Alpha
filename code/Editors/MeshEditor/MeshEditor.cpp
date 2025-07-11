@@ -214,7 +214,7 @@ namespace Editors
 			pEntryLayout->AddWidget(pButtonImport);
 
 			Widgets::Icon* pImportIcon = new Widgets::Icon(m_importIconTextureId);
-			pImportIcon->SetSize(DirectX::XMUINT2(20, 20));
+			pImportIcon->SetSize(Core::UInt2(20, 20));
 			pButtonImport->AddWidget(pImportIcon);
 
 			//mesh name

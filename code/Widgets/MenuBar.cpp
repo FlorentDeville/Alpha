@@ -52,7 +52,7 @@ namespace Widgets
 		return pNewMenu;
 	}
 
-	void MenuBar::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void MenuBar::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		Widget::Resize(parentAbsPos, parentSize);
 

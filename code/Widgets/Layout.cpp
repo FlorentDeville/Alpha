@@ -112,7 +112,7 @@ namespace Widgets
 		return false;
 	}
 
-	void Layout::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Layout::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		m_absPos.x = parentAbsPos.x + m_locPos.x;
 		m_absPos.y = parentAbsPos.y + m_locPos.y;
@@ -124,7 +124,7 @@ namespace Widgets
 		if (m_children.empty())
 			return;
 		
-		DirectX::XMUINT2 contentSize = m_size;
+		Core::UInt2 contentSize = m_size;
 		int32_t pos = 0;
 		if (m_defaultStyle.m_showBorder)
 		{

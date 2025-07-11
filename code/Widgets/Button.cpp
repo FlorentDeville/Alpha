@@ -37,7 +37,7 @@ namespace Widgets
 		pLabel->SetX(HMARGIN);
 		pLabel->SetY(VMARGIN);
 
-		DirectX::XMUINT2 size = pLabel->GetSize();
+		Core::UInt2 size = pLabel->GetSize();
 		size.x += (2 * HMARGIN);
 		size.y += (2 * VMARGIN);
 		SetSize(size);
@@ -49,7 +49,7 @@ namespace Widgets
 	{
 		Label* pLabel = new Label(textLabel);
 
-		DirectX::XMUINT2 labelSize = pLabel->GetSize();
+		Core::UInt2 labelSize = pLabel->GetSize();
 
 		int labelX = static_cast<int>((width - labelSize.x) * 0.5f);
 		int labelY = static_cast<int>((height - labelSize.y) * 0.5f);

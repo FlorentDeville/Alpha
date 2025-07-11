@@ -55,7 +55,7 @@ namespace Widgets
 		m_pTextbox = new TextBox();
 		m_pTextbox->Disable();
 		m_pTextbox->SetText(std::to_string(m_currentValue));
-		m_pTextbox->SetSize(DirectX::XMUINT2(100, 20));
+		m_pTextbox->SetSize(Core::UInt2(100, 20));
 		m_pTextbox->SetTextAlignment(TextBox::Center);
 		m_pTextbox->OnValidate([this](const std::string& strValue) { TextBox_OnValidate(strValue); });
 		m_pTextbox->OnEscape([this]() { TransitionTextToSlider(false); });

@@ -39,7 +39,7 @@ namespace Widgets
 		return true;
 	}
 
-	void Menu::ReComputePosition(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Menu::ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		Container::ReComputePosition(parentAbsPos, parentSize);
 		m_absPos.z = 10;

@@ -157,7 +157,7 @@ namespace Editors
 	Widgets::TextBox* PropertyGridItemFactory_MaterialParameterDescription::CreateSingleFloatWidget(float* pData)
 	{
 		Widgets::TextBox* pWidget = new Widgets::TextBox();
-		pWidget->SetSize(DirectX::XMUINT2(TEXT_BOX_WIDTH, 20));
+		pWidget->SetSize(Core::UInt2(TEXT_BOX_WIDTH, 20));
 		pWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
 
 		const int BUFFER_SIZE = 32;

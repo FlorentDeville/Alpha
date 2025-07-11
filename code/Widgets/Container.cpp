@@ -96,7 +96,7 @@ namespace Widgets
 		absPos.x += m_defaultStyle.m_borderSize;
 		absPos.y += m_defaultStyle.m_borderSize;
 
-		DirectX::XMUINT2 size = m_size;
+		Core::UInt2 size = m_size;
 		size.x -= 2 * m_defaultStyle.m_borderSize;
 		size.y -= 2 * m_defaultStyle.m_borderSize;
 

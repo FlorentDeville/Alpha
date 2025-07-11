@@ -76,7 +76,7 @@ namespace Editors
 	void AssetIdWidget::OnClick_OpenAssetList()
 	{
 		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Select Asset");
-		pWindow->SetSize(DirectX::XMUINT2(500, 500));
+		pWindow->SetSize(Core::UInt2(500, 500));
 		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
 		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
@@ -88,7 +88,7 @@ namespace Editors
 
 		//list
 		m_pAssetList = new Widgets::TableView();
-		m_pAssetList->SetSize(DirectX::XMUINT2(500, 450));
+		m_pAssetList->SetSize(Core::UInt2(500, 450));
 		m_pAssetList->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk_AssetList(); });
 
 		m_pAssetListModel = new Editors::AssetListModel(m_type);

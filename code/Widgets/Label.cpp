@@ -27,7 +27,9 @@ namespace Widgets
 		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);
 		DirectX::XMUINT2 size;
 		pFont->ComputeRect(text, size);
-		SetSize(size);
+
+		Core::UInt2 coreSize(size.x, size.y);
+		SetSize(coreSize);
 		SetSizeStyle(Widget::HSIZE_STRETCH);
 	}
 
@@ -40,7 +42,9 @@ namespace Widgets
 		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(fontId);
 		DirectX::XMUINT2 size;
 		pFont->ComputeRect(text, size);
-		SetSize(size);
+		
+		Core::UInt2 coreSize(size.x, size.y);
+		SetSize(coreSize);
 
 		SetSizeStyle(Widget::HSIZE_STRETCH);
 		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
@@ -77,7 +81,7 @@ namespace Widgets
 		Rendering::RenderModule::Get().PrepareRenderText(m_text, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(m_fontScale, m_fontScale), localScissor, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 	}
 
-	void Label::ReComputeSize(const DirectX::XMUINT2& parentSize)
+	void Label::ReComputeSize(const Core::UInt2& parentSize)
 	{
 		bool anyNotFit = ((m_sizeStyle & Widget::HSIZE_FIT) == 0) && ((m_sizeStyle & Widget::VSIZE_FIT) == 0);
 		bool anyFit = (m_sizeStyle & Widget::HSIZE_FIT) || (m_sizeStyle & Widget::VSIZE_FIT);

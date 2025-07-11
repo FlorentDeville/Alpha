@@ -64,7 +64,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
+	void Widget::ReComputeSize(const Core::UInt2& parentSize)
 	{
 		if ((m_sizeStyle & HSIZE_STRETCH) != 0)
 			m_size.x = parentSize.x - m_locPos.x;
@@ -124,7 +124,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::ReComputePosition(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Widget::ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		switch (m_hPositionStyle)
 		{
@@ -177,7 +177,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Widget::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
@@ -329,7 +329,7 @@ namespace Widgets
 		m_locPos.y = y;
 	}
 
-	void Widget::SetSize(const DirectX::XMUINT2& size)
+	void Widget::SetSize(const Core::UInt2& size)
 	{
 		m_defaultSize = size;
 		m_size = size;
@@ -391,7 +391,7 @@ namespace Widgets
 		return pos;
 	}
 
-	DirectX::XMUINT2 Widget::GetSize() const
+	Core::UInt2 Widget::GetSize() const
 	{
 		return m_size;
 	}

@@ -8,6 +8,23 @@
 
 namespace Core
 {
+	class UInt2
+	{
+	public:
+		uint32_t x;
+		uint32_t y;
+
+		UInt2()
+			: x(0)
+			, y(0)
+		{ }
+
+		UInt2(uint32_t _x, uint32_t _y)
+			: x(_x)
+			, y(_y)
+		{ }
+	};
+
 	class Int3
 	{
 	public:

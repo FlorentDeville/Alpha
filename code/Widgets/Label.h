@@ -20,7 +20,7 @@ namespace Widgets
 
 		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
 
-		void ReComputeSize(const DirectX::XMUINT2& parentSize) override;
+		void ReComputeSize(const Core::UInt2& parentSize) override;
 		void ReComputeSize_PostChildren() override;
 
 		void SetFontScale(float scale);

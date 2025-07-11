@@ -46,7 +46,7 @@ namespace Widgets
 			m_pLabel = new Label(name);
 			m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::DEFAULT);
 			m_pLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
-			DirectX::XMUINT2 size = m_pLabel->GetSize();
+			Core::UInt2 size = m_pLabel->GetSize();
 			size.x = LABEL_WIDTH;
 			size.y = HEIGHT;
 			m_pLabel->SetSize(size);
@@ -60,7 +60,7 @@ namespace Widgets
 			m_pShortcutLabel = new Label();
 			m_pShortcutLabel->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
 			m_pShortcutLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
-			DirectX::XMUINT2 size = m_pShortcutLabel->GetSize();
+			Core::UInt2 size = m_pShortcutLabel->GetSize();
 			size.x = SHORTCUT_WIDTH;
 			size.y = HEIGHT;
 			m_pShortcutLabel->SetSize(size);

@@ -107,7 +107,7 @@ namespace Widgets
 		// scissor : rectangle from which the widgets must be cropped.
 		virtual void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor);
 
-		virtual void Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize);
+		virtual void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize);
 
 		virtual bool Handle(const BaseEvent& event); //Handle events and propagate to children
 
@@ -125,7 +125,7 @@ namespace Widgets
 		// Set local y coordinate from the top left corner of the parent widget
 		void SetY(int32_t y);
 
-		void SetSize(const DirectX::XMUINT2& size);
+		void SetSize(const Core::UInt2& size);
 		void SetWidth(uint32_t width);
 
 		void SetFocus();
@@ -142,7 +142,7 @@ namespace Widgets
 		int32_t GetY() const; //Get the local y coordinate from the top left corner
 
 		DirectX::XMINT2 GetPosition() const;
-		DirectX::XMUINT2 GetSize() const;
+		Core::UInt2 GetSize() const;
 
 		int32_t GetScreenX() const; //Get the x coordinate from the top left corner
 		int32_t GetScreenY() const; //Get the y coordinate from the top left corner
@@ -164,9 +164,9 @@ namespace Widgets
 		void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
 		void ReleaseMouse();	//Stop receiving the mouse events
 
-		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
+		virtual void ReComputeSize(const Core::UInt2& parentSize);
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
-		virtual void ReComputePosition(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize);
+		virtual void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize);
 		virtual void ResizeChildren();
 
 		/* Let's put all events declaration here*/
@@ -180,8 +180,8 @@ namespace Widgets
 		EVENT_DECL(FocusLost, void(const FocusEvent&))
 
 	protected:
-		DirectX::XMUINT2 m_size; //current size in pixels
-		DirectX::XMUINT2 m_defaultSize; // size provided by the client and used when style is default
+		Core::UInt2 m_size; //current size in pixels
+		Core::UInt2 m_defaultSize; // size provided by the client and used when style is default
 		Core::Int3 m_locPos; //local position of the top left corner in pixel
 		Core::Int3 m_absPos; //absolute position (from the top left corner)
 

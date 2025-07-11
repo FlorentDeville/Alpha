@@ -44,14 +44,14 @@ namespace Widgets
 		m_pCursorIcon = new Icon(WidgetMgr::Get().GetIconTextureId(IconId::kIconCursor));
 		m_pCursorIcon->SetX(4);
 		m_pCursorIcon->SetY(2);
-		m_pCursorIcon->SetSize(DirectX::XMUINT2(2, 16));
+		m_pCursorIcon->SetSize(Core::UInt2(2, 16));
 		m_pCursorIcon->Disable();
 		AddWidget(m_pCursorIcon);
 
 		OnFocusGained([this](const FocusEvent& ev) { OnGetFocusCallback(); });
 		OnFocusLost([this](const FocusEvent& ev) { OnLoseFocusCallback(); });
 
-		SetSize(DirectX::XMUINT2(0, 20));
+		SetSize(Core::UInt2(0, 20));
 		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 	}
 

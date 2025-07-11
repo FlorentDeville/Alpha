@@ -37,7 +37,7 @@ namespace Editors
 		else
 			TABLE_HEIGHT = WINDOW_HEIGHT - OK_CANCEL_HEIGHT;
 
-		SetSize(DirectX::XMUINT2(WINDOW_WIDTH, WINDOW_HEIGHT));
+		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
 		SetSizeStyle(Widgets::Widget::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
@@ -49,7 +49,7 @@ namespace Editors
 
 		//list
 		m_pAssetView = new Widgets::TableView();
-		m_pAssetView->SetSize(DirectX::XMUINT2(500, TABLE_HEIGHT));
+		m_pAssetView->SetSize(Core::UInt2(500, TABLE_HEIGHT));
 		m_pAssetView->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk(); });
 
 		m_pAssetViewModel = new Editors::AssetListModel(type);
@@ -65,16 +65,16 @@ namespace Editors
 			Widgets::Layout* pNewAssetLayout = new Widgets::Layout();
 			pNewAssetLayout->SetDirection(Widgets::Layout::Horizontal);
 			pNewAssetLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pNewAssetLayout->SetSize(DirectX::XMUINT2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
+			pNewAssetLayout->SetSize(Core::UInt2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
 
 			pVLayout->AddWidget(pNewAssetLayout);
 
 			Widgets::Label* pNewAssetLabel = new Widgets::Label("New asset : ");
-			pNewAssetLabel->SetSize(DirectX::XMUINT2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
+			pNewAssetLabel->SetSize(Core::UInt2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
 			pNewAssetLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 			
 			Widgets::TextBox* pNewAssetTextBox = new Widgets::TextBox();
-			pNewAssetTextBox->SetSize(DirectX::XMUINT2(TEXTBOX_WIDTH, NEW_ASSET_HEIGHT));
+			pNewAssetTextBox->SetSize(Core::UInt2(TEXTBOX_WIDTH, NEW_ASSET_HEIGHT));
 			pNewAssetTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pNewAssetTextBox->OnValidate([this](const std::string& value) { OnCreateAsset(value); });
 
