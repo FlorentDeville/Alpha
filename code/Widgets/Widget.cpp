@@ -72,10 +72,10 @@ namespace Widgets
 			m_size.y = parentSize.y - m_locPos.y;
 
 		//crop the size to the parent if the style is default
-		if ((m_sizeStyle & HSIZE_DEFAULT) != 0 && m_defaultSize.x > parentSize.x - m_locPos.x)
-			m_size.x = parentSize.x - m_locPos.x;
-		if ((m_sizeStyle & VSIZE_STRETCH) != 0 && m_defaultSize.y > parentSize.y - m_locPos.y)
-			m_size.y = parentSize.y - m_locPos.y;
+		//if ((m_sizeStyle & HSIZE_DEFAULT) != 0 && m_defaultSize.x > parentSize.x - m_locPos.x)
+		//	m_size.x = parentSize.x - m_locPos.x;
+		//if ((m_sizeStyle & VSIZE_STRETCH) != 0 && m_defaultSize.y > parentSize.y - m_locPos.y)
+		//	m_size.y = parentSize.y - m_locPos.y;
 	}
 
 	void Widget::ReComputeSize_PostChildren()
