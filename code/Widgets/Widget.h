@@ -15,6 +15,8 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Callbacks/CallbackMacro.h"
 
+#include "Widgets/Tools/Color.h"
+
 struct Message;
 
 /********************************************************************/
@@ -127,7 +129,7 @@ namespace Widgets
 
 		void SetFocus();
 
-		void SetBackgroundColor(const DirectX::XMVECTOR& color);
+		void SetBackgroundColor(const Color& color);
 		void SetSizeStyle(int sizeStyle);
 		void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
 
@@ -183,8 +185,8 @@ namespace Widgets
 		DirectX::XMINT3 m_absPos; //absolute position (from the top left corner)
 
 		char m_padding[8];
-		DirectX::XMVECTOR m_backgroundColor;
-		DirectX::XMVECTOR m_borderColor;
+		Color m_backgroundColor;
+		Color m_borderColor;
 		bool m_showBorder;
 		int m_borderWidth;
 

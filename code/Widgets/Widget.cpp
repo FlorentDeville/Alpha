@@ -20,8 +20,8 @@ namespace Widgets
 		, m_locPos(0, 0, 0)
 		, m_absPos(0, 0, 0)
 		, m_hover(false)
-		, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
-		, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
+		, m_backgroundColor(Color(0.12f, 0.12f, 0.12f))
+		, m_borderColor(Color(1.f, 1.f, 1.f))
 		, m_showBorder(false)
 		, m_borderWidth(1)
 		, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
@@ -347,7 +347,7 @@ namespace Widgets
 		widgetMgr.SetFocus(this);
 	}
 
-	void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
+	void Widget::SetBackgroundColor(const Color& color)
 	{
 		m_backgroundColor = color;
 	}
