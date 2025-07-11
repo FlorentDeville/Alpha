@@ -146,5 +146,8 @@
     <ClInclude Include="Log\LogModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Int3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
