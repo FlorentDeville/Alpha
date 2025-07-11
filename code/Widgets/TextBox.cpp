@@ -34,11 +34,10 @@ namespace Widgets
 		, m_textAlignment(Left)
 		, m_textLocalPos()
 	{
-		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1));
-		m_hoverStyle.SetBorderColor(DirectX::XMVectorSet(0.6f, 0.6f, 0.6f, 1));
+		m_hoverStyle.SetBackgroundColor(Color(0.12f, 0.12f, 0.12f));
+		m_hoverStyle.SetBorderColor(Color(0.6f, 0.6f, 0.6f));
 		m_hoverStyle.SetBorderSize(1);
 		m_hoverStyle.SetShowBorder(true);
-		m_hoverStyle.SetTextColor(DirectX::XMVectorSet(0.98f, 0.98f, 0.98f, 1));
 
 		m_editStyle = m_hoverStyle;
 
