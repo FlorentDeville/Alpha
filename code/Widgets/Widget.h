@@ -14,7 +14,7 @@
 
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Callbacks/CallbackMacro.h"
-#include "Core/Math/Int3.h"
+#include "Core/Math/VecInt.h"
 
 #include "Widgets/Tools/Color.h"
 
