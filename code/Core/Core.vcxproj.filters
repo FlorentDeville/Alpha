@@ -146,7 +146,7 @@
     <ClInclude Include="Log\LogModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Math\VecInt.h">
+    <ClInclude Include="Math\Vectors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
