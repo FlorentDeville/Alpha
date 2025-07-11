@@ -18,7 +18,7 @@ namespace Widgets
 		ModalWindow(const std::string& title);
 		~ModalWindow();
 
-		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
+		void ReComputePosition(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		bool Handle(const BaseEvent& ev) override;
 

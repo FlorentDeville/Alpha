@@ -92,7 +92,7 @@ namespace Widgets
 			return;
 		}
 
-		DirectX::XMINT3 absPos = m_absPos;
+		Core::Int3 absPos = m_absPos;
 		absPos.x += m_defaultStyle.m_borderSize;
 		absPos.y += m_defaultStyle.m_borderSize;
 

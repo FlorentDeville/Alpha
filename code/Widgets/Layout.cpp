@@ -112,7 +112,7 @@ namespace Widgets
 		return false;
 	}
 
-	void Layout::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Layout::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		m_absPos.x = parentAbsPos.x + m_locPos.x;
 		m_absPos.y = parentAbsPos.y + m_locPos.y;

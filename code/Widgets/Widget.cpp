@@ -40,7 +40,7 @@ namespace Widgets
 		m_size.x = w;
 		m_size.y = h;
 		m_defaultSize = m_size;
-		m_locPos = DirectX::XMINT3(x, y, 0);
+		m_locPos = Core::Int3(x, y, 0);
 	}
 
 	Widget::~Widget()
@@ -124,7 +124,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Widget::ReComputePosition(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		switch (m_hPositionStyle)
 		{
@@ -177,7 +177,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Widget::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);

@@ -285,7 +285,7 @@ namespace Widgets
 		if (!m_pRoot)
 			return;
 
-		DirectX::XMINT3 absPos(0, 0, 100);
+		Core::Int3 absPos(0, 0, 100);
 		DirectX::XMUINT2 size(m_pMainSysWindow->GetWidth(), m_pMainSysWindow->GetHeight());
 		m_pRoot->Resize(absPos, size);
 

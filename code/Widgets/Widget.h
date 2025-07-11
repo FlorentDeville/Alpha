@@ -14,6 +14,7 @@
 
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Callbacks/CallbackMacro.h"
+#include "Core/Math/Int3.h"
 
 #include "Widgets/Tools/Color.h"
 
@@ -106,7 +107,7 @@ namespace Widgets
 		// scissor : rectangle from which the widgets must be cropped.
 		virtual void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor);
 
-		virtual void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
+		virtual void Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 
 		virtual bool Handle(const BaseEvent& event); //Handle events and propagate to children
 
@@ -165,7 +166,7 @@ namespace Widgets
 
 		virtual void ReComputeSize(const DirectX::XMUINT2& parentSize);
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
-		virtual void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize);
+		virtual void ReComputePosition(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize);
 		virtual void ResizeChildren();
 
 		/* Let's put all events declaration here*/
@@ -181,8 +182,8 @@ namespace Widgets
 	protected:
 		DirectX::XMUINT2 m_size; //current size in pixels
 		DirectX::XMUINT2 m_defaultSize; // size provided by the client and used when style is default
-		DirectX::XMINT3 m_locPos; //local position of the top left corner in pixel
-		DirectX::XMINT3 m_absPos; //absolute position (from the top left corner)
+		Core::Int3 m_locPos; //local position of the top left corner in pixel
+		Core::Int3 m_absPos; //absolute position (from the top left corner)
 
 		char m_padding[8];
 		Color m_backgroundColor;

@@ -89,7 +89,7 @@ namespace Widgets
 		Widget::Draw(windowSize, scissor);
 	}
 
-	void SplitHorizontal::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void SplitHorizontal::Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize)
 	{
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);

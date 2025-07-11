@@ -26,7 +26,7 @@ namespace Widgets
 
 		virtual ~Layout();
 
-		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
+		void Resize(const Core::Int3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
 
 		void ReComputeSize_PostChildren() override;
 
