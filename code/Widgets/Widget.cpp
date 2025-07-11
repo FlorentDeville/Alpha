@@ -383,9 +383,9 @@ namespace Widgets
 		return m_locPos.y;
 	}
 
-	DirectX::XMINT2 Widget::GetPosition() const
+	Core::Int2 Widget::GetPosition() const
 	{
-		DirectX::XMINT2 pos;
+		Core::Int2 pos;
 		pos.x = m_locPos.x;
 		pos.y = m_locPos.y;
 		return pos;

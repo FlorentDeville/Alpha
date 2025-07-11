@@ -141,7 +141,7 @@ namespace Widgets
 		int32_t GetX() const; //Get the local x coordinate from the top left corner
 		int32_t GetY() const; //Get the local y coordinate from the top left corner
 
-		DirectX::XMINT2 GetPosition() const;
+		Core::Int2 GetPosition() const;
 		Core::UInt2 GetSize() const;
 
 		int32_t GetScreenX() const; //Get the x coordinate from the top left corner

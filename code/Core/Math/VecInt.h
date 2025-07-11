@@ -25,6 +25,24 @@ namespace Core
 		{ }
 	};
 
+	class Int2
+	{
+	public:
+		int32_t x;
+		int32_t y;
+
+		Int2()
+			: x(0)
+			, y(0)
+		{ }
+
+		Int2(uint32_t _x, uint32_t _y)
+			: x(_x)
+			, y(_y)
+		{ }
+	};
+
+
 	class Int3
 	{
 	public:
