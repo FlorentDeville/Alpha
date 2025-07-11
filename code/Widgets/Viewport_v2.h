@@ -23,7 +23,7 @@ namespace Widgets
 
 		void Update(uint64_t dt) override;
 
-		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		DirectX::XMVECTOR Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
 

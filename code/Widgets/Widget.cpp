@@ -52,7 +52,7 @@ namespace Widgets
 	void Widget::Update(uint64_t dt)
 	{}
 
-	void Widget::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Widget::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		if (!IsEnabled())
 			return;
@@ -467,7 +467,7 @@ namespace Widgets
 		WidgetMgr::Get().CaptureMouse(nullptr);
 	}
 
-	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
+	void Widget::ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const
 	{
 		float width = static_cast<float>(m_size.x);
 		float height = static_cast<float>(m_size.y);

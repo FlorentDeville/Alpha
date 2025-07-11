@@ -43,7 +43,7 @@ namespace Widgets
 	Layout::~Layout()
 	{}
 
-	void Layout::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Layout::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		if (!m_transparent)
 		{

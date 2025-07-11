@@ -63,7 +63,7 @@ namespace Widgets
 	Button::~Button()
 	{}
 
-	void Button::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Button::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		ButtonStyle* pCurrentStyle = &m_defaultStyle;
 		if (m_hover)

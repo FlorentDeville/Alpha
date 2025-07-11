@@ -105,7 +105,7 @@ namespace Widgets
 		// Draw the widgets using the gfx api.
 		// windowSize : size of the entire window
 		// scissor : rectangle from which the widgets must be cropped.
-		virtual void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor);
+		virtual void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor);
 
 		virtual void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize);
 
@@ -205,7 +205,7 @@ namespace Widgets
 
 		std::string m_name;
 
-		void ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const;
+		void ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
 
 	private:
 		virtual void Internal_Render(); //only used by widgets rendering 3d like a viewport

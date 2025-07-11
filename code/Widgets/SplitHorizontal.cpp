@@ -84,7 +84,7 @@ namespace Widgets
 		}
 	}
 
-	void SplitHorizontal::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void SplitHorizontal::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		Widget::Draw(windowSize, scissor);
 	}

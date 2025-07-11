@@ -266,7 +266,7 @@ namespace Widgets
 	{
 		if (m_pRoot && m_pRoot->IsEnabled())
 		{
-			DirectX::XMFLOAT2 windowSize;
+			Core::Float2 windowSize;
 			windowSize.x = static_cast<float>(m_pRoot->GetSize().x);
 			windowSize.y = static_cast<float>(m_pRoot->GetSize().y);
 

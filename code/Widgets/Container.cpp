@@ -28,7 +28,7 @@ namespace Widgets
 	Container::~Container()
 	{}
 
-	void Container::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Container::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);

@@ -53,7 +53,7 @@ namespace Widgets
 	Label::~Label()
 	{}
 
-	void Label::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Label::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
 

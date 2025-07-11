@@ -31,7 +31,7 @@ Split::Split(bool isVerticalSplit)
 Split::~Split()
 {}
 
-void Split::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+void Split::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 {
 	DirectX::XMMATRIX mvpMatrix;
 	ComputeWVPMatrix(windowSize, mvpMatrix);

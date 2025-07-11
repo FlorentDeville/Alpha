@@ -77,7 +77,7 @@ namespace Widgets
 		}
 	}
 
-	void TextBox::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void TextBox::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		TextBoxStyle* pCurrentStyle = &m_defaultStyle;
 		if (m_currentState == HOVER)

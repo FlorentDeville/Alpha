@@ -107,7 +107,7 @@ namespace Widgets
 
 	}
 
-	void MenuBar::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void MenuBar::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		//Widget::Draw(windowSize);
 		m_pLayout->Draw(windowSize, scissor);

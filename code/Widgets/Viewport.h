@@ -16,7 +16,7 @@ namespace Widgets
 		Viewport();
 		~Viewport();
 
-		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		void OnGetRenderTargetTexture(const std::function<Rendering::TextureId ()>& callback);
 

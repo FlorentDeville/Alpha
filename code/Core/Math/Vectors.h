@@ -36,7 +36,24 @@ namespace Core
 			, y(0)
 		{ }
 
-		Int2(uint32_t _x, uint32_t _y)
+		Int2(int32_t _x, int32_t _y)
+			: x(_x)
+			, y(_y)
+		{ }
+	};
+
+	class Float2
+	{
+	public:
+		float x;
+		float y;
+
+		Float2()
+			: x(0)
+			, y(0)
+		{ }
+
+		Float2(float _x, float _y)
 			: x(_x)
 			, y(_y)
 		{ }

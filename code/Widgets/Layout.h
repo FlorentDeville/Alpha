@@ -30,7 +30,7 @@ namespace Widgets
 
 		void ReComputeSize_PostChildren() override;
 
-		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		bool Handle(const BaseEvent& ev) override;
 
