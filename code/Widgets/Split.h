@@ -22,15 +22,15 @@ namespace Widgets
 		bool Handle(const BaseEvent& ev) override;
 
 		bool IsDragged();
-		DirectX::XMINT2 GetPreviousCursorPosition() const;
+		Core::Int2 GetPreviousCursorPosition() const;
 
-		void SetPreviousCursorPosition(const DirectX::XMINT2& pos);
+		void SetPreviousCursorPosition(const Core::Int2& pos);
 
 		EVENT_DECL(Drag, void(const Core::Int2& offset))
 
 	private:
 		bool m_isDragged;
-		DirectX::XMINT2 m_previousCursorPosition;
+		Core::Int2 m_previousCursorPosition;
 
 		bool m_isVerticalSplit;
 	};

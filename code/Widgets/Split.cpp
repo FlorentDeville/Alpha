@@ -112,7 +112,7 @@ bool Split::Handle(const BaseEvent& ev)
 			CaptureMouse();
 
 			m_isDragged = true;
-			m_previousCursorPosition.x = mouseEvent.GetX();// = WidgetMgr::Get().GetCursorPosition();
+			m_previousCursorPosition.x = mouseEvent.GetX();
 			m_previousCursorPosition.y = mouseEvent.GetY();
 
 			if (m_isVerticalSplit)
@@ -149,12 +149,12 @@ bool Split::IsDragged()
 	return m_isDragged;
 }
 
-DirectX::XMINT2 Split::GetPreviousCursorPosition() const
+Core::Int2 Split::GetPreviousCursorPosition() const
 {
 	return m_previousCursorPosition;
 }
 
-void Split::SetPreviousCursorPosition(const DirectX::XMINT2& pos)
+void Split::SetPreviousCursorPosition(const Core::Int2& pos)
 {
 	m_previousCursorPosition = pos;
 }
