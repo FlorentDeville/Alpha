@@ -1,8 +1,10 @@
 /********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #pragma once
+
+#include "Core/Callbacks/CallbackMacro.h"
 
 #include "Widgets/Widget.h"
 
@@ -24,7 +26,9 @@ namespace Widgets
 
 		void SetPreviousCursorPosition(const DirectX::XMINT2& pos);
 
-	public:
+		EVENT_DECL(Drag, void(const Core::Int2& offset))
+
+	private:
 		bool m_isDragged;
 		DirectX::XMINT2 m_previousCursorPosition;
 
