@@ -26,7 +26,7 @@ namespace Widgets
 		~TextBox();
 
 		void Update(uint64_t dt) override;
-		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		void ResizeChildren() override;
 
 		void Enable(bool recursive = true) override;

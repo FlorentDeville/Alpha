@@ -20,8 +20,8 @@ namespace Widgets
 		, m_locPos(0, 0, 0)
 		, m_absPos(0, 0, 0)
 		, m_hover(false)
-		, m_backgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1.f))
-		, m_borderColor(DirectX::XMVectorSet(1.f, 1.f, 1.f, 1.f))
+		, m_backgroundColor(Color(0.12f, 0.12f, 0.12f))
+		, m_borderColor(Color(1.f, 1.f, 1.f))
 		, m_showBorder(false)
 		, m_borderWidth(1)
 		, m_sizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT)
@@ -40,7 +40,7 @@ namespace Widgets
 		m_size.x = w;
 		m_size.y = h;
 		m_defaultSize = m_size;
-		m_locPos = DirectX::XMINT3(x, y, 0);
+		m_locPos = Core::Int3(x, y, 0);
 	}
 
 	Widget::~Widget()
@@ -52,7 +52,7 @@ namespace Widgets
 	void Widget::Update(uint64_t dt)
 	{}
 
-	void Widget::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Widget::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		if (!IsEnabled())
 			return;
@@ -64,7 +64,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::ReComputeSize(const DirectX::XMUINT2& parentSize)
+	void Widget::ReComputeSize(const Core::UInt2& parentSize)
 	{
 		if ((m_sizeStyle & HSIZE_STRETCH) != 0)
 			m_size.x = parentSize.x - m_locPos.x;
@@ -124,7 +124,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Widget::ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		switch (m_hPositionStyle)
 		{
@@ -177,7 +177,7 @@ namespace Widgets
 		}
 	}
 
-	void Widget::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void Widget::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
@@ -329,7 +329,7 @@ namespace Widgets
 		m_locPos.y = y;
 	}
 
-	void Widget::SetSize(const DirectX::XMUINT2& size)
+	void Widget::SetSize(const Core::UInt2& size)
 	{
 		m_defaultSize = size;
 		m_size = size;
@@ -347,7 +347,7 @@ namespace Widgets
 		widgetMgr.SetFocus(this);
 	}
 
-	void Widget::SetBackgroundColor(const DirectX::XMVECTOR& color)
+	void Widget::SetBackgroundColor(const Color& color)
 	{
 		m_backgroundColor = color;
 	}
@@ -383,15 +383,15 @@ namespace Widgets
 		return m_locPos.y;
 	}
 
-	DirectX::XMINT2 Widget::GetPosition() const
+	Core::Int2 Widget::GetPosition() const
 	{
-		DirectX::XMINT2 pos;
+		Core::Int2 pos;
 		pos.x = m_locPos.x;
 		pos.y = m_locPos.y;
 		return pos;
 	}
 
-	DirectX::XMUINT2 Widget::GetSize() const
+	Core::UInt2 Widget::GetSize() const
 	{
 		return m_size;
 	}
@@ -467,7 +467,7 @@ namespace Widgets
 		WidgetMgr::Get().CaptureMouse(nullptr);
 	}
 
-	void Widget::ComputeWVPMatrix(const DirectX::XMFLOAT2& windowSize, DirectX::XMMATRIX& wvp) const
+	void Widget::ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const
 	{
 		float width = static_cast<float>(m_size.x);
 		float height = static_cast<float>(m_size.y);

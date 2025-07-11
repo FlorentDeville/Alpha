@@ -19,7 +19,7 @@ namespace Editors
 		const int WINDOW_HEIGHT = 70;
 		const int OK_CANCEL_HEIGHT = 50;
 
-		SetSize(DirectX::XMUINT2(WINDOW_WIDTH, WINDOW_HEIGHT));
+		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
 		SetSizeStyle(Widgets::Widget::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
@@ -31,7 +31,7 @@ namespace Editors
 
 		//input
 		m_pTextBox = new Widgets::TextBox();
-		m_pTextBox->SetSize(DirectX::XMUINT2(0, 20));
+		m_pTextBox->SetSize(Core::UInt2(0, 20));
 		m_pTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		m_pTextBox->OnValidate([this](const std::string& text) { OnOk(); });
 		m_pTextBox->OnEscape([this]() { OnCancel(); });

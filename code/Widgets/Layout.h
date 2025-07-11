@@ -26,11 +26,11 @@ namespace Widgets
 
 		virtual ~Layout();
 
-		void Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
+		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
 		void ReComputeSize_PostChildren() override;
 
-		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		bool Handle(const BaseEvent& ev) override;
 

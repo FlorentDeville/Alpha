@@ -26,7 +26,7 @@ namespace Widgets
 
 		uint32_t w = static_cast<uint32_t>(pTexture->GetWidth());
 		uint32_t h = static_cast<uint32_t>(pTexture->GetHeight());
-		SetSize(DirectX::XMUINT2(w, h));
+		SetSize(Core::UInt2(w, h));
 		SetX(0);
 		SetY(0);
 	}
@@ -41,7 +41,7 @@ namespace Widgets
 
 		uint32_t w = static_cast<uint32_t>(pTexture->GetWidth());
 		uint32_t h = static_cast<uint32_t>(pTexture->GetHeight());
-		SetSize(DirectX::XMUINT2(w, h));
+		SetSize(Core::UInt2(w, h));
 		SetX(0);
 		SetY(0);
 	}
@@ -58,7 +58,7 @@ namespace Widgets
 	Icon::~Icon()
 	{}
 
-	void Icon::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Icon::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);

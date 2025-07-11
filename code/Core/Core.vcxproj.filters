@@ -146,5 +146,8 @@
     <ClInclude Include="Log\LogModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Vectors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

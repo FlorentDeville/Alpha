@@ -84,7 +84,7 @@ namespace Editors
 			pNameLayout->SetDirection(Widgets::Layout::Horizontal);
 
 			Widgets::Icon* pIcon = new Widgets::Icon();
-			pIcon->SetSize(DirectX::XMUINT2(12, 12));
+			pIcon->SetSize(Core::UInt2(12, 12));
 			pIcon->SetTextureId(m_expandedIcon);
 			pIcon->SetY(3);
 			
@@ -93,7 +93,7 @@ namespace Editors
 			Widgets::Label* pNameLabel = new Widgets::Label();
 
 			pNameLabel->SetText(m_pModel->GetComponentName(ii));
-			pNameLabel->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT + 3));
+			pNameLabel->SetSize(Core::UInt2(0, FIELD_HEIGHT + 3));
 			pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 			pNameLayout->AddWidget(pNameLabel);
 			

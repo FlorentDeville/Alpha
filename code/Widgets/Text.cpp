@@ -20,7 +20,7 @@ namespace Widgets
 	Text::~Text()
 	{}
 
-	void Text::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Text::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 

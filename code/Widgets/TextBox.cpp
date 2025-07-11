@@ -34,25 +34,24 @@ namespace Widgets
 		, m_textAlignment(Left)
 		, m_textLocalPos()
 	{
-		m_hoverStyle.SetBackgroundColor(DirectX::XMVectorSet(0.12f, 0.12f, 0.12f, 1));
-		m_hoverStyle.SetBorderColor(DirectX::XMVectorSet(0.6f, 0.6f, 0.6f, 1));
+		m_hoverStyle.SetBackgroundColor(Color(0.12f, 0.12f, 0.12f));
+		m_hoverStyle.SetBorderColor(Color(0.6f, 0.6f, 0.6f));
 		m_hoverStyle.SetBorderSize(1);
 		m_hoverStyle.SetShowBorder(true);
-		m_hoverStyle.SetTextColor(DirectX::XMVectorSet(0.98f, 0.98f, 0.98f, 1));
 
 		m_editStyle = m_hoverStyle;
 
 		m_pCursorIcon = new Icon(WidgetMgr::Get().GetIconTextureId(IconId::kIconCursor));
 		m_pCursorIcon->SetX(4);
 		m_pCursorIcon->SetY(2);
-		m_pCursorIcon->SetSize(DirectX::XMUINT2(2, 16));
+		m_pCursorIcon->SetSize(Core::UInt2(2, 16));
 		m_pCursorIcon->Disable();
 		AddWidget(m_pCursorIcon);
 
 		OnFocusGained([this](const FocusEvent& ev) { OnGetFocusCallback(); });
 		OnFocusLost([this](const FocusEvent& ev) { OnLoseFocusCallback(); });
 
-		SetSize(DirectX::XMUINT2(0, 20));
+		SetSize(Core::UInt2(0, 20));
 		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 	}
 
@@ -78,7 +77,7 @@ namespace Widgets
 		}
 	}
 
-	void TextBox::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void TextBox::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		TextBoxStyle* pCurrentStyle = &m_defaultStyle;
 		if (m_currentState == HOVER)

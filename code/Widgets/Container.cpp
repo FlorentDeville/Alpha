@@ -28,7 +28,7 @@ namespace Widgets
 	Container::~Container()
 	{}
 
-	void Container::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Container::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
@@ -92,11 +92,11 @@ namespace Widgets
 			return;
 		}
 
-		DirectX::XMINT3 absPos = m_absPos;
+		Core::Int3 absPos = m_absPos;
 		absPos.x += m_defaultStyle.m_borderSize;
 		absPos.y += m_defaultStyle.m_borderSize;
 
-		DirectX::XMUINT2 size = m_size;
+		Core::UInt2 size = m_size;
 		size.x -= 2 * m_defaultStyle.m_borderSize;
 		size.y -= 2 * m_defaultStyle.m_borderSize;
 

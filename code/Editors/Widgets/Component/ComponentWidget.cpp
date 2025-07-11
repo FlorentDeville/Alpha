@@ -64,7 +64,7 @@ namespace Editors
 
 			//add property name
 			Widgets::Label* pNameLabel = new Widgets::Label(0, 0, 1, m_pModel->GetPropertyName(ii));
-			pNameLabel->SetSize(DirectX::XMUINT2(NAME_WIDTH, FIELD_HEIGHT));
+			pNameLabel->SetSize(Core::UInt2(NAME_WIDTH, FIELD_HEIGHT));
 			pNameLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pItemLayout->AddWidget(pNameLabel);
 
@@ -79,7 +79,7 @@ namespace Editors
 				pNewWidget->SetValue(strAssetId);
 				pNewWidget->OnAssetSelected([this, ii](Systems::AssetId id) { m_pModel->SetPropertyValue(ii, id, Systems::kMaterial); });
 
-				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
+				pNewWidget->SetSize(Core::UInt2(0, FIELD_HEIGHT));
 				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 
 				m_pModel->OnPropertyValueChanged([this, pNewWidget, ii](int row)
@@ -104,7 +104,7 @@ namespace Editors
 				pNewWidget->SetValue(strAssetId);
 				pNewWidget->OnAssetSelected([this, ii](Systems::AssetId id) { m_pModel->SetPropertyValue(ii, id, Systems::kMesh); });
 
-				pNewWidget->SetSize(DirectX::XMUINT2(0, FIELD_HEIGHT));
+				pNewWidget->SetSize(Core::UInt2(0, FIELD_HEIGHT));
 				pNewWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
 
 				m_pModel->OnPropertyValueChanged([this, pNewWidget, ii](int row)

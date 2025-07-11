@@ -60,7 +60,7 @@ namespace Editors
 
 		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
 		pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-		pLabel->SetSize(DirectX::XMUINT2(nameColumnWidth, m_rowHeight));
+		pLabel->SetSize(Core::UInt2(nameColumnWidth, m_rowHeight));
 
 		pPropertyLayout->AddWidget(pLabel);
 

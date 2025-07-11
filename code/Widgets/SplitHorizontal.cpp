@@ -52,7 +52,7 @@ namespace Widgets
 			dt.x = currentMousePosition.x - m_pSplit->GetPreviousCursorPosition().x;
 			dt.y = currentMousePosition.y - m_pSplit->GetPreviousCursorPosition().y;
 
-			DirectX::XMUINT2 topContainerSize = m_pTopContainer->GetSize();
+			Core::UInt2 topContainerSize = m_pTopContainer->GetSize();
 
 			//prevent overflow cause topContainerSize is unsigned
 			if (-dt.y > (int)topContainerSize.y)
@@ -64,7 +64,7 @@ namespace Widgets
 			if (topContainerSize.x < MIN_SIZE)
 				return;
 
-			DirectX::XMUINT2 bottomContainerSize = m_pBottomContainer->GetSize();
+			Core::UInt2 bottomContainerSize = m_pBottomContainer->GetSize();
 
 			//prevent overflow cause leftContainerSize is unsigned
 			if (dt.y > (int)bottomContainerSize.y)
@@ -84,12 +84,12 @@ namespace Widgets
 		}
 	}
 
-	void SplitHorizontal::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void SplitHorizontal::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		Widget::Draw(windowSize, scissor);
 	}
 
-	void SplitHorizontal::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void SplitHorizontal::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
@@ -115,7 +115,7 @@ namespace Widgets
 
 	void SplitHorizontal::SetTopPanelHeight(int height)
 	{
-		DirectX::XMUINT2 size = m_pTopContainer->GetSize();
+		Core::UInt2 size = m_pTopContainer->GetSize();
 		size.y = height;
 		m_pTopContainer->SetSize(size);
 	}

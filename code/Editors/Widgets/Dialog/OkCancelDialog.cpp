@@ -28,7 +28,7 @@ namespace Editors
 		const int LABEL_HEIGHT = WINDOW_HEIGHT - BUTTON_HEIGHT - TITLE_HEIGHT - BUTTON_PADDING_HEIGHT;
 		const int LABEL_WIDTH = WINDOW_WIDTH;
 
-		SetSize(DirectX::XMUINT2(WINDOW_WIDTH, WINDOW_HEIGHT));
+		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
 		SetSizeStyle(Widgets::Widget::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 

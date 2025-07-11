@@ -266,7 +266,7 @@ namespace Widgets
 	{
 		if (m_pRoot && m_pRoot->IsEnabled())
 		{
-			DirectX::XMFLOAT2 windowSize;
+			Core::Float2 windowSize;
 			windowSize.x = static_cast<float>(m_pRoot->GetSize().x);
 			windowSize.y = static_cast<float>(m_pRoot->GetSize().y);
 
@@ -285,8 +285,8 @@ namespace Widgets
 		if (!m_pRoot)
 			return;
 
-		DirectX::XMINT3 absPos(0, 0, 100);
-		DirectX::XMUINT2 size(m_pMainSysWindow->GetWidth(), m_pMainSysWindow->GetHeight());
+		Core::Int3 absPos(0, 0, 100);
+		Core::UInt2 size(m_pMainSysWindow->GetWidth(), m_pMainSysWindow->GetHeight());
 		m_pRoot->Resize(absPos, size);
 
 		ComputeSortedWidgetQueue();

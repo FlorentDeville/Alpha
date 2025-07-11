@@ -33,7 +33,7 @@ namespace Editors
 		const int FIELD_HEIGHT = 20;
 		const int FIELD_WIDTH = 50;
 
-		SetSize(DirectX::XMUINT2(3 * FIELD_WIDTH, 4 * FIELD_HEIGHT));
+		SetSize(Core::UInt2(3 * FIELD_WIDTH, 4 * FIELD_HEIGHT));
 
 		m_pLayout = new Widgets::Layout(3 * FIELD_WIDTH, 4 * FIELD_HEIGHT, 0, 0);
 		m_pLayout->SetDirection(Widgets::Layout::Vertical);
@@ -49,7 +49,7 @@ namespace Editors
 			for (int jj = 0; jj < 3; ++jj)
 			{
 				Widgets::TextBox* pNewTextBox = new Widgets::TextBox();
-				pNewTextBox->SetSize(DirectX::XMUINT2(FIELD_WIDTH, FIELD_HEIGHT));
+				pNewTextBox->SetSize(Core::UInt2(FIELD_WIDTH, FIELD_HEIGHT));
 				pNewTextBox->OnValidate([this, ii, jj](const std::string& value) -> bool 
 					{ 
 						float floatValue = StringToFloat(value);

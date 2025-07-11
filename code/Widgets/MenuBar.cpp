@@ -52,7 +52,7 @@ namespace Widgets
 		return pNewMenu;
 	}
 
-	void MenuBar::Resize(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void MenuBar::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		Widget::Resize(parentAbsPos, parentSize);
 
@@ -62,7 +62,7 @@ namespace Widgets
 			Menu* pMenu = m_menusArray[ii];
 			Button* pButton = m_buttonsArray[ii];
 
-			DirectX::XMINT3 position;
+			Core::Int3 position;
 			position.x = pButton->GetScreenX();
 			position.y = pButton->GetScreenY() + pButton->GetHeight();
 			position.z = 10;
@@ -107,7 +107,7 @@ namespace Widgets
 
 	}
 
-	void MenuBar::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void MenuBar::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		//Widget::Draw(windowSize);
 		m_pLayout->Draw(windowSize, scissor);

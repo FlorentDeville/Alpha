@@ -33,7 +33,7 @@ namespace Widgets
 		m_pInnerLayout->AddWidget(pLabelContainer);
 
 		m_pTitleLabel = new Widgets::Label(0, 0, 1, title);
-		m_pTitleLabel->SetSize(DirectX::XMUINT2(0, TITLE_HEIGHT));
+		m_pTitleLabel->SetSize(Core::UInt2(0, TITLE_HEIGHT));
 		
 
 		pLabelContainer->AddWidget(m_pTitleLabel);
@@ -46,7 +46,7 @@ namespace Widgets
 	ModalWindow::~ModalWindow()
 	{}
 
-	void ModalWindow::ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize)
+	void ModalWindow::ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		Widgets::Container::ReComputePosition(parentAbsPos, parentSize);
 		m_absPos.z = 10;

@@ -54,7 +54,7 @@ namespace Widgets
 			m_onUpdate(dt);
 	}
 
-	void Viewport_v2::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void Viewport_v2::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
@@ -106,12 +106,12 @@ namespace Widgets
 		const XMMATRIX& proj = pCamera->GetProjectionMatrix();
 
 		//get position in viewport widget
-		DirectX::XMUINT2 absPos(GetScreenX(), GetScreenY());
-		DirectX::XMUINT2 size = GetSize();
+		Core::UInt2 absPos(GetScreenX(), GetScreenY());
+		Core::UInt2 size = GetSize();
 
-		DirectX::XMUINT2 mouseViewportWidgetPos(windowAbsPos.x - absPos.x, windowAbsPos.y - absPos.y);
+		Core::UInt2 mouseViewportWidgetPos(windowAbsPos.x - absPos.x, windowAbsPos.y - absPos.y);
 
-		DirectX::XMUINT2 mouseViewportPos(0, 0);
+		Core::UInt2 mouseViewportPos(0, 0);
 
 		//real size of the texture painted on the viewport, copied from the shader code
 		float h = 0;

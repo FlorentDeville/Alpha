@@ -594,7 +594,7 @@ void CreateMainWindow(const Configuration& configuration)
 		pVLayout->AddWidget(pTopOffsetContainer);
 
 		Widgets::TableView* pTableView = new Widgets::TableView();
-		pTableView->SetSize(DirectX::XMUINT2(300, 700));
+		pTableView->SetSize(Core::UInt2(300, 700));
 
 		Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
 		pTableView->SetModel(pModel);

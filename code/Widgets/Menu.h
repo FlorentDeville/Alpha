@@ -23,7 +23,7 @@ namespace Widgets
 		~Menu();
 
 		bool Handle(const BaseEvent& ev) override;
-		void ReComputePosition(const DirectX::XMINT3& parentAbsPos, const DirectX::XMUINT2& parentSize) override;
+		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
 		MenuItem* AddMenuItem(const std::string& itemName);
 		void AddSeparator();

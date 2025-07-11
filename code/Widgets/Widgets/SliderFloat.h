@@ -21,7 +21,7 @@ namespace Widgets
 		//bool Handle(const BaseEvent& ev) override;
 
 		void Update(uint64_t dt) override;
-		void Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		EVENT_DECL(Validate, void(const float value))
 
@@ -53,8 +53,8 @@ namespace Widgets
 
 		int CalculateSliderLocalX();
 
-		void DrawBackground(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor);
-		void DrawSliderText(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor);
+		void DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& localScissor);
+		void DrawSliderText(const Core::Float2& windowSize, const D3D12_RECT& localScissor);
 
 		void TransitionTextToSlider(bool valueChanged);
 		void TransitionSliderToText();

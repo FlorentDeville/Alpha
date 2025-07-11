@@ -46,7 +46,7 @@ namespace Widgets
 
 		bool m_multiSelectionEnabled;
 
-		DirectX::XMUINT2 m_cellDefaultSize;
+		Core::UInt2 m_cellDefaultSize;
 
 		Core::Array<uint32_t> m_columnWidth;
 

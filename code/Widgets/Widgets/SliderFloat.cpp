@@ -55,7 +55,7 @@ namespace Widgets
 		m_pTextbox = new TextBox();
 		m_pTextbox->Disable();
 		m_pTextbox->SetText(std::to_string(m_currentValue));
-		m_pTextbox->SetSize(DirectX::XMUINT2(100, 20));
+		m_pTextbox->SetSize(Core::UInt2(100, 20));
 		m_pTextbox->SetTextAlignment(TextBox::Center);
 		m_pTextbox->OnValidate([this](const std::string& strValue) { TextBox_OnValidate(strValue); });
 		m_pTextbox->OnEscape([this]() { TransitionTextToSlider(false); });
@@ -104,7 +104,7 @@ namespace Widgets
 		}
 	}
 
-	void SliderFloat::Draw(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& scissor)
+	void SliderFloat::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		//compute local scissor
 		D3D12_RECT localScissorRect;
@@ -152,7 +152,7 @@ namespace Widgets
 		return static_cast<int>(positionRatio);
 	}
 
-	void SliderFloat::DrawBackground(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor)
+	void SliderFloat::DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& localScissor)
 	{
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
@@ -183,7 +183,7 @@ namespace Widgets
 		render.RenderMesh(*pMesh);
 	}
 
-	void SliderFloat::DrawSliderText(const DirectX::XMFLOAT2& windowSize, const D3D12_RECT& localScissor)
+	void SliderFloat::DrawSliderText(const Core::Float2& windowSize, const D3D12_RECT& localScissor)
 	{
 		//All of this should be cached
 		std::string strValue = std::to_string(m_currentValue);
