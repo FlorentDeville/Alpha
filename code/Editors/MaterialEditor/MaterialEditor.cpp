@@ -439,6 +439,7 @@ namespace Editors
 
 		m_pMaterialListModel = new MaterialListModel();
 		pTableView->SetModel(m_pMaterialListModel);
+		pTableView->SetColumnWidth(MaterialListModel::Columns::Id, 120);
 		pTableView->SetColumnWidth(MaterialListModel::Columns::Name, 200);
 
 		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
