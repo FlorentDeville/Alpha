@@ -17,7 +17,6 @@ namespace Widgets
 		, m_pRightContainer(nullptr)
 		, m_pSplit(nullptr)
 		, m_pLayout(nullptr)
-		, m_splitDragged(false)
 		, m_resizePolicy(KeepRatio)
 	{
 		m_pLayout = new Layout(0, 0, 0, 0);
@@ -31,6 +30,28 @@ namespace Widgets
 
 		m_pSplit = new Split(true);
 		m_pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
+		m_pSplit->OnDrag([this](const Core::Int2& mousePosition)
+			{
+				const int MIN_SIZE = 50;
+
+				Core::UInt2 leftContainerSize = m_pLeftContainer->GetSize();
+
+				int offset = mousePosition.x - (m_pLeftContainer->GetScreenX() + leftContainerSize.x);
+				int newLeftContainerWidth = leftContainerSize.x + offset;
+				if (newLeftContainerWidth < MIN_SIZE)
+					return;
+	
+				Core::UInt2 rightContainerSize = m_pRightContainer->GetSize();
+				int newRightContainerWidth = rightContainerSize.x - offset;
+				if (newRightContainerWidth < MIN_SIZE)
+					return;
+
+				m_pLeftContainer->SetWidth(newLeftContainerWidth);
+				m_pRightContainer->SetWidth(newRightContainerWidth);
+
+				WidgetMgr::Get().RequestResize();
+			});
+
 		m_pLayout->AddWidget(m_pSplit);
 
 		m_pRightContainer = new Container(200, 0);
@@ -40,51 +61,6 @@ namespace Widgets
 
 	SplitVertical::~SplitVertical()
 	{}
-
-	void SplitVertical::Update(uint64_t dt)
-	{
-		const int MIN_SIZE = 50;
-
-		if (m_pSplit->IsDragged())
-		{
-			DirectX::XMINT2 currentMousePosition = WidgetMgr::Get().GetCursorPosition();
-
-			DirectX::XMINT2 dt;
-			dt.x = currentMousePosition.x - m_pSplit->GetPreviousCursorPosition().x;
-			dt.y = currentMousePosition.y - m_pSplit->GetPreviousCursorPosition().y;
-
-			Core::UInt2 leftContainerSize = m_pLeftContainer->GetSize();
-
-			//prevent overflow cause leftContainerSize is unsigned
-			if (-dt.x > (int)leftContainerSize.x)
-				return;
-
-			leftContainerSize.x += dt.x;
-			leftContainerSize.y += dt.y;
-
-			if (leftContainerSize.x < MIN_SIZE)
-				return;
-
-			Core::UInt2 rightContainerSize = m_pRightContainer->GetSize();
-
-			//prevent overflow cause leftContainerSize is unsigned
-			if (dt.x > (int)rightContainerSize.x)
-				return;
-
-			rightContainerSize.x -= dt.x;
-			rightContainerSize.y -= dt.y;
-
-			if (rightContainerSize.x < MIN_SIZE)
-				return;
-
-			m_pLeftContainer->SetSize(leftContainerSize);
-			m_pRightContainer->SetSize(rightContainerSize);
-
-			WidgetMgr::Get().RequestResize();
-
-			m_pSplit->SetPreviousCursorPosition(currentMousePosition);
-		}
-	}
 
 	void SplitVertical::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{

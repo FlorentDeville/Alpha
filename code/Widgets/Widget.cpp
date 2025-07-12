@@ -341,6 +341,12 @@ namespace Widgets
 		m_size.x = width;
 	}
 
+	void Widget::SetHeight(uint32_t height)
+	{
+		m_defaultSize.y = height;
+		m_size.y = height;
+	}
+
 	void Widget::SetFocus()
 	{
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();

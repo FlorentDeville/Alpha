@@ -127,6 +127,7 @@ namespace Widgets
 
 		void SetSize(const Core::UInt2& size);
 		void SetWidth(uint32_t width);
+		void SetHeight(uint32_t height);
 
 		void SetFocus();
 

@@ -30,6 +30,28 @@ namespace Widgets
 
 		m_pSplit = new Split(false);
 		m_pSplit->SetSizeStyle(Widget::HSIZE_STRETCH);
+		m_pSplit->OnDrag([this](const Core::Int2& mousePosition)
+			{
+				const int MIN_SIZE = 50;
+
+				Core::UInt2 topContainerSize = m_pTopContainer->GetSize();
+
+				int offset = mousePosition.y - (m_pTopContainer->GetScreenY() + topContainerSize.y);
+				int newTopContainerWidth = topContainerSize.y + offset;
+
+				if (newTopContainerWidth < MIN_SIZE)
+					return;
+
+				int newBottonContainerWidth = m_pBottomContainer->GetHeight() - offset;
+				if (newBottonContainerWidth < MIN_SIZE)
+					return;
+
+				m_pTopContainer->SetHeight(newTopContainerWidth);
+				m_pBottomContainer->SetHeight(newBottonContainerWidth);
+
+				WidgetMgr::Get().RequestResize();
+			});
+
 		m_pLayout->AddWidget(m_pSplit);
 
 		m_pBottomContainer = new Container(0, 200);
@@ -39,50 +61,6 @@ namespace Widgets
 
 	SplitHorizontal::~SplitHorizontal()
 	{}
-
-	void SplitHorizontal::Update(uint64_t dt)
-	{
-		const int MIN_SIZE = 50;
-
-		if (m_pSplit->IsDragged())
-		{
-			DirectX::XMINT2 currentMousePosition = WidgetMgr::Get().GetCursorPosition();
-
-			DirectX::XMINT2 dt;
-			dt.x = currentMousePosition.x - m_pSplit->GetPreviousCursorPosition().x;
-			dt.y = currentMousePosition.y - m_pSplit->GetPreviousCursorPosition().y;
-
-			Core::UInt2 topContainerSize = m_pTopContainer->GetSize();
-
-			//prevent overflow cause topContainerSize is unsigned
-			if (-dt.y > (int)topContainerSize.y)
-				return;
-
-			topContainerSize.x += dt.x;
-			topContainerSize.y += dt.y;
-
-			if (topContainerSize.x < MIN_SIZE)
-				return;
-
-			Core::UInt2 bottomContainerSize = m_pBottomContainer->GetSize();
-
-			//prevent overflow cause leftContainerSize is unsigned
-			if (dt.y > (int)bottomContainerSize.y)
-				return;
-
-			bottomContainerSize.x -= dt.x;
-			bottomContainerSize.y -= dt.y;
-
-			if (bottomContainerSize.y < MIN_SIZE)
-				return;
-
-			m_pTopContainer->SetSize(topContainerSize);
-
-			WidgetMgr::Get().RequestResize();
-
-			m_pSplit->SetPreviousCursorPosition(currentMousePosition);
-		}
-	}
 
 	void SplitHorizontal::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{

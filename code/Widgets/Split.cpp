@@ -107,18 +107,34 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseDown:
 	{
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-		if (mouseEvent.HasButton(MouseButton::LeftButton))
+		if (mouseEvent.HasButton(MouseButton::LeftButton) && !m_isDragged)
 		{
 			CaptureMouse();
 
 			m_isDragged = true;
-			m_previousCursorPosition = WidgetMgr::Get().GetCursorPosition();
+			m_previousCursorPosition.x = mouseEvent.GetX();
+			m_previousCursorPosition.y = mouseEvent.GetY();
 
 			if (m_isVerticalSplit)
 				g_pIconName = IDC_SIZEWE;
 			else
 				g_pIconName = IDC_SIZENS;
 			return true;
+		}
+	}
+	break;
+
+	case EventType::kMouseMove:
+	{
+		if (m_isDragged)
+		{
+			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
+
+			Core::Int2 currentMousePos(mouseEvent.GetX(), mouseEvent.GetY());
+			m_onDrag(currentMousePos);
+
+			m_previousCursorPosition.x = currentMousePos.x;
+			m_previousCursorPosition.y = currentMousePos.y;
 		}
 	}
 	break;
@@ -133,12 +149,12 @@ bool Split::IsDragged()
 	return m_isDragged;
 }
 
-DirectX::XMINT2 Split::GetPreviousCursorPosition() const
+Core::Int2 Split::GetPreviousCursorPosition() const
 {
 	return m_previousCursorPosition;
 }
 
-void Split::SetPreviousCursorPosition(const DirectX::XMINT2& pos)
+void Split::SetPreviousCursorPosition(const Core::Int2& pos)
 {
 	m_previousCursorPosition = pos;
 }
