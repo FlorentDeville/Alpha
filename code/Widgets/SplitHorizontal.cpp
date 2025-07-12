@@ -30,27 +30,7 @@ namespace Widgets
 
 		m_pSplit = new Split(false);
 		m_pSplit->SetSizeStyle(Widget::HSIZE_STRETCH);
-		m_pSplit->OnDrag([this](const Core::Int2& mousePosition)
-			{
-				const int MIN_SIZE = 50;
-
-				Core::UInt2 topContainerSize = m_pTopContainer->GetSize();
-
-				int offset = mousePosition.y - (m_pTopContainer->GetScreenY() + topContainerSize.y);
-				int newTopContainerWidth = topContainerSize.y + offset;
-
-				if (newTopContainerWidth < MIN_SIZE)
-					return;
-
-				int newBottonContainerWidth = m_pBottomContainer->GetHeight() - offset;
-				if (newBottonContainerWidth < MIN_SIZE)
-					return;
-
-				m_pTopContainer->SetHeight(newTopContainerWidth);
-				m_pBottomContainer->SetHeight(newBottonContainerWidth);
-
-				WidgetMgr::Get().RequestResize();
-			});
+		m_pSplit->OnDrag([this](const Core::Int2& mousePosition) { Split_OnDrag(mousePosition); });
 
 		m_pLayout->AddWidget(m_pSplit);
 
@@ -96,5 +76,27 @@ namespace Widgets
 		Core::UInt2 size = m_pTopContainer->GetSize();
 		size.y = height;
 		m_pTopContainer->SetSize(size);
+	}
+
+	void SplitHorizontal::Split_OnDrag(const Core::Int2& mousePosition)
+	{
+		const int MIN_SIZE = 50;
+
+		Core::UInt2 topContainerSize = m_pTopContainer->GetSize();
+
+		int offset = mousePosition.y - (m_pTopContainer->GetScreenY() + topContainerSize.y);
+		int newTopContainerWidth = topContainerSize.y + offset;
+
+		if (newTopContainerWidth < MIN_SIZE)
+			return;
+
+		int newBottonContainerWidth = m_pBottomContainer->GetHeight() - offset;
+		if (newBottonContainerWidth < MIN_SIZE)
+			return;
+
+		m_pTopContainer->SetHeight(newTopContainerWidth);
+		m_pBottomContainer->SetHeight(newBottonContainerWidth);
+
+		WidgetMgr::Get().RequestResize();
 	}
 }

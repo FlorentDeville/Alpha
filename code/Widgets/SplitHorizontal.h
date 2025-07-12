@@ -35,5 +35,7 @@ namespace Widgets
 		Container* m_pBottomContainer;
 
 		bool m_splitDragged;
+
+		void Split_OnDrag(const Core::Int2& mousePosition);
 	};
 }
