@@ -45,5 +45,7 @@ namespace Widgets
 		Container* m_pRightContainer;
 
 		ResizePolicy m_resizePolicy;
+
+		void Split_OnDrag(const Core::Int2& mousePosition);
 	};
 }

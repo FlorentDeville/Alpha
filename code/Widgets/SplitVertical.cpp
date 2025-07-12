@@ -30,27 +30,7 @@ namespace Widgets
 
 		m_pSplit = new Split(true);
 		m_pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
-		m_pSplit->OnDrag([this](const Core::Int2& mousePosition)
-			{
-				const int MIN_SIZE = 50;
-
-				Core::UInt2 leftContainerSize = m_pLeftContainer->GetSize();
-
-				int offset = mousePosition.x - (m_pLeftContainer->GetScreenX() + leftContainerSize.x);
-				int newLeftContainerWidth = leftContainerSize.x + offset;
-				if (newLeftContainerWidth < MIN_SIZE)
-					return;
-	
-				Core::UInt2 rightContainerSize = m_pRightContainer->GetSize();
-				int newRightContainerWidth = rightContainerSize.x - offset;
-				if (newRightContainerWidth < MIN_SIZE)
-					return;
-
-				m_pLeftContainer->SetWidth(newLeftContainerWidth);
-				m_pRightContainer->SetWidth(newRightContainerWidth);
-
-				WidgetMgr::Get().RequestResize();
-			});
+		m_pSplit->OnDrag([this](const Core::Int2& mousePosition) { Split_OnDrag(mousePosition); });
 
 		m_pLayout->AddWidget(m_pSplit);
 
@@ -142,5 +122,27 @@ namespace Widgets
 	void SplitVertical::SetResizePolicy(ResizePolicy policy)
 	{
 		m_resizePolicy = policy;
+	}
+
+	void SplitVertical::Split_OnDrag(const Core::Int2& mousePosition)
+	{
+		const int MIN_SIZE = 50;
+
+		Core::UInt2 leftContainerSize = m_pLeftContainer->GetSize();
+
+		int offset = mousePosition.x - (m_pLeftContainer->GetScreenX() + leftContainerSize.x);
+		int newLeftContainerWidth = leftContainerSize.x + offset;
+		if (newLeftContainerWidth < MIN_SIZE)
+			return;
+
+		Core::UInt2 rightContainerSize = m_pRightContainer->GetSize();
+		int newRightContainerWidth = rightContainerSize.x - offset;
+		if (newRightContainerWidth < MIN_SIZE)
+			return;
+
+		m_pLeftContainer->SetWidth(newLeftContainerWidth);
+		m_pRightContainer->SetWidth(newRightContainerWidth);
+
+		WidgetMgr::Get().RequestResize();
 	}
 }
