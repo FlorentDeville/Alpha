@@ -13,6 +13,7 @@
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Split.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -90,8 +91,18 @@ namespace Widgets
 		m_columnWidth[column] = width;
 
 		std::vector<Widgets::Widget*> rows = m_pLayout->GetChildren();
-		for (Widgets::Widget* pRow : rows)
+
+		//first resize the header
 		{
+			Widgets::Widget* pHeaderRow = rows[0];
+			Widgets::Widget* pCell = pHeaderRow->GetChildren()[column * 2];
+			pCell->SetWidth(width);
+		}
+
+		//now resize the rows
+		for(size_t ii = 1; ii < rows.size(); ++ii)
+		{
+			Widgets::Widget* pRow = rows[ii];
 			Widgets::Widget* pCell = pRow->GetChildren()[column];
 			Core::UInt2 size = pCell->GetSize();
 			size.x = width;
@@ -102,7 +113,6 @@ namespace Widgets
 	void TableView::CreateHeader()
 	{
 		Layout* pHeaderLayout = new Layout();
-		pHeaderLayout->SetSpace(DirectX::XMINT2(5, 0));
 		pHeaderLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
 		pHeaderLayout->SetDirection(Layout::Horizontal);
 		pHeaderLayout->GetDefaultStyle().SetBackgroundColor(m_headerBackgroundColor);
@@ -111,20 +121,30 @@ namespace Widgets
 		int columnCount = m_pModel->GetColumnCount(Widgets::ModelIndex());
 		for (int jj = 0; jj < columnCount; ++jj)
 		{
-			std::string data = m_pModel->GetHeaderData(jj);
+			std::string data = "  " + m_pModel->GetHeaderData(jj);
 
 			Label* pLabel = new Label(data);
 			if (jj != columnCount - 1)
 			{
 				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 				pLabel->SetSize(m_cellDefaultSize);
+
+				pHeaderLayout->AddWidget(pLabel);
+
+				Split* pSplit = new Split(true);
+				pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
+				pSplit->SetWidth(4);
+				pSplit->SetBackgroundColor(Color(61, 61, 61));
+				pSplit->OnDrag([this, pLabel, jj](const Core::Int2& mousePosition) { HeaderSplit_OnDrag(mousePosition, pLabel, jj);	});
+
+				pHeaderLayout->AddWidget(pSplit);
 			}
 			else
 			{
 				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			}
 
-			pHeaderLayout->AddWidget(pLabel);
+				pHeaderLayout->AddWidget(pLabel);
+			}
 		}
 
 		m_pLayout->AddWidget(pHeaderLayout);
@@ -371,5 +391,19 @@ namespace Widgets
 	int TableView::GetRowLayoutIndex(int row) const
 	{
 		return row + 1; //+1 because the first row is the header.
+	}
+
+	void TableView::HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex)
+	{
+		int labelRight = pHeader->GetScreenX() + pHeader->GetWidth();
+		int offset = mousePosition.x - labelRight;
+		int newWidth = pHeader->GetWidth() + offset;
+
+		const int MIN_COLUMN_WIDTH = 10;
+		if (newWidth < MIN_COLUMN_WIDTH)
+			return;
+
+		SetColumnWidth(columnIndex, newWidth);
+		WidgetMgr::Get().RequestResize();
 	}
 }

@@ -18,6 +18,7 @@ namespace Widgets
 	class Layout;
 	class ModelIndex;
 	class SelectionRow;
+	class Split;
 
 	class TableView : public Widget
 	{
@@ -73,5 +74,7 @@ namespace Widgets
 
 		// Convert a row index into the widget index.
 		int GetRowLayoutIndex(int row) const;
+
+		void HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex);
 	};
 }
