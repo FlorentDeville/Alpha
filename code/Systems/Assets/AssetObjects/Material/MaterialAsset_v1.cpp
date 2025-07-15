@@ -2,7 +2,7 @@
 /* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v1.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/RootSignature/RootSignature.h"
