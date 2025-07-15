@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v1.h"
-
 namespace Systems
 {
-	using MaterialAsset = MaterialAsset_v1;
+	class MeshAsset_v1;
+	class MeshAsset_v2;
+	void UpgradeMeshAssetV1ToV2(const MeshAsset_v1* pMeshV1, MeshAsset_v2* pMeshV2);
 }

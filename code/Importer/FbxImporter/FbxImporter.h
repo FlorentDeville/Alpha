@@ -8,7 +8,7 @@
 
 #include "Core/Collections/Array.h"
 #include "Core/Math/Vec4f.h"
-#include "Systems/Assets/AssetObjects/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 
 namespace ofbx
 {

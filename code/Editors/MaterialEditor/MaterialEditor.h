@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Core/Singleton.h"
-#include "Systems/Assets/AssetObjects/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include <DirectXMath.h>

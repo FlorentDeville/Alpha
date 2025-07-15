@@ -31,7 +31,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
-#include "Systems/Assets/AssetObjects/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Loader.h"
