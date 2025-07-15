@@ -15,6 +15,8 @@
     <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
+    <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Level\LevelAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset_v1.h" />
@@ -62,6 +64,7 @@
     <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
