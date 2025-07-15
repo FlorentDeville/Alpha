@@ -21,7 +21,10 @@
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
-    <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetType.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
     <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
@@ -61,7 +64,9 @@
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.cpp" />
-    <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
     <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />

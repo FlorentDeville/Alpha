@@ -21,7 +21,7 @@
     <ClInclude Include="GameComponent\TransformComponent.h" />
     <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Objects\AssetObject.h" />
-    <ClInclude Include="Assets\AssetObjects\MeshAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
     <ClInclude Include="Serialization\ObjectJsonDeserializer.h" />
     <ClInclude Include="Serialization\ObjectHeader.h" />
@@ -43,6 +43,9 @@
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -61,7 +64,7 @@
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
-    <ClCompile Include="Assets\AssetObjects\MeshAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />
     <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />
@@ -78,5 +81,7 @@
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Rendering\MaterialRendering.cpp" />
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
   </ItemGroup>
 </Project>

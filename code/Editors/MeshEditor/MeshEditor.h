@@ -13,7 +13,7 @@
 #include "Rendering/Texture/TextureId.h"
 
 #include "Systems/Assets/AssetId.h"
-#include "Systems/Assets/AssetObjects/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include "DirectXMath.h"
