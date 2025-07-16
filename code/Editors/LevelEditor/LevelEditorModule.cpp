@@ -18,6 +18,7 @@
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Loader.h"
 
 //#pragma optimize("", off)
@@ -94,16 +95,15 @@ namespace Editors
 		return m_pSelectionMgr;
 	}
 
-	void LevelEditorModule::NewLevel()
+	Systems::LevelAsset* LevelEditorModule::CreateNewLevel(const std::string& levelName)
 	{
-		m_loadedLevelAssetId = Systems::AssetId::INVALID;
-
-		m_pSelectionMgr->Clear();
-
-		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
-		pSceneTree->DeleteNode(pSceneTree->GetConstRoot()->GetConstGuid());
+		Systems::LevelAsset* pLevel = Systems::AssetUtil::CreateAsset<Systems::LevelAsset>(levelName);
+		if (!pLevel)
+			return nullptr;
 
 		m_onNewLevel();
+
+		return pLevel;
 	}
 
 	bool LevelEditorModule::SaveAsLevel(Systems::AssetId levelId)

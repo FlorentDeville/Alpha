@@ -11,6 +11,7 @@
 #include "Core/Math/Mat44f.h"
 
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
 #include <map>
 #include <string>
@@ -58,8 +59,7 @@ namespace Editors
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
 
-//		Systems::AssetId CreateAssetLevel(const std::string& virtualName);
-		void NewLevel();
+		Systems::LevelAsset* CreateNewLevel(const std::string& levelName);
 		bool SaveLevel();
 		bool SaveAsLevel(Systems::AssetId levelId);
 		bool LoadLevel(Systems::AssetId levelId);
