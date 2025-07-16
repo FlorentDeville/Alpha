@@ -12,7 +12,6 @@
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
-#include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
 
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -73,11 +72,6 @@ namespace Editors
 
 		delete m_pLevelMgr;
 		m_pLevelMgr = nullptr;
-	}
-
-	void LevelEditorModule::CreateEditor(Widgets::Widget* pParent)
-	{
-		LevelEditorTab* pTab = new LevelEditorTab(pParent);
 	}
 
 	const LevelMgr* LevelEditorModule::GetConstLevelMgr() const

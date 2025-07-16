@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
+#include "Editors/LevelEditor/Widgets/LevelEditor.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelMgr.h"
@@ -33,6 +33,7 @@
 #include "Widgets/MenuItem.h"
 #include "Widgets/ModalWindow.h"
 #include "Widgets/SplitVertical.h"
+#include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/TextBox.h"
 #include "Widgets/Viewport.h"
@@ -41,8 +42,8 @@
 
 namespace Editors
 {
-	LevelEditorTab::LevelEditorTab(Widgets::Widget* pParent)
-		: Widgets::Tab()
+	LevelEditor::LevelEditor()
+		: Core::Singleton<LevelEditor>()
 		, m_enableViewportControl(false)
 		, m_pEntityNameLabel(nullptr)
 		, m_pEntityModel(nullptr)
@@ -51,7 +52,24 @@ namespace Editors
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
+	{ }
+
+	LevelEditor::~LevelEditor()
+	{ }
+
+	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
 	{
+		Widgets::Tab* pViewportTab = new Widgets::Tab();
+		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
+		if (pTabContainer)
+		{
+			pTabContainer->AddTab("Level", pViewportTab);
+		}
+		else
+		{
+			pParent->AddWidget(pViewportTab);
+		}
+
 		//create the render target
 		int width = 1280;
 		int height = 720;
@@ -59,7 +77,7 @@ namespace Editors
 		Widgets::Layout* pInternalLayout = new Widgets::Layout();
 		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		AddWidget(pInternalLayout);
+		pViewportTab->AddWidget(pInternalLayout);
 
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 
@@ -94,19 +112,6 @@ namespace Editors
 
 		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
-		if (pParent)
-		{
-			Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
-			if (pTabContainer)
-			{
-				pTabContainer->AddTab("Level", this);
-			}
-			else
-			{
-				pParent->AddWidget(this);
-			}
-		}
-
 		CreateEntityPropertyGrid(m_pSplit);
 		CreateSceneTreeViewer(m_pLeftSplit);
 
@@ -118,10 +123,7 @@ namespace Editors
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
 	}
 
-	LevelEditorTab::~LevelEditorTab()
-	{}
-
-	void LevelEditorTab::CreateMenuFile(Widgets::MenuBar* pMenuBar)
+	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("File");
 
@@ -144,7 +146,7 @@ namespace Editors
 		levelEditorModule.OnSaveLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 	}
 
-	void LevelEditorTab::CreateMenuEdit(Widgets::MenuBar* pMenuBar)
+	void LevelEditor::CreateMenuEdit(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
 
@@ -163,7 +165,7 @@ namespace Editors
 		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateEntity(); });
 	}
 
-	void LevelEditorTab::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
+	void LevelEditor::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pTransformMenu = pMenuBar->AddMenu("Transformation");
 
@@ -189,7 +191,7 @@ namespace Editors
 		m_pSnapItem->OnClick([this]() { OnClickTransformationMenu_Snap(); });
 	}
 
-	void LevelEditorTab::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
+	void LevelEditor::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pMenu = pMenuBar->AddMenu("Windows");
 
@@ -200,7 +202,7 @@ namespace Editors
 		pEntityItem->OnClick([this]() { CreateEntityPropertyGrid(m_pSplit); });
 	}
 
-	void LevelEditorTab::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
+	void LevelEditor::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
 		Widgets::Frame* pFrame = new Widgets::Frame("Entity Properties");
 		pFrame->OnClose([this]() { m_pEntityWidget = nullptr; delete m_pEntityModel; m_pEntityModel = nullptr; });
@@ -230,7 +232,7 @@ namespace Editors
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_EntityProperties(nodeGuid); });
 	}
 
-	void LevelEditorTab::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
+	void LevelEditor::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
 	{
 		if (m_pSceneTreeFrame != nullptr)
 			return;
@@ -252,7 +254,7 @@ namespace Editors
 
 		pLayout->AddWidget(m_pTreeWidget);
 
-		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditorTab::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
+		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditor::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
 
 		//callbacks
 		levelEditorModule.OnAddEntity([this](const Os::Guid& nodeGuid) { OnAddEntity_SceneTree(nodeGuid); });
@@ -263,7 +265,7 @@ namespace Editors
 		levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
 	}
 
-	void LevelEditorTab::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
+	void LevelEditor::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
 	{
 		//show a modal window to enter the entity name
 		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Entity Name");
@@ -324,7 +326,7 @@ namespace Editors
 		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
 	}
 
-	bool LevelEditorTab::OnClick_TreeItem(BaseModel* pModel, int rowId)
+	bool LevelEditor::OnClick_TreeItem(BaseModel* pModel, int rowId)
 	{
 		if (!m_pEntityWidget)
 			return true;
@@ -343,7 +345,7 @@ namespace Editors
 		return true;
 	}
 
-	void LevelEditorTab::OnClick_SetGizmoModeSelection()
+	void LevelEditor::OnClick_SetGizmoModeSelection()
 	{
 		//if right click, don't apply the mode
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
@@ -354,7 +356,7 @@ namespace Editors
 		pGizmo->SetEnable(!pGizmo->IsEnabled());
 	}
 
-	void LevelEditorTab::OnClick_SetGizmoModeTranslate()
+	void LevelEditor::OnClick_SetGizmoModeTranslate()
 	{
 		//if right click, don't apply the mode
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
@@ -364,7 +366,7 @@ namespace Editors
 		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kTranslation);
 	}
 
-	void LevelEditorTab::OnClick_SetGizmoModeRotation()
+	void LevelEditor::OnClick_SetGizmoModeRotation()
 	{
 		//if right click, don't apply the mode
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
@@ -374,7 +376,7 @@ namespace Editors
 		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation);
 	}
 
-	void LevelEditorTab::OnSelectionCleared_EntityProperties()
+	void LevelEditor::OnSelectionCleared_EntityProperties()
 	{
 		if (!m_pEntityWidget)
 			return;
@@ -383,7 +385,7 @@ namespace Editors
 		m_pEntityWidget->SetModel(m_pEntityModel);
 	}
 
-	void LevelEditorTab::OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid)
+	void LevelEditor::OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
@@ -403,7 +405,7 @@ namespace Editors
 		m_pEntityNameLabel->SetText(pEntity->GetName());
 	}
 
-	void LevelEditorTab::OnRemovedFromSelection_EntityProperties(const Os::Guid& nodeGuid)
+	void LevelEditor::OnRemovedFromSelection_EntityProperties(const Os::Guid& nodeGuid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
@@ -435,7 +437,7 @@ namespace Editors
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
-	void LevelEditorTab::OnRenameEntity_EntityProperties(const Os::Guid& nodeGuid)
+	void LevelEditor::OnRenameEntity_EntityProperties(const Os::Guid& nodeGuid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
@@ -451,19 +453,19 @@ namespace Editors
 		m_pEntityNameLabel->SetText(pEntity->GetName());
 	}
 
-	void LevelEditorTab::OnSelectionCleared_Gizmo()
+	void LevelEditor::OnSelectionCleared_Gizmo()
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
 		pGizmoModel->SetNode(Os::Guid());
 	}
 
-	void LevelEditorTab::OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid)
+	void LevelEditor::OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid)
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
 		pGizmoModel->SetNode(nodeGuid);
 	}
 
-	void LevelEditorTab::OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid)
+	void LevelEditor::OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
@@ -482,7 +484,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorTab::OnAddEntity_SceneTree(const Os::Guid& nodeGuid)
+	void LevelEditor::OnAddEntity_SceneTree(const Os::Guid& nodeGuid)
 	{
 		delete m_pLevelTreeModel;
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
@@ -490,7 +492,7 @@ namespace Editors
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
-	void LevelEditorTab::OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid)
+	void LevelEditor::OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid)
 	{
 		delete m_pLevelTreeModel;
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
@@ -498,35 +500,35 @@ namespace Editors
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
-	void LevelEditorTab::OnRenameEntity_SceneTree(const Os::Guid& nodeGuid)
+	void LevelEditor::OnRenameEntity_SceneTree(const Os::Guid& nodeGuid)
 	{
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
-	void LevelEditorTab::OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy)
+	void LevelEditor::OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy)
 	{
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
-	void LevelEditorTab::OnNewLevel_SceneTree()
+	void LevelEditor::OnNewLevel_SceneTree()
 	{
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
-	void LevelEditorTab::OnLoadLevel_SceneTree()
+	void LevelEditor::OnLoadLevel_SceneTree()
 	{
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
 	}
 
-	void LevelEditorTab::OnClickFileMenu_LoadLevel()
+	void LevelEditor::OnClickFileMenu_LoadLevel()
 	{
 		//modal windows are automatically deleted when closed,sono need to delete the dialog.
 		Editors::AssetDialog* pNewAssetDialog = new Editors::AssetDialog(false, Systems::kLevel);
@@ -535,7 +537,7 @@ namespace Editors
 		pNewAssetDialog->Open();
 	}
 
-	void LevelEditorTab::OnClickFileMenu_Save()
+	void LevelEditor::OnClickFileMenu_Save()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		Systems::AssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
@@ -549,14 +551,14 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorTab::OnClickFileMenu_SaveAs()
+	void LevelEditor::OnClickFileMenu_SaveAs()
 	{
 		AssetDialog* pDialog = new AssetDialog(true, Systems::kLevel);
 		pDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().SaveAsLevel(id); });
 		pDialog->Open();
 	}
 
-	void LevelEditorTab::OnClickEditMenu_AddEntity()
+	void LevelEditor::OnClickEditMenu_AddEntity()
 	{
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
@@ -570,7 +572,7 @@ namespace Editors
 		levelEditorModule.AddToSelection(newGuid);
 	}
 
-	void LevelEditorTab::OnClickEditMenu_DeleteEntity()
+	void LevelEditor::OnClickEditMenu_DeleteEntity()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
@@ -582,7 +584,7 @@ namespace Editors
 			levelEditorModule.DeleteEntity(selectedGuid);
 	}
 
-	void LevelEditorTab::OnClickEditMenu_RenameEntity()
+	void LevelEditor::OnClickEditMenu_RenameEntity()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
@@ -599,7 +601,7 @@ namespace Editors
 			});
 	}
 
-	void LevelEditorTab::OnClickEditMenu_DuplicateEntity()
+	void LevelEditor::OnClickEditMenu_DuplicateEntity()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
@@ -621,7 +623,7 @@ namespace Editors
 			levelEditorModule.AddToSelection(guid);
 	}
 
-	void LevelEditorTab::OnClickTransformationMenu_Snap()
+	void LevelEditor::OnClickTransformationMenu_Snap()
 	{
 		GizmoWidget* pGizmo = m_pViewport->GetGizmoWidget();
 		bool enabled = pGizmo->SnappingEnabled();

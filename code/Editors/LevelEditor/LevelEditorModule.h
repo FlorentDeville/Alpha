@@ -52,8 +52,6 @@ namespace Editors
 		void Init() override;
 		void Shutdown() override;
 
-		void CreateEditor(Widgets::Widget* pParent);
-
 		const LevelMgr* GetConstLevelMgr() const;
 		LevelMgr* GetLevelMgr();
 
