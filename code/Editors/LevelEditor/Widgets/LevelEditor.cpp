@@ -15,6 +15,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/Widgets/Dialog/AssetDialog.h"
+#include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
 #include "Editors/Widgets/Tree/LevelTreeModel.h"
@@ -128,7 +129,7 @@ namespace Editors
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("File");
 
 		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New");
-		pNewItem->OnClick([this]() { LevelEditorModule::Get().NewLevel(); });
+		pNewItem->OnClick([this]() { OnClickFileMenu_NewLevel(); });
 
 		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Load");
 		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
@@ -526,6 +527,17 @@ namespace Editors
 		delete m_pLevelTreeModel;
 		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
 		m_pTreeWidget->SetModel(m_pLevelTreeModel);
+	}
+
+	void LevelEditor::OnClickFileMenu_NewLevel()
+	{
+		//modal windows are automatically deleted when closed,so no need to delete the dialog.
+		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				Systems::LevelAsset* pLevel = LevelEditorModule::Get().CreateNewLevel(input);
+			});
+		pDialog->Open();
 	}
 
 	void LevelEditor::OnClickFileMenu_LoadLevel()
