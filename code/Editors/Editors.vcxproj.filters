@@ -90,7 +90,7 @@
     <ClInclude Include="LevelEditor\Widgets\GizmoWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\Widgets\LevelEditorTab.h">
+    <ClInclude Include="LevelEditor\Widgets\LevelEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\Widgets\LevelEditorViewportWidget.h">
@@ -230,7 +230,7 @@
     <ClCompile Include="LevelEditor\Widgets\GizmoWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\Widgets\LevelEditorTab.cpp">
+    <ClCompile Include="LevelEditor\Widgets\LevelEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\Widgets\LevelEditorViewportWidget.cpp">

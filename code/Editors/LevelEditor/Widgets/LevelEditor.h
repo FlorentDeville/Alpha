@@ -39,11 +39,11 @@ namespace Editors
 	class LevelTreeModel;
 	class TreeWidget;
 
-	class LevelEditorTab : public Core::Singleton<LevelEditorTab>
+	class LevelEditor : public Core::Singleton<LevelEditor>
 	{
 	public:
-		LevelEditorTab();
-		~LevelEditorTab();
+		LevelEditor();
+		~LevelEditor();
 
 		void CreateEditor(Widgets::Widget* pParent);
 
