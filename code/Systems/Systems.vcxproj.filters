@@ -46,6 +46,8 @@
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
+    <ClInclude Include="Assets\AssetObjects\Level\LevelAsset_v1.h" />
+    <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -83,5 +85,6 @@
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
   </ItemGroup>
 </Project>
