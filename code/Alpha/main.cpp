@@ -649,6 +649,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.RegisterAssetType<Systems::MeshAsset>();
 	assetMgr.RegisterAssetType<Systems::MaterialAsset>();
 	assetMgr.RegisterAssetType<Systems::MaterialInstanceAsset>();
+	assetMgr.RegisterAssetType<Systems::LevelAsset>();
 	assetMgr.LoadMetadataTable();
 	
 
