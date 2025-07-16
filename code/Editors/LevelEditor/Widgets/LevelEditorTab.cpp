@@ -33,6 +33,7 @@
 #include "Widgets/MenuItem.h"
 #include "Widgets/ModalWindow.h"
 #include "Widgets/SplitVertical.h"
+#include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/TextBox.h"
 #include "Widgets/Viewport.h"
@@ -41,8 +42,8 @@
 
 namespace Editors
 {
-	LevelEditorTab::LevelEditorTab(Widgets::Widget* pParent)
-		: Widgets::Tab()
+	LevelEditorTab::LevelEditorTab()
+		: Core::Singleton<LevelEditorTab>()
 		, m_enableViewportControl(false)
 		, m_pEntityNameLabel(nullptr)
 		, m_pEntityModel(nullptr)
@@ -51,7 +52,24 @@ namespace Editors
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
+	{ }
+
+	LevelEditorTab::~LevelEditorTab()
+	{ }
+
+	void LevelEditorTab::CreateEditor(Widgets::Widget* pParent)
 	{
+		Widgets::Tab* pViewportTab = new Widgets::Tab();
+		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
+		if (pTabContainer)
+		{
+			pTabContainer->AddTab("Level", pViewportTab);
+		}
+		else
+		{
+			pParent->AddWidget(pViewportTab);
+		}
+
 		//create the render target
 		int width = 1280;
 		int height = 720;
@@ -59,7 +77,7 @@ namespace Editors
 		Widgets::Layout* pInternalLayout = new Widgets::Layout();
 		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		AddWidget(pInternalLayout);
+		pViewportTab->AddWidget(pInternalLayout);
 
 		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
 
@@ -94,19 +112,6 @@ namespace Editors
 
 		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
-		if (pParent)
-		{
-			Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
-			if (pTabContainer)
-			{
-				pTabContainer->AddTab("Level", this);
-			}
-			else
-			{
-				pParent->AddWidget(this);
-			}
-		}
-
 		CreateEntityPropertyGrid(m_pSplit);
 		CreateSceneTreeViewer(m_pLeftSplit);
 
@@ -117,9 +122,6 @@ namespace Editors
 		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_Gizmo(nodeGuid); });
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
 	}
-
-	LevelEditorTab::~LevelEditorTab()
-	{}
 
 	void LevelEditorTab::CreateMenuFile(Widgets::MenuBar* pMenuBar)
 	{

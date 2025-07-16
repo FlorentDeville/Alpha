@@ -18,6 +18,7 @@
 #include "Core/Log/LogModule.h"
 
 #include "Editors/GamePlayer/GamePlayer.h"
+#include "Editors/LevelEditor/Widgets/LevelEditorTab.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
@@ -550,7 +551,7 @@ void CreateMainWindow(const Configuration& configuration)
 	pContainer->AddWidget(pMiddleTabContainer);
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
-	Editors::LevelEditorModule::Get().CreateEditor(pMiddleTabContainer);
+	Editors::LevelEditorTab::Get().CreateEditor(pMiddleTabContainer);
 
 	Editors::MeshEditorParameter meshEditorParameter;
 	meshEditorParameter.pParent = pMiddleTabContainer;
@@ -692,6 +693,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	inputMgr.Init();
 
 	Editors::GamePlayer::InitSingleton();
+
+	Editors::LevelEditorTab::InitSingleton();
 	Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::InitSingleton();
 	levelEditorModule.Init();
 
@@ -759,6 +762,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	resourcesMgr.Shutdown();
 
 	Rendering::RenderModule::ReleaseSingleton();
+	
+	Editors::LevelEditorTab::Get().Shutdown();
+	Editors::LevelEditorTab::ReleaseSingleton();
+
 	Editors::LevelEditorModule::ReleaseSingleton();
 	AppResources::ResourcesMgr::ReleaseSingleton();
 

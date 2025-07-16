@@ -1,10 +1,14 @@
 /********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #pragma once
 
-#include "Widgets/Tab.h"
+#include "Core/Callbacks/CallbackId.h"
+#include "Core/Singleton.h"
+
+#include <functional>
+#include <string>
 
 namespace Os
 {
@@ -23,6 +27,7 @@ namespace Widgets
 	class MenuBar;
 	class MenuItem;
 	class SplitVertical;
+	class Widget;
 }
 
 namespace Editors
@@ -34,11 +39,13 @@ namespace Editors
 	class LevelTreeModel;
 	class TreeWidget;
 
-	class LevelEditorTab : public Widgets::Tab
+	class LevelEditorTab : public Core::Singleton<LevelEditorTab>
 	{
 	public:
-		LevelEditorTab(Widgets::Widget* pParent = nullptr);
-		virtual ~LevelEditorTab();
+		LevelEditorTab();
+		~LevelEditorTab();
+
+		void CreateEditor(Widgets::Widget* pParent);
 
 	private:
 		bool m_enableViewportControl;
