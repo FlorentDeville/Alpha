@@ -179,12 +179,27 @@ namespace Widgets
 
 	void Widget::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
+		//I think there is a pattern here to figure out where first the widget is sized/positioned based on the parents.
+		//Then its children are resized. And finally the widget is sized/positioned again after its childrens are updated.
+
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
 
 		ResizeChildren();
 
+		Core::UInt2 oldSize = m_size;
+
 		ReComputeSize_PostChildren();
+
+		//If my children forced me to change my size then I might need to reposition the children.
+		//For example the tab header have a Container with a Label. The Label stretches to contains the entire text
+		//and the container fits the label. So the container.ReComputeSize_PostChildren will change the size of the container
+		//to fit the label. Now I need to recompute the location of the label because it needs to be centered.
+		if (oldSize != m_size)
+		{
+			for (Widget* pChild : m_children)
+				pChild->ReComputePosition(m_absPos, m_size);
+		}
 	}
 
 	bool Widget::Handle(const BaseEvent& event)

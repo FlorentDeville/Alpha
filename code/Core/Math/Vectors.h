@@ -23,6 +23,16 @@ namespace Core
 			: x(_x)
 			, y(_y)
 		{ }
+
+		bool operator==(const UInt2& other) const
+		{
+			return x == other.x && y == other.y;
+		}
+
+		bool operator!=(const UInt2& other) const
+		{
+			return !(*this == other);
+		}
 	};
 
 	class Int2
