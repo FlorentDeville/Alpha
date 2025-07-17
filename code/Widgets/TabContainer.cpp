@@ -62,7 +62,12 @@ namespace Widgets
 		int tabIndex = static_cast<int>(m_tabHeaders.size());
 
 		Widgets::Container* pTitleContainer = new Widgets::Container(textRect.x, textRect.y);
-		Label* pTitleLabel = new Label(0, 0, 1, header);
+
+		//cheat padding
+		Label* pTitleLabel = new Label(" " + header + " ");
+		pTitleLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		pTitleLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pTitleContainer->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
 		pTitleContainer->AddWidget(pTitleLabel);
 		pTitleContainer->OnMouseDown([this, tabIndex](const MouseEvent& ev) { OnMouseDown_TitleContainer(ev, tabIndex); });
 
