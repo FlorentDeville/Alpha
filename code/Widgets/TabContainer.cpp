@@ -51,7 +51,7 @@ namespace Widgets
 		assert(false);
 	}
 
-	Container* TabContainer::AddTab(const std::string& header, Tab* pTab)
+	Container* TabContainer::AddTab(const std::string& header, Widget* pWidget) 
 	{
 		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
 
@@ -69,17 +69,42 @@ namespace Widgets
 		pTitleLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pTitleContainer->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
 		pTitleContainer->AddWidget(pTitleLabel);
-		pTitleContainer->OnMouseDown([this, tabIndex](const MouseEvent& ev) { OnMouseDown_TitleContainer(ev, tabIndex); });
+		pTitleContainer->OnMouseDown([this, pTitleContainer](const MouseEvent& ev) { OnMouseDown_TitleContainer(ev, pTitleContainer); });
 
 		m_pHeaderLayout->AddWidget(pTitleContainer);
-		m_pContentContainer->AddWidget(pTab);
+		m_pContentContainer->AddWidget(pWidget);
 
 		m_selectedTab = static_cast<int>(m_tabContent.size());
 
 		m_tabHeaders.push_back(pTitleContainer);
-		m_tabContent.push_back(pTab);
+		m_tabContent.push_back(pWidget);
 
 		return pTitleContainer;
+	}
+
+	void TabContainer::CloseTab(Widget* pWidget)
+	{
+		std::vector<Widget*>::iterator it = std::find(m_tabContent.begin(), m_tabContent.end(), pWidget);
+		if (it == m_tabContent.end())
+			return;
+
+		size_t index = std::distance(m_tabContent.begin(), it);
+
+		WidgetMgr::Get().RequestWidgetDeletion(pWidget);
+		WidgetMgr::Get().RequestWidgetDeletion(m_tabHeaders[index]);
+
+		m_tabContent.erase(m_tabContent.cbegin() + index);
+		m_tabHeaders.erase(m_tabHeaders.cbegin() + index);
+
+		int tabCount = static_cast<int>(m_tabContent.size());
+
+		if (m_selectedTab == index)
+		{
+			if(index >= tabCount)
+				SetSelectedTab(tabCount - 1);
+		}
+		
+		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
 	void TabContainer::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
@@ -133,12 +158,17 @@ namespace Widgets
 		Widget::Disable(recursive);
 	}
 
-	void TabContainer::OnMouseDown_TitleContainer(const MouseEvent& ev, int tabIndex)
+	void TabContainer::OnMouseDown_TitleContainer(const MouseEvent& ev, Container* pHeader)
 	{
 		if (!ev.HasButton(MouseButton::LeftButton))
 			return;
 
-		SetSelectedTab(tabIndex);
+		std::vector<Container*>::const_iterator it = std::find(m_tabHeaders.cbegin(), m_tabHeaders.cend(), pHeader);
+		if (it == m_tabHeaders.cend())
+			return;
+
+		size_t index = std::distance(m_tabHeaders.cbegin(), it);
+		SetSelectedTab(static_cast<int>(index));
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 }
