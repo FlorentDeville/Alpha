@@ -115,7 +115,7 @@ namespace Editors
 
 		CreateEntityPropertyGrid(m_pSplit);
 
-		m_pLeftTabContainer = new Widgets::TabContainer();
+		m_pLeftTabContainer = new Widgets::TabContainer(false);
 		m_pLeftSplit->AddLeftPanel(m_pLeftTabContainer);
 
 		CreateSceneTreeViewer(m_pLeftTabContainer);
