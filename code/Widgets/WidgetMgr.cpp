@@ -246,6 +246,11 @@ namespace Widgets
 
 		for (Widget* pWidget : m_deleteRequestArray)
 		{
+			//first make sure the widget still exists. This is in the case a child widget is deleted before its parent.
+			std::set<Widget*>::const_iterator it = std::find(m_widgets.cbegin(), m_widgets.cend(), pWidget);
+			if (it == m_widgets.cend())
+				continue;
+
 			if (Widget* pParent = pWidget->GetParent())
 				pParent->DeleteChild(pWidget);
 		}
