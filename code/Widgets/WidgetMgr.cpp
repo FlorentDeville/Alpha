@@ -238,12 +238,6 @@ namespace Widgets
 
 	void WidgetMgr::Update(uint64_t dt)
 	{
-		if (m_resizeRequest)
-		{
-			Resize();
-			m_resizeRequest = false;
-		}
-
 		for (Widget* pWidget : m_deleteRequestArray)
 		{
 			//first make sure the widget still exists. This is in the case a child widget is deleted before its parent.
@@ -253,6 +247,12 @@ namespace Widgets
 
 			if (Widget* pParent = pWidget->GetParent())
 				pParent->DeleteChild(pWidget);
+		}
+
+		if (m_resizeRequest)
+		{
+			Resize();
+			m_resizeRequest = false;
 		}
 
 		m_deleteRequestArray.clear();
