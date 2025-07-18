@@ -248,14 +248,14 @@ namespace Widgets
 			if (Widget* pParent = pWidget->GetParent())
 				pParent->DeleteChild(pWidget);
 		}
+		
+		m_deleteRequestArray.clear();
 
 		if (m_resizeRequest)
 		{
 			Resize();
 			m_resizeRequest = false;
 		}
-
-		m_deleteRequestArray.clear();
 
 		for (Widget* pWidget : m_widgets)
 			pWidget->Update(dt);
