@@ -73,11 +73,11 @@ namespace Widgets
 
 		m_pHeaderLayout->AddWidget(pTitleContainer);
 		m_pContentContainer->AddWidget(pWidget);
-
-		m_selectedTab = static_cast<int>(m_tabContent.size());
-
+		
 		m_tabHeaders.push_back(pTitleContainer);
 		m_tabContent.push_back(pWidget);
+
+		SetSelectedTab(static_cast<int>(m_tabContent.size() - 1));
 
 		return pTitleContainer;
 	}
