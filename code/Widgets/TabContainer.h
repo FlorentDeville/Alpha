@@ -17,7 +17,7 @@ namespace Widgets
 	class TabContainer : public Widget
 	{
 	public:
-		TabContainer();
+		TabContainer(bool headerTop = true);
 		~TabContainer();
 
 		void AddWidget(Widget* pWidget) override;

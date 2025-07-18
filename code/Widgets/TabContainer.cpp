@@ -14,7 +14,7 @@
 
 namespace Widgets
 {
-	TabContainer::TabContainer()
+	TabContainer::TabContainer(bool headerTop)
 		: Widget()
 		, m_selectedTab(0)
 		, m_pInternalLayout(nullptr)
@@ -25,7 +25,12 @@ namespace Widgets
 
 		m_pInternalLayout = new Layout(0, 0, 0, 0);
 		m_pInternalLayout->SetSizeStyle(HSIZE_STRETCH | VSIZE_STRETCH);
-		m_pInternalLayout->SetDirection(Layout::Direction::Vertical);
+
+		if(headerTop)
+			m_pInternalLayout->SetDirection(Layout::Direction::Vertical);
+		else
+			m_pInternalLayout->SetDirection(Layout::Direction::Vertical_Reverse);
+
 		Widget::AddWidget(m_pInternalLayout);
 
 		m_pHeaderLayout = new Layout(0, 20, 0, 0);
