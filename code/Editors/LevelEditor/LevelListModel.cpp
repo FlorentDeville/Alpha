@@ -1,0 +1,123 @@
+/********************************************************************/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************/
+
+#include "Editors/LevelEditor/LevelListModel.h"
+
+//#include "Editors/MaterialEditor/MaterialEditorModule.h"
+
+#include "Systems/Assets/AssetMgr.h"
+//#include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+
+#include "Widgets/Models/ModelIndex.h"
+
+namespace Editors
+{
+	LevelListModel::LevelListModel()
+		: AbstractViewModel()
+	{
+		const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		assetMgr.ForEachMetadata([this](const Systems::AssetMetadata& metadata) 
+			{
+				if (!metadata.IsA<Systems::LevelAsset>())
+					return;
+				
+				CachedLevelData data;
+				data.m_id = metadata.GetAssetId();
+				data.m_virtualName = metadata.GetVirtualName();
+				data.m_modified = false;
+				m_cachedDataArray.PushBack(data);
+			});
+	}
+
+	LevelListModel::~LevelListModel()
+	{
+	}
+
+	Widgets::ModelIndex LevelListModel::GetParent(const Widgets::ModelIndex&) const
+	{
+		return Widgets::ModelIndex(); //there is no parent in arrays
+	}
+
+	Widgets::ModelIndex LevelListModel::GetIndex(int row, int column, const Widgets::ModelIndex& parent) const
+	{
+		if (parent.IsValid())
+			return Widgets::ModelIndex();
+
+		if (row < 0 || row >= static_cast<int32_t>(m_cachedDataArray.GetSize()))
+			return Widgets::ModelIndex();
+
+		if (column < 0 || column >= Columns::Count)
+			return Widgets::ModelIndex();
+
+		const CachedLevelData& data = m_cachedDataArray[row];
+		return CreateIndex(row, column, &data);
+	}
+
+	int LevelListModel::GetRowCount(const Widgets::ModelIndex& parent) const
+	{
+		if (parent.IsValid())
+			return 0;
+
+		return static_cast<int>(m_cachedDataArray.GetSize());
+	}
+
+	int LevelListModel::GetColumnCount(const Widgets::ModelIndex& parent) const
+	{
+		if (parent.IsValid())
+			return 0;
+
+		return Columns::Count;
+	}
+
+	std::string LevelListModel::GetData(const Widgets::ModelIndex& index)
+	{
+		const CachedLevelData* pData = reinterpret_cast<const CachedLevelData*>(index.GetConstDataPointer());
+		switch (index.GetColumn())
+		{
+		case Columns::Id:
+			return pData->m_id.ToString();
+			break;
+
+		case Columns::Name:
+			return pData->m_virtualName;
+			break;
+
+		case Columns::Modified:
+		{
+			if (pData->m_modified)
+				return "*";
+			else
+				return "";
+		}
+		break;
+
+		default:
+			return "";
+			break;
+		}
+	}
+
+	std::string LevelListModel::GetHeaderData(int column)
+	{
+		switch (column)
+		{
+		case Columns::Id:
+			return "Id";
+			break;
+
+		case Columns::Name:
+			return "Name";
+			break;
+
+		case Columns::Modified:
+			return "Modified";
+			break;
+
+		default:
+			return "";
+			break;
+		}
+	}
+}

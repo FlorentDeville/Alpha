@@ -5,6 +5,7 @@
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
@@ -40,6 +41,7 @@
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/Frame.h"
+#include "Widgets/Widgets/TableView.h"
 
 namespace Editors
 {
@@ -279,6 +281,12 @@ namespace Editors
 	{
 		Widgets::Frame* pLevelBrowser = new Widgets::Frame("Level Browser");
 		pParent->AddTab("Level Browser", pLevelBrowser);
+
+		Widgets::TableView* pLevelTableView = new Widgets::TableView();
+		pLevelBrowser->AddWidget(pLevelTableView);
+
+		LevelListModel* pModel = new LevelListModel();
+		pLevelTableView->SetModel(pModel);
 	}
 
 	void LevelEditor::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
