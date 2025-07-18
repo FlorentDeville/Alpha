@@ -27,6 +27,7 @@ namespace Widgets
 	class MenuBar;
 	class MenuItem;
 	class SplitVertical;
+	class TabContainer;
 	class Widget;
 }
 
@@ -60,6 +61,8 @@ namespace Editors
 
 		Widgets::MenuItem* m_pSnapItem;
 
+		Widgets::TabContainer* m_pLeftTabContainer;
+
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
 
@@ -71,7 +74,8 @@ namespace Editors
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 
 		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
-		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
+		void CreateSceneTreeViewer(Widgets::TabContainer* pParent);
+		void CreateLevelBrowser(Widgets::TabContainer* pParent);
 
 		void CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const;
 

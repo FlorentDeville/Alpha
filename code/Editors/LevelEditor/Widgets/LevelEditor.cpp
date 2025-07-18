@@ -114,7 +114,13 @@ namespace Editors
 		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
 		CreateEntityPropertyGrid(m_pSplit);
-		CreateSceneTreeViewer(m_pLeftSplit);
+
+		m_pLeftTabContainer = new Widgets::TabContainer();
+		m_pLeftSplit->AddLeftPanel(m_pLeftTabContainer);
+
+		CreateSceneTreeViewer(m_pLeftTabContainer);
+		CreateLevelBrowser(m_pLeftTabContainer);
+		m_pLeftTabContainer->SetSelectedTab(0);
 
 		//gizmo callback registration
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
@@ -197,7 +203,7 @@ namespace Editors
 		Widgets::Menu* pMenu = pMenuBar->AddMenu("Windows");
 
 		Widgets::MenuItem* pSceneTreeItem = pMenu->AddMenuItem("Scene Tree");
-		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftSplit); });
+		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftTabContainer); });
 
 		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Entity Properties");
 		pEntityItem->OnClick([this]() { CreateEntityPropertyGrid(m_pSplit); });
@@ -233,15 +239,18 @@ namespace Editors
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_EntityProperties(nodeGuid); });
 	}
 
-	void LevelEditor::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
+	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
 	{
 		if (m_pSceneTreeFrame != nullptr)
 			return;
 
 		m_pSceneTreeFrame = new Widgets::Frame("Scene Tree");
-		m_pSceneTreeFrame->OnClose([this]() { m_pSceneTreeFrame = nullptr; });
+		m_pSceneTreeFrame->OnClose([this, pParent]() 
+			{ 
+				pParent->CloseTab(m_pSceneTreeFrame); m_pSceneTreeFrame = nullptr; 
+			});
 
-		pSplit->AddLeftPanel(m_pSceneTreeFrame);
+		pParent->AddTab("Scene Tree", m_pSceneTreeFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
@@ -264,6 +273,12 @@ namespace Editors
 		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
 		levelEditorModule.OnNewLevel([this]() { OnNewLevel_SceneTree(); });
 		levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
+	}
+
+	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
+	{
+		Widgets::Frame* pLevelBrowser = new Widgets::Frame("Level Browser");
+		pParent->AddTab("Level Browser", pLevelBrowser);
 	}
 
 	void LevelEditor::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
