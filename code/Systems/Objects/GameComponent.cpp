@@ -8,7 +8,7 @@ namespace Systems
 {
 	GameComponent::GameComponent()
 		: Object()
-		, m_id()
+		, m_guid()
 	{ }
 
 	GameComponent::~GameComponent()
@@ -19,4 +19,9 @@ namespace Systems
 
 	void GameComponent::Render()
 	{ }
+
+	void GameComponent::SetGuid(const Core::Guid& guid)
+	{
+		m_guid = guid;
+	}
 }
