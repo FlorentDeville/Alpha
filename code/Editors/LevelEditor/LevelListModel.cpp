@@ -4,10 +4,7 @@
 
 #include "Editors/LevelEditor/LevelListModel.h"
 
-//#include "Editors/MaterialEditor/MaterialEditorModule.h"
-
 #include "Systems/Assets/AssetMgr.h"
-//#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
 #include "Widgets/Models/ModelIndex.h"
@@ -23,11 +20,7 @@ namespace Editors
 				if (!metadata.IsA<Systems::LevelAsset>())
 					return;
 				
-				CachedLevelData data;
-				data.m_id = metadata.GetAssetId();
-				data.m_virtualName = metadata.GetVirtualName();
-				data.m_modified = false;
-				m_cachedDataArray.PushBack(data);
+				AddCachedData(metadata);
 			});
 	}
 
@@ -119,5 +112,23 @@ namespace Editors
 			return "";
 			break;
 		}
+	}
+
+	void LevelListModel::AddNewLevel(const Systems::AssetMetadata& metadata)
+	{
+		uint32_t row = m_cachedDataArray.GetSize();
+
+		AddCachedData(metadata);
+
+		CommitInsertRows(row, 1, Widgets::ModelIndex());
+	}
+
+	void LevelListModel::AddCachedData(const Systems::AssetMetadata& metadata)
+	{
+		CachedLevelData data;
+		data.m_id = metadata.GetAssetId();
+		data.m_virtualName = metadata.GetVirtualName();
+		data.m_modified = false;
+		m_cachedDataArray.PushBack(data);
 	}
 }

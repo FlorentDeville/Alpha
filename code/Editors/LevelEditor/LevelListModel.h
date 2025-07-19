@@ -8,13 +8,12 @@
 
 #include "Widgets/Models/AbstractViewModel.h"
 
-//#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/NewAssetId.h"
-//
-//namespace Systems
-//{
-//	class AssetMetadata;
-//}
+
+namespace Systems
+{
+	class AssetMetadata;
+}
 
 namespace Editors
 {
@@ -42,6 +41,9 @@ namespace Editors
 		std::string GetHeaderData(int column) override;
 
 		// Specific functions
+		void AddNewLevel(const Systems::AssetMetadata& metadata);
+
+		
 	private:
 		struct CachedLevelData
 		{
@@ -51,5 +53,7 @@ namespace Editors
 		};
 
 		Core::Array<CachedLevelData> m_cachedDataArray;
+
+		void AddCachedData(const Systems::AssetMetadata& pMetadata);
 	};
 }
