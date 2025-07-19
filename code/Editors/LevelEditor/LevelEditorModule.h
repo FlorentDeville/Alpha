@@ -61,6 +61,8 @@ namespace Editors
 		SelectionMgr* GetSelectionMgr();
 
 		Systems::LevelAsset* CreateNewLevel(const std::string& levelName);
+		void DeleteLevel(Systems::NewAssetId id);
+
 		bool SaveLevel();
 		bool SaveAsLevel(Systems::AssetId levelId);
 		bool LoadLevel(Systems::AssetId levelId);
@@ -87,6 +89,9 @@ namespace Editors
 
 		//operation callback
 		EVENT_DECL(NewLevel, void(const Systems::AssetMetadata& metadata))
+		EVENT_DECL(BeforeDeleteLevel, void(Systems::AssetMetadata& metadata))
+		EVENT_DECL(AfterDeleteLevel, void(Systems::AssetMetadata& metadata))
+
 		EVENT_DECL(LoadLevel, void())
 		EVENT_DECL(SaveLevel, void())
 

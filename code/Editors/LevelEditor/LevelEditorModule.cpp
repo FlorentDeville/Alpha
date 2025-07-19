@@ -108,6 +108,22 @@ namespace Editors
 		return pLevel;
 	}
 
+	void LevelEditorModule::DeleteLevel(Systems::NewAssetId id)
+	{
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return;
+
+		//make a copy of the metadata to use it in the after delete event
+		Systems::AssetMetadata metadataCopy = *pMetadata;
+
+		m_onBeforeDeleteLevel(metadataCopy);
+
+		Systems::AssetUtil::DeleteAsset(id);
+
+		m_onAfterDeleteLevel(metadataCopy);
+	}
+
 	bool LevelEditorModule::SaveAsLevel(Systems::AssetId levelId)
 	{
 		if (!levelId.IsValid())
