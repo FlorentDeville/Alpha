@@ -169,33 +169,22 @@ namespace Editors
 		return true;;
 	}
 
-	void LevelEditorModule::AddNewEntity(Core::Guid& nodeGuid)
+	void LevelEditorModule::AddGameObject(Core::Guid& nodeGuid)
 	{
-		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
+		if (!m_pLevel)
+			return;
 
-		Core::Guid parentGuid;
-		if (Node* pParent = pSceneTree->GetRoot())
-			parentGuid = pParent->GetConstGuid();
+		Systems::GameObject* pGo = Systems::CreateNewGameObject<Systems::GameObject>("newentity");
 		
-		std::string entityName = "newentity";
+		Core::Mat44f localTx;
+		localTx.SetIdentity();
+		pGo->GetTransform().SetLocalTx(localTx);
+		
+		m_pLevel->AddGameObject(pGo);
 
-		Entity* pNewEntity = new Entity(entityName);
-		Component* pPlanTransform = CreateComponentTransform();
-		pPlanTransform->SetPropertyValue("Local", Core::Mat44f(
-			Core::Vec4f(1, 0, 0, 0),
-			Core::Vec4f(0, 1, 0, 0),
-			Core::Vec4f(0, 0, 1, 0),
-			Core::Vec4f(0, 0, 0, 1)));
+		nodeGuid = pGo->GetGuid();
 
-		Component* pPlanRendering = CreateComponentRendering();
-		pNewEntity->AddComponent(pPlanTransform);
-		pNewEntity->AddComponent(pPlanRendering);
-
-		pSceneTree->AddNode(pNewEntity, parentGuid);
-
-		nodeGuid = pNewEntity->GetGuid();
-
-		m_onAddEntity(pNewEntity->GetConstGuid());
+		m_onAddEntity(nodeGuid);
 	}
 
 	void LevelEditorModule::DeleteEntity(const Core::Guid& nodeGuid)

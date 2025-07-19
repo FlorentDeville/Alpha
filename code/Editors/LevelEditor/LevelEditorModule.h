@@ -70,7 +70,7 @@ namespace Editors
 
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
-		void AddNewEntity(Core::Guid& nodeGuid);
+		void AddGameObject(Core::Guid& nodeGuid);
 		void DeleteEntity(const Core::Guid& nodeGuid);
 		void RenameEntity(const Core::Guid& nodeGuid, const std::string& name);
 		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);

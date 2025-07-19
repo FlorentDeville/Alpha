@@ -182,8 +182,8 @@ namespace Editors
 	{
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
 
-		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add");
-		pAddItem->OnClick([this]() { OnClickEditMenu_AddEntity(); });
+		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add Game Object");
+		pAddItem->OnClick([this]() { OnClickEditMenu_AddGameObject(); });
 
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
 		pDeleteItem->SetShortcut("Del");
@@ -650,12 +650,12 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void LevelEditor::OnClickEditMenu_AddEntity()
+	void LevelEditor::OnClickEditMenu_AddGameObject()
 	{
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
 		Core::Guid newGuid;
-		levelEditorModule.AddNewEntity(newGuid);
+		levelEditorModule.AddGameObject(newGuid);
 
 		if (!newGuid.IsValid())
 			return;
