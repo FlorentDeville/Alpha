@@ -30,4 +30,9 @@ namespace Systems
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
 	}
+
+	void LevelAsset_v1::AddGameObject(GameObject* pGo)
+	{
+		m_gameObjectsArray.PushBack(pGo);
+	}
 }

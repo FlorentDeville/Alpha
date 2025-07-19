@@ -239,6 +239,13 @@ namespace Core
 		while (keepReading)
 		{
 			keepReading = ReadNextToken();
+
+			//empty object
+			if (m_token[0] == '}')
+			{
+				break;
+			}
+
 			std::string memberName = m_token.substr(1, m_token.size() - 2);
 
 			if (!keepReading)

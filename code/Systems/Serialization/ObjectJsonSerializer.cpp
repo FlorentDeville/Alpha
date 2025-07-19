@@ -10,6 +10,7 @@
 
 #include "Core/Collections/BaseArray.h"
 #include "Core/Guid/Guid.h"
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/String/BytesToHexa.h"
 
@@ -37,6 +38,21 @@ namespace Systems
 		data.ToString(buffer, BUFFER_SIZE);
 
 		value.Set(buffer);
+		return true;
+	}
+
+	template<> bool SerializeData<Core::Mat44f>(const Core::Mat44f& data, Core::JsonValue& value)
+	{
+		Core::JsonArray* pArray = new Core::JsonArray();
+		for (int ii = 0; ii < 4; ++ii)
+		{
+			for (int jj = 0; jj < 4; ++jj)
+			{
+				pArray->AddElement(data.Get(ii, jj));
+			}
+		}
+
+		value.Set(pArray);
 		return true;
 	}
 
@@ -162,7 +178,14 @@ namespace Systems
 		case SID("Core::Guid"):
 		{
 			const Core::Guid* pGuid = reinterpret_cast<const Core::Guid*>(pFieldPtr);
-			SerializeData(pGuid, value);
+			SerializeData(*pGuid, value);
+		}
+		break;
+
+		case SID("Core::Mat44f"):
+		{
+			const Core::Mat44f* pMat = reinterpret_cast<const Core::Mat44f*>(pFieldPtr);
+			SerializeData(*pMat, value);
 		}
 		break;
 
@@ -212,8 +235,8 @@ namespace Systems
 			const void* pItem = pArray->GetConstElement(ii);
 			if (pFieldArray->IsElementPointer())
 			{
-				const char* pCharPtr = reinterpret_cast<const char*>(pItem);
-				pItem = reinterpret_cast<const char*>(*pCharPtr);
+				const uint64_t* pPtr = reinterpret_cast<const uint64_t*>(pItem);
+				pItem = reinterpret_cast<const void*>(*pPtr);
 			}
 
 			Core::JsonValue* pNewValue = new Core::JsonValue();

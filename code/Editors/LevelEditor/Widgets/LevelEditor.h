@@ -118,7 +118,7 @@ namespace Editors
 		void OnClickFileMenu_DeleteLevel();
 		void OnClickFileMenu_RenameLevel();
 
-		void OnClickEditMenu_AddEntity();
+		void OnClickEditMenu_AddGameObject();
 		void OnClickEditMenu_DeleteEntity();
 		void OnClickEditMenu_RenameEntity();
 		void OnClickEditMenu_DuplicateEntity();

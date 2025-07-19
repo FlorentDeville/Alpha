@@ -4,8 +4,9 @@
 
 #pragma once
 
+#include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/GameComponent.h"
-#include "Systems/Assets/AssetId.h"
+
 
 namespace Systems
 {
@@ -18,8 +19,8 @@ namespace Systems
 
 	private:
 
-		AssetId m_meshId;
-		AssetId m_materialId;
+		NewAssetId m_meshId;
+		NewAssetId m_materialId;
 
 		START_REFLECTION(Systems::StaticMeshComponent)
 			ADD_BASETYPE(Systems::GameComponent)
