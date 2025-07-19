@@ -113,7 +113,7 @@ namespace Editors
 		void OnLoadLevel_SceneTree();
 
 		void OnClickFileMenu_NewLevel();
-		void OnClickFileMenu_LoadLevel();
+		void OnClickFileMenu_OpenLevel();
 		void OnClickFileMenu_Save();
 		void OnClickFileMenu_DeleteLevel();
 

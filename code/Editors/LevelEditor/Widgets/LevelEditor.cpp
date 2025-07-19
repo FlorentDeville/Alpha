@@ -153,9 +153,9 @@ namespace Editors
 		pNewItem->SetShortcut("Ctrl+N");
 		pNewItem->OnClick([this]() { OnClickFileMenu_NewLevel(); });
 
-		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Open");
-		pLoadItem->SetShortcut("Ctrl+O");
-		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
+		Widgets::MenuItem* pOpenItem = pEditMenu->AddMenuItem("Open");
+		pOpenItem->SetShortcut("Ctrl+O");
+		pOpenItem->OnClick([this]() { OnClickFileMenu_OpenLevel(); });
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->SetShortcut("Ctrl+S");
@@ -598,7 +598,7 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void LevelEditor::OnClickFileMenu_LoadLevel()
+	void LevelEditor::OnClickFileMenu_OpenLevel()
 	{
 		if (!m_selectedLevelInLevelList.IsValid())
 			return;
