@@ -42,6 +42,16 @@ namespace Systems
 		return pNewObject;
 	}
 
+	template<typename T, typename... Args> T* CreateObjectInPlace(T* pPtr, Args... args)
+	{
+		new(pPtr) T(std::forward<Args>(args)...);
+
+		const TypeDescriptor* pType = TypeResolver<T>::GetConstType();
+		pPtr->SetTypeDescriptor(pType);
+
+		return pPtr;
+	}
+
 	template<typename T> void DeleteObject(T* pObject)
 	{
 		delete pObject;
