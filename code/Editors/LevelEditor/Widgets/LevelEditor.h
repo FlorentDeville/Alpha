@@ -115,7 +115,6 @@ namespace Editors
 		void OnClickFileMenu_NewLevel();
 		void OnClickFileMenu_LoadLevel();
 		void OnClickFileMenu_Save();
-		void OnClickFileMenu_SaveAs();
 		void OnClickFileMenu_DeleteLevel();
 
 		void OnClickEditMenu_AddEntity();

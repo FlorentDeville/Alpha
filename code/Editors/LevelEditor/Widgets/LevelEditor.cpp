@@ -160,9 +160,6 @@ namespace Editors
 		pSaveItem->SetShortcut("Ctrl+S");
 		pSaveItem->OnClick([this]() { OnClickFileMenu_Save(); });
 
-		Widgets::MenuItem* pSaveAsItem = pEditMenu->AddMenuItem("Save As...");
-		pSaveAsItem->OnClick([this]() { OnClickFileMenu_SaveAs(); });
-
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Level...");
 		pDeleteItem->SetShortcut("Del");
 		pDeleteItem->OnClick([this]() { OnClickFileMenu_DeleteLevel(); });
@@ -617,17 +614,6 @@ namespace Editors
 		{
 			levelEditorModule.SaveLevel();
 		}
-		else
-		{
-			OnClickFileMenu_SaveAs();
-		}
-	}
-
-	void LevelEditor::OnClickFileMenu_SaveAs()
-	{
-		AssetDialog* pDialog = new AssetDialog(true, Systems::kLevel);
-		pDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().SaveAsLevel(id); });
-		pDialog->Open();
 	}
 
 	void LevelEditor::OnClickFileMenu_DeleteLevel()

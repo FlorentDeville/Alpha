@@ -124,16 +124,6 @@ namespace Editors
 		m_onAfterDeleteLevel(metadataCopy);
 	}
 
-	bool LevelEditorModule::SaveAsLevel(Systems::AssetId levelId)
-	{
-		if (!levelId.IsValid())
-			return false;
-
-		m_loadedLevelAssetId = levelId;
-
-		return SaveLevel();
-	}
-
 	bool LevelEditorModule::SaveLevel()
 	{
 		if (!m_loadedLevelAssetId.IsValid())
