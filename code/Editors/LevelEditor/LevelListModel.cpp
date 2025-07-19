@@ -123,6 +123,19 @@ namespace Editors
 		CommitInsertRows(row, 1, Widgets::ModelIndex());
 	}
 
+	Systems::NewAssetId LevelListModel::GetAssetId(const Widgets::ModelIndex& index) const
+	{
+		if (index.GetParent().IsValid())
+			return Systems::NewAssetId::INVALID;
+
+		int row = index.GetRow();
+		if(row < 0 || row >= m_cachedDataArray.GetSize())
+			return Systems::NewAssetId::INVALID;
+
+		const CachedLevelData& data = m_cachedDataArray[row];
+		return data.m_id;
+	}
+
 	void LevelListModel::AddCachedData(const Systems::AssetMetadata& metadata)
 	{
 		CachedLevelData data;
