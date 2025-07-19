@@ -621,7 +621,7 @@ namespace Editors
 		if (!m_selectedLevelInLevelList.IsValid())
 			return;
 
-		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this level?");
 		pDialog->OnOk([this]() { LevelEditorModule::Get().DeleteLevel(m_selectedLevelInLevelList); });
 		pDialog->Open();
 	}
