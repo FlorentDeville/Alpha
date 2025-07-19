@@ -4,7 +4,10 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
@@ -15,6 +18,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/Widgets/Dialog/AssetDialog.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
@@ -33,6 +37,8 @@
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
 #include "Widgets/ModalWindow.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
@@ -40,6 +46,7 @@
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/Frame.h"
+#include "Widgets/Widgets/TableView.h"
 
 namespace Editors
 {
@@ -53,6 +60,13 @@ namespace Editors
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
+		, m_selectedLevelInLevelList()
+		, m_pLeftTabContainer(nullptr)
+		, m_pLevelListModel(nullptr)
+		, m_pSnapItem(nullptr)
+		, m_pSplit(nullptr)
+		, m_pTreeWidget(nullptr)
+		, m_pViewport(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -114,7 +128,13 @@ namespace Editors
 		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
 		CreateEntityPropertyGrid(m_pSplit);
-		CreateSceneTreeViewer(m_pLeftSplit);
+
+		m_pLeftTabContainer = new Widgets::TabContainer(false);
+		m_pLeftSplit->AddLeftPanel(m_pLeftTabContainer);
+
+		CreateSceneTreeViewer(m_pLeftTabContainer);
+		CreateLevelBrowser(m_pLeftTabContainer);
+		//m_pLeftTabContainer->SetSelectedTab(0);
 
 		//gizmo callback registration
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
@@ -122,28 +142,39 @@ namespace Editors
 		pSelectionMgr->OnClear([this]() { OnSelectionCleared_Gizmo(); });
 		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_Gizmo(nodeGuid); });
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
+
+		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) {  m_pLevelListModel->AddNewLevel(metadata); });
+		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
+		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("File");
 
-		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New");
+		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New Level...");
+		pNewItem->SetShortcut("Ctrl+N");
 		pNewItem->OnClick([this]() { OnClickFileMenu_NewLevel(); });
 
-		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Load");
-		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
+		Widgets::MenuItem* pOpenItem = pEditMenu->AddMenuItem("Open");
+		pOpenItem->SetShortcut("Ctrl+O");
+		pOpenItem->OnClick([this]() { OnClickFileMenu_OpenLevel(); });
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->SetShortcut("Ctrl+S");
-		pSaveItem->OnClick([this]() { OnClickFileMenu_Save(); });
+		pSaveItem->OnClick([this]() { OnClickFileMenu_SaveLevel(); });
 
-		Widgets::MenuItem* pSaveAsItem = pEditMenu->AddMenuItem("Save As...");
-		pSaveAsItem->OnClick([this]() { OnClickFileMenu_SaveAs(); });
+		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
+		pRenameItem->SetShortcut("F2");
+		pRenameItem->OnClick([this]() { OnClickFileMenu_RenameLevel(); });
+
+		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Level...");
+		pDeleteItem->SetShortcut("Del");
+		pDeleteItem->OnClick([this]() { OnClickFileMenu_DeleteLevel(); });
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		levelEditorModule.OnNewLevel([pSaveItem]() { pSaveItem->SetText("Save"); });
-		levelEditorModule.OnLoadLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
+		levelEditorModule.OnNewLevel([pSaveItem](const Systems::AssetMetadata& metadata) { pSaveItem->SetText("Save"); });
+		levelEditorModule.OnOpenLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 		levelEditorModule.OnSaveLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 	}
 
@@ -197,7 +228,7 @@ namespace Editors
 		Widgets::Menu* pMenu = pMenuBar->AddMenu("Windows");
 
 		Widgets::MenuItem* pSceneTreeItem = pMenu->AddMenuItem("Scene Tree");
-		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftSplit); });
+		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftTabContainer); });
 
 		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Entity Properties");
 		pEntityItem->OnClick([this]() { CreateEntityPropertyGrid(m_pSplit); });
@@ -233,15 +264,18 @@ namespace Editors
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_EntityProperties(nodeGuid); });
 	}
 
-	void LevelEditor::CreateSceneTreeViewer(Widgets::SplitVertical* pSplit)
+	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
 	{
 		if (m_pSceneTreeFrame != nullptr)
 			return;
 
 		m_pSceneTreeFrame = new Widgets::Frame("Scene Tree");
-		m_pSceneTreeFrame->OnClose([this]() { m_pSceneTreeFrame = nullptr; });
+		m_pSceneTreeFrame->OnClose([this, pParent]() 
+			{ 
+				pParent->CloseTab(m_pSceneTreeFrame); m_pSceneTreeFrame = nullptr; 
+			});
 
-		pSplit->AddLeftPanel(m_pSceneTreeFrame);
+		pParent->AddTab("Scene Tree", m_pSceneTreeFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
@@ -262,8 +296,39 @@ namespace Editors
 		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
-		levelEditorModule.OnNewLevel([this]() { OnNewLevel_SceneTree(); });
-		levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
+		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) { OnNewLevel_SceneTree(); });
+		//levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
+	}
+
+	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
+	{
+		Widgets::Frame* pLevelBrowser = new Widgets::Frame("Level Browser");
+		pParent->AddTab("Level Browser", pLevelBrowser);
+
+		Widgets::TableView* pLevelTableView = new Widgets::TableView();
+		pLevelBrowser->AddWidget(pLevelTableView);
+
+		m_pLevelListModel = new LevelListModel();
+		pLevelTableView->SetModel(m_pLevelListModel);
+
+		Widgets::SelectionModel* pSelectionModel = m_pLevelListModel->GetSelectionModel();
+		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
+			{
+				if (!selected.empty())
+				{
+					Systems::NewAssetId id = m_pLevelListModel->GetAssetId(selected[0].GetStartIndex());
+					if (id.IsValid())
+					{
+						m_selectedLevelInLevelList = id;
+						return;
+					}
+				}
+
+				if (!deselected.empty())
+				{
+					m_selectedLevelInLevelList = Systems::NewAssetId::INVALID;
+				}
+			});
 	}
 
 	void LevelEditor::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
@@ -540,33 +605,48 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void LevelEditor::OnClickFileMenu_LoadLevel()
+	void LevelEditor::OnClickFileMenu_OpenLevel()
 	{
-		//modal windows are automatically deleted when closed,sono need to delete the dialog.
-		Editors::AssetDialog* pNewAssetDialog = new Editors::AssetDialog(false, Systems::kLevel);
+		if (!m_selectedLevelInLevelList.IsValid())
+			return;
 
-		pNewAssetDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().LoadLevel(id); });
-		pNewAssetDialog->Open();
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
 	}
 
-	void LevelEditor::OnClickFileMenu_Save()
+	void LevelEditor::OnClickFileMenu_SaveLevel()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		Systems::AssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
+		Systems::NewAssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
 		if (id.IsValid())
 		{
 			levelEditorModule.SaveLevel();
 		}
-		else
-		{
-			OnClickFileMenu_SaveAs();
-		}
 	}
 
-	void LevelEditor::OnClickFileMenu_SaveAs()
+	void LevelEditor::OnClickFileMenu_DeleteLevel()
 	{
-		AssetDialog* pDialog = new AssetDialog(true, Systems::kLevel);
-		pDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().SaveAsLevel(id); });
+		if (!m_selectedLevelInLevelList.IsValid())
+			return;
+
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this level?");
+		pDialog->OnOk([this]() { LevelEditorModule::Get().DeleteLevel(m_selectedLevelInLevelList); });
+		pDialog->Open();
+	}
+
+	void LevelEditor::OnClickFileMenu_RenameLevel()
+	{
+		if (!m_selectedLevelInLevelList.IsValid())
+		{
+			Core::LogModule::Get().LogError("You need to select a level to rename.");
+			return;
+		}
+
+		UserInputDialog* pDialog = new UserInputDialog("New name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				LevelEditorModule::Get().RenameLevel(m_selectedLevelInLevelList, input);
+			});
 		pDialog->Open();
 	}
 
@@ -641,5 +721,15 @@ namespace Editors
 		bool enabled = pGizmo->SnappingEnabled();
 		pGizmo->SetSnapping(!enabled);
 		m_pSnapItem->SetChecked(!enabled);
+	}
+
+	void LevelEditor::OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata)
+	{
+		m_pLevelListModel->RemoveLevel(metadata);
+	}
+
+	void LevelEditor::OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName)
+	{
+		m_pLevelListModel->RenameLevel(id, newName);
 	}
 }

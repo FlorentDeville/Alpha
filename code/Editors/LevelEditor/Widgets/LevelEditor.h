@@ -7,6 +7,8 @@
 #include "Core/Callbacks/CallbackId.h"
 #include "Core/Singleton.h"
 
+#include "Systems/Assets/NewAssetId.h"
+
 #include <functional>
 #include <string>
 
@@ -20,6 +22,11 @@ namespace Rendering
 	class RenderTarget;
 }
 
+namespace Systems
+{
+	class AssetMetadata;
+}
+
 namespace Widgets
 {
 	class Frame;
@@ -27,6 +34,7 @@ namespace Widgets
 	class MenuBar;
 	class MenuItem;
 	class SplitVertical;
+	class TabContainer;
 	class Widget;
 }
 
@@ -36,6 +44,7 @@ namespace Editors
 	class EntityModel;
 	class EntityWidget;
 	class LevelEditorViewportWidget;
+	class LevelListModel;
 	class LevelTreeModel;
 	class TreeWidget;
 
@@ -60,10 +69,15 @@ namespace Editors
 
 		Widgets::MenuItem* m_pSnapItem;
 
+		Widgets::TabContainer* m_pLeftTabContainer;
+
+		LevelListModel* m_pLevelListModel;
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
 
 		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
+
+		Systems::NewAssetId m_selectedLevelInLevelList;
 
 		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
@@ -71,7 +85,8 @@ namespace Editors
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 
 		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
-		void CreateSceneTreeViewer(Widgets::SplitVertical* pSplit);
+		void CreateSceneTreeViewer(Widgets::TabContainer* pParent);
+		void CreateLevelBrowser(Widgets::TabContainer* pParent);
 
 		void CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const;
 
@@ -98,9 +113,10 @@ namespace Editors
 		void OnLoadLevel_SceneTree();
 
 		void OnClickFileMenu_NewLevel();
-		void OnClickFileMenu_LoadLevel();
-		void OnClickFileMenu_Save();
-		void OnClickFileMenu_SaveAs();
+		void OnClickFileMenu_OpenLevel();
+		void OnClickFileMenu_SaveLevel();
+		void OnClickFileMenu_DeleteLevel();
+		void OnClickFileMenu_RenameLevel();
 
 		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();
@@ -108,5 +124,8 @@ namespace Editors
 		void OnClickEditMenu_DuplicateEntity();
 
 		void OnClickTransformationMenu_Snap();
+
+		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
+		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
 	};
 }

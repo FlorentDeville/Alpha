@@ -53,7 +53,8 @@ namespace Editors
 		, m_pLevelMgr(nullptr)
 		, m_pSelectionMgr(nullptr)
 		, m_loadedLevelAssetId()
-	{}
+		, m_pLevel(nullptr)
+	{ }
 
 	LevelEditorModule::~LevelEditorModule()
 	{}
@@ -101,19 +102,27 @@ namespace Editors
 		if (!pLevel)
 			return nullptr;
 
-		m_onNewLevel();
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pLevel->GetId());
+
+		m_onNewLevel(*pMetadata);
 
 		return pLevel;
 	}
 
-	bool LevelEditorModule::SaveAsLevel(Systems::AssetId levelId)
+	void LevelEditorModule::DeleteLevel(Systems::NewAssetId id)
 	{
-		if (!levelId.IsValid())
-			return false;
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return;
 
-		m_loadedLevelAssetId = levelId;
+		//make a copy of the metadata to use it in the after delete event
+		Systems::AssetMetadata metadataCopy = *pMetadata;
 
-		return SaveLevel();
+		m_onBeforeDeleteLevel(metadataCopy);
+
+		Systems::AssetUtil::DeleteAsset(id);
+
+		m_onAfterDeleteLevel(metadataCopy);
 	}
 
 	bool LevelEditorModule::SaveLevel()
@@ -121,31 +130,43 @@ namespace Editors
 		if (!m_loadedLevelAssetId.IsValid())
 			return false;
 
-		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(m_loadedLevelAssetId);
-		bool res = LevelSerializer::Serialize(*pAsset, m_pLevelMgr->GetName(), m_pLevelMgr->GetConstSceneTree());
+		bool res = Systems::ContainerMgr::Get().SaveContainer(m_loadedLevelAssetId.GetContainerId());
 		if (!res)
-			return false;
+			return res;
 
 		m_onSaveLevel();
 		return true;
 	}
 
-	bool LevelEditorModule::LoadLevel(Systems::AssetId levelId)
+	bool LevelEditorModule::OpenLevel(Systems::NewAssetId id)
 	{
-		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(levelId);
-		if (pAsset->GetType() != Systems::AssetType::kLevel)
+		Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id);
+		if (!pLevel)
 			return false;
 
-		m_loadedLevelAssetId = levelId;
+		m_loadedLevelAssetId = id;
+		m_pLevel = pLevel;
 
-		std::string levelName;
-		bool res = LevelSerializer::Deserialize(*pAsset, levelName, m_pLevelMgr->GetSceneTree());
+		m_onOpenLevel();
+
+		return true;
+	}
+
+	bool LevelEditorModule::RenameLevel(Systems::NewAssetId id, const std::string& newName)
+	{
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		pMetadata->SetVirtualName(newName);
+
+		bool res = Systems::AssetMgr::Get().SaveMetadataTable();
 		if (!res)
 			return false;
 
-		m_onLoadLevel();
+		m_onRenameLevel(id, newName);
 
-		return true;
+		return true;;
 	}
 
 	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)
@@ -307,7 +328,7 @@ namespace Editors
 		m_pSelectionMgr->Clear();
 	}
 
-	Systems::AssetId LevelEditorModule::GetCurrentLoadedLevelAssetId() const
+	Systems::NewAssetId LevelEditorModule::GetCurrentLoadedLevelAssetId() const
 	{
 		return m_loadedLevelAssetId;
 	}
@@ -317,10 +338,10 @@ namespace Editors
 		if (!m_loadedLevelAssetId.IsValid())
 			return "";
 
-		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(m_loadedLevelAssetId);
-		if (!pAsset)
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_loadedLevelAssetId);
+		if (!pMetadata)
 			return "";
 
-		return pAsset->GetVirtualName();
+		return pMetadata->GetVirtualName();
 	}
 }

@@ -17,12 +17,14 @@ namespace Widgets
 	class TabContainer : public Widget
 	{
 	public:
-		TabContainer();
+		TabContainer(bool headerTop = true);
 		~TabContainer();
 
 		void AddWidget(Widget* pWidget) override;
 
-		Container* AddTab(const std::string& header, Tab* pTab);
+		Container* AddTab(const std::string& header, Widget* pWidget);
+
+		void CloseTab(Widget* pWidget);
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
@@ -32,7 +34,7 @@ namespace Widgets
 		void Disable(bool recursive = true) override;
 
 	private:
-		void OnMouseDown_TitleContainer(const MouseEvent& ev, int tabIndex);
+		void OnMouseDown_TitleContainer(const MouseEvent& ev, Container* pHeader);
 
 		int m_selectedTab;
 
