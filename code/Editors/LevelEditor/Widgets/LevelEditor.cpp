@@ -162,7 +162,7 @@ namespace Editors
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->SetShortcut("Ctrl+S");
-		pSaveItem->OnClick([this]() { OnClickFileMenu_Save(); });
+		pSaveItem->OnClick([this]() { OnClickFileMenu_SaveLevel(); });
 
 		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
 		pRenameItem->SetShortcut("F2");
@@ -614,7 +614,7 @@ namespace Editors
 		levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
 	}
 
-	void LevelEditor::OnClickFileMenu_Save()
+	void LevelEditor::OnClickFileMenu_SaveLevel()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		Systems::NewAssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
