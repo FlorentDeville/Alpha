@@ -127,7 +127,7 @@ namespace Editors
 
 		CreateSceneTreeViewer(m_pLeftTabContainer);
 		CreateLevelBrowser(m_pLeftTabContainer);
-		m_pLeftTabContainer->SetSelectedTab(0);
+		//m_pLeftTabContainer->SetSelectedTab(0);
 
 		//gizmo callback registration
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
