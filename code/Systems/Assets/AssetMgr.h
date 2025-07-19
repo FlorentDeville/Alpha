@@ -69,8 +69,6 @@ namespace Systems
 		bool SaveMetadataTable() const;
 		bool LoadMetadataTable();
 		
-		EVENT_DECL(AssetRenamed, void(const AssetMetadata& metadata, const std::string& oldName))
-
 	private:
 		std::string m_root; //location of toc.txt
 		

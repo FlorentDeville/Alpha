@@ -44,7 +44,7 @@ namespace Editors
 		EVENT_DECL(MaterialInstanceCreated, void(const Systems::AssetMetadata* pMetadata));
 
 		//This event is called for Material and MaterialInstance
-		EVENT_DECL(MaterialRenamed, void(const Systems::AssetMetadata& metadata, const std::string& oldName));
+		EVENT_DECL(MaterialRenamed, void(const Systems::AssetMetadata& metadata, const std::string& newName));
 
 	private:
 

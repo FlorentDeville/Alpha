@@ -209,8 +209,6 @@ namespace Systems
 
 		std::string oldName = pMetadata->GetVirtualName();
 		pMetadata->SetVirtualName(newName);
-
-		m_onAssetRenamed(*pMetadata, oldName);
 	}
 
 	bool AssetMgr::SaveTableOfContent() const

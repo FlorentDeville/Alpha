@@ -189,7 +189,7 @@ namespace Editors
 				m_pMaterialListModel->SetShaderModified(pMetadata->GetAssetId());
 			});
 
-		MaterialEditorModule::Get().OnMaterialRenamed([this](const Systems::AssetMetadata& metadata, const std::string& oldName)
+		MaterialEditorModule::Get().OnMaterialRenamed([this](const Systems::AssetMetadata& metadata, const std::string& newName)
 			{
 				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
