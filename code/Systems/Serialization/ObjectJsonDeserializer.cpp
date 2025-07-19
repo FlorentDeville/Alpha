@@ -8,6 +8,7 @@
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonMember.h"
 #include "Core/Json/JsonObject.h"
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/String/BytesToHexa.h"
 
@@ -25,7 +26,7 @@ namespace Systems
 	bool DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject);
 	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr);
 
-	bool DeserializeArray(const Core::JsonArray& jsonArray, const TypeDescriptor* pElementType, Core::BaseArray& array)
+	bool DeserializeArray(const Core::JsonArray& jsonArray, const TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array)
 	{
 		size_t size = jsonArray.GetSize();
 		array.Resize(static_cast<int32_t>(size));
@@ -34,6 +35,23 @@ namespace Systems
 		{
 			const Core::JsonValue* pJsonValue = jsonArray.GetElement(ii);
 			void* pFieldPtr = array.GetElement(ii);
+
+			// if this is an array of pointers then I need to allocate the elements.
+			if (elementIsPointer)
+			{
+				void* pAllocatedElement = pElementType->Construct();
+				if (pElementType->IsObject())
+				{
+					Object* pFieldObject = reinterpret_cast<Object*>(pAllocatedElement);
+					pFieldObject->SetTypeDescriptor(pElementType);
+				}
+
+				uint64_t* pp = reinterpret_cast<uint64_t*>(pFieldPtr);
+				*pp = reinterpret_cast<uint64_t>(pAllocatedElement);
+
+				pFieldPtr = pAllocatedElement;
+			}
+
 			bool res = DeserializeField(*pJsonValue, pElementType, nullptr, pFieldPtr);
 			if (!res)
 				return res;
@@ -61,7 +79,6 @@ namespace Systems
 		if (pFieldType->IsObject())
 		{
 			Object* pFieldObject = reinterpret_cast<Object*>(ptr);
-			pFieldObject->SetTypeDescriptor(pFieldType);
 
 			Core::JsonObject* pJsonFieldObject = jsonFieldValue.GetValueAsObject()->GetMember(1).GetValueAsObject();
 			bool res = DeserializeClass(pJsonFieldObject, pFieldType, ptr);
@@ -69,6 +86,8 @@ namespace Systems
 				return false;
 
 			pFieldObject->PostLoad();
+
+			return true;
 		}
 		else if (pFieldType->IsClass())
 		{
@@ -164,6 +183,22 @@ namespace Systems
 		}
 		break;
 
+		case SID("Core::Mat44f"):
+		{
+			Core::Mat44f* pMat = reinterpret_cast<Core::Mat44f*>(ptr);
+			Core::JsonArray* pJsonArray = jsonFieldValue.GetValueAsArray();
+
+			for (int ii = 0; ii < 4; ++ii)
+			{
+				for (int jj = 0; jj < 4; ++jj)
+				{
+					float fValue = static_cast<float>(pJsonArray->GetElement(ii * 4 + jj)->GetValueAsDouble());
+					pMat->Set(ii, jj, fValue);
+				}
+			}
+		}
+		break;
+
 		case SID("Core::Vec4f"):
 		{
 			Core::Vec4f* pValue = reinterpret_cast<Core::Vec4f*>(ptr);
@@ -185,10 +220,10 @@ namespace Systems
 
 		case SID("Core::Array"):
 		{
-			//assert(pFieldDescriptor); //don't support array of arrays
+			assert(pFieldDescriptor); //don't support array of arrays
 
 			Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pFieldPtr);
-			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldDescriptor->GetElementType(), *pArray);
+			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldDescriptor->GetElementType(), pFieldDescriptor->IsElementPointer(), *pArray);
 			if (!res)
 				return false;
 		}
