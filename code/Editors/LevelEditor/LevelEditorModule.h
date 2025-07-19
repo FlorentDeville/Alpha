@@ -63,8 +63,10 @@ namespace Editors
 		Systems::LevelAsset* CreateNewLevel(const std::string& levelName);
 		void DeleteLevel(Systems::NewAssetId id);
 
+		//Save the currently opened level.
 		bool SaveLevel();
-		bool LoadLevel(Systems::AssetId levelId);
+
+		bool OpenLevel(Systems::NewAssetId id);
 
 		void AddNewEntity(Os::Guid& nodeGuid);
 		void DeleteEntity(const Os::Guid& nodeGuid);
@@ -83,7 +85,7 @@ namespace Editors
 		bool RemoveFromSelection(const Os::Guid& nodeGuid);
 		void ClearSelection();
 
-		Systems::AssetId GetCurrentLoadedLevelAssetId() const;
+		Systems::NewAssetId GetCurrentLoadedLevelAssetId() const;
 		std::string GetCurrentLoadedLevelName() const;
 
 		//operation callback
@@ -91,7 +93,7 @@ namespace Editors
 		EVENT_DECL(BeforeDeleteLevel, void(Systems::AssetMetadata& metadata))
 		EVENT_DECL(AfterDeleteLevel, void(Systems::AssetMetadata& metadata))
 
-		EVENT_DECL(LoadLevel, void())
+		EVENT_DECL(OpenLevel, void())
 		EVENT_DECL(SaveLevel, void())
 
 		EVENT_DECL(AddEntity, void(const Os::Guid& nodeGuid))
@@ -107,7 +109,8 @@ namespace Editors
 		LevelMgr* m_pLevelMgr;
 		SelectionMgr* m_pSelectionMgr;
 
-		Systems::AssetId m_loadedLevelAssetId;
+		Systems::NewAssetId m_loadedLevelAssetId;
+		Systems::LevelAsset* m_pLevel;
 
 		//camera state
 		Core::Mat44f m_cameraWs;

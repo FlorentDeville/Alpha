@@ -53,7 +53,8 @@ namespace Editors
 		, m_pLevelMgr(nullptr)
 		, m_pSelectionMgr(nullptr)
 		, m_loadedLevelAssetId()
-	{}
+		, m_pLevel(nullptr)
+	{ }
 
 	LevelEditorModule::~LevelEditorModule()
 	{}
@@ -129,29 +130,24 @@ namespace Editors
 		if (!m_loadedLevelAssetId.IsValid())
 			return false;
 
-		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(m_loadedLevelAssetId);
-		bool res = LevelSerializer::Serialize(*pAsset, m_pLevelMgr->GetName(), m_pLevelMgr->GetConstSceneTree());
+		bool res = Systems::ContainerMgr::Get().SaveContainer(m_loadedLevelAssetId.GetContainerId());
 		if (!res)
-			return false;
+			return res;
 
 		m_onSaveLevel();
 		return true;
 	}
 
-	bool LevelEditorModule::LoadLevel(Systems::AssetId levelId)
+	bool LevelEditorModule::OpenLevel(Systems::NewAssetId id)
 	{
-		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(levelId);
-		if (pAsset->GetType() != Systems::AssetType::kLevel)
+		Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id);
+		if (!pLevel)
 			return false;
 
-		m_loadedLevelAssetId = levelId;
+		m_loadedLevelAssetId = id;
+		m_pLevel = pLevel;
 
-		std::string levelName;
-		bool res = LevelSerializer::Deserialize(*pAsset, levelName, m_pLevelMgr->GetSceneTree());
-		if (!res)
-			return false;
-
-		m_onLoadLevel();
+		m_onOpenLevel();
 
 		return true;
 	}
@@ -315,7 +311,7 @@ namespace Editors
 		m_pSelectionMgr->Clear();
 	}
 
-	Systems::AssetId LevelEditorModule::GetCurrentLoadedLevelAssetId() const
+	Systems::NewAssetId LevelEditorModule::GetCurrentLoadedLevelAssetId() const
 	{
 		return m_loadedLevelAssetId;
 	}
@@ -325,10 +321,10 @@ namespace Editors
 		if (!m_loadedLevelAssetId.IsValid())
 			return "";
 
-		const Systems::Asset* pAsset = Systems::AssetMgr::Get().GetAsset(m_loadedLevelAssetId);
-		if (!pAsset)
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_loadedLevelAssetId);
+		if (!pMetadata)
 			return "";
 
-		return pAsset->GetVirtualName();
+		return pMetadata->GetVirtualName();
 	}
 }

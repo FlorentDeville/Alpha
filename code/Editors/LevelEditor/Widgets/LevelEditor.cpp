@@ -153,7 +153,8 @@ namespace Editors
 		pNewItem->SetShortcut("Ctrl+N");
 		pNewItem->OnClick([this]() { OnClickFileMenu_NewLevel(); });
 
-		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Load");
+		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Open");
+		pLoadItem->SetShortcut("Ctrl+O");
 		pLoadItem->OnClick([this]() { OnClickFileMenu_LoadLevel(); });
 
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
@@ -166,7 +167,7 @@ namespace Editors
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		levelEditorModule.OnNewLevel([pSaveItem](const Systems::AssetMetadata& metadata) { pSaveItem->SetText("Save"); });
-		levelEditorModule.OnLoadLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
+		levelEditorModule.OnOpenLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 		levelEditorModule.OnSaveLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 	}
 
@@ -289,7 +290,7 @@ namespace Editors
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
 		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) { OnNewLevel_SceneTree(); });
-		levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
+		//levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
 	}
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
@@ -599,17 +600,17 @@ namespace Editors
 
 	void LevelEditor::OnClickFileMenu_LoadLevel()
 	{
-		//modal windows are automatically deleted when closed,sono need to delete the dialog.
-		Editors::AssetDialog* pNewAssetDialog = new Editors::AssetDialog(false, Systems::kLevel);
+		if (!m_selectedLevelInLevelList.IsValid())
+			return;
 
-		pNewAssetDialog->OnAssetSelected([](Systems::AssetId id) { LevelEditorModule::Get().LoadLevel(id); });
-		pNewAssetDialog->Open();
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
 	}
 
 	void LevelEditor::OnClickFileMenu_Save()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		Systems::AssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
+		Systems::NewAssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
 		if (id.IsValid())
 		{
 			levelEditorModule.SaveLevel();
