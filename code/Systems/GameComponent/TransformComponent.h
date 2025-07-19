@@ -17,12 +17,20 @@ namespace Systems
 		TransformComponent();
 		~TransformComponent();
 
+		const Core::Mat44f& GetLocalTx() const;
+		void SetLocalTx(const Core::Mat44f& localTx);
+
 	private:
 		Core::Mat44f m_localTransform;
+
+		Core::Guid m_parent;
+		Core::Array<Core::Guid> m_children;
 
 		START_REFLECTION(Systems::TransformComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_localTransform)
+			ADD_FIELD(m_parent)
+			ADD_FIELD(m_children)
 		END_REFLECTION()
 	};
 }
