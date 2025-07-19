@@ -162,7 +162,7 @@ namespace Systems
 		case SID("Core::Guid"):
 		{
 			const Core::Guid* pGuid = reinterpret_cast<const Core::Guid*>(pFieldPtr);
-			SerializeData(pGuid, value);
+			SerializeData(*pGuid, value);
 		}
 		break;
 
@@ -212,8 +212,8 @@ namespace Systems
 			const void* pItem = pArray->GetConstElement(ii);
 			if (pFieldArray->IsElementPointer())
 			{
-				const char* pCharPtr = reinterpret_cast<const char*>(pItem);
-				pItem = reinterpret_cast<const char*>(*pCharPtr);
+				const uint64_t* pPtr = reinterpret_cast<const uint64_t*>(pItem);
+				pItem = reinterpret_cast<const void*>(*pPtr);
 			}
 
 			Core::JsonValue* pNewValue = new Core::JsonValue();
