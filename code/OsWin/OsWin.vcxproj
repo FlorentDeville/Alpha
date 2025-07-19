@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClCompile Include="Clipboard.cpp" />
     <ClCompile Include="FileDialog.cpp" />
-    <ClCompile Include="Guid.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="Resource.cpp" />
@@ -22,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="FileDialog.h" />
-    <ClInclude Include="Guid.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Process.h" />
     <ClInclude Include="Resource.h" />

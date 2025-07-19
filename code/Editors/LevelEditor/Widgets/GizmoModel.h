@@ -7,7 +7,7 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 
-#include "OsWin/Guid.h"
+#include "Core/Guid/Guid.h"
 
 namespace Core
 {
@@ -25,11 +25,11 @@ namespace Editors
 		GizmoModel();
 		~GizmoModel();
 
-		void SetNode(const Os::Guid& nodeGuid);
+		void SetNode(const Core::Guid& nodeGuid);
 
 		bool ShouldRender();
 
-		using OnNodeChangedEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
+		using OnNodeChangedEvent = Core::CallbackList<void(const Core::Guid& nodeGuid)>;
 
 		Core::CallbackId OnNodeChanged(const OnNodeChangedEvent::Callback& callback);
 
@@ -46,7 +46,7 @@ namespace Editors
 		virtual void Scale(const Core::Vec4f& scale);
 
 	private:
-		Os::Guid m_nodeGuid;
+		Core::Guid m_nodeGuid;
 
 		OnNodeChangedEvent m_onNodeChangedEvent;
 

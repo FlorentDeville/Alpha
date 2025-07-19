@@ -16,7 +16,7 @@ namespace Editors
 		, m_name(name)
 	{}
 
-	Entity::Entity(const std::string& name, const Os::Guid& guid)
+	Entity::Entity(const std::string& name, const Core::Guid& guid)
 		: Node()
 		, m_components()
 		, m_name(name)

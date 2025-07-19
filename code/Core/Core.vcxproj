@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClCompile Include="Callbacks\CallbackId.cpp" />
     <ClCompile Include="CommandLine.cpp" />
+    <ClCompile Include="Guid\Guid.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Json\JsonArray.cpp" />
     <ClCompile Include="Json\JsonDeserializer.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Collections\Array.h" />
     <ClInclude Include="Collections\BaseArray.h" />
     <ClInclude Include="CommandLine.h" />
+    <ClInclude Include="Guid\Guid.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Json\JsonArray.h" />
     <ClInclude Include="Json\JsonDeserializer.h" />

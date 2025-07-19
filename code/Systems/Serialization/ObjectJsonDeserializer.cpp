@@ -4,6 +4,7 @@
 
 #include "Systems/Serialization/ObjectJsonDeserializer.h"
 
+#include "Core/Guid/Guid.h"
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonMember.h"
 #include "Core/Json/JsonObject.h"
@@ -153,6 +154,13 @@ namespace Systems
 		{
 			std::string* pValue = reinterpret_cast<std::string*>(ptr);
 			pValue->assign(jsonFieldValue.GetValueAsString());
+		}
+		break;
+
+		case SID("Core::Guid"):
+		{
+			Core::Guid* pValue = reinterpret_cast<Core::Guid*>(ptr);
+			new(pValue) Core::Guid(jsonFieldValue.GetValueAsString().c_str());
 		}
 		break;
 

@@ -9,6 +9,7 @@
 #include "Core/Json/JsonValue.h"
 
 #include "Core/Collections/BaseArray.h"
+#include "Core/Guid/Guid.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/String/BytesToHexa.h"
 
@@ -26,6 +27,16 @@ namespace Systems
 	template<typename T> bool SerializeData(const T& data, Core::JsonValue& value)
 	{
 		value.Set(data);
+		return true;
+	}
+
+	template<> bool SerializeData<Core::Guid>(const Core::Guid& data, Core::JsonValue& value)
+	{
+		const int BUFFER_SIZE = 64;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		data.ToString(buffer, BUFFER_SIZE);
+
+		value.Set(buffer);
 		return true;
 	}
 
@@ -145,6 +156,13 @@ namespace Systems
 		{
 			const std::string* pStr = reinterpret_cast<const std::string*>(pFieldPtr);
 			SerializeData(*pStr, value);
+		}
+		break;
+
+		case SID("Core::Guid"):
+		{
+			const Core::Guid* pGuid = reinterpret_cast<const Core::Guid*>(pFieldPtr);
+			SerializeData(pGuid, value);
 		}
 		break;
 
