@@ -4,6 +4,8 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/LevelMgr.h"
@@ -160,6 +162,10 @@ namespace Editors
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->SetShortcut("Ctrl+S");
 		pSaveItem->OnClick([this]() { OnClickFileMenu_Save(); });
+
+		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
+		pRenameItem->SetShortcut("F2");
+		pRenameItem->OnClick([this]() { OnClickFileMenu_RenameLevel(); });
 
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Level...");
 		pDeleteItem->SetShortcut("Del");
@@ -624,6 +630,22 @@ namespace Editors
 
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this level?");
 		pDialog->OnOk([this]() { LevelEditorModule::Get().DeleteLevel(m_selectedLevelInLevelList); });
+		pDialog->Open();
+	}
+
+	void LevelEditor::OnClickFileMenu_RenameLevel()
+	{
+		if (!m_selectedLevelInLevelList.IsValid())
+		{
+			Core::LogModule::Get().LogError("You need to select a level to rename.");
+			return;
+		}
+
+		UserInputDialog* pDialog = new UserInputDialog("New name");
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				LevelEditorModule::Get().RenameLevel(m_selectedLevelInLevelList, input);
+			});
 		pDialog->Open();
 	}
 
