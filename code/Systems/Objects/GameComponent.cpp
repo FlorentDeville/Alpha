@@ -8,6 +8,7 @@ namespace Systems
 {
 	GameComponent::GameComponent()
 		: Object()
+		, m_id()
 	{ }
 
 	GameComponent::~GameComponent()
