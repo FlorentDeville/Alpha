@@ -130,13 +130,16 @@ namespace Editors
 		pSelectionMgr->OnClear([this]() { OnSelectionCleared_Gizmo(); });
 		pSelectionMgr->OnItemAdded([this](const Os::Guid& nodeGuid) { OnAddedToSelection_Gizmo(nodeGuid); });
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
+
+		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) {  m_pLevelListModel->AddNewLevel(metadata); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
 	{
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("File");
 
-		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New");
+		Widgets::MenuItem* pNewItem = pEditMenu->AddMenuItem("New Level...");
+		pNewItem->SetShortcut("Ctrl+N");
 		pNewItem->OnClick([this]() { OnClickFileMenu_NewLevel(); });
 
 		Widgets::MenuItem* pLoadItem = pEditMenu->AddMenuItem("Load");
@@ -150,7 +153,7 @@ namespace Editors
 		pSaveAsItem->OnClick([this]() { OnClickFileMenu_SaveAs(); });
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		levelEditorModule.OnNewLevel([pSaveItem]() { pSaveItem->SetText("Save"); });
+		levelEditorModule.OnNewLevel([pSaveItem](const Systems::AssetMetadata& metadata) { pSaveItem->SetText("Save"); });
 		levelEditorModule.OnLoadLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 		levelEditorModule.OnSaveLevel([pSaveItem]() { pSaveItem->SetText("Save " + Editors::LevelEditorModule::Get().GetCurrentLoadedLevelName()); });
 	}
@@ -273,7 +276,7 @@ namespace Editors
 		levelEditorModule.OnDeleteEntity([this](const Os::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnRenameEntity([this](const Os::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
 		levelEditorModule.OnDuplicateEntity([this](const Os::Guid& src, const Os::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
-		levelEditorModule.OnNewLevel([this]() { OnNewLevel_SceneTree(); });
+		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) { OnNewLevel_SceneTree(); });
 		levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
 	}
 
@@ -285,8 +288,8 @@ namespace Editors
 		Widgets::TableView* pLevelTableView = new Widgets::TableView();
 		pLevelBrowser->AddWidget(pLevelTableView);
 
-		LevelListModel* pModel = new LevelListModel();
-		pLevelTableView->SetModel(pModel);
+		m_pLevelListModel = new LevelListModel();
+		pLevelTableView->SetModel(m_pLevelListModel);
 	}
 
 	void LevelEditor::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const

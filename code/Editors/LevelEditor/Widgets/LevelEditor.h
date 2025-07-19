@@ -37,6 +37,7 @@ namespace Editors
 	class EntityModel;
 	class EntityWidget;
 	class LevelEditorViewportWidget;
+	class LevelListModel;
 	class LevelTreeModel;
 	class TreeWidget;
 
@@ -63,6 +64,7 @@ namespace Editors
 
 		Widgets::TabContainer* m_pLeftTabContainer;
 
+		LevelListModel* m_pLevelListModel;
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
 

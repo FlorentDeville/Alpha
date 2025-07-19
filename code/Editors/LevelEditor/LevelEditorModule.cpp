@@ -101,7 +101,9 @@ namespace Editors
 		if (!pLevel)
 			return nullptr;
 
-		m_onNewLevel();
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pLevel->GetId());
+
+		m_onNewLevel(*pMetadata);
 
 		return pLevel;
 	}

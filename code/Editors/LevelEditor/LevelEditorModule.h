@@ -30,6 +30,7 @@ namespace Rendering
 namespace Systems
 {
 	class AssetId;
+	class AssetMetadata;
 }
 
 namespace Widgets
@@ -85,7 +86,7 @@ namespace Editors
 		std::string GetCurrentLoadedLevelName() const;
 
 		//operation callback
-		EVENT_DECL(NewLevel, void())
+		EVENT_DECL(NewLevel, void(const Systems::AssetMetadata& metadata))
 		EVENT_DECL(LoadLevel, void())
 		EVENT_DECL(SaveLevel, void())
 
