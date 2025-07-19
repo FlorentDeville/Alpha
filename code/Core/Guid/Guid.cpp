@@ -107,7 +107,7 @@ namespace Core
 		uint64_t data42 = static_cast<uint64_t>(dis(gen));
 		uint64_t data43 = static_cast<uint64_t>(dis(gen));
 		uint64_t data44 = static_cast<uint64_t>(dis(gen));
-		guid.m_data4 = data41 | (data42 << 16) | (data43 << 32) | (data43 << 48);
+		guid.m_data4 = data41 | (data42 << 16) | (data43 << 32) | (data44 << 48);
 
 		return guid;
 	}
