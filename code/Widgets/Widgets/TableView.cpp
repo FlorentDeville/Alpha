@@ -276,6 +276,8 @@ namespace Widgets
 			return;
 
 		m_pLayout->DeleteChild(pLayout);
+
+		WidgetMgr::Get().RequestResize();
 	}
 
 	void TableView::OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected)
