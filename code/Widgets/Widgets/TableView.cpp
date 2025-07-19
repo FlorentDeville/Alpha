@@ -30,6 +30,8 @@ namespace Widgets
 		, m_cellDefaultSize(75, 20)
 		, m_columnWidth()
 	{
+		SetSizeStyle(Widgets::Widget::STRETCH);
+
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
 		m_pLayout->SetDirection(Layout::Vertical);
