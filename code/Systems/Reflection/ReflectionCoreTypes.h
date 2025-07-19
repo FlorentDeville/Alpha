@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Guid/Guid.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Sid/Sid.h"
@@ -13,6 +14,7 @@
 
 namespace Systems
 {
+	DEFINE_TYPE_RESOLVER(Core::Guid)
 	DEFINE_TYPE_RESOLVER(Core::Vec4f)
 	DEFINE_TYPE_RESOLVER(Core::Mat44f)
 	DEFINE_TYPE_RESOLVER(Core::Sid)
