@@ -126,7 +126,7 @@ namespace Editors
 		if (!pModel)
 			return;
 
-		pModel->OnNodeChanged([this](const Os::Guid& nodeGuid) { OnNodeChanged_Model(); });
+		pModel->OnNodeChanged([this](const Core::Guid& nodeGuid) { OnNodeChanged_Model(); });
 		m_sqt = pModel->GetTransform();
 	}
 

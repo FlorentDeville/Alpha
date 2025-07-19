@@ -7,7 +7,7 @@
 #include <list>
 
 #include "Core/Callbacks/CallbackList.h"
-#include "OsWin/Guid.h"
+#include "Core/Guid/Guid.h"
 
 namespace Editors
 {
@@ -17,17 +17,17 @@ namespace Editors
 		SelectionMgr();
 		~SelectionMgr();
 
-		bool Add(const Os::Guid& guid);
-		bool Remove(const Os::Guid& guid);
+		bool Add(const Core::Guid& guid);
+		bool Remove(const Core::Guid& guid);
 		void Clear();
 
-		bool IsSelected(const Os::Guid& guid) const;
+		bool IsSelected(const Core::Guid& guid) const;
 
-		const std::list<Os::Guid>& GetSelectionList() const;
+		const std::list<Core::Guid>& GetSelectionList() const;
 
 		//callbacks
-		using OnItemAddedEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
-		using OnItemRemovedEvent = Core::CallbackList<void(const Os::Guid& nodeGuid)>;
+		using OnItemAddedEvent = Core::CallbackList<void(const Core::Guid& nodeGuid)>;
+		using OnItemRemovedEvent = Core::CallbackList<void(const Core::Guid& nodeGuid)>;
 		using OnClearEvent = Core::CallbackList<void()>;
 
 		Core::CallbackId OnItemAdded(const OnItemAddedEvent::Callback& callback);
@@ -35,7 +35,7 @@ namespace Editors
 		Core::CallbackId OnClear(const OnClearEvent::Callback& callback);
 
 	private:
-		std::list<Os::Guid> m_selection;
+		std::list<Core::Guid> m_selection;
 
 		OnItemAddedEvent m_onItemAdded;
 		OnItemRemovedEvent m_onItemRemoved;

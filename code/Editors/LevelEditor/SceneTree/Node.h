@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "OsWin/Guid.h"
+#include "Core/Guid/Guid.h"
 
 namespace Editors
 {
@@ -24,8 +24,8 @@ namespace Editors
 		const std::vector<Node*>& GetConstChildren() const;
 		std::vector<Node*>& GetChildren();
 
-		const Os::Guid& GetConstGuid() const;
-		Os::Guid& GetGuid();
+		const Core::Guid& GetConstGuid() const;
+		Core::Guid& GetGuid();
 
 		void SetParent(Node* pParent);
 		void AddChild(Node* pChild);
@@ -35,7 +35,7 @@ namespace Editors
 		virtual const Entity* ToConstEntity() const;
 
 	protected:
-		Os::Guid m_guid;
+		Core::Guid m_guid;
 
 	private:
 		Node* m_pParent;

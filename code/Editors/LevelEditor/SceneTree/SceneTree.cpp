@@ -29,25 +29,25 @@ namespace Editors
 		return m_pRoot;
 	}
 
-	const Node* SceneTree::GetConstNode(const Os::Guid& guid) const
+	const Node* SceneTree::GetConstNode(const Core::Guid& guid) const
 	{
-		std::map<Os::Guid, Node*>::const_iterator it = m_nodeCache.find(guid);
+		std::map<Core::Guid, Node*>::const_iterator it = m_nodeCache.find(guid);
 		if (it == m_nodeCache.cend())
 			return nullptr;
 
 		return it->second;
 	}
 
-	Node* SceneTree::GetNode(const Os::Guid& guid)
+	Node* SceneTree::GetNode(const Core::Guid& guid)
 	{
-		std::map<Os::Guid, Node*>::iterator it = m_nodeCache.find(guid);
+		std::map<Core::Guid, Node*>::iterator it = m_nodeCache.find(guid);
 		if (it == m_nodeCache.end())
 			return nullptr;
 
 		return it->second;
 	}
 
-	bool SceneTree::AddNode(Node* pNode, const Os::Guid& parent)
+	bool SceneTree::AddNode(Node* pNode, const Core::Guid& parent)
 	{
 		if (!parent.IsValid()) //invalid parent then it's the root
 		{
@@ -67,7 +67,7 @@ namespace Editors
 		return true;
 	}
 
-	bool SceneTree::DeleteNode(const Os::Guid& guid)
+	bool SceneTree::DeleteNode(const Core::Guid& guid)
 	{
 		Node* pNode = GetNode(guid);
 		if (!pNode)

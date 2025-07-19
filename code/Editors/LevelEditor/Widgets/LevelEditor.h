@@ -12,7 +12,7 @@
 #include <functional>
 #include <string>
 
-namespace Os
+namespace Core
 {
 	class Guid;
 }
@@ -97,18 +97,18 @@ namespace Editors
 		void OnClick_SetGizmoModeRotation();
 
 		void OnSelectionCleared_EntityProperties();
-		void OnAddedToSelection_EntityProperties(const Os::Guid& nodeGuid);
-		void OnRemovedFromSelection_EntityProperties(const Os::Guid& nodeGuid);
-		void OnRenameEntity_EntityProperties(const Os::Guid& nodeGuid);
+		void OnAddedToSelection_EntityProperties(const Core::Guid& nodeGuid);
+		void OnRemovedFromSelection_EntityProperties(const Core::Guid& nodeGuid);
+		void OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid);
 
 		void OnSelectionCleared_Gizmo();
-		void OnAddedToSelection_Gizmo(const Os::Guid& nodeGuid);
-		void OnRemovedFromSelection_Gizmo(const Os::Guid& nodeGuid);
+		void OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid);
+		void OnRemovedFromSelection_Gizmo(const Core::Guid& nodeGuid);
 
-		void OnAddEntity_SceneTree(const Os::Guid& nodeGuid);
-		void OnDeleteEntity_SceneTree(const Os::Guid& nodeGuid);
-		void OnRenameEntity_SceneTree(const Os::Guid& nodeGuid);
-		void OnDuplicateEntity_SceneTree(const Os::Guid& src, const Os::Guid& copy);
+		void OnAddEntity_SceneTree(const Core::Guid& nodeGuid);
+		void OnDeleteEntity_SceneTree(const Core::Guid& nodeGuid);
+		void OnRenameEntity_SceneTree(const Core::Guid& nodeGuid);
+		void OnDuplicateEntity_SceneTree(const Core::Guid& src, const Core::Guid& copy);
 		void OnNewLevel_SceneTree();
 		void OnLoadLevel_SceneTree();
 

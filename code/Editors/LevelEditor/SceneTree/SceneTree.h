@@ -7,7 +7,7 @@
 #include <functional>
 #include <map>
 
-namespace Os
+namespace Core
 {
 	class Guid;
 }
@@ -25,17 +25,17 @@ namespace Editors
 		const Node* GetConstRoot() const;
 		Node* GetRoot();
 
-		const Node* GetConstNode(const Os::Guid& guid) const;
-		Node* GetNode(const Os::Guid& guid);
+		const Node* GetConstNode(const Core::Guid& guid) const;
+		Node* GetNode(const Core::Guid& guid);
 
-		bool AddNode(Node* pNode, const Os::Guid& parent);
-		bool DeleteNode(const Os::Guid& guid);
+		bool AddNode(Node* pNode, const Core::Guid& parent);
+		bool DeleteNode(const Core::Guid& guid);
 
 		void Traverse(const std::function<void(const Node* pNode)>& callback) const;
 
 	private:
 		Node* m_pRoot;
-		std::map<Os::Guid, Node*> m_nodeCache;
+		std::map<Core::Guid, Node*> m_nodeCache;
 
 		void DeleteNodeRecursive(Node* pNode);
 

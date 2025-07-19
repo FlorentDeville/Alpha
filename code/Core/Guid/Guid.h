@@ -1,12 +1,12 @@
 /********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #pragma once
 
 #include <cstdint>
 
-namespace Os
+namespace Core
 {
 	class Guid
 	{

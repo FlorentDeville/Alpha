@@ -16,7 +16,7 @@ namespace Editors
 	SelectionMgr::~SelectionMgr()
 	{}
 
-	bool SelectionMgr::Add(const Os::Guid& guid)
+	bool SelectionMgr::Add(const Core::Guid& guid)
 	{
 		if (IsSelected(guid))
 			return false;
@@ -26,7 +26,7 @@ namespace Editors
 		return true;
 	}
 
-	bool SelectionMgr::Remove(const Os::Guid& guid)
+	bool SelectionMgr::Remove(const Core::Guid& guid)
 	{
 		if (!IsSelected(guid))
 			return false;
@@ -45,16 +45,16 @@ namespace Editors
 		m_onClear();
 	}
 
-	bool SelectionMgr::IsSelected(const Os::Guid& guid) const
+	bool SelectionMgr::IsSelected(const Core::Guid& guid) const
 	{
-		std::list<Os::Guid>::const_iterator it = std::find(m_selection.cbegin(), m_selection.cend(), guid);
+		std::list<Core::Guid>::const_iterator it = std::find(m_selection.cbegin(), m_selection.cend(), guid);
 		if (it == m_selection.cend())
 			return false;
 
 		return true;
 	}
 
-	const std::list<Os::Guid>& SelectionMgr::GetSelectionList() const
+	const std::list<Core::Guid>& SelectionMgr::GetSelectionList() const
 	{
 		return m_selection;
 	}

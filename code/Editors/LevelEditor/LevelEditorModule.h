@@ -16,7 +16,7 @@
 #include <map>
 #include <string>
 
-namespace Os
+namespace Core
 {
 	class Guid;
 }
@@ -70,10 +70,10 @@ namespace Editors
 
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
-		void AddNewEntity(Os::Guid& nodeGuid);
-		void DeleteEntity(const Os::Guid& nodeGuid);
-		void RenameEntity(const Os::Guid& nodeGuid, const std::string& name);
-		void DuplicateEntity(const Os::Guid& originalNode, Os::Guid& newNode);
+		void AddNewEntity(Core::Guid& nodeGuid);
+		void DeleteEntity(const Core::Guid& nodeGuid);
+		void RenameEntity(const Core::Guid& nodeGuid, const std::string& name);
+		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);
 
 		void SetCameraWs(const Core::Mat44f& ws);
 		const Core::Mat44f& GetCameraWs() const;
@@ -83,8 +83,8 @@ namespace Editors
 		Rendering::MeshId LoadMesh(Systems::AssetId id);
 		Rendering::MaterialId LoadMaterial(Systems::AssetId id);
 
-		bool AddToSelection(const Os::Guid& nodeGuid);
-		bool RemoveFromSelection(const Os::Guid& nodeGuid);
+		bool AddToSelection(const Core::Guid& nodeGuid);
+		bool RemoveFromSelection(const Core::Guid& nodeGuid);
 		void ClearSelection();
 
 		Systems::NewAssetId GetCurrentLoadedLevelAssetId() const;
@@ -99,10 +99,10 @@ namespace Editors
 		EVENT_DECL(SaveLevel, void())
 		EVENT_DECL(RenameLevel, void(Systems::NewAssetId id, const std::string& newName))
 
-		EVENT_DECL(AddEntity, void(const Os::Guid& nodeGuid))
-		EVENT_DECL(DeleteEntity, void(const Os::Guid& nodeGuid))
-		EVENT_DECL(RenameEntity, void(const Os::Guid& nodeGuid))
-		EVENT_DECL(DuplicateEntity, void(const Os::Guid& src, const Os::Guid& copy))
+		EVENT_DECL(AddEntity, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(DeleteEntity, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(RenameEntity, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;

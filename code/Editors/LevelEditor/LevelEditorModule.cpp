@@ -169,11 +169,11 @@ namespace Editors
 		return true;;
 	}
 
-	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)
+	void LevelEditorModule::AddNewEntity(Core::Guid& nodeGuid)
 	{
 		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
 
-		Os::Guid parentGuid;
+		Core::Guid parentGuid;
 		if (Node* pParent = pSceneTree->GetRoot())
 			parentGuid = pParent->GetConstGuid();
 		
@@ -198,7 +198,7 @@ namespace Editors
 		m_onAddEntity(pNewEntity->GetConstGuid());
 	}
 
-	void LevelEditorModule::DeleteEntity(const Os::Guid& nodeGuid)
+	void LevelEditorModule::DeleteEntity(const Core::Guid& nodeGuid)
 	{
 		m_pSelectionMgr->Remove(nodeGuid);
 		bool res = m_pLevelMgr->GetSceneTree()->DeleteNode(nodeGuid);
@@ -207,7 +207,7 @@ namespace Editors
 			m_onDeleteEntity(nodeGuid);
 	}
 
-	void LevelEditorModule::RenameEntity(const Os::Guid& nodeGuid, const std::string& name)
+	void LevelEditorModule::RenameEntity(const Core::Guid& nodeGuid, const std::string& name)
 	{
 		Node* pNode = m_pLevelMgr->GetSceneTree()->GetNode(nodeGuid);
 		if (!pNode)
@@ -221,7 +221,7 @@ namespace Editors
 		m_onRenameEntity(nodeGuid);
 	}
 
-	void LevelEditorModule::DuplicateEntity(const Os::Guid& originalNode, Os::Guid& newNode)
+	void LevelEditorModule::DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode)
 	{
 		if (!originalNode.IsValid())
 			return;
@@ -313,12 +313,12 @@ namespace Editors
 		return materialId;
 	}
 
-	bool LevelEditorModule::AddToSelection(const Os::Guid& nodeGuid)
+	bool LevelEditorModule::AddToSelection(const Core::Guid& nodeGuid)
 	{
 		return m_pSelectionMgr->Add(nodeGuid);
 	}
 
-	bool LevelEditorModule::RemoveFromSelection(const Os::Guid& nodeGuid)
+	bool LevelEditorModule::RemoveFromSelection(const Core::Guid& nodeGuid)
 	{
 		return m_pSelectionMgr->Remove(nodeGuid);
 	}

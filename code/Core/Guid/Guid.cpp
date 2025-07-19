@@ -1,13 +1,13 @@
 /********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "OsWin/Guid.h"
+#include "Core/Guid/Guid.h"
 
 #include <cstdio>
-#include <objbase.h>
+#include <random>
 
-namespace Os
+namespace Core
 {
 	Guid::Guid()
 		: m_data1(0)
@@ -92,15 +92,22 @@ namespace Os
 	{
 		Guid guid;
 
-		GUID winGuid;
-		HRESULT res = CoCreateGuid(&winGuid);
-		if (res != S_OK)
-			return guid;
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<uint16_t> dis(0, UINT16_MAX);
+		
+		uint32_t data11 = static_cast<uint32_t>(dis(gen));
+		uint32_t data12 = static_cast<uint32_t>(dis(gen));
+		guid.m_data1 = data11 | (data12 << 16);
+		
+		guid.m_data2 = static_cast<uint16_t>(dis(gen));
+		guid.m_data3 = static_cast<uint16_t>(dis(gen));
 
-		guid.m_data1 = winGuid.Data1;
-		guid.m_data2 = winGuid.Data2;
-		guid.m_data3 = winGuid.Data3;
-		memcpy(&guid.m_data4, winGuid.Data4, sizeof(guid.m_data4));
+		uint64_t data41 = static_cast<uint64_t>(dis(gen));
+		uint64_t data42 = static_cast<uint64_t>(dis(gen));
+		uint64_t data43 = static_cast<uint64_t>(dis(gen));
+		uint64_t data44 = static_cast<uint64_t>(dis(gen));
+		guid.m_data4 = data41 | (data42 << 16) | (data43 << 32) | (data43 << 48);
 
 		return guid;
 	}

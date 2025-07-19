@@ -202,10 +202,10 @@ namespace Editors
 		return true;
 	}
 
-	bool DeserializeEntity(const rapidjson::Value& jsonEntity, SceneTree* pSceneTree, const Os::Guid& parentGuid)
+	bool DeserializeEntity(const rapidjson::Value& jsonEntity, SceneTree* pSceneTree, const Core::Guid& parentGuid)
 	{
 		std::string strGuid = jsonEntity["guid"].GetString();
-		Os::Guid guid(strGuid.c_str());
+		Core::Guid guid(strGuid.c_str());
 
 		std::string name = jsonEntity["name"].GetString();
 
@@ -308,7 +308,7 @@ namespace Editors
 
 		const rapidjson::Value& jsonRoot = jsonSceneTree[0];
 
-		DeserializeEntity(jsonRoot, pSceneTree, Os::Guid());
+		DeserializeEntity(jsonRoot, pSceneTree, Core::Guid());
 
 		return true;
 	}

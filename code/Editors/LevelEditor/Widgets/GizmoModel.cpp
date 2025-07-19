@@ -35,7 +35,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoModel::SetNode(const Os::Guid& nodeGuid)
+	void GizmoModel::SetNode(const Core::Guid& nodeGuid)
 	{
 		if (m_nodeGuid == nodeGuid)
 			return;

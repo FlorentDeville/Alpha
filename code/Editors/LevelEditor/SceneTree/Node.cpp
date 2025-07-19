@@ -9,7 +9,7 @@ namespace Editors
 	Node::Node()
 		: m_pParent(nullptr)
 		, m_children()
-		, m_guid(Os::Guid::GenerateNewGuid())
+		, m_guid(Core::Guid::GenerateNewGuid())
 	{}
 
 	Node::~Node()
@@ -38,12 +38,12 @@ namespace Editors
 		return m_children;
 	}
 
-	const Os::Guid& Node::GetConstGuid() const
+	const Core::Guid& Node::GetConstGuid() const
 	{
 		return m_guid;
 	}
 
-	Os::Guid& Node::GetGuid()
+	Core::Guid& Node::GetGuid()
 	{
 		return m_guid;
 	}
