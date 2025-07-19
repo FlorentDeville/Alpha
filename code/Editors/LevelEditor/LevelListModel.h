@@ -46,6 +46,8 @@ namespace Editors
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
+		void RenameLevel(Systems::NewAssetId id, const std::string& newName);
+
 	private:
 		struct CachedLevelData
 		{

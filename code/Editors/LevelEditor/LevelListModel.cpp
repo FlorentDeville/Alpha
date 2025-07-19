@@ -136,6 +136,18 @@ namespace Editors
 		return data.m_id;
 	}
 
+	void LevelListModel::RenameLevel(Systems::NewAssetId id, const std::string& newName)
+	{
+		Core::Array<CachedLevelData>::Iterator it = std::find_if(m_cachedDataArray.begin(), m_cachedDataArray.end(), [&id](const CachedLevelData& data) { return data.m_id == id; });
+		if (it == m_cachedDataArray.end())
+			return;
+
+		it->m_virtualName = newName;
+
+		size_t row = std::distance(m_cachedDataArray.begin(), it);
+		m_onDataChanged(GetIndex(static_cast<int>(row), Columns::Name, Widgets::ModelIndex()));
+	}
+
 	void LevelListModel::RemoveLevel(const Systems::AssetMetadata& metadata)
 	{
 		Core::Array<CachedLevelData>::Iterator it = std::find_if(m_cachedDataArray.begin(), m_cachedDataArray.end(), [&metadata](const CachedLevelData& data) { return data.m_id == metadata.GetAssetId(); });

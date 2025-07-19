@@ -125,6 +125,7 @@ namespace Editors
 
 		void OnClickTransformationMenu_Snap();
 
-		void OnLeveleditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
+		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
+		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
 	};
 }

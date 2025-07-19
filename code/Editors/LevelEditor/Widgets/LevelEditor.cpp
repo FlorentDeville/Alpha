@@ -144,7 +144,8 @@ namespace Editors
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
 
 		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) {  m_pLevelListModel->AddNewLevel(metadata); });
-		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLeveleditorModule_BeforeDeleteLevel(metadata); });
+		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
+		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -722,8 +723,13 @@ namespace Editors
 		m_pSnapItem->SetChecked(!enabled);
 	}
 
-	void LevelEditor::OnLeveleditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata)
+	void LevelEditor::OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata)
 	{
 		m_pLevelListModel->RemoveLevel(metadata);
+	}
+
+	void LevelEditor::OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName)
+	{
+		m_pLevelListModel->RenameLevel(id, newName);
 	}
 }
