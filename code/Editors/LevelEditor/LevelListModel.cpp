@@ -129,11 +129,24 @@ namespace Editors
 			return Systems::NewAssetId::INVALID;
 
 		int row = index.GetRow();
-		if(row < 0 || row >= m_cachedDataArray.GetSize())
+		if (row < 0 || row >= static_cast<int>(m_cachedDataArray.GetSize()))
 			return Systems::NewAssetId::INVALID;
 
 		const CachedLevelData& data = m_cachedDataArray[row];
 		return data.m_id;
+	}
+
+	void LevelListModel::RemoveLevel(const Systems::AssetMetadata& metadata)
+	{
+		Core::Array<CachedLevelData>::Iterator it = std::find_if(m_cachedDataArray.begin(), m_cachedDataArray.end(), [&metadata](const CachedLevelData& data) { return data.m_id == metadata.GetAssetId(); });
+		if (it == m_cachedDataArray.end())
+			return;
+		
+		size_t index = std::distance(m_cachedDataArray.begin(), it);
+
+		m_cachedDataArray.Erase(it);
+
+		RemoveRows(static_cast<int>(index), 1, Widgets::ModelIndex());
 	}
 
 	void LevelListModel::AddCachedData(const Systems::AssetMetadata& metadata)

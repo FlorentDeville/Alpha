@@ -42,6 +42,7 @@ namespace Editors
 
 		// Specific functions
 		void AddNewLevel(const Systems::AssetMetadata& metadata);
+		void RemoveLevel(const Systems::AssetMetadata& metadata);
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
