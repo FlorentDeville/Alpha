@@ -21,6 +21,8 @@ namespace Systems
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
+		void AddGameObject(GameObject* pGo);
+
 	private:
 
 		Core::Array<GameObject*> m_gameObjectsArray;
