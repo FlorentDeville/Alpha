@@ -167,6 +167,9 @@ namespace Core
 		//Erase the first element equal to value and return the number of element erased.
 		uint32_t Erase(const T& value);
 
+		//Erase the element at the position of the iterator.
+		void Erase(Iterator& it);
+
 		//function to work with stl algorithms
 		Iterator begin();
 		const Iterator begin() const;
@@ -255,6 +258,27 @@ namespace Core
 		Resize(static_cast<uint32_t>(size));
 
 		return static_cast<uint32_t>(erasedCount);
+	}
+
+	template<typename T> void Array<T>::Erase(Iterator& it)
+	{
+		//first delete the element
+		T& pValue = *it;
+		pValue.~T();
+
+		//copy
+		Iterator previousElement = it;
+		Iterator ii = it;
+		++ii;
+		for (; ii != end(); ++ii, ++previousElement)
+		{
+			T& src = *ii;
+			T& dst = *previousElement;
+
+			dst = src;
+		}
+
+		--m_size;
 	}
 
 	template<typename T> Array<T>::Iterator::Iterator(pointer pPtr)
