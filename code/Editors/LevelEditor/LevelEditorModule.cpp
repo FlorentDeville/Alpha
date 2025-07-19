@@ -152,6 +152,23 @@ namespace Editors
 		return true;
 	}
 
+	bool LevelEditorModule::RenameLevel(Systems::NewAssetId id, const std::string& newName)
+	{
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		pMetadata->SetVirtualName(newName);
+
+		bool res = Systems::AssetMgr::Get().SaveMetadataTable();
+		if (!res)
+			return false;
+
+		m_onRenameLevel(id, newName);
+
+		return true;;
+	}
+
 	void LevelEditorModule::AddNewEntity(Os::Guid& nodeGuid)
 	{
 		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
