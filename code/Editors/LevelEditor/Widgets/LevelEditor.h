@@ -7,6 +7,8 @@
 #include "Core/Callbacks/CallbackId.h"
 #include "Core/Singleton.h"
 
+#include "Systems/Assets/NewAssetId.h"
+
 #include <functional>
 #include <string>
 
@@ -69,6 +71,8 @@ namespace Editors
 		LevelTreeModel* m_pLevelTreeModel;
 
 		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
+
+		Systems::NewAssetId m_selectedLevelInLevelList;
 
 		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);

@@ -34,6 +34,8 @@
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
 #include "Widgets/ModalWindow.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
@@ -55,6 +57,9 @@ namespace Editors
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
+		, m_selectedLevelInLevelList()
+		, m_pLeftTabContainer(nullptr)
+		, m_pLevelListModel(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -290,6 +295,25 @@ namespace Editors
 
 		m_pLevelListModel = new LevelListModel();
 		pLevelTableView->SetModel(m_pLevelListModel);
+
+		Widgets::SelectionModel* pSelectionModel = m_pLevelListModel->GetSelectionModel();
+		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
+			{
+				if (!selected.empty())
+				{
+					Systems::NewAssetId id = m_pLevelListModel->GetAssetId(selected[0].GetStartIndex());
+					if (id.IsValid())
+					{
+						m_selectedLevelInLevelList = id;
+						return;
+					}
+				}
+
+				if (!deselected.empty())
+				{
+					m_selectedLevelInLevelList = Systems::NewAssetId::INVALID;
+				}
+			});
 	}
 
 	void LevelEditor::CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const
