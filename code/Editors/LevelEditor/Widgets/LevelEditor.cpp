@@ -16,6 +16,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/Widgets/Dialog/AssetDialog.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
@@ -60,6 +61,10 @@ namespace Editors
 		, m_selectedLevelInLevelList()
 		, m_pLeftTabContainer(nullptr)
 		, m_pLevelListModel(nullptr)
+		, m_pSnapItem(nullptr)
+		, m_pSplit(nullptr)
+		, m_pTreeWidget(nullptr)
+		, m_pViewport(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -137,6 +142,7 @@ namespace Editors
 		pSelectionMgr->OnItemRemoved([this](const Os::Guid& nodeGuid) { OnRemovedFromSelection_Gizmo(nodeGuid); });
 
 		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) {  m_pLevelListModel->AddNewLevel(metadata); });
+		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLeveleditorModule_BeforeDeleteLevel(metadata); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -156,6 +162,10 @@ namespace Editors
 
 		Widgets::MenuItem* pSaveAsItem = pEditMenu->AddMenuItem("Save As...");
 		pSaveAsItem->OnClick([this]() { OnClickFileMenu_SaveAs(); });
+
+		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Level...");
+		pDeleteItem->SetShortcut("Del");
+		pDeleteItem->OnClick([this]() { OnClickFileMenu_DeleteLevel(); });
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		levelEditorModule.OnNewLevel([pSaveItem](const Systems::AssetMetadata& metadata) { pSaveItem->SetText("Save"); });
@@ -620,6 +630,16 @@ namespace Editors
 		pDialog->Open();
 	}
 
+	void LevelEditor::OnClickFileMenu_DeleteLevel()
+	{
+		if (!m_selectedLevelInLevelList.IsValid())
+			return;
+
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this material?");
+		pDialog->OnOk([this]() { LevelEditorModule::Get().DeleteLevel(m_selectedLevelInLevelList); });
+		pDialog->Open();
+	}
+
 	void LevelEditor::OnClickEditMenu_AddEntity()
 	{
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
@@ -691,5 +711,10 @@ namespace Editors
 		bool enabled = pGizmo->SnappingEnabled();
 		pGizmo->SetSnapping(!enabled);
 		m_pSnapItem->SetChecked(!enabled);
+	}
+
+	void LevelEditor::OnLeveleditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata)
+	{
+		m_pLevelListModel->RemoveLevel(metadata);
 	}
 }

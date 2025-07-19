@@ -22,6 +22,11 @@ namespace Rendering
 	class RenderTarget;
 }
 
+namespace Systems
+{
+	class AssetMetadata;
+}
+
 namespace Widgets
 {
 	class Frame;
@@ -111,6 +116,7 @@ namespace Editors
 		void OnClickFileMenu_LoadLevel();
 		void OnClickFileMenu_Save();
 		void OnClickFileMenu_SaveAs();
+		void OnClickFileMenu_DeleteLevel();
 
 		void OnClickEditMenu_AddEntity();
 		void OnClickEditMenu_DeleteEntity();
@@ -118,5 +124,7 @@ namespace Editors
 		void OnClickEditMenu_DuplicateEntity();
 
 		void OnClickTransformationMenu_Snap();
+
+		void OnLeveleditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 	};
 }
