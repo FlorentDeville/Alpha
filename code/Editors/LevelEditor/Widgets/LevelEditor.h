@@ -47,9 +47,7 @@ namespace Editors
 	class EntityWidget;
 	class LevelEditorViewportWidget;
 	class LevelListModel;
-	class LevelTreeModel;
 	class SceneTreeModel;
-	class TreeWidget;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
 	{
@@ -64,7 +62,6 @@ namespace Editors
 
 		Widgets::Label* m_pEntityNameLabel;
 		EntityWidget* m_pEntityWidget;
-		TreeWidget* m_pTreeWidget;
 		LevelEditorViewportWidget* m_pViewport;
 		Widgets::SplitVertical* m_pSplit; //split the right and center
 		Widgets::SplitVertical* m_pLeftSplit; //split between the left and center
@@ -76,7 +73,6 @@ namespace Editors
 
 		LevelListModel* m_pLevelListModel;
 		EntityModel* m_pEntityModel;
-		LevelTreeModel* m_pLevelTreeModel;
 
 		Widgets::TreeView* m_pSceneTree;
 		SceneTreeModel* m_pSceneTreeModel;
@@ -95,8 +91,6 @@ namespace Editors
 		void CreateLevelBrowser(Widgets::TabContainer* pParent);
 
 		void CreateRenameModalWindow(const std::function<void(const std::string& newName)>& callback) const;
-
-		bool OnClick_TreeItem(BaseModel* pModel, int rowId);
 
 		void OnClick_SetGizmoModeSelection();
 		void OnClick_SetGizmoModeTranslate();

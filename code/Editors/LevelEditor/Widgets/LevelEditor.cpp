@@ -23,8 +23,6 @@
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
-#include "Editors/Widgets/Tree/LevelTreeModel.h"
-#include "Editors/Widgets/Tree/TreeWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -58,7 +56,6 @@ namespace Editors
 		, m_pEntityNameLabel(nullptr)
 		, m_pEntityModel(nullptr)
 		, m_pEntityWidget(nullptr)
-		, m_pLevelTreeModel(nullptr)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
@@ -67,7 +64,6 @@ namespace Editors
 		, m_pLevelListModel(nullptr)
 		, m_pSnapItem(nullptr)
 		, m_pSplit(nullptr)
-		, m_pTreeWidget(nullptr)
 		, m_pViewport(nullptr)
 		, m_pSceneTree(nullptr)
 		, m_pSceneTreeModel(nullptr)
@@ -378,25 +374,6 @@ namespace Editors
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
-	}
-
-	bool LevelEditor::OnClick_TreeItem(BaseModel* pModel, int rowId)
-	{
-		if (!m_pEntityWidget)
-			return true;
-
-		//get the entity
-		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
-		Node* pNode = pLevelTreeModel->GetSource();
-
-		if (!pNode)
-			return false;
-
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		levelEditorModule.ClearSelection();
-		levelEditorModule.AddToSelection(pNode->GetConstGuid());
-
-		return true;
 	}
 
 	void LevelEditor::OnClick_SetGizmoModeSelection()
