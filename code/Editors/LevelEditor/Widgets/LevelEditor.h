@@ -42,7 +42,6 @@ namespace Widgets
 
 namespace Editors
 {
-	class BaseModel;
 	class EntityModel;
 	class EntityWidget;
 	class LevelEditorViewportWidget;

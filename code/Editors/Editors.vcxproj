@@ -58,8 +58,6 @@
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridWidget.h" />
     <ClInclude Include="Widgets\StatusBar\StatusBar.h" />
-    <ClInclude Include="Widgets\Tree\LevelTreeModel.h" />
-    <ClInclude Include="Widgets\Tree\TreeWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
@@ -106,8 +104,6 @@
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridWidget.cpp" />
     <ClCompile Include="Widgets\StatusBar\StatusBar.cpp" />
-    <ClCompile Include="Widgets\Tree\LevelTreeModel.cpp" />
-    <ClCompile Include="Widgets\Tree\TreeWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
