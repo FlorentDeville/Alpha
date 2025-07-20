@@ -268,7 +268,8 @@ namespace Editors
 
 		//remove the child from its old parent
 		Systems::TransformComponent& childTx = pGoChild->GetTransform();
-		Systems::GameObject* pGoOldParent = m_pLevel->FindGameObject(childTx.GetParentGuid());
+		Core::Guid oldParentGuid = childTx.GetParentGuid();
+		Systems::GameObject* pGoOldParent = m_pLevel->FindGameObject(oldParentGuid);
 		if (pGoOldParent)
 		{
 			Systems::TransformComponent& oldParentTx = pGoOldParent->GetTransform();
@@ -278,7 +279,7 @@ namespace Editors
 		//set the new parent to the child
 		pGoChild->GetTransform().SetParentGuid(parent);
 
-		m_onReparentGameObject(child, pGoOldParent->GetGuid(), parent);
+		m_onReparentGameObject(child, oldParentGuid, parent);
 	}
 
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
