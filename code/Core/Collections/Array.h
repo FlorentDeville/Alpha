@@ -165,7 +165,7 @@ namespace Core
 		void Clear();
 
 		//Erase the first element equal to value and return the number of element erased.
-		uint32_t Erase(const T& value);
+		template<typename U> uint32_t Erase(const U& value);
 
 		//Erase the element at the position of the iterator.
 		void Erase(Iterator& it);
@@ -252,7 +252,7 @@ namespace Core
 		m_pStart = nullptr;
 	}
 
-	template<typename T> uint32_t Array<T>::Erase(const T& value)
+	template<typename T> template<typename U> uint32_t Array<T>::Erase(const U& value)
 	{
 		Iterator newEndIt = std::remove(begin(), end(), value);
 		uint64_t erasedCount = std::distance(newEndIt, end());
