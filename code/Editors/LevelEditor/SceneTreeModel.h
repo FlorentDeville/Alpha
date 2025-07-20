@@ -41,6 +41,10 @@ namespace Editors
 		// Specific functions
 		void AddGameObject(const Systems::GameObject* pGo);
 
+		void RenameGameObject(const Core::Guid& guid, const std::string& newName);
+
+		Core::Guid FindGameObject(const Widgets::ModelIndex& index) const;
+
 	private:
 
 		struct CachedItem
@@ -58,6 +62,7 @@ namespace Editors
 
 		const CachedItem* CreateCachedItem(const Systems::GameObject* pGo);
 
+		CachedItem* FindCachedItem(const Core::Guid& guid);
 		const CachedItem* FindCachedItem(const Core::Guid& guid) const;
 
 		Widgets::ModelIndex GetModelIndex(const CachedItem* pItem) const;

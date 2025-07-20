@@ -203,6 +203,31 @@ namespace Editors
 		CommitInsertRows(index.GetRow(), 1, index.GetParent());
 	}
 
+	void SceneTreeModel::RenameGameObject(const Core::Guid& guid, const std::string& newName)
+	{
+		CachedItem* pItem = FindCachedItem(guid);
+		if (!pItem)
+			return;
+
+		pItem->m_name = newName;
+
+		Widgets::ModelIndex index = GetModelIndex(pItem);
+		if (!index.IsValid())
+			return;
+
+		Widgets::ModelIndex cellIndex = index.GetSiblingAtColumn(Columns::Name);
+		m_onDataChanged(cellIndex);
+	}
+
+	Core::Guid SceneTreeModel::FindGameObject(const Widgets::ModelIndex& index) const
+	{
+		const CachedItem* pItem = index.GetConstDataPointer<CachedItem>();
+		if (!pItem)
+			return Core::Guid();
+
+		return pItem->m_guid;
+	}
+
 	const SceneTreeModel::CachedItem* SceneTreeModel::CreateCachedItem(const Systems::GameObject* pGo)
 	{
 		CachedItem* pItem = new CachedItem();
@@ -219,6 +244,15 @@ namespace Editors
 			m_cachedItemRootsArray.PushBack(pItem);
 
 		return pItem;
+	}
+
+	SceneTreeModel::CachedItem* SceneTreeModel::FindCachedItem(const Core::Guid& guid)
+	{
+		std::map<Core::Guid, CachedItem*>::const_iterator it = m_cachedItemMap.find(guid);
+		if (it == m_cachedItemMap.cend())
+			return nullptr;
+
+		return it->second;
 	}
 
 	const SceneTreeModel::CachedItem* SceneTreeModel::FindCachedItem(const Core::Guid& guid) const
