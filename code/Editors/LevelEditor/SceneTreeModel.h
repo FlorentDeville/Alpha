@@ -5,6 +5,12 @@
 #pragma once
 
 #include "Widgets/Models/AbstractViewModel.h"
+#include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+
+namespace Systems
+{
+	class GameObject;
+}
 
 namespace Editors
 {
@@ -21,7 +27,7 @@ namespace Editors
 			Count
 		};
 
-		SceneTreeModel();
+		SceneTreeModel(const Systems::LevelAsset* pLevel);
 		~SceneTreeModel();
 
 		// Override base class functions
@@ -33,6 +39,23 @@ namespace Editors
 		std::string GetHeaderData(int column) override;
 
 		// Specific functions
+	private:
 
+		struct CachedItem
+		{
+			Core::Guid m_guid;
+			std::string m_name; //maybe I shouldn't cache this and query it?
+			std::string m_type;
+			Core::Guid m_parent;
+			Core::Array<Core::Guid> m_children;
+		};
+
+		Core::Array<CachedItem*> m_cachedItemArray;			// flat list containing all the cached item
+		std::map<Core::Guid, CachedItem*> m_cachedItemMap;	// map from a game object guid to the cached item
+		Core::Array<CachedItem*> m_cachedItemRootsArray;	// list of root game objects.
+
+		void CreateCachedItem(const Systems::GameObject* pGo);
+
+		const CachedItem* FindCachedItem(const Core::Guid& guid) const;
 	};
 }
