@@ -35,6 +35,7 @@ namespace Widgets
 	class MenuItem;
 	class SplitVertical;
 	class TabContainer;
+	class TreeView;
 	class Widget;
 }
 
@@ -74,6 +75,8 @@ namespace Editors
 		LevelListModel* m_pLevelListModel;
 		EntityModel* m_pEntityModel;
 		LevelTreeModel* m_pLevelTreeModel;
+
+		Widgets::TreeView* m_pSceneTree;
 
 		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
 
@@ -127,5 +130,6 @@ namespace Editors
 
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
+		void OnLevelEditorModule_OpenLevel();
 	};
 }

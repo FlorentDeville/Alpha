@@ -122,7 +122,7 @@ namespace Editors
 		//create split between viewport and left panel
 		m_pLeftSplit = new Widgets::SplitVertical();
 		m_pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
-		m_pLeftSplit->SetLeftPanelWidth(200);
+		m_pLeftSplit->SetLeftPanelWidth(300);
 		m_pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
 		m_pLeftSplit->AddRightPanel(m_pViewport);
 
@@ -148,6 +148,7 @@ namespace Editors
 		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) {  m_pLevelListModel->AddNewLevel(metadata); });
 		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
+		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -280,11 +281,8 @@ namespace Editors
 
 		pParent->AddTab(title, m_pSceneTreeFrame);
 
-		Widgets::TreeView* pSceneTree = new Widgets::TreeView();
-		m_pSceneTreeFrame->AddWidget(pSceneTree);
-
-		SceneTreeModel* pModel = new SceneTreeModel();
-		pSceneTree->SetModel(pModel);
+		m_pSceneTree = new Widgets::TreeView();
+		m_pSceneTreeFrame->AddWidget(m_pSceneTree);
 	}
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
@@ -718,5 +716,13 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName)
 	{
 		m_pLevelListModel->RenameLevel(id, newName);
+	}
+
+	void LevelEditor::OnLevelEditorModule_OpenLevel()
+	{
+		const Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel();
+
+		SceneTreeModel* pModel = new SceneTreeModel(pLevel);
+		m_pSceneTree->SetModel(pModel);
 	}
 }

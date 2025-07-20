@@ -90,6 +90,8 @@ namespace Editors
 		Systems::NewAssetId GetCurrentLoadedLevelAssetId() const;
 		std::string GetCurrentLoadedLevelName() const;
 
+		const Systems::LevelAsset* GetCurrentLoadedLevel() const;
+
 		//operation callback
 		EVENT_DECL(NewLevel, void(const Systems::AssetMetadata& metadata))
 		EVENT_DECL(BeforeDeleteLevel, void(Systems::AssetMetadata& metadata))

@@ -333,4 +333,9 @@ namespace Editors
 
 		return pMetadata->GetVirtualName();
 	}
+
+	const Systems::LevelAsset* LevelEditorModule::GetCurrentLoadedLevel() const
+	{
+		return m_pLevel;
+	}
 }
