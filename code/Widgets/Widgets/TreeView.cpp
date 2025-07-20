@@ -156,13 +156,21 @@ namespace Widgets
 	{
 		ModelIndex root;
 
-		int rowCount = m_pModel->GetRowCount(root);
-		int columnCount = m_pModel->GetColumnCount(root);
+		CreateView_Recursive(root);
+	}
+
+	void TreeView::CreateView_Recursive(const ModelIndex& parent)
+	{
+		int rowCount = m_pModel->GetRowCount(parent);
+		int columnCount = m_pModel->GetColumnCount(parent);
 
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
-			Layout* pRowLayout = CreateItem(ii, columnCount, root);
+			Layout* pRowLayout = CreateItem(ii, columnCount, parent);
 			m_pLayout->AddWidget(pRowLayout);
+
+			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, parent);
+			CreateView_Recursive(childIndex);
 		}
 	}
 

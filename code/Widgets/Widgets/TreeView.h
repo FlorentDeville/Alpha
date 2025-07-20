@@ -53,6 +53,7 @@ namespace Widgets
 
 		void CreateHeader();
 		void CreateView();
+		void CreateView_Recursive(const ModelIndex& parent);
 
 		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
