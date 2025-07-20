@@ -36,6 +36,21 @@ namespace Systems
 		m_gameObjectsArray.PushBack(pGo);
 	}
 
+	void LevelAsset_v1::DeleteGameObject(GameObject* pGo)
+	{
+		m_gameObjectsArray.Erase(pGo);
+		Systems::DeleteObject(pGo);
+	}
+
+	void LevelAsset_v1::DeleteGameObject(const Core::Guid& guid)
+	{
+		GameObject* pGo = FindGameObject(guid);
+		if (!pGo)
+			return;
+
+		DeleteGameObject(pGo);
+	}
+
 	GameObject* LevelAsset_v1::FindGameObject(const Core::Guid& guid)
 	{
 		Core::Array<GameObject*>::Iterator it = std::find_if(m_gameObjectsArray.cbegin(), m_gameObjectsArray.cend(), [guid](const GameObject* pGo) { return pGo->GetGuid() == guid; });

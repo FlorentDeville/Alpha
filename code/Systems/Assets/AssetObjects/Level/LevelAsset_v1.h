@@ -22,6 +22,8 @@ namespace Systems
 		static Core::Sid GetAssetTypeNameSid();
 
 		void AddGameObject(GameObject* pGo);
+		void DeleteGameObject(GameObject* pGo);
+		void DeleteGameObject(const Core::Guid& guid);
 
 		GameObject* FindGameObject(const Core::Guid& guid);
 
