@@ -14,6 +14,8 @@
 #include "Widgets/Models/SelectionRow.h"
 #include "Widgets/Widgets/TableViewStyle.h"
 
+#include "Widgets/Container.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Split.h"
@@ -213,21 +215,21 @@ namespace Widgets
 	{
 		ModelIndex root;
 
-		CreateView_Recursive(root);
+		CreateView_Recursive(root, 0);
 	}
 
-	void TreeView::CreateView_Recursive(const ModelIndex& parent)
+	void TreeView::CreateView_Recursive(const ModelIndex& parent, int depth)
 	{
 		int rowCount = m_pModel->GetRowCount(parent);
 		int columnCount = m_pModel->GetColumnCount(parent);
 
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
-			Layout* pRowLayout = CreateItem(ii, columnCount, parent);
+			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth);
 			m_pLayout->AddWidget(pRowLayout);
 
 			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, parent);
-			CreateView_Recursive(childIndex);
+			CreateView_Recursive(childIndex, depth + 1);
 		}
 	}
 
@@ -236,12 +238,12 @@ namespace Widgets
 		if (!ev.HasButton(MouseButton::LeftButton))
 			return;
 
-		int row = GetRowIndex(pRowLayout);
-		if (row < 0)
+		std::map<Widget*, RowInfo>::const_iterator it = m_rowInfoMap.find(pRowLayout);
+		if (it == m_rowInfoMap.cend())
 			return;
 
-		ModelIndex start = m_pModel->GetIndex(row, 0, ModelIndex());
-		ModelIndex end = m_pModel->GetIndex(row, m_pModel->GetColumnCount(ModelIndex()) - 1, ModelIndex());
+		ModelIndex start = it->second.m_index;
+		ModelIndex end = m_pModel->GetIndex(start.GetRow(), m_pModel->GetColumnCount(ModelIndex()) - 1, start.GetParent());
 		SelectionRow clickedRow(start, end);
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
@@ -250,7 +252,7 @@ namespace Widgets
 		if (rowSelected)
 		{
 			//deselect
-			SetDeselectedRowStyle(row);
+			SetDeselectedRowStyle(pRowLayout);
 			pSelectionModel->DeselectRow(clickedRow);
 		}
 		else
@@ -258,16 +260,19 @@ namespace Widgets
 			//select
 			if (m_multiSelectionEnabled)
 			{
-				SetSelectedRowStyle(row);
+				SetSelectedRowStyle(pRowLayout);
 				pSelectionModel->SelectRow(clickedRow);
 			}
 			else
 			{
 				const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
 				for (const SelectionRow& sel : selection)
-					SetDeselectedRowStyle(sel.GetStartIndex().GetRow());
-
-				SetSelectedRowStyle(row);
+				{
+					std::map<ModelIndex, Layout*>::const_iterator it = m_modelIndexToRowMap.find(sel.GetStartIndex());
+					if(it != m_modelIndexToRowMap.cend())
+						SetDeselectedRowStyle(it->second);
+				}
+				SetSelectedRowStyle(pRowLayout);
 				pSelectionModel->SetSelectionRow(clickedRow);
 			}
 		}
@@ -283,9 +288,8 @@ namespace Widgets
 		m_onItemDoubleClick(idx);
 	}
 
-	void TreeView::SetSelectedRowStyle(int row)
+	void TreeView::SetSelectedRowStyle(Layout* pLayout)
 	{
-		Widgets::Layout* pLayout = GetRowWidget(row, 0, Widgets::ModelIndex());
 		pLayout->GetDefaultStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pLayout->GetDefaultStyle().ShowBorder(true);
 		pLayout->GetDefaultStyle().SetBorderColor(m_selectedBorderColor);
@@ -295,10 +299,8 @@ namespace Widgets
 		pLayout->GetHoverStyle().SetBorderColor(m_selectedBorderColor);
 	}
 
-	void TreeView::SetDeselectedRowStyle(int row)
+	void TreeView::SetDeselectedRowStyle(Layout* pLayout)
 	{
-		Layout* pLayout = GetRowWidget(row, 0, Widgets::ModelIndex());
-
 
 		pLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 		pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
@@ -315,11 +317,18 @@ namespace Widgets
 		ModelIndex root;
 		int columnCount = m_pModel->GetColumnCount(root);
 		
-		//handle selection!!!!
+		//compute the depth. not great.
+		int depth = 0;
+		ModelIndex temp = parent;
+		while (temp.IsValid())
+		{
+			temp = temp.GetParent();
+			++depth;
+		}
 
 		for (int ii = start; ii < start + count; ++ii)
 		{
-			Layout* pRowLayout = CreateItem(ii, columnCount, root);
+			Layout* pRowLayout = CreateItem(ii, columnCount, root, depth);
 
 			int layoutIndex = GetRowLayoutIndex(ii);
 			m_pLayout->InsertWidget(pRowLayout, layoutIndex);
@@ -346,19 +355,16 @@ namespace Widgets
 	{
 		for (const SelectionRow& deselectedRow : deselected)
 		{
-			//if the row was removed, it's possible deselected contains an out of range index
-			size_t childrenCount = m_pLayout->GetChildren().size();
-			int row = deselectedRow.GetStartIndex().GetRow();
-			
-			if (row < 0 || row >= childrenCount)
-				continue;
-
-			SetDeselectedRowStyle(deselectedRow.GetStartIndex().GetRow());
+			std::map<ModelIndex, Layout*>::const_iterator it = m_modelIndexToRowMap.find(deselectedRow.GetStartIndex());
+			if (it != m_modelIndexToRowMap.cend())
+				SetDeselectedRowStyle(it->second);
 		}
 
 		for (const SelectionRow& selectedRow : selected)
 		{
-			SetSelectedRowStyle(selectedRow.GetStartIndex().GetRow());
+			std::map<ModelIndex, Layout*>::const_iterator it = m_modelIndexToRowMap.find(selectedRow.GetStartIndex());
+			if (it != m_modelIndexToRowMap.cend())
+				SetSelectedRowStyle(it->second);
 		}
 	}
 
@@ -372,7 +378,7 @@ namespace Widgets
 		pLabel->SetText(value);
 	}
 
-	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent)
+	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent, int depth)
 	{
 		Layout* pRowLayout = new Layout();
 		pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
@@ -381,6 +387,14 @@ namespace Widgets
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pRowLayout->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, pRowLayout); });
 		pRowLayout->OnMouseDoubleClick([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, pRowLayout); });
+
+		RowInfo info;
+		info.m_depth = depth;
+		info.m_index = m_pModel->GetIndex(row, 0, parent);
+		m_rowInfoMap[pRowLayout] = info;
+
+		m_modelIndexToRowMap[info.m_index] = pRowLayout;
+
 		pRowLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 
 		for (int jj = 0; jj < columnCount; ++jj)
@@ -392,18 +406,45 @@ namespace Widgets
 			std::string data = m_pModel->GetData(rowIndex);
 
 			Label* pLabel = new Label(data);
+			Widget* pContainer = pLabel;
+			if (jj == 0)
+			{
+				Layout* pExpandLayout = new Layout();
+				pExpandLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
+				pExpandLayout->SetDirection(Layout::Horizontal);
+				pExpandLayout->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
+				pExpandLayout->GetHoverStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
+
+				for (int ii = 0; ii <= depth-1; ++ii)
+				{
+					Container* pContainer = new Container(20, 1);
+					pContainer->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
+					pExpandLayout->AddWidget(pContainer);
+				}
+
+				Rendering::TextureId expandIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
+				Rendering::TextureId collapseIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
+				Icon* pIcon = new Icon(expandIcon);
+				pIcon->SetSize(Core::UInt2(20, 20));
+				//pIcon->OnMouseDown([pIcon, collapseIcon](const Widgets::MouseEvent& ev) { pIcon->SetTextureId(collapseIcon); });
+
+				pExpandLayout->AddWidget(pIcon);
+				pExpandLayout->AddWidget(pLabel);
+				pContainer = pExpandLayout;
+			}
+			
 			if (jj != columnCount - 1)
 			{
-				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+				pContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
 				Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
-				pLabel->SetSize(cellSize);
+				pContainer->SetSize(cellSize);
 			}
 			else
 			{
-				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+				pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			}
 
-			pRowLayout->AddWidget(pLabel);
+			pRowLayout->AddWidget(pContainer);
 		}
 
 		return pRowLayout;

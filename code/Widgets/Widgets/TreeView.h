@@ -8,6 +8,7 @@
 
 #include "Core/Collections/Array.h"
 
+#include "Widgets/Models/ModelIndex.h"
 #include "Widgets/Tools/Color.h"
 #include "Widgets/Widget.h"
 
@@ -54,15 +55,24 @@ namespace Widgets
 
 		Core::Array<uint32_t> m_columnWidth;
 
+		struct RowInfo
+		{
+			int m_depth;
+			ModelIndex m_index;
+		};
+
+		std::map<Widget*, RowInfo> m_rowInfoMap;
+		std::map<ModelIndex, Layout*> m_modelIndexToRowMap;
+
 		void CreateHeader();
 		void CreateView();
-		void CreateView_Recursive(const ModelIndex& parent);
+		void CreateView_Recursive(const ModelIndex& parent, int depth);
 
 		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 
-		void SetSelectedRowStyle(int row);
-		void SetDeselectedRowStyle(int row);
+		void SetSelectedRowStyle(Layout* pLayout);
+		void SetDeselectedRowStyle(Layout* pLayout);
 
 		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
 		void OnRemoveRows(int start, int count, const ModelIndex& parent);
@@ -70,7 +80,7 @@ namespace Widgets
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 		void OnDataChanged_SelectionModel(const ModelIndex& index);
 
-		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent);
+		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth);
 		Label* GetItem(int row, int column, const ModelIndex& parent);
 		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
 
