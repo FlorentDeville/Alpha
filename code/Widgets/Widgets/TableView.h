@@ -26,6 +26,8 @@ namespace Widgets
 		TableView();
 		~TableView();
 
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor);
+
 		void SetModel(AbstractViewModel* pModel);
 
 		void SetMultiSelection(bool enable);
@@ -40,6 +42,7 @@ namespace Widgets
 		Color m_oddRowBackgroundColor;
 		Color m_evenRowBackgroundColor;
 		Color m_hoverBackgroundColor;
+		Color m_defaultRowBackgroundColor;
 		Color m_selectedBorderColor;
 		Color m_headerBackgroundColor;
 

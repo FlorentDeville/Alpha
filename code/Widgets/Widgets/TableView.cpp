@@ -4,6 +4,9 @@
 
 #include "Widgets/Widgets/TableView.h"
 
+#include "Rendering/Material/MaterialMgr.h"
+#include "Rendering/Mesh/MeshMgr.h"
+
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Models/AbstractViewModel.h"
 #include "Widgets/Models/ModelIndex.h"
@@ -26,6 +29,7 @@ namespace Widgets
 		, m_hoverBackgroundColor(TableViewStyle::s_hoverBackgroundColor)
 		, m_selectedBorderColor(TableViewStyle::s_selectedBorderColor)
 		, m_headerBackgroundColor(TableViewStyle::s_headerBackgroundColor)
+		, m_defaultRowBackgroundColor(0.f, 0.f, 0.f, 0.f)
 		, m_multiSelectionEnabled(false)
 		, m_cellDefaultSize(75, 20)
 		, m_columnWidth()
@@ -35,7 +39,8 @@ namespace Widgets
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
 		m_pLayout->SetDirection(Layout::Vertical);
-
+		m_pLayout->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f)); //transparent
+		m_pLayout->GetHoverStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f)); //transparent
 		AddWidget(m_pLayout);
 	}
 
@@ -45,6 +50,58 @@ namespace Widgets
 		{
 			delete m_pModel;
 			m_pModel = nullptr;
+		}
+	}
+
+	void TableView::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
+	{
+		DirectX::XMMATRIX wvp;
+		ComputeWVPMatrix(windowSize, wvp);
+		int valueShowBorder = m_showBorder ? 1 : 0;
+		float rect[2] = { (float)m_size.x, (float)m_size.y };
+
+		{
+			WidgetMgr& widgetMgr = WidgetMgr::Get();
+			Rendering::RenderModule& render = Rendering::RenderModule::Get();
+			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+
+			render.SetScissorRectangle(scissor);
+
+			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.GetWidgetMaterialId());
+			render.BindMaterial(*pMaterial, wvp);
+
+			render.SetConstantBuffer(1, sizeof(m_backgroundColor), &m_backgroundColor, 0);
+			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+			render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
+			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+
+			struct AlternateColor
+			{
+				Color m_color1;
+				Color m_color2;
+				uint32_t m_size;
+			};
+
+			AlternateColor altColor;
+			altColor.m_color1 = m_evenRowBackgroundColor;
+			altColor.m_color2 = m_oddRowBackgroundColor;
+			altColor.m_size = 20;
+			render.SetConstantBuffer(6, sizeof(AlternateColor), &altColor, 0);
+
+			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());
+			render.RenderMesh(*pMesh);
+
+			altColor.m_size = 0;
+			render.SetConstantBuffer(6, sizeof(AlternateColor), &altColor, 0);
+		}
+
+		for (Widget* pWidget : m_children)
+		{
+			if (!pWidget->IsEnabled())
+				continue;
+
+			pWidget->Draw(windowSize, scissor);
 		}
 	}
 
@@ -234,11 +291,7 @@ namespace Widgets
 	{
 		Layout* pLayout = GetRowWidget(row, 0, Widgets::ModelIndex());
 
-		if (row % 2 == 0)
-			pLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
-		else
-			pLayout->GetDefaultStyle().SetBackgroundColor(m_oddRowBackgroundColor);
-
+		pLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 		pLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pLayout->GetHoverStyle().ShowBorder(false);
 		pLayout->GetDefaultStyle().ShowBorder(false);
@@ -319,11 +372,7 @@ namespace Widgets
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pRowLayout->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, pRowLayout); });
 		pRowLayout->OnMouseDoubleClick([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, pRowLayout); });
-
-		if (row % 2 == 0)
-		{
-			pRowLayout->GetDefaultStyle().SetBackgroundColor(m_evenRowBackgroundColor);
-		}
+		pRowLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 
 		for (int jj = 0; jj < columnCount; ++jj)
 		{

@@ -47,7 +47,7 @@ namespace Editors
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
-			pLayout->SetTransparent(true);
+			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
 
 			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
@@ -67,7 +67,7 @@ namespace Editors
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
-			pLayout->SetTransparent(true);
+			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
 
 			Widgets::SliderFloat* pRedChannel = new Widgets::SliderFloat(0, 1, pFloat[0]);
 			pLayout->AddWidget(pRedChannel);
@@ -130,7 +130,7 @@ namespace Editors
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
-			pLayout->SetTransparent(true);
+			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
 
 			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
 			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));

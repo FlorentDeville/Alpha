@@ -14,6 +14,7 @@
 			"RootConstants(num32BitConstants=1, b2, space=0, visibility=SHADER_VISIBILITY_PIXEL)," \
 			"RootConstants(num32BitConstants=4, b3, space=0, visibility=SHADER_VISIBILITY_PIXEL)," \
 			"RootConstants(num32BitConstants=2, b4, space=0, visibility=SHADER_VISIBILITY_PIXEL)," \
-			"RootConstants(num32BitConstants=1, b5, space=0, visibility=SHADER_VISIBILITY_PIXEL)"
+			"RootConstants(num32BitConstants=1, b5, space=0, visibility=SHADER_VISIBILITY_PIXEL)," \
+			"RootConstants(num32BitConstants=9, b6, space=0, visibility=SHADER_VISIBILITY_PIXEL)"
 
 #endif

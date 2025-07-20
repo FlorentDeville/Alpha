@@ -21,7 +21,6 @@ namespace Widgets
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
 		, m_hoverStyle()
-		, m_transparent(false)
 	{}
 
 	Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -30,7 +29,6 @@ namespace Widgets
 		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
-		, m_transparent(false)
 	{}
 
 	Layout::Layout(Direction dir, Widget::SIZE_STYLE sizeStyle)
@@ -45,12 +43,12 @@ namespace Widgets
 
 	void Layout::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
-		if (!m_transparent)
-		{
-			LayoutStyle* pCurrentStyle = &m_defaultStyle;
-			if (m_hover)
-				pCurrentStyle = &m_hoverStyle;
+		LayoutStyle* pCurrentStyle = &m_defaultStyle;
+		if (m_hover)
+			pCurrentStyle = &m_hoverStyle;
 
+		if (pCurrentStyle->m_backgroundColor.m_channels[3] != 0) // 0 is full transparent, don't render
+		{
 			DirectX::XMMATRIX wvp;
 			ComputeWVPMatrix(windowSize, wvp);
 			int valueShowBorder = pCurrentStyle->m_showBorder ? 1 : 0;
@@ -264,11 +262,6 @@ namespace Widgets
 	void Layout::SetSpace(const DirectX::XMINT2& space)
 	{
 		m_space = space;
-	}
-
-	void Layout::SetTransparent(bool transparent)
-	{
-		m_transparent = transparent;
 	}
 
 	LayoutStyle& Layout::GetDefaultStyle()
