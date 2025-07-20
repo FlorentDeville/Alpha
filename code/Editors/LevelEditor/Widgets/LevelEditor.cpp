@@ -9,6 +9,7 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/LevelMgr.h"
+#include "Editors/LevelEditor/SceneTreeModel.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
@@ -47,6 +48,7 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/Frame.h"
 #include "Widgets/Widgets/TableView.h"
+#include "Widgets/Widgets/TreeView.h"
 
 namespace Editors
 {
@@ -269,35 +271,20 @@ namespace Editors
 		if (m_pSceneTreeFrame != nullptr)
 			return;
 
-		m_pSceneTreeFrame = new Widgets::Frame("Scene Tree");
+		const std::string title = "Scene Tree";
+		m_pSceneTreeFrame = new Widgets::Frame(title);
 		m_pSceneTreeFrame->OnClose([this, pParent]() 
 			{ 
 				pParent->CloseTab(m_pSceneTreeFrame); m_pSceneTreeFrame = nullptr; 
 			});
 
-		pParent->AddTab("Scene Tree", m_pSceneTreeFrame);
+		pParent->AddTab(title, m_pSceneTreeFrame);
 
-		Widgets::Layout* pLayout = new Widgets::Layout();
-		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pLayout->SetDirection(Widgets::Layout::Vertical);
-		m_pSceneTreeFrame->AddWidget(pLayout);
+		Widgets::TreeView* pSceneTree = new Widgets::TreeView();
+		m_pSceneTreeFrame->AddWidget(pSceneTree);
 
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget = new TreeWidget();
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-
-		pLayout->AddWidget(m_pTreeWidget);
-
-		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditor::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
-
-		//callbacks
-		levelEditorModule.OnAddEntity([this](const Core::Guid& nodeGuid) { OnAddEntity_SceneTree(nodeGuid); });
-		levelEditorModule.OnDeleteEntity([this](const Core::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
-		levelEditorModule.OnRenameEntity([this](const Core::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
-		levelEditorModule.OnDuplicateEntity([this](const Core::Guid& src, const Core::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
-		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) { OnNewLevel_SceneTree(); });
-		//levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
+		SceneTreeModel* pModel = new SceneTreeModel();
+		pSceneTree->SetModel(pModel);
 	}
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
