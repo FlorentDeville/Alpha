@@ -25,4 +25,14 @@ namespace Systems
 	{
 		m_localTransform = localTx;
 	}
+
+	const Core::Guid& TransformComponent::GetParentGuid() const
+	{
+		return m_parent;
+	}
+
+	const Core::Array<Core::Guid>& TransformComponent::GetChildrenGuid() const
+	{
+		return m_children;
+	}
 }

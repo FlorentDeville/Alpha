@@ -23,6 +23,8 @@ namespace Systems
 
 		void AddGameObject(GameObject* pGo);
 
+		const Core::Array<GameObject*>& GetGameObjectsArray() const;
+
 	private:
 
 		Core::Array<GameObject*> m_gameObjectsArray;

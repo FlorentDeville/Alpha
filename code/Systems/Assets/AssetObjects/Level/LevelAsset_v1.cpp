@@ -35,4 +35,9 @@ namespace Systems
 	{
 		m_gameObjectsArray.PushBack(pGo);
 	}
+
+	const Core::Array<GameObject*>& LevelAsset_v1::GetGameObjectsArray() const
+	{
+		return m_gameObjectsArray;
+	}
 }
