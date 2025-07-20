@@ -80,6 +80,15 @@ namespace Systems
 		{
 			Object* pFieldObject = reinterpret_cast<Object*>(ptr);
 
+			//There are 2 possible cases here :
+			// - this is an element from an array, then DeserializeArray should have called the constructor
+			// - this is an in place member, then I need to do the setup myself
+			if (pFieldDescriptor && !pFieldDescriptor->IsPointer())
+			{
+				pFieldType->InPlaceConstruct(pFieldObject);
+				pFieldObject->SetTypeDescriptor(pFieldType);
+			}
+
 			Core::JsonObject* pJsonFieldObject = jsonFieldValue.GetValueAsObject()->GetMember(1).GetValueAsObject();
 			bool res = DeserializeClass(pJsonFieldObject, pFieldType, ptr);
 			if (!res)
@@ -287,6 +296,14 @@ namespace Systems
 
 	bool DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject)
 	{
+		const TypeDescriptor* pBaseType = pType->GetBaseType();
+		if (pBaseType)
+		{
+			bool res = DeserializeClass(jsonObject, pBaseType, pObject);
+			if (!res)
+				return false;
+		}
+
 		const std::vector<FieldDescriptor>& fields = pType->GetFields();
 		for (const FieldDescriptor& field : fields)
 		{
