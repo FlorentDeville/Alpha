@@ -31,6 +31,7 @@ namespace Systems
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;
 
+		void SetName(const std::string& name);
 		const std::string& GetName() const;
 
 		TransformComponent& GetTransform();

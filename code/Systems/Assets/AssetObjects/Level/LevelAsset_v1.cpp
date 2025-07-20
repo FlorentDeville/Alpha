@@ -36,6 +36,15 @@ namespace Systems
 		m_gameObjectsArray.PushBack(pGo);
 	}
 
+	GameObject* LevelAsset_v1::FindGameObject(const Core::Guid& guid)
+	{
+		Core::Array<GameObject*>::Iterator it = std::find_if(m_gameObjectsArray.cbegin(), m_gameObjectsArray.cend(), [guid](const GameObject* pGo) { return pGo->GetGuid() == guid; });
+		if (it == m_gameObjectsArray.cend())
+			return nullptr;
+
+		return *it;
+	}
+
 	const Core::Array<GameObject*>& LevelAsset_v1::GetGameObjectsArray() const
 	{
 		return m_gameObjectsArray;
