@@ -74,14 +74,8 @@ namespace Widgets
 
 		Widget::Draw(windowSize, localScissorRect);
 
-		{
-			D3D12_RECT windowRect;
-			windowRect.left = 0;
-			windowRect.right = (LONG)windowSize.x;
-			windowRect.top = 0;
-			windowRect.bottom = (LONG)windowSize.y;
-			render.SetScissorRectangle(windowRect);
-		}
+		//reset the scissor
+		render.SetScissorRectangle(scissor);
 	}
 
 	void Container::ResizeChildren()
