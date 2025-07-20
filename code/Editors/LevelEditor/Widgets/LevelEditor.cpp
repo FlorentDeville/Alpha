@@ -538,50 +538,6 @@ namespace Editors
 		}
 	}
 
-	void LevelEditor::OnAddEntity_SceneTree(const Core::Guid& nodeGuid)
-	{
-		delete m_pLevelTreeModel;
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnDeleteEntity_SceneTree(const Core::Guid& nodeGuid)
-	{
-		delete m_pLevelTreeModel;
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnRenameEntity_SceneTree(const Core::Guid& nodeGuid)
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnDuplicateEntity_SceneTree(const Core::Guid& src, const Core::Guid& copy)
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnNewLevel_SceneTree()
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnLoadLevel_SceneTree()
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
 	void LevelEditor::OnClickFileMenu_NewLevel()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.

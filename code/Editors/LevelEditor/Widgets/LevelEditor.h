@@ -111,13 +111,6 @@ namespace Editors
 		void OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid);
 		void OnRemovedFromSelection_Gizmo(const Core::Guid& nodeGuid);
 
-		void OnAddEntity_SceneTree(const Core::Guid& nodeGuid);
-		void OnDeleteEntity_SceneTree(const Core::Guid& nodeGuid);
-		void OnRenameEntity_SceneTree(const Core::Guid& nodeGuid);
-		void OnDuplicateEntity_SceneTree(const Core::Guid& src, const Core::Guid& copy);
-		void OnNewLevel_SceneTree();
-		void OnLoadLevel_SceneTree();
-
 		void OnClickFileMenu_NewLevel();
 		void OnClickFileMenu_OpenLevel();
 		void OnClickFileMenu_SaveLevel();
