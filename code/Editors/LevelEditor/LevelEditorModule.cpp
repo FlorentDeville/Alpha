@@ -246,6 +246,41 @@ namespace Editors
 			m_onDuplicateEntity(originalNode, newNode);
 	}
 
+	void LevelEditorModule::ReparentGameObject(const Core::Guid& parent, const Core::Guid& child)
+	{
+		if (!m_pLevel)
+			return;
+
+		Systems::GameObject* pGoChild = m_pLevel->FindGameObject(child);
+		if (!pGoChild)
+			return;
+
+		//add the child to its new parent
+		Systems::GameObject* pGoNewParent = nullptr;
+		if (parent.IsValid())
+		{
+			Systems::GameObject* pGoNewParent = m_pLevel->FindGameObject(parent);
+			if (!pGoNewParent)
+				return;
+
+			pGoNewParent->GetTransform().AddChild(child);
+		}
+
+		//remove the child from its old parent
+		Systems::TransformComponent& childTx = pGoChild->GetTransform();
+		Systems::GameObject* pGoOldParent = m_pLevel->FindGameObject(childTx.GetParentGuid());
+		if (pGoOldParent)
+		{
+			Systems::TransformComponent& oldParentTx = pGoOldParent->GetTransform();
+			oldParentTx.RemoveChild(pGoChild->GetGuid());
+		}
+
+		//set the new parent to the child
+		pGoChild->GetTransform().SetParentGuid(parent);
+
+		m_onReparentGameObject(child, pGoOldParent->GetGuid(), parent);
+	}
+
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
 	{
 		m_cameraWs = ws;

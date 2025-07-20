@@ -75,6 +75,8 @@ namespace Editors
 		void RenameGameObject(const Core::Guid& guid, const std::string& name);
 		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);
 
+		void ReparentGameObject(const Core::Guid& parent, const Core::Guid& child);
+
 		void SetCameraWs(const Core::Mat44f& ws);
 		const Core::Mat44f& GetCameraWs() const;
 
@@ -106,6 +108,7 @@ namespace Editors
 		EVENT_DECL(AfterDeleteGameObject, void(const Core::Guid& nodeGuid))
 		EVENT_DECL(RenameGameObject, void(const Core::Guid & guid, const std::string & newName))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
+		EVENT_DECL(ReparentGameObject, void(const Core::Guid& child, const Core::Guid& oldParent, const Core::Guid& newParent))
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
