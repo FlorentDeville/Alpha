@@ -170,6 +170,8 @@ namespace Core
 		//Erase the element at the position of the iterator.
 		void Erase(Iterator& it);
 
+		bool IsValidIndex(int32_t index) const;
+
 		//function to work with stl algorithms
 		Iterator begin();
 		const Iterator begin() const;
@@ -279,6 +281,14 @@ namespace Core
 		}
 
 		--m_size;
+	}
+
+	template<typename T> bool Array<T>::IsValidIndex(int32_t index) const
+	{
+		if (index < 0 || index >= static_cast<int32_t>(m_size))
+			return false;
+
+		return true;
 	}
 
 	template<typename T> Array<T>::Iterator::Iterator(pointer pPtr)
