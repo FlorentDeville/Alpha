@@ -108,6 +108,9 @@ namespace Widgets
 
 		Rendering::TextureId GetIconTextureId(IconId iconId) const;
 
+		Rendering::MaterialId GetWidgetMaterialId() const;
+		Rendering::MeshId GetQuadMeshId() const;
+
 	private:
 
 		std::set<Widget*> m_widgets;

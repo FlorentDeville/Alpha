@@ -540,6 +540,16 @@ namespace Widgets
 		return m_iconTextureIdArray[static_cast<int>(iconId)];
 	}
 
+	Rendering::MaterialId WidgetMgr::GetWidgetMaterialId() const
+	{
+		return m_materialId;
+	}
+
+	Rendering::MeshId WidgetMgr::GetQuadMeshId() const
+	{
+		return m_quadMeshId;
+	}
+
 	void WidgetMgr::ComputeSortedWidgetQueue()
 	{
 		m_sortedWidgets.clear();

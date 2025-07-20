@@ -40,6 +40,14 @@ struct CB_BorderWidth
 };
 ConstantBuffer<CB_BorderWidth> borderWidth : register(b5);
 
+struct CB_AlternateColor
+{
+    float4 Color1;
+    float4 Color2;
+    uint Size;
+};
+ConstantBuffer<CB_AlternateColor> alternateColor: register(b6);
+
 [RootSignature(RS)]
 float4 main(PixelShaderInput IN) : SV_Target
 {
@@ -54,6 +62,19 @@ float4 main(PixelShaderInput IN) : SV_Target
 		if (pixelCoord.x < min || pixelCoord.x >= max.x || pixelCoord.y < min || pixelCoord.y >= max.y)
 			return borderColor.Color;
 	}
+	
+	if(alternateColor.Size > 0)
+    {
+        float2 fPixelCoord = rect.Rect * IN.Uv;
+        int2 pixelCoord = floor(fPixelCoord + 0.49f);
+		
+        uint row = (uint)pixelCoord.y / alternateColor.Size;
+        if ((row % 2) == 0)
+            return alternateColor.Color1;
+		
+        return alternateColor.Color2;
+
+    }
 
 	return backgroundColor.Color;
 }
