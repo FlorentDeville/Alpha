@@ -196,18 +196,18 @@ namespace Editors
 			m_onDeleteEntity(nodeGuid);
 	}
 
-	void LevelEditorModule::RenameEntity(const Core::Guid& nodeGuid, const std::string& name)
+	void LevelEditorModule::RenameGameObject(const Core::Guid& guid, const std::string& name)
 	{
-		Node* pNode = m_pLevelMgr->GetSceneTree()->GetNode(nodeGuid);
-		if (!pNode)
+		if (!m_pLevel)
 			return;
 
-		Entity* pEntity = pNode->ToEntity();
-		if (!pEntity)
+		Systems::GameObject* pGo = m_pLevel->FindGameObject(guid);
+		if (!pGo)
 			return;
 
-		pEntity->SetName(name);
-		m_onRenameEntity(nodeGuid);
+		pGo->SetName(name);
+
+		m_onRenameGameObject(guid, name);
 	}
 
 	void LevelEditorModule::DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode)

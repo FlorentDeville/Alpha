@@ -152,6 +152,7 @@ namespace Editors
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
 		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo) { OnLevelEditorModule_AddGameObject(pGo); });
+		levelEditorModule.OnRenameGameObject([this](const Core::Guid& guid, const std::string& newName) { OnLevelEditorModule_RenameGameObject(guid, newName); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -195,8 +196,8 @@ namespace Editors
 		pDeleteItem->SetShortcut("Del");
 		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteEntity(); });
 
-		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
-		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameEntity(); });
+		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename Game Object...");
+		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameGameObject(); });
 
 		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
 		pDuplicateItem->SetShortcut("Ctrl+D");
@@ -266,8 +267,6 @@ namespace Editors
 		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
 		pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
 		pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
-
-		levelEditorModule.OnRenameEntity([this](const Core::Guid& nodeGuid) { OnRenameEntity_EntityProperties(nodeGuid); });
 	}
 
 	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
@@ -664,7 +663,7 @@ namespace Editors
 			levelEditorModule.DeleteEntity(selectedGuid);
 	}
 
-	void LevelEditor::OnClickEditMenu_RenameEntity()
+	void LevelEditor::OnClickEditMenu_RenameGameObject()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
@@ -675,9 +674,10 @@ namespace Editors
 
 		const Core::Guid& lastSelectedNode = selectionList.back();
 
-		CreateRenameModalWindow([lastSelectedNode](const std::string& newName) {
-			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-			levelEditorModule.RenameEntity(lastSelectedNode, newName);
+		CreateRenameModalWindow([lastSelectedNode](const std::string& newName) 
+			{
+				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+				levelEditorModule.RenameGameObject(lastSelectedNode, newName);
 			});
 	}
 
@@ -727,10 +727,31 @@ namespace Editors
 
 		m_pSceneTreeModel = new SceneTreeModel(pLevel);
 		m_pSceneTree->SetModel(m_pSceneTreeModel);
+
+		Widgets::SelectionModel* pSelectionModel = m_pSceneTreeModel->GetSelectionModel();
+		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+			{
+				for (const Widgets::SelectionRow& row : deselected)
+				{
+					Core::Guid guid = m_pSceneTreeModel->FindGameObject(row.GetStartIndex());
+					LevelEditorModule::Get().RemoveFromSelection(guid);
+				}
+				
+				for (const Widgets::SelectionRow& row : selected)
+				{
+					Core::Guid guid = m_pSceneTreeModel->FindGameObject(row.GetStartIndex());
+					LevelEditorModule::Get().AddToSelection(guid);
+				}
+			});
 	}
 
 	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo)
 	{
 		m_pSceneTreeModel->AddGameObject(pGo);
+	}
+
+	void LevelEditor::OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName)
+	{
+		m_pSceneTreeModel->RenameGameObject(guid, newName);
 	}
 }

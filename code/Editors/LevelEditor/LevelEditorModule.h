@@ -72,7 +72,7 @@ namespace Editors
 
 		void AddGameObject(Core::Guid& nodeGuid);
 		void DeleteEntity(const Core::Guid& nodeGuid);
-		void RenameEntity(const Core::Guid& nodeGuid, const std::string& name);
+		void RenameGameObject(const Core::Guid& guid, const std::string& name);
 		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);
 
 		void SetCameraWs(const Core::Mat44f& ws);
@@ -103,7 +103,7 @@ namespace Editors
 
 		EVENT_DECL(AddGameObject, void(const Systems::GameObject* pGo))
 		EVENT_DECL(DeleteEntity, void(const Core::Guid& nodeGuid))
-		EVENT_DECL(RenameEntity, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(RenameGameObject, void(const Core::Guid& guid, const std::string& newName))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
 
 		//temp
