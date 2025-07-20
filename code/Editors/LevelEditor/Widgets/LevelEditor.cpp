@@ -199,6 +199,9 @@ namespace Editors
 		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
 		pDuplicateItem->SetShortcut("Ctrl+D");
 		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateEntity(); });
+
+		Widgets::MenuItem* pReparentItem = pEditMenu->AddMenuItem("Reparent Game Object...");
+		pReparentItem->OnClick([this]() { OnClickEditMenu_ReparentGameObject(); });
 	}
 
 	void LevelEditor::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
@@ -281,6 +284,7 @@ namespace Editors
 		pParent->AddTab(title, m_pSceneTreeFrame);
 
 		m_pSceneTree = new Widgets::TreeView();
+		m_pSceneTree->SetMultiSelection(true);
 		m_pSceneTreeFrame->AddWidget(m_pSceneTree);
 	}
 
@@ -634,6 +638,26 @@ namespace Editors
 		levelEditorModule.ClearSelection();
 		for (const Core::Guid& guid : newNodes)
 			levelEditorModule.AddToSelection(guid);
+	}
+
+	void LevelEditor::OnClickEditMenu_ReparentGameObject()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+
+		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+
+		if (selectionList.size() < 2)
+			return;
+
+		Core::Guid newParent = selectionList.back();
+		std::list<Core::Guid>::const_iterator endIt = selectionList.cend();
+		--endIt;
+
+		for (std::list<Core::Guid>::const_iterator it = selectionList.cbegin(); it != endIt; ++it)
+		{
+			levelEditorModule.ReparentGameObject(newParent, *it);
+		}
 	}
 
 	void LevelEditor::OnClickTransformationMenu_Snap()

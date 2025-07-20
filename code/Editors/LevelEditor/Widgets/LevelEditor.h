@@ -114,6 +114,7 @@ namespace Editors
 		void OnClickEditMenu_DeleteGameObject();
 		void OnClickEditMenu_RenameGameObject();
 		void OnClickEditMenu_DuplicateEntity();
+		void OnClickEditMenu_ReparentGameObject();
 
 		void OnClickTransformationMenu_Snap();
 
