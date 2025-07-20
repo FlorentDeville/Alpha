@@ -70,7 +70,7 @@ namespace Core
 				if (m_reservedSize == 0)
 					m_reservedSize = 10;
 				else
-					m_reservedSize = m_reservedSize + (m_reservedSize / 2);
+					m_reservedSize = m_reservedSize + (m_reservedSize / 2) + 1;
 				
 				T* pNewArray = new T[m_reservedSize];
 				std::memcpy(pNewArray, m_pStart, sizeof(T) * m_size);
