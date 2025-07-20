@@ -32,6 +32,7 @@ namespace Widgets
 
 		bool operator==(const ModelIndex& other) const;
 		bool operator!=(const ModelIndex& other) const;
+		bool operator<(const ModelIndex& other) const;
 
 	private:
 		ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel);
