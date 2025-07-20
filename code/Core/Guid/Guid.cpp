@@ -84,7 +84,7 @@ namespace Core
 		uint16_t data41 = (uint16_t)(m_data4 >> 48);
 		uint16_t data42 = (uint16_t)((m_data4 >> 32) & 0x0000FFFFF);
 		uint32_t data43 = (uint32_t)(m_data4 & 0x00000000FFFFFFFF);
-		snprintf(pBuffer, GUID_STRING_LENGTH, "%x-%hx-%hx-%hx-%hx%x", m_data1, m_data2, m_data3, data41, data42, data43);
+		snprintf(pBuffer, GUID_STRING_LENGTH, "%x-%hx-%hx-%hx-%04hx%x", m_data1, m_data2, m_data3, data41, data42, data43);
 		return true;
 	}
 
