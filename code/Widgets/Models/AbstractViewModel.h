@@ -16,6 +16,7 @@ namespace Widgets
 	class AbstractViewModel
 	{
 		friend class TableView;
+		friend class TreeView;
 
 	public:
 		AbstractViewModel();
