@@ -254,12 +254,13 @@ namespace Core
 
 	template<typename T> template<typename U> uint32_t Array<T>::Erase(const U& value)
 	{
-		Iterator newEndIt = std::remove(begin(), end(), value);
-		uint64_t erasedCount = std::distance(newEndIt, end());
-		uint64_t size = std::distance(begin(), newEndIt);
-		Resize(static_cast<uint32_t>(size));
-
-		return static_cast<uint32_t>(erasedCount);
+		Iterator it = std::find(cbegin(), cend(), value);
+		if (it == cend())
+			return 0;
+		
+		int oldSize = GetSize();
+		Erase(it);
+		return oldSize - GetSize();
 	}
 
 	template<typename T> void Array<T>::Erase(Iterator& it)
@@ -268,7 +269,7 @@ namespace Core
 		T& pValue = *it;
 		pValue.~T();
 
-		//copy
+		//move the elements
 		Iterator previousElement = it;
 		Iterator ii = it;
 		++ii;
@@ -277,7 +278,7 @@ namespace Core
 			T& src = *ii;
 			T& dst = *previousElement;
 
-			dst = src;
+			dst = std::move(src);
 		}
 
 		--m_size;
