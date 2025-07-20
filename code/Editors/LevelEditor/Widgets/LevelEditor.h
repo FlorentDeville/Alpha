@@ -25,6 +25,7 @@ namespace Rendering
 namespace Systems
 {
 	class AssetMetadata;
+	class GameObject;
 }
 
 namespace Widgets
@@ -47,6 +48,7 @@ namespace Editors
 	class LevelEditorViewportWidget;
 	class LevelListModel;
 	class LevelTreeModel;
+	class SceneTreeModel;
 	class TreeWidget;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
@@ -77,6 +79,7 @@ namespace Editors
 		LevelTreeModel* m_pLevelTreeModel;
 
 		Widgets::TreeView* m_pSceneTree;
+		SceneTreeModel* m_pSceneTreeModel;
 
 		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
 
@@ -131,5 +134,6 @@ namespace Editors
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
 		void OnLevelEditorModule_OpenLevel();
+		void OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo);
 	};
 }

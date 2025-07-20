@@ -69,6 +69,8 @@ namespace Editors
 		, m_pSplit(nullptr)
 		, m_pTreeWidget(nullptr)
 		, m_pViewport(nullptr)
+		, m_pSceneTree(nullptr)
+		, m_pSceneTreeModel(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -149,6 +151,7 @@ namespace Editors
 		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
+		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo) { OnLevelEditorModule_AddGameObject(pGo); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -722,7 +725,12 @@ namespace Editors
 	{
 		const Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel();
 
-		SceneTreeModel* pModel = new SceneTreeModel(pLevel);
-		m_pSceneTree->SetModel(pModel);
+		m_pSceneTreeModel = new SceneTreeModel(pLevel);
+		m_pSceneTree->SetModel(m_pSceneTreeModel);
+	}
+
+	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo)
+	{
+		m_pSceneTreeModel->AddGameObject(pGo);
 	}
 }

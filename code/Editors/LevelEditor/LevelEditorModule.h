@@ -101,7 +101,7 @@ namespace Editors
 		EVENT_DECL(SaveLevel, void())
 		EVENT_DECL(RenameLevel, void(Systems::NewAssetId id, const std::string& newName))
 
-		EVENT_DECL(AddEntity, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(AddGameObject, void(const Systems::GameObject* pGo))
 		EVENT_DECL(DeleteEntity, void(const Core::Guid& nodeGuid))
 		EVENT_DECL(RenameEntity, void(const Core::Guid& nodeGuid))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))

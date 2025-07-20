@@ -184,7 +184,7 @@ namespace Editors
 
 		nodeGuid = pGo->GetGuid();
 
-		m_onAddEntity(nodeGuid);
+		m_onAddGameObject(pGo);
 	}
 
 	void LevelEditorModule::DeleteEntity(const Core::Guid& nodeGuid)

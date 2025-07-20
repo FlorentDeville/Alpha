@@ -195,7 +195,15 @@ namespace Editors
 		}
 	}
 
-	void SceneTreeModel::CreateCachedItem(const Systems::GameObject* pGo)
+	void SceneTreeModel::AddGameObject(const Systems::GameObject* pGo)
+	{
+		const CachedItem* pItem = CreateCachedItem(pGo);
+
+		Widgets::ModelIndex index = GetModelIndex(pItem);
+		CommitInsertRows(index.GetRow(), 1, index.GetParent());
+	}
+
+	const SceneTreeModel::CachedItem* SceneTreeModel::CreateCachedItem(const Systems::GameObject* pGo)
 	{
 		CachedItem* pItem = new CachedItem();
 		pItem->m_guid = pGo->GetGuid();
@@ -209,6 +217,8 @@ namespace Editors
 
 		if (!pItem->m_parent.IsValid())
 			m_cachedItemRootsArray.PushBack(pItem);
+
+		return pItem;
 	}
 
 	const SceneTreeModel::CachedItem* SceneTreeModel::FindCachedItem(const Core::Guid& guid) const
@@ -218,5 +228,32 @@ namespace Editors
 			return nullptr;
 
 		return it->second;
+	}
+
+	Widgets::ModelIndex SceneTreeModel::GetModelIndex(const SceneTreeModel::CachedItem* pItem) const
+	{
+		if (!pItem->m_parent.IsValid()) //no parent then we're asking for a root game object
+		{
+			const Core::Guid& guid = pItem->m_guid;
+			Core::Array<CachedItem*>::Iterator it = std::find_if(m_cachedItemRootsArray.cbegin(), m_cachedItemRootsArray.cend(), [&guid](const CachedItem* pItem) { return pItem->m_guid == guid; });
+			if (it == m_cachedItemRootsArray.cend())
+				return Widgets::ModelIndex();
+
+			size_t row = std::distance(m_cachedItemRootsArray.cbegin(), it);
+			return CreateIndex(static_cast<int>(row), 0, pItem);
+		}
+
+		const CachedItem* pParentItem = FindCachedItem(pItem->m_parent);
+		if (!pParentItem)
+			return Widgets::ModelIndex();
+
+		const Core::Array<Core::Guid>& childrenArray = pParentItem->m_children;
+		Core::Array<Core::Guid>::Iterator it = std::find(childrenArray.cbegin(), childrenArray.cend(), pItem->m_guid);
+		if(it == childrenArray.cend())
+			return Widgets::ModelIndex();
+
+		size_t row = std::distance(childrenArray.cbegin(), it);
+		
+		return CreateIndex(static_cast<int>(row), 0, pItem);
 	}
 }

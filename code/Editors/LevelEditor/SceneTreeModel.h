@@ -19,9 +19,9 @@ namespace Editors
 	public:
 		enum Columns
 		{
-			Guid = 0,
-			Name,
+			Name = 0,
 			Type,
+			Guid,
 			Modified,
 
 			Count
@@ -39,6 +39,8 @@ namespace Editors
 		std::string GetHeaderData(int column) override;
 
 		// Specific functions
+		void AddGameObject(const Systems::GameObject* pGo);
+
 	private:
 
 		struct CachedItem
@@ -54,8 +56,10 @@ namespace Editors
 		std::map<Core::Guid, CachedItem*> m_cachedItemMap;	// map from a game object guid to the cached item
 		Core::Array<CachedItem*> m_cachedItemRootsArray;	// list of root game objects.
 
-		void CreateCachedItem(const Systems::GameObject* pGo);
+		const CachedItem* CreateCachedItem(const Systems::GameObject* pGo);
 
 		const CachedItem* FindCachedItem(const Core::Guid& guid) const;
+
+		Widgets::ModelIndex GetModelIndex(const CachedItem* pItem) const;
 	};
 }
