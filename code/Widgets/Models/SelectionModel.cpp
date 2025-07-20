@@ -162,8 +162,13 @@ namespace Widgets
 			int oldRow = oldSelectedRow.GetStartIndex().GetRow();
 			if (oldRow >= 0 && oldRow < rowCount)
 			{
-				m_selectedRows.push_back(oldSelectedRow);
-				select.push_back(oldSelectedRow);
+				ModelIndex newIndex = pModel->GetIndex(oldRow, 0, parent); //recompute the model index to update the data pointer
+				int columnCount = pModel->GetColumnCount(newIndex);
+				SelectionRow newRow(newIndex, newIndex.GetSiblingAtColumn(columnCount - 1));
+
+				m_selectedRows.push_back(newRow);
+				select.push_back(newRow);
+				
 				continue;
 			}
 
