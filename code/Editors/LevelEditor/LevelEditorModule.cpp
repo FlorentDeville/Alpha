@@ -187,13 +187,18 @@ namespace Editors
 		m_onAddGameObject(pGo);
 	}
 
-	void LevelEditorModule::DeleteEntity(const Core::Guid& nodeGuid)
+	void LevelEditorModule::DeleteGameObject(const Core::Guid& guid)
 	{
-		m_pSelectionMgr->Remove(nodeGuid);
-		bool res = m_pLevelMgr->GetSceneTree()->DeleteNode(nodeGuid);
+		if (!m_pLevel)
+			return;
 
-		if (res)
-			m_onDeleteEntity(nodeGuid);
+		m_pSelectionMgr->Remove(guid);
+		
+		m_onBeforeDeleteGameObject(guid);
+
+		m_pLevel->DeleteGameObject(guid);
+
+		m_onAfterDeleteGameObject(guid);
 	}
 
 	void LevelEditorModule::RenameGameObject(const Core::Guid& guid, const std::string& name)

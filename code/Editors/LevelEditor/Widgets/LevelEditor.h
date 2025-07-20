@@ -125,7 +125,7 @@ namespace Editors
 		void OnClickFileMenu_RenameLevel();
 
 		void OnClickEditMenu_AddGameObject();
-		void OnClickEditMenu_DeleteEntity();
+		void OnClickEditMenu_DeleteGameObject();
 		void OnClickEditMenu_RenameGameObject();
 		void OnClickEditMenu_DuplicateEntity();
 
@@ -136,5 +136,6 @@ namespace Editors
 		void OnLevelEditorModule_OpenLevel();
 		void OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo);
 		void OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName);
+		void OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid);
 	};
 }

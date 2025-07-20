@@ -71,7 +71,7 @@ namespace Editors
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
 		void AddGameObject(Core::Guid& nodeGuid);
-		void DeleteEntity(const Core::Guid& nodeGuid);
+		void DeleteGameObject(const Core::Guid & nodeGuid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& name);
 		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);
 
@@ -102,8 +102,9 @@ namespace Editors
 		EVENT_DECL(RenameLevel, void(Systems::NewAssetId id, const std::string& newName))
 
 		EVENT_DECL(AddGameObject, void(const Systems::GameObject* pGo))
-		EVENT_DECL(DeleteEntity, void(const Core::Guid& nodeGuid))
-		EVENT_DECL(RenameGameObject, void(const Core::Guid& guid, const std::string& newName))
+		EVENT_DECL(BeforeDeleteGameObject, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(AfterDeleteGameObject, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(RenameGameObject, void(const Core::Guid & guid, const std::string & newName))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
 
 		//temp

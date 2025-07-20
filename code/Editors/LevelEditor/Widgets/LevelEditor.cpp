@@ -153,6 +153,7 @@ namespace Editors
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
 		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo) { OnLevelEditorModule_AddGameObject(pGo); });
 		levelEditorModule.OnRenameGameObject([this](const Core::Guid& guid, const std::string& newName) { OnLevelEditorModule_RenameGameObject(guid, newName); });
+		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -192,9 +193,9 @@ namespace Editors
 		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add Game Object");
 		pAddItem->OnClick([this]() { OnClickEditMenu_AddGameObject(); });
 
-		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
+		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Game Object");
 		pDeleteItem->SetShortcut("Del");
-		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteEntity(); });
+		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteGameObject(); });
 
 		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename Game Object...");
 		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameGameObject(); });
@@ -265,8 +266,8 @@ namespace Editors
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
-		pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
-		pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
+		//pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
+		//pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
 	}
 
 	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
@@ -647,11 +648,10 @@ namespace Editors
 		if (!newGuid.IsValid())
 			return;
 
-		levelEditorModule.ClearSelection();
-		levelEditorModule.AddToSelection(newGuid);
+		m_pSceneTreeModel->SelectGameObject(newGuid);
 	}
 
-	void LevelEditor::OnClickEditMenu_DeleteEntity()
+	void LevelEditor::OnClickEditMenu_DeleteGameObject()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
@@ -660,7 +660,7 @@ namespace Editors
 		const std::list<Core::Guid> selectionList = pSelectionMgr->GetSelectionList();
 
 		for (const Core::Guid& selectedGuid : selectionList)
-			levelEditorModule.DeleteEntity(selectedGuid);
+			levelEditorModule.DeleteGameObject(selectedGuid);
 	}
 
 	void LevelEditor::OnClickEditMenu_RenameGameObject()
@@ -753,5 +753,10 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName)
 	{
 		m_pSceneTreeModel->RenameGameObject(guid, newName);
+	}
+
+	void LevelEditor::OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid)
+	{
+		m_pSceneTreeModel->RemoveGameObject(guid);
 	}
 }
