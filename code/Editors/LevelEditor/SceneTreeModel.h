@@ -40,10 +40,12 @@ namespace Editors
 
 		// Specific functions
 		void AddGameObject(const Systems::GameObject* pGo);
-
+		void RemoveGameObject(const Core::Guid& guid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& newName);
 
 		Core::Guid FindGameObject(const Widgets::ModelIndex& index) const;
+
+		void SelectGameObject(const Core::Guid& guid);
 
 	private:
 

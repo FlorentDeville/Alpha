@@ -8,6 +8,8 @@
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
 #include "Widgets/Models/ModelIndex.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 
 #include <assert.h>
 
@@ -203,6 +205,31 @@ namespace Editors
 		CommitInsertRows(index.GetRow(), 1, index.GetParent());
 	}
 
+	void SceneTreeModel::RemoveGameObject(const Core::Guid& guid)
+	{
+		const CachedItem* pItem = FindCachedItem(guid);
+		if (!pItem)
+			return;
+
+		Widgets::ModelIndex modelIndex = GetModelIndex(pItem);
+		int row = modelIndex.GetRow();
+		Widgets::ModelIndex parentModelIndex = modelIndex.GetParent();
+		Core::Guid parentGuid = pItem->m_parent;
+
+		//delete the cache
+		if (!parentGuid.IsValid())
+		{
+			m_cachedItemRootsArray.Erase(pItem);
+		}
+
+		m_cachedItemMap.erase(pItem->m_guid);
+		m_cachedItemArray.Erase(pItem);
+
+		delete pItem;
+
+		RemoveRows(row, 1, parentModelIndex);
+	}
+
 	void SceneTreeModel::RenameGameObject(const Core::Guid& guid, const std::string& newName)
 	{
 		CachedItem* pItem = FindCachedItem(guid);
@@ -226,6 +253,20 @@ namespace Editors
 			return Core::Guid();
 
 		return pItem->m_guid;
+	}
+
+	void SceneTreeModel::SelectGameObject(const Core::Guid& guid)
+	{
+		const CachedItem* pItem = FindCachedItem(guid);
+		if (!pItem)
+			return;
+
+		Widgets::ModelIndex startIndex = GetModelIndex(pItem);
+		Widgets::ModelIndex endIndex = startIndex.GetSiblingAtColumn(Columns::Count - 1);
+
+		Widgets::SelectionRow row(startIndex, endIndex);
+		Widgets::SelectionModel* pSelection = GetSelectionModel();
+		pSelection->SetSelectionRow(row);
 	}
 
 	const SceneTreeModel::CachedItem* SceneTreeModel::CreateCachedItem(const Systems::GameObject* pGo)
