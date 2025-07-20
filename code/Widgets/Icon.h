@@ -27,7 +27,12 @@ namespace Widgets
 
 		Rendering::TextureId GetTextureId() const;
 
+		void Hide();
+		void Show();
+
 	private:
 		Rendering::TextureId m_textureId;
+
+		bool m_isHidden;
 	};
 }

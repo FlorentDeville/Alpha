@@ -225,10 +225,14 @@ namespace Widgets
 
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
-			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth);
+			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, parent);
+			int childrenCount = m_pModel->GetRowCount(childIndex);
+			bool hasChildren = childrenCount > 0;
+
+			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth, hasChildren);
 			m_pLayout->AddWidget(pRowLayout);
 
-			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, parent);
+			
 			CreateView_Recursive(childIndex, depth + 1);
 		}
 	}
@@ -328,7 +332,11 @@ namespace Widgets
 
 		for (int ii = start; ii < start + count; ++ii)
 		{
-			Layout* pRowLayout = CreateItem(ii, columnCount, root, depth);
+			Widgets::ModelIndex newIndex = m_pModel->GetIndex(ii, 0, parent);
+			int rowCount = m_pModel->GetRowCount(newIndex);
+			bool hasChildren = rowCount > 0;
+
+			Layout* pRowLayout = CreateItem(ii, columnCount, root, depth, hasChildren);
 
 			int layoutIndex = GetRowLayoutIndex(ii);
 			m_pLayout->InsertWidget(pRowLayout, layoutIndex);
@@ -378,7 +386,7 @@ namespace Widgets
 		pLabel->SetText(value);
 	}
 
-	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent, int depth)
+	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren)
 	{
 		Layout* pRowLayout = new Layout();
 		pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
@@ -426,6 +434,9 @@ namespace Widgets
 				Rendering::TextureId collapseIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
 				Icon* pIcon = new Icon(expandIcon);
 				pIcon->SetSize(Core::UInt2(20, 20));
+				if (!hasChildren)
+					pIcon->Hide();
+
 				//pIcon->OnMouseDown([pIcon, collapseIcon](const Widgets::MouseEvent& ev) { pIcon->SetTextureId(collapseIcon); });
 
 				pExpandLayout->AddWidget(pIcon);

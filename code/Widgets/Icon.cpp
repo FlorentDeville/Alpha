@@ -17,10 +17,12 @@ namespace Widgets
 	Icon::Icon()
 		: Widget()
 		, m_textureId(Rendering::TextureId::INVALID)
+		, m_isHidden(false)
 	{}
 
 	Icon::Icon(Rendering::TextureId textureId)
 	{
+		m_isHidden = false;
 		m_textureId = textureId;
 		const Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(textureId);
 
@@ -34,6 +36,7 @@ namespace Widgets
 	Icon::Icon(const std::string& path)
 		: Widget()
 	{
+		m_isHidden = false;
 		Rendering::Texture* pTexture = nullptr;
 		Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_textureId);
 
@@ -49,6 +52,7 @@ namespace Widgets
 	Icon::Icon(const DirectX::XMINT2& pos, const DirectX::XMUINT2 size, const std::string& path)
 		: Widget(size.x, size.y, pos.x, pos.y)
 	{
+		m_isHidden = false;
 		Rendering::Texture* pTexture = nullptr;
 		Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_textureId);
 
@@ -60,6 +64,9 @@ namespace Widgets
 
 	void Icon::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
+		if (m_isHidden)
+			return;
+
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);
 
@@ -87,5 +94,15 @@ namespace Widgets
 	Rendering::TextureId Icon::GetTextureId() const
 	{
 		return m_textureId;
+	}
+
+	void Icon::Hide()
+	{
+		m_isHidden = true;
+	}
+
+	void Icon::Show()
+	{
+		m_isHidden = false;
 	}
 }

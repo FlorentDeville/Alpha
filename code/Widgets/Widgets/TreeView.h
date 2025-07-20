@@ -80,7 +80,7 @@ namespace Widgets
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 		void OnDataChanged_SelectionModel(const ModelIndex& index);
 
-		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth);
+		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren);
 		Label* GetItem(int row, int column, const ModelIndex& parent);
 		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
 
