@@ -85,6 +85,8 @@ namespace Widgets
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 
 		void OnClick_Icon(Layout* pRowLayout);
+		
+		void HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex);
 
 		// Internal functions
 		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren);
@@ -95,8 +97,6 @@ namespace Widgets
 
 		// Convert a row index into the widget index.
 		int GetRowLayoutIndex(int row) const;
-
-		void HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex);
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);

@@ -452,6 +452,20 @@ namespace Widgets
 		WidgetMgr::Get().RequestResize();
 	}
 
+	void TreeView::HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex)
+	{
+		int labelRight = pHeader->GetScreenX() + pHeader->GetWidth();
+		int offset = mousePosition.x - labelRight;
+		int newWidth = pHeader->GetWidth() + offset;
+
+		const int MIN_COLUMN_WIDTH = 10;
+		if (newWidth < MIN_COLUMN_WIDTH)
+			return;
+
+		SetColumnWidth(columnIndex, newWidth);
+		WidgetMgr::Get().RequestResize();
+	}
+
 	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren)
 	{
 		Layout* pRowLayout = new Layout();
@@ -584,20 +598,6 @@ namespace Widgets
 	int TreeView::GetRowLayoutIndex(int row) const
 	{
 		return row + 1; //+1 because the first row is the header.
-	}
-
-	void TreeView::HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex)
-	{
-		int labelRight = pHeader->GetScreenX() + pHeader->GetWidth();
-		int offset = mousePosition.x - labelRight;
-		int newWidth = pHeader->GetWidth() + offset;
-
-		const int MIN_COLUMN_WIDTH = 10;
-		if (newWidth < MIN_COLUMN_WIDTH)
-			return;
-
-		SetColumnWidth(columnIndex, newWidth);
-		WidgetMgr::Get().RequestResize();
 	}
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
