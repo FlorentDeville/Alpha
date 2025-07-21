@@ -338,8 +338,42 @@ namespace Widgets
 
 			Layout* pRowLayout = CreateItem(ii, columnCount, root, depth, hasChildren);
 
-			int layoutIndex = GetRowLayoutIndex(ii);
-			m_pLayout->InsertWidget(pRowLayout, layoutIndex);
+			// I need to calculate the correct position for this row in the layout.
+			// It needs to go after all the children of the previous sibling. It's easier to do
+			// the reverse and to add it before the next sibling of my parent
+			//int layoutIndex = GetRowLayoutIndex(ii);
+
+			Widgets::ModelIndex followingSibling;
+			Widgets::ModelIndex tempParentIndex = parent;
+			while (tempParentIndex.IsValid())
+			{
+				Widgets::ModelIndex grandParent = tempParentIndex.GetParent();
+				followingSibling = m_pModel->GetIndex(tempParentIndex.GetRow(), 0, grandParent);
+				if (followingSibling.IsValid())
+					break;
+
+				tempParentIndex = grandParent;
+			}
+			
+			if (!followingSibling.IsValid()) // no following sibling, add the row at the end
+			{
+				m_pLayout->AddWidget(pRowLayout);
+			}
+			else
+			{
+				//find the index of the following rows. Ugly as fuck! I need a cache or something to do this
+				std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(followingSibling);
+				if (it == m_modelIndexToRowMap.end())
+				{
+					const std::vector<Widget*>& allChildren = m_pLayout->GetChildren();
+					std::vector<Widget*>::const_iterator itWidget = std::find(allChildren.cbegin(), allChildren.cend(), it->second);
+					if (itWidget != allChildren.cend())
+					{
+						size_t layoutIndex = std::distance(allChildren.cbegin(), itWidget);
+						m_pLayout->InsertWidget(pRowLayout, static_cast<int>(layoutIndex));
+					}
+				}
+			}
 		}
 
 		Widgets::WidgetMgr::Get().RequestResize();
