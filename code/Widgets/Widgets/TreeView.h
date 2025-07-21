@@ -62,6 +62,7 @@ namespace Widgets
 			ModelIndex m_index;
 			bool m_collapsed;
 			Icon* m_pIcon;
+			Layout* m_pParent;
 		};
 
 		std::map<Widget*, RowInfo> m_rowInfoMap;
@@ -89,7 +90,7 @@ namespace Widgets
 		void HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex);
 
 		// Internal functions
-		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren);
+		Layout* CreateItem(const ModelIndex& index, int columnCount, int depth);
 		Label* GetCell(const ModelIndex& index);
 		Layout* ComputeRowLayoutFromModelIndex(const ModelIndex& index);
 

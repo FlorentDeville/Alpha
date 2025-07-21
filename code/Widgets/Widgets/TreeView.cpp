@@ -232,10 +232,8 @@ namespace Widgets
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
 			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, parent);
-			int childrenCount = m_pModel->GetRowCount(childIndex);
-			bool hasChildren = childrenCount > 0;
 
-			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth, hasChildren);
+			Layout* pRowLayout = CreateItem(childIndex, columnCount, depth);
 			m_pLayout->AddWidget(pRowLayout);
 
 			layoutArray.PushBack(pRowLayout);
@@ -334,10 +332,8 @@ namespace Widgets
 		for (int ii = start; ii < start + count; ++ii)
 		{
 			Widgets::ModelIndex newIndex = m_pModel->GetIndex(ii, 0, parent);
-			int rowCount = m_pModel->GetRowCount(newIndex);
-			bool hasChildren = rowCount > 0;
 
-			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth, hasChildren);
+			Layout* pRowLayout = CreateItem(newIndex, columnCount, depth);
 
 			// I need to calculate the correct position for this row in the layout.
 			// It needs to go after all the children of the previous sibling. It's easier to do
@@ -490,7 +486,7 @@ namespace Widgets
 		WidgetMgr::Get().RequestResize();
 	}
 
-	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren)
+	Widgets::Layout* TreeView::CreateItem(const ModelIndex& index, int columnCount, int depth)
 	{
 		Layout* pRowLayout = new Layout();
 		pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
@@ -502,14 +498,17 @@ namespace Widgets
 
 		RowInfo info;
 		info.m_depth = depth;
-		info.m_index = m_pModel->GetIndex(row, 0, parent);
+		info.m_index = index;
 		info.m_collapsed = false;
 
 		pRowLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 
+		int childrenCount = index.GetConstModel()->GetRowCount(index);
+		bool hasChildren = childrenCount > 0;
+
 		for (int jj = 0; jj < columnCount; ++jj)
 		{
-			ModelIndex rowIndex = m_pModel->GetIndex(row, jj, parent);
+			ModelIndex rowIndex = index.GetSiblingAtColumn(jj);
 			if (!rowIndex.IsValid())
 				continue;
 
