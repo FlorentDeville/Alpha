@@ -150,6 +150,9 @@ namespace Core
 			source.m_reservedSize = 0;
 		}
 
+		T& Back();
+		const T& Back() const;
+
 		void Resize(uint32_t newSize) override;
 		void Resize(uint32_t newSize, const T& value);
 
@@ -181,6 +184,16 @@ namespace Core
 		T* m_pStart;
 
 	};
+
+	template<typename T> T& Array<T>::Back()
+	{
+		return m_pStart[m_size - 1];
+	}
+
+	template<typename T> const T& Array<T>::Back() const
+	{
+		return m_pStart[m_size - 1];
+	}
 
 	template<typename T> void Array<T>::Resize(uint32_t newSize)
 	{
