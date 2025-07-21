@@ -278,7 +278,7 @@ namespace Widgets
 				const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
 				for (const SelectionRow& sel : selection)
 				{
-					if(Layout* pSelectedLayout = GetRowLayout(sel.GetStartIndex()))
+					if(Layout* pSelectedLayout = ComputeRowLayoutFromModelIndex(sel.GetStartIndex()))
 						SetDeselectedRowStyle(pSelectedLayout);
 				}
 				SetSelectedRowStyle(pRowLayout);
@@ -361,7 +361,7 @@ namespace Widgets
 			else
 			{
 				//find the index of the following rows. Ugly as fuck! I need a cache or something to do this
-				Layout* pFollowingLayout = GetRowLayout(followingSibling);
+				Layout* pFollowingLayout = ComputeRowLayoutFromModelIndex(followingSibling);
 				if (pFollowingLayout)
 				{
 					int layoutIndex = GetRowIndexInLayout(pFollowingLayout);
@@ -369,7 +369,7 @@ namespace Widgets
 				}
 			}
 
-			Layout* pParentLayout = GetRowLayout(parent);
+			Layout* pParentLayout = ComputeRowLayoutFromModelIndex(parent);
 
 			//update the parent collapsed icon
 			if(pParentLayout)
@@ -391,7 +391,7 @@ namespace Widgets
 		//Watch out : the row has already been deleted from the model.
 
 		//First delete the layout widget
-		Layout* pParentRow = GetRowLayout(parent);
+		Layout* pParentRow = ComputeRowLayoutFromModelIndex(parent);
 		int row = GetRowIndexInLayout(pParentRow);
 		for (int ii = start; ii < start + count; ++ii)
 		{
@@ -427,13 +427,13 @@ namespace Widgets
 	{
 		for (const SelectionRow& deselectedRow : deselected)
 		{
-			if(Layout* pLayout = GetRowLayout(deselectedRow.GetStartIndex()))
+			if(Layout* pLayout = ComputeRowLayoutFromModelIndex(deselectedRow.GetStartIndex()))
 				SetDeselectedRowStyle(pLayout);
 		}
 
 		for (const SelectionRow& selectedRow : selected)
 		{
-			if (Layout* pLayout = GetRowLayout(selectedRow.GetStartIndex()))
+			if (Layout* pLayout = ComputeRowLayoutFromModelIndex(selectedRow.GetStartIndex()))
 				SetSelectedRowStyle(pLayout);
 		}
 	}
@@ -568,7 +568,7 @@ namespace Widgets
 
 	Label* TreeView::GetCell(const ModelIndex& index)
 	{
-		Layout* pRowLayout = GetRowLayout(index);
+		Layout* pRowLayout = ComputeRowLayoutFromModelIndex(index);
 		if (!pRowLayout)
 			return nullptr;
 
@@ -586,7 +586,7 @@ namespace Widgets
 		return pLabel;
 	}
 
-	Layout* TreeView::GetRowLayout(const ModelIndex& index)
+	Layout* TreeView::ComputeRowLayoutFromModelIndex(const ModelIndex& index)
 	{
 		std::stack<ModelIndex> indexStack;
 
@@ -642,7 +642,7 @@ namespace Widgets
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
 	{
-		if(Layout* pLayout = GetRowLayout(indexToHide))
+		if(Layout* pLayout = ComputeRowLayoutFromModelIndex(indexToHide))
 			pLayout->Disable();
 
 		int rowCount = m_pModel->GetRowCount(indexToHide);
@@ -655,7 +655,7 @@ namespace Widgets
 
 	void TreeView::ShowRowsRecursively(const ModelIndex& indexToShow)
 	{
-		Layout* pLayout = GetRowLayout(indexToShow);
+		Layout* pLayout = ComputeRowLayoutFromModelIndex(indexToShow);
 		if (!pLayout)
 			return;
 
