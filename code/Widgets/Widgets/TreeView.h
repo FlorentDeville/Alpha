@@ -15,6 +15,7 @@
 namespace Widgets
 {
 	class AbstractViewModel;
+	class Icon;
 	class Label;
 	class Layout;
 	class ModelIndex;
@@ -59,6 +60,8 @@ namespace Widgets
 		{
 			int m_depth;
 			ModelIndex m_index;
+			bool m_collapsed;
+			Icon* m_pIcon;
 		};
 
 		std::map<Widget*, RowInfo> m_rowInfoMap;
@@ -68,6 +71,7 @@ namespace Widgets
 		void CreateView();
 		void CreateView_Recursive(const ModelIndex& parent, int depth);
 
+		// Event callbacks
 		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 
@@ -80,6 +84,9 @@ namespace Widgets
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 		void OnDataChanged_SelectionModel(const ModelIndex& index);
 
+		void OnClick_Icon(Layout* pRowLayout);
+
+		// Internal functions
 		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren);
 		Label* GetItem(int row, int column, const ModelIndex& parent);
 		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
@@ -90,5 +97,8 @@ namespace Widgets
 		int GetRowLayoutIndex(int row) const;
 
 		void HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex);
+
+		void HideRowsRecursively(const ModelIndex& indexToHide);
+		void ShowRowsRecursively(const ModelIndex& indexToShow);
 	};
 }

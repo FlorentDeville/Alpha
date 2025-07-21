@@ -386,6 +386,44 @@ namespace Widgets
 		pLabel->SetText(value);
 	}
 
+	void TreeView::OnClick_Icon(Layout* pRowLayout)
+	{
+		std::map<Widget*, RowInfo>::iterator it = m_rowInfoMap.find(pRowLayout);
+		if (it == m_rowInfoMap.cend())
+			return;
+
+		RowInfo& info = it->second;
+
+		if (info.m_collapsed)
+		{
+			Rendering::TextureId expandedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
+			info.m_pIcon->SetTextureId(expandedIcon);
+
+			int rowCount = m_pModel->GetRowCount(info.m_index);
+			for (int ii = 0; ii < rowCount; ++ii)
+			{
+				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, info.m_index);
+				ShowRowsRecursively(childIndex);
+			}
+		}
+		else
+		{
+			Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
+			info.m_pIcon->SetTextureId(collapsedIcon);
+
+			int rowCount = m_pModel->GetRowCount(info.m_index);
+			for (int ii = 0; ii < rowCount; ++ii)
+			{
+				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, info.m_index);
+				HideRowsRecursively(childIndex);
+			}
+		}
+
+		info.m_collapsed = !info.m_collapsed;
+
+		WidgetMgr::Get().RequestResize();
+	}
+
 	Widgets::Layout* TreeView::CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren)
 	{
 		Layout* pRowLayout = new Layout();
@@ -399,8 +437,8 @@ namespace Widgets
 		RowInfo info;
 		info.m_depth = depth;
 		info.m_index = m_pModel->GetIndex(row, 0, parent);
-		m_rowInfoMap[pRowLayout] = info;
-
+		info.m_collapsed = true;
+		
 		m_modelIndexToRowMap[info.m_index] = pRowLayout;
 
 		pRowLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
@@ -431,13 +469,14 @@ namespace Widgets
 				}
 
 				Rendering::TextureId expandIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
-				Rendering::TextureId collapseIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
 				Icon* pIcon = new Icon(expandIcon);
 				pIcon->SetSize(Core::UInt2(20, 20));
 				if (!hasChildren)
 					pIcon->Hide();
 
-				//pIcon->OnMouseDown([pIcon, collapseIcon](const Widgets::MouseEvent& ev) { pIcon->SetTextureId(collapseIcon); });
+				pIcon->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnClick_Icon(pRowLayout); });
+
+				info.m_pIcon = pIcon;
 
 				pExpandLayout->AddWidget(pIcon);
 				pExpandLayout->AddWidget(pLabel);
@@ -457,6 +496,8 @@ namespace Widgets
 
 			pRowLayout->AddWidget(pContainer);
 		}
+
+		m_rowInfoMap[pRowLayout] = info;
 
 		return pRowLayout;
 	}
@@ -519,5 +560,50 @@ namespace Widgets
 
 		SetColumnWidth(columnIndex, newWidth);
 		WidgetMgr::Get().RequestResize();
+	}
+
+	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
+	{
+		std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(indexToHide);
+		if (it != m_modelIndexToRowMap.end())
+		{
+			it->second->Disable();
+		}
+
+		int rowCount = m_pModel->GetRowCount(indexToHide);
+		for (int ii = 0; ii < rowCount; ++ii)
+		{
+			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, indexToHide);
+			HideRowsRecursively(childIndex);
+		}
+	}
+
+	void TreeView::ShowRowsRecursively(const ModelIndex& indexToShow)
+	{
+		std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(indexToShow);
+		if (it != m_modelIndexToRowMap.end())
+		{
+			it->second->Enable();
+		}
+
+		int rowCount = m_pModel->GetRowCount(indexToShow);
+		for (int ii = 0; ii < rowCount; ++ii)
+		{
+			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, indexToShow);
+
+			//2 lookups, aouch. I should have map Layout* -> RowInfo*
+			std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(indexToShow);
+			if (it == m_modelIndexToRowMap.end())
+				continue;
+
+			std::map<Widget*, RowInfo>::iterator itInfo = m_rowInfoMap.find(it->second);
+			if (itInfo == m_rowInfoMap.end())
+				continue;
+
+			if (itInfo->second.m_collapsed)
+				continue;
+
+			ShowRowsRecursively(childIndex);
+		}
 	}
 }
