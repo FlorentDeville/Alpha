@@ -124,14 +124,7 @@ namespace Core
 
 		void operator=(const Array& source)
 		{
-			//clean up existing memory
-			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[ii].~T();
-
-			delete[] m_pStart;
-
-			m_size = 0;
-			m_reservedSize = 0;
+			Clear();
 
 			Resize(source.GetSize());
 
