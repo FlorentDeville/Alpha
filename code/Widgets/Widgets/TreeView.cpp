@@ -390,6 +390,7 @@ namespace Widgets
 	{
 		//Watch out : the row has already been deleted from the model.
 
+		//First delete the layout widget
 		Layout* pParentRow = GetRowLayout(parent);
 		int row = GetRowIndexInLayout(pParentRow);
 		for (int ii = start; ii < start + count; ++ii)
@@ -397,13 +398,10 @@ namespace Widgets
 			Widget* pWidgetToDelete = m_pLayout->GetChild(row + ii + 1);
 			Layout* pLayoutToDelete = static_cast<Layout*>(pWidgetToDelete);
 
-			//clean up the caches
-			m_rowInfoMap.erase(pLayoutToDelete);
-
-			//delet the widgets
-			m_pLayout->DeleteChild(pLayoutToDelete);
+			DeleteRowRecursively(pParentRow, pLayoutToDelete);
 		}
 		
+		//Second update the parent collapse state and icon
 		int rowCount = m_pModel->GetRowCount(parent);
 		bool hasChildren = rowCount > 0;
 		if (!hasChildren)
@@ -678,5 +676,23 @@ namespace Widgets
 
 			ShowRowsRecursively(childIndex);
 		}
+	}
+
+	void TreeView::DeleteRowRecursively(Layout* pParentRow, Layout* pRowToRemove)
+	{
+		//delete the children
+		Core::Array<Layout*>& children = m_rowLayoutTree[pRowToRemove];
+		for (Layout* pChild : children)
+		{
+			DeleteRowRecursively(pRowToRemove, pChild);
+		}
+		
+		//delete the widgets
+		m_pLayout->DeleteChild(pRowToRemove);
+
+		//clean the caches
+		m_rowInfoMap.erase(pRowToRemove);
+		m_rowLayoutTree.erase(pRowToRemove);
+		m_rowLayoutTree[pParentRow].Erase(pRowToRemove);
 	}
 }

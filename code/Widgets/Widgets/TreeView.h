@@ -100,5 +100,7 @@ namespace Widgets
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);
+
+		void DeleteRowRecursively(Layout* pParentRow, Layout* pRowToRemove);
 	};
 }
