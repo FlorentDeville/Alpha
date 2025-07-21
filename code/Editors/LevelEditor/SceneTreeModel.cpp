@@ -229,6 +229,14 @@ namespace Editors
 		{
 			m_cachedItemRootsArray.Erase(pItem);
 		}
+		else
+		{
+			if (CachedItem* pParentCachedItem = FindCachedItem(parentGuid))
+			{
+				pParentCachedItem->m_children.Erase(guid);
+			}
+
+		}
 
 		m_cachedItemMap.erase(pItem->m_guid);
 		m_cachedItemArray.Erase(pItem);
