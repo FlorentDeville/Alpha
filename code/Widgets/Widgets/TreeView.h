@@ -91,12 +91,12 @@ namespace Widgets
 		// Internal functions
 		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren);
 		Label* GetCell(const ModelIndex& index);
-		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
+		Layout* GetRowLayout(const ModelIndex& index);
 
-		int GetRowIndex(const Layout* pLayout) const;
+		//Return the index of the layout widget in the parent layout containing all the rows.
+		int GetRowIndexInLayout(const Layout* pLayout) const;
 
-		// Convert a row index into the widget index.
-		int GetRowLayoutIndex(int row) const;
+		RowInfo* GetRowInfo(Widget* pRowLayout);
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);

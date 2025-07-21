@@ -21,6 +21,8 @@
 #include "Widgets/Split.h"
 #include "Widgets/WidgetMgr.h"
 
+#include <stack>
+
 namespace Widgets
 {
 	TreeView::TreeView()
@@ -284,12 +286,12 @@ namespace Widgets
 
 	void TreeView::OnMouseDoubleClick_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout)
 	{
-		int row = GetRowIndex(pRowLayout);
-		if (row < 0)
-			return;
+		//int row = GetRowIndex(pRowLayout);
+		//if (row < 0)
+		//	return;
 
-		ModelIndex idx = m_pModel->GetIndex(row, 0, ModelIndex());
-		m_onItemDoubleClick(idx);
+		//ModelIndex idx = m_pModel->GetIndex(row, 0, ModelIndex());
+		//m_onItemDoubleClick(idx);
 	}
 
 	void TreeView::SetSelectedRowStyle(Layout* pLayout)
@@ -375,14 +377,30 @@ namespace Widgets
 
 	void TreeView::OnRemoveRows(int start, int count, const ModelIndex& parent)
 	{
-		if (parent.IsValid())
-			return;
+		//Watch out : the row has already been deleted from the model.
 
-		Layout* pLayout = GetRowWidget(start, 0, parent);
-		if (!pLayout)
-			return;
+		Layout* pParentRow = GetRowLayout(parent);
+		int row = GetRowIndexInLayout(pParentRow);
+		for (int ii = start; ii < start + count; ++ii)
+		{
+			Widget* pWidgetToDelete = m_pLayout->GetChild(row + ii + 1);
+			Layout* pLayoutToDelete = static_cast<Layout*>(pWidgetToDelete);
 
-		m_pLayout->DeleteChild(pLayout);
+			//clean up the caches
+			m_rowInfoMap.erase(pLayoutToDelete);
+			//m_modelIndexToRowMap.erase(index);
+
+			//delet the widgets
+			m_pLayout->DeleteChild(pLayoutToDelete);
+		}
+		
+		int rowCount = m_pModel->GetRowCount(parent);
+		bool hasChildren = rowCount > 0;
+		if (!hasChildren)
+		{
+			if (RowInfo* pInfo = GetRowInfo(pParentRow))
+				pInfo->m_pIcon->Hide();
+		}
 
 		WidgetMgr::Get().RequestResize();
 	}
@@ -568,21 +586,32 @@ namespace Widgets
 		return pLabel;
 	}
 
-	Layout* TreeView::GetRowWidget(int row, int column, const ModelIndex& parent)
+	Layout* TreeView::GetRowLayout(const ModelIndex& index)
 	{
-		if (parent.IsValid())
-			return nullptr;
+		std::stack<ModelIndex> indexStack;
 
-		int layoutIndex = GetRowLayoutIndex(row);
-		Widget* pRow = m_pLayout->GetChildren()[layoutIndex]; //+1 because the first row is the header
-		if (!pRow)
-			return nullptr;
+		ModelIndex temp = index;
+		while (temp.IsValid())
+		{
+			indexStack.push(temp);
+			temp = temp.GetParent();
+		}
 
-		Layout* pRowLayout = static_cast<Layout*>(pRow);
-		return pRowLayout;
+		int row = 0;
+		while (!indexStack.empty())
+		{
+			temp = indexStack.top();
+			indexStack.pop();
+
+			row += temp.GetRow() + 1;
+		}
+
+		Widget* pWidget = m_pLayout->GetChild(row);
+		Layout* pLayout = static_cast<Layout*>(pWidget);
+		return pLayout;
 	}
 
-	int TreeView::GetRowIndex(const Layout* pLayout) const
+	int TreeView::GetRowIndexInLayout(const Layout* pLayout) const
 	{
 		const std::vector<Widgets::Widget*> children = m_pLayout->GetChildren();
 		std::vector<Widgets::Widget*>::const_iterator it = std::find(children.cbegin(), children.cend(), pLayout);
@@ -591,13 +620,16 @@ namespace Widgets
 			return -1;
 
 		int index = static_cast<int>(std::distance(children.cbegin(), it));
-		index = index - 1; //-1 because the first row is the header
 		return index;
 	}
 
-	int TreeView::GetRowLayoutIndex(int row) const
+	TreeView::RowInfo* TreeView::GetRowInfo(Widget* pRowLayout)
 	{
-		return row + 1; //+1 because the first row is the header.
+		std::map<Widget*, RowInfo>::iterator it = m_rowInfoMap.find(pRowLayout);
+		if (it == m_rowInfoMap.cend())
+			return nullptr;
+
+		return &it->second;
 	}
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
