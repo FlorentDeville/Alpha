@@ -437,7 +437,7 @@ namespace Widgets
 		RowInfo info;
 		info.m_depth = depth;
 		info.m_index = m_pModel->GetIndex(row, 0, parent);
-		info.m_collapsed = true;
+		info.m_collapsed = false;
 		
 		m_modelIndexToRowMap[info.m_index] = pRowLayout;
 
