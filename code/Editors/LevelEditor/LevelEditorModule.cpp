@@ -169,7 +169,7 @@ namespace Editors
 		return true;;
 	}
 
-	void LevelEditorModule::AddGameObject(Core::Guid& nodeGuid)
+	void LevelEditorModule::AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid)
 	{
 		if (!m_pLevel)
 			return;
@@ -180,11 +180,15 @@ namespace Editors
 		localTx.SetIdentity();
 		pGo->GetTransform().SetLocalTx(localTx);
 		
-		m_pLevel->AddGameObject(pGo);
+		m_pLevel->AddGameObject(pGo, parentGuid);
 
-		nodeGuid = pGo->GetGuid();
+		newGoGuid = pGo->GetGuid();
 
-		m_onAddGameObject(pGo);
+		const Systems::GameObject* pGoParent = nullptr;
+		if (parentGuid.IsValid())
+			pGoParent = m_pLevel->FindGameObject(parentGuid);
+
+		m_onAddGameObject(pGo, pGoParent);
 	}
 
 	void LevelEditorModule::DeleteGameObject(const Core::Guid& guid)

@@ -121,7 +121,7 @@ namespace Editors
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
 		void OnLevelEditorModule_OpenLevel();
-		void OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo);
+		void OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent);
 		void OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName);
 		void OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid);
 	};

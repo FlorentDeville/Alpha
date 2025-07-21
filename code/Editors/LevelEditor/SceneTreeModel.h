@@ -39,7 +39,7 @@ namespace Editors
 		std::string GetHeaderData(int column) override;
 
 		// Specific functions
-		void AddGameObject(const Systems::GameObject* pGo);
+		void AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent = nullptr);
 		void RemoveGameObject(const Core::Guid& guid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& newName);
 

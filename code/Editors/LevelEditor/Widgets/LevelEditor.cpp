@@ -147,7 +147,7 @@ namespace Editors
 		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
-		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo) { OnLevelEditorModule_AddGameObject(pGo); });
+		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoParent) { OnLevelEditorModule_AddGameObject(pGo, pGoParent); });
 		levelEditorModule.OnRenameGameObject([this](const Core::Guid& guid, const std::string& newName) { OnLevelEditorModule_RenameGameObject(guid, newName); });
 		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
 	}
@@ -577,10 +577,16 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_AddGameObject()
 	{
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+
+		Core::Guid parentGuid;
+		if (!pSelectionMgr->GetSelectionList().empty())
+			parentGuid = pSelectionMgr->GetSelectionList().back();
 
 		Core::Guid newGuid;
-		levelEditorModule.AddGameObject(newGuid);
+		levelEditorModule.AddGameObject(parentGuid, newGuid);
 
 		if (!newGuid.IsValid())
 			return;
@@ -702,9 +708,9 @@ namespace Editors
 			});
 	}
 
-	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo)
+	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)
 	{
-		m_pSceneTreeModel->AddGameObject(pGo);
+		m_pSceneTreeModel->AddGameObject(pGo, pGoParent);
 	}
 
 	void LevelEditor::OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName)

@@ -36,6 +36,21 @@ namespace Systems
 		m_gameObjectsArray.PushBack(pGo);
 	}
 
+	void LevelAsset_v1::AddGameObject(GameObject* pGo, const Core::Guid& parent)
+	{
+		AddGameObject(pGo);
+
+		if (!parent.IsValid())
+			return;
+
+		GameObject* pGoParent = FindGameObject(parent);
+		if (!pGoParent)
+			return;
+
+		pGoParent->GetTransform().AddChild(pGo->GetGuid());
+		pGo->GetTransform().SetParentGuid(pGoParent->GetGuid());
+	}
+
 	void LevelAsset_v1::DeleteGameObject(GameObject* pGo)
 	{
 		m_gameObjectsArray.Erase(pGo);

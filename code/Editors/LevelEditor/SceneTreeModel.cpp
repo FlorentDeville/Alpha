@@ -197,9 +197,17 @@ namespace Editors
 		}
 	}
 
-	void SceneTreeModel::AddGameObject(const Systems::GameObject* pGo)
+	void SceneTreeModel::AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)
 	{
 		const CachedItem* pItem = CreateCachedItem(pGo);
+
+		if (pGoParent)
+		{
+			if (CachedItem* pParentCachedItem = FindCachedItem(pGoParent->GetGuid()))
+			{
+				pParentCachedItem->m_children = pGoParent->GetTransform().GetChildrenGuid(); //copy everything to keep the order
+			}
+		}
 
 		Widgets::ModelIndex index = GetModelIndex(pItem);
 		CommitInsertRows(index.GetRow(), 1, index.GetParent());

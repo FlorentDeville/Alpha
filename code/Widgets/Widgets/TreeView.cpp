@@ -314,10 +314,6 @@ namespace Widgets
 
 	void TreeView::OnCommitInsertRows(int start, int count, const ModelIndex& parent)
 	{
-		//This is a table, only root can have children
-		if (parent.IsValid())
-			return;
-
 		ModelIndex root;
 		int columnCount = m_pModel->GetColumnCount(root);
 		
@@ -336,19 +332,17 @@ namespace Widgets
 			int rowCount = m_pModel->GetRowCount(newIndex);
 			bool hasChildren = rowCount > 0;
 
-			Layout* pRowLayout = CreateItem(ii, columnCount, root, depth, hasChildren);
+			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth, hasChildren);
 
 			// I need to calculate the correct position for this row in the layout.
 			// It needs to go after all the children of the previous sibling. It's easier to do
 			// the reverse and to add it before the next sibling of my parent
-			//int layoutIndex = GetRowLayoutIndex(ii);
-
 			Widgets::ModelIndex followingSibling;
 			Widgets::ModelIndex tempParentIndex = parent;
 			while (tempParentIndex.IsValid())
 			{
 				Widgets::ModelIndex grandParent = tempParentIndex.GetParent();
-				followingSibling = m_pModel->GetIndex(tempParentIndex.GetRow(), 0, grandParent);
+				followingSibling = m_pModel->GetIndex(tempParentIndex.GetRow() + 1, 0, grandParent);
 				if (followingSibling.IsValid())
 					break;
 
@@ -363,7 +357,7 @@ namespace Widgets
 			{
 				//find the index of the following rows. Ugly as fuck! I need a cache or something to do this
 				std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(followingSibling);
-				if (it == m_modelIndexToRowMap.end())
+				if (it != m_modelIndexToRowMap.end())
 				{
 					const std::vector<Widget*>& allChildren = m_pLayout->GetChildren();
 					std::vector<Widget*>::const_iterator itWidget = std::find(allChildren.cbegin(), allChildren.cend(), it->second);
