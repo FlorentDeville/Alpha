@@ -37,6 +37,7 @@ namespace Widgets
 		, m_multiSelectionEnabled(false)
 		, m_cellDefaultSize(75, 20)
 		, m_columnWidth()
+		, m_rowLayoutTree()
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
@@ -217,13 +218,16 @@ namespace Widgets
 	{
 		ModelIndex root;
 
-		CreateView_Recursive(root, 0);
+		m_rowLayoutTree[nullptr];
+		CreateView_Recursive(root, nullptr, 0);
 	}
 
-	void TreeView::CreateView_Recursive(const ModelIndex& parent, int depth)
+	void TreeView::CreateView_Recursive(const ModelIndex& parent, const Layout* pParentLayout, int depth)
 	{
 		int rowCount = m_pModel->GetRowCount(parent);
 		int columnCount = m_pModel->GetColumnCount(parent);
+
+		Core::Array<Layout*>& layoutArray = m_rowLayoutTree[pParentLayout];
 
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
@@ -234,8 +238,8 @@ namespace Widgets
 			Layout* pRowLayout = CreateItem(ii, columnCount, parent, depth, hasChildren);
 			m_pLayout->AddWidget(pRowLayout);
 
-			
-			CreateView_Recursive(childIndex, depth + 1);
+			layoutArray.PushBack(pRowLayout);
+			CreateView_Recursive(childIndex, pRowLayout, depth + 1);
 		}
 	}
 
@@ -274,9 +278,8 @@ namespace Widgets
 				const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
 				for (const SelectionRow& sel : selection)
 				{
-					std::map<ModelIndex, Layout*>::const_iterator it = m_modelIndexToRowMap.find(sel.GetStartIndex());
-					if(it != m_modelIndexToRowMap.cend())
-						SetDeselectedRowStyle(it->second);
+					if(Layout* pSelectedLayout = GetRowLayout(sel.GetStartIndex()))
+						SetDeselectedRowStyle(pSelectedLayout);
 				}
 				SetSelectedRowStyle(pRowLayout);
 				pSelectionModel->SetSelectionRow(clickedRow);
@@ -358,18 +361,26 @@ namespace Widgets
 			else
 			{
 				//find the index of the following rows. Ugly as fuck! I need a cache or something to do this
-				std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(followingSibling);
-				if (it != m_modelIndexToRowMap.end())
+				Layout* pFollowingLayout = GetRowLayout(followingSibling);
+				if (pFollowingLayout)
 				{
-					const std::vector<Widget*>& allChildren = m_pLayout->GetChildren();
-					std::vector<Widget*>::const_iterator itWidget = std::find(allChildren.cbegin(), allChildren.cend(), it->second);
-					if (itWidget != allChildren.cend())
-					{
-						size_t layoutIndex = std::distance(allChildren.cbegin(), itWidget);
-						m_pLayout->InsertWidget(pRowLayout, static_cast<int>(layoutIndex));
-					}
+					int layoutIndex = GetRowIndexInLayout(pFollowingLayout);
+					m_pLayout->InsertWidget(pRowLayout, layoutIndex);
 				}
 			}
+
+			Layout* pParentLayout = GetRowLayout(parent);
+
+			//update the parent collapsed icon
+			if(pParentLayout)
+			{
+				RowInfo& info = m_rowInfoMap[pParentLayout];
+				info.m_collapsed = false;
+				info.m_pIcon->Show();
+			}
+
+			Core::Array<Layout*>& children = m_rowLayoutTree[pParentLayout];
+			children.PushBack(pRowLayout);
 		}
 
 		Widgets::WidgetMgr::Get().RequestResize();
@@ -388,7 +399,6 @@ namespace Widgets
 
 			//clean up the caches
 			m_rowInfoMap.erase(pLayoutToDelete);
-			//m_modelIndexToRowMap.erase(index);
 
 			//delet the widgets
 			m_pLayout->DeleteChild(pLayoutToDelete);
@@ -419,16 +429,14 @@ namespace Widgets
 	{
 		for (const SelectionRow& deselectedRow : deselected)
 		{
-			std::map<ModelIndex, Layout*>::const_iterator it = m_modelIndexToRowMap.find(deselectedRow.GetStartIndex());
-			if (it != m_modelIndexToRowMap.cend())
-				SetDeselectedRowStyle(it->second);
+			if(Layout* pLayout = GetRowLayout(deselectedRow.GetStartIndex()))
+				SetDeselectedRowStyle(pLayout);
 		}
 
 		for (const SelectionRow& selectedRow : selected)
 		{
-			std::map<ModelIndex, Layout*>::const_iterator it = m_modelIndexToRowMap.find(selectedRow.GetStartIndex());
-			if (it != m_modelIndexToRowMap.cend())
-				SetSelectedRowStyle(it->second);
+			if (Layout* pLayout = GetRowLayout(selectedRow.GetStartIndex()))
+				SetSelectedRowStyle(pLayout);
 		}
 	}
 
@@ -498,8 +506,6 @@ namespace Widgets
 		info.m_depth = depth;
 		info.m_index = m_pModel->GetIndex(row, 0, parent);
 		info.m_collapsed = false;
-		
-		m_modelIndexToRowMap[info.m_index] = pRowLayout;
 
 		pRowLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 
@@ -564,11 +570,7 @@ namespace Widgets
 
 	Label* TreeView::GetCell(const ModelIndex& index)
 	{
-		std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(index);
-		if (it == m_modelIndexToRowMap.end())
-			return nullptr;
-
-		Layout* pRowLayout = it->second;
+		Layout* pRowLayout = GetRowLayout(index);
 		if (!pRowLayout)
 			return nullptr;
 
@@ -597,17 +599,25 @@ namespace Widgets
 			temp = temp.GetParent();
 		}
 
+		Layout* pLayout = nullptr;
 		int row = 0;
 		while (!indexStack.empty())
 		{
 			temp = indexStack.top();
 			indexStack.pop();
 
-			row += temp.GetRow() + 1;
+			std::map<const Layout*, Core::Array<Layout*>>::iterator it = m_rowLayoutTree.find(pLayout);
+			if (it == m_rowLayoutTree.end())
+				return nullptr;
+
+			Core::Array<Layout*>& children = it->second;
+
+			if (!children.IsValidIndex(temp.GetRow()))
+				return nullptr;
+
+			pLayout = children[temp.GetRow()];
 		}
 
-		Widget* pWidget = m_pLayout->GetChild(row);
-		Layout* pLayout = static_cast<Layout*>(pWidget);
 		return pLayout;
 	}
 
@@ -634,11 +644,8 @@ namespace Widgets
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
 	{
-		std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(indexToHide);
-		if (it != m_modelIndexToRowMap.end())
-		{
-			it->second->Disable();
-		}
+		if(Layout* pLayout = GetRowLayout(indexToHide))
+			pLayout->Disable();
 
 		int rowCount = m_pModel->GetRowCount(indexToHide);
 		for (int ii = 0; ii < rowCount; ++ii)
@@ -650,27 +657,23 @@ namespace Widgets
 
 	void TreeView::ShowRowsRecursively(const ModelIndex& indexToShow)
 	{
-		std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(indexToShow);
-		if (it != m_modelIndexToRowMap.end())
-		{
-			it->second->Enable();
-		}
+		Layout* pLayout = GetRowLayout(indexToShow);
+		if (!pLayout)
+			return;
+
+		pLayout->Enable();
 
 		int rowCount = m_pModel->GetRowCount(indexToShow);
 		for (int ii = 0; ii < rowCount; ++ii)
 		{
 			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, indexToShow);
 
-			//2 lookups, aouch. I should have map Layout* -> RowInfo*
-			std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(indexToShow);
-			if (it == m_modelIndexToRowMap.end())
+
+			RowInfo* pInfo = GetRowInfo(pLayout);
+			if (!pInfo)
 				continue;
 
-			std::map<Widget*, RowInfo>::iterator itInfo = m_rowInfoMap.find(it->second);
-			if (itInfo == m_rowInfoMap.end())
-				continue;
-
-			if (itInfo->second.m_collapsed)
+			if (pInfo->m_collapsed)
 				continue;
 
 			ShowRowsRecursively(childIndex);

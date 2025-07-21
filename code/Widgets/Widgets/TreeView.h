@@ -65,11 +65,11 @@ namespace Widgets
 		};
 
 		std::map<Widget*, RowInfo> m_rowInfoMap;
-		std::map<ModelIndex, Layout*> m_modelIndexToRowMap;
+		std::map<const Layout*, Core::Array<Layout*>> m_rowLayoutTree;
 
 		void CreateHeader();
 		void CreateView();
-		void CreateView_Recursive(const ModelIndex& parent, int depth);
+		void CreateView_Recursive(const ModelIndex& parent, const Layout* pParentLayout, int depth);
 
 		// Event callbacks
 		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
