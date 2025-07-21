@@ -80,15 +80,15 @@ namespace Widgets
 
 		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
 		void OnRemoveRows(int start, int count, const ModelIndex& parent);
+		void OnDataChanged(const ModelIndex& index);
 
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
-		void OnDataChanged_SelectionModel(const ModelIndex& index);
 
 		void OnClick_Icon(Layout* pRowLayout);
 
 		// Internal functions
 		Layout* CreateItem(int row, int columnCount, const ModelIndex& parent, int depth, bool hasChildren);
-		Label* GetItem(int row, int column, const ModelIndex& parent);
+		Label* GetCell(const ModelIndex& index);
 		Layout* GetRowWidget(int row, int column, const ModelIndex& parent);
 
 		int GetRowIndex(const Layout* pLayout) const;

@@ -121,7 +121,7 @@ namespace Widgets
 		m_pModel = pModel;
 		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
 		m_pModel->OnRemoveRows([this](int start, int count, const ModelIndex& parent) { OnRemoveRows(start, count, parent); });
-		m_pModel->OnDataChanged([this](const ModelIndex& index) { OnDataChanged_SelectionModel(index); });
+		m_pModel->OnDataChanged([this](const ModelIndex& index) { OnDataChanged(index); });
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected) { OnSelectionChanged_SelectionModel(selected, deselected); });
@@ -359,6 +359,16 @@ namespace Widgets
 		WidgetMgr::Get().RequestResize();
 	}
 
+	void TreeView::OnDataChanged(const ModelIndex& index)
+	{
+		Label* pLabel = GetCell(index);
+		if (!pLabel)
+			return;
+
+		std::string value = m_pModel->GetData(index);
+		pLabel->SetText(value);
+	}
+
 	void TreeView::OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected)
 	{
 		for (const SelectionRow& deselectedRow : deselected)
@@ -374,16 +384,6 @@ namespace Widgets
 			if (it != m_modelIndexToRowMap.cend())
 				SetSelectedRowStyle(it->second);
 		}
-	}
-
-	void TreeView::OnDataChanged_SelectionModel(const ModelIndex& index)
-	{
-		Label* pLabel = GetItem(index.GetRow(), index.GetColumn(), index.GetParent());
-		if (!pLabel)
-			return;
-
-		std::string value = m_pModel->GetData(index);
-		pLabel->SetText(value);
 	}
 
 	void TreeView::OnClick_Icon(Layout* pRowLayout)
@@ -502,15 +502,25 @@ namespace Widgets
 		return pRowLayout;
 	}
 
-	Label* TreeView::GetItem(int row, int column, const ModelIndex& parent)
+	Label* TreeView::GetCell(const ModelIndex& index)
 	{
-		Layout* pRowLayout = GetRowWidget(row, column, parent);
+		std::map<ModelIndex, Layout*>::iterator it = m_modelIndexToRowMap.find(index);
+		if (it == m_modelIndexToRowMap.end())
+			return nullptr;
+
+		Layout* pRowLayout = it->second;
 		if (!pRowLayout)
 			return nullptr;
 
-		Widget* pCell = pRowLayout->GetChildren()[column];
+		Widget* pCell = pRowLayout->GetChildren()[index.GetColumn()];
 		if (!pCell)
 			return nullptr;
+
+		if (index.GetColumn() == 0) // first column is a layout, not a label
+		{
+			Layout* pCellLayout = static_cast<Layout*>(pCell);
+			pCell = pCellLayout->GetChildren().back(); //the last widget is the label
+		}
 
 		Label* pLabel = static_cast<Label*>(pCell);
 		return pLabel;
