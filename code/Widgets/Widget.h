@@ -157,6 +157,8 @@ namespace Widgets
 		const std::vector<Widget*>& GetChildren() const;
 		uint32_t GetChildrenCount() const;
 
+		Widget* GetChild(int ii);
+
 		Widget* GetParent();
 
 		bool IsInside(uint32_t screenX, uint32_t screenY) const;
