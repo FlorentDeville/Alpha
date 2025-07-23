@@ -11,7 +11,7 @@ namespace Systems
 {
 	// A container id is a unique identifier for container. It uses the first 56 lsb
 	// which gives us 2^56 possible value.
-	// The top 8 bits are reserved for ObjectId. An ObjectId is local a container and represents
+	// The top 8 bits are reserved for ObjectId. An ObjectId is local to a container and represents
 	// the id of a root object in the package. It means a container can store 2^8 = 256 root objects.
 	// The ObjectId and ContainerId together makes the AssetId.
 	class ContainerId

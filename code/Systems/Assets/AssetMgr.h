@@ -18,6 +18,7 @@
 
 #include <functional>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -69,6 +70,9 @@ namespace Systems
 		bool SaveMetadataTable() const;
 		bool LoadMetadataTable();
 		
+		//Generate a new unique container id.
+		ContainerId GenerateNewContainerId();
+
 	private:
 		std::string m_root; //location of toc.txt
 		
@@ -85,6 +89,8 @@ namespace Systems
 
 		// New asset system using containers
 		std::map<NewAssetId, AssetMetadata> m_metadata;
+
+		std::set<ContainerId> m_containerIds;
 
 		// New asset types. the type is saved as a string in the metadata table.
 		// It is different from the asset object type. An asset object type can be upgraded and renamed,
