@@ -31,6 +31,7 @@ namespace Systems
 		void DeleteGameObject(const Core::Guid& guid);
 
 		GameObject* FindGameObject(const Core::Guid& guid);
+		const GameObject* FindGameObject(const Core::Guid& guid) const;
 
 		const Core::Array<GameObject*>& GetGameObjectsArray() const;
 
