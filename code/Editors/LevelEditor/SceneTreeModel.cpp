@@ -222,6 +222,9 @@ namespace Editors
 		Widgets::ModelIndex modelIndex = GetModelIndex(pItem);
 		int row = modelIndex.GetRow();
 		Widgets::ModelIndex parentModelIndex = modelIndex.GetParent();
+
+		BeforeRemoveRows(row, 1, parentModelIndex);
+
 		Core::Guid parentGuid = pItem->m_parent;
 
 		//delete the cache
@@ -243,7 +246,7 @@ namespace Editors
 
 		delete pItem;
 
-		RemoveRows(row, 1, parentModelIndex);
+		AfterRemoveRows(row, 1, parentModelIndex);
 	}
 
 	void SceneTreeModel::RenameGameObject(const Core::Guid& guid, const std::string& newName)

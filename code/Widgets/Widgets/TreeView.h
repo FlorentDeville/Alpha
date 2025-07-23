@@ -80,7 +80,8 @@ namespace Widgets
 		void SetDeselectedRowStyle(Layout* pLayout);
 
 		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
-		void OnRemoveRows(int start, int count, const ModelIndex& parent);
+		void Model_OnBeforeRemoveRows(int start, int count, const ModelIndex& parent);
+		void Model_OnAfterRemoveRows(int start, int count, const ModelIndex& parent);
 		void OnDataChanged(const ModelIndex& index);
 
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);

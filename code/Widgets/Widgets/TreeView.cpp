@@ -123,7 +123,8 @@ namespace Widgets
 
 		m_pModel = pModel;
 		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
-		m_pModel->OnRemoveRows([this](int start, int count, const ModelIndex& parent) { OnRemoveRows(start, count, parent); });
+		m_pModel->OnBeforeRemoveRows([this](int start, int count, const ModelIndex& parent) { Model_OnBeforeRemoveRows(start, count, parent); });
+		m_pModel->OnAfterRemoveRows([this](int start, int count, const ModelIndex& parent) { Model_OnAfterRemoveRows(start, count, parent); });
 		m_pModel->OnDataChanged([this](const ModelIndex& index) { OnDataChanged(index); });
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
@@ -382,7 +383,7 @@ namespace Widgets
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
-	void TreeView::OnRemoveRows(int start, int count, const ModelIndex& parent)
+	void TreeView::Model_OnBeforeRemoveRows(int start, int count, const ModelIndex& parent)
 	{
 		//Watch out : the row has already been deleted from the model.
 
@@ -405,7 +406,10 @@ namespace Widgets
 			if (RowInfo* pInfo = GetRowInfo(pParentRow))
 				pInfo->m_pIcon->Hide();
 		}
+	}
 
+	void TreeView::Model_OnAfterRemoveRows(int start, int count, const ModelIndex& parent)
+	{
 		WidgetMgr::Get().RequestResize();
 	}
 
