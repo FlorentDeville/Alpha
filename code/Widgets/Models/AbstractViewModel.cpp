@@ -44,12 +44,11 @@ namespace Widgets
 	{
 		m_pSelectionModel->BeforeRemoveRows(start, count, parent);
 		m_onBeforeRemoveRows(start, count, parent);
-		m_pSelectionModel->AfterRemoveRows(start, count, parent);
 	}
 
 	void AbstractViewModel::AfterRemoveRows(int start, int count, const ModelIndex& parent)
 	{
-		m_pSelectionModel->AfterRemoveRows(start, count, parent);
 		m_onAfterRemoveRows(start, count, parent);
+		m_pSelectionModel->AfterRemoveRows(start, count, parent);
 	}
 }
