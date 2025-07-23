@@ -63,11 +63,15 @@ namespace Editors
 		std::map<Core::Guid, CachedItem*> m_cachedItemMap;	// map from a game object guid to the cached item
 		Core::Array<CachedItem*> m_cachedItemRootsArray;	// list of root game objects.
 
+		const Systems::LevelAsset* m_pLevel;
+
 		const CachedItem* CreateCachedItem(const Systems::GameObject* pGo);
 
 		CachedItem* FindCachedItem(const Core::Guid& guid);
 		const CachedItem* FindCachedItem(const Core::Guid& guid) const;
 
 		Widgets::ModelIndex GetModelIndex(const CachedItem* pItem) const;
+
+		void AddGameObject_Recursive(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent);
 	};
 }

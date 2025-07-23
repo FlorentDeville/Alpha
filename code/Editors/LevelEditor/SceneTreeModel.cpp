@@ -17,6 +17,7 @@ namespace Editors
 {
 	SceneTreeModel::SceneTreeModel(const Systems::LevelAsset* pLevel)
 		: AbstractViewModel()
+		, m_pLevel(pLevel)
 	{
 		const Core::Array<Systems::GameObject*>& goArray = pLevel->GetGameObjectsArray();
 		for (const Systems::GameObject* pGo : goArray)
@@ -199,18 +200,7 @@ namespace Editors
 
 	void SceneTreeModel::AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)
 	{
-		const CachedItem* pItem = CreateCachedItem(pGo);
-
-		if (pGoParent)
-		{
-			if (CachedItem* pParentCachedItem = FindCachedItem(pGoParent->GetGuid()))
-			{
-				pParentCachedItem->m_children = pGoParent->GetTransform().GetChildrenGuid(); //copy everything to keep the order
-			}
-		}
-
-		Widgets::ModelIndex index = GetModelIndex(pItem);
-		CommitInsertRows(index.GetRow(), 1, index.GetParent());
+		AddGameObject_Recursive(pGo, pGoParent);
 	}
 
 	void SceneTreeModel::RemoveGameObject(const Core::Guid& guid)
@@ -356,5 +346,31 @@ namespace Editors
 		size_t row = std::distance(childrenArray.cbegin(), it);
 		
 		return CreateIndex(static_cast<int>(row), 0, pItem);
+	}
+
+	void SceneTreeModel::AddGameObject_Recursive(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)
+	{
+		if (pGoParent)
+		{
+			if (CachedItem* pParentCachedItem = FindCachedItem(pGoParent->GetGuid()))
+			{
+				pParentCachedItem->m_children = pGoParent->GetTransform().GetChildrenGuid(); //copy everything to keep the order
+			}
+		}
+
+		const CachedItem* pItem = CreateCachedItem(pGo);
+		Widgets::ModelIndex index = GetModelIndex(pItem);
+		CommitInsertRows(index.GetRow(), 1, index.GetParent());
+
+		//now add the children
+		const Core::Array<Core::Guid>& children = pGo->GetTransform().GetChildrenGuid();
+		for (const Core::Guid& childGuid : children)
+		{
+			const Systems::GameObject* pGoChild = m_pLevel->FindGameObject(childGuid);
+			if (!pGoChild)
+				continue;
+
+			AddGameObject_Recursive(pGoChild, pGo);
+		}
 	}
 }
