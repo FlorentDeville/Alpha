@@ -63,8 +63,9 @@ namespace Widgets
 		void SetSelectedRowStyle(int row);
 		void SetDeselectedRowStyle(int row);
 
-		void OnCommitInsertRows(int start, int count, const ModelIndex& parent);
-		void OnRemoveRows(int start, int count, const ModelIndex& parent);
+		void Model_OnCommitInsertRows(int start, int count, const ModelIndex& parent);
+		void Model_OnBeforeRemoveRows(int start, int count, const ModelIndex& parent);
+		void Model_OnAfterRemoveRows(int start, int count, const ModelIndex& parent);
 
 		void OnSelectionChanged_SelectionModel(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected);
 		void OnDataChanged_SelectionModel(const ModelIndex& index);

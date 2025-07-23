@@ -36,8 +36,11 @@ namespace Widgets
 		//call this after inserting new rows in the model
 		void CommitInsertRows(int start, int count, const ModelIndex& parent);
 
-		//call this after removing the rows from the model
-		void RemoveRows(int start, int count, const ModelIndex& parent);
+		//call this before removing the rows from the model
+		void BeforeRemoveRows(int start, int count, const ModelIndex& parent);
+
+		//call this after the rows were removed from the model
+		void AfterRemoveRows(int start, int count, const ModelIndex& parent);
 
 		//Event called when the model has changed a value and the view needs to be refreshed.
 		EVENT_DECL(DataChanged, void(const ModelIndex& index))
@@ -47,6 +50,7 @@ namespace Widgets
 
 		//Used only by widgets. they need to be friend with this class.
 		PRIVATE_EVENT_DECL(CommitInsertRows, void(int start, int count, const ModelIndex& parent))
-		PRIVATE_EVENT_DECL(RemoveRows, void(int start, int count, const ModelIndex& parent))
+		PRIVATE_EVENT_DECL(BeforeRemoveRows, void(int start, int count, const ModelIndex& parent))
+		PRIVATE_EVENT_DECL(AfterRemoveRows, void(int start, int count, const ModelIndex& parent))
 	};
 }
