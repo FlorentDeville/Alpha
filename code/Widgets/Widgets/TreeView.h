@@ -59,13 +59,12 @@ namespace Widgets
 		struct RowInfo
 		{
 			int m_depth;
-			ModelIndex m_index;
 			bool m_collapsed;
 			Icon* m_pIcon;
 			Layout* m_pParent;
 		};
 
-		std::map<Widget*, RowInfo> m_rowInfoMap;
+		std::map<const Widget*, RowInfo> m_rowInfoMap;
 		std::map<const Layout*, Core::Array<Layout*>> m_rowLayoutTree;
 
 		void CreateHeader();
@@ -94,11 +93,12 @@ namespace Widgets
 		Layout* CreateItem(const ModelIndex& index, int columnCount, int depth);
 		Label* GetCell(const ModelIndex& index);
 		Layout* ComputeRowLayoutFromModelIndex(const ModelIndex& index);
+		ModelIndex ComputeModelIndexFromRowLayout(const Layout* pLayout);
 
 		//Return the index of the layout widget in the parent layout containing all the rows.
 		int GetRowIndexInLayout(const Layout* pLayout) const;
 
-		RowInfo* GetRowInfo(Widget* pRowLayout);
+		RowInfo* GetRowInfo(const Widget* pRowLayout);
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);

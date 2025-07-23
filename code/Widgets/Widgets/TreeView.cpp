@@ -247,11 +247,10 @@ namespace Widgets
 		if (!ev.HasButton(MouseButton::LeftButton))
 			return;
 
-		std::map<Widget*, RowInfo>::const_iterator it = m_rowInfoMap.find(pRowLayout);
-		if (it == m_rowInfoMap.cend())
+		ModelIndex start = ComputeModelIndexFromRowLayout(pRowLayout);
+		if (!start.IsValid())
 			return;
 
-		ModelIndex start = it->second.m_index;
 		ModelIndex end = m_pModel->GetIndex(start.GetRow(), m_pModel->GetColumnCount(ModelIndex()) - 1, start.GetParent());
 		SelectionRow clickedRow(start, end);
 
@@ -385,8 +384,6 @@ namespace Widgets
 
 	void TreeView::Model_OnBeforeRemoveRows(int start, int count, const ModelIndex& parent)
 	{
-		//Watch out : the row has already been deleted from the model.
-
 		//First delete the layout widget
 		Layout* pParentRow = ComputeRowLayoutFromModelIndex(parent);
 		for (int ii = start; ii < start + count; ++ii)
@@ -441,38 +438,38 @@ namespace Widgets
 
 	void TreeView::OnClick_Icon(Layout* pRowLayout)
 	{
-		std::map<Widget*, RowInfo>::iterator it = m_rowInfoMap.find(pRowLayout);
-		if (it == m_rowInfoMap.cend())
+		RowInfo* pInfo = GetRowInfo(pRowLayout);
+		if (!pInfo)
 			return;
 
-		RowInfo& info = it->second;
+		ModelIndex index = ComputeModelIndexFromRowLayout(pRowLayout);
 
-		if (info.m_collapsed)
+		if (pInfo->m_collapsed)
 		{
 			Rendering::TextureId expandedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
-			info.m_pIcon->SetTextureId(expandedIcon);
+			pInfo->m_pIcon->SetTextureId(expandedIcon);
 
-			int rowCount = m_pModel->GetRowCount(info.m_index);
+			int rowCount = m_pModel->GetRowCount(index);
 			for (int ii = 0; ii < rowCount; ++ii)
 			{
-				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, info.m_index);
+				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, index);
 				ShowRowsRecursively(childIndex);
 			}
 		}
 		else
 		{
 			Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
-			info.m_pIcon->SetTextureId(collapsedIcon);
+			pInfo->m_pIcon->SetTextureId(collapsedIcon);
 
-			int rowCount = m_pModel->GetRowCount(info.m_index);
+			int rowCount = m_pModel->GetRowCount(index);
 			for (int ii = 0; ii < rowCount; ++ii)
 			{
-				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, info.m_index);
+				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, index);
 				HideRowsRecursively(childIndex);
 			}
 		}
 
-		info.m_collapsed = !info.m_collapsed;
+		pInfo->m_collapsed = !pInfo->m_collapsed;
 
 		WidgetMgr::Get().RequestResize();
 	}
@@ -503,8 +500,8 @@ namespace Widgets
 
 		RowInfo info;
 		info.m_depth = depth;
-		info.m_index = index;
 		info.m_collapsed = false;
+		info.m_pParent = ComputeRowLayoutFromModelIndex(index.GetParent());
 
 		pRowLayout->GetDefaultStyle().SetBackgroundColor(m_defaultRowBackgroundColor);
 
@@ -623,6 +620,36 @@ namespace Widgets
 		return pLayout;
 	}
 
+	ModelIndex TreeView::ComputeModelIndexFromRowLayout(const Layout* pLayout)
+	{
+		std::stack<int> rowStack;
+
+		const Layout* pChildLayout = pLayout;
+		const RowInfo* pInfo = GetRowInfo(static_cast<const Widget*>(pChildLayout));
+		while (pInfo)
+		{
+			Core::Array<Layout*>& childrenArray = m_rowLayoutTree[pInfo->m_pParent];
+			Core::Array<Layout*>::Iterator it = std::find(childrenArray.cbegin(), childrenArray.cend(), pChildLayout);
+			if (it == childrenArray.cend())
+				return ModelIndex();
+
+			int row = static_cast<int>(std::distance(childrenArray.cbegin(), it));
+			rowStack.push(row);
+
+			pChildLayout = pInfo->m_pParent;
+			pInfo = GetRowInfo(static_cast<const Widget*>(pChildLayout));
+		}
+
+		ModelIndex index;
+		while (!rowStack.empty())
+		{
+			index = m_pModel->GetIndex(rowStack.top(), 0, index);
+			rowStack.pop();
+		}
+
+		return index;
+	}
+
 	int TreeView::GetRowIndexInLayout(const Layout* pLayout) const
 	{
 		const std::vector<Widgets::Widget*> children = m_pLayout->GetChildren();
@@ -635,9 +662,9 @@ namespace Widgets
 		return index;
 	}
 
-	TreeView::RowInfo* TreeView::GetRowInfo(Widget* pRowLayout)
+	TreeView::RowInfo* TreeView::GetRowInfo(const Widget* pRowLayout)
 	{
-		std::map<Widget*, RowInfo>::iterator it = m_rowInfoMap.find(pRowLayout);
+		std::map<const Widget*, RowInfo>::iterator it = m_rowInfoMap.find(pRowLayout);
 		if (it == m_rowInfoMap.cend())
 			return nullptr;
 
