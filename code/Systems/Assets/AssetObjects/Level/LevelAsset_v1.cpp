@@ -53,6 +53,10 @@ namespace Systems
 
 	void LevelAsset_v1::DeleteGameObject(GameObject* pGo)
 	{
+		const Core::Guid& parentGuid = pGo->GetTransform().GetParentGuid();
+		if (GameObject* pGoParent = FindGameObject(parentGuid))
+			pGoParent->GetTransform().RemoveChild(pGo->GetGuid());
+
 		m_gameObjectsArray.Erase(pGo);
 		Systems::DeleteObject(pGo);
 	}
