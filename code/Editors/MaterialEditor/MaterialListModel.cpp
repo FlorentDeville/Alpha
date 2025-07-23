@@ -141,6 +141,8 @@ namespace Editors
 		if (cacheIndex < 0)
 			return;
 
+		BeforeRemoveRows(cacheIndex, 1, Widgets::ModelIndex());
+
 		std::vector<CachedShaderData>::const_iterator it = m_cache.cbegin() + cacheIndex;
 		m_cache.erase(it);
 
@@ -161,7 +163,7 @@ namespace Editors
 			}
 		}
 
-		RemoveRows(cacheIndex, 1, Widgets::ModelIndex());
+		AfterRemoveRows(cacheIndex, 1, Widgets::ModelIndex());
 
 		//update the other rows after deletion so the indices are correct
 		if (pMetadata->IsA<Systems::MaterialAsset>())

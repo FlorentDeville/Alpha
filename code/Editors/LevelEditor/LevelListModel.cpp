@@ -156,9 +156,11 @@ namespace Editors
 		
 		size_t index = std::distance(m_cachedDataArray.begin(), it);
 
+		BeforeRemoveRows(static_cast<int>(index), 1, Widgets::ModelIndex());
+
 		m_cachedDataArray.Erase(it);
 
-		RemoveRows(static_cast<int>(index), 1, Widgets::ModelIndex());
+		AfterRemoveRows(static_cast<int>(index), 1, Widgets::ModelIndex());
 	}
 
 	void LevelListModel::AddCachedData(const Systems::AssetMetadata& metadata)

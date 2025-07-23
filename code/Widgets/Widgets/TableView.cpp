@@ -117,8 +117,9 @@ namespace Widgets
 		}
 
 		m_pModel = pModel;
-		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { OnCommitInsertRows(start, count, parent); });
-		m_pModel->OnRemoveRows([this](int start, int count, const ModelIndex& parent) { OnRemoveRows(start, count, parent); });
+		m_pModel->OnCommitInsertRows([this](int start, int count, const ModelIndex& parent) { Model_OnCommitInsertRows(start, count, parent); });
+		m_pModel->OnBeforeRemoveRows([this](int start, int count, const ModelIndex& parent) { Model_OnBeforeRemoveRows(start, count, parent); });
+		m_pModel->OnAfterRemoveRows([this](int start, int count, const ModelIndex& parent) { Model_OnAfterRemoveRows(start, count, parent); });
 		m_pModel->OnDataChanged([this](const ModelIndex& index) { OnDataChanged_SelectionModel(index); });
 
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
@@ -297,7 +298,7 @@ namespace Widgets
 		pLayout->GetDefaultStyle().ShowBorder(false);
 	}
 
-	void TableView::OnCommitInsertRows(int start, int count, const ModelIndex& parent)
+	void TableView::Model_OnCommitInsertRows(int start, int count, const ModelIndex& parent)
 	{
 		//This is a table, only root can have children
 		if (parent.IsValid())
@@ -319,7 +320,7 @@ namespace Widgets
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
-	void TableView::OnRemoveRows(int start, int count, const ModelIndex& parent)
+	void TableView::Model_OnBeforeRemoveRows(int start, int count, const ModelIndex& parent)
 	{
 		if (parent.IsValid())
 			return;
@@ -329,7 +330,10 @@ namespace Widgets
 			return;
 
 		m_pLayout->DeleteChild(pLayout);
+	}
 
+	void TableView::Model_OnAfterRemoveRows(int start, int count, const ModelIndex& parent)
+	{
 		WidgetMgr::Get().RequestResize();
 	}
 
