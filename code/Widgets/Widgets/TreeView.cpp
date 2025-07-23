@@ -389,27 +389,28 @@ namespace Widgets
 
 		//First delete the layout widget
 		Layout* pParentRow = ComputeRowLayoutFromModelIndex(parent);
-		int row = GetRowIndexInLayout(pParentRow);
 		for (int ii = start; ii < start + count; ++ii)
 		{
-			Widget* pWidgetToDelete = m_pLayout->GetChild(row + ii + 1);
+			ModelIndex indexToRemove = m_pModel->GetIndex(ii, 0, parent);
+			Widget* pWidgetToDelete = ComputeRowLayoutFromModelIndex(indexToRemove);
 			Layout* pLayoutToDelete = static_cast<Layout*>(pWidgetToDelete);
 
 			DeleteRowRecursively(pParentRow, pLayoutToDelete);
-		}
-		
-		//Second update the parent collapse state and icon
-		int rowCount = m_pModel->GetRowCount(parent);
-		bool hasChildren = rowCount > 0;
-		if (!hasChildren)
-		{
-			if (RowInfo* pInfo = GetRowInfo(pParentRow))
-				pInfo->m_pIcon->Hide();
-		}
+		}		
 	}
 
 	void TreeView::Model_OnAfterRemoveRows(int start, int count, const ModelIndex& parent)
 	{
+		//update the parent collapse state and icon
+		int rowCount = m_pModel->GetRowCount(parent);
+		bool hasChildren = rowCount > 0;
+		if (!hasChildren)
+		{
+			Layout* pParentRow = ComputeRowLayoutFromModelIndex(parent);
+			if (RowInfo* pInfo = GetRowInfo(pParentRow))
+				pInfo->m_pIcon->Hide();
+		}
+
 		WidgetMgr::Get().RequestResize();
 	}
 
