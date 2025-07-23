@@ -150,6 +150,7 @@ namespace Editors
 		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoParent) { OnLevelEditorModule_AddGameObject(pGo, pGoParent); });
 		levelEditorModule.OnRenameGameObject([this](const Core::Guid& guid, const std::string& newName) { OnLevelEditorModule_RenameGameObject(guid, newName); });
 		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
+		levelEditorModule.OnReparentGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent) { OnLevelEditorModule_ReparentGameObject(pGo, pGoOldParent, pGoNewParent); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -651,7 +652,8 @@ namespace Editors
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 
-		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+		//reparenting will change the selection so copy the selection list.
+		const std::list<Core::Guid> selectionList = pSelectionMgr->GetSelectionList();
 
 		if (selectionList.size() < 2)
 			return;
@@ -721,5 +723,10 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid)
 	{
 		m_pSceneTreeModel->RemoveGameObject(guid);
+	}
+
+	void LevelEditor::OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent)
+	{
+		m_pSceneTreeModel->ReparentGameObject(pGo, pGoOldParent, pGoNewParent);
 	}
 }

@@ -263,7 +263,7 @@ namespace Editors
 		Systems::GameObject* pGoNewParent = nullptr;
 		if (parent.IsValid())
 		{
-			Systems::GameObject* pGoNewParent = m_pLevel->FindGameObject(parent);
+			pGoNewParent = m_pLevel->FindGameObject(parent);
 			if (!pGoNewParent)
 				return;
 
@@ -283,7 +283,7 @@ namespace Editors
 		//set the new parent to the child
 		pGoChild->GetTransform().SetParentGuid(parent);
 
-		m_onReparentGameObject(child, oldParentGuid, parent);
+		m_onReparentGameObject(pGoChild, pGoOldParent, pGoNewParent);
 	}
 
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)

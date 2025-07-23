@@ -265,6 +265,13 @@ namespace Editors
 		m_onDataChanged(cellIndex);
 	}
 
+	void SceneTreeModel::ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent)
+	{
+		RemoveGameObject(pGo->GetGuid());
+
+		AddGameObject(pGo, pNewParent);
+	}
+
 	Core::Guid SceneTreeModel::FindGameObject(const Widgets::ModelIndex& index) const
 	{
 		const CachedItem* pItem = index.GetConstDataPointer<CachedItem>();

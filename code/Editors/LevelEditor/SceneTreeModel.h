@@ -42,6 +42,7 @@ namespace Editors
 		void AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent = nullptr);
 		void RemoveGameObject(const Core::Guid& guid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& newName);
+		void ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent);
 
 		Core::Guid FindGameObject(const Widgets::ModelIndex& index) const;
 

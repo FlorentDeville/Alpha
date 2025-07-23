@@ -108,7 +108,7 @@ namespace Editors
 		EVENT_DECL(AfterDeleteGameObject, void(const Core::Guid& nodeGuid))
 		EVENT_DECL(RenameGameObject, void(const Core::Guid & guid, const std::string & newName))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
-		EVENT_DECL(ReparentGameObject, void(const Core::Guid& child, const Core::Guid& oldParent, const Core::Guid& newParent))
+		EVENT_DECL(ReparentGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent))
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
