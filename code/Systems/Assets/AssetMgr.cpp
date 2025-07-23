@@ -11,8 +11,9 @@
 #include "Systems/Assets/AssetType/NewAssetType.h"
 
 #include <assert.h>
+#include <cstdio>
 #include <fstream>
-
+#include <random>
 //#pragma optimize("", off)
 
 namespace Systems
@@ -23,6 +24,7 @@ namespace Systems
 		, m_meshes()
 		, m_materials()
 		, m_nextId()
+		, m_containerIds()
 	{}
 
 	AssetMgr::~AssetMgr()
@@ -357,9 +359,29 @@ namespace Systems
 
 			AssetMetadata metadata(assetId, virtualName, assetTypeSid);
 			m_metadata[assetId] = metadata;
+
+			m_containerIds.insert(assetId.GetContainerId());
 		}
 
 		return true;
+	}
+
+	ContainerId AssetMgr::GenerateNewContainerId()
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<uint64_t> dis(0, UINT64_MAX);
+
+		ContainerId newId;
+		do
+		{
+			newId = ContainerId(static_cast<uint64_t>(dis(gen)));
+		} 
+		while (m_containerIds.find(newId) != m_containerIds.cend());
+
+		m_containerIds.insert(newId);
+		return newId;
+		
 	}
 
 	std::string AssetMgr::GetMetadataTableFilePath() const

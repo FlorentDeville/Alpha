@@ -48,15 +48,18 @@ namespace Systems
 		if (!pAsset)
 			return nullptr;
 
+		AssetMgr& assetMgr = AssetMgr::Get();
+		ContainerId cid = assetMgr.GenerateNewContainerId();
+
 		ContainerMgr& containerMgr = ContainerMgr::Get();
-		Container* pContainer = containerMgr.CreateContainer(virtualName.c_str());
+		Container* pContainer = containerMgr.CreateContainer(cid);
 		pContainer->AddAsset(pAsset);
 		bool res = containerMgr.SaveContainer(pContainer->GetId());
 		if (!res)
 			return nullptr;
 
 		AssetMetadata materialMetadata(pAsset->GetId(), virtualName, T::GetAssetTypeNameSid());
-		AssetMgr& assetMgr = AssetMgr::Get();
+		
 		res = assetMgr.RegisterAssetMetadata(materialMetadata);
 		if (!res)
 			return nullptr;

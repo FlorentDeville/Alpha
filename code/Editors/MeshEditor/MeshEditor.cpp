@@ -67,7 +67,8 @@ namespace Editors
 		FbxImporter::FbxImporter importer;
 		importer.Import(filename, *pMesh);
 	
-		Systems::Container* pContainer = containerMgr.CreateContainer(filename.c_str());
+		Systems::ContainerId cid = assetMgr.GenerateNewContainerId();
+		Systems::Container* pContainer = containerMgr.CreateContainer(cid);
 		pContainer->AddAsset(pMesh);
 
 		Systems::AssetMetadata metadata(pMesh->GetId(), filename, MAKESID("Mesh"));

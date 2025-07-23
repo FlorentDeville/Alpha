@@ -42,25 +42,9 @@ namespace Systems
 		m_containerMap.clear();
 	}
 
-	Container* ContainerMgr::CreateContainer(const char* seed)
+	Container* ContainerMgr::CreateContainer(ContainerId cid)
 	{
-		//first make a new container id
-		Core::Sid startSid = SID(seed);
-
-		ContainerId cid(startSid);
-
-		const int MAX_ITERATION = 10000;
-		int ii = 0;
-		std::map<ContainerId, Container*>::const_iterator it = m_containerMap.find(cid);
-		while (it != m_containerMap.cend() && ii < MAX_ITERATION) //boo caca
-		{
-			++ii;
-			++startSid;
-			cid = ContainerId(startSid);
-			it = m_containerMap.find(cid);
-		}
-
-		if (ii >= MAX_ITERATION)
+		if (DoesContainerExistsOnDisk(cid))
 			return nullptr;
 
 		//now create the container
@@ -184,7 +168,14 @@ namespace Systems
 		return true;
 	}
 
-	std::string ContainerMgr::MakeDirectory(ContainerId cid)
+	bool ContainerMgr::DoesContainerExistsOnDisk(ContainerId cid) const
+	{
+		std::string containerFilename = MakeFilename(cid);
+
+		return std::filesystem::exists(containerFilename);
+	}
+
+	std::string ContainerMgr::MakeDirectory(ContainerId cid) const
 	{
 		std::string cidStr = cid.ToString();
 		std::string firstSubFolder = cidStr.substr(2, 2);
@@ -194,7 +185,7 @@ namespace Systems
 		return directory;
 	}
 
-	std::string ContainerMgr::MakeFilename(ContainerId cid)
+	std::string ContainerMgr::MakeFilename(ContainerId cid) const
 	{
 		std::string cidStr = cid.ToString();
 		return MakeDirectory(cid) + cidStr;
