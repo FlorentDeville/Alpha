@@ -127,5 +127,8 @@ namespace Editors
 		void OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName);
 		void OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid);
 		void OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent);
+
+		bool IsLevelBrowserEnabled() const;
+		bool IsSceneTreeEnabled() const;
 	};
 }

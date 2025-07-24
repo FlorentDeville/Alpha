@@ -189,6 +189,7 @@ namespace Editors
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
 
 		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add Game Object");
+		pAddItem->SetShortcut("Ctrl+N");
 		pAddItem->OnClick([this]() { OnClickEditMenu_AddGameObject(); });
 
 		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Game Object");
@@ -525,6 +526,11 @@ namespace Editors
 
 	void LevelEditor::OnClickFileMenu_NewLevel()
 	{
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!IsLevelBrowserEnabled())
+			return;
+
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
 		UserInputDialog* pDialog = new UserInputDialog("New Asset Name");
 		pDialog->OnInputValidated([this](const std::string& input)
@@ -536,6 +542,11 @@ namespace Editors
 
 	void LevelEditor::OnClickFileMenu_OpenLevel()
 	{
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!IsLevelBrowserEnabled())
+			return;
+
 		if (!m_selectedLevelInLevelList.IsValid())
 			return;
 
@@ -555,7 +566,9 @@ namespace Editors
 
 	void LevelEditor::OnClickFileMenu_DeleteLevel()
 	{
-		if (!m_selectedLevelInLevelList.IsValid())
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!IsLevelBrowserEnabled())
 			return;
 
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", "Are you sure you want to delete this level?");
@@ -567,7 +580,7 @@ namespace Editors
 	{
 		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
 		//at the same time, I only trigger it for the enabled widget.
-		if (!m_pLevelTableView->IsEnabled())
+		if (!IsLevelBrowserEnabled())
 			return;
 
 		if (!m_selectedLevelInLevelList.IsValid())
@@ -586,6 +599,11 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_AddGameObject()
 	{
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!IsSceneTreeEnabled())
+			return;
+
 		LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
@@ -605,6 +623,11 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_DeleteGameObject()
 	{
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!IsSceneTreeEnabled())
+			return;
+
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 
@@ -619,7 +642,7 @@ namespace Editors
 	{
 		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
 		//at the same time, I only trigger it for the enabled widget.
-		if (!m_pSceneTree->IsEnabled())
+		if (!IsSceneTreeEnabled())
 			return;
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
@@ -743,5 +766,15 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent)
 	{
 		m_pSceneTreeModel->ReparentGameObject(pGo, pGoOldParent, pGoNewParent);
+	}
+
+	bool LevelEditor::IsLevelBrowserEnabled() const
+	{
+		return m_pLevelTableView->IsEnabled();
+	}
+
+	bool LevelEditor::IsSceneTreeEnabled() const
+	{
+		return m_pSceneTree->IsEnabled();
 	}
 }
