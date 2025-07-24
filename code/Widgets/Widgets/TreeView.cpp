@@ -143,19 +143,18 @@ namespace Widgets
 
 	void TreeView::SetColumnWidth(int column, int width)
 	{
-		if (!m_pModel)
+		if (column < 0)
 			return;
 
-		int columnCount = m_pModel->GetColumnCount(Widgets::ModelIndex());
-		if (column < 0 || column >= columnCount)
-			return;
-
-		if (m_columnWidth.GetSize() < static_cast<uint32_t>(columnCount))
-			m_columnWidth.Resize(columnCount, m_cellDefaultSize.x);
+		if (!m_columnWidth.IsValidIndex(column))
+			m_columnWidth.Resize(column + 1, m_cellDefaultSize.x);
 
 		m_columnWidth[column] = width;
 
 		std::vector<Widgets::Widget*> rows = m_pLayout->GetChildren();
+		
+		if (rows.size() < 1)
+			return;
 
 		//first resize the header
 		{
@@ -192,7 +191,11 @@ namespace Widgets
 			if (jj != columnCount - 1)
 			{
 				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				pLabel->SetSize(m_cellDefaultSize);
+
+				if(m_columnWidth.IsValidIndex(jj))
+					pLabel->SetSize(Core::UInt2(m_columnWidth[jj], m_cellDefaultSize.y));
+				else
+					pLabel->SetSize(m_cellDefaultSize);
 
 				pHeaderLayout->AddWidget(pLabel);
 
