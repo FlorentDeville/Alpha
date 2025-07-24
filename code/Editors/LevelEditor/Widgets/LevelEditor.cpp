@@ -61,6 +61,7 @@ namespace Editors
 		, m_cidOnSelectionCleared_EntityProperties()
 		, m_selectedLevelInLevelList()
 		, m_pLeftTabContainer(nullptr)
+		, m_pLevelTableView(nullptr)
 		, m_pLevelListModel(nullptr)
 		, m_pSnapItem(nullptr)
 		, m_pSplit(nullptr)
@@ -195,6 +196,7 @@ namespace Editors
 		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteGameObject(); });
 
 		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename Game Object...");
+		pRenameItem->SetShortcut("F2");
 		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameGameObject(); });
 
 		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
@@ -295,11 +297,11 @@ namespace Editors
 		Widgets::Frame* pLevelBrowser = new Widgets::Frame("Level Browser");
 		pParent->AddTab("Level Browser", pLevelBrowser);
 
-		Widgets::TableView* pLevelTableView = new Widgets::TableView();
-		pLevelBrowser->AddWidget(pLevelTableView);
+		m_pLevelTableView = new Widgets::TableView();
+		pLevelBrowser->AddWidget(m_pLevelTableView);
 
 		m_pLevelListModel = new LevelListModel();
-		pLevelTableView->SetModel(m_pLevelListModel);
+		m_pLevelTableView->SetModel(m_pLevelListModel);
 
 		Widgets::SelectionModel* pSelectionModel = m_pLevelListModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
@@ -563,13 +565,18 @@ namespace Editors
 
 	void LevelEditor::OnClickFileMenu_RenameLevel()
 	{
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!m_pLevelTableView->IsEnabled())
+			return;
+
 		if (!m_selectedLevelInLevelList.IsValid())
 		{
 			Core::LogModule::Get().LogError("You need to select a level to rename.");
 			return;
 		}
 
-		UserInputDialog* pDialog = new UserInputDialog("New name");
+		UserInputDialog* pDialog = new UserInputDialog("New level name");
 		pDialog->OnInputValidated([this](const std::string& input)
 			{
 				LevelEditorModule::Get().RenameLevel(m_selectedLevelInLevelList, input);
@@ -610,6 +617,11 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_RenameGameObject()
 	{
+		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
+		//at the same time, I only trigger it for the enabled widget.
+		if (!m_pSceneTree->IsEnabled())
+			return;
+
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
@@ -619,11 +631,13 @@ namespace Editors
 
 		const Core::Guid& lastSelectedNode = selectionList.back();
 
-		CreateRenameModalWindow([lastSelectedNode](const std::string& newName) 
+		UserInputDialog* pDialog = new UserInputDialog("New game object name");
+		pDialog->OnInputValidated([lastSelectedNode](const std::string& input)
 			{
 				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-				levelEditorModule.RenameGameObject(lastSelectedNode, newName);
+				levelEditorModule.RenameGameObject(lastSelectedNode, input);
 			});
+		pDialog->Open();
 	}
 
 	void LevelEditor::OnClickEditMenu_DuplicateEntity()

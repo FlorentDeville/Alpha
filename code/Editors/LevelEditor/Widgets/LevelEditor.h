@@ -36,6 +36,7 @@ namespace Widgets
 	class MenuItem;
 	class SplitVertical;
 	class TabContainer;
+	class TableView;
 	class TreeView;
 	class Widget;
 }
@@ -70,6 +71,7 @@ namespace Editors
 
 		Widgets::TabContainer* m_pLeftTabContainer;
 
+		Widgets::TableView* m_pLevelTableView;
 		LevelListModel* m_pLevelListModel;
 		EntityModel* m_pEntityModel;
 
