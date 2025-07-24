@@ -286,6 +286,7 @@ namespace Editors
 
 		m_pSceneTree = new Widgets::TreeView();
 		m_pSceneTree->SetMultiSelection(true);
+		m_pSceneTree->SetColumnWidth(SceneTreeModel::Columns::Name, 150);
 		m_pSceneTreeFrame->AddWidget(m_pSceneTree);
 	}
 
