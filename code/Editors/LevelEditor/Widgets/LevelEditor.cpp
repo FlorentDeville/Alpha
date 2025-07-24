@@ -9,6 +9,7 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/LevelMgr.h"
+#include "Editors/LevelEditor/SceneTreeModel.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
@@ -22,8 +23,6 @@
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
-#include "Editors/Widgets/Tree/LevelTreeModel.h"
-#include "Editors/Widgets/Tree/TreeWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -47,6 +46,7 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/Frame.h"
 #include "Widgets/Widgets/TableView.h"
+#include "Widgets/Widgets/TreeView.h"
 
 namespace Editors
 {
@@ -56,7 +56,6 @@ namespace Editors
 		, m_pEntityNameLabel(nullptr)
 		, m_pEntityModel(nullptr)
 		, m_pEntityWidget(nullptr)
-		, m_pLevelTreeModel(nullptr)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
@@ -65,8 +64,9 @@ namespace Editors
 		, m_pLevelListModel(nullptr)
 		, m_pSnapItem(nullptr)
 		, m_pSplit(nullptr)
-		, m_pTreeWidget(nullptr)
 		, m_pViewport(nullptr)
+		, m_pSceneTree(nullptr)
+		, m_pSceneTreeModel(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -120,7 +120,7 @@ namespace Editors
 		//create split between viewport and left panel
 		m_pLeftSplit = new Widgets::SplitVertical();
 		m_pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
-		m_pLeftSplit->SetLeftPanelWidth(200);
+		m_pLeftSplit->SetLeftPanelWidth(300);
 		m_pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
 		m_pLeftSplit->AddRightPanel(m_pViewport);
 
@@ -146,6 +146,11 @@ namespace Editors
 		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) {  m_pLevelListModel->AddNewLevel(metadata); });
 		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
+		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
+		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoParent) { OnLevelEditorModule_AddGameObject(pGo, pGoParent); });
+		levelEditorModule.OnRenameGameObject([this](const Core::Guid& guid, const std::string& newName) { OnLevelEditorModule_RenameGameObject(guid, newName); });
+		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
+		levelEditorModule.OnReparentGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent) { OnLevelEditorModule_ReparentGameObject(pGo, pGoOldParent, pGoNewParent); });
 	}
 
 	void LevelEditor::CreateMenuFile(Widgets::MenuBar* pMenuBar)
@@ -185,16 +190,19 @@ namespace Editors
 		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add Game Object");
 		pAddItem->OnClick([this]() { OnClickEditMenu_AddGameObject(); });
 
-		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete");
+		Widgets::MenuItem* pDeleteItem = pEditMenu->AddMenuItem("Delete Game Object");
 		pDeleteItem->SetShortcut("Del");
-		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteEntity(); });
+		pDeleteItem->OnClick([this]() { OnClickEditMenu_DeleteGameObject(); });
 
-		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
-		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameEntity(); });
+		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename Game Object...");
+		pRenameItem->OnClick([this]() { OnClickEditMenu_RenameGameObject(); });
 
 		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
 		pDuplicateItem->SetShortcut("Ctrl+D");
 		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateEntity(); });
+
+		Widgets::MenuItem* pReparentItem = pEditMenu->AddMenuItem("Reparent Game Object...");
+		pReparentItem->OnClick([this]() { OnClickEditMenu_ReparentGameObject(); });
 	}
 
 	void LevelEditor::CreateMenuTransformation(Widgets::MenuBar* pMenuBar)
@@ -258,10 +266,8 @@ namespace Editors
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
-		pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
-		pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
-
-		levelEditorModule.OnRenameEntity([this](const Core::Guid& nodeGuid) { OnRenameEntity_EntityProperties(nodeGuid); });
+		//pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
+		//pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
 	}
 
 	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
@@ -269,35 +275,19 @@ namespace Editors
 		if (m_pSceneTreeFrame != nullptr)
 			return;
 
-		m_pSceneTreeFrame = new Widgets::Frame("Scene Tree");
+		const std::string title = "Scene Tree";
+		m_pSceneTreeFrame = new Widgets::Frame(title);
 		m_pSceneTreeFrame->OnClose([this, pParent]() 
 			{ 
 				pParent->CloseTab(m_pSceneTreeFrame); m_pSceneTreeFrame = nullptr; 
 			});
 
-		pParent->AddTab("Scene Tree", m_pSceneTreeFrame);
+		pParent->AddTab(title, m_pSceneTreeFrame);
 
-		Widgets::Layout* pLayout = new Widgets::Layout();
-		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pLayout->SetDirection(Widgets::Layout::Vertical);
-		m_pSceneTreeFrame->AddWidget(pLayout);
-
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget = new TreeWidget();
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-
-		pLayout->AddWidget(m_pTreeWidget);
-
-		m_pTreeWidget->OnItemClicked(std::bind(&LevelEditor::OnClick_TreeItem, this, std::placeholders::_1, std::placeholders::_2));
-
-		//callbacks
-		levelEditorModule.OnAddEntity([this](const Core::Guid& nodeGuid) { OnAddEntity_SceneTree(nodeGuid); });
-		levelEditorModule.OnDeleteEntity([this](const Core::Guid& nodeGuid) { OnDeleteEntity_SceneTree(nodeGuid); });
-		levelEditorModule.OnRenameEntity([this](const Core::Guid& nodeGuid) { OnRenameEntity_SceneTree(nodeGuid); });
-		levelEditorModule.OnDuplicateEntity([this](const Core::Guid& src, const Core::Guid& copy) { OnDuplicateEntity_SceneTree(src, copy); });
-		levelEditorModule.OnNewLevel([this](const Systems::AssetMetadata& metadata) { OnNewLevel_SceneTree(); });
-		//levelEditorModule.OnLoadLevel([this]() { OnLoadLevel_SceneTree(); });
+		m_pSceneTree = new Widgets::TreeView();
+		m_pSceneTree->SetMultiSelection(true);
+		m_pSceneTree->SetColumnWidth(SceneTreeModel::Columns::Name, 150);
+		m_pSceneTreeFrame->AddWidget(m_pSceneTree);
 	}
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
@@ -390,25 +380,6 @@ namespace Editors
 
 		Widgets::WidgetMgr::Get().OpenModalWindow(pWindow);
 		Widgets::WidgetMgr::Get().SetFocus(pNameTextBox);
-	}
-
-	bool LevelEditor::OnClick_TreeItem(BaseModel* pModel, int rowId)
-	{
-		if (!m_pEntityWidget)
-			return true;
-
-		//get the entity
-		LevelTreeModel* pLevelTreeModel = static_cast<LevelTreeModel*>(pModel);
-		Node* pNode = pLevelTreeModel->GetSource();
-
-		if (!pNode)
-			return false;
-
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		levelEditorModule.ClearSelection();
-		levelEditorModule.AddToSelection(pNode->GetConstGuid());
-
-		return true;
 	}
 
 	void LevelEditor::OnClick_SetGizmoModeSelection()
@@ -550,50 +521,6 @@ namespace Editors
 		}
 	}
 
-	void LevelEditor::OnAddEntity_SceneTree(const Core::Guid& nodeGuid)
-	{
-		delete m_pLevelTreeModel;
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnDeleteEntity_SceneTree(const Core::Guid& nodeGuid)
-	{
-		delete m_pLevelTreeModel;
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		m_pLevelTreeModel = new LevelTreeModel(levelEditorModule.GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnRenameEntity_SceneTree(const Core::Guid& nodeGuid)
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnDuplicateEntity_SceneTree(const Core::Guid& src, const Core::Guid& copy)
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnNewLevel_SceneTree()
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
-	void LevelEditor::OnLoadLevel_SceneTree()
-	{
-		delete m_pLevelTreeModel;
-		m_pLevelTreeModel = new LevelTreeModel(LevelEditorModule::Get().GetLevelMgr()->GetSceneTree()->GetRoot());
-		m_pTreeWidget->SetModel(m_pLevelTreeModel);
-	}
-
 	void LevelEditor::OnClickFileMenu_NewLevel()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
@@ -652,19 +579,24 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_AddGameObject()
 	{
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+
+		Core::Guid parentGuid;
+		if (!pSelectionMgr->GetSelectionList().empty())
+			parentGuid = pSelectionMgr->GetSelectionList().back();
 
 		Core::Guid newGuid;
-		levelEditorModule.AddGameObject(newGuid);
+		levelEditorModule.AddGameObject(parentGuid, newGuid);
 
 		if (!newGuid.IsValid())
 			return;
 
-		levelEditorModule.ClearSelection();
-		levelEditorModule.AddToSelection(newGuid);
+		m_pSceneTreeModel->SelectGameObject(newGuid);
 	}
 
-	void LevelEditor::OnClickEditMenu_DeleteEntity()
+	void LevelEditor::OnClickEditMenu_DeleteGameObject()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
@@ -673,10 +605,10 @@ namespace Editors
 		const std::list<Core::Guid> selectionList = pSelectionMgr->GetSelectionList();
 
 		for (const Core::Guid& selectedGuid : selectionList)
-			levelEditorModule.DeleteEntity(selectedGuid);
+			levelEditorModule.DeleteGameObject(selectedGuid);
 	}
 
-	void LevelEditor::OnClickEditMenu_RenameEntity()
+	void LevelEditor::OnClickEditMenu_RenameGameObject()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
@@ -687,9 +619,10 @@ namespace Editors
 
 		const Core::Guid& lastSelectedNode = selectionList.back();
 
-		CreateRenameModalWindow([lastSelectedNode](const std::string& newName) {
-			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-			levelEditorModule.RenameEntity(lastSelectedNode, newName);
+		CreateRenameModalWindow([lastSelectedNode](const std::string& newName) 
+			{
+				Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+				levelEditorModule.RenameGameObject(lastSelectedNode, newName);
 			});
 	}
 
@@ -715,6 +648,27 @@ namespace Editors
 			levelEditorModule.AddToSelection(guid);
 	}
 
+	void LevelEditor::OnClickEditMenu_ReparentGameObject()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+
+		//reparenting will change the selection so copy the selection list.
+		const std::list<Core::Guid> selectionList = pSelectionMgr->GetSelectionList();
+
+		if (selectionList.size() < 2)
+			return;
+
+		Core::Guid newParent = selectionList.back();
+		std::list<Core::Guid>::const_iterator endIt = selectionList.cend();
+		--endIt;
+
+		for (std::list<Core::Guid>::const_iterator it = selectionList.cbegin(); it != endIt; ++it)
+		{
+			levelEditorModule.ReparentGameObject(newParent, *it);
+		}
+	}
+
 	void LevelEditor::OnClickTransformationMenu_Snap()
 	{
 		GizmoWidget* pGizmo = m_pViewport->GetGizmoWidget();
@@ -731,5 +685,49 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName)
 	{
 		m_pLevelListModel->RenameLevel(id, newName);
+	}
+
+	void LevelEditor::OnLevelEditorModule_OpenLevel()
+	{
+		const Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel();
+
+		m_pSceneTreeModel = new SceneTreeModel(pLevel);
+		m_pSceneTree->SetModel(m_pSceneTreeModel);
+
+		Widgets::SelectionModel* pSelectionModel = m_pSceneTreeModel->GetSelectionModel();
+		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+			{
+				for (const Widgets::SelectionRow& row : deselected)
+				{
+					Core::Guid guid = m_pSceneTreeModel->FindGameObject(row.GetStartIndex());
+					LevelEditorModule::Get().RemoveFromSelection(guid);
+				}
+				
+				for (const Widgets::SelectionRow& row : selected)
+				{
+					Core::Guid guid = m_pSceneTreeModel->FindGameObject(row.GetStartIndex());
+					LevelEditorModule::Get().AddToSelection(guid);
+				}
+			});
+	}
+
+	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)
+	{
+		m_pSceneTreeModel->AddGameObject(pGo, pGoParent);
+	}
+
+	void LevelEditor::OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName)
+	{
+		m_pSceneTreeModel->RenameGameObject(guid, newName);
+	}
+
+	void LevelEditor::OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid)
+	{
+		m_pSceneTreeModel->RemoveGameObject(guid);
+	}
+
+	void LevelEditor::OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent)
+	{
+		m_pSceneTreeModel->ReparentGameObject(pGo, pGoOldParent, pGoNewParent);
 	}
 }

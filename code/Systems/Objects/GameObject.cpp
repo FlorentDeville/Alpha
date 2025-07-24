@@ -29,7 +29,22 @@ namespace Systems
 		return m_guid;
 	}
 
+	void GameObject::SetName(const std::string& name)
+	{
+		m_name = name;
+	}
+
+	const std::string& GameObject::GetName() const
+	{
+		return m_name;
+	}
+
 	TransformComponent& GameObject::GetTransform()
+	{
+		return m_transform;
+	}
+
+	const TransformComponent& GameObject::GetTransform() const
 	{
 		return m_transform;
 	}

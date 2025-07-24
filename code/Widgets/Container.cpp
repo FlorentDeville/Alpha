@@ -53,35 +53,32 @@ namespace Widgets
 		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
 			return;
 
-		render.SetScissorRectangle(localScissorRect);
+		if (m_defaultStyle.m_backgroundColor.m_channels[3] != 0)
+		{
+			render.SetScissorRectangle(localScissorRect);
 
-		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
-		render.BindMaterial(*pMaterial, mvpMatrix);
+			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
+			render.BindMaterial(*pMaterial, mvpMatrix);
 
-		render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
+			render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
 
-		int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;
-		render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-		render.SetConstantBuffer(3, sizeof(m_defaultStyle.m_borderColor), &m_defaultStyle.m_borderColor, 0);
+			int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;
+			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+			render.SetConstantBuffer(3, sizeof(m_defaultStyle.m_borderColor), &m_defaultStyle.m_borderColor, 0);
 
-		float rect[2] = { (float)m_size.x, (float)m_size.y };
-		render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
+			float rect[2] = { (float)m_size.x, (float)m_size.y };
+			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-		render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
+			render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
 
-		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
-		render.RenderMesh(*pMesh);
+			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
+			render.RenderMesh(*pMesh);
+		}
 
 		Widget::Draw(windowSize, localScissorRect);
 
-		{
-			D3D12_RECT windowRect;
-			windowRect.left = 0;
-			windowRect.right = (LONG)windowSize.x;
-			windowRect.top = 0;
-			windowRect.bottom = (LONG)windowSize.y;
-			render.SetScissorRectangle(windowRect);
-		}
+		//reset the scissor
+		render.SetScissorRectangle(scissor);
 	}
 
 	void Container::ResizeChildren()

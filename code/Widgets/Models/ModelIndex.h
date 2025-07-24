@@ -26,11 +26,13 @@ namespace Widgets
 		ModelIndex GetSiblingAtColumn(int column) const;
 
 		const void* GetConstDataPointer() const;
+		template<typename T> const T* GetConstDataPointer() const;
 
 		const AbstractViewModel* GetConstModel() const;
 
 		bool operator==(const ModelIndex& other) const;
 		bool operator!=(const ModelIndex& other) const;
+		bool operator<(const ModelIndex& other) const;
 
 	private:
 		ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel);
@@ -40,4 +42,10 @@ namespace Widgets
 		const void* m_pData;
 		const AbstractViewModel* m_pModel;
 	};
+
+	template<typename T> const T* ModelIndex::GetConstDataPointer() const
+	{
+		const void* pRet = GetConstDataPointer();
+		return reinterpret_cast<const T*>(pRet);
+	}
 }

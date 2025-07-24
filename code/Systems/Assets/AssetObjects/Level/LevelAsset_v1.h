@@ -21,7 +21,19 @@ namespace Systems
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
+		// Add game object to the root of the scene
 		void AddGameObject(GameObject* pGo);
+
+		// Add new game object to the specific parent. Invalid guid add it to the root
+		void AddGameObject(GameObject* pGo, const Core::Guid& parent);
+
+		void DeleteGameObject(GameObject* pGo);
+		void DeleteGameObject(const Core::Guid& guid);
+
+		GameObject* FindGameObject(const Core::Guid& guid);
+		const GameObject* FindGameObject(const Core::Guid& guid) const;
+
+		const Core::Array<GameObject*>& GetGameObjectsArray() const;
 
 	private:
 

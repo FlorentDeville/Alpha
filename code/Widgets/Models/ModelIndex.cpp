@@ -74,6 +74,17 @@ namespace Widgets
 		return !(*this == other);
 	}
 
+	bool ModelIndex::operator<(const ModelIndex& other) const
+	{
+		if (m_pData != other.m_pData)
+			return m_pData < other.m_pData;
+
+		if (m_row != other.m_row)
+			return m_row < other.m_row;
+
+		return m_column < other.m_column;
+	}
+
 	ModelIndex::ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel)
 		: m_row(row)
 		, m_column(column)

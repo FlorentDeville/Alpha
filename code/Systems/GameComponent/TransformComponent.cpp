@@ -25,4 +25,32 @@ namespace Systems
 	{
 		m_localTransform = localTx;
 	}
+
+	const Core::Guid& TransformComponent::GetParentGuid() const
+	{
+		return m_parent;
+	}
+
+	void TransformComponent::SetParentGuid(const Core::Guid& parentGuid)
+	{
+		m_parent = parentGuid;
+	}
+
+	const Core::Array<Core::Guid>& TransformComponent::GetChildrenGuid() const
+	{
+		return m_children;
+	}
+
+	void TransformComponent::AddChild(const Core::Guid& child)
+	{
+		Core::Array<Core::Guid>::Iterator it = std::find(m_children.cbegin(), m_children.cend(), child);
+
+		if(it == m_children.cend())
+			m_children.PushBack(child);
+	}
+
+	void TransformComponent::RemoveChild(const Core::Guid& child)
+	{
+		m_children.Erase(child);
+	}
 }

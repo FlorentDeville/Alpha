@@ -70,10 +70,12 @@ namespace Editors
 
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
-		void AddGameObject(Core::Guid& nodeGuid);
-		void DeleteEntity(const Core::Guid& nodeGuid);
-		void RenameEntity(const Core::Guid& nodeGuid, const std::string& name);
+		void AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid);
+		void DeleteGameObject(const Core::Guid & nodeGuid);
+		void RenameGameObject(const Core::Guid& guid, const std::string& name);
 		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);
+
+		void ReparentGameObject(const Core::Guid& parent, const Core::Guid& child);
 
 		void SetCameraWs(const Core::Mat44f& ws);
 		const Core::Mat44f& GetCameraWs() const;
@@ -90,6 +92,8 @@ namespace Editors
 		Systems::NewAssetId GetCurrentLoadedLevelAssetId() const;
 		std::string GetCurrentLoadedLevelName() const;
 
+		const Systems::LevelAsset* GetCurrentLoadedLevel() const;
+
 		//operation callback
 		EVENT_DECL(NewLevel, void(const Systems::AssetMetadata& metadata))
 		EVENT_DECL(BeforeDeleteLevel, void(Systems::AssetMetadata& metadata))
@@ -99,10 +103,12 @@ namespace Editors
 		EVENT_DECL(SaveLevel, void())
 		EVENT_DECL(RenameLevel, void(Systems::NewAssetId id, const std::string& newName))
 
-		EVENT_DECL(AddEntity, void(const Core::Guid& nodeGuid))
-		EVENT_DECL(DeleteEntity, void(const Core::Guid& nodeGuid))
-		EVENT_DECL(RenameEntity, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(AddGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent))
+		EVENT_DECL(BeforeDeleteGameObject, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(AfterDeleteGameObject, void(const Core::Guid& nodeGuid))
+		EVENT_DECL(RenameGameObject, void(const Core::Guid & guid, const std::string & newName))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
+		EVENT_DECL(ReparentGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent))
 
 		//temp
 		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;

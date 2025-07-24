@@ -124,14 +124,7 @@ namespace Widgets
 		
 		Core::UInt2 contentSize = m_size;
 		int32_t pos = 0;
-		if (m_defaultStyle.m_showBorder)
-		{
-			pos = m_defaultStyle.m_borderSize;
 
-			contentSize.x -= 2 * m_defaultStyle.m_borderSize;
-			contentSize.y -= 2 * m_defaultStyle.m_borderSize;
-		}
-		
 		for (Widget* pWidget : m_children)
 		{
 			if (!pWidget->IsEnabled())
@@ -143,9 +136,7 @@ namespace Widgets
 			case Horizontal_Reverse:
 				//compute first the new position
 				pWidget->SetX(pos);
-
-				if (m_defaultStyle.m_showBorder)
-					pWidget->SetY(m_defaultStyle.m_borderSize);
+				pWidget->SetY(0);
 
 				//now compute the size
 				pWidget->Resize(m_absPos, contentSize);
@@ -157,8 +148,7 @@ namespace Widgets
 			case Vertical:
 			case Vertical_Reverse:
 				pWidget->SetY(pos);
-				if (m_defaultStyle.m_showBorder)
-					pWidget->SetX(m_defaultStyle.m_borderSize);
+				pWidget->SetX(0);
 
 				pWidget->Resize(m_absPos, contentSize);
 				pos = pWidget->GetY() + pWidget->GetHeight() + m_space.y;
@@ -227,10 +217,6 @@ namespace Widgets
 			}
 
 			m_size.x = maxSize;
-			if (m_defaultStyle.m_showBorder)
-			{
-				m_size.x += m_defaultStyle.m_borderSize;
-			}
 		}
 		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
 		{
@@ -245,10 +231,6 @@ namespace Widgets
 			}
 
 			m_size.y = maxSize;
-			if (m_defaultStyle.m_showBorder)
-			{
-				m_size.y += m_defaultStyle.m_borderSize;
-			}
 		}
 
 		

@@ -70,7 +70,7 @@ namespace Core
 				if (m_reservedSize == 0)
 					m_reservedSize = 10;
 				else
-					m_reservedSize = m_reservedSize + (m_reservedSize / 2);
+					m_reservedSize = m_reservedSize + (m_reservedSize / 2) + 1;
 				
 				T* pNewArray = new T[m_reservedSize];
 				std::memcpy(pNewArray, m_pStart, sizeof(T) * m_size);
@@ -124,14 +124,7 @@ namespace Core
 
 		void operator=(const Array& source)
 		{
-			//clean up existing memory
-			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[ii].~T();
-
-			delete[] m_pStart;
-
-			m_size = 0;
-			m_reservedSize = 0;
+			Clear();
 
 			Resize(source.GetSize());
 
@@ -157,6 +150,9 @@ namespace Core
 			source.m_reservedSize = 0;
 		}
 
+		T& Back();
+		const T& Back() const;
+
 		void Resize(uint32_t newSize) override;
 		void Resize(uint32_t newSize, const T& value);
 
@@ -165,10 +161,12 @@ namespace Core
 		void Clear();
 
 		//Erase the first element equal to value and return the number of element erased.
-		uint32_t Erase(const T& value);
+		template<typename U> uint32_t Erase(const U& value);
 
 		//Erase the element at the position of the iterator.
 		void Erase(Iterator& it);
+
+		bool IsValidIndex(int32_t index) const;
 
 		//function to work with stl algorithms
 		Iterator begin();
@@ -186,6 +184,16 @@ namespace Core
 		T* m_pStart;
 
 	};
+
+	template<typename T> T& Array<T>::Back()
+	{
+		return m_pStart[m_size - 1];
+	}
+
+	template<typename T> const T& Array<T>::Back() const
+	{
+		return m_pStart[m_size - 1];
+	}
 
 	template<typename T> void Array<T>::Resize(uint32_t newSize)
 	{
@@ -250,14 +258,15 @@ namespace Core
 		m_pStart = nullptr;
 	}
 
-	template<typename T> uint32_t Array<T>::Erase(const T& value)
+	template<typename T> template<typename U> uint32_t Array<T>::Erase(const U& value)
 	{
-		Iterator newEndIt = std::remove(begin(), end(), value);
-		uint64_t erasedCount = std::distance(newEndIt, end());
-		uint64_t size = std::distance(begin(), newEndIt);
-		Resize(static_cast<uint32_t>(size));
-
-		return static_cast<uint32_t>(erasedCount);
+		Iterator it = std::find(cbegin(), cend(), value);
+		if (it == cend())
+			return 0;
+		
+		int oldSize = GetSize();
+		Erase(it);
+		return oldSize - GetSize();
 	}
 
 	template<typename T> void Array<T>::Erase(Iterator& it)
@@ -266,7 +275,7 @@ namespace Core
 		T& pValue = *it;
 		pValue.~T();
 
-		//copy
+		//move the elements
 		Iterator previousElement = it;
 		Iterator ii = it;
 		++ii;
@@ -275,10 +284,18 @@ namespace Core
 			T& src = *ii;
 			T& dst = *previousElement;
 
-			dst = src;
+			dst = std::move(src);
 		}
 
 		--m_size;
+	}
+
+	template<typename T> bool Array<T>::IsValidIndex(int32_t index) const
+	{
+		if (index < 0 || index >= static_cast<int32_t>(m_size))
+			return false;
+
+		return true;
 	}
 
 	template<typename T> Array<T>::Iterator::Iterator(pointer pPtr)

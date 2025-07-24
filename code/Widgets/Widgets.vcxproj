@@ -57,6 +57,7 @@
     <ClInclude Include="Widgets\SliderFloat.h" />
     <ClInclude Include="Widgets\TableView.h" />
     <ClInclude Include="Widgets\TableViewStyle.h" />
+    <ClInclude Include="Widgets\TreeView.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="Widgets\SliderFloat.cpp" />
     <ClCompile Include="Widgets\TableView.cpp" />
     <ClCompile Include="Widgets\TableViewStyle.cpp" />
+    <ClCompile Include="Widgets\TreeView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">

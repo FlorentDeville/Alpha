@@ -169,7 +169,7 @@ namespace Editors
 		return true;;
 	}
 
-	void LevelEditorModule::AddGameObject(Core::Guid& nodeGuid)
+	void LevelEditorModule::AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid)
 	{
 		if (!m_pLevel)
 			return;
@@ -180,34 +180,43 @@ namespace Editors
 		localTx.SetIdentity();
 		pGo->GetTransform().SetLocalTx(localTx);
 		
-		m_pLevel->AddGameObject(pGo);
+		m_pLevel->AddGameObject(pGo, parentGuid);
 
-		nodeGuid = pGo->GetGuid();
+		newGoGuid = pGo->GetGuid();
 
-		m_onAddEntity(nodeGuid);
+		const Systems::GameObject* pGoParent = nullptr;
+		if (parentGuid.IsValid())
+			pGoParent = m_pLevel->FindGameObject(parentGuid);
+
+		m_onAddGameObject(pGo, pGoParent);
 	}
 
-	void LevelEditorModule::DeleteEntity(const Core::Guid& nodeGuid)
+	void LevelEditorModule::DeleteGameObject(const Core::Guid& guid)
 	{
-		m_pSelectionMgr->Remove(nodeGuid);
-		bool res = m_pLevelMgr->GetSceneTree()->DeleteNode(nodeGuid);
+		if (!m_pLevel)
+			return;
 
-		if (res)
-			m_onDeleteEntity(nodeGuid);
+		m_pSelectionMgr->Remove(guid);
+		
+		m_onBeforeDeleteGameObject(guid);
+
+		m_pLevel->DeleteGameObject(guid);
+
+		m_onAfterDeleteGameObject(guid);
 	}
 
-	void LevelEditorModule::RenameEntity(const Core::Guid& nodeGuid, const std::string& name)
+	void LevelEditorModule::RenameGameObject(const Core::Guid& guid, const std::string& name)
 	{
-		Node* pNode = m_pLevelMgr->GetSceneTree()->GetNode(nodeGuid);
-		if (!pNode)
+		if (!m_pLevel)
 			return;
 
-		Entity* pEntity = pNode->ToEntity();
-		if (!pEntity)
+		Systems::GameObject* pGo = m_pLevel->FindGameObject(guid);
+		if (!pGo)
 			return;
 
-		pEntity->SetName(name);
-		m_onRenameEntity(nodeGuid);
+		pGo->SetName(name);
+
+		m_onRenameGameObject(guid, name);
 	}
 
 	void LevelEditorModule::DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode)
@@ -239,6 +248,42 @@ namespace Editors
 
 		if (m_onDuplicateEntity)
 			m_onDuplicateEntity(originalNode, newNode);
+	}
+
+	void LevelEditorModule::ReparentGameObject(const Core::Guid& parent, const Core::Guid& child)
+	{
+		if (!m_pLevel)
+			return;
+
+		Systems::GameObject* pGoChild = m_pLevel->FindGameObject(child);
+		if (!pGoChild)
+			return;
+
+		//add the child to its new parent
+		Systems::GameObject* pGoNewParent = nullptr;
+		if (parent.IsValid())
+		{
+			pGoNewParent = m_pLevel->FindGameObject(parent);
+			if (!pGoNewParent)
+				return;
+
+			pGoNewParent->GetTransform().AddChild(child);
+		}
+
+		//remove the child from its old parent
+		Systems::TransformComponent& childTx = pGoChild->GetTransform();
+		Core::Guid oldParentGuid = childTx.GetParentGuid();
+		Systems::GameObject* pGoOldParent = m_pLevel->FindGameObject(oldParentGuid);
+		if (pGoOldParent)
+		{
+			Systems::TransformComponent& oldParentTx = pGoOldParent->GetTransform();
+			oldParentTx.RemoveChild(pGoChild->GetGuid());
+		}
+
+		//set the new parent to the child
+		pGoChild->GetTransform().SetParentGuid(parent);
+
+		m_onReparentGameObject(pGoChild, pGoOldParent, pGoNewParent);
 	}
 
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
@@ -332,5 +377,10 @@ namespace Editors
 			return "";
 
 		return pMetadata->GetVirtualName();
+	}
+
+	const Systems::LevelAsset* LevelEditorModule::GetCurrentLoadedLevel() const
+	{
+		return m_pLevel;
 	}
 }

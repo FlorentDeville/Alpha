@@ -457,6 +457,11 @@ namespace Widgets
 		return static_cast<uint32_t>(m_children.size());
 	}
 
+	Widget* Widget::GetChild(int ii)
+	{
+		return m_children[ii];
+	}
+
 	Widget* Widget::GetParent()
 	{
 		return m_pParent;

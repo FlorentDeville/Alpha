@@ -20,6 +20,14 @@ namespace Systems
 		const Core::Mat44f& GetLocalTx() const;
 		void SetLocalTx(const Core::Mat44f& localTx);
 
+		const Core::Guid& GetParentGuid() const;
+		void SetParentGuid(const Core::Guid& parentGuid);
+
+		const Core::Array<Core::Guid>& GetChildrenGuid() const;
+
+		void AddChild(const Core::Guid& child);
+		void RemoveChild(const Core::Guid& child);
+
 	private:
 		Core::Mat44f m_localTransform;
 

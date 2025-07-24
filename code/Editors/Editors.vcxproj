@@ -15,6 +15,7 @@
     <ClInclude Include="LevelEditor\Component.h" />
     <ClInclude Include="LevelEditor\LevelListModel.h" />
     <ClInclude Include="LevelEditor\LevelSerializer.h" />
+    <ClInclude Include="LevelEditor\SceneTreeModel.h" />
     <ClInclude Include="LevelEditor\SceneTree\Entity.h" />
     <ClInclude Include="LevelEditor\LevelMgr.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
@@ -57,14 +58,13 @@
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridWidget.h" />
     <ClInclude Include="Widgets\StatusBar\StatusBar.h" />
-    <ClInclude Include="Widgets\Tree\LevelTreeModel.h" />
-    <ClInclude Include="Widgets\Tree\TreeWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\Component.cpp" />
     <ClCompile Include="LevelEditor\LevelListModel.cpp" />
     <ClCompile Include="LevelEditor\LevelSerializer.cpp" />
+    <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Entity.cpp" />
     <ClCompile Include="LevelEditor\LevelMgr.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
@@ -104,8 +104,6 @@
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridWidget.cpp" />
     <ClCompile Include="Widgets\StatusBar\StatusBar.cpp" />
-    <ClCompile Include="Widgets\Tree\LevelTreeModel.cpp" />
-    <ClCompile Include="Widgets\Tree\TreeWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
