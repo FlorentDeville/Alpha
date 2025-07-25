@@ -4,6 +4,7 @@
 
 #include "Widgets/Widgets/TreeView.h"
 
+#include "OsWin/Cursor/Cursor.h"
 #include "OsWin/Input.h"
 
 #include "Rendering/Material/MaterialMgr.h"
@@ -25,6 +26,8 @@
 
 #include <stack>
 
+extern OsWin::CursorId g_pIconName;
+
 namespace Widgets
 {
 	TreeView::TreeView()
@@ -40,6 +43,8 @@ namespace Widgets
 		, m_cellDefaultSize(75, 20)
 		, m_columnWidth()
 		, m_rowLayoutTree()
+		, m_isDragStarted(false)
+		, m_dragModelIndex()
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
@@ -49,6 +54,8 @@ namespace Widgets
 		m_pLayout->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
 		m_pLayout->GetHoverStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
 		AddWidget(m_pLayout);
+
+		OnMouseExit([this](const Widgets::MouseEvent& ev) { TreeView_OnMouseExit(ev); });
 	}
 
 	TreeView::~TreeView()
@@ -247,6 +254,15 @@ namespace Widgets
 		}
 	}
 
+	void TreeView::TreeView_OnMouseExit(const MouseEvent& ev)
+	{
+		if (!m_isDragStarted)
+			return;
+		
+		m_isDragStarted = false;
+		g_pIconName = OsWin::CursorId::Arrow;
+	}
+
 	void TreeView::OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout)
 	{
 		if (!ev.HasButton(MouseButton::LeftButton))
@@ -300,6 +316,40 @@ namespace Widgets
 			}
 			SetSelectedRowStyle(pRowLayout);
 			pSelectionModel->SetSelectionRow(clickedRow);
+		}
+	}
+
+	void TreeView::OnMouseUp_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout)
+	{
+		if (!m_isDragStarted)
+			return;
+
+		m_isDragStarted = false;
+		g_pIconName = OsWin::CursorId::Arrow;
+
+		ModelIndex parent = ComputeModelIndexFromRowLayout(pRowLayout);
+		if (!parent.IsValid())
+			return;
+
+		m_onDropItem(m_dragModelIndex, parent);
+	}
+
+	void TreeView::OnMouseMove_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout)
+	{
+		if (ev.GetButton() != Widgets::MouseButton::LeftButton)
+			return;
+
+		if (!m_isDragStarted)
+		{
+			ModelIndex start = ComputeModelIndexFromRowLayout(pRowLayout);
+			if (!start.IsValid())
+				return;
+
+			m_isDragStarted = true;
+			m_dragModelIndex = start;
+
+			g_pIconName = OsWin::CursorId::Move;
+			OsWin::SetCursor(g_pIconName);
 		}
 	}
 
@@ -514,7 +564,9 @@ namespace Widgets
 		pRowLayout->SetDirection(Layout::Horizontal);
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pRowLayout->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, pRowLayout); });
+		pRowLayout->OnMouseMove([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseMove_ItemLayout(ev, pRowLayout); });
 		pRowLayout->OnMouseDoubleClick([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDoubleClick_ItemLayout(ev, pRowLayout); });
+		pRowLayout->OnMouseUp([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseUp_ItemLayout(ev, pRowLayout); });
 
 		RowInfo info;
 		info.m_depth = depth;
