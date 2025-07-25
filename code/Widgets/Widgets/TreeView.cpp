@@ -4,6 +4,8 @@
 
 #include "Widgets/Widgets/TreeView.h"
 
+#include "OsWin/Input.h"
+
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 
@@ -260,31 +262,44 @@ namespace Widgets
 		SelectionModel* pSelectionModel = m_pModel->GetSelectionModel();
 		bool rowSelected = pSelectionModel->IsRowSelected(clickedRow);
 
-		if (rowSelected)
+		bool addToSelection = false;
+		bool removeFromSelection = false;
+		bool setSelection = false;
+		if (Os::IsKeyDown(Os::VKeyCodes::Control) && m_multiSelectionEnabled) //ctrl+click does a toggle and adds to the current selection
 		{
-			//deselect
+			if (rowSelected)
+				removeFromSelection = true;
+			else
+				addToSelection = true;
+		}
+		else //regular click
+		{
+			if (!rowSelected)
+				setSelection = true;
+		}
+
+		if (addToSelection)
+		{
+			SetSelectedRowStyle(pRowLayout);
+			pSelectionModel->SelectRow(clickedRow);
+		}
+
+		if (removeFromSelection)
+		{
 			SetDeselectedRowStyle(pRowLayout);
 			pSelectionModel->DeselectRow(clickedRow);
 		}
-		else
+
+		if(setSelection)
 		{
-			//select
-			if (m_multiSelectionEnabled)
+			const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
+			for (const SelectionRow& sel : selection)
 			{
-				SetSelectedRowStyle(pRowLayout);
-				pSelectionModel->SelectRow(clickedRow);
+				if(Layout* pSelectedLayout = ComputeRowLayoutFromModelIndex(sel.GetStartIndex()))
+					SetDeselectedRowStyle(pSelectedLayout);
 			}
-			else
-			{
-				const std::list<SelectionRow>& selection = pSelectionModel->GetSelectedRows();
-				for (const SelectionRow& sel : selection)
-				{
-					if(Layout* pSelectedLayout = ComputeRowLayoutFromModelIndex(sel.GetStartIndex()))
-						SetDeselectedRowStyle(pSelectedLayout);
-				}
-				SetSelectedRowStyle(pRowLayout);
-				pSelectionModel->SetSelectionRow(clickedRow);
-			}
+			SetSelectedRowStyle(pRowLayout);
+			pSelectionModel->SetSelectionRow(clickedRow);
 		}
 	}
 
