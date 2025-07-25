@@ -30,12 +30,6 @@
     <ClInclude Include="Layout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Message.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MessageId.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Split.h">
       <Filter>Header Files</Filter>
     </ClInclude>

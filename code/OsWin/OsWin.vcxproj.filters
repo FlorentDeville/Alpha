@@ -16,5 +16,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="FileDialog.h" />
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="UIMessage\UIMessage.h" />
+    <ClInclude Include="UIMessage\UIMessageId.h" />
   </ItemGroup>
 </Project>

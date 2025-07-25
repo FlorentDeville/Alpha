@@ -28,6 +28,11 @@
 struct Message;
 class SysWindow;
 
+namespace OsWin
+{
+	class UIMessage;
+}
+
 namespace Widgets
 {
 	class Button;
@@ -90,7 +95,7 @@ namespace Widgets
 		void Resize();
 
 		//Handle messages coming from windows
-		void HandleMsg(const Message& msg);
+		void HandleMsg(const OsWin::UIMessage& msg);
 
 		Rendering::FontId GetUIFontId() const;
 
@@ -161,7 +166,7 @@ namespace Widgets
 
 		const Widget* GetFocusedWidget() const;
 
-		const BaseEvent& ConvertMessageToEvent(const Widget* pWidget, const Message& msg);
+		const BaseEvent& ConvertMessageToEvent(const Widget* pWidget, const OsWin::UIMessage& msg);
 
 		Rendering::TextureId LoadApplicationResourceImage(AppResources::AppResourceId id) const;
 	};
