@@ -34,6 +34,7 @@ namespace Widgets
 	class Label;
 	class MenuBar;
 	class MenuItem;
+	class ModelIndex;
 	class SplitVertical;
 	class TabContainer;
 	class TableView;
@@ -127,6 +128,8 @@ namespace Editors
 		void OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName);
 		void OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid);
 		void OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent);
+
+		void OnSceneTreeView_OnDropItem(const Widgets::ModelIndex& index, const Widgets::ModelIndex& parent);
 
 		bool IsLevelBrowserEnabled() const;
 		bool IsSceneTreeEnabled() const;
