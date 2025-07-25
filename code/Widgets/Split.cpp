@@ -6,7 +6,6 @@
 
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/MouseEvent.h"
-#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
 #include "Rendering/Material/MaterialMgr.h"

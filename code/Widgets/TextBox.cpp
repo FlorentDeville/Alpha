@@ -11,7 +11,6 @@
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Icon.h"
-#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
 #include "Rendering/Font/FontMgr.h"
