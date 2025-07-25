@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="Cursor\Cursor.cpp" />
     <ClCompile Include="FileDialog.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Process.cpp" />
@@ -20,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clipboard.h" />
+    <ClInclude Include="Cursor\Cursor.h" />
     <ClInclude Include="FileDialog.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Process.h" />
