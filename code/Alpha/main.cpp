@@ -164,13 +164,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_id = OsWin::UIMessageId::MouseMove;
 		msg.m_low.m_uint32[0] = x;
 		msg.m_low.m_uint32[1] = y;
-	
+		msg.m_high = wParam;
+
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
 		mouseState.m_mouseX = x;
 		mouseState.m_mouseY = y;
+		mouseState.m_mouseLeftButton = wParam & MK_LBUTTON;
+		mouseState.m_mouseRightButton = wParam & MK_RBUTTON;
+		mouseState.m_mouseMiddleButton = wParam & MK_MBUTTON;
 		inputMgr.UpdateMouseState(mouseState);
 	}
 		break;

@@ -19,6 +19,7 @@
     <ClInclude Include="Clipboard.h" />
     <ClInclude Include="UIMessage\UIMessage.h" />
     <ClInclude Include="UIMessage\UIMessageId.h" />
+	<ClInclude Include="UIMessage\UIMouseMask.h" />
     <ClInclude Include="Cursor\Cursor.h" />
   </ItemGroup>
 </Project>

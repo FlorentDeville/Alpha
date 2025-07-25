@@ -290,6 +290,8 @@ namespace Editors
 		m_pSceneTree = new Widgets::TreeView();
 		m_pSceneTree->SetMultiSelection(true);
 		m_pSceneTree->SetColumnWidth(SceneTreeModel::Columns::Name, 150);
+		m_pSceneTree->OnDropItem([this](const Widgets::ModelIndex& index, const Widgets::ModelIndex& parent) { OnSceneTreeView_OnDropItem(index, parent); });
+
 		m_pSceneTreeFrame->AddWidget(m_pSceneTree);
 	}
 
@@ -766,6 +768,23 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent)
 	{
 		m_pSceneTreeModel->ReparentGameObject(pGo, pGoOldParent, pGoNewParent);
+	}
+
+	void LevelEditor::OnSceneTreeView_OnDropItem(const Widgets::ModelIndex& index, const Widgets::ModelIndex& parent)
+	{
+		if (!m_pSceneTreeModel)
+			return;
+
+		Core::Guid objGuid = m_pSceneTreeModel->FindGameObject(index);
+		if (!objGuid.IsValid())
+			return;
+
+		Core::Guid objParentGuid = m_pSceneTreeModel->FindGameObject(parent);
+		if (!objParentGuid.IsValid())
+			return;
+
+		LevelEditorModule& module = LevelEditorModule::Get();
+		module.ReparentGameObject(objParentGuid, objGuid);
 	}
 
 	bool LevelEditor::IsLevelBrowserEnabled() const

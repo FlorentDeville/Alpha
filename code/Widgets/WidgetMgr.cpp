@@ -22,6 +22,7 @@
 #include "OsWin/Resource.h"
 #include "OsWin/SysWindow.h"
 #include "OsWin/UIMessage/UIMessage.h"
+#include "OsWin/UIMessage/UIMouseMask.h"
 #include "OsWin/VirtualKeyCode.h"
 
 #include "Widgets/Events/FocusEvent.h"
@@ -581,24 +582,30 @@ namespace Widgets
 		{
 				bool isInside = pWidget->IsInside(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
+
+				MouseButton button = MouseButton::NoButton;
+				if (msg.m_high & OsWin::UIMouseMask::LeftButton) button = static_cast<MouseButton>(button | MouseButton::LeftButton);
+				if (msg.m_high & OsWin::UIMouseMask::RightButton) button = static_cast<MouseButton>(button | MouseButton::RightButton);
+				if (msg.m_high & OsWin::UIMouseMask::MiddleButton) button = static_cast<MouseButton>(button | MouseButton::MiddleButton);
+				
 				if (!wasInside && isInside)
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseEnter, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], MouseButton::NoButton);
+					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseEnter, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else if (wasInside && !isInside)
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseExit, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], MouseButton::NoButton);
+					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseExit, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else if (isInside)
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], MouseButton::NoButton);
+					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make an event if we captured the mouse
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], MouseButton::NoButton);
+					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return m_internalEvent.m_mouseEvent;
 				}
 				else //this message doesn't concern this widget

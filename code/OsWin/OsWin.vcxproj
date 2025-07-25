@@ -29,6 +29,7 @@
     <ClInclude Include="SysWindow.h" />
     <ClInclude Include="UIMessage\UIMessage.h" />
     <ClInclude Include="UIMessage\UIMessageId.h" />
+    <ClInclude Include="UIMessage\UIMouseMask.h" />
     <ClInclude Include="VirtualKeyCode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

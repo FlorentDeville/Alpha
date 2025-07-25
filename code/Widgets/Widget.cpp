@@ -238,6 +238,17 @@ namespace Widgets
 		}
 		break;
 
+		case EventType::kMouseMove:
+		{
+			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
+			if (m_onMouseMove)
+			{
+				m_onMouseMove(mouseEvent);
+				handled = true;
+			}
+		}
+		break;
+
 		case EventType::kMouseUp:
 		{
 			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);

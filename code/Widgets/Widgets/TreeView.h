@@ -37,6 +37,7 @@ namespace Widgets
 		void SetColumnWidth(int column, int width);
 		
 		EVENT_DECL(ItemDoubleClick, void(const ModelIndex& idx))
+		EVENT_DECL(DropItem, void(const ModelIndex& index, const ModelIndex& newParent)) //called when a row is dragged and dropped on another row
 
 	private:
 		AbstractViewModel* m_pModel;
@@ -51,6 +52,9 @@ namespace Widgets
 		Layout* m_pLayout;
 
 		bool m_multiSelectionEnabled;
+		
+		bool m_isDragStarted;
+		ModelIndex m_dragModelIndex; // model index of the row being dragged
 
 		Core::UInt2 m_cellDefaultSize;
 
@@ -72,7 +76,11 @@ namespace Widgets
 		void CreateView_Recursive(const ModelIndex& parent, const Layout* pParentLayout, int depth);
 
 		// Event callbacks
+		void TreeView_OnMouseExit(const MouseEvent& ev);
+
 		void OnMouseDown_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
+		void OnMouseUp_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout);
+		void OnMouseMove_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 		void OnMouseDoubleClick_ItemLayout(const MouseEvent& ev, Widgets::Layout* pRowLayout);
 
 		void SetSelectedRowStyle(Layout* pLayout);
