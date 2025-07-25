@@ -252,6 +252,7 @@ namespace Editors
 
 	void LevelEditorModule::ReparentGameObject(const Core::Guid& parent, const Core::Guid& child)
 	{
+		//first check all the inputs are valid
 		if (!m_pLevel)
 			return;
 
@@ -259,21 +260,27 @@ namespace Editors
 		if (!pGoChild)
 			return;
 
-		//add the child to its new parent
+		Systems::TransformComponent& childTx = pGoChild->GetTransform();
+		Core::Guid oldParentGuid = childTx.GetParentGuid();
+		Systems::GameObject* pGoOldParent = m_pLevel->FindGameObject(oldParentGuid);
+
 		Systems::GameObject* pGoNewParent = nullptr;
 		if (parent.IsValid())
 		{
 			pGoNewParent = m_pLevel->FindGameObject(parent);
 			if (!pGoNewParent)
 				return;
-
-			pGoNewParent->GetTransform().AddChild(child);
 		}
 
+		//if the new parent and old parent are the same then there is nothing to do
+		if (pGoNewParent == pGoOldParent)
+			return;
+
+		//add the child to its new parent if any
+		if (pGoNewParent)
+			pGoNewParent->GetTransform().AddChild(child);
+
 		//remove the child from its old parent
-		Systems::TransformComponent& childTx = pGoChild->GetTransform();
-		Core::Guid oldParentGuid = childTx.GetParentGuid();
-		Systems::GameObject* pGoOldParent = m_pLevel->FindGameObject(oldParentGuid);
 		if (pGoOldParent)
 		{
 			Systems::TransformComponent& oldParentTx = pGoOldParent->GetTransform();
