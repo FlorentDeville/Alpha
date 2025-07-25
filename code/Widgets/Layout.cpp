@@ -90,14 +90,12 @@ namespace Widgets
 		case EventType::kMouseEnter:
 		{
 			m_hover = true;
-			return true;
 		}
 		break;
 
 		case EventType::kMouseExit:
 		{
 			m_hover = false;
-			return true;
 		}
 		break;
 
