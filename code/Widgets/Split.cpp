@@ -4,15 +4,17 @@
 
 #include "Widgets/Split.h"
 
-#include "Widgets/Events/BaseEvent.h"
-#include "Widgets/Events/MouseEvent.h"
-#include "Widgets/WidgetMgr.h"
+#include "OsWin/Cursor/Cursor.h"
 
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
-extern LPCSTR g_pIconName;
+#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/MouseEvent.h"
+#include "Widgets/WidgetMgr.h"
+
+extern OsWin::CursorId g_pIconName;
 
 namespace Widgets
 {
@@ -69,9 +71,9 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseEnter:
 	{
 		if (m_isVerticalSplit)
-			g_pIconName = IDC_SIZEWE;
+			g_pIconName = OsWin::CursorId::ResizeHorizontal;
 		else
-			g_pIconName = IDC_SIZENS;
+			g_pIconName = OsWin::CursorId::ResizeVertical;
 
 		return true;
 	}
@@ -80,7 +82,7 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseExit:
 	{
 		if (!m_isDragged)
-			g_pIconName = IDC_ARROW;
+			g_pIconName = OsWin::CursorId::Arrow;
 
 		return true;
 	}
@@ -95,7 +97,7 @@ bool Split::Handle(const BaseEvent& ev)
 			ReleaseMouse();
 
 			if (!IsInside(mouseEvent.GetX(), mouseEvent.GetY()))
-				g_pIconName = IDC_ARROW;
+				g_pIconName = OsWin::CursorId::Arrow;
 
 			m_isDragged = false;
 			return true;
@@ -115,9 +117,9 @@ bool Split::Handle(const BaseEvent& ev)
 			m_previousCursorPosition.y = mouseEvent.GetY();
 
 			if (m_isVerticalSplit)
-				g_pIconName = IDC_SIZEWE;
+				g_pIconName = OsWin::CursorId::ResizeHorizontal;
 			else
-				g_pIconName = IDC_SIZENS;
+				g_pIconName = OsWin::CursorId::ResizeVertical;
 			return true;
 		}
 	}

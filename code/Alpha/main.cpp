@@ -31,6 +31,7 @@
 
 #include "Inputs/InputMgr.h"
 
+#include "OsWin/Cursor/Cursor.h"
 #include "OsWin/UIMessage/UIMessage.h"
 #include "OsWin/UIMessage/UIMessageId.h"
 
@@ -88,7 +89,7 @@
 
 SysWindow* g_pWindow = nullptr;
 
-LPCSTR g_pIconName = IDC_ARROW;
+OsWin::CursorId g_pIconName = OsWin::CursorId::Arrow;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -347,37 +348,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 	case WM_SETCURSOR:
 	{
-		LPCSTR cursorResource;
+		OsWin::CursorId cursor;
 		uint16_t hitResult = LOWORD(lParam);
 		switch (hitResult)
 		{
 		case HTTOP:
 		case HTBOTTOM:
-			cursorResource = IDC_SIZENS;
+			cursor = OsWin::CursorId::ResizeVertical;
 			break;
 
 		case HTLEFT:
 		case HTRIGHT:
-			cursorResource = IDC_SIZEWE;
+			cursor = OsWin::CursorId::ResizeHorizontal;
 			break;
 
 		case HTTOPLEFT:
 		case HTBOTTOMRIGHT:
-			cursorResource = IDC_SIZENWSE;
+			cursor = OsWin::CursorId::ResizeDiagonalNWSE;
 			break;
 
 		case HTTOPRIGHT:
 		case HTBOTTOMLEFT:
-			cursorResource = IDC_SIZENESW;
+			cursor = OsWin::CursorId::ResizeDiagonalNESW;
 			break;
 
 		default:
-			cursorResource = g_pIconName;
+			cursor = g_pIconName;
 			break;
 		}
 		
-		HCURSOR cursor = LoadCursor(NULL, cursorResource);
-		SetCursor(cursor);
+		OsWin::SetCursor(cursor);
 		return 1;
 	}
 		break;
