@@ -10,7 +10,6 @@
 #include <DirectXMath.h>
 #include <d3d12.h>
 #include <functional>
-#include "MessageId.h"
 
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Callbacks/CallbackMacro.h"

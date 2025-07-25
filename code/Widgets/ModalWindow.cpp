@@ -8,8 +8,6 @@
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
-#include "Widgets/Message.h"
-#include "Widgets/MessageId.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets

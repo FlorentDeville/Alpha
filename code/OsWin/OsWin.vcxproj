@@ -25,6 +25,8 @@
     <ClInclude Include="Process.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SysWindow.h" />
+    <ClInclude Include="UIMessage\UIMessage.h" />
+    <ClInclude Include="UIMessage\UIMessageId.h" />
     <ClInclude Include="VirtualKeyCode.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -5,7 +5,6 @@
 #include "Widget.h"
 
 #include "Widgets/Events/BaseEvent.h"
-#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets

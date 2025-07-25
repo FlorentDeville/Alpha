@@ -12,7 +12,6 @@
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
-#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
 #include <DirectXMath.h>

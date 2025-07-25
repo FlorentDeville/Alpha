@@ -16,7 +16,6 @@
 #include "Rendering/Texture/TextureId.h"
 #include "Rendering/Texture/TextureMgr.h"
 
-#include "Widgets/Message.h"
 #include "Widgets/WidgetMgr.h"
 
 #include <DirectXMath.h>

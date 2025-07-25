@@ -7,7 +7,6 @@
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
 #include "Widgets/MenuItem.h"
-#include "Widgets/Message.h"
 
 namespace Widgets
 {

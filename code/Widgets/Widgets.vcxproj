@@ -24,8 +24,6 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MenuBar.h" />
     <ClInclude Include="MenuItem.h" />
-    <ClInclude Include="Message.h" />
-    <ClInclude Include="MessageId.h" />
     <ClInclude Include="ModalWindow.h" />
     <ClInclude Include="IconId.h" />
     <ClInclude Include="Models\AbstractViewModel.h" />

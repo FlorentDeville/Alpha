@@ -13,6 +13,9 @@
 
 #include <DirectXMath.h>
 
+#include "Alpha/Configuration.h"
+#include "Alpha/GameMgr.h"
+
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
 #include "Core/Log/LogModule.h"
@@ -28,8 +31,8 @@
 
 #include "Inputs/InputMgr.h"
 
-#include "Configuration.h"
-#include "GameMgr.h"
+#include "OsWin/UIMessage/UIMessage.h"
+#include "OsWin/UIMessage/UIMessageId.h"
 
 #include "Rendering/CommandQueue.h"
 #include "Rendering/Font/Font.h"
@@ -66,7 +69,6 @@
 #include "Widgets/Layout.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
-#include "Widgets/Message.h"
 #include "Widgets/Split.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
@@ -94,8 +96,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CHAR:
 	{
-		Message msg;
-		msg.m_id = M_CharKeyDown;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::CharKeyDown;
 		msg.m_high = wParam;
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 	}
@@ -104,8 +106,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	{
 		//wParam is a virtual key code
-		Message msg;
-		msg.m_id = M_VirtualKeyDown;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::VirtualKeyDown;
 		msg.m_high = wParam; 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 		Inputs::InputMgr::Get().UpdateKeyboardState(wParam, true);
@@ -115,8 +117,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYUP:
 	{
 		//wParam is a virtual key code
-		Message msg;
-		msg.m_id = M_VirtualKeyUp;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::VirtualKeyUp;
 		msg.m_high = wParam;
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 		Inputs::InputMgr::Get().UpdateKeyboardState(wParam, false);
@@ -157,10 +159,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseMove;
-		msg.m_low.m_pos[0] = x;
-		msg.m_low.m_pos[1] = y;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseMove;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
 	
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -190,10 +192,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		uint16_t xPos = GET_X_LPARAM(lParam);
 		uint16_t yPos = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseMDown;
-		msg.m_low.m_pos[0] = xPos;
-		msg.m_low.m_pos[1] = yPos;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseMDown;
+		msg.m_low.m_uint32[0] = xPos;
+		msg.m_low.m_uint32[1] = yPos;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -212,10 +214,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		uint16_t xPos = GET_X_LPARAM(lParam);
 		uint16_t yPos = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseMUp;
-		msg.m_low.m_pos[0] = xPos;
-		msg.m_low.m_pos[1] = yPos;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseMUp;
+		msg.m_low.m_uint32[0] = xPos;
+		msg.m_low.m_uint32[1] = yPos;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -235,10 +237,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseLDown;
-		msg.m_low.m_pos[0] = x;
-		msg.m_low.m_pos[1] = y;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseLDown;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -259,10 +261,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseLUp;
-		msg.m_low.m_pos[0] = x;
-		msg.m_low.m_pos[1] = y;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseLUp;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -280,10 +282,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseLDoubleClick;
-		msg.m_low.m_pos[0] = x;
-		msg.m_low.m_pos[1] = y;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseLDoubleClick;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -303,10 +305,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseRDown;
-		msg.m_low.m_pos[0] = x;
-		msg.m_low.m_pos[1] = y;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseRDown;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
@@ -327,10 +329,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		int x = GET_X_LPARAM(lParam);
 		int y = GET_Y_LPARAM(lParam);
 
-		Message msg;
-		msg.m_id = M_MouseRUp;
-		msg.m_low.m_pos[0] = x;
-		msg.m_low.m_pos[1] = y;
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseRUp;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
