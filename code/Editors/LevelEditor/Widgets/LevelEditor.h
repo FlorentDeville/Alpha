@@ -63,8 +63,6 @@ namespace Editors
 	private:
 		bool m_enableViewportControl;
 
-		Widgets::Label* m_pEntityNameLabel;
-		EntityWidget* m_pEntityWidget;
 		LevelEditorViewportWidget* m_pViewport;
 		Widgets::SplitVertical* m_pSplit; //split the right and center
 		Widgets::SplitVertical* m_pLeftSplit; //split between the left and center
@@ -76,7 +74,6 @@ namespace Editors
 
 		Widgets::TableView* m_pLevelTableView;
 		LevelListModel* m_pLevelListModel;
-		EntityModel* m_pEntityModel;
 
 		Widgets::TreeView* m_pSceneTree;
 		SceneTreeModel* m_pSceneTreeModel;

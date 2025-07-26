@@ -55,9 +55,6 @@ namespace Editors
 	LevelEditor::LevelEditor()
 		: Core::Singleton<LevelEditor>()
 		, m_enableViewportControl(false)
-		, m_pEntityNameLabel(nullptr)
-		, m_pEntityModel(nullptr)
-		, m_pEntityWidget(nullptr)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
 		, m_cidOnSelectionCleared_EntityProperties()
@@ -255,7 +252,6 @@ namespace Editors
 	void LevelEditor::CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
 		Widgets::Frame* pFrame = new Widgets::Frame("Game Object Properties");
-		pFrame->OnClose([this]() { m_pEntityWidget = nullptr; delete m_pEntityModel; m_pEntityModel = nullptr; });
 		pSplit->AddRightPanel(pFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -263,10 +259,6 @@ namespace Editors
 		pLayout->SetDirection(Widgets::Layout::Vertical);
 
 		pFrame->AddWidget(pLayout);
-
-		m_pEntityNameLabel = new Widgets::Label();
-		m_pEntityNameLabel->SetSize(Core::UInt2(0, 20));
-		pLayout->AddWidget(m_pEntityNameLabel);
 
 		m_pPropertyGridWidget = new PropertyGridWidget();
 		pLayout->AddWidget(m_pPropertyGridWidget);
@@ -429,11 +421,6 @@ namespace Editors
 
 	void LevelEditor::OnSelectionCleared_EntityProperties()
 	{
-		if (!m_pEntityWidget)
-			return;
-
-		m_pEntityModel = new EntityModel(nullptr);
-		m_pEntityWidget->SetModel(m_pEntityModel);
 	}
 
 	void LevelEditor::OnAddedToSelection_GameObjectProperties(const Core::Guid& guid)
@@ -449,8 +436,6 @@ namespace Editors
 
 		m_pPropertyGridWidget->ClearAllItems();
 		m_pPropertyGridPopulator->Populate(pGo);
-		
-		m_pEntityNameLabel->SetText(pGo->GetName());
 	}
 
 	void LevelEditor::OnRemovedFromSelection_GameObjectProperties(const Core::Guid& guid)
@@ -459,7 +444,6 @@ namespace Editors
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 
 		m_pPropertyGridWidget->ClearAllItems();
-		m_pEntityNameLabel->SetText("");
 
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
 
@@ -476,7 +460,6 @@ namespace Editors
 			return;
 
 		m_pPropertyGridPopulator->Populate(pGo);
-		m_pEntityNameLabel->SetText(pGo->GetName());
 	}
 
 	void LevelEditor::OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid)
@@ -491,8 +474,6 @@ namespace Editors
 		Entity* pEntity = pNode->ToEntity();
 		if (!pEntity)
 			return;
-
-		m_pEntityNameLabel->SetText(pEntity->GetName());
 	}
 
 	void LevelEditor::OnSelectionCleared_Gizmo()
