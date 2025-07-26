@@ -48,6 +48,8 @@ namespace Editors
 	class EntityWidget;
 	class LevelEditorViewportWidget;
 	class LevelListModel;
+	class PropertyGridPopulator;
+	class PropertyGridWidget;
 	class SceneTreeModel;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
@@ -79,6 +81,9 @@ namespace Editors
 		Widgets::TreeView* m_pSceneTree;
 		SceneTreeModel* m_pSceneTreeModel;
 
+		PropertyGridWidget* m_pPropertyGridWidget;
+		PropertyGridPopulator* m_pPropertyGridPopulator;
+
 		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
 
 		Systems::NewAssetId m_selectedLevelInLevelList;
@@ -99,7 +104,7 @@ namespace Editors
 		void OnClick_SetGizmoModeRotation();
 
 		void OnSelectionCleared_EntityProperties();
-		void OnAddedToSelection_EntityProperties(const Core::Guid& nodeGuid);
+		void OnAddedToSelection_GameObjectProperties(const Core::Guid& guid);
 		void OnRemovedFromSelection_EntityProperties(const Core::Guid& nodeGuid);
 		void OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid);
 
