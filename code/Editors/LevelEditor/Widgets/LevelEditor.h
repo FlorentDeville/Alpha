@@ -88,7 +88,7 @@ namespace Editors
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 
-		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
+		void CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::TabContainer* pParent);
 		void CreateLevelBrowser(Widgets::TabContainer* pParent);
 

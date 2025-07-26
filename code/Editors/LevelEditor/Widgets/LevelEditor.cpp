@@ -128,7 +128,7 @@ namespace Editors
 
 		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
-		CreateEntityPropertyGrid(m_pSplit);
+		CreateGameObjectPropertyGrid(m_pSplit);
 
 		m_pLeftTabContainer = new Widgets::TabContainer(false);
 		m_pLeftSplit->AddLeftPanel(m_pLeftTabContainer);
@@ -241,13 +241,13 @@ namespace Editors
 		Widgets::MenuItem* pSceneTreeItem = pMenu->AddMenuItem("Scene Tree");
 		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftTabContainer); });
 
-		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Entity Properties");
-		pEntityItem->OnClick([this]() { CreateEntityPropertyGrid(m_pSplit); });
+		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Game Object Properties");
+		pEntityItem->OnClick([this]() { CreateGameObjectPropertyGrid(m_pSplit); });
 	}
 
-	void LevelEditor::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
+	void LevelEditor::CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
-		Widgets::Frame* pFrame = new Widgets::Frame("Entity Properties");
+		Widgets::Frame* pFrame = new Widgets::Frame("Game Object Properties");
 		pFrame->OnClose([this]() { m_pEntityWidget = nullptr; delete m_pEntityModel; m_pEntityModel = nullptr; });
 		pSplit->AddRightPanel(pFrame);
 
@@ -261,14 +261,16 @@ namespace Editors
 		m_pEntityNameLabel->SetSize(Core::UInt2(0, 20));
 		pLayout->AddWidget(m_pEntityNameLabel);
 
-		m_pEntityModel = new EntityModel(nullptr);
+		/*m_pEntityModel = new EntityModel(nullptr);
 		m_pEntityWidget = new EntityWidget();
 		m_pEntityWidget->SetModel(m_pEntityModel);
-		pLayout->AddWidget(m_pEntityWidget);
+		pLayout->AddWidget(m_pEntityWidget);*/
+
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
-		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
+
+		//m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
 		//pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
 		//pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
 	}
