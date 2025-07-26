@@ -278,8 +278,8 @@ namespace Editors
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 
 		//m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
-		pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_GameObjectProperties(nodeGuid); });
-		//pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
+		pSelectionMgr->OnItemAdded([this](const Core::Guid& guid) { OnAddedToSelection_GameObjectProperties(guid); });
+		pSelectionMgr->OnItemRemoved([this](const Core::Guid& guid) { OnRemovedFromSelection_GameObjectProperties(guid); });
 	}
 
 	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
@@ -453,36 +453,30 @@ namespace Editors
 		m_pEntityNameLabel->SetText(pGo->GetName());
 	}
 
-	void LevelEditor::OnRemovedFromSelection_EntityProperties(const Core::Guid& nodeGuid)
+	void LevelEditor::OnRemovedFromSelection_GameObjectProperties(const Core::Guid& guid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 
+		m_pPropertyGridWidget->ClearAllItems();
+		m_pEntityNameLabel->SetText("");
+
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+
 		if (selectionList.empty())
-		{
-			m_pEntityModel = new EntityModel(nullptr);
-			m_pEntityWidget->SetModel(m_pEntityModel);
-			m_pEntityNameLabel->SetText("");
-			
-		}
-		else
-		{
-			const Core::Guid& lastSelectedNodeGuid = selectionList.back();
-			SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
-			Node* pNode = pSceneTree->GetNode(lastSelectedNodeGuid);
-			if (!pNode)
-				return;
+			return;
+		
+		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+		if (!pLevel)
+			return;
 
-			Entity* pEntity = pNode->ToEntity();
-			if (!pEntity)
-				return;
+		const Core::Guid& lastSelectedNodeGuid = selectionList.back();
+		Systems::GameObject* pGo = pLevel->FindGameObject(lastSelectedNodeGuid);
+		if (!pGo)
+			return;
 
-			m_pEntityModel = new EntityModel(pEntity);
-			m_pEntityWidget->SetModel(m_pEntityModel);
-		}
-
-		Widgets::WidgetMgr::Get().RequestResize();
+		m_pPropertyGridPopulator->Populate(pGo);
+		m_pEntityNameLabel->SetText(pGo->GetName());
 	}
 
 	void LevelEditor::OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid)
