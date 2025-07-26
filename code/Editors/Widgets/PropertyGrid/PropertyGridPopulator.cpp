@@ -4,6 +4,8 @@
 
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 
+#include "Core/Guid/Guid.h"
+
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -112,7 +114,7 @@ namespace Editors
 		const std::vector<Systems::FieldDescriptor>& members = pFieldType->GetFields();
 		for (const Systems::FieldDescriptor& member : members)
 		{
-			if (!member.IsEditable())
+			if (member.IsHidden())
 				continue;
 
 			const Systems::TypeDescriptor* memberType = member.GetType();
@@ -211,6 +213,28 @@ namespace Editors
 					*pValue = Core::MakeSid(value);
 					m_onDataChanged();
 				});
+
+			pEditingWidget = pTextBox;
+		}
+		break;
+
+		case SID("Core::Guid"):
+		{
+			Widgets::TextBox* pTextBox = new Widgets::TextBox();
+
+			Core::Guid* pValue = reinterpret_cast<Core::Guid*>(pData);
+
+			const int BUFFER_SIZE = 64;
+			char buffer[BUFFER_SIZE] = { '\0' };
+			pValue->ToString(buffer, BUFFER_SIZE);
+
+			pTextBox->SetText(buffer);
+
+			/*pTextBox->OnValidate([this, pValue](const std::string& value)
+				{
+					*pValue = Core::MakeSid(value);
+					m_onDataChanged();
+				});*/
 
 			pEditingWidget = pTextBox;
 		}

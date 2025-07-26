@@ -9,7 +9,8 @@ namespace Systems
 	enum FieldAttribute
 	{
 		None = 0x0,
-		DoNotEdit = 0x1,
-		DoNotSerialize = 0x2
+		Hidden = 0x1,			// Hide the field complelety in editors
+		DoNotSerialize = 0x2,
+		ReadOnly = 0x04			// Display the field in editors but keep it readonly
 	};
 }

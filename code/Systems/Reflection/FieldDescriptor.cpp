@@ -59,9 +59,15 @@ namespace Systems
 		return reinterpret_cast<char*>(pObj) + m_offset;
 	}
 
-	bool FieldDescriptor::IsEditable() const
+	bool FieldDescriptor::IsHidden() const
 	{
-		bool doNotEdit = m_attribute & FieldAttribute::DoNotEdit;
-		return !doNotEdit;
+		bool hidden = m_attribute & FieldAttribute::Hidden;
+		return hidden;
+	}
+
+	bool FieldDescriptor::IsReadOnly() const
+	{
+		bool readOnly = m_attribute & FieldAttribute::ReadOnly;
+		return readOnly;
 	}
 }
