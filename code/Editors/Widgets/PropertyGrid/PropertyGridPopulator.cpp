@@ -100,7 +100,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(pElementType, pElement);
+				Widgets::Widget* pWidget = CreateWidgetForPODField(pElementType, pElement, pField->IsReadOnly());
 
 				
 				PropertyGridItem* pItem = new PropertyGridItem(buffer, pWidget);
@@ -142,7 +142,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(memberType, pMemberPtr);
+				Widgets::Widget* pWidget = CreateWidgetForPODField(memberType, pMemberPtr, member.IsReadOnly());
 
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), pWidget);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
@@ -151,7 +151,7 @@ namespace Editors
 
 	}
 
-	Widgets::Widget* PropertyGridPopulator::CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData)
+	Widgets::Widget* PropertyGridPopulator::CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly)
 	{
 		Widgets::Widget* pEditingWidget = nullptr;
 
@@ -163,7 +163,7 @@ namespace Editors
 
 			std::string* pValue = reinterpret_cast<std::string*>(pData);
 			pTextBox->SetText(*pValue);
-			pEditingWidget = pTextBox;
+			pTextBox->SetReadOnly(readOnly);
 
 			pTextBox->OnValidate([this, pValue](const std::string& value)
 				{
@@ -185,7 +185,7 @@ namespace Editors
 			char buffer[BUFFER_SIZE] = { '\0' };
 			sprintf_s(buffer, BUFFER_SIZE, "%d", *pValue);
 			pTextBox->SetText(buffer);
-			pEditingWidget = pTextBox;
+			pTextBox->SetReadOnly(readOnly);
 
 			pTextBox->OnValidate([this, pValue](const std::string& value)
 				{
@@ -206,7 +206,7 @@ namespace Editors
 
 			std::string strSid = Core::ToString(*pValue);
 			pTextBox->SetText(strSid);
-			pEditingWidget = pTextBox;
+			pTextBox->SetReadOnly(readOnly);
 
 			pTextBox->OnValidate([this, pValue](const std::string& value)
 				{
@@ -229,12 +229,13 @@ namespace Editors
 			pValue->ToString(buffer, BUFFER_SIZE);
 
 			pTextBox->SetText(buffer);
+			pTextBox->SetReadOnly(readOnly);
 
-			/*pTextBox->OnValidate([this, pValue](const std::string& value)
+			pTextBox->OnValidate([this, pValue](const std::string& value)
 				{
-					*pValue = Core::MakeSid(value);
+					*pValue = Core::Guid(value.c_str());
 					m_onDataChanged();
-				});*/
+				});
 
 			pEditingWidget = pTextBox;
 		}
