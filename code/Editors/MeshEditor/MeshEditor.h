@@ -5,7 +5,6 @@
 #pragma once
 
 #include "Core/Singleton.h"
-#include "Editors/RawDb.h"
 
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"

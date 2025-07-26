@@ -27,9 +27,6 @@
     <ClInclude Include="MaterialEditor\MaterialEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RawDb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LevelEditor\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -168,9 +165,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MaterialEditor\MaterialEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RawDb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Property.cpp">
