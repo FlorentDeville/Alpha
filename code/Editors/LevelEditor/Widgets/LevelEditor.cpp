@@ -57,7 +57,6 @@ namespace Editors
 		, m_enableViewportControl(false)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
-		, m_cidOnSelectionCleared_EntityProperties()
 		, m_selectedLevelInLevelList()
 		, m_pLeftTabContainer(nullptr)
 		, m_pLevelTableView(nullptr)
@@ -269,7 +268,7 @@ namespace Editors
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 
-		//m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
+		pSelectionMgr->OnClear([this]() { OnSelectionCleared_GameObjectProperties(); });
 		pSelectionMgr->OnItemAdded([this](const Core::Guid& guid) { OnAddedToSelection_GameObjectProperties(guid); });
 		pSelectionMgr->OnItemRemoved([this](const Core::Guid& guid) { OnRemovedFromSelection_GameObjectProperties(guid); });
 	}
@@ -419,8 +418,9 @@ namespace Editors
 		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation);
 	}
 
-	void LevelEditor::OnSelectionCleared_EntityProperties()
+	void LevelEditor::OnSelectionCleared_GameObjectProperties()
 	{
+		m_pPropertyGridWidget->ClearAllItems();
 	}
 
 	void LevelEditor::OnAddedToSelection_GameObjectProperties(const Core::Guid& guid)

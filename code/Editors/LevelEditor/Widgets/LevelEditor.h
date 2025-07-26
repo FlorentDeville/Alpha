@@ -81,8 +81,6 @@ namespace Editors
 		PropertyGridWidget* m_pPropertyGridWidget;
 		PropertyGridPopulator* m_pPropertyGridPopulator;
 
-		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
-
 		Systems::NewAssetId m_selectedLevelInLevelList;
 
 		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
@@ -100,7 +98,7 @@ namespace Editors
 		void OnClick_SetGizmoModeTranslate();
 		void OnClick_SetGizmoModeRotation();
 
-		void OnSelectionCleared_EntityProperties();
+		void OnSelectionCleared_GameObjectProperties();
 		void OnAddedToSelection_GameObjectProperties(const Core::Guid& guid);
 		void OnRemovedFromSelection_GameObjectProperties(const Core::Guid& nodeGuid);
 		void OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid);
