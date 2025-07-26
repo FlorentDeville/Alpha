@@ -390,4 +390,9 @@ namespace Editors
 	{
 		return m_pLevel;
 	}
+
+	Systems::LevelAsset* LevelEditorModule::GetCurrentLoadedLevel()
+	{
+		return m_pLevel;
+	}
 }
