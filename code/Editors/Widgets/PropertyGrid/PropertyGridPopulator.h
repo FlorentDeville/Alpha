@@ -44,7 +44,7 @@ namespace Editors
 
 	private:
 		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth);
-		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData);
+		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly);
 		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;

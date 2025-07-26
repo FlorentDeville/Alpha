@@ -48,6 +48,8 @@ namespace Editors
 	class EntityWidget;
 	class LevelEditorViewportWidget;
 	class LevelListModel;
+	class PropertyGridPopulator;
+	class PropertyGridWidget;
 	class SceneTreeModel;
 
 	class LevelEditor : public Core::Singleton<LevelEditor>
@@ -61,8 +63,6 @@ namespace Editors
 	private:
 		bool m_enableViewportControl;
 
-		Widgets::Label* m_pEntityNameLabel;
-		EntityWidget* m_pEntityWidget;
 		LevelEditorViewportWidget* m_pViewport;
 		Widgets::SplitVertical* m_pSplit; //split the right and center
 		Widgets::SplitVertical* m_pLeftSplit; //split between the left and center
@@ -74,12 +74,12 @@ namespace Editors
 
 		Widgets::TableView* m_pLevelTableView;
 		LevelListModel* m_pLevelListModel;
-		EntityModel* m_pEntityModel;
 
 		Widgets::TreeView* m_pSceneTree;
 		SceneTreeModel* m_pSceneTreeModel;
 
-		Core::CallbackId m_cidOnSelectionCleared_EntityProperties;
+		PropertyGridWidget* m_pPropertyGridWidget;
+		PropertyGridPopulator* m_pPropertyGridPopulator;
 
 		Systems::NewAssetId m_selectedLevelInLevelList;
 
@@ -88,7 +88,7 @@ namespace Editors
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 
-		void CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit);
+		void CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::TabContainer* pParent);
 		void CreateLevelBrowser(Widgets::TabContainer* pParent);
 
@@ -98,9 +98,9 @@ namespace Editors
 		void OnClick_SetGizmoModeTranslate();
 		void OnClick_SetGizmoModeRotation();
 
-		void OnSelectionCleared_EntityProperties();
-		void OnAddedToSelection_EntityProperties(const Core::Guid& nodeGuid);
-		void OnRemovedFromSelection_EntityProperties(const Core::Guid& nodeGuid);
+		void OnSelectionCleared_GameObjectProperties();
+		void OnAddedToSelection_GameObjectProperties(const Core::Guid& guid);
+		void OnRemovedFromSelection_GameObjectProperties(const Core::Guid& nodeGuid);
 		void OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid);
 
 		void OnSelectionCleared_Gizmo();

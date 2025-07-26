@@ -39,8 +39,10 @@ namespace Systems
 		template<typename T> const T* GetDataPtr(const void* pObj) const;
 		template<typename T> T* GetDataPtr(void* pObj) const;
 
-		//Check if the attribute DoNotEdit is present.
-		bool IsEditable() const;
+		//Check if the attribute Hidden is present.
+		bool IsHidden() const;
+
+		bool IsReadOnly() const;
 
 	private:
 		std::string m_name;

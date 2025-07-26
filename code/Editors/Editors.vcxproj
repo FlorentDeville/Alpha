@@ -14,7 +14,6 @@
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\Component.h" />
     <ClInclude Include="LevelEditor\LevelListModel.h" />
-    <ClInclude Include="LevelEditor\LevelSerializer.h" />
     <ClInclude Include="LevelEditor\SceneTreeModel.h" />
     <ClInclude Include="LevelEditor\SceneTree\Entity.h" />
     <ClInclude Include="LevelEditor\LevelMgr.h" />
@@ -34,7 +33,6 @@
     <ClInclude Include="MaterialEditor\ShaderTemplate.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
-    <ClInclude Include="RawDb.h" />
     <ClInclude Include="MaterialEditor\Compiler\MaterialParameters.h" />
     <ClInclude Include="MaterialEditor\Compiler\RootSignatureDescription.h" />
     <ClInclude Include="MaterialEditor\Compiler\ShaderCompiler.h" />
@@ -63,7 +61,6 @@
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\Component.cpp" />
     <ClCompile Include="LevelEditor\LevelListModel.cpp" />
-    <ClCompile Include="LevelEditor\LevelSerializer.cpp" />
     <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />
     <ClCompile Include="LevelEditor\SceneTree\Entity.cpp" />
     <ClCompile Include="LevelEditor\LevelMgr.cpp" />
@@ -82,7 +79,6 @@
     <ClCompile Include="MaterialEditor\ShaderTemplate.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
-    <ClCompile Include="RawDb.cpp" />
     <ClCompile Include="MaterialEditor\Compiler\MaterialParameters.cpp" />
     <ClCompile Include="MaterialEditor\Compiler\ShaderCompiler.cpp" />
     <ClCompile Include="MaterialEditor\MaterialEditor.cpp" />

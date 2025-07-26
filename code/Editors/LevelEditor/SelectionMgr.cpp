@@ -58,19 +58,4 @@ namespace Editors
 	{
 		return m_selection;
 	}
-
-	Core::CallbackId SelectionMgr::OnItemAdded(const OnItemAddedEvent::Callback& callback)
-	{
-		return m_onItemAdded.Connect(callback);
-	}
-
-	Core::CallbackId SelectionMgr::OnItemRemoved(const OnItemRemovedEvent::Callback& callback)
-	{
-		return m_onItemRemoved.Connect(callback);
-	}
-
-	Core::CallbackId SelectionMgr::OnClear(const OnClearEvent::Callback& callback)
-	{
-		return m_onClear.Connect(callback);
-	}
 }

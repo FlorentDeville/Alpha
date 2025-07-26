@@ -23,6 +23,8 @@
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Entity/EntityModel.h"
 #include "Editors/Widgets/Entity/EntityWidget.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -53,12 +55,8 @@ namespace Editors
 	LevelEditor::LevelEditor()
 		: Core::Singleton<LevelEditor>()
 		, m_enableViewportControl(false)
-		, m_pEntityNameLabel(nullptr)
-		, m_pEntityModel(nullptr)
-		, m_pEntityWidget(nullptr)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
-		, m_cidOnSelectionCleared_EntityProperties()
 		, m_selectedLevelInLevelList()
 		, m_pLeftTabContainer(nullptr)
 		, m_pLevelTableView(nullptr)
@@ -68,10 +66,15 @@ namespace Editors
 		, m_pViewport(nullptr)
 		, m_pSceneTree(nullptr)
 		, m_pSceneTreeModel(nullptr)
+		, m_pPropertyGridWidget(nullptr)
+		, m_pPropertyGridPopulator(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
-	{ }
+	{
+		delete m_pPropertyGridPopulator;
+		m_pPropertyGridPopulator = nullptr;
+	}
 
 	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
 	{
@@ -128,7 +131,7 @@ namespace Editors
 
 		m_pSplit->AddLeftPanel(m_pLeftSplit);
 
-		CreateEntityPropertyGrid(m_pSplit);
+		CreateGameObjectPropertyGrid(m_pSplit);
 
 		m_pLeftTabContainer = new Widgets::TabContainer(false);
 		m_pLeftSplit->AddLeftPanel(m_pLeftTabContainer);
@@ -241,14 +244,13 @@ namespace Editors
 		Widgets::MenuItem* pSceneTreeItem = pMenu->AddMenuItem("Scene Tree");
 		pSceneTreeItem->OnClick([this]() { CreateSceneTreeViewer(m_pLeftTabContainer); });
 
-		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Entity Properties");
-		pEntityItem->OnClick([this]() { CreateEntityPropertyGrid(m_pSplit); });
+		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Game Object Properties");
+		pEntityItem->OnClick([this]() { CreateGameObjectPropertyGrid(m_pSplit); });
 	}
 
-	void LevelEditor::CreateEntityPropertyGrid(Widgets::SplitVertical* pSplit)
+	void LevelEditor::CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit)
 	{
-		Widgets::Frame* pFrame = new Widgets::Frame("Entity Properties");
-		pFrame->OnClose([this]() { m_pEntityWidget = nullptr; delete m_pEntityModel; m_pEntityModel = nullptr; });
+		Widgets::Frame* pFrame = new Widgets::Frame("Game Object Properties");
 		pSplit->AddRightPanel(pFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -257,20 +259,18 @@ namespace Editors
 
 		pFrame->AddWidget(pLayout);
 
-		m_pEntityNameLabel = new Widgets::Label();
-		m_pEntityNameLabel->SetSize(Core::UInt2(0, 20));
-		pLayout->AddWidget(m_pEntityNameLabel);
+		m_pPropertyGridWidget = new PropertyGridWidget();
+		pLayout->AddWidget(m_pPropertyGridWidget);
 
-		m_pEntityModel = new EntityModel(nullptr);
-		m_pEntityWidget = new EntityWidget();
-		m_pEntityWidget->SetModel(m_pEntityModel);
-		pLayout->AddWidget(m_pEntityWidget);
+		m_pPropertyGridPopulator = new PropertyGridPopulator();
+		m_pPropertyGridPopulator->Init(m_pPropertyGridWidget);
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
-		m_cidOnSelectionCleared_EntityProperties = pSelectionMgr->OnClear([this]() { OnSelectionCleared_EntityProperties(); });
-		//pSelectionMgr->OnItemAdded([this](const Core::Guid& nodeGuid) { OnAddedToSelection_EntityProperties(nodeGuid); });
-		//pSelectionMgr->OnItemRemoved([this](const Core::Guid& nodeGuid) { OnRemovedFromSelection_EntityProperties(nodeGuid); });
+
+		pSelectionMgr->OnClear([this]() { OnSelectionCleared_GameObjectProperties(); });
+		pSelectionMgr->OnItemAdded([this](const Core::Guid& guid) { OnAddedToSelection_GameObjectProperties(guid); });
+		pSelectionMgr->OnItemRemoved([this](const Core::Guid& guid) { OnRemovedFromSelection_GameObjectProperties(guid); });
 	}
 
 	void LevelEditor::CreateSceneTreeViewer(Widgets::TabContainer* pParent)
@@ -418,65 +418,48 @@ namespace Editors
 		m_pViewport->GetGizmoWidget()->SetManipulatorMode(GizmoWidget::kRotation);
 	}
 
-	void LevelEditor::OnSelectionCleared_EntityProperties()
+	void LevelEditor::OnSelectionCleared_GameObjectProperties()
 	{
-		if (!m_pEntityWidget)
-			return;
-
-		m_pEntityModel = new EntityModel(nullptr);
-		m_pEntityWidget->SetModel(m_pEntityModel);
+		m_pPropertyGridWidget->ClearAllItems();
 	}
 
-	void LevelEditor::OnAddedToSelection_EntityProperties(const Core::Guid& nodeGuid)
+	void LevelEditor::OnAddedToSelection_GameObjectProperties(const Core::Guid& guid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-
-		SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
-		Node* pNode = pSceneTree->GetNode(nodeGuid);
-		if (!pNode)
+		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+		if (!pLevel)
 			return;
 
-		Entity* pEntity = pNode->ToEntity();
-		if (!pEntity)
+		Systems::GameObject* pGo = pLevel->FindGameObject(guid);
+		if (!pGo)
 			return;
 
-		m_pEntityModel = new EntityModel(pEntity);
-		m_pEntityWidget->SetModel(m_pEntityModel);
-		Widgets::WidgetMgr::Get().RequestResize();
-
-		m_pEntityNameLabel->SetText(pEntity->GetName());
+		m_pPropertyGridWidget->ClearAllItems();
+		m_pPropertyGridPopulator->Populate(pGo);
 	}
 
-	void LevelEditor::OnRemovedFromSelection_EntityProperties(const Core::Guid& nodeGuid)
+	void LevelEditor::OnRemovedFromSelection_GameObjectProperties(const Core::Guid& guid)
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 
+		m_pPropertyGridWidget->ClearAllItems();
+
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
+
 		if (selectionList.empty())
-		{
-			m_pEntityModel = new EntityModel(nullptr);
-			m_pEntityWidget->SetModel(m_pEntityModel);
-			m_pEntityNameLabel->SetText("");
-			
-		}
-		else
-		{
-			const Core::Guid& lastSelectedNodeGuid = selectionList.back();
-			SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
-			Node* pNode = pSceneTree->GetNode(lastSelectedNodeGuid);
-			if (!pNode)
-				return;
+			return;
+		
+		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+		if (!pLevel)
+			return;
 
-			Entity* pEntity = pNode->ToEntity();
-			if (!pEntity)
-				return;
+		const Core::Guid& lastSelectedNodeGuid = selectionList.back();
+		Systems::GameObject* pGo = pLevel->FindGameObject(lastSelectedNodeGuid);
+		if (!pGo)
+			return;
 
-			m_pEntityModel = new EntityModel(pEntity);
-			m_pEntityWidget->SetModel(m_pEntityModel);
-		}
-
-		Widgets::WidgetMgr::Get().RequestResize();
+		m_pPropertyGridPopulator->Populate(pGo);
 	}
 
 	void LevelEditor::OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid)
@@ -491,8 +474,6 @@ namespace Editors
 		Entity* pEntity = pNode->ToEntity();
 		if (!pEntity)
 			return;
-
-		m_pEntityNameLabel->SetText(pEntity->GetName());
 	}
 
 	void LevelEditor::OnSelectionCleared_Gizmo()

@@ -8,7 +8,6 @@
 
 #include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/LevelSerializer.h"
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
@@ -387,6 +386,11 @@ namespace Editors
 	}
 
 	const Systems::LevelAsset* LevelEditorModule::GetCurrentLoadedLevel() const
+	{
+		return m_pLevel;
+	}
+
+	Systems::LevelAsset* LevelEditorModule::GetCurrentLoadedLevel()
 	{
 		return m_pLevel;
 	}

@@ -6,7 +6,8 @@
 
 #include <list>
 
-#include "Core/Callbacks/CallbackList.h"
+#include "Core/Callbacks/CallbackMacro.h"
+
 #include "Core/Guid/Guid.h"
 
 namespace Editors
@@ -26,19 +27,11 @@ namespace Editors
 		const std::list<Core::Guid>& GetSelectionList() const;
 
 		//callbacks
-		using OnItemAddedEvent = Core::CallbackList<void(const Core::Guid& nodeGuid)>;
-		using OnItemRemovedEvent = Core::CallbackList<void(const Core::Guid& nodeGuid)>;
-		using OnClearEvent = Core::CallbackList<void()>;
-
-		Core::CallbackId OnItemAdded(const OnItemAddedEvent::Callback& callback);
-		Core::CallbackId OnItemRemoved(const OnItemRemovedEvent::Callback& callback);
-		Core::CallbackId OnClear(const OnClearEvent::Callback& callback);
+		EVENT_DECL(ItemAdded, void(const Core::Guid& guid))
+		EVENT_DECL(ItemRemoved, void(const Core::Guid& guid))
+		EVENT_DECL(Clear, void())
 
 	private:
 		std::list<Core::Guid> m_selection;
-
-		OnItemAddedEvent m_onItemAdded;
-		OnItemRemovedEvent m_onItemRemoved;
-		OnClearEvent m_onClear;
 	};
 }
