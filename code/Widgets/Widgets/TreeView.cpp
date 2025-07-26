@@ -45,6 +45,7 @@ namespace Widgets
 		, m_rowLayoutTree()
 		, m_isDragStarted(false)
 		, m_dragModelIndex()
+		, m_pDraggedRowLayout(nullptr)
 	{
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
@@ -327,6 +328,9 @@ namespace Widgets
 		m_isDragStarted = false;
 		g_pIconName = OsWin::CursorId::Arrow;
 
+		if (m_pDraggedRowLayout == pRowLayout) // I can't reparent to myself
+			return;
+
 		ModelIndex parent = ComputeModelIndexFromRowLayout(pRowLayout);
 		if (!parent.IsValid())
 			return;
@@ -347,6 +351,7 @@ namespace Widgets
 
 			m_isDragStarted = true;
 			m_dragModelIndex = start;
+			m_pDraggedRowLayout = pRowLayout;
 
 			g_pIconName = OsWin::CursorId::Move;
 			OsWin::SetCursor(g_pIconName);
