@@ -55,7 +55,7 @@ namespace Widgets
 		OnFocusGained([this](const FocusEvent& ev) { OnGetFocusCallback(); });
 		OnFocusLost([this](const FocusEvent& ev) { OnLoseFocusCallback(); });
 
-		SetSize(Core::UInt2(0, 20));
+		SetSize(Core::UInt2(100, 20));
 		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 	}
 
