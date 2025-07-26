@@ -29,12 +29,12 @@ namespace Widgets
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		void ResizeChildren() override;
 
-		void Enable(bool recursive = true) override;
-
 		bool Handle(const BaseEvent& ev) override;
 
 		void SetText(const std::string& text);
 		void SetTextAlignment(TextAlignment alignment);
+
+		void SetReadOnly(bool readOnly);
 
 		const std::string& GetText() const;
 
@@ -46,12 +46,14 @@ namespace Widgets
 		{
 			DEFAULT,
 			HOVER,
-			EDIT
+			EDIT,
+			READONLY
 		};
 
 		TextBoxStyle m_defaultStyle;
 		TextBoxStyle m_editStyle;
 		TextBoxStyle m_hoverStyle;
+		TextBoxStyle m_readOnlyStyle;
 
 		Icon* m_pCursorIcon;
 

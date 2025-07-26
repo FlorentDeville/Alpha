@@ -38,6 +38,11 @@ namespace Widgets
 		m_hoverStyle.SetBorderSize(1);
 		m_hoverStyle.SetShowBorder(true);
 
+		m_readOnlyStyle.SetBorderColor(Color(46, 46, 46));
+		m_readOnlyStyle.SetShowBorder(true);
+		m_readOnlyStyle.SetBorderSize(1);
+		m_readOnlyStyle.SetBackgroundColor(Color(31, 31, 31));
+
 		m_editStyle = m_hoverStyle;
 
 		m_pCursorIcon = new Icon(WidgetMgr::Get().GetIconTextureId(IconId::kIconCursor));
@@ -83,6 +88,8 @@ namespace Widgets
 			pCurrentStyle = &m_hoverStyle;
 		else if (m_currentState == EDIT)
 			pCurrentStyle = &m_editStyle;
+		else if (m_currentState == READONLY)
+			pCurrentStyle = &m_readOnlyStyle;
 
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);
@@ -119,13 +126,11 @@ namespace Widgets
 		m_pCursorIcon->Resize(m_absPos, m_size);
 	}
 
-	void TextBox::Enable(bool recursive)
-	{
-		m_enabled = true;
-	}
-
 	bool TextBox::Handle(const BaseEvent& ev)
 	{
+		if (m_currentState == READONLY)
+			return true;
+
 		switch (ev.m_id)
 		{
 		case EventType::kMouseEnter: //M_MouseEnter:
@@ -264,6 +269,14 @@ namespace Widgets
 		}
 	}
 
+	void TextBox::SetReadOnly(bool readOnly)
+	{
+		if (readOnly)
+			m_currentState = READONLY;
+		else
+			m_currentState = DEFAULT;
+	}
+
 	const std::string& TextBox::GetText() const
 	{
 		return m_text;
@@ -271,6 +284,9 @@ namespace Widgets
 
 	bool TextBox::OnGetFocusCallback()
 	{
+		if (m_currentState == READONLY)
+			return true;
+
 		m_pCursorIcon->Enable(); 
 		m_currentState = EDIT; 
 		m_cursorPosition = 0;
@@ -280,6 +296,9 @@ namespace Widgets
 
 	bool TextBox::OnLoseFocusCallback()
 	{
+		if (m_currentState == READONLY)
+			return true;
+
 		m_pCursorIcon->Disable(); 
 		m_currentState = DEFAULT;
 		m_cursorLastBlinkChange = 0;
