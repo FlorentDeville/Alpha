@@ -54,6 +54,7 @@ namespace Widgets
 		bool m_multiSelectionEnabled;
 		
 		bool m_isDragStarted;
+		Layout* m_pDraggedRowLayout; // widget of the row that triggered the drag and drop event.
 		ModelIndex m_dragModelIndex; // model index of the row being dragged
 
 		Core::UInt2 m_cellDefaultSize;
