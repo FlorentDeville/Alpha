@@ -58,11 +58,11 @@ namespace Editors
 			nameColumnWidth -= containerWidth;
 		}
 
-		Widgets::Label* pLabel = new Widgets::Label(pProperty->GetName());
-		pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-		pLabel->SetSize(Core::UInt2(nameColumnWidth, m_rowHeight));
+		Widgets::Widget* pNameWidget = pProperty->GetNameWidget();
+		pNameWidget->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pNameWidget->SetSize(Core::UInt2(nameColumnWidth, m_rowHeight));
 
-		pPropertyLayout->AddWidget(pLabel);
+		pPropertyLayout->AddWidget(pNameWidget);
 
 		if (pProperty->GetEditingWidget())
 		{
