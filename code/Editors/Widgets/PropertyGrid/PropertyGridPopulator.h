@@ -35,6 +35,7 @@ namespace Editors
 		void Init(PropertyGridWidget* pWidget);
 
 		void Populate(Systems::Object* pObject);
+		void Repopulate();
 
 		void RegisterItemFactory(Core::Sid typenameSid, PropertyGridItemFactory* pFactory);
 
@@ -53,5 +54,8 @@ namespace Editors
 
 		//Map of type name sid to item factory
 		std::map<Core::Sid, PropertyGridItemFactory*> m_factories;
+
+		//The object currently being displayed
+		Systems::Object* m_pObject;
 	};
 }

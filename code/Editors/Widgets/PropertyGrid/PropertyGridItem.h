@@ -19,6 +19,7 @@ namespace Editors
 	public:
 		PropertyGridItem();
 		PropertyGridItem(const std::string& name, Widgets::Widget* pEditingWidget);
+		PropertyGridItem(Widgets::Widget* pNameWidget, Widgets::Widget* pEditingWidget);
 
 		Widgets::Widget* GetNameWidget() const;
 		Widgets::Widget* GetEditingWidget() const;

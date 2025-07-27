@@ -19,6 +19,11 @@ namespace Editors
 		m_pNameWidget = new Widgets::Label(name);
 	}
 
+	PropertyGridItem::PropertyGridItem(Widgets::Widget* pNameWidget, Widgets::Widget* pEditingWidget)
+		: m_pNameWidget(pNameWidget)
+		, m_pEditingWidget(pEditingWidget)
+	{ }
+
 	Widgets::Widget* PropertyGridItem::GetNameWidget() const
 	{
 		return m_pNameWidget;

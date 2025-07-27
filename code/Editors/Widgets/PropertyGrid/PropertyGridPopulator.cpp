@@ -8,12 +8,15 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Systems/Objects/Object.h"
 
+#include "Widgets/Button.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/TextBox.h"
@@ -26,6 +29,7 @@ namespace Editors
 {
 	PropertyGridPopulator::PropertyGridPopulator()
 		: m_pPropertyGridWidget(nullptr)
+		, m_pObject(nullptr)
 	{ }
 
 	PropertyGridPopulator::~PropertyGridPopulator()
@@ -45,11 +49,17 @@ namespace Editors
 
 	void PropertyGridPopulator::Populate(Systems::Object* pObject)
 	{
+		m_pObject = pObject;
 		const Systems::TypeDescriptor* pType = pObject->GetTypeDescriptor();
 
 		CreatePropertiesForClassMember(pType, pObject, 0);
 
 		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	void PropertyGridPopulator::Repopulate()
+	{
+		Populate(m_pObject);
 	}
 
 	void PropertyGridPopulator::RegisterItemFactory(Core::Sid typenameSid, PropertyGridItemFactory* pFactory)
@@ -84,9 +94,43 @@ namespace Editors
 				pElement = reinterpret_cast<char*>(*pCharPtr);
 			}
 
-			const int BUFFER_SIZE = 8;
-			char buffer[BUFFER_SIZE] = { '\0' };
-			sprintf_s(buffer, "[%d]", ii);
+			Widgets::Layout* pNameLayout = nullptr;
+			{
+				pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
+				pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
+				pNameLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
+				pNameLayout->SetSpace(DirectX::XMINT2(5, 0));
+
+				const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+				Rendering::TextureId deleteTextureId = widgetMgr.GetIconTextureId(Widgets::IconId::kIconClose);
+				Widgets::Icon* pDeleteIcon = new Widgets::Icon(deleteTextureId);
+
+				Widgets::Button* pDeleteButton = new Widgets::Button(12, 12, 0, 0);
+				pDeleteButton->AddWidget(pDeleteIcon);
+				pDeleteButton->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::NONE, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+				pDeleteButton->OnClick([pArray, ii, this]()
+					{
+						Editors::OkCancelDialog* pDialog = new Editors::OkCancelDialog("Delete element", "Are you sure you want to delete this element from the array ?");
+						pDialog->OnOk([pArray, ii, this]()
+							{
+								pArray->RemoveElement(ii);
+								m_onDataChanged();
+							});
+
+						pDialog->Open();
+					});
+
+				pNameLayout->AddWidget(pDeleteButton);
+
+				const int BUFFER_SIZE = 8;
+				char buffer[BUFFER_SIZE] = { '\0' };
+				sprintf_s(buffer, "[%d]", ii);
+
+				Widgets::Label* pNameLabel = new Widgets::Label(buffer);
+				pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+				pNameLayout->AddWidget(pNameLabel);			
+			}
+
 			if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
 			{
 				pFactory->CreateItems(pElementType, pElement, depth + 1);
@@ -97,7 +141,7 @@ namespace Editors
 			}
 			else if (pElementType->IsClass())
 			{
-				PropertyGridItem* pItem = new PropertyGridItem(buffer, nullptr);
+				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
 				CreatePropertiesForClassMember(pElementType, pElement, depth + 1);
@@ -107,7 +151,7 @@ namespace Editors
 				Widgets::Widget* pWidget = CreateWidgetForPODField(pElementType, pElement, pField->IsReadOnly());
 
 				
-				PropertyGridItem* pItem = new PropertyGridItem(buffer, pWidget);
+				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, pWidget);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
