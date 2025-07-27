@@ -46,9 +46,17 @@ namespace Editors
 		EVENT_DECL(DataChanged, void())
 
 	private:
+		// Create properties for an instance of a class deriving from Object.
+		void CreatePropertiesForObject(Systems::Object* pObject, int depth);
+
+		// Recursively goes up the inheritance hierarchy of an Object to display all its properties.
+		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth);
+
 		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth);
 		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly);
-		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
+
+		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
+		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
 		void CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr);
 

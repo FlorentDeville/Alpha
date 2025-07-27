@@ -54,9 +54,8 @@ namespace Editors
 	void PropertyGridPopulator::Populate(Systems::Object* pObject)
 	{
 		m_pObject = pObject;
-		const Systems::TypeDescriptor* pType = pObject->GetTypeDescriptor();
-
-		CreatePropertiesForClassMember(pType, pObject, 0);
+		
+		CreatePropertiesForObject(pObject, 0);
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
@@ -86,6 +85,21 @@ namespace Editors
 		m_onDataChanged();
 	}
 
+	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject, int depth)
+	{
+		const Systems::TypeDescriptor* pRealType = pObject->GetTypeDescriptor();
+		CreatePropertiesForObjectParentClass(pObject, pRealType, depth);
+	}
+
+	void PropertyGridPopulator::CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth)
+	{
+		const Systems::TypeDescriptor* pParentType = pType->GetBaseType();
+		if (pParentType)
+			CreatePropertiesForObjectParentClass(pObject, pParentType, depth);
+		
+		CreatePropertiesForTypeMembers(pType, pObject, depth);
+	}
+
 	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth)
 	{
 		Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pArrayPtr);
@@ -93,6 +107,7 @@ namespace Editors
 		int32_t size = pArray->GetSize();
 
 		const Systems::TypeDescriptor* pElementType = pField->GetElementType();
+		bool isObject = pElementType->IsObject();
 
 		for (int ii = 0; ii < size; ++ii)
 		{
@@ -131,9 +146,19 @@ namespace Editors
 
 				pNameLayout->AddWidget(pDeleteButton);
 
-				const int BUFFER_SIZE = 8;
+				const int BUFFER_SIZE = 64;
 				char buffer[BUFFER_SIZE] = { '\0' };
-				sprintf_s(buffer, "[%d]", ii);
+
+				if (isObject)
+				{
+					Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
+					const Systems::TypeDescriptor* pObjectType = pObject->GetTypeDescriptor();
+					sprintf_s(buffer, "[%d] %s", ii, pObjectType->GetName().c_str());
+				}
+				else
+				{
+					sprintf_s(buffer, "[%d]", ii);
+				}
 
 				Widgets::Label* pNameLabel = new Widgets::Label(buffer);
 				pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
@@ -148,12 +173,20 @@ namespace Editors
 			{
 				assert(false); //don't support array of arrays for now
 			}
+			else if (isObject)
+			{
+				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
+				m_pPropertyGridWidget->AddProperty(pItem, depth);
+
+				Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
+				CreatePropertiesForObject(pObject, depth + 1);
+			}
 			else if (pElementType->IsClass())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
-				CreatePropertiesForClassMember(pElementType, pElement, depth + 1);
+				CreatePropertiesForTypeMembers(pElementType, pElement, depth + 1);
 			}
 			else //pod
 			{
@@ -166,7 +199,7 @@ namespace Editors
 		}
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth)
+	void PropertyGridPopulator::CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth)
 	{
 		const std::vector<Systems::FieldDescriptor>& members = pFieldType->GetFields();
 		for (const Systems::FieldDescriptor& member : members)
@@ -193,12 +226,17 @@ namespace Editors
 				if(m_canAddElementToArray)
 					CreateArrayAddElementButton(member, pMemberPtr);
 			}
+			else if (memberType->IsObject())
+			{
+				Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pMemberPtr);
+				CreatePropertiesForObject(pObject, depth + 1);
+			}
 			else if (memberType->IsClass())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem);
 
-				CreatePropertiesForClassMember(memberType, pMemberPtr, depth + 1);
+				CreatePropertiesForTypeMembers(memberType, pMemberPtr, depth + 1);
 			}
 			else //pod
 			{
