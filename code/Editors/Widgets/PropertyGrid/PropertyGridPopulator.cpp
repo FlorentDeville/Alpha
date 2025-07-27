@@ -8,11 +8,14 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
+#include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
+#include "Systems/Objects/GameComponent.h"
+#include "Systems/Objects/GameObject.h"
 #include "Systems/Objects/Object.h"
 
 #include "Widgets/Button.h"
@@ -96,8 +99,8 @@ namespace Editors
 			void* pElement = pArray->GetElement(ii);
 			if (pField->IsElementPointer())
 			{
-				char* pCharPtr = reinterpret_cast<char*>(pElement);
-				pElement = reinterpret_cast<char*>(*pCharPtr);
+				uint64_t* pCharPtr = reinterpret_cast<uint64_t*>(pElement);
+				pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
 			}
 
 			Widgets::Layout* pNameLayout = nullptr;
@@ -231,14 +234,45 @@ namespace Editors
 					assert(pElementBaseType->GetSid() == CONSTSID("Systems::Object"));
 
 					//now let the user choose what class to instanciate.
+					ClassSelectionDialog* pDialog = new ClassSelectionDialog(pElementType->GetSid());
+					pDialog->Open();
+					pDialog->OnOk([this, pMemberPtr](const Core::Sid& classNameSid) 
+						{
+							const Systems::TypeDescriptor* pTypeToCreate = Systems::ReflectionMgr::Get().GetType(classNameSid);
+							if (!pTypeToCreate)
+								return;
+
+							void* pNewItem = nullptr;
+
+							if (pTypeToCreate->IsGameComponent())
+								pNewItem = Systems::CreateNewGameComponent(pTypeToCreate);
+							else if (pTypeToCreate->IsGameObject())
+								pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
+							else if (pTypeToCreate->IsObject())
+								pNewItem = Systems::CreateObject(pTypeToCreate);
+							else
+								assert(false); // we can only create Object derived class here
+
+							if (!pNewItem)
+								return;
+
+							Core::BaseArray* pArray = static_cast<Core::BaseArray*>(pMemberPtr);
+							pArray->AddElement();
+							void* ppItem = pArray->GetElement(pArray->GetSize()-1); //ppItem is actually a Object**
+							uint64_t* pTemp = reinterpret_cast<uint64_t*>(ppItem);
+							*pTemp = reinterpret_cast<uint64_t>(pNewItem);
+
+							m_onDataChanged();
+						});
 				}
 				else
 				{
 					//it's not a pointer so the array will take care or allocating the object
 					Core::BaseArray* pArray = static_cast<Core::BaseArray*>(pMemberPtr);
 					pArray->AddElement();
+					m_onDataChanged();
 				}
-				m_onDataChanged();
+				
 			});
 
 		PropertyGridItem* pItem = new PropertyGridItem(nullptr, pAddElementButton);
