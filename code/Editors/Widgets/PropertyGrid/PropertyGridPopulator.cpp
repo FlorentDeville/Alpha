@@ -118,53 +118,6 @@ namespace Editors
 				pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
 			}
 
-			Widgets::Layout* pNameLayout = nullptr;
-			{
-				pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
-				pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
-				pNameLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
-				pNameLayout->SetSpace(DirectX::XMINT2(5, 0));
-
-				const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
-				Rendering::TextureId deleteTextureId = widgetMgr.GetIconTextureId(Widgets::IconId::kIconClose);
-				Widgets::Icon* pDeleteIcon = new Widgets::Icon(deleteTextureId);
-
-				Widgets::Button* pDeleteButton = new Widgets::Button(12, 12, 0, 0);
-				pDeleteButton->AddWidget(pDeleteIcon);
-				pDeleteButton->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::NONE, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-				pDeleteButton->OnClick([pArray, ii, this]()
-					{
-						Editors::OkCancelDialog* pDialog = new Editors::OkCancelDialog("Delete element", "Are you sure you want to delete this element from the array ?");
-						pDialog->OnOk([pArray, ii, this]()
-							{
-								pArray->RemoveElement(ii);
-								m_onDataChanged();
-							});
-
-						pDialog->Open();
-					});
-
-				pNameLayout->AddWidget(pDeleteButton);
-
-				const int BUFFER_SIZE = 64;
-				char buffer[BUFFER_SIZE] = { '\0' };
-
-				if (isObject)
-				{
-					Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
-					const Systems::TypeDescriptor* pObjectType = pObject->GetTypeDescriptor();
-					sprintf_s(buffer, "[%d] %s", ii, pObjectType->GetName().c_str());
-				}
-				else
-				{
-					sprintf_s(buffer, "[%d]", ii);
-				}
-
-				Widgets::Label* pNameLabel = new Widgets::Label(buffer);
-				pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
-				pNameLayout->AddWidget(pNameLabel);			
-			}
-
 			if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
 			{
 				pFactory->CreateItems(pElementType, pElement, depth + 1);
@@ -175,6 +128,7 @@ namespace Editors
 			}
 			else if (isObject)
 			{
+				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
@@ -183,6 +137,7 @@ namespace Editors
 			}
 			else if (pElementType->IsClass())
 			{
+				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
@@ -191,7 +146,7 @@ namespace Editors
 			else //pod
 			{
 				Widgets::Widget* pWidget = CreateWidgetForPODField(pElementType, pElement, pField->IsReadOnly());
-
+				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
 				
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, pWidget);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
@@ -463,5 +418,54 @@ namespace Editors
 			return it->second;
 
 		return nullptr;
+	}
+
+	Widgets::Widget* PropertyGridPopulator::CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement)
+	{
+		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
+		pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
+		pNameLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
+		pNameLayout->SetSpace(DirectX::XMINT2(5, 0));
+
+		const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		Rendering::TextureId deleteTextureId = widgetMgr.GetIconTextureId(Widgets::IconId::kIconClose);
+		Widgets::Icon* pDeleteIcon = new Widgets::Icon(deleteTextureId);
+
+		Widgets::Button* pDeleteButton = new Widgets::Button(12, 12, 0, 0);
+		pDeleteButton->AddWidget(pDeleteIcon);
+		pDeleteButton->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::NONE, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		pDeleteButton->OnClick([pArray, elementIndex, this]()
+			{
+				Editors::OkCancelDialog* pDialog = new Editors::OkCancelDialog("Delete element", "Are you sure you want to delete this element from the array ?");
+				pDialog->OnOk([pArray, elementIndex, this]()
+					{
+						pArray->RemoveElement(elementIndex);
+						m_onDataChanged();
+					});
+
+				pDialog->Open();
+			});
+
+		pNameLayout->AddWidget(pDeleteButton);
+
+		const int BUFFER_SIZE = 64;
+		char buffer[BUFFER_SIZE] = { '\0' };
+
+		if (elementIsObject)
+		{
+			Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
+			const Systems::TypeDescriptor* pObjectType = pObject->GetTypeDescriptor();
+			sprintf_s(buffer, "[%d] %s", elementIndex, pObjectType->GetName().c_str());
+		}
+		else
+		{
+			sprintf_s(buffer, "[%d]", elementIndex);
+		}
+
+		Widgets::Label* pNameLabel = new Widgets::Label(buffer);
+		pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		pNameLayout->AddWidget(pNameLabel);
+
+		return pNameLayout;
 	}
 }

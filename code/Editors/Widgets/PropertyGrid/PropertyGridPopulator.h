@@ -9,6 +9,11 @@
 
 #include <map>
 
+namespace Core
+{
+	class BaseArray;
+}
+
 namespace Systems
 {
 	class FieldDescriptor;
@@ -61,6 +66,8 @@ namespace Editors
 		void CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr);
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
+
+		Widgets::Widget* CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 
