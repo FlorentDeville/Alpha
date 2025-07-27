@@ -18,6 +18,8 @@ namespace Core
 		virtual void* GetElement(uint32_t index) = 0;
 		virtual const void* GetConstElement(uint32_t) const = 0;
 
+		virtual void RemoveElement(uint32_t index) = 0;
+
 		virtual void Resize(uint32_t newSize) = 0;
 	};
 }

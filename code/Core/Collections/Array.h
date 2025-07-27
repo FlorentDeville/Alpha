@@ -100,6 +100,8 @@ namespace Core
 			return &m_pStart[index];
 		}
 
+		void RemoveElement(uint32_t index) override;
+
 		T* GetData()
 		{
 			return m_pStart;
@@ -184,6 +186,15 @@ namespace Core
 		T* m_pStart;
 
 	};
+
+	template<typename T> void Array<T>::RemoveElement(uint32_t index)
+	{
+		if (!IsValidIndex(index))
+			return;
+
+		Iterator it(m_pStart + index);
+		Erase(it);
+	}
 
 	template<typename T> T& Array<T>::Back()
 	{
