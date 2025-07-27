@@ -201,6 +201,7 @@ namespace Widgets
 			}
 			else
 			{
+				pLabel->SetHeight(m_cellDefaultSize.y);
 				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 
 				pHeaderLayout->AddWidget(pLabel);
@@ -395,6 +396,7 @@ namespace Widgets
 			}
 			else
 			{
+				pLabel->SetHeight(m_cellDefaultSize.y);
 				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			}
 
