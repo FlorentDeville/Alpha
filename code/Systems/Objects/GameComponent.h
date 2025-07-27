@@ -32,6 +32,8 @@ namespace Systems
 		END_REFLECTION()
 	};
 
+	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType);
+
 	template<typename T, typename... Args> T* CreateNewGameComponent(Args... args)
 	{
 		T* ptr = Systems::CreateObject(std::forward<Args>(args)...);

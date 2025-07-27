@@ -57,6 +57,8 @@ namespace Systems
 		END_REFLECTION()
 	};
 
+	GameObject* CreateNewGameObject(const TypeDescriptor* pType);
+
 	template<typename T, typename... Args> T* CreateNewGameObject(Args... args)
 	{
 		T* ptr = Systems::CreateObject<T, Args...>(args...);

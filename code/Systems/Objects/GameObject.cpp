@@ -48,4 +48,13 @@ namespace Systems
 	{
 		return m_transform;
 	}
+
+	GameObject* CreateNewGameObject(const TypeDescriptor* pType)
+	{
+		GameObject* pObject = static_cast<GameObject*>(CreateObject(pType));
+		pObject->SetGuid(Core::Guid::GenerateNewGuid());
+		pObject->GetTransform().SetGuid(Core::Guid::GenerateNewGuid());
+
+		return pObject;
+	}
 }

@@ -32,6 +32,8 @@ namespace Systems
 		END_REFLECTION()
 	};
 
+	Object* CreateObject(const TypeDescriptor* pType);
+
 	template<typename T, typename... Args> T* CreateObject(Args... args)
 	{
 		T* pNewObject = new T(std::forward<Args>(args)...);

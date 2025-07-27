@@ -24,4 +24,11 @@ namespace Systems
 	{
 		m_guid = guid;
 	}
+
+	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType)
+	{
+		GameComponent* ptr = static_cast<GameComponent*>(CreateObject(pType));
+		ptr->SetGuid(Core::Guid::GenerateNewGuid());
+		return ptr;
+	}
 }
