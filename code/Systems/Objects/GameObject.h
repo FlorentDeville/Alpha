@@ -23,7 +23,7 @@ namespace Systems
 		GameObject() = default;
 		GameObject(const std::string& name);
 
-		~GameObject() = default;
+		virtual ~GameObject();
 
 		virtual void Update();
 		virtual void Render();

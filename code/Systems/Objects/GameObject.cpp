@@ -13,6 +13,14 @@ namespace Systems
 		Systems::CreateObjectInPlace(&m_transform);
 	}
 
+	GameObject::~GameObject()
+	{
+		for (GameComponent* pComponent : m_components)
+			delete pComponent;
+
+		m_components.Clear();
+	}
+
 	void GameObject::Update()
 	{ }
 
