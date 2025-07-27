@@ -158,6 +158,8 @@ namespace Core
 		void Resize(uint32_t newSize) override;
 		void Resize(uint32_t newSize, const T& value);
 
+		void AddElement() override;
+
 		void Reserve(uint32_t index, bool allowShrink = false);
 
 		void Clear();
@@ -233,6 +235,11 @@ namespace Core
 				memcpy(m_pStart + ii, &value, sizeof(value));
 			}
 		}
+	}
+
+	template<typename T> void Array<T>::AddElement()
+	{
+		PushBack(T());
 	}
 
 	template<typename T> void Array<T>::Reserve(uint32_t newSize, bool allowShrink)
