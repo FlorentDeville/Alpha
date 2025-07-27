@@ -39,6 +39,8 @@ namespace Editors
 
 		void RegisterItemFactory(Core::Sid typenameSid, PropertyGridItemFactory* pFactory);
 
+		void SetCanAddElementToArray(bool canAdd);
+
 		void SendDataChangedEvent();
 
 		EVENT_DECL(DataChanged, void())
@@ -47,6 +49,8 @@ namespace Editors
 		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth);
 		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly);
 		void CreatePropertiesForClassMember(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
+
+		void CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr);
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
@@ -57,5 +61,7 @@ namespace Editors
 
 		//The object currently being displayed
 		Systems::Object* m_pObject;
+
+		bool m_canAddElementToArray;
 	};
 }

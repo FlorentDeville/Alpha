@@ -30,6 +30,7 @@ namespace Editors
 	PropertyGridPopulator::PropertyGridPopulator()
 		: m_pPropertyGridWidget(nullptr)
 		, m_pObject(nullptr)
+		, m_canAddElementToArray(true)
 	{ }
 
 	PropertyGridPopulator::~PropertyGridPopulator()
@@ -70,6 +71,11 @@ namespace Editors
 			delete pFactory;
 		
 		m_factories[typenameSid] = pFactory;
+	}
+
+	void PropertyGridPopulator::SetCanAddElementToArray(bool canAdd)
+	{
+		m_canAddElementToArray = canAdd;
 	}
 
 	void PropertyGridPopulator::SendDataChangedEvent()
@@ -180,20 +186,9 @@ namespace Editors
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
 				CreatePropertiesForArrayElements(&member, pMemberPtr, depth + 1);
-
-				//button to add an new element
-				{
-					Widgets::Label* pLabel = new Widgets::Label("+");
-					pLabel->SetSizeStyle(Widgets::Widget::FIT);
-					pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-					
-					Widgets::Button* pAddElementButton = new Widgets::Button(10, 20, 0, 0);
-					pAddElementButton->AddWidget(pLabel);
-					pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-
-					PropertyGridItem* pItem = new PropertyGridItem(nullptr, pAddElementButton);
-					m_pPropertyGridWidget->AddProperty(pItem);
-				}
+				
+				if(m_canAddElementToArray)
+					CreateArrayAddElementButton(member, pMemberPtr);
 			}
 			else if (memberType->IsClass())
 			{
@@ -211,6 +206,43 @@ namespace Editors
 			}
 		}
 
+	}
+
+	void PropertyGridPopulator::CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr)
+	{
+		Widgets::Label* pLabel = new Widgets::Label("+");
+		pLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+		Widgets::Button* pAddElementButton = new Widgets::Button(10, 20, 0, 0);
+		pAddElementButton->AddWidget(pLabel);
+		pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pAddElementButton->OnClick([this, member, pMemberPtr]()
+			{
+				if (member.IsElementPointer())
+				{
+					const Systems::TypeDescriptor* pElementType = member.GetElementType();
+
+					const Systems::TypeDescriptor* pElementBaseType = pElementType;
+					while (pElementBaseType->GetBaseType())
+						pElementBaseType = pElementBaseType->GetBaseType();
+
+					// for now only support pointers to Object.
+					assert(pElementBaseType->GetSid() == CONSTSID("Systems::Object"));
+
+					//now let the user choose what class to instanciate.
+				}
+				else
+				{
+					//it's not a pointer so the array will take care or allocating the object
+					Core::BaseArray* pArray = static_cast<Core::BaseArray*>(pMemberPtr);
+					pArray->AddElement();
+				}
+				m_onDataChanged();
+			});
+
+		PropertyGridItem* pItem = new PropertyGridItem(nullptr, pAddElementButton);
+		m_pPropertyGridWidget->AddProperty(pItem);
 	}
 
 	Widgets::Widget* PropertyGridPopulator::CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly)
