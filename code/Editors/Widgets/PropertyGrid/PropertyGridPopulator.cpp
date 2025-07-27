@@ -180,6 +180,20 @@ namespace Editors
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
 				CreatePropertiesForArrayElements(&member, pMemberPtr, depth + 1);
+
+				//button to add an new element
+				{
+					Widgets::Label* pLabel = new Widgets::Label("+");
+					pLabel->SetSizeStyle(Widgets::Widget::FIT);
+					pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+					
+					Widgets::Button* pAddElementButton = new Widgets::Button(10, 20, 0, 0);
+					pAddElementButton->AddWidget(pLabel);
+					pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+
+					PropertyGridItem* pItem = new PropertyGridItem(nullptr, pAddElementButton);
+					m_pPropertyGridWidget->AddProperty(pItem);
+				}
 			}
 			else if (memberType->IsClass())
 			{

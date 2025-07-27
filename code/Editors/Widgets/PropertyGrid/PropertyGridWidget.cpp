@@ -47,22 +47,30 @@ namespace Editors
 
 		int nameColumnWidth = m_nameColumnWidth;
 
-		if (depth != 0)
+		if (Widgets::Widget* pNameWidget = pProperty->GetNameWidget())
 		{
-			const int OFFSET_DEPTH = 10;
-			uint32_t containerWidth = OFFSET_DEPTH * depth;
-			Widgets::Widget* pSpacer = new Widgets::Widget(containerWidth, 0, 0, 0);
+			if (depth != 0)
+			{
+				const int OFFSET_DEPTH = 10;
+				uint32_t containerWidth = OFFSET_DEPTH * depth;
+				Widgets::Widget* pSpacer = new Widgets::Widget(containerWidth, 0, 0, 0);
+				pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+				pPropertyLayout->AddWidget(pSpacer);
+
+				nameColumnWidth -= containerWidth;
+			}
+
+			pNameWidget->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pNameWidget->SetSize(Core::UInt2(nameColumnWidth, m_rowHeight));
+
+			pPropertyLayout->AddWidget(pNameWidget);
+		}
+		else
+		{
+			Widgets::Widget* pSpacer = new Widgets::Widget(m_nameColumnWidth, 0, 0, 0);
 			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 			pPropertyLayout->AddWidget(pSpacer);
-
-			nameColumnWidth -= containerWidth;
 		}
-
-		Widgets::Widget* pNameWidget = pProperty->GetNameWidget();
-		pNameWidget->SetSizeStyle(Widgets::Widget::DEFAULT);
-		pNameWidget->SetSize(Core::UInt2(nameColumnWidth, m_rowHeight));
-
-		pPropertyLayout->AddWidget(pNameWidget);
 
 		if (pProperty->GetEditingWidget())
 		{
