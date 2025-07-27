@@ -32,8 +32,17 @@ namespace Systems
 		const TypeDescriptor* GetBaseType() const;
 		Core::Sid GetUpgradeType() const;
 
+		// True if this type inherits from baseClassSid
+		bool InheritsFrom(Core::Sid baseClassSid) const;
+
 		// True if this class inehrits from Object.
 		bool IsObject() const;
+
+		// True if this class inherits from GameObject.
+		bool IsGameObject() const;
+
+		// True if the class ihnerits from GameComponent.
+		bool IsGameComponent() const;
 
 		// True if this is a class (it has fields). False if it's a pod (there is no field).
 		bool IsClass() const;

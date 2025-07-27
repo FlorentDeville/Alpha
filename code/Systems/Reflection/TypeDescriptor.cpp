@@ -70,18 +70,43 @@ namespace Systems
 		return m_upgradeType;
 	}
 
-	bool TypeDescriptor::IsObject() const
+	bool TypeDescriptor::InheritsFrom(Core::Sid baseClassSid) const
 	{
-		const TypeDescriptor* pType = this;
+		const TypeDescriptor* pType = m_pBaseType;
 		while (pType)
 		{
-			if (pType->m_sid == MAKESID("Systems::Object"))
+			if (pType->m_sid == baseClassSid)
 				return true;
 
 			pType = pType->m_pBaseType;
 		}
 
 		return false;
+	}
+
+	bool TypeDescriptor::IsObject() const
+	{
+		if (m_sid == CONSTSID("Systems::Object"))
+			return true;
+		else
+			return InheritsFrom(CONSTSID("Systems::Object"));
+	}
+
+	bool TypeDescriptor::IsGameObject() const
+	{
+		if (m_sid == CONSTSID("Systems::GameObject"))
+			return true;
+		else
+			return InheritsFrom(CONSTSID("Systems::GameObject"));
+	}
+
+	// True if the class ihnerits from GameComponent.
+	bool TypeDescriptor::IsGameComponent() const
+	{
+		if (m_sid == CONSTSID("Systems::GameComponent"))
+			return true;
+		else
+			return InheritsFrom(CONSTSID("Systems::GameComponent"));
 	}
 
 	bool TypeDescriptor::IsClass() const
