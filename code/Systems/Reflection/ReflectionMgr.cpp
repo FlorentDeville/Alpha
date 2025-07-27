@@ -68,4 +68,12 @@ namespace Systems
 
 		return it->second;
 	}
+
+	void ReflectionMgr::ForEachType(const std::function<void(const TypeDescriptor*)>& callback) const
+	{
+		for (const std::pair<Core::Sid, TypeDescriptor*>& pair : m_sidToType)
+		{
+			callback(pair.second);
+		}
+	}
 }
