@@ -13,6 +13,14 @@ namespace Systems
 		Systems::CreateObjectInPlace(&m_transform);
 	}
 
+	GameObject::~GameObject()
+	{
+		for (GameComponent* pComponent : m_components)
+			delete pComponent;
+
+		m_components.Clear();
+	}
+
 	void GameObject::Update()
 	{ }
 
@@ -47,5 +55,14 @@ namespace Systems
 	const TransformComponent& GameObject::GetTransform() const
 	{
 		return m_transform;
+	}
+
+	GameObject* CreateNewGameObject(const TypeDescriptor* pType)
+	{
+		GameObject* pObject = static_cast<GameObject*>(CreateObject(pType));
+		pObject->SetGuid(Core::Guid::GenerateNewGuid());
+		pObject->GetTransform().SetGuid(Core::Guid::GenerateNewGuid());
+
+		return pObject;
 	}
 }

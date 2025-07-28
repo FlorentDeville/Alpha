@@ -23,7 +23,7 @@ namespace Systems
 		GameObject() = default;
 		GameObject(const std::string& name);
 
-		~GameObject() = default;
+		virtual ~GameObject();
 
 		virtual void Update();
 		virtual void Render();
@@ -56,6 +56,8 @@ namespace Systems
 			ADD_FIELD(m_components)
 		END_REFLECTION()
 	};
+
+	GameObject* CreateNewGameObject(const TypeDescriptor* pType);
 
 	template<typename T, typename... Args> T* CreateNewGameObject(Args... args)
 	{

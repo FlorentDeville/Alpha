@@ -10,6 +10,7 @@
 #include "Systems/Reflection/TypeDescriptor.h"
 
 #include <assert.h>
+#include <functional>
 #include <map>
 #include <string>
 
@@ -30,6 +31,8 @@ namespace Systems
 
 		const TypeDescriptor* GetType(const std::string& name) const;
 		const TypeDescriptor* GetType(const Core::Sid sidType) const;
+
+		void ForEachType(const std::function<void(const TypeDescriptor*)>& callback) const;
 
 	private:
 		std::map<std::string, TypeDescriptor*> m_typeDb;

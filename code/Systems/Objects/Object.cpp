@@ -22,4 +22,12 @@ namespace Systems
 
 	void Object::PostLoad()
 	{ }
+
+	Object* CreateObject(const TypeDescriptor* pType)
+	{
+		Object* pObject = static_cast<Object*>(pType->Construct());
+		pObject->SetTypeDescriptor(pType);
+
+		return pObject;
+	}
 }

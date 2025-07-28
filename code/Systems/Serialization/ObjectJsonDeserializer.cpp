@@ -24,7 +24,8 @@
 namespace Systems
 {
 	bool DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject);
-	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr);
+	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer);
+	bool DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject, bool constructInPlace);
 
 	bool DeserializeArray(const Core::JsonArray& jsonArray, const TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array)
 	{
@@ -37,22 +38,16 @@ namespace Systems
 			void* pFieldPtr = array.GetElement(ii);
 
 			// if this is an array of pointers then I need to allocate the elements.
-			if (elementIsPointer)
+			if (elementIsPointer && !pElementType->IsObject())
 			{
 				void* pAllocatedElement = pElementType->Construct();
-				if (pElementType->IsObject())
-				{
-					Object* pFieldObject = reinterpret_cast<Object*>(pAllocatedElement);
-					pFieldObject->SetTypeDescriptor(pElementType);
-				}
-
 				uint64_t* pp = reinterpret_cast<uint64_t*>(pFieldPtr);
 				*pp = reinterpret_cast<uint64_t>(pAllocatedElement);
 
 				pFieldPtr = pAllocatedElement;
 			}
 
-			bool res = DeserializeField(*pJsonValue, pElementType, nullptr, pFieldPtr);
+			bool res = DeserializeField(*pJsonValue, pElementType, nullptr, pFieldPtr, elementIsPointer);
 			if (!res)
 				return res;
 		}
@@ -60,7 +55,7 @@ namespace Systems
 		return true;
 	}
 
-	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr)
+	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer)
 	{
 		//Watch out : pFieldDescriptor can be null if this is a field from an array
 		void* ptr = pFieldPtr;
@@ -78,23 +73,25 @@ namespace Systems
 
 		if (pFieldType->IsObject())
 		{
-			Object* pFieldObject = reinterpret_cast<Object*>(ptr);
+			Object* pObject = reinterpret_cast<Object*>(pFieldPtr);
+			Object** ppObject = &pObject;
 
-			//There are 2 possible cases here :
-			// - this is an element from an array, then DeserializeArray should have called the constructor
-			// - this is an in place member, then I need to do the setup myself
-			if (pFieldDescriptor && !pFieldDescriptor->IsPointer())
+			bool constructInPlace = false;
+			if (isPointer)
 			{
-				pFieldType->InPlaceConstruct(pFieldObject);
-				pFieldObject->SetTypeDescriptor(pFieldType);
+				ppObject = reinterpret_cast<Object**>(pFieldPtr);
+			}
+			else
+			{
+				constructInPlace = true;
 			}
 
-			Core::JsonObject* pJsonFieldObject = jsonFieldValue.GetValueAsObject()->GetMember(1).GetValueAsObject();
-			bool res = DeserializeClass(pJsonFieldObject, pFieldType, ptr);
+			Core::JsonObject* pJsonFieldObject = jsonFieldValue.GetValueAsObject();
+			bool res = DeserializeObject(pJsonFieldObject, ppObject, constructInPlace);
 			if (!res)
 				return false;
 
-			pFieldObject->PostLoad();
+			(*ppObject)->PostLoad();
 
 			return true;
 		}
@@ -246,7 +243,7 @@ namespace Systems
 		return true;
 	}
 
-	bool DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject)
+	bool DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject, bool constructInPlace)
 	{
 		const std::vector<Core::JsonMember*>& members = jsonObject->GetMembers();
 
@@ -268,8 +265,17 @@ namespace Systems
 
 		//now create the object
 		const TypeDescriptor* pType = ReflectionMgr::Get().GetType(objectTypename);
-		*ppObject = reinterpret_cast<Object*>(pType->Construct());
-		(*ppObject)->SetTypeDescriptor(pType);
+
+		if (constructInPlace)
+		{
+			pType->InPlaceConstruct(*ppObject);
+			(*ppObject)->SetTypeDescriptor(pType);
+		}
+		else
+		{
+			*ppObject = reinterpret_cast<Object*>(pType->Construct());
+			(*ppObject)->SetTypeDescriptor(pType);
+		}
 
 		bool res = DeserializeClass(members[1]->GetConstValue().GetValueAsObject(), pType, *ppObject);
 		if (!res)
@@ -312,7 +318,7 @@ namespace Systems
 				continue;
 
 			void* pFieldPtr = field.GetDataPtr(pObject);
-			bool res = DeserializeField(jsonValue, field.GetType(), &field, pFieldPtr);
+			bool res = DeserializeField(jsonValue, field.GetType(), &field, pFieldPtr, field.IsPointer());
 			if (!res)
 				return false;
 		}
@@ -322,6 +328,6 @@ namespace Systems
 
 	bool ObjectJsonDeserializer::Deserialize(const Core::JsonObject& jsonObject, Object** ppObject)
 	{
-		return DeserializeObject(&jsonObject, ppObject);
+		return DeserializeObject(&jsonObject, ppObject, false);
 	}
 }

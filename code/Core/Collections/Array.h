@@ -100,6 +100,8 @@ namespace Core
 			return &m_pStart[index];
 		}
 
+		void RemoveElement(uint32_t index) override;
+
 		T* GetData()
 		{
 			return m_pStart;
@@ -156,6 +158,8 @@ namespace Core
 		void Resize(uint32_t newSize) override;
 		void Resize(uint32_t newSize, const T& value);
 
+		void AddElement() override;
+
 		void Reserve(uint32_t index, bool allowShrink = false);
 
 		void Clear();
@@ -184,6 +188,15 @@ namespace Core
 		T* m_pStart;
 
 	};
+
+	template<typename T> void Array<T>::RemoveElement(uint32_t index)
+	{
+		if (!IsValidIndex(index))
+			return;
+
+		Iterator it(m_pStart + index);
+		Erase(it);
+	}
 
 	template<typename T> T& Array<T>::Back()
 	{
@@ -222,6 +235,11 @@ namespace Core
 				memcpy(m_pStart + ii, &value, sizeof(value));
 			}
 		}
+	}
+
+	template<typename T> void Array<T>::AddElement()
+	{
+		PushBack(T());
 	}
 
 	template<typename T> void Array<T>::Reserve(uint32_t newSize, bool allowShrink)
