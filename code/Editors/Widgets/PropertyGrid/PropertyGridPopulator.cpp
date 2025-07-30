@@ -8,6 +8,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
+#include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
@@ -417,6 +418,12 @@ namespace Editors
 			Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pButton->AddWidget(pLabel);
+			pButton->OnClick([]()
+				{
+					AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
+					pDialog->Open();
+				});
+
 			pLayout->AddWidget(pButton);
 
 			Widgets::TextBox* pBox = new Widgets::TextBox();

@@ -60,9 +60,6 @@
     <ClInclude Include="Widgets\Entity\EntityModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Widgets\List\Models\AssetListModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LevelEditor\SceneTree\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -195,9 +192,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Entity\EntityModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Widgets\List\Models\AssetListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\SceneTree\Node.cpp">
