@@ -1,17 +1,17 @@
 /********************************************************************/
-/* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 
-#include "Editors/Widgets/List/Models/AssetListModel.h"
+#include "Core/Collections/Array.h"
 
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Models/AbstractViewModel.h"
 #include "Widgets/Models/SelectionModel.h"
 #include "Widgets/Models/SelectionRow.h"
 #include "Widgets/TextBox.h"
@@ -22,20 +22,140 @@
 
 namespace Editors
 {
-	AssetDialog::AssetDialog(bool isSaveDialog, Systems::AssetType type)
-		: Widgets::ModalWindow(isSaveDialog ? "Save Asset" : "Load Asset")
-		, m_assetType(type)
+	class AssetListModel : public Widgets::AbstractViewModel
+	{
+	public:
+		enum Columns
+		{
+			Name,
+			Type,
+			Id,
+
+			Count
+		};
+
+		struct MetadataCache
+		{
+			std::string m_name;
+			std::string m_id;
+			std::string m_type;
+			Systems::NewAssetId m_AssetId;
+		};
+
+		AssetListModel(Core::Sid type)
+		{
+			Systems::AssetMgr::Get().ForEachMetadata([this, type](const Systems::AssetMetadata& metadata)
+				{
+					if (metadata.GetAssetType() != type && type != Core::INVALID_SID)
+						return;
+
+					MetadataCache cache;
+					cache.m_AssetId = metadata.GetAssetId();
+					cache.m_id = metadata.GetAssetId().ToString();
+					cache.m_name = metadata.GetVirtualName();
+
+					const Systems::NewAssetType& type = Systems::AssetMgr::Get().GetAssetType(metadata.GetAssetType());
+					cache.m_type = type.GetName();
+
+					m_cachedAsset.PushBack(cache);
+				});
+		}
+
+		~AssetListModel()
+		{ }
+
+		Widgets::ModelIndex GetParent(const Widgets::ModelIndex& child) const override
+		{
+			return Widgets::ModelIndex();
+		}
+
+		Widgets::ModelIndex GetIndex(int row, int column, const Widgets::ModelIndex& parent) const override
+		{
+			if (parent.IsValid())
+				return Widgets::ModelIndex();
+
+			if (!m_cachedAsset.IsValidIndex(row))
+				return Widgets::ModelIndex();
+
+			if (column < 0 || column >= Columns::Count)
+				return Widgets::ModelIndex();
+
+			return CreateIndex(row, column, &(m_cachedAsset[row]));
+		}
+
+		int GetRowCount(const Widgets::ModelIndex& parent) const override
+		{
+			if (parent.IsValid())
+				return 0;
+
+			return m_cachedAsset.GetSize();
+		}
+
+		int GetColumnCount(const Widgets::ModelIndex& parent) const override
+		{
+			if (parent.IsValid())
+				return 0;
+
+			return Columns::Count;
+		}
+
+		std::string GetHeaderData(int columnIndex)
+		{
+			switch (columnIndex)
+			{
+			case Columns::Id:
+				return "Id";
+				break;
+
+			case Columns::Name:
+				return "Name";
+				break;
+
+			case Columns::Type:
+				return "Type";
+				break;
+			}
+
+			return "__ERROR__";
+		}
+
+		std::string GetData(const Widgets::ModelIndex& idx) override
+		{
+			const MetadataCache* pMetadata = idx.GetConstDataPointer<MetadataCache>();
+			if (!pMetadata)
+				return "__ERROR__";
+
+			switch (idx.GetColumn())
+			{
+			case Columns::Id:
+				return pMetadata->m_id;
+				break;
+
+			case Columns::Name:
+				return pMetadata->m_name;
+				break;
+
+			case Columns::Type:
+				return pMetadata->m_type;
+				break;
+			}
+
+			return "__ERROR__";
+		}
+
+	private:
+		Core::Array<MetadataCache> m_cachedAsset;
+	};
+
+	AssetDialog::AssetDialog(Core::Sid assetType)
+		: Widgets::ModalWindow("Select Asset")
 	{
 		const int WINDOW_WIDTH = 500;
 		const int WINDOW_HEIGHT = 500;
 		const int NEW_ASSET_HEIGHT = 20;
-		const int OK_CANCEL_HEIGHT = 50;
+		const int OK_CANCEL_HEIGHT = 30;
 
-		int TABLE_HEIGHT = 0;
-		if (isSaveDialog)
-			TABLE_HEIGHT = WINDOW_HEIGHT - NEW_ASSET_HEIGHT - OK_CANCEL_HEIGHT;
-		else
-			TABLE_HEIGHT = WINDOW_HEIGHT - OK_CANCEL_HEIGHT;
+		int TABLE_HEIGHT = WINDOW_HEIGHT - OK_CANCEL_HEIGHT;
 
 		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
 		SetSizeStyle(Widgets::Widget::DEFAULT);
@@ -43,74 +163,48 @@ namespace Editors
 
 		//vlayout
 		Widgets::Layout* pVLayout = new Widgets::Layout();
-		pVLayout->SetDirection(Widgets::Layout::Vertical);
+		pVLayout->SetDirection(Widgets::Layout::Vertical_Reverse);
 		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		AddWidget(pVLayout);
 
-		//list
-		m_pAssetView = new Widgets::TableView();
-		m_pAssetView->SetSize(Core::UInt2(500, TABLE_HEIGHT));
-		m_pAssetView->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk(); });
-
-		m_pAssetViewModel = new Editors::AssetListModel(type);
-		m_pAssetView->SetModel(m_pAssetViewModel);
-		pVLayout->AddWidget(m_pAssetView);
-
-		if (isSaveDialog)
 		{
-			int LABEL_WIDTH = 70;
-			int BUTTON_WIDTH = 60;
-			int TEXTBOX_WIDTH = WINDOW_WIDTH - LABEL_WIDTH - BUTTON_WIDTH;
+			//button ok escape
+			Widgets::Layout* pHLayout = new Widgets::Layout();
+			pHLayout->SetDirection(Widgets::Layout::Horizontal);
+			pHLayout->SetSizeStyle(Widgets::Widget::HSTRETCH_VFIT);
+			pVLayout->AddWidget(pHLayout);
 
-			Widgets::Layout* pNewAssetLayout = new Widgets::Layout();
-			pNewAssetLayout->SetDirection(Widgets::Layout::Horizontal);
-			pNewAssetLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pNewAssetLayout->SetSize(Core::UInt2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
+			std::string okLabel = "Select";
+			Widgets::Button* pOkButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
+			Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, okLabel);
+			pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+			pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+			pOkButton->AddWidget(pOkLabel);
+			pOkButton->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pOkButton->OnClick([this]() { OnOk(); });
 
-			pVLayout->AddWidget(pNewAssetLayout);
+			pHLayout->AddWidget(pOkButton);
 
-			Widgets::Label* pNewAssetLabel = new Widgets::Label("New asset : ");
-			pNewAssetLabel->SetSize(Core::UInt2(LABEL_WIDTH, NEW_ASSET_HEIGHT));
-			pNewAssetLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-			
-			Widgets::TextBox* pNewAssetTextBox = new Widgets::TextBox();
-			pNewAssetTextBox->SetSize(Core::UInt2(TEXTBOX_WIDTH, NEW_ASSET_HEIGHT));
-			pNewAssetTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
-			pNewAssetTextBox->OnValidate([this](const std::string& value) { OnCreateAsset(value); });
-
-			Widgets::Button* pNewAssetButton = new Widgets::Button("Create", BUTTON_WIDTH, NEW_ASSET_HEIGHT);
-			pNewAssetButton->OnClick([this, pNewAssetTextBox]() { OnCreateAsset(pNewAssetTextBox->GetText()); });
-
-			pNewAssetLayout->AddWidget(pNewAssetLabel);
-			pNewAssetLayout->AddWidget(pNewAssetTextBox);
-			pNewAssetLayout->AddWidget(pNewAssetButton);
+			Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
+			Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
+			pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+			pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
+			pCancelButton->AddWidget(pCancelLabel);
+			pCancelButton->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pCancelButton->OnClick([this]() { OnCancel(); });
+			pHLayout->AddWidget(pCancelButton);
 		}
 
-		//button ok escape
-		Widgets::Layout* pHLayout = new Widgets::Layout();
-		pHLayout->SetDirection(Widgets::Layout::Horizontal);
-		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pVLayout->AddWidget(pHLayout);
+		//list
+		m_pAssetView = new Widgets::TableView();
+		m_pAssetView->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pAssetView->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk(); });
 
-		std::string okLabel = isSaveDialog ? "Save" : "Load";
-		Widgets::Button* pOkButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
-		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, okLabel);
-		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-		pOkButton->AddWidget(pOkLabel);
-		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pOkButton->OnClick([this]() { OnOk(); });
+		m_pAssetViewModel = new Editors::AssetListModel(assetType);
+		m_pAssetView->SetModel(m_pAssetViewModel);
+		m_pAssetView->SetColumnWidth(0, 300);
 
-		pHLayout->AddWidget(pOkButton);
-
-		Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
-		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
-		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
-		pCancelButton->AddWidget(pCancelLabel);
-		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
-		pCancelButton->OnClick([this]() { OnCancel(); });
-		pHLayout->AddWidget(pCancelButton);
+		pVLayout->AddWidget(m_pAssetView);
 	}
 
 	AssetDialog::~AssetDialog()
@@ -132,9 +226,8 @@ namespace Editors
 		if (selection.empty())
 			return;
 
-		const void* pData = selection.back().GetStartIndex().GetConstDataPointer();
-		const Systems::Asset* pAsset = static_cast<const Systems::Asset*>(pData);
-		m_onAssetSelected(pAsset->GetId());
+		const AssetListModel::MetadataCache* pData = selection.back().GetStartIndex().GetConstDataPointer<AssetListModel::MetadataCache>();
+		m_onOk(pData->m_AssetId);
 
 		Close();
 	}
@@ -142,18 +235,5 @@ namespace Editors
 	void AssetDialog::OnCancel()
 	{
 		Close();
-	}
-
-	void AssetDialog::OnCreateAsset(const std::string& assetName)
-	{
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		const Systems::Asset* pNewAsset = assetMgr.CreateAsset(m_assetType, assetName);
-		if (!pNewAsset)
-			return;
-
-		assetMgr.SaveTableOfContent();
-
-		int start = static_cast<int>(assetMgr.GetAssets(m_assetType).size());
-		m_pAssetViewModel->InsertRows(start - 1, 1);
 	}
 }

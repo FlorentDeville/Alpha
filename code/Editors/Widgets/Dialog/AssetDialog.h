@@ -1,8 +1,10 @@
 /********************************************************************/
-/* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
 #pragma once
+
+#include "Core/Sid/Sid.h"
 
 #include "Widgets/ModalWindow.h"
 
@@ -10,7 +12,7 @@
 
 namespace Systems
 {
-	class AssetId;
+	class NewAssetId;
 }
 
 namespace Widgets
@@ -25,22 +27,19 @@ namespace Editors
 	class AssetDialog : public Widgets::ModalWindow
 	{
 	public:
-		AssetDialog(bool isSaveDialog, Systems::AssetType type);
+		AssetDialog(Core::Sid assetType);
 		~AssetDialog();
 
 		void Open();
 		void Close() const;
 		
-		EVENT_DECL(AssetSelected, void(Systems::AssetId))
+		EVENT_DECL(Ok, void(Systems::NewAssetId))
 
 	private:
 		Widgets::TableView* m_pAssetView;
 		Editors::AssetListModel* m_pAssetViewModel;
-		
-		Systems::AssetType m_assetType;
 
 		void OnOk();
 		void OnCancel();
-		void OnCreateAsset(const std::string& assetName);
 	};
 }

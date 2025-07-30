@@ -27,7 +27,6 @@
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
-#include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -603,9 +602,9 @@ void CreateMainWindow(const Configuration& configuration)
 		Widgets::TableView* pTableView = new Widgets::TableView();
 		pTableView->SetSize(Core::UInt2(300, 700));
 
-		Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
-		pTableView->SetModel(pModel);
-		pTableView->SetMultiSelection(true);
+		//Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
+		//pTableView->SetModel(pModel);
+		//pTableView->SetMultiSelection(true);
 		
 		pVLayout->AddWidget(pTableView);
 	}

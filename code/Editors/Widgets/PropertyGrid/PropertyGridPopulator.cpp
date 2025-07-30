@@ -8,12 +8,15 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
+#include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
+#include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Objects/Object.h"
@@ -401,6 +404,47 @@ namespace Editors
 			}
 
 			pEditingWidget = pLayout;
+		}
+		break;
+
+		case SID("Systems::NewAssetId"):
+		{
+			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(pData);
+
+			Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widgets::Widget::HSTRETCH_VFIT);
+			
+			Widgets::Label* pLabel = new Widgets::Label("...");
+			pLabel->SetSizeStyle(Widgets::Widget::FIT);
+			pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+			Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
+			pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pButton->AddWidget(pLabel);
+			pButton->OnClick([this, pValue]()
+				{
+					AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
+					pDialog->Open();
+					pDialog->OnOk([this, pValue](Systems::NewAssetId id) 
+						{ 
+							*pValue = id; 
+							m_onDataChanged(); 
+						});
+				});
+
+			pLayout->AddWidget(pButton);
+
+			Widgets::TextBox* pBox = new Widgets::TextBox();
+			pBox->SetReadOnly(true);
+			pLayout->AddWidget(pBox);
+			
+			Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(*pValue);
+			if (pMetadata)
+				pBox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
+			else
+				pBox->SetText("Unknown");
+
+			pEditingWidget = pLayout;
+
 		}
 		break;
 

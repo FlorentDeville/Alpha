@@ -4,7 +4,7 @@
 
 #include "Editors/Widgets/AssetId/AssetIdWidget.h"
 
-#include "Editors/Widgets/List/Models/AssetListModel.h"
+//#include "Editors/Widgets/List/Models/AssetListModel.h"
 
 #include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetId.h"
@@ -62,7 +62,7 @@ namespace Editors
 
 	void AssetIdWidget::OnOk_AssetList()
 	{
-		const std::list<Widgets::SelectionRow>& selection = m_pAssetListModel->GetSelectionModel()->GetSelectedRows();
+		/*const std::list<Widgets::SelectionRow>& selection = m_pAssetListModel->GetSelectionModel()->GetSelectedRows();
 		if (selection.empty())
 			return;
 
@@ -70,7 +70,7 @@ namespace Editors
 		const Systems::Asset* pAsset = static_cast<const Systems::Asset*>(pData);
 		m_onAssetSelected(pAsset->GetId());
 
-		Widgets::WidgetMgr::Get().CloseModalWindow();
+		Widgets::WidgetMgr::Get().CloseModalWindow();*/
 	}
 
 	void AssetIdWidget::OnClick_OpenAssetList()
@@ -91,8 +91,8 @@ namespace Editors
 		m_pAssetList->SetSize(Core::UInt2(500, 450));
 		m_pAssetList->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk_AssetList(); });
 
-		m_pAssetListModel = new Editors::AssetListModel(m_type);
-		m_pAssetList->SetModel(m_pAssetListModel);
+		/*m_pAssetListModel = new Editors::AssetListModel(m_type);
+		m_pAssetList->SetModel(m_pAssetListModel);*/
 		pVLayout->AddWidget(m_pAssetList);
 
 		//button ok escape
