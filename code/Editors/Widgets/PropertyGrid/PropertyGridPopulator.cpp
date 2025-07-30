@@ -409,6 +409,8 @@ namespace Editors
 
 		case SID("Systems::NewAssetId"):
 		{
+			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(pData);
+
 			Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widgets::Widget::HSTRETCH_VFIT);
 			
 			Widgets::Label* pLabel = new Widgets::Label("...");
@@ -418,10 +420,15 @@ namespace Editors
 			Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pButton->AddWidget(pLabel);
-			pButton->OnClick([]()
+			pButton->OnClick([this, pValue]()
 				{
 					AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
 					pDialog->Open();
+					pDialog->OnOk([this, pValue](Systems::NewAssetId id) 
+						{ 
+							*pValue = id; 
+							m_onDataChanged(); 
+						});
 				});
 
 			pLayout->AddWidget(pButton);
@@ -430,7 +437,6 @@ namespace Editors
 			pBox->SetReadOnly(true);
 			pLayout->AddWidget(pBox);
 			
-			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(pData);
 			Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(*pValue);
 			if (pMetadata)
 				pBox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
