@@ -34,6 +34,14 @@ namespace Editors
 			Count
 		};
 
+		struct MetadataCache
+		{
+			std::string m_name;
+			std::string m_id;
+			std::string m_type;
+			Systems::NewAssetId m_AssetId;
+		};
+
 		AssetListModel(Core::Sid type)
 		{
 			Systems::AssetMgr::Get().ForEachMetadata([this, type](const Systems::AssetMetadata& metadata)
@@ -136,14 +144,6 @@ namespace Editors
 		}
 
 	private:
-		struct MetadataCache
-		{
-			std::string m_name;
-			std::string m_id;
-			std::string m_type;
-			Systems::NewAssetId m_AssetId;
-		};
-
 		Core::Array<MetadataCache> m_cachedAsset;
 	};
 
@@ -226,9 +226,8 @@ namespace Editors
 		if (selection.empty())
 			return;
 
-		const void* pData = selection.back().GetStartIndex().GetConstDataPointer();
-		const Systems::NewAssetId* pAsset = static_cast<const Systems::NewAssetId*>(pData);
-		m_onOk(*pAsset);
+		const AssetListModel::MetadataCache* pData = selection.back().GetStartIndex().GetConstDataPointer<AssetListModel::MetadataCache>();
+		m_onOk(pData->m_AssetId);
 
 		Close();
 	}
