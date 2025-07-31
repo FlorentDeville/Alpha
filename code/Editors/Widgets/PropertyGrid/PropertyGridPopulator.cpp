@@ -8,6 +8,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
@@ -103,9 +104,10 @@ namespace Editors
 		CreatePropertiesForTypeMembers(pType, pObject, depth);
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth)
+	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth)
 	{
-		Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pArrayPtr);
+		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
+		//Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pArrayPtr);
 
 		int32_t size = pArray->GetSize();
 
@@ -148,7 +150,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(pElementType, pElement, pField->IsReadOnly());
+				Widgets::Widget* pWidget = CreateWidgetForPODField(pField, pObj, ii);
 				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
 				
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, pWidget);
@@ -179,7 +181,7 @@ namespace Editors
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
-				CreatePropertiesForArrayElements(&member, pMemberPtr, depth + 1);
+				CreatePropertiesForArrayElements(&member, pData, depth + 1);
 				
 				if(m_canAddElementToArray)
 					CreateArrayAddElementButton(member, pMemberPtr);
@@ -198,7 +200,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(memberType, pMemberPtr, member.IsReadOnly());
+				Widgets::Widget* pWidget = CreateWidgetForPODField(&member, pData, -1);
 
 				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), pWidget);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
@@ -275,9 +277,24 @@ namespace Editors
 		m_pPropertyGridWidget->AddProperty(pItem);
 	}
 
-	Widgets::Widget* PropertyGridPopulator::CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly)
+	Widgets::Widget* PropertyGridPopulator::CreateWidgetForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement)
 	{
 		Widgets::Widget* pEditingWidget = nullptr;
+
+		const Systems::TypeDescriptor* pFieldType = pField->IsContainer() ? pField->GetElementType() : pField->GetType();
+		void* pRawValue = nullptr;
+		
+		if (pField->IsContainer())
+		{
+			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
+			pRawValue = pArray->GetElement(indexElement);
+		}
+		else
+		{
+			pRawValue = pField->GetDataPtr(pObj);
+		}
+
+		bool readOnly = pField->IsReadOnly();
 
 		switch (pFieldType->GetSid())
 		{
@@ -285,7 +302,7 @@ namespace Editors
 		{
 			Widgets::TextBox* pTextBox = new Widgets::TextBox();
 
-			std::string* pValue = reinterpret_cast<std::string*>(pData);
+			std::string* pValue = reinterpret_cast<std::string*>(pRawValue);
 			pTextBox->SetText(*pValue);
 			pTextBox->SetReadOnly(readOnly);
 
@@ -303,7 +320,7 @@ namespace Editors
 		{
 			Widgets::TextBox* pTextBox = new Widgets::TextBox();
 
-			uint32_t* pValue = reinterpret_cast<uint32_t*>(pData);
+			uint32_t* pValue = reinterpret_cast<uint32_t*>(pRawValue);
 			
 			const int BUFFER_SIZE = 64;
 			char buffer[BUFFER_SIZE] = { '\0' };
@@ -326,7 +343,7 @@ namespace Editors
 		{
 			Widgets::TextBox* pTextBox = new Widgets::TextBox();
 
-			Core::Sid* pValue = reinterpret_cast<Core::Sid*>(pData);
+			Core::Sid* pValue = reinterpret_cast<Core::Sid*>(pRawValue);
 
 			std::string strSid = Core::ToString(*pValue);
 			pTextBox->SetText(strSid);
@@ -346,7 +363,7 @@ namespace Editors
 		{
 			Widgets::TextBox* pTextBox = new Widgets::TextBox();
 
-			Core::Guid* pValue = reinterpret_cast<Core::Guid*>(pData);
+			Core::Guid* pValue = reinterpret_cast<Core::Guid*>(pRawValue);
 
 			const int BUFFER_SIZE = 64;
 			char buffer[BUFFER_SIZE] = { '\0' };
@@ -367,7 +384,7 @@ namespace Editors
 
 		case SID("Core::Mat44f"):
 		{
-			Core::Mat44f* pValue = reinterpret_cast<Core::Mat44f*>(pData);
+			Core::Mat44f* pValue = reinterpret_cast<Core::Mat44f*>(pRawValue);
 
 			Widgets::Layout* pLayout = new Widgets::Layout();
 			pLayout->SetDirection(Widgets::Layout::Direction::Vertical);
@@ -409,7 +426,7 @@ namespace Editors
 
 		case SID("Systems::NewAssetId"):
 		{
-			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(pData);
+			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(pRawValue);
 
 			Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widgets::Widget::HSTRETCH_VFIT);
 			
@@ -420,13 +437,17 @@ namespace Editors
 			Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pButton->AddWidget(pLabel);
-			pButton->OnClick([this, pValue]()
+			pButton->OnClick([this, pField, pObj, indexElement]()
 				{
 					AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
 					pDialog->Open();
-					pDialog->OnOk([this, pValue](Systems::NewAssetId id) 
+					pDialog->OnOk([this, pField, pObj, indexElement](Systems::NewAssetId id)
 						{ 
-							*pValue = id; 
+							if (pField->IsContainer())
+								ObjectWatcher::Get().SetArrayFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &id);
+							else
+								ObjectWatcher::Get().SetFieldValue(static_cast<Systems::Object*>(pObj), pField, &id);
+
 							m_onDataChanged(); 
 						});
 				});

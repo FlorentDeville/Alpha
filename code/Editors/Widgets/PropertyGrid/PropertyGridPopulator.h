@@ -57,8 +57,9 @@ namespace Editors
 		// Recursively goes up the inheritance hierarchy of an Object to display all its properties.
 		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth);
 
-		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth);
-		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly);
+		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth);
+		
+		Widgets::Widget* CreateWidgetForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
 
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
 		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
