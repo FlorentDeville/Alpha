@@ -31,6 +31,7 @@ namespace Systems
 		const std::vector<FieldDescriptor>& GetFields() const;
 		const TypeDescriptor* GetBaseType() const;
 		Core::Sid GetUpgradeType() const;
+		uint64_t GetSize() const;
 
 		// True if this type inherits from baseClassSid
 		bool InheritsFrom(Core::Sid baseClassSid) const;

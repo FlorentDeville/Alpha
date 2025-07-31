@@ -70,6 +70,11 @@ namespace Systems
 		return m_upgradeType;
 	}
 
+	uint64_t TypeDescriptor::GetSize() const
+	{
+		return m_size;
+	}
+
 	bool TypeDescriptor::InheritsFrom(Core::Sid baseClassSid) const
 	{
 		const TypeDescriptor* pType = m_pBaseType;
