@@ -27,6 +27,7 @@
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -698,6 +699,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
 	inputMgr.Init();
 
+	Editors::ObjectWatcher::InitSingleton();
+	Editors::ObjectWatcher& objectWatcher = Editors::ObjectWatcher::Get();
+	objectWatcher.Init();
+
 	Editors::GamePlayer::InitSingleton();
 
 	Editors::LevelEditor::InitSingleton();
@@ -747,6 +752,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	levelEditorModule.Shutdown();
 	
 	Editors::GamePlayer::ReleaseSingleton();
+
+	objectWatcher.Shutdown();
+	Editors::ObjectWatcher::ReleaseSingleton();
 
 	gameMgr.Release();
 	GameMgr::ReleaseSingleton();
