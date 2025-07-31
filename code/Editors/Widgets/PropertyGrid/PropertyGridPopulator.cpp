@@ -8,6 +8,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
