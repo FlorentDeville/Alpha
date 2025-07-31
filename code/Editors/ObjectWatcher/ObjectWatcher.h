@@ -21,7 +21,7 @@ namespace Editors
 	{
 	public:
 
-		using WatcherCallbackList = Core::CallbackList<void(Systems::Object*, Systems::FieldDescriptor*)>;
+		using WatcherCallbackList = Core::CallbackList<void(Systems::Object*, const Systems::FieldDescriptor*)>;
 		using WatcherCallback = WatcherCallbackList::Callback;
 
 		ObjectWatcher();
@@ -31,7 +31,8 @@ namespace Editors
 		void Init() override;
 		void Shutdown() override;
 
-		void SetFieldValue(Systems::Object* pObj, Systems::FieldDescriptor* pField, void* pValue);
+		void SetFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, void* pValue);
+		void SetArrayFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, void* pValue);
 
 		Core::CallbackId AddWatcher(Systems::Object* pObj, WatcherCallback& callback);
 		void RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId);
