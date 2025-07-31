@@ -307,9 +307,9 @@ namespace Editors
 			pTextBox->SetText(*pValue);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pValue](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
 				{
-					*pValue = value;
+					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &value);
 					m_onDataChanged();
 				});
 
@@ -329,10 +329,11 @@ namespace Editors
 			pTextBox->SetText(buffer);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pValue](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
 				{
 					char* pEnd = nullptr;
-					*pValue = std::strtoul(value.c_str(), &pEnd, 10);
+					uint32_t newValue = std::strtoul(value.c_str(), &pEnd, 10);
+					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &newValue);
 					m_onDataChanged();
 				});
 
@@ -350,9 +351,10 @@ namespace Editors
 			pTextBox->SetText(strSid);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pValue](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
 				{
-					*pValue = Core::MakeSid(value);
+					Core::Sid newSid = Core::MakeSid(value);
+					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &newSid);
 					m_onDataChanged();
 				});
 
@@ -373,9 +375,10 @@ namespace Editors
 			pTextBox->SetText(buffer);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pValue](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
 				{
-					*pValue = Core::Guid(value.c_str());
+					Core::Guid newGuid(value.c_str());
+					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &newGuid);
 					m_onDataChanged();
 				});
 
@@ -411,11 +414,14 @@ namespace Editors
 					pTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
 					pTextBox->SetReadOnly(readOnly);
 					pTextBox->SetWidth(40);
-					pTextBox->OnValidate([row, column, pValue](const std::string& value)
+					pTextBox->OnValidate([row, column, pValue, pObj, pField, indexElement](const std::string& value)
 						{
 							float newValue = 0;
 							std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
-							pValue->Set(row, column, newValue);
+
+							Core::Mat44f copy = *pValue;
+							copy.Set(row, column, newValue);
+							ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &copy);
 						});
 					pRowLayout->AddWidget(pTextBox);
 				}
@@ -444,11 +450,7 @@ namespace Editors
 					pDialog->Open();
 					pDialog->OnOk([this, pField, pObj, indexElement](Systems::NewAssetId id)
 						{ 
-							if (pField->IsContainer())
-								ObjectWatcher::Get().SetArrayFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &id);
-							else
-								ObjectWatcher::Get().SetFieldValue(static_cast<Systems::Object*>(pObj), pField, &id);
-
+							ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &id);
 							m_onDataChanged(); 
 						});
 				});
