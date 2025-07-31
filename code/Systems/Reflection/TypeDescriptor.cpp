@@ -95,6 +95,11 @@ namespace Systems
 	{
 		return m_isElementPointer;
 	}
+	
+	uint64_t TypeDescriptor::GetSize() const
+	{
+		return m_size;
+	}
 
 	bool TypeDescriptor::InheritsFrom(Core::Sid baseClassSid) const
 	{

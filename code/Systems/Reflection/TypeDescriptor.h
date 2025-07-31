@@ -45,6 +45,7 @@ namespace Systems
 		const TypeDescriptor* GetBaseType() const;
 		const TypeDescriptor* GetElementType() const;
 		Core::Sid GetUpgradeType() const;
+		uint64_t GetSize() const;
 
 		bool IsContainer() const;
 		bool IsElementPointer() const;
