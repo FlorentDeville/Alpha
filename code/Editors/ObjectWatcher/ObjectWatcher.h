@@ -8,6 +8,7 @@
 #include "Core/Singleton.h"
 
 #include <map>
+#include <string>
 
 namespace Systems
 {
@@ -31,8 +32,12 @@ namespace Editors
 		void Init() override;
 		void Shutdown() override;
 
-		void SetFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, void* pValue);
-		void SetArrayFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, void* pValue);
+		void SetFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue);
+
+		void SetArrayFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue);
+
+		// Can set a regular field or an element in an array.
+		void SetGenericFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue);
 
 		Core::CallbackId AddWatcher(Systems::Object* pObj, WatcherCallback& callback);
 		void RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId);
