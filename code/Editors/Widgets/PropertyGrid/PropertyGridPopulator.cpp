@@ -443,6 +443,7 @@ namespace Editors
 
 		if (it == items.end())
 			return;
+
 		switch (op)
 		{
 		case ObjectWatcher::SET_FIELD:
