@@ -146,6 +146,16 @@ namespace Editors
 		callbacks.Disconnect(callbackId);
 	}
 
+	void ObjectWatcher::RemoveWatcher(const Systems::Object* pObj, Core::CallbackId callbackId)
+	{
+		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(const_cast<Systems::Object*>(pObj));
+		if (it == m_watchers.end())
+			return;
+
+		WatcherCallbackList& callbacks = it->second;
+		callbacks.Disconnect(callbackId);
+	}
+
 	const ObjectWatcher::WatcherCallbackList* ObjectWatcher::FindWatcherCallback(Systems::Object* pObj) const
 	{
 		std::map<Systems::Object*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
