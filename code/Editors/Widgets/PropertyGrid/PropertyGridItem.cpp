@@ -45,7 +45,7 @@ namespace Editors
 		, m_index(-1)
 	{ }
 
-	PropertyGridItem::PropertyGridItem(Systems::Object* pObj, Systems::FieldDescriptor* pField, uint32_t index)
+	PropertyGridItem::PropertyGridItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 		: m_pNameWidget(nullptr)
 		, m_pEditingWidget(nullptr)
 		, m_pObj(pObj)
