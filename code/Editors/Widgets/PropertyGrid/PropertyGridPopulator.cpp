@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -157,10 +158,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(pField, pObj, ii);
-				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
-				
-				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, pWidget);
+				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pObj, ii);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
@@ -207,9 +205,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(pField, pData, -1);
-
-				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), pWidget);
+				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pData, -1);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
@@ -285,7 +281,7 @@ namespace Editors
 		m_pPropertyGridWidget->AddProperty(pItem);
 	}
 
-	Widgets::Widget* PropertyGridPopulator::CreateWidgetForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement)
+	PropertyGridItem* PropertyGridPopulator::CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement)
 	{
 		Widgets::Widget* pEditingWidget = nullptr;
 
@@ -310,19 +306,8 @@ namespace Editors
 		{
 		case SID("std::string"):
 		{
-			Widgets::TextBox* pTextBox = new Widgets::TextBox();
-
-			std::string* pValue = reinterpret_cast<std::string*>(pRawValue);
-			pTextBox->SetText(*pValue);
-			pTextBox->SetReadOnly(readOnly);
-
-			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
-				{
-					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &value);
-					m_onDataChanged();
-				});
-
-			pEditingWidget = pTextBox;
+			StringItem* pItem = new StringItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
 		}
 		break;
 
@@ -485,7 +470,21 @@ namespace Editors
 			break;
 		}
 
-		return pEditingWidget;
+		PropertyGridItem* pItem = nullptr;
+		if (pField->IsContainer())
+		{
+			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
+			bool elementIsObject = pField->GetElementType()->IsObject();
+			void* pElement = pArray->GetElement(indexElement);
+			Widgets::Widget* pNameWidget = CreateArrayItemName(pArray, indexElement, elementIsObject, pElement);
+			pItem = new PropertyGridItem(pNameWidget, pEditingWidget);
+		}
+		else
+		{
+			pItem = new PropertyGridItem(pField->GetName(), pEditingWidget);
+		}
+
+		return pItem;
 	}
 
 	PropertyGridItemFactory* PropertyGridPopulator::GetFactory(Core::Sid typeSid) const

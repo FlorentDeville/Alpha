@@ -31,6 +31,7 @@ namespace Editors
 	void PropertyGridWidget::AddProperty(PropertyGridItem* pProperty, int depth)
 	{
 		m_properties.PushBack(pProperty);
+		pProperty->CreateWidgets();
 
 		Widgets::Layout* pPropertyLayout = new Widgets::Layout();
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
