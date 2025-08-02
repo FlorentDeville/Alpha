@@ -30,6 +30,7 @@ namespace Widgets
 
 namespace Editors
 {
+	class PropertyGridItem;
 	class PropertyGridItemFactory;
 	class PropertyGridWidget;
 
@@ -61,7 +62,7 @@ namespace Editors
 
 		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth);
 		
-		Widgets::Widget* CreateWidgetForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
+		PropertyGridItem* CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
 
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
 		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
