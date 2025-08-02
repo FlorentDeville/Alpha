@@ -64,6 +64,7 @@ namespace Editors
 		Core::CallbackId AddWatcher(Systems::Object* pObj, const WatcherCallback& callback);
 		Core::CallbackId AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback);
 		void RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId);
+		void RemoveWatcher(const Systems::Object* pObj, Core::CallbackId callbackId);
 
 	private:
 		std::map<Systems::Object*, WatcherCallbackList> m_watchers;
