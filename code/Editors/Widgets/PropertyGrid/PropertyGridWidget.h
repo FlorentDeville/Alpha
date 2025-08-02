@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+
 #include "Widgets/Container.h"
 
 #include <vector>
@@ -28,7 +30,7 @@ namespace Editors
 		void ClearAllItems();
 
 	private:
-		std::vector<PropertyGridItem*> m_properties;
+		Core::Array<PropertyGridItem*> m_properties;
 
 		Widgets::Layout* m_pInternalLayout;
 
