@@ -17,10 +17,11 @@ namespace Core
 	{}
 
 	Guid::Guid(const char* pBuffer)
+		: Guid()
 	{
-		uint16_t data41;
-		uint16_t data42;
-		uint32_t data43;
+		uint16_t data41 = 0;
+		uint16_t data42 = 0;
+		uint32_t data43 = 0;
 		sscanf_s(pBuffer, "%x-%hx-%hx-%hx-%4hx%x", &m_data1, &m_data2, &m_data3, &data41, &data42, &data43);
 
 		m_data4 = ((uint64_t)data41 << 48) | ((uint64_t)data42 << 32) | (uint64_t)data43;
