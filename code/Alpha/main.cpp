@@ -753,9 +753,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	
 	Editors::GamePlayer::ReleaseSingleton();
 
-	objectWatcher.Shutdown();
-	Editors::ObjectWatcher::ReleaseSingleton();
-
 	gameMgr.Release();
 	GameMgr::ReleaseSingleton();
 
@@ -781,6 +778,10 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::LevelEditor::ReleaseSingleton();
 
 	Editors::LevelEditorModule::ReleaseSingleton();
+
+	objectWatcher.Shutdown();
+	Editors::ObjectWatcher::ReleaseSingleton();
+
 	AppResources::ResourcesMgr::ReleaseSingleton();
 
 	logModule.Shutdown();
