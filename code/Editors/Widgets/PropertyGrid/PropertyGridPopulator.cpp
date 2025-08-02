@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
@@ -321,22 +322,8 @@ namespace Editors
 
 		case SID("Core::Sid"):
 		{
-			Widgets::TextBox* pTextBox = new Widgets::TextBox();
-
-			Core::Sid* pValue = reinterpret_cast<Core::Sid*>(pRawValue);
-
-			std::string strSid = Core::ToString(*pValue);
-			pTextBox->SetText(strSid);
-			pTextBox->SetReadOnly(readOnly);
-
-			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
-				{
-					Core::Sid newSid = Core::MakeSid(value);
-					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &newSid);
-					m_onDataChanged();
-				});
-
-			pEditingWidget = pTextBox;
+			SidItem* pItem = new SidItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
 		}
 		break;
 
