@@ -53,6 +53,7 @@
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\GuidItem.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\Mat44fItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\SidItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\StringItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\UInt32Item.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\GuidItem.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\Mat44fItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\SidItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\StringItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\UInt32Item.cpp" />

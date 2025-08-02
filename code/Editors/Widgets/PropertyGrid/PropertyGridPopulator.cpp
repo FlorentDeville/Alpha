@@ -12,6 +12,7 @@
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
@@ -339,46 +340,8 @@ namespace Editors
 
 		case SID("Core::Mat44f"):
 		{
-			Core::Mat44f* pValue = reinterpret_cast<Core::Mat44f*>(pRawValue);
-
-			Widgets::Layout* pLayout = new Widgets::Layout();
-			pLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
-			pLayout->GetDefaultStyle().SetBorderSize(1);
-			pLayout->GetDefaultStyle().SetBorderColor(Widgets::Color(255, 0, 0, 255));
-			pLayout->GetDefaultStyle().ShowBorder(true);
-
-			for (int row = 0; row < 4; ++row)
-			{
-				Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::Widget::FIT);
-				pLayout->AddWidget(pRowLayout);
-				for (int column = 0; column < 4; ++column)
-				{
-					Widgets::TextBox* pTextBox = new Widgets::TextBox();
-					float fValue = pValue->Get(row, column);
-
-					const int BUFFER_SIZE = 16;
-					char buffer[BUFFER_SIZE] = { '\0' };
-					snprintf(buffer, BUFFER_SIZE, "%g", fValue); //%g removes the meaningless 0.
-
-					pTextBox->SetText(buffer);
-					pTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
-					pTextBox->SetReadOnly(readOnly);
-					pTextBox->SetWidth(40);
-					pTextBox->OnValidate([row, column, pValue, pObj, pField, indexElement, op](const std::string& value)
-						{
-							float newValue = 0;
-							std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
-
-							Core::Mat44f copy = *pValue;
-							copy.Set(row, column, newValue);
-							ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &copy);
-						});
-					pRowLayout->AddWidget(pTextBox);
-				}
-			}
-
-			pEditingWidget = pLayout;
+			Mat44fItem* pItem = new Mat44fItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
 		}
 		break;
 
