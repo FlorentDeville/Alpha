@@ -548,7 +548,13 @@ namespace Editors
 
 	void PropertyGridPopulator::ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
 	{
-		//Poperty* pProperty = FindProperty(pObj, pField)
-		//pProperty->UpdateValue(op, index)
+		Core::Array<PropertyGridItem*> items = m_pPropertyGridWidget->GetPropertyGridItems();
+		Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField, index](PropertyGridItem* item) 
+			{ return item->IsField(pObj, pField, index); });
+
+		if (it == items.end())
+			return;
+
+		(*it)->UpdateValue();
 	}
 }
