@@ -205,7 +205,7 @@ namespace Editors
 			}
 			else //pod
 			{
-				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pData, -1);
+				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pData, 0);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
