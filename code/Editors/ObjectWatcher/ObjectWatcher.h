@@ -62,6 +62,7 @@ namespace Editors
 		void ModifyField(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue);
 
 		Core::CallbackId AddWatcher(Systems::Object* pObj, const WatcherCallback& callback);
+		Core::CallbackId AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback);
 		void RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId);
 
 	private:

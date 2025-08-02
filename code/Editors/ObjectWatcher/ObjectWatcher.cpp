@@ -129,6 +129,13 @@ namespace Editors
 		return id;
 	}
 
+	Core::CallbackId ObjectWatcher::AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback)
+	{
+		//ugly const cast here but I can't think of another solution
+		Core::CallbackId id = m_watchers[const_cast<Systems::Object*>(pObj)].Connect(callback);
+		return id;
+	}
+
 	void ObjectWatcher::RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId)
 	{
 		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(pObj);
