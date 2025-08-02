@@ -24,10 +24,7 @@ namespace Editors
 	{
 		m_pTextbox = new Widgets::TextBox();
 
-		Core::Sid* pValue = m_pField->GetDataPtr<Core::Sid>(m_pObj);
-
-		std::string strSid = Core::ToString(*pValue);
-		m_pTextbox->SetText(strSid);
+		UpdateValue();
 		m_pTextbox->SetReadOnly(m_pField->IsReadOnly());
 
 		m_pTextbox->OnValidate([this](const std::string& value)
@@ -44,7 +41,7 @@ namespace Editors
 
 	void SidItem::UpdateValue()
 	{
-		Core::Sid* pValue = m_pField->GetDataPtr<Core::Sid>(m_pObj);
+		const Core::Sid* pValue = GetDataPtr<const Core::Sid>();
 		std::string strSid = Core::ToString(*pValue);
 		m_pTextbox->SetText(strSid);
 	}

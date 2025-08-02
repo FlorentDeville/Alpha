@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Systems/Reflection/FieldDescriptor.h"
+
 #include <string>
 
 namespace Systems
@@ -40,6 +42,8 @@ namespace Editors
 		// Check if this item corresponds to a certain field for an given object
 		bool IsField(const Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index) const;
 
+		template<typename T> const T* GetDataPtr() const;
+
 	protected:
 
 		//The widgets are not owned by the item.
@@ -56,4 +60,18 @@ namespace Editors
 		Widgets::Widget* CreatePodItemLabel();
 		Widgets::Widget* CreateArrayItemLabel();
 	};
+
+	template<typename T> const T* PropertyGridItem::GetDataPtr() const
+	{
+		if (m_pField->IsContainer())
+		{
+			Core::BaseArray* pArray = m_pField->GetDataPtr<Core::BaseArray>(m_pObj);
+			const void* pElement = pArray->GetConstElement(m_index);
+			return reinterpret_cast<const T*>(pElement);
+		}
+		else
+		{
+			return m_pField->GetDataPtr<const T>(m_pObj);
+		}
+	}
 }

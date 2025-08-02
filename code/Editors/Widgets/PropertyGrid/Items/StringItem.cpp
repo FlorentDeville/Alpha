@@ -26,8 +26,7 @@ namespace Editors
 
 		m_pTextbox = new Widgets::TextBox();
 
-		std::string* pValue = m_pField->GetDataPtr<std::string>(m_pObj);
-		m_pTextbox->SetText(*pValue);
+		UpdateValue();
 		m_pTextbox->SetReadOnly(m_pField->IsReadOnly());
 
 		m_pTextbox->OnValidate([this](const std::string& value)
@@ -45,7 +44,7 @@ namespace Editors
 
 	void StringItem::UpdateValue()
 	{
-		std::string* pValue = m_pField->GetDataPtr<std::string>(m_pObj);
+		const std::string* pValue = GetDataPtr<const std::string>();
 		m_pTextbox->SetText(*pValue);
 	}
 }

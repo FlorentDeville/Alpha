@@ -44,18 +44,7 @@ namespace Editors
 
 	void GuidItem::UpdateValue()
 	{
-		const Core::Guid* pValue = nullptr;
-
-		if (m_pField->IsContainer())
-		{
-			Core::BaseArray* pArray = m_pField->GetDataPtr<Core::BaseArray>(m_pObj);
-			const void* pElement = pArray->GetConstElement(m_index);
-			pValue = reinterpret_cast<const Core::Guid*>(pElement);
-		}
-		else
-		{
-			pValue = m_pField->GetDataPtr<Core::Guid>(m_pObj);
-		}
+		const Core::Guid* pValue = GetDataPtr<const Core::Guid>();
 
 		const int BUFFER_SIZE = 64;
 		char buffer[BUFFER_SIZE] = { '\0' };

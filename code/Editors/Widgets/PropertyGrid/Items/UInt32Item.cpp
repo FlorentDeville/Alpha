@@ -24,12 +24,7 @@ namespace Editors
 	{
 		m_pTextbox = new Widgets::TextBox();
 
-		uint32_t* pValue = m_pField->GetDataPtr<uint32_t>(m_pObj);
-
-		const int BUFFER_SIZE = 64;
-		char buffer[BUFFER_SIZE] = { '\0' };
-		sprintf_s(buffer, BUFFER_SIZE, "%d", *pValue);
-		m_pTextbox->SetText(buffer);
+		UpdateValue();
 		m_pTextbox->SetReadOnly(m_pField->IsReadOnly());
 
 		m_pTextbox->OnValidate([this](const std::string& value)
@@ -52,7 +47,7 @@ namespace Editors
 
 	void UInt32Item::UpdateValue()
 	{
-		uint32_t* pValue = m_pField->GetDataPtr<uint32_t>(m_pObj);
+		const uint32_t* pValue = GetDataPtr<const uint32_t>();
 		const int BUFFER_SIZE = 64;
 		char buffer[BUFFER_SIZE] = { '\0' };
 		sprintf_s(buffer, BUFFER_SIZE, "%d", *pValue);

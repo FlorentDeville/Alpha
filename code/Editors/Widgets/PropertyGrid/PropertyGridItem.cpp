@@ -10,7 +10,6 @@
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 
 #include "Systems/Objects/Object.h"
-#include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Icon.h"
