@@ -8,7 +8,6 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
@@ -38,10 +37,13 @@ namespace Editors
 		: m_pPropertyGridWidget(nullptr)
 		, m_pObject(nullptr)
 		, m_canAddElementToArray(true)
+		, m_watcherCallbackId()
 	{ }
 
 	PropertyGridPopulator::~PropertyGridPopulator()
 	{
+		ObjectWatcher::Get().RemoveWatcher(m_pObject, m_watcherCallbackId);
+
 		for (const std::pair<Core::Sid, PropertyGridItemFactory*>& pair : m_factories)
 		{
 			delete pair.second;
@@ -57,9 +59,14 @@ namespace Editors
 
 	void PropertyGridPopulator::Populate(Systems::Object* pObject)
 	{
+		ObjectWatcher::Get().RemoveWatcher(m_pObject, m_watcherCallbackId);
+
 		m_pObject = pObject;
 		
 		CreatePropertiesForObject(pObject, 0);
+
+		m_watcherCallbackId = ObjectWatcher::Get().AddWatcher(pObject, 
+			[this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
@@ -537,5 +544,11 @@ namespace Editors
 		pNameLayout->AddWidget(pNameLabel);
 
 		return pNameLayout;
+	}
+
+	void PropertyGridPopulator::ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
+	{
+		//Poperty* pProperty = FindProperty(pObj, pField)
+		//pProperty->UpdateValue(op, index)
 	}
 }
