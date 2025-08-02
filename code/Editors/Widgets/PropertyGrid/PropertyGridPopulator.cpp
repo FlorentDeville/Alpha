@@ -12,6 +12,7 @@
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -313,25 +314,8 @@ namespace Editors
 
 		case SID("uint32_t"):
 		{
-			Widgets::TextBox* pTextBox = new Widgets::TextBox();
-
-			uint32_t* pValue = reinterpret_cast<uint32_t*>(pRawValue);
-			
-			const int BUFFER_SIZE = 64;
-			char buffer[BUFFER_SIZE] = { '\0' };
-			sprintf_s(buffer, BUFFER_SIZE, "%d", *pValue);
-			pTextBox->SetText(buffer);
-			pTextBox->SetReadOnly(readOnly);
-
-			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
-				{
-					char* pEnd = nullptr;
-					uint32_t newValue = std::strtoul(value.c_str(), &pEnd, 10);
-					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &newValue);
-					m_onDataChanged();
-				});
-
-			pEditingWidget = pTextBox;
+			UInt32Item* pItem = new UInt32Item(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
 		}
 		break;
 
