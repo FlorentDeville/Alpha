@@ -80,11 +80,11 @@ namespace Editors
 		//Map of type name sid to item factory
 		std::map<Core::Sid, PropertyGridItemFactory*> m_factories;
 
+		std::map<const Systems::Object*, Core::CallbackId> m_watcherCallbackIds;
+
 		//The object currently being displayed
 		Systems::Object* m_pObject;
 
 		bool m_canAddElementToArray;
-
-		Core::CallbackId m_watcherCallbackId;
 	};
 }

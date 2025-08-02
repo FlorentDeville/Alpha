@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
@@ -40,17 +41,16 @@ namespace Editors
 		: m_pPropertyGridWidget(nullptr)
 		, m_pObject(nullptr)
 		, m_canAddElementToArray(true)
-		, m_watcherCallbackId()
+		, m_watcherCallbackIds()
 	{ }
 
 	PropertyGridPopulator::~PropertyGridPopulator()
 	{
-		ObjectWatcher::Get().RemoveWatcher(m_pObject, m_watcherCallbackId);
+		for (const std::pair<const Systems::Object*, Core::CallbackId>& pair : m_watcherCallbackIds)
+			ObjectWatcher::Get().RemoveWatcher(pair.first, pair.second);
 
 		for (const std::pair<Core::Sid, PropertyGridItemFactory*>& pair : m_factories)
-		{
 			delete pair.second;
-		}
 
 		m_factories.clear();
 	}
@@ -62,14 +62,12 @@ namespace Editors
 
 	void PropertyGridPopulator::Populate(Systems::Object* pObject)
 	{
-		ObjectWatcher::Get().RemoveWatcher(m_pObject, m_watcherCallbackId);
+		for (const std::pair<const Systems::Object*, Core::CallbackId>& pair : m_watcherCallbackIds)
+			ObjectWatcher::Get().RemoveWatcher(pair.first, pair.second);
 
 		m_pObject = pObject;
 		
 		CreatePropertiesForObject(pObject, 0);
-
-		m_watcherCallbackId = ObjectWatcher::Get().AddWatcher(pObject, 
-			[this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
@@ -101,6 +99,11 @@ namespace Editors
 
 	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject, int depth)
 	{
+		Core::CallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
+			[this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
+
+		m_watcherCallbackIds[pObject] = callbackId;
+
 		const Systems::TypeDescriptor* pRealType = pObject->GetTypeDescriptor();
 		CreatePropertiesForObjectParentClass(pObject, pRealType, depth);
 	}
@@ -329,25 +332,8 @@ namespace Editors
 
 		case SID("Core::Guid"):
 		{
-			Widgets::TextBox* pTextBox = new Widgets::TextBox();
-
-			Core::Guid* pValue = reinterpret_cast<Core::Guid*>(pRawValue);
-
-			const int BUFFER_SIZE = 64;
-			char buffer[BUFFER_SIZE] = { '\0' };
-			pValue->ToString(buffer, BUFFER_SIZE);
-
-			pTextBox->SetText(buffer);
-			pTextBox->SetReadOnly(readOnly);
-
-			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
-				{
-					Core::Guid newGuid(value.c_str());
-					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &newGuid);
-					m_onDataChanged();
-				});
-
-			pEditingWidget = pTextBox;
+			GuidItem* pItem = new GuidItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
 		}
 		break;
 
