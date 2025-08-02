@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
@@ -347,42 +348,8 @@ namespace Editors
 
 		case SID("Systems::NewAssetId"):
 		{
-			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(pRawValue);
-
-			Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widgets::Widget::HSTRETCH_VFIT);
-			
-			Widgets::Label* pLabel = new Widgets::Label("...");
-			pLabel->SetSizeStyle(Widgets::Widget::FIT);
-			pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-
-			Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
-			pButton->AddWidget(pLabel);
-			pButton->OnClick([this, pField, pObj, indexElement, op]()
-				{
-					AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
-					pDialog->Open();
-					pDialog->OnOk([this, pField, pObj, indexElement, op](Systems::NewAssetId id)
-						{ 
-							ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &id);
-							m_onDataChanged(); 
-						});
-				});
-
-			pLayout->AddWidget(pButton);
-
-			Widgets::TextBox* pBox = new Widgets::TextBox();
-			pBox->SetReadOnly(true);
-			pLayout->AddWidget(pBox);
-			
-			Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(*pValue);
-			if (pMetadata)
-				pBox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
-			else
-				pBox->SetText("Unknown");
-
-			pEditingWidget = pLayout;
-
+			AssetIdItem* pItem = new AssetIdItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
 		}
 		break;
 
