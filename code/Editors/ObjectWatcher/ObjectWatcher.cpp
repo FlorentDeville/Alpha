@@ -123,7 +123,7 @@ namespace Editors
 		}
 	}
 
-	Core::CallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, WatcherCallback& callback)
+	Core::CallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
 	{
 		Core::CallbackId id = m_watchers[pObj].Connect(callback);
 		return id;
