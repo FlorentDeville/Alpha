@@ -29,6 +29,8 @@ namespace Editors
 
 		void ClearAllItems();
 
+		Core::Array<PropertyGridItem*>& GetPropertyGridItems();
+
 	private:
 		Core::Array<PropertyGridItem*> m_properties;
 

@@ -91,4 +91,9 @@ namespace Editors
 
 		m_pInternalLayout->DeleteAllChildren();
 	}
+
+	Core::Array<PropertyGridItem*>& PropertyGridWidget::GetPropertyGridItems()
+	{
+		return m_properties;
+	}
 }
