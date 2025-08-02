@@ -7,6 +7,8 @@
 #include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Sid/Sid.h"
 
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
+
 #include <map>
 
 namespace Core
@@ -70,6 +72,8 @@ namespace Editors
 
 		Widgets::Widget* CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement);
 
+		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
+
 		PropertyGridWidget* m_pPropertyGridWidget;
 
 		//Map of type name sid to item factory
@@ -79,5 +83,7 @@ namespace Editors
 		Systems::Object* m_pObject;
 
 		bool m_canAddElementToArray;
+
+		Core::CallbackId m_watcherCallbackId;
 	};
 }
