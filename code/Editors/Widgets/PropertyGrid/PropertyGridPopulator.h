@@ -86,7 +86,5 @@ namespace Editors
 		Systems::Object* m_pObject;
 
 		bool m_canAddElementToArray;
-
-		Core::CallbackId m_watcherCallbackId;
 	};
 }

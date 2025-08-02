@@ -71,9 +71,6 @@ namespace Editors
 		
 		CreatePropertiesForObject(pObject, 0);
 
-		m_watcherCallbackId = ObjectWatcher::Get().AddWatcher(pObject, 
-			[this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
-
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
