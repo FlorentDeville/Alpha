@@ -57,6 +57,7 @@ namespace Editors
 			std::string m_type;
 			Core::Guid m_parent;
 			Core::Array<Core::Guid> m_children;
+			Core::CallbackId m_objWatcherCallbackId;
 		};
 
 		Core::Array<CachedItem*> m_cachedItemArray;			// flat list containing all the cached item

@@ -4,6 +4,8 @@
 
 #include "Editors/LevelEditor/SceneTreeModel.h"
 
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
+
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
@@ -215,6 +217,9 @@ namespace Editors
 
 		BeforeRemoveRows(row, 1, parentModelIndex);
 
+		const Systems::GameObject* pGo = m_pLevel->FindGameObject(pItem->m_guid);
+		ObjectWatcher::Get().RemoveWatcher(static_cast<const Systems::Object*>(pGo), pItem->m_objWatcherCallbackId);
+
 		Core::Guid parentGuid = pItem->m_parent;
 
 		//delete the cache
@@ -293,6 +298,15 @@ namespace Editors
 		pItem->m_type = pGo->GetTypeDescriptor()->GetName();
 		pItem->m_parent = pGo->GetTransform().GetParentGuid();
 		pItem->m_children = pGo->GetTransform().GetChildrenGuid();
+
+		pItem->m_objWatcherCallbackId = ObjectWatcher::Get().AddWatcher(pGo, [this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
+			{
+				if (pField->GetName() == "m_name") // it's ugly to hardcode the name of the field here.
+				{
+					Systems::GameObject* pGo = static_cast<Systems::GameObject*>(pObj);
+					RenameGameObject(pGo->GetGuid(), *pField->GetDataPtr<std::string>(pObj));
+				}
+			});
 
 		m_cachedItemArray.PushBack(pItem);
 		m_cachedItemMap[pItem->m_guid] = pItem;

@@ -11,6 +11,7 @@
 #include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
@@ -213,9 +214,16 @@ namespace Editors
 		if (!pGo)
 			return;
 
-		pGo->SetName(name);
+		const std::vector<Systems::FieldDescriptor>& fields = pGo->GetTypeDescriptor()->GetFields();
+		std::vector<Systems::FieldDescriptor>::const_iterator it = std::find_if(fields.begin(), fields.end(), 
+			[](const Systems::FieldDescriptor& field) { return field.GetName() == "m_name"; });
 
-		m_onRenameGameObject(guid, name);
+		if (it == fields.cend())
+			return;
+
+		const Systems::FieldDescriptor& field = *it;
+		const void* pValue = reinterpret_cast<const void*>(&name);
+		ObjectWatcher::Get().ModifyField(pGo, &field, ObjectWatcher::SET_FIELD, 0, pValue);
 	}
 
 	void LevelEditorModule::DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode)

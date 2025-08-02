@@ -107,7 +107,6 @@ namespace Editors
 		EVENT_DECL(AddGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent))
 		EVENT_DECL(BeforeDeleteGameObject, void(const Core::Guid& nodeGuid))
 		EVENT_DECL(AfterDeleteGameObject, void(const Core::Guid& nodeGuid))
-		EVENT_DECL(RenameGameObject, void(const Core::Guid & guid, const std::string & newName))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
 		EVENT_DECL(ReparentGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent))
 
