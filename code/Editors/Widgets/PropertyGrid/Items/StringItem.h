@@ -16,7 +16,7 @@ namespace Editors
 	class StringItem : public PropertyGridItem
 	{
 	public:
-		StringItem(Systems::Object* pObj, Systems::FieldDescriptor* pField, uint32_t index);
+		StringItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
 		~StringItem();
 
 		void CreateWidgets() override;

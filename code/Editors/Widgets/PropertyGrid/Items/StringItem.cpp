@@ -12,7 +12,7 @@
 
 namespace Editors
 {
-	StringItem::StringItem(Systems::Object* pObj, Systems::FieldDescriptor* pField, uint32_t index)
+	StringItem::StringItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 	{ }
 
