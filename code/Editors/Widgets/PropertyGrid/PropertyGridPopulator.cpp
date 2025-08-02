@@ -284,7 +284,8 @@ namespace Editors
 		const Systems::TypeDescriptor* pFieldType = pField->IsContainer() ? pField->GetElementType() : pField->GetType();
 		void* pRawValue = nullptr;
 		
-		if (pField->IsContainer())
+		bool isArray = pField->IsContainer();
+		if (isArray)
 		{
 			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 			pRawValue = pArray->GetElement(indexElement);
@@ -295,6 +296,7 @@ namespace Editors
 		}
 
 		bool readOnly = pField->IsReadOnly();
+		ObjectWatcher::OPERATION op = isArray ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 
 		switch (pFieldType->GetSid())
 		{
@@ -306,9 +308,9 @@ namespace Editors
 			pTextBox->SetText(*pValue);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
 				{
-					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &value);
+					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &value);
 					m_onDataChanged();
 				});
 
@@ -328,11 +330,11 @@ namespace Editors
 			pTextBox->SetText(buffer);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
 				{
 					char* pEnd = nullptr;
 					uint32_t newValue = std::strtoul(value.c_str(), &pEnd, 10);
-					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &newValue);
+					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &newValue);
 					m_onDataChanged();
 				});
 
@@ -350,10 +352,10 @@ namespace Editors
 			pTextBox->SetText(strSid);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
 				{
 					Core::Sid newSid = Core::MakeSid(value);
-					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &newSid);
+					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &newSid);
 					m_onDataChanged();
 				});
 
@@ -374,10 +376,10 @@ namespace Editors
 			pTextBox->SetText(buffer);
 			pTextBox->SetReadOnly(readOnly);
 
-			pTextBox->OnValidate([this, pObj, pField, indexElement](const std::string& value)
+			pTextBox->OnValidate([this, pObj, pField, indexElement, op](const std::string& value)
 				{
 					Core::Guid newGuid(value.c_str());
-					ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &newGuid);
+					ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &newGuid);
 					m_onDataChanged();
 				});
 
@@ -413,14 +415,14 @@ namespace Editors
 					pTextBox->SetSizeStyle(Widgets::Widget::DEFAULT);
 					pTextBox->SetReadOnly(readOnly);
 					pTextBox->SetWidth(40);
-					pTextBox->OnValidate([row, column, pValue, pObj, pField, indexElement](const std::string& value)
+					pTextBox->OnValidate([row, column, pValue, pObj, pField, indexElement, op](const std::string& value)
 						{
 							float newValue = 0;
 							std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
 
 							Core::Mat44f copy = *pValue;
 							copy.Set(row, column, newValue);
-							ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &copy);
+							ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &copy);
 						});
 					pRowLayout->AddWidget(pTextBox);
 				}
@@ -443,13 +445,13 @@ namespace Editors
 			Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
 			pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
 			pButton->AddWidget(pLabel);
-			pButton->OnClick([this, pField, pObj, indexElement]()
+			pButton->OnClick([this, pField, pObj, indexElement, op]()
 				{
 					AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
 					pDialog->Open();
-					pDialog->OnOk([this, pField, pObj, indexElement](Systems::NewAssetId id)
+					pDialog->OnOk([this, pField, pObj, indexElement, op](Systems::NewAssetId id)
 						{ 
-							ObjectWatcher::Get().SetGenericFieldValue(static_cast<Systems::Object*>(pObj), pField, indexElement, &id);
+							ObjectWatcher::Get().ModifyField(static_cast<Systems::Object*>(pObj), pField, op, indexElement, &id);
 							m_onDataChanged(); 
 						});
 				});
