@@ -30,7 +30,7 @@ namespace Editors
 
 	void PropertyGridWidget::AddProperty(PropertyGridItem* pProperty, int depth)
 	{
-		m_properties.push_back(pProperty);
+		m_properties.PushBack(pProperty);
 
 		Widgets::Layout* pPropertyLayout = new Widgets::Layout();
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
@@ -87,7 +87,7 @@ namespace Editors
 		for (PropertyGridItem* pProperty : m_properties)
 			delete pProperty;
 
-		m_properties.clear();
+		m_properties.Clear();
 
 		m_pInternalLayout->DeleteAllChildren();
 	}
