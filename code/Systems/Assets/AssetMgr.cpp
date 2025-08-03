@@ -7,11 +7,8 @@
 #include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/Asset.h"
-#include "Systems/Assets/AssetType.h"
-#include "Systems/Assets/AssetType/NewAssetType.h"
 
 #include <assert.h>
-#include <cstdio>
 #include <fstream>
 #include <random>
 //#pragma optimize("", off)
