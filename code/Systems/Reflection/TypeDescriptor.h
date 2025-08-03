@@ -18,6 +18,7 @@ namespace Systems
 	{
 	public:
 		TypeDescriptor(const std::string& name, uint64_t size);
+		~TypeDescriptor();
 
 		void Init(const std::string& name, uint64_t size);
 
@@ -28,7 +29,7 @@ namespace Systems
 
 		const std::string& GetName() const;
 		Core::Sid GetSid() const;
-		const std::vector<FieldDescriptor>& GetFields() const;
+		const std::vector<FieldDescriptor*>& GetFields() const;
 		const TypeDescriptor* GetBaseType() const;
 		Core::Sid GetUpgradeType() const;
 
@@ -61,7 +62,7 @@ namespace Systems
 
 	private:
 		std::string m_name;
-		std::vector<FieldDescriptor> m_fields;
+		std::vector<FieldDescriptor*> m_fields;
 		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;

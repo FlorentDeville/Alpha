@@ -310,15 +310,15 @@ namespace Systems
 				return false;
 		}
 
-		const std::vector<FieldDescriptor>& fields = pType->GetFields();
-		for (const FieldDescriptor& field : fields)
+		const std::vector<FieldDescriptor*>& fields = pType->GetFields();
+		for (const FieldDescriptor* pField : fields)
 		{
-			const Core::JsonValue& jsonValue = jsonObject->GetMember(field.GetName());
+			const Core::JsonValue& jsonValue = jsonObject->GetMember(pField->GetName());
 			if (jsonValue.IsNull())
 				continue;
 
-			void* pFieldPtr = field.GetDataPtr(pObject);
-			bool res = DeserializeField(jsonValue, field.GetType(), &field, pFieldPtr, field.IsPointer());
+			void* pFieldPtr = pField->GetDataPtr(pObject);
+			bool res = DeserializeField(jsonValue, pField->GetType(), pField, pFieldPtr, pField->IsPointer());
 			if (!res)
 				return false;
 		}

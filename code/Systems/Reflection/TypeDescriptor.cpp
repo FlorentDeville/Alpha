@@ -17,6 +17,14 @@ namespace Systems
 		Init(name, size);
 	}
 
+	TypeDescriptor::~TypeDescriptor()
+	{
+		for (FieldDescriptor* pField : m_fields)
+			delete pField;
+
+		m_fields.clear();
+	}
+
 	void TypeDescriptor::Init(const std::string& name, uint64_t size)
 	{
 		m_name = name;
@@ -28,9 +36,9 @@ namespace Systems
 
 	FieldDescriptor* TypeDescriptor::AddField()
 	{
-		m_fields.push_back(FieldDescriptor());
-		FieldDescriptor& field = m_fields.back();
-		return &field;
+		m_fields.push_back(new FieldDescriptor());
+		FieldDescriptor* field = m_fields.back();
+		return field;
 	}
 
 	void TypeDescriptor::SetBaseType(const std::string& baseTypeName)
@@ -55,7 +63,7 @@ namespace Systems
 		return m_sid;
 	}
 
-	const std::vector<FieldDescriptor>& TypeDescriptor::GetFields() const
+	const std::vector<FieldDescriptor*>& TypeDescriptor::GetFields() const
 	{
 		return m_fields;
 	}

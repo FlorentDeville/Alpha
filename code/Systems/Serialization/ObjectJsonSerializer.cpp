@@ -260,14 +260,14 @@ namespace Systems
 				return false;
 		}
 
-		const std::vector<Systems::FieldDescriptor>& fieldsArray = pType->GetFields();
-		for (const Systems::FieldDescriptor& field : fieldsArray)
+		const std::vector<Systems::FieldDescriptor*>& fieldsArray = pType->GetFields();
+		for (const Systems::FieldDescriptor* pField : fieldsArray)
 		{
-			assert(!field.IsPointer()); //don't support pointer for now
+			assert(!pField->IsPointer()); //don't support pointer for now
 
-			Core::JsonValue* pValue = jsonObj.AddMember(field.GetName());
-			const void* pFieldPtr = field.GetDataPtr(pObject);
-			SerializeField(pFieldPtr, &field, field.GetType(), *pValue);
+			Core::JsonValue* pValue = jsonObj.AddMember(pField->GetName());
+			const void* pFieldPtr = pField->GetDataPtr(pObject);
+			SerializeField(pFieldPtr, pField, pField->GetType(), *pValue);
 		}
 
 		return true;
