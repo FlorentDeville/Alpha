@@ -159,16 +159,16 @@ namespace Editors
 
 	void PropertyGridPopulator::CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth)
 	{
-		const std::vector<Systems::FieldDescriptor>& members = pFieldType->GetFields();
-		for (const Systems::FieldDescriptor& member : members)
+		const std::vector<Systems::FieldDescriptor*>& members = pFieldType->GetFields();
+		for (const Systems::FieldDescriptor* pField : members)
 		{
-			if (member.IsHidden())
+			if (pField->IsHidden())
 				continue;
 
-			const Systems::TypeDescriptor* memberType = member.GetType();
+			const Systems::TypeDescriptor* memberType = pField->GetType();
 
-			void* pMemberPtr = member.GetDataPtr(pData);
-			if (member.IsPointer())
+			void* pMemberPtr = pField->GetDataPtr(pData);
+			if (pField->IsPointer())
 			{
 				char* pCharPtr = reinterpret_cast<char*>(pMemberPtr);
 				pMemberPtr = reinterpret_cast<char*>(*pCharPtr);
@@ -176,13 +176,13 @@ namespace Editors
 
 			if (memberType->GetSid() == CONSTSID("Core::Array"))
 			{
-				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), nullptr);
+				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
-				CreatePropertiesForArrayElements(&member, pMemberPtr, depth + 1);
+				CreatePropertiesForArrayElements(pField, pMemberPtr, depth + 1);
 				
 				if(m_canAddElementToArray)
-					CreateArrayAddElementButton(member, pMemberPtr);
+					CreateArrayAddElementButton(*pField, pMemberPtr);
 			}
 			else if (memberType->IsObject())
 			{
@@ -191,16 +191,16 @@ namespace Editors
 			}
 			else if (memberType->IsClass())
 			{
-				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), nullptr);
+				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem);
 
 				CreatePropertiesForTypeMembers(memberType, pMemberPtr, depth + 1);
 			}
 			else //pod
 			{
-				Widgets::Widget* pWidget = CreateWidgetForPODField(memberType, pMemberPtr, member.IsReadOnly());
+				Widgets::Widget* pWidget = CreateWidgetForPODField(memberType, pMemberPtr, pField->IsReadOnly());
 
-				PropertyGridItem* pItem = new PropertyGridItem(member.GetName(), pWidget);
+				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), pWidget);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 			}
 		}
