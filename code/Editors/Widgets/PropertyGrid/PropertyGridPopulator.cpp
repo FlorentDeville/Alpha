@@ -440,7 +440,17 @@ namespace Editors
 
 		if (it == items.end())
 			return;
+		switch (op)
+		{
+		case ObjectWatcher::SET_FIELD:
+		case ObjectWatcher::SET_ELEMENT:
+			(*it)->UpdateValue();
+			break;
 
-		(*it)->UpdateValue();
+		case ObjectWatcher::REMOVE_ELEMENT:
+			m_pPropertyGridWidget->RemoveProperty(*it);
+			break;
+		}
+		
 	}
 }

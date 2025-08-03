@@ -9,6 +9,7 @@
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Widgets/TableViewStyle.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Editors
 {
@@ -81,6 +82,15 @@ namespace Editors
 			pPropertyLayout->AddWidget(pSpacer);
 			pPropertyLayout->AddWidget(pProperty->GetEditingWidget());
 		}
+	}
+
+	void PropertyGridWidget::RemoveProperty(PropertyGridItem* pProperty)
+	{
+		Widgets::Widget* pPropertyWidget = pProperty->GetNameWidget()->GetParent();
+		Widgets::WidgetMgr::Get().RequestWidgetDeletion(pPropertyWidget);
+
+		m_properties.Erase(pProperty);
+		delete pProperty;		
 	}
 
 	void PropertyGridWidget::ClearAllItems()
