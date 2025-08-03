@@ -4,20 +4,17 @@
 
 #pragma once
 
+#include "Core/Sid/Sid.h"
 #include "Core/Singleton.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/TypeDescriptor.h"
 
-#include <assert.h>
 #include <functional>
 #include <map>
 #include <string>
 
 namespace Systems
 {
-	class TypeDescriptor;
-
 	class ReflectionMgr : public Core::Singleton<ReflectionMgr>
 	{
 	public:

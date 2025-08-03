@@ -4,6 +4,8 @@
 
 #include "Systems/Reflection/ReflectionMgr.h"
 
+#include <assert.h>
+
 namespace Systems
 {
 	ReflectionMgr::ReflectionMgr()
