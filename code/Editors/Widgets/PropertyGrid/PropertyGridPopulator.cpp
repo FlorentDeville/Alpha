@@ -452,6 +452,5 @@ namespace Editors
 			m_pPropertyGridWidget->RemoveProperty(*it);
 			break;
 		}
-
 	}
 }
