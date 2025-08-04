@@ -38,19 +38,20 @@ namespace Systems
 
 	template<typename T> TypeDescriptor* ReflectionMgr::RegisterType(const std::string& name)
 	{
+		TypeDescriptor* pType = nullptr;
+
 		std::map<std::string, TypeDescriptor*>::iterator it = m_typeDb.find(name);
 		if (it == m_typeDb.end())
 		{
-			TypeDescriptor* pType = new TypeDescriptor(name, sizeof(T));
+			pType = new TypeDescriptor(name);
 			m_typeDb[name] = pType;
 			m_sidToType[SID(name)] = pType;
-			return pType;
 		}
 		else
 		{
-			TypeDescriptor* pType = it->second;
-			pType->Init(name, sizeof(T));
-			return pType;
+			pType = it->second;
 		}
+
+		return pType;
 	}
 }

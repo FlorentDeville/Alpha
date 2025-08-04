@@ -40,7 +40,7 @@ namespace Systems
 		if (it != m_typeDb.end())
 			return it->second;
 
-		TypeDescriptor* pType = new TypeDescriptor(name, 0);
+		TypeDescriptor* pType = new TypeDescriptor(name);
 		m_typeDb[name] = pType;
 		m_sidToType[SID(name)] = pType;
 

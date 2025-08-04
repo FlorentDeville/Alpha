@@ -17,10 +17,12 @@ namespace Systems
 	class TypeDescriptor
 	{
 	public:
-		TypeDescriptor(const std::string& name, uint64_t size);
+		// This constructor creates a non initialized TypeDescriptor.
+		TypeDescriptor(const std::string& name);
+
 		~TypeDescriptor();
 
-		void Init(const std::string& name, uint64_t size);
+		template<typename T> void Init();
 
 		FieldDescriptor* AddField();
 
@@ -67,6 +69,13 @@ namespace Systems
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
 		Core::Sid m_upgradeType; // Sid of the type this class should be upgraded to
-		
 	};
+
+	template<typename T> void TypeDescriptor::Init()
+	{
+		m_size = sizeof(T);
+		Construct = []() -> void* { return new T(); };
+		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) T(); };
+		Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
+	}
 }
