@@ -10,10 +10,8 @@ namespace Systems
 		: m_name()
 		, m_offset(0)
 		, m_pType(nullptr)
-		, m_pElementType(nullptr)
 		, m_attribute(FieldAttribute::None)
 		, m_isPointer(false)
-		, m_isContainer(false)
 	{ }
 
 	FieldDescriptor::~FieldDescriptor()
@@ -29,24 +27,9 @@ namespace Systems
 		return m_pType;
 	}
 
-	const TypeDescriptor* FieldDescriptor::GetElementType() const
-	{
-		return m_pElementType;
-	}
-
 	bool FieldDescriptor::IsPointer() const
 	{
 		return m_isPointer;
-	}
-
-	bool FieldDescriptor::IsContainer() const
-	{
-		return m_isContainer;
-	}
-
-	bool FieldDescriptor::IsElementPointer() const
-	{
-		return m_isElementPointer;
 	}
 
 	const void* FieldDescriptor::GetDataPtr(const void* pObj) const

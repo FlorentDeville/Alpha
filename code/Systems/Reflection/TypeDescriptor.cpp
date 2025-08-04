@@ -13,6 +13,9 @@ namespace Systems
 		, m_size(0)
 		, m_pBaseType(nullptr)
 		, m_upgradeType(Core::INVALID_SID)
+		, m_isContainer(false)
+		, m_isElementPointer(false)
+		, m_pElementType(nullptr)
 		, Construct()
 		, InPlaceConstruct()
 		, Destruct()
@@ -73,9 +76,24 @@ namespace Systems
 		return m_pBaseType;
 	}
 
+	const TypeDescriptor* TypeDescriptor::GetElementType() const
+	{
+		return m_pElementType;
+	}
+
 	Core::Sid TypeDescriptor::GetUpgradeType() const
 	{
 		return m_upgradeType;
+	}
+
+	bool TypeDescriptor::IsContainer() const
+	{
+		return m_isContainer;
+	}
+
+	bool TypeDescriptor::IsElementPointer() const
+	{
+		return m_isElementPointer;
 	}
 
 	bool TypeDescriptor::InheritsFrom(Core::Sid baseClassSid) const

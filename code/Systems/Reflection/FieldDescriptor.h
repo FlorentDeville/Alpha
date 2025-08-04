@@ -28,10 +28,7 @@ namespace Systems
 
 		const std::string& GetName() const;
 		const TypeDescriptor* GetType() const;
-		const TypeDescriptor* GetElementType() const;
 		bool IsPointer() const;
-		bool IsContainer() const;
-		bool IsElementPointer() const;
 
 		//Return a pointer to the variable in pObj
 		const void* GetDataPtr(const void* pObj) const;
@@ -49,10 +46,7 @@ namespace Systems
 		std::string m_name;
 		uint64_t m_offset;
 		TypeDescriptor* m_pType;
-		TypeDescriptor* m_pElementType; // this is the type of the elements when the field is a container. it must be iteratable with begin/end.
 		bool m_isPointer : 1;
-		bool m_isContainer : 1;			// array, map, list of any kind
-		bool m_isElementPointer : 1;	// the elements are pointers to m_pElementType.
 
 		FieldAttribute m_attribute;
 	};
@@ -80,10 +74,7 @@ namespace Systems
 			pField->m_name = name;
 			pField->m_offset = offset;
 			pField->m_pType = pType;
-			pField->m_pElementType = nullptr;
 			pField->m_isPointer = isPointer;
-			pField->m_isContainer = false;
-			pField->m_isElementPointer = false;
 			pField->m_attribute = attribute;
 		}
 	};
@@ -107,16 +98,13 @@ namespace Systems
 			TypeDescriptor* pArrayType = Systems::ReflectionMgr::Get().GetOrAddType(arrayTypename);
 			if (!pArrayType->IsInitialized())
 			{
-				pArrayType->Init<Core::Array<T>>();
+				pArrayType->Init((Core::Array<T>*)nullptr);
 			}
 
 			pField->m_name = name;
 			pField->m_offset = offset;
 			pField->m_pType = pArrayType;
-			pField->m_pElementType = pElementType;
 			pField->m_isPointer = false;
-			pField->m_isContainer = true;
-			pField->m_isElementPointer = isElementPointer;
 			pField->m_attribute = attribute;
 		}
 	};
