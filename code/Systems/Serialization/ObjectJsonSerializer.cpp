@@ -227,13 +227,14 @@ namespace Systems
 	bool SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray)
 	{
 		const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pArrayPtr);
+		const TypeDescriptor* pArrayType = pFieldArray->GetType();
 
 		int32_t size = pArray->GetSize();
 
 		for(int ii = 0; ii < size; ++ii)
 		{
 			const void* pItem = pArray->GetConstElement(ii);
-			if (pFieldArray->IsElementPointer())
+			if (pArrayType->IsElementPointer())
 			{
 				const uint64_t* pPtr = reinterpret_cast<const uint64_t*>(pItem);
 				pItem = reinterpret_cast<const void*>(*pPtr);
@@ -242,7 +243,7 @@ namespace Systems
 			Core::JsonValue* pNewValue = new Core::JsonValue();
 			jsonArray.AddElement(pNewValue);
 
-			bool res = SerializeField(pItem, nullptr, pFieldArray->GetElementType(), *pNewValue);
+			bool res = SerializeField(pItem, nullptr, pArrayType->GetElementType(), *pNewValue);
 			if (!res)
 				return false;
 		}

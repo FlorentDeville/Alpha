@@ -70,7 +70,7 @@
 #define REGISTER_TYPE(TYPE) \
 	{ \
 		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		pType->Init<TYPE>(); \
+		pType->Init((TYPE*)nullptr); \
 	}
 
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
@@ -100,7 +100,7 @@ public: \
 	static void RegisterReflection() {\
 		using ClassType = TYPE; \
 		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		pType->Init<ClassType>();
+		pType->Init((ClassType*)nullptr);
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }

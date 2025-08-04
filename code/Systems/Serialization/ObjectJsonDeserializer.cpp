@@ -71,10 +71,10 @@ namespace Systems
 			}
 		}
 
-		if (pFieldDescriptor && pFieldDescriptor->IsContainer())
+		if (pFieldType->IsContainer())
 		{
 			Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pFieldPtr);
-			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldDescriptor->GetElementType(), pFieldDescriptor->IsElementPointer(), *pArray);
+			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldType->GetElementType(), pFieldType->IsElementPointer(), *pArray);
 			return res;
 		}
 		else if (pFieldType->IsObject())
