@@ -29,6 +29,11 @@ namespace Systems
 		m_fields.clear();
 	}
 
+	bool TypeDescriptor::IsInitialized() const
+	{
+		return m_size != 0;
+	}
+
 	FieldDescriptor* TypeDescriptor::AddField()
 	{
 		m_fields.push_back(new FieldDescriptor());

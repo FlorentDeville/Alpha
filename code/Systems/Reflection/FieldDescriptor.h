@@ -9,6 +9,7 @@
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionUtils.h"
+#include "Systems/Reflection/TypeDescriptor.h"
 #include "Systems/Reflection/TypeResolver.h"
 
 #include <string>
@@ -92,16 +93,26 @@ namespace Systems
 	public:
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
 		{
-			TypeDescriptor* pType = TypeResolver<Core::Array<T>>::GetType();
-
 			typedef RemovePointer<T>::type NonPointerElementType;
 			TypeDescriptor* pElementType = TypeResolver<NonPointerElementType>::GetType();
 
 			bool isElementPointer = IsPointer<T>::value;
 
+			std::string arrayTypename = "Core::Array<" + pElementType->GetName();
+			if (isElementPointer)
+				arrayTypename += "*";
+
+			arrayTypename += ">";
+
+			TypeDescriptor* pArrayType = Systems::ReflectionMgr::Get().GetOrAddType(arrayTypename);
+			if (!pArrayType->IsInitialized())
+			{
+				pArrayType->Init<Core::Array<T>>();
+			}
+
 			pField->m_name = name;
 			pField->m_offset = offset;
-			pField->m_pType = pType;
+			pField->m_pType = pArrayType;
 			pField->m_pElementType = pElementType;
 			pField->m_isPointer = false;
 			pField->m_isContainer = true;

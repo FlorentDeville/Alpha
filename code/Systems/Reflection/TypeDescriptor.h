@@ -24,6 +24,8 @@ namespace Systems
 
 		template<typename T> void Init();
 
+		bool IsInitialized() const;
+
 		FieldDescriptor* AddField();
 
 		void SetBaseType(const std::string& baseTypeName);
