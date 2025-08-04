@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Collections/Array.h"
 #include "Core/Singleton.h"
 
@@ -13,8 +12,6 @@
 #include "Systems/Assets/AssetType/NewAssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 #include "Systems/Assets/NewAssetId.h"
-#include "Systems/Reflection/ReflectionMgr.h"
-#include "Systems/Reflection/TypeDescriptor.h"
 
 #include <functional>
 #include <map>

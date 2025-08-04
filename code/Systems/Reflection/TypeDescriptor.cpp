@@ -8,13 +8,17 @@
 
 namespace Systems
 {
-	TypeDescriptor::TypeDescriptor(const std::string& name, uint64_t size)
+	TypeDescriptor::TypeDescriptor(const std::string& name)
 		: m_name(name)
-		, m_size(size)
+		, m_size(0)
 		, m_pBaseType(nullptr)
 		, m_upgradeType(Core::INVALID_SID)
+		, Construct()
+		, InPlaceConstruct()
+		, Destruct()
+		, Upgrade()
 	{
-		Init(name, size);
+		m_sid = Core::MakeSid(name);
 	}
 
 	TypeDescriptor::~TypeDescriptor()
@@ -23,15 +27,6 @@ namespace Systems
 			delete pField;
 
 		m_fields.clear();
-	}
-
-	void TypeDescriptor::Init(const std::string& name, uint64_t size)
-	{
-		m_name = name;
-		m_size = size;
-		m_pBaseType = nullptr;
-		m_upgradeType = Core::INVALID_SID;
-		m_sid = Core::MakeSid(name);
 	}
 
 	FieldDescriptor* TypeDescriptor::AddField()

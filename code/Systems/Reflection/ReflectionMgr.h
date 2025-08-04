@@ -4,20 +4,17 @@
 
 #pragma once
 
+#include "Core/Sid/Sid.h"
 #include "Core/Singleton.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/TypeDescriptor.h"
 
-#include <assert.h>
 #include <functional>
 #include <map>
 #include <string>
 
 namespace Systems
 {
-	class TypeDescriptor;
-
 	class ReflectionMgr : public Core::Singleton<ReflectionMgr>
 	{
 	public:
@@ -41,19 +38,20 @@ namespace Systems
 
 	template<typename T> TypeDescriptor* ReflectionMgr::RegisterType(const std::string& name)
 	{
+		TypeDescriptor* pType = nullptr;
+
 		std::map<std::string, TypeDescriptor*>::iterator it = m_typeDb.find(name);
 		if (it == m_typeDb.end())
 		{
-			TypeDescriptor* pType = new TypeDescriptor(name, sizeof(T));
+			pType = new TypeDescriptor(name);
 			m_typeDb[name] = pType;
 			m_sidToType[SID(name)] = pType;
-			return pType;
 		}
 		else
 		{
-			TypeDescriptor* pType = it->second;
-			pType->Init(name, sizeof(T));
-			return pType;
+			pType = it->second;
 		}
+
+		return pType;
 	}
 }

@@ -67,7 +67,11 @@
 	CLOSE_SYSTEMS_NAMESPACE
 
 // Macro to register a type
-#define REGISTER_TYPE(TYPE) Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE)
+#define REGISTER_TYPE(TYPE) \
+	{ \
+		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		pType->Init<TYPE>(); \
+	}
 
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
 	{ \
@@ -96,9 +100,7 @@ public: \
 	static void RegisterReflection() {\
 		using ClassType = TYPE; \
 		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		pType->Construct = []() -> void* { return new ClassType(); }; \
-		pType->InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) ClassType(); }; \
-		pType->Destruct = [](void* pObject) { delete reinterpret_cast<ClassType*>(pObject); };
+		pType->Init<ClassType>();
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }
