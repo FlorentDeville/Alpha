@@ -89,6 +89,14 @@ namespace Systems
 			pFieldPtr = reinterpret_cast<const char*>(*pCharPtr);
 		}
 
+		if (pDescription->IsContainer())
+		{
+			const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pFieldPtr);
+			Core::JsonArray* pNewArray = new Core::JsonArray();
+			value.Set(pNewArray);
+
+			return SerializeArray(pFieldPtr, pField, *pNewArray);
+		}
 		if (pDescription->IsObject())
 		{
 			Core::JsonObject* pJsonObject = new Core::JsonObject();
@@ -201,18 +209,6 @@ namespace Systems
 			const Core::Sid* pSid = reinterpret_cast<const Core::Sid*>(pFieldPtr);
 			std::string strSid = Core::Uint64ToHexa(*pSid);
 			SerializeData(strSid, value);
-		}
-		break;
-
-		case SID("Core::Array"):
-		{
-			assert(pField); //don't support array of arrays
-
-			const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pFieldPtr);
-			Core::JsonArray* pNewArray = new Core::JsonArray();
-			value.Set(pNewArray);
-
-			SerializeArray(pFieldPtr, pField, *pNewArray);
 		}
 		break;
 
