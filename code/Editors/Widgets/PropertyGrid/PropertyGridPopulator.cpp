@@ -126,7 +126,7 @@ namespace Editors
 			{
 				pFactory->CreateItems(pElementType, pElement, depth + 1);
 			}
-			else if (pElementType->GetSid() == CONSTSID("Core::Array"))
+			else if (pElementType->IsContainer())
 			{
 				assert(false); //don't support array of arrays for now
 			}
@@ -175,7 +175,7 @@ namespace Editors
 				pMemberPtr = reinterpret_cast<char*>(*pCharPtr);
 			}
 
-			if (memberType->GetSid() == CONSTSID("Core::Array"))
+			if (memberType->IsContainer())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
