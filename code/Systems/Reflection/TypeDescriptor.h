@@ -76,6 +76,9 @@ namespace Systems
 		//Function to call to upgrade this type to the type m_upgradeType
 		void (*Upgrade)(const void* src, void* dst);
 
+		// Copy using copy operator the object src to dst.
+		void (*Copy)(const void* pSrc, void* pDst);
+
 	private:
 		std::string m_name;
 		std::vector<FieldDescriptor*> m_fields;
@@ -94,6 +97,7 @@ namespace Systems
 		Construct = []() -> void* { return new T(); };
 		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) T(); };
 		Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
+		Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<T*>(pDst) = *reinterpret_cast<const T*>(pSrc); };
 	}
 
 	template<typename T> void TypeDescriptor::Init(Core::Array<T>* /*ptr*/)
@@ -102,6 +106,7 @@ namespace Systems
 		Construct = []() -> void* { return new Core::Array<T>(); };
 		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) Core::Array<T>(); };
 		Destruct = [](void* pObject) { delete reinterpret_cast<Core::Array<T>*>(pObject); };
+		Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<Core::Array<T>*>(pDst) = *reinterpret_cast<const Core::Array<T>*>(pSrc); };
 
 		m_isContainer = true;
 
