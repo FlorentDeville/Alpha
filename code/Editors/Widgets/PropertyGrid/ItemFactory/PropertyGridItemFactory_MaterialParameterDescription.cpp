@@ -78,7 +78,7 @@ namespace Editors
 			Widgets::SliderFloat* pBlueChannel = new Widgets::SliderFloat(0, 1, pFloat[2]);
 			pLayout->AddWidget(pBlueChannel);
 
-			Widgets::SliderFloat* pAlphaChannel = new Widgets::SliderFloat(0, 1, pFloat[2]);
+			Widgets::SliderFloat* pAlphaChannel = new Widgets::SliderFloat(0, 1, pFloat[3]);
 			pLayout->AddWidget(pAlphaChannel);
 
 			Widgets::Container* pColorWidget = new Widgets::Container(20, 20);
