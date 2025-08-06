@@ -106,16 +106,17 @@ namespace Editors
 	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth)
 	{
 		Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pArrayPtr);
+		const Systems::TypeDescriptor* pArrayType = pField->GetType();
 
 		int32_t size = pArray->GetSize();
 
-		const Systems::TypeDescriptor* pElementType = pField->GetElementType();
+		const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
 		bool isObject = pElementType->IsObject();
 
 		for (int ii = 0; ii < size; ++ii)
 		{
 			void* pElement = pArray->GetElement(ii);
-			if (pField->IsElementPointer())
+			if (pArrayType->IsElementPointer())
 			{
 				uint64_t* pCharPtr = reinterpret_cast<uint64_t*>(pElement);
 				pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
@@ -125,7 +126,7 @@ namespace Editors
 			{
 				pFactory->CreateItems(pElementType, pElement, depth + 1);
 			}
-			else if (pElementType->GetSid() == CONSTSID("Core::Array"))
+			else if (pElementType->IsContainer())
 			{
 				assert(false); //don't support array of arrays for now
 			}
@@ -174,7 +175,7 @@ namespace Editors
 				pMemberPtr = reinterpret_cast<char*>(*pCharPtr);
 			}
 
-			if (memberType->GetSid() == CONSTSID("Core::Array"))
+			if (memberType->IsContainer())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
@@ -218,9 +219,10 @@ namespace Editors
 		pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		pAddElementButton->OnClick([this, member, pMemberPtr]()
 			{
-				if (member.IsElementPointer())
+				const Systems::TypeDescriptor* pArrayType = member.GetType();
+				if (pArrayType->IsElementPointer())
 				{
-					const Systems::TypeDescriptor* pElementType = member.GetElementType();
+					const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
 
 					const Systems::TypeDescriptor* pElementBaseType = pElementType;
 					while (pElementBaseType->GetBaseType())

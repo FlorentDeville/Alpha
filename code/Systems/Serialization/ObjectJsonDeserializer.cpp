@@ -71,7 +71,13 @@ namespace Systems
 			}
 		}
 
-		if (pFieldType->IsObject())
+		if (pFieldType->IsContainer())
+		{
+			Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pFieldPtr);
+			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldType->GetElementType(), pFieldType->IsElementPointer(), *pArray);
+			return res;
+		}
+		else if (pFieldType->IsObject())
 		{
 			Object* pObject = reinterpret_cast<Object*>(pFieldPtr);
 			Object** ppObject = &pObject;
@@ -221,17 +227,6 @@ namespace Systems
 
 			const std::string& strSid = jsonFieldValue.GetValueAsString();
 			*pValue = Core::HexaToUint64(strSid);
-		}
-		break;
-
-		case SID("Core::Array"):
-		{
-			assert(pFieldDescriptor); //don't support array of arrays
-
-			Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pFieldPtr);
-			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldDescriptor->GetElementType(), pFieldDescriptor->IsElementPointer(), *pArray);
-			if (!res)
-				return false;
 		}
 		break;
 

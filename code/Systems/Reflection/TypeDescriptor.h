@@ -4,8 +4,12 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
 #include "Core/Sid/Sid.h"
+
 #include "Systems/Reflection/FieldAttribute.h"
+#include "Systems/Reflection/ReflectionUtils.h"
+#include "Systems/Reflection/TypeResolver.h"
 
 #include <string>
 #include <vector>
@@ -22,7 +26,13 @@ namespace Systems
 
 		~TypeDescriptor();
 
-		template<typename T> void Init();
+		// Generic function to initialize the TypeDescriptor. I pass a dummy parameter otherwise I can't overload the function to specialize it.
+		template<typename T> void Init(T* ptr = nullptr);
+
+		// Initialize a Core::Array. I pass a dummy parameter otherwise I can't overload the function to specialize it.
+		template<typename T> void Init(Core::Array<T>* ptr = nullptr);
+
+		bool IsInitialized() const;
 
 		FieldDescriptor* AddField();
 
@@ -33,7 +43,11 @@ namespace Systems
 		Core::Sid GetSid() const;
 		const std::vector<FieldDescriptor*>& GetFields() const;
 		const TypeDescriptor* GetBaseType() const;
+		const TypeDescriptor* GetElementType() const;
 		Core::Sid GetUpgradeType() const;
+
+		bool IsContainer() const;
+		bool IsElementPointer() const;
 
 		// True if this type inherits from baseClassSid
 		bool InheritsFrom(Core::Sid baseClassSid) const;
@@ -68,14 +82,32 @@ namespace Systems
 		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
-		Core::Sid m_upgradeType; // Sid of the type this class should be upgraded to
+		Core::Sid m_upgradeType;			// Sid of the type this class should be upgraded to
+		bool m_isContainer;					// true if this is an array, m_pElementType is the type of the elements in the array.
+		bool m_isElementPointer;			// this is an array of pointer to m_pElementType.
+		TypeDescriptor* m_pElementType;		// this is the type of the elements when the field is a container. it must be iteratable with begin/end.
 	};
 
-	template<typename T> void TypeDescriptor::Init()
+	template<typename T> void TypeDescriptor::Init(T* /*ptr*/)
 	{
 		m_size = sizeof(T);
 		Construct = []() -> void* { return new T(); };
 		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) T(); };
 		Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
+	}
+
+	template<typename T> void TypeDescriptor::Init(Core::Array<T>* /*ptr*/)
+	{
+		m_size = sizeof(Core::Array<T>);
+		Construct = []() -> void* { return new Core::Array<T>(); };
+		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) Core::Array<T>(); };
+		Destruct = [](void* pObject) { delete reinterpret_cast<Core::Array<T>*>(pObject); };
+
+		m_isContainer = true;
+
+		using NonPointerElementType = typename RemovePointer<T>::type;
+		m_pElementType = TypeResolver<NonPointerElementType>::GetType();
+
+		m_isElementPointer = IsPointer<T>::value;
 	}
 }
