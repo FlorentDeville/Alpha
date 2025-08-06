@@ -48,7 +48,7 @@ namespace Editors
 
 	void ObjectWatcher::SetArrayFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
 	{
-		assert(pField->IsContainer());
+		assert(pField->GetType()->IsContainer());
 
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		Internal_SetArrayFieldValue(pArray, pField, index, pValue);
@@ -66,7 +66,7 @@ namespace Editors
 
 	void ObjectWatcher::AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
 	{
-		assert(pField->IsContainer());
+		assert(pField->GetType()->IsContainer());
 
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		
@@ -84,7 +84,7 @@ namespace Editors
 
 	void ObjectWatcher::RemoveArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 	{
-		assert(pField->IsContainer());
+		assert(pField->GetType()->IsContainer());
 
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 
@@ -177,7 +177,7 @@ namespace Editors
 		}
 		else
 		{
-			memcpy(pArrayElement, pValue, pField->GetElementType()->GetSize());
+			memcpy(pArrayElement, pValue, pField->GetType()->GetElementType()->GetSize());
 		}
 	}
 }

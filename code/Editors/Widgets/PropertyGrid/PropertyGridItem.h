@@ -63,7 +63,7 @@ namespace Editors
 
 	template<typename T> const T* PropertyGridItem::GetDataPtr() const
 	{
-		if (m_pField->IsContainer())
+		if (m_pField->GetType()->IsContainer())
 		{
 			Core::BaseArray* pArray = m_pField->GetDataPtr<Core::BaseArray>(m_pObj);
 			const void* pElement = pArray->GetConstElement(m_index);

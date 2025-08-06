@@ -29,7 +29,7 @@ namespace Editors
 
 		m_pTextbox->OnValidate([this](const std::string& value)
 			{
-				ObjectWatcher::OPERATION op = m_pField->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+				ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 				char* pEnd = nullptr;
 				uint32_t newValue = std::strtoul(value.c_str(), &pEnd, 10);
 

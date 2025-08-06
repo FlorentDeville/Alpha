@@ -45,7 +45,7 @@ namespace Editors
 				pDialog->Open();
 				pDialog->OnOk([this](Systems::NewAssetId id)
 					{
-						ObjectWatcher::OPERATION op = m_pField->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &id);
 					});
 			});

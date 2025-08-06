@@ -292,10 +292,10 @@ namespace Editors
 	{
 		Widgets::Widget* pEditingWidget = nullptr;
 
-		const Systems::TypeDescriptor* pFieldType = pField->IsContainer() ? pField->GetElementType() : pField->GetType();
+		const Systems::TypeDescriptor* pFieldType = pField->GetType()->IsContainer() ? pField->GetType()->GetElementType() : pField->GetType();
 		void* pRawValue = nullptr;
 		
-		bool isArray = pField->IsContainer();
+		bool isArray = pField->GetType()->IsContainer();
 		if (isArray)
 		{
 			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
@@ -358,10 +358,10 @@ namespace Editors
 		}
 
 		PropertyGridItem* pItem = nullptr;
-		if (pField->IsContainer())
+		if (pField->GetType()->IsContainer())
 		{
 			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
-			bool elementIsObject = pField->GetElementType()->IsObject();
+			bool elementIsObject = pField->GetType()->GetElementType()->IsObject();
 			void* pElement = pArray->GetElement(indexElement);
 			Widgets::Widget* pNameWidget = CreateArrayItemName(pArray, indexElement, elementIsObject, pElement);
 			pItem = new PropertyGridItem(pNameWidget, pEditingWidget);

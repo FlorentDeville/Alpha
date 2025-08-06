@@ -75,7 +75,7 @@ namespace Editors
 
 	Widgets::Widget* PropertyGridItem::CreateDefaultItemLabel()
 	{
-		if (m_pField->IsContainer())
+		if (m_pField->GetType()->IsContainer())
 			return CreateArrayItemLabel();
 		else
 			return CreatePodItemLabel();
@@ -88,7 +88,7 @@ namespace Editors
 
 	Widgets::Widget* PropertyGridItem::CreateArrayItemLabel()
 	{
-		assert(m_pField->IsContainer());
+		assert(m_pField->GetType()->IsContainer());
 
 		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
 		pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
@@ -118,7 +118,7 @@ namespace Editors
 		const int BUFFER_SIZE = 64;
 		char buffer[BUFFER_SIZE] = { '\0' };
 
-		if (m_pField->GetElementType()->IsObject())
+		if (m_pField->GetType()->GetElementType()->IsObject())
 		{
 			Core::BaseArray* pArray = m_pField->GetDataPtr<Core::BaseArray>(m_pObj);
 

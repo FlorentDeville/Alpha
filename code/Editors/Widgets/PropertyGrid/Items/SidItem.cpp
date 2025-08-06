@@ -29,7 +29,7 @@ namespace Editors
 
 		m_pTextbox->OnValidate([this](const std::string& value)
 			{
-				ObjectWatcher::OPERATION op = m_pField->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+				ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 				Core::Sid newSid = Core::MakeSid(value);
 				ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &newSid);
 			});

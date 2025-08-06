@@ -46,7 +46,7 @@ namespace Editors
 				m_pTextbox[row][column]->SetWidth(40);
 				m_pTextbox[row][column]->OnValidate([row, column, this](const std::string& value)
 					{
-						ObjectWatcher::OPERATION op = m_pField->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 
 						float newValue = 0;
 						std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
