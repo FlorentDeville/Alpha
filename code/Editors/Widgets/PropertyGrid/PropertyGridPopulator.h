@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Sid/Sid.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
@@ -49,10 +48,6 @@ namespace Editors
 
 		void SetCanAddElementToArray(bool canAdd);
 
-		void SendDataChangedEvent();
-
-		EVENT_DECL(DataChanged, void())
-
 	private:
 		// Create properties for an instance of a class deriving from Object.
 		void CreatePropertiesForObject(Systems::Object* pObject, int depth);
@@ -67,13 +62,15 @@ namespace Editors
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
 		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
-		void CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr);
+		void CreateArrayAddElementButton(Systems::Object* pObj, const Systems::FieldDescriptor* pField);
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
 		Widgets::Widget* CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement);
 
 		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
+
+		void OnClick_AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 

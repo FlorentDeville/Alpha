@@ -26,17 +26,8 @@ namespace Editors
 
 	void ObjectWatcher::SetFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
 	{
-		if (pField->GetType()->GetSid() == CONSTSID("std::string"))
-		{
-			//special case for std::string because it allocates memory, I can't just do a memcpy
-			std::string* pDst = pField->GetDataPtr<std::string>(pObj);
-			*pDst = *static_cast<const std::string*>(pValue);
-		}
-		else
-		{
-			void* pFieldPtr = pField->GetDataPtr(pObj);
-			memcpy(pFieldPtr, pValue, pField->GetType()->GetSize());
-		}
+		void* pFieldPtr = pField->GetDataPtr(pObj);
+		pField->GetType()->Copy(pValue, pFieldPtr);
 
 		std::map<Systems::Object*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
 		if (it == m_watchers.cend())
@@ -73,7 +64,8 @@ namespace Editors
 		uint32_t newIndex = pArray->GetSize();
 		pArray->AddElement();
 
-		Internal_SetArrayFieldValue(pArray, pField, newIndex, pValue);
+		if(pValue)
+			Internal_SetArrayFieldValue(pArray, pField, newIndex, pValue);
 
 		const WatcherCallbackList* callbacks = FindWatcherCallback(pObj);
 		if (!callbacks)
@@ -168,16 +160,6 @@ namespace Editors
 	void ObjectWatcher::Internal_SetArrayFieldValue(Core::BaseArray* pArray, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
 	{
 		void* pArrayElement = pArray->GetElement(index);
-
-		if (pField->GetType()->GetSid() == CONSTSID("std::string"))
-		{
-			//special case for std::string because it allocates memory, I can't just do a memcpy
-			std::string* pDst = static_cast<std::string*>(pArrayElement);
-			*pDst = *static_cast<const std::string*>(pValue);
-		}
-		else
-		{
-			memcpy(pArrayElement, pValue, pField->GetType()->GetElementType()->GetSize());
-		}
+		pField->GetType()->Copy(pValue, pArrayElement);
 	}
 }

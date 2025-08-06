@@ -89,7 +89,6 @@ namespace Editors
 			pRedChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
 					pFloat[0] = value;
-					m_pPopulator->SendDataChangedEvent();
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[0] = value;
 				});
@@ -97,7 +96,6 @@ namespace Editors
 			pGreenChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
 					pFloat[1] = value;
-					m_pPopulator->SendDataChangedEvent();
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[1] = value;
 				});
@@ -105,7 +103,6 @@ namespace Editors
 			pBlueChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
 					pFloat[2] = value;
-					m_pPopulator->SendDataChangedEvent();
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[2] = value;
 				});
@@ -113,7 +110,6 @@ namespace Editors
 			pAlphaChannel->OnValidate([this, pColorWidget, pFloat](const float value)
 				{
 					pFloat[3] = value;
-					m_pPopulator->SendDataChangedEvent();
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[3] = value;
 				});
@@ -173,7 +169,6 @@ namespace Editors
 				if (value.c_str() != pEnd)
 				{
 					*pData = f;
-					m_pPopulator->SendDataChangedEvent();
 				}
 			});
 

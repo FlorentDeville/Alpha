@@ -94,11 +94,6 @@ namespace Editors
 		m_canAddElementToArray = canAdd;
 	}
 
-	void PropertyGridPopulator::SendDataChangedEvent()
-	{
-		m_onDataChanged();
-	}
-
 	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject, int depth)
 	{
 		Core::CallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
@@ -196,7 +191,7 @@ namespace Editors
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);
 				
 				if(m_canAddElementToArray)
-					CreateArrayAddElementButton(*pField, pMemberPtr);
+					CreateArrayAddElementButton(reinterpret_cast<Systems::Object*>(pData), pField);
 			}
 			else if (memberType->IsObject())
 			{
@@ -219,7 +214,7 @@ namespace Editors
 
 	}
 
-	void PropertyGridPopulator::CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr)
+	void PropertyGridPopulator::CreateArrayAddElementButton(Systems::Object* pObj, const Systems::FieldDescriptor* pField)
 	{
 		Widgets::Label* pLabel = new Widgets::Label("+");
 		pLabel->SetSizeStyle(Widgets::Widget::FIT);
@@ -228,61 +223,7 @@ namespace Editors
 		Widgets::Button* pAddElementButton = new Widgets::Button(10, 20, 0, 0);
 		pAddElementButton->AddWidget(pLabel);
 		pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		pAddElementButton->OnClick([this, member, pMemberPtr]()
-			{
-				const Systems::TypeDescriptor* pArrayType = member.GetType();
-				if (pArrayType->IsElementPointer())
-				{
-					const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
-
-					const Systems::TypeDescriptor* pElementBaseType = pElementType;
-					while (pElementBaseType->GetBaseType())
-						pElementBaseType = pElementBaseType->GetBaseType();
-
-					// for now only support pointers to Object.
-					assert(pElementBaseType->GetSid() == CONSTSID("Systems::Object"));
-
-					//now let the user choose what class to instanciate.
-					ClassSelectionDialog* pDialog = new ClassSelectionDialog(pElementType->GetSid());
-					pDialog->Open();
-					pDialog->OnOk([this, pMemberPtr](const Core::Sid& classNameSid) 
-						{
-							const Systems::TypeDescriptor* pTypeToCreate = Systems::ReflectionMgr::Get().GetType(classNameSid);
-							if (!pTypeToCreate)
-								return;
-
-							void* pNewItem = nullptr;
-
-							if (pTypeToCreate->IsGameComponent())
-								pNewItem = Systems::CreateNewGameComponent(pTypeToCreate);
-							else if (pTypeToCreate->IsGameObject())
-								pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
-							else if (pTypeToCreate->IsObject())
-								pNewItem = Systems::CreateObject(pTypeToCreate);
-							else
-								assert(false); // we can only create Object derived class here
-
-							if (!pNewItem)
-								return;
-
-							Core::BaseArray* pArray = static_cast<Core::BaseArray*>(pMemberPtr);
-							pArray->AddElement();
-							void* ppItem = pArray->GetElement(pArray->GetSize()-1); //ppItem is actually a Object**
-							uint64_t* pTemp = reinterpret_cast<uint64_t*>(ppItem);
-							*pTemp = reinterpret_cast<uint64_t>(pNewItem);
-
-							m_onDataChanged();
-						});
-				}
-				else
-				{
-					//it's not a pointer so the array will take care or allocating the object
-					Core::BaseArray* pArray = static_cast<Core::BaseArray*>(pMemberPtr);
-					pArray->AddElement();
-					m_onDataChanged();
-				}
-				
-			});
+		pAddElementButton->OnClick([this, pObj, pField]() { OnClick_AddArrayElement(pObj, pField); });
 
 		PropertyGridItem* pItem = new PropertyGridItem(nullptr, pAddElementButton);
 		m_pPropertyGridWidget->AddProperty(pItem);
@@ -403,7 +344,7 @@ namespace Editors
 				pDialog->OnOk([pArray, elementIndex, this]()
 					{
 						pArray->RemoveElement(elementIndex);
-						m_onDataChanged();
+						//m_onDataChanged();
 					});
 
 				pDialog->Open();
@@ -452,5 +393,50 @@ namespace Editors
 			m_pPropertyGridWidget->RemoveProperty(*it);
 			break;
 		}
+	}
+
+	void PropertyGridPopulator::OnClick_AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField)
+	{
+		if (!pField->GetType()->IsElementPointer())
+		{
+			ObjectWatcher::Get().AddArrayElement(pObj, pField, nullptr);
+			return;
+		}
+
+		//here I know it's an array of pointers, so I need to add an element to the array and also to create the object
+		const Systems::TypeDescriptor* pElementType = pField->GetType()->GetElementType();
+
+		const Systems::TypeDescriptor* pElementBaseType = pElementType;
+		while (pElementBaseType->GetBaseType())
+			pElementBaseType = pElementBaseType->GetBaseType();
+
+		// for now only support pointers to Object.
+		assert(pElementBaseType->GetSid() == CONSTSID("Systems::Object"));
+
+		//now let the user choose what class to instanciate.
+		ClassSelectionDialog* pDialog = new ClassSelectionDialog(pElementType->GetSid());
+		pDialog->Open();
+		pDialog->OnOk([this, pObj, pField](const Core::Sid& classNameSid)
+			{
+				const Systems::TypeDescriptor* pTypeToCreate = Systems::ReflectionMgr::Get().GetType(classNameSid);
+				if (!pTypeToCreate)
+					return;
+
+				void* pNewItem = nullptr;
+
+				if (pTypeToCreate->IsGameComponent())
+					pNewItem = Systems::CreateNewGameComponent(pTypeToCreate);
+				else if (pTypeToCreate->IsGameObject())
+					pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
+				else if (pTypeToCreate->IsObject())
+					pNewItem = Systems::CreateObject(pTypeToCreate);
+				else
+					assert(false); // we can only create Object derived class here
+
+				if (!pNewItem)
+					return;
+
+				ObjectWatcher::Get().AddArrayElement(pObj, pField, &pNewItem);
+			});
 	}
 }

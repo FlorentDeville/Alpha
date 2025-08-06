@@ -261,7 +261,6 @@ namespace Editors
 
 		m_pPropertyGridPopulator = new PropertyGridPopulator();
 		m_pPropertyGridPopulator->Init(m_pPropertyGridWidget);
-		m_pPropertyGridPopulator->OnDataChanged([this]() { m_pPropertyGridWidget->ClearAllItems(); m_pPropertyGridPopulator->Repopulate(); });
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
