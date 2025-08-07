@@ -41,117 +41,35 @@ namespace Core
 			pointer m_pPtr;
 		};
 
-		Array()
-			: BaseArray()
-			, m_pStart(nullptr)
-			, m_size(0)
-			, m_reservedSize(0)
-		{}
+		Array();
 
-		Array(const Array& source)
-		{
-			*this = source;
-		}
+		Array(const Array& source);
 
-		Array(Array&& source)
-		{
-			*this = std::move(source);
-		}
+		Array(Array&& source);
 
-		~Array()
-		{
-			Clear();
-		}
+		~Array();
 
-		void PushBack(const T& item)
-		{
-			if (m_reservedSize <= m_size)
-			{
-				if (m_reservedSize == 0)
-					m_reservedSize = 10;
-				else
-					m_reservedSize = m_reservedSize + (m_reservedSize / 2) + 1;
-				
-				T* pNewArray = new T[m_reservedSize];
-				for (uint32_t ii = 0; ii < m_size; ++ii)
-					pNewArray[ii] = std::move(m_pStart[ii]);
+		void PushBack(const T& item);
 
-				delete[] m_pStart;
-				m_pStart = pNewArray;
-			}
+		uint32_t GetSize() const override;
 
-			m_pStart[m_size] = item;
-			++m_size;
-		}
+		void* GetElement(uint32_t index) override;
 
-		uint32_t GetSize() const override
-		{
-			return m_size;
-		}
-
-		void* GetElement(uint32_t index) override
-		{
-			assert(index < m_size);
-			return &m_pStart[index];
-		}
-
-		const void* GetConstElement(uint32_t index) const override
-		{
-			assert(index < m_size);
-			return &m_pStart[index];
-		}
+		const void* GetConstElement(uint32_t index) const override;
 
 		void RemoveElement(uint32_t index) override;
 
-		T* GetData()
-		{
-			return m_pStart;
-		}
+		T* GetData();
 
-		const T* GetData() const
-		{
-			return m_pStart;
-		}
+		const T* GetData() const;
 
-		T& operator[](uint32_t index)
-		{
-			assert(index < m_size);
-			return m_pStart[index];
-		}
+		T& operator[](uint32_t index);
 
-		const T& operator[](uint32_t index) const
-		{
-			assert(index < m_size);
-			return m_pStart[index];
-		}
+		const T& operator[](uint32_t index) const;
 
-		void operator=(const Array& source)
-		{
-			Clear();
+		void operator=(const Array& source);
 
-			Resize(source.GetSize());
-
-			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[ii] = source[ii];
-		}
-
-		void operator=(Array&& source)
-		{
-			//clean up existing memory
-			for (uint32_t ii = 0; ii < m_size; ++ii)
-				m_pStart[ii].~T();
-
-			delete[] m_pStart;
-
-			//now do the move
-			m_pStart = source.m_pStart;
-			m_size = source.m_size;
-			m_reservedSize = source.m_reservedSize;
-
-			source.m_pStart = nullptr;
-			source.m_size = 0;
-			source.m_reservedSize = 0;
-		}
+		void operator=(Array&& source);
 
 		T& Back();
 		const T& Back() const;
@@ -190,6 +108,67 @@ namespace Core
 
 	};
 
+	template<typename T> Array<T>::Array()
+		: BaseArray()
+		, m_pStart(nullptr)
+		, m_size(0)
+		, m_reservedSize(0)
+	{
+	}
+
+	template<typename T> Array<T>::Array(const Array& source)
+	{
+		*this = source;
+	}
+
+	template<typename T> Array<T>::Array(Array&& source)
+	{
+		*this = std::move(source);
+	}
+
+	template<typename T> Array<T>::~Array()
+	{
+		Clear();
+	}
+
+	template<typename T> void Array<T>::PushBack(const T& item)
+	{
+		if (m_reservedSize <= m_size)
+		{
+			if (m_reservedSize == 0)
+				m_reservedSize = 10;
+			else
+				m_reservedSize = m_reservedSize + (m_reservedSize / 2) + 1;
+
+			T* pNewArray = new T[m_reservedSize];
+			for (uint32_t ii = 0; ii < m_size; ++ii)
+				pNewArray[ii] = std::move(m_pStart[ii]);
+
+			delete[] m_pStart;
+			m_pStart = pNewArray;
+		}
+
+		m_pStart[m_size] = item;
+		++m_size;
+	}
+
+	template<typename T> uint32_t Array<T>::GetSize() const
+	{
+		return m_size;
+	}
+
+	template<typename T> void* Array<T>::GetElement(uint32_t index)
+	{
+		assert(index < m_size);
+		return &m_pStart[index];
+	}
+
+	template<typename T> const void* Array<T>::GetConstElement(uint32_t index) const
+	{
+		assert(index < m_size);
+		return &m_pStart[index];
+	}
+
 	template<typename T> void Array<T>::RemoveElement(uint32_t index)
 	{
 		if (!IsValidIndex(index))
@@ -197,6 +176,56 @@ namespace Core
 
 		Iterator it(m_pStart + index);
 		Erase(it);
+	}
+
+	template<typename T> T* Array<T>::GetData()
+	{
+		return m_pStart;
+	}
+
+	template<typename T> const T* Array<T>::GetData() const
+	{
+		return m_pStart;
+	}
+
+	template<typename T> T& Array<T>::operator[](uint32_t index)
+	{
+		assert(index < m_size);
+		return m_pStart[index];
+	}
+
+	template<typename T> const T& Array<T>::operator[](uint32_t index) const
+	{
+		assert(index < m_size);
+		return m_pStart[index];
+	}
+
+	template<typename T> void Array<T>::operator=(const Array& source)
+	{
+		Clear();
+
+		Resize(source.GetSize());
+
+		for (uint32_t ii = 0; ii < m_size; ++ii)
+			m_pStart[ii] = source[ii];
+	}
+
+	template<typename T> void Array<T>::operator=(Array&& source)
+	{
+		//clean up existing memory
+		for (uint32_t ii = 0; ii < m_size; ++ii)
+			m_pStart[ii].~T();
+
+		delete[] m_pStart;
+
+		//now do the move
+		m_pStart = source.m_pStart;
+		m_size = source.m_size;
+		m_reservedSize = source.m_reservedSize;
+
+		source.m_pStart = nullptr;
+		source.m_size = 0;
+		source.m_reservedSize = 0;
 	}
 
 	template<typename T> T& Array<T>::Back()
