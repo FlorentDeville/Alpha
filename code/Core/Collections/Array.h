@@ -73,7 +73,8 @@ namespace Core
 					m_reservedSize = m_reservedSize + (m_reservedSize / 2) + 1;
 				
 				T* pNewArray = new T[m_reservedSize];
-				std::memcpy(pNewArray, m_pStart, sizeof(T) * m_size);
+				for (uint32_t ii = 0; ii < m_size; ++ii)
+					pNewArray[ii] = std::move(m_pStart[ii]);
 
 				delete[] m_pStart;
 				m_pStart = pNewArray;
@@ -231,8 +232,7 @@ namespace Core
 		{
 			for (uint32_t ii = oldSize; ii < m_size; ++ii)
 			{
-				// m_pStart is a T*, so I can just increase the pointer
-				memcpy(m_pStart + ii, &value, sizeof(value));
+				m_pStart[ii] = value;
 			}
 		}
 	}
@@ -256,7 +256,8 @@ namespace Core
 		}
 
 		T* pNewArray = new T[newSize];
-		std::memcpy(pNewArray, m_pStart, sizeof(T) * m_size);
+		for (uint32_t ii = 0; ii < m_size; ++ii)
+			pNewArray[ii] = std::move(m_pStart[ii]);
 
 		delete[] m_pStart;
 		m_pStart = pNewArray;
