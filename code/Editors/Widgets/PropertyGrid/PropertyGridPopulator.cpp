@@ -143,7 +143,7 @@ namespace Editors
 			}
 			else if (isObject)
 			{
-				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
+				Widgets::Widget* pNameLayout = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, ii);
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
@@ -152,7 +152,7 @@ namespace Editors
 			}
 			else if (pElementType->IsClass())
 			{
-				Widgets::Widget* pNameLayout = CreateArrayItemName(pArray, ii, isObject, pElement);
+				Widgets::Widget* pNameLayout = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, ii);
 				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
@@ -304,7 +304,8 @@ namespace Editors
 			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 			bool elementIsObject = pField->GetType()->GetElementType()->IsObject();
 			void* pElement = pArray->GetElement(indexElement);
-			Widgets::Widget* pNameWidget = CreateArrayItemName(pArray, indexElement, elementIsObject, pElement);
+			
+			Widgets::Widget* pNameWidget = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, indexElement);
 			pItem = new PropertyGridItem(pNameWidget, pEditingWidget);
 		}
 		else
@@ -324,7 +325,7 @@ namespace Editors
 		return nullptr;
 	}
 
-	Widgets::Widget* PropertyGridPopulator::CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement)
+	Widgets::Widget* PropertyGridPopulator::CreateArrayItemName(Systems::Object* pObj, const Systems::FieldDescriptor* pField, int elementIndex)
 	{
 		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
 		pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
@@ -338,13 +339,12 @@ namespace Editors
 		Widgets::Button* pDeleteButton = new Widgets::Button(12, 12, 0, 0);
 		pDeleteButton->AddWidget(pDeleteIcon);
 		pDeleteButton->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::NONE, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pDeleteButton->OnClick([pArray, elementIndex, this]()
+		pDeleteButton->OnClick([pObj, pField, elementIndex, this]()
 			{
 				Editors::OkCancelDialog* pDialog = new Editors::OkCancelDialog("Delete element", "Are you sure you want to delete this element from the array ?");
-				pDialog->OnOk([pArray, elementIndex, this]()
+				pDialog->OnOk([pObj, pField, elementIndex, this]()
 					{
-						pArray->RemoveElement(elementIndex);
-						//m_onDataChanged();
+						ObjectWatcher::Get().ModifyField(pObj, pField, ObjectWatcher::REMOVE_ELEMENT, elementIndex, nullptr);
 					});
 
 				pDialog->Open();
@@ -355,11 +355,24 @@ namespace Editors
 		const int BUFFER_SIZE = 64;
 		char buffer[BUFFER_SIZE] = { '\0' };
 
+		const Systems::TypeDescriptor* pArrayType = pField->GetType();
+		const Systems::TypeDescriptor* pArrayElementType = pArrayType->GetElementType();
+
+		bool elementIsObject = pArrayElementType->IsObject();
 		if (elementIsObject)
 		{
-			Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
-			const Systems::TypeDescriptor* pObjectType = pObject->GetTypeDescriptor();
-			sprintf_s(buffer, "[%d] %s", elementIndex, pObjectType->GetName().c_str());
+			if (pArrayType->IsElementPointer())
+			{
+				const Core::BaseArray* pArray = pField->GetDataPtr<const Core::BaseArray>(pObj);
+				const void* pElement = pArray->GetConstElement(elementIndex);
+				const Systems::Object* const * pObject = reinterpret_cast<const Systems::Object* const *>(pElement);
+				const Systems::TypeDescriptor* pObjectType = (*pObject)->GetTypeDescriptor();
+				sprintf_s(buffer, "[%d] %s", elementIndex, pObjectType->GetName().c_str());
+			}
+			else
+			{
+				sprintf_s(buffer, "[%d] %s", elementIndex, pArrayElementType->GetName().c_str());
+			}
 		}
 		else
 		{

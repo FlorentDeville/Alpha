@@ -66,7 +66,7 @@ namespace Editors
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
-		Widgets::Widget* CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement);
+		Widgets::Widget* CreateArrayItemName(Systems::Object* pObj, const Systems::FieldDescriptor* pField, int elementIndex);
 
 		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
 

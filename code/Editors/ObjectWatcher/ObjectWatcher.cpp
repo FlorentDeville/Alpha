@@ -76,10 +76,20 @@ namespace Editors
 
 	void ObjectWatcher::RemoveArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 	{
-		assert(pField->GetType()->IsContainer());
+		const Systems::TypeDescriptor* pArrayType = pField->GetType();
+
+		assert(pArrayType->IsContainer());
 
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 
+		if (pArrayType->IsElementPointer())
+		{
+			void* pElement = pArray->GetElement(index); //pElement is actually a T** so I need to dereference it
+			uint64_t* pElementPtr = reinterpret_cast<uint64_t*>(pElement);
+			pElementPtr = reinterpret_cast<uint64_t*>(*pElementPtr);
+			pArrayType->GetElementType()->Destruct(pElementPtr);
+		}
+		
 		pArray->RemoveElement(index);
 
 		const WatcherCallbackList* callbacks = FindWatcherCallback(pObj);
