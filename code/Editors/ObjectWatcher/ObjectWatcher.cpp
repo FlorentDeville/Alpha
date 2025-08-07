@@ -160,6 +160,19 @@ namespace Editors
 	void ObjectWatcher::Internal_SetArrayFieldValue(Core::BaseArray* pArray, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
 	{
 		void* pArrayElement = pArray->GetElement(index);
-		pField->GetType()->Copy(pValue, pArrayElement);
+
+		const Systems::TypeDescriptor* pArrayType = pField->GetType();
+		if (pArrayType->IsElementPointer())
+		{
+			//if it's an array of pointer, just copy the pointer
+			uint64_t* pDst = static_cast<uint64_t*>(pArrayElement);
+			uint64_t src = reinterpret_cast<uint64_t>(pValue);
+			*pDst = src;
+		}
+		else
+		{
+			//if it's an array of element, copy the element
+			pField->GetType()->GetElementType()->Copy(pValue, pArrayElement);
+		}
 	}
 }

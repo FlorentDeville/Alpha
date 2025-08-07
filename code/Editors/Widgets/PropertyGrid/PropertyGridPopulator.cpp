@@ -436,7 +436,7 @@ namespace Editors
 				if (!pNewItem)
 					return;
 
-				ObjectWatcher::Get().AddArrayElement(pObj, pField, &pNewItem);
+				ObjectWatcher::Get().AddArrayElement(pObj, pField, pNewItem);
 			});
 	}
 }
