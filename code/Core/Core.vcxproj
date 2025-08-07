@@ -143,6 +143,9 @@
     <ClInclude Include="String\BytesToHexa.h" />
     <ClInclude Include="Tree\Tree.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Collections\Array.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
