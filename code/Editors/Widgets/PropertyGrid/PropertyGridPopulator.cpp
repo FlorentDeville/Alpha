@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
@@ -185,7 +186,7 @@ namespace Editors
 
 			if (memberType->IsContainer())
 			{
-				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
+				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, depth);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);

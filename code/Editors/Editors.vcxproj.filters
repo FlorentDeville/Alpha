@@ -171,6 +171,9 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\AssetIdItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -318,6 +321,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\PropertyGrid\Items\AssetIdItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
