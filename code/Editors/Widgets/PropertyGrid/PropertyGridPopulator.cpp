@@ -191,7 +191,7 @@ namespace Editors
 
 			if (memberType->IsContainer())
 			{
-				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, depth);
+				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1);
 				m_pPropertyGridWidget->AddProperty(pItem, depth);
 
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);
@@ -398,14 +398,21 @@ namespace Editors
 		Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField, index](PropertyGridItem* item) 
 			{ return item->IsField(pObj, pField, index); });
 
-		if (it == items.end())
-			return;
+		if (op != ObjectWatcher::ADD_ELEMENT)
+		{
+			if (it == items.end())
+				return;
+		}
 
 		switch (op)
 		{
 		case ObjectWatcher::SET_FIELD:
 		case ObjectWatcher::SET_ELEMENT:
 			(*it)->UpdateValue();
+			break;
+
+		case ObjectWatcher::ADD_ELEMENT:
+			CreatePropertiesForSingleArrayElement(pField, pObj, 0, index);
 			break;
 
 		case ObjectWatcher::REMOVE_ELEMENT:
