@@ -56,6 +56,8 @@ namespace Editors
 		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth);
 
 		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth);
+
+		void CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, int depth, uint32_t index);
 		
 		PropertyGridItem* CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
 

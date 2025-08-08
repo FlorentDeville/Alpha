@@ -118,52 +118,57 @@ namespace Editors
 	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth)
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
-		const Systems::TypeDescriptor* pArrayType = pField->GetType();
-
 		int32_t size = pArray->GetSize();
-
-		const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
-		bool isObject = pElementType->IsObject();
 
 		for (int ii = 0; ii < size; ++ii)
 		{
-			void* pElement = pArray->GetElement(ii);
-			if (pArrayType->IsElementPointer())
-			{
-				uint64_t* pCharPtr = reinterpret_cast<uint64_t*>(pElement);
-				pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
-			}
+			CreatePropertiesForSingleArrayElement(pField, pObj, depth, ii);
+		}
+	}
 
-			if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
-			{
-				pFactory->CreateItems(pElementType, pElement, depth + 1);
-			}
-			else if (pElementType->IsContainer())
-			{
-				assert(false); //don't support array of arrays for now
-			}
-			else if (isObject)
-			{
-				Widgets::Widget* pNameLayout = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, ii);
-				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
-				m_pPropertyGridWidget->AddProperty(pItem, depth);
+	void PropertyGridPopulator::CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, int depth, uint32_t index)
+	{
+		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
+		const Systems::TypeDescriptor* pArrayType = pField->GetType();
+		const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
+		bool isObject = pElementType->IsObject();
 
-				Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
-				CreatePropertiesForObject(pObject, depth + 1);
-			}
-			else if (pElementType->IsClass())
-			{
-				Widgets::Widget* pNameLayout = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, ii);
-				PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
-				m_pPropertyGridWidget->AddProperty(pItem, depth);
+		void* pElement = pArray->GetElement(index);
+		if (pArrayType->IsElementPointer())
+		{
+			uint64_t* pCharPtr = reinterpret_cast<uint64_t*>(pElement);
+			pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
+		}
 
-				CreatePropertiesForTypeMembers(pElementType, pElement, depth + 1);
-			}
-			else //pod
-			{
-				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pObj, ii);
-				m_pPropertyGridWidget->AddProperty(pItem, depth);
-			}
+		if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
+		{
+			pFactory->CreateItems(pElementType, pElement, depth + 1);
+		}
+		else if (pElementType->IsContainer())
+		{
+			assert(false); //don't support array of arrays for now
+		}
+		else if (isObject)
+		{
+			Widgets::Widget* pNameLayout = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, index);
+			PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
+			m_pPropertyGridWidget->AddProperty(pItem, depth);
+
+			Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
+			CreatePropertiesForObject(pObject, depth + 1);
+		}
+		else if (pElementType->IsClass())
+		{
+			Widgets::Widget* pNameLayout = CreateArrayItemName(static_cast<Systems::Object*>(pObj), pField, index);
+			PropertyGridItem* pItem = new PropertyGridItem(pNameLayout, nullptr);
+			m_pPropertyGridWidget->AddProperty(pItem, depth);
+
+			CreatePropertiesForTypeMembers(pElementType, pElement, depth + 1);
+		}
+		else //pod
+		{
+			PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pObj, index);
+			m_pPropertyGridWidget->AddProperty(pItem, depth);
 		}
 	}
 
