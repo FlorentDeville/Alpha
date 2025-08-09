@@ -101,6 +101,8 @@ namespace Editors
 			m_properties.PushBack(pNewProperty);
 			m_pInternalLayout->AddWidget(pPropertyLayout);
 		}
+
+		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
 	void PropertyGridWidget::RemoveProperty(PropertyGridItem* pProperty)
