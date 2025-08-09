@@ -154,7 +154,7 @@ namespace Editors
 		else if (isObject)
 		{
 			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(static_cast<Systems::Object*>(pObj), pField, index);
-			Internal_AddPropertyGridItem(pItem, depth);
+			Internal_AddPropertyGridItem(pItem, index, depth);
 
 			ParentItemContextScope janitor(pItem, this);
 
@@ -168,7 +168,7 @@ namespace Editors
 		else //pod
 		{
 			PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pObj, index);
-			Internal_AddPropertyGridItem(pItem, depth);
+			Internal_AddPropertyGridItem(pItem, index, depth);
 		}
 	}
 
@@ -282,10 +282,42 @@ namespace Editors
 
 	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth)
 	{
-		m_pPropertyGridWidget->AddProperty(pItem, depth);
+		PropertyGridItem* pInsertAfter = nullptr;
+		{
+			pInsertAfter = m_parentItemContext.m_pParent;
+			while (m_propertyItemsTree[pInsertAfter].GetSize() != 0)
+			{
+				pInsertAfter = m_propertyItemsTree[pInsertAfter].Back();
+			}
+		}
+
+		m_pPropertyGridWidget->InsertProperty(pItem, pInsertAfter, depth);
 		m_propertyItemsTree[m_parentItemContext.m_pParent].PushBack(pItem);
 		m_propertyItemParent[pItem] = m_parentItemContext.m_pParent;
 	}
+
+	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index, int depth)
+	{
+		Core::Array<PropertyGridItem*>& children = m_propertyItemsTree[m_parentItemContext.m_pParent];
+		if (!children.IsValidIndex(index)) //if the index is not valid, add at the end.
+		{
+			Internal_AddPropertyGridItem(pItem, depth);
+			return;
+		}
+		
+		PropertyGridItem* pInsertAfter = nullptr;
+		{
+			PropertyGridItem* pInsertAfter = children[index - 1];
+			while (m_propertyItemsTree[pInsertAfter].GetSize() != 0)
+			{
+				pInsertAfter = m_propertyItemsTree[pInsertAfter].Back();
+			}
+		}
+
+		m_pPropertyGridWidget->InsertProperty(pItem, pInsertAfter, depth);
+		m_propertyItemsTree[m_parentItemContext.m_pParent].PushBack(pItem);
+		m_propertyItemParent[pItem] = m_parentItemContext.m_pParent;
+	}		
 
 	void PropertyGridPopulator::DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete)
 	{
@@ -334,7 +366,17 @@ namespace Editors
 			break;
 
 		case ObjectWatcher::ADD_ELEMENT:
+		{
+			Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField, index](PropertyGridItem* item)
+				{ return item->IsField(pObj, pField, -1); });
+
+			if (it == items.end())
+				return;
+
+			ParentItemContextScope janitor((*it), this);
+
 			CreatePropertiesForSingleArrayElement(pField, pObj, 0, index);
+		}
 			break;
 
 		case ObjectWatcher::REMOVE_ELEMENT:

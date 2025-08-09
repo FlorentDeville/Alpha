@@ -67,6 +67,9 @@ namespace Editors
 
 		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth);
 
+		// Overload to add a property item at the given index in its parent
+		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index, int depth);
+
 		//This function does not delete pItemToDelete. It deletes recursively all the children of pItemToDelete
 		void DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete);
 
