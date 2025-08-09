@@ -65,10 +65,10 @@ namespace Editors
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
 		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
-		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth);
+		void Internal_AddPropertyGridItem(PropertyGridItem* pItem);
 
 		// Overload to add a property item at the given index in its parent
-		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index, int depth);
+		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index);
 
 		//This function does not delete pItemToDelete. It deletes recursively all the children of pItemToDelete
 		void DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete);
@@ -89,6 +89,9 @@ namespace Editors
 
 		//Map from an item to its parent. The parent is ullptr if it's a root item.
 		std::map<const PropertyGridItem*, PropertyGridItem*> m_propertyItemParent;
+
+		// Map of property item to the depth of the property.
+		std::map< const PropertyGridItem*, uint32_t> m_propertyItemDepth;
 
 		//The object currently being displayed
 		Systems::Object* m_pObject;

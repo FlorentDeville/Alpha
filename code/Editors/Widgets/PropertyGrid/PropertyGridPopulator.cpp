@@ -42,9 +42,12 @@ namespace Editors
 		, m_canAddElementToArray(true)
 		, m_watcherCallbackIds()
 		, m_propertyItemsTree()
+		, m_propertyItemDepth()
 	{
 		m_parentItemContext.m_pParent = nullptr;
 		m_parentItemContext.depth = 0;
+
+		m_propertyItemDepth[nullptr] = 0;
 	}
 
 	PropertyGridPopulator::~PropertyGridPopulator()
@@ -70,9 +73,13 @@ namespace Editors
 
 		m_parentItemContext.m_pParent = nullptr;
 		m_parentItemContext.depth = 0;
+
+		m_propertyItemDepth.clear();
 		m_propertyItemsTree.clear();
 		m_pObject = pObject;
 		
+		m_propertyItemDepth[nullptr] = 0;
+
 		CreatePropertiesForObject(pObject, 0);
 
 		Widgets::WidgetMgr::Get().RequestResize();
@@ -154,7 +161,7 @@ namespace Editors
 		else if (isObject)
 		{
 			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(static_cast<Systems::Object*>(pObj), pField, index);
-			Internal_AddPropertyGridItem(pItem, index, depth);
+			Internal_AddPropertyGridItem(pItem, index);
 
 			ParentItemContextScope janitor(pItem, this);
 
@@ -168,7 +175,7 @@ namespace Editors
 		else //pod
 		{
 			PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pObj, index);
-			Internal_AddPropertyGridItem(pItem, index, depth);
+			Internal_AddPropertyGridItem(pItem, index);
 		}
 	}
 
@@ -192,7 +199,7 @@ namespace Editors
 			if (memberType->IsContainer())
 			{
 				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1, m_canAddElementToArray);
-				Internal_AddPropertyGridItem(pItem, depth);
+				Internal_AddPropertyGridItem(pItem);
 
 				ParentItemContextScope janitor(pItem, this);
 
@@ -206,7 +213,7 @@ namespace Editors
 			else if (memberType->IsClass())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
-				Internal_AddPropertyGridItem(pItem, depth);
+				Internal_AddPropertyGridItem(pItem);
 
 				ParentItemContextScope janitor(pItem, this);
 
@@ -215,7 +222,7 @@ namespace Editors
 			else //pod
 			{
 				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pData, 0);
-				Internal_AddPropertyGridItem(pItem, depth);
+				Internal_AddPropertyGridItem(pItem);
 			}
 		}
 
@@ -280,7 +287,7 @@ namespace Editors
 		return nullptr;
 	}
 
-	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth)
+	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem)
 	{
 		PropertyGridItem* pInsertAfter = nullptr;
 		{
@@ -290,18 +297,21 @@ namespace Editors
 				pInsertAfter = m_propertyItemsTree[pInsertAfter].Back();
 			}
 		}
+		
+		uint32_t depth = m_propertyItemDepth[m_parentItemContext.m_pParent] + 1;
 
 		m_pPropertyGridWidget->InsertProperty(pItem, pInsertAfter, depth);
 		m_propertyItemsTree[m_parentItemContext.m_pParent].PushBack(pItem);
 		m_propertyItemParent[pItem] = m_parentItemContext.m_pParent;
+		m_propertyItemDepth[pItem] = depth;
 	}
 
-	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index, int depth)
+	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index)
 	{
 		Core::Array<PropertyGridItem*>& children = m_propertyItemsTree[m_parentItemContext.m_pParent];
 		if (!children.IsValidIndex(index)) //if the index is not valid, add at the end.
 		{
-			Internal_AddPropertyGridItem(pItem, depth);
+			Internal_AddPropertyGridItem(pItem);
 			return;
 		}
 		
@@ -314,9 +324,12 @@ namespace Editors
 			}
 		}
 
+		uint32_t depth = m_propertyItemDepth[m_parentItemContext.m_pParent] + 1;
+
 		m_pPropertyGridWidget->InsertProperty(pItem, pInsertAfter, depth);
 		m_propertyItemsTree[m_parentItemContext.m_pParent].PushBack(pItem);
 		m_propertyItemParent[pItem] = m_parentItemContext.m_pParent;
+		m_propertyItemDepth[pItem] = depth;
 	}		
 
 	void PropertyGridPopulator::DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete)
