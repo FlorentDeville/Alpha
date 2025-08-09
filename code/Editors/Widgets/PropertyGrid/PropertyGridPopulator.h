@@ -64,13 +64,9 @@ namespace Editors
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
 		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
 
-		void CreateArrayAddElementButton(Systems::Object* pObj, const Systems::FieldDescriptor* pField);
-
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
 		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
-
-		void OnClick_AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 

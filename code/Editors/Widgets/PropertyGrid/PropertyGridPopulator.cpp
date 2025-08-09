@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/ArrayAddElementItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
@@ -29,11 +30,6 @@
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Objects/Object.h"
 
-#include "Widgets/Button.h"
-#include "Widgets/Icon.h"
-#include "Widgets/Label.h"
-#include "Widgets/Layout.h"
-#include "Widgets/TextBox.h"
 #include "Widgets/WidgetMgr.h"
 
 #include <charconv>
@@ -192,8 +188,11 @@ namespace Editors
 
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);
 				
-				if(m_canAddElementToArray)
-					CreateArrayAddElementButton(reinterpret_cast<Systems::Object*>(pData), pField);
+				if (m_canAddElementToArray)
+				{
+					ArrayAddElementItem* pItem = new ArrayAddElementItem(reinterpret_cast<Systems::Object*>(pData), pField);
+					m_pPropertyGridWidget->AddProperty(pItem, depth);
+				}
 			}
 			else if (memberType->IsObject())
 			{
@@ -214,21 +213,6 @@ namespace Editors
 			}
 		}
 
-	}
-
-	void PropertyGridPopulator::CreateArrayAddElementButton(Systems::Object* pObj, const Systems::FieldDescriptor* pField)
-	{
-		Widgets::Label* pLabel = new Widgets::Label("+");
-		pLabel->SetSizeStyle(Widgets::Widget::FIT);
-		pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-
-		Widgets::Button* pAddElementButton = new Widgets::Button(10, 20, 0, 0);
-		pAddElementButton->AddWidget(pLabel);
-		pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-		pAddElementButton->OnClick([this, pObj, pField]() { OnClick_AddArrayElement(pObj, pField); });
-
-		PropertyGridItem* pItem = new PropertyGridItem(nullptr, pAddElementButton);
-		m_pPropertyGridWidget->AddProperty(pItem);
 	}
 
 	PropertyGridItem* PropertyGridPopulator::CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement)
@@ -326,50 +310,5 @@ namespace Editors
 			m_pPropertyGridWidget->RemoveProperty(*it);
 			break;
 		}
-	}
-
-	void PropertyGridPopulator::OnClick_AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField)
-	{
-		if (!pField->GetType()->IsElementPointer())
-		{
-			ObjectWatcher::Get().AddArrayElement(pObj, pField, nullptr);
-			return;
-		}
-
-		//here I know it's an array of pointers, so I need to add an element to the array and also to create the object
-		const Systems::TypeDescriptor* pElementType = pField->GetType()->GetElementType();
-
-		const Systems::TypeDescriptor* pElementBaseType = pElementType;
-		while (pElementBaseType->GetBaseType())
-			pElementBaseType = pElementBaseType->GetBaseType();
-
-		// for now only support pointers to Object.
-		assert(pElementBaseType->GetSid() == CONSTSID("Systems::Object"));
-
-		//now let the user choose what class to instanciate.
-		ClassSelectionDialog* pDialog = new ClassSelectionDialog(pElementType->GetSid());
-		pDialog->Open();
-		pDialog->OnOk([this, pObj, pField](const Core::Sid& classNameSid)
-			{
-				const Systems::TypeDescriptor* pTypeToCreate = Systems::ReflectionMgr::Get().GetType(classNameSid);
-				if (!pTypeToCreate)
-					return;
-
-				void* pNewItem = nullptr;
-
-				if (pTypeToCreate->IsGameComponent())
-					pNewItem = Systems::CreateNewGameComponent(pTypeToCreate);
-				else if (pTypeToCreate->IsGameObject())
-					pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
-				else if (pTypeToCreate->IsObject())
-					pNewItem = Systems::CreateObject(pTypeToCreate);
-				else
-					assert(false); // we can only create Object derived class here
-
-				if (!pNewItem)
-					return;
-
-				ObjectWatcher::Get().AddArrayElement(pObj, pField, pNewItem);
-			});
 	}
 }
