@@ -51,19 +51,19 @@ namespace Editors
 
 	private:
 		// Create properties for an instance of a class deriving from Object.
-		void CreatePropertiesForObject(Systems::Object* pObject, int depth);
+		void CreatePropertiesForObject(Systems::Object* pObject);
 
 		// Recursively goes up the inheritance hierarchy of an Object to display all its properties.
-		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth);
+		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType);
 
-		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth);
+		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj);
 
-		void CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, int depth, uint32_t index);
+		void CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, uint32_t index);
 		
 		PropertyGridItem* CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
 
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
-		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
+		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData);
 
 		void Internal_AddPropertyGridItem(PropertyGridItem* pItem);
 

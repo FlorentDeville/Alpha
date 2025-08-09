@@ -80,7 +80,7 @@ namespace Editors
 		
 		m_propertyItemDepth[nullptr] = 0;
 
-		CreatePropertiesForObject(pObject, 0);
+		CreatePropertiesForObject(pObject);
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
@@ -105,7 +105,7 @@ namespace Editors
 		m_canAddElementToArray = canAdd;
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject, int depth)
+	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject)
 	{
 		Core::CallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
 			[this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
@@ -113,30 +113,30 @@ namespace Editors
 		m_watcherCallbackIds[pObject] = callbackId;
 
 		const Systems::TypeDescriptor* pRealType = pObject->GetTypeDescriptor();
-		CreatePropertiesForObjectParentClass(pObject, pRealType, depth);
+		CreatePropertiesForObjectParentClass(pObject, pRealType);
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth)
+	void PropertyGridPopulator::CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType)
 	{
 		const Systems::TypeDescriptor* pParentType = pType->GetBaseType();
 		if (pParentType)
-			CreatePropertiesForObjectParentClass(pObject, pParentType, depth);
+			CreatePropertiesForObjectParentClass(pObject, pParentType);
 		
-		CreatePropertiesForTypeMembers(pType, pObject, depth);
+		CreatePropertiesForTypeMembers(pType, pObject);
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj, int depth)
+	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj)
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		int32_t size = pArray->GetSize();
 
 		for (int ii = 0; ii < size; ++ii)
 		{
-			CreatePropertiesForSingleArrayElement(pField, pObj, depth, ii);
+			CreatePropertiesForSingleArrayElement(pField, pObj, ii);
 		}
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, int depth, uint32_t index)
+	void PropertyGridPopulator::CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, uint32_t index)
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		const Systems::TypeDescriptor* pArrayType = pField->GetType();
@@ -152,7 +152,7 @@ namespace Editors
 
 		if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
 		{
-			pFactory->CreateItems(pElementType, pElement, depth + 1);
+			pFactory->CreateItems(pElementType, pElement, 0);
 		}
 		else if (pElementType->IsContainer())
 		{
@@ -166,7 +166,7 @@ namespace Editors
 			ParentItemContextScope janitor(pItem, this);
 
 			Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
-			CreatePropertiesForObject(pObject, depth + 1);
+			CreatePropertiesForObject(pObject);
 		}
 		else if (pElementType->IsClass())
 		{
@@ -179,7 +179,7 @@ namespace Editors
 		}
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth)
+	void PropertyGridPopulator::CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData)
 	{
 		const std::vector<Systems::FieldDescriptor*>& members = pFieldType->GetFields();
 		for (const Systems::FieldDescriptor* pField : members)
@@ -203,12 +203,12 @@ namespace Editors
 
 				ParentItemContextScope janitor(pItem, this);
 
-				CreatePropertiesForArrayElements(pField, pData, depth + 1);
+				CreatePropertiesForArrayElements(pField, pData);
 			}
 			else if (memberType->IsObject())
 			{
 				Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pMemberPtr);
-				CreatePropertiesForObject(pObject, depth + 1);
+				CreatePropertiesForObject(pObject);
 			}
 			else if (memberType->IsClass())
 			{
@@ -217,7 +217,7 @@ namespace Editors
 
 				ParentItemContextScope janitor(pItem, this);
 
-				CreatePropertiesForTypeMembers(memberType, pMemberPtr, depth + 1);
+				CreatePropertiesForTypeMembers(memberType, pMemberPtr);
 			}
 			else //pod
 			{
@@ -388,7 +388,7 @@ namespace Editors
 
 			ParentItemContextScope janitor((*it), this);
 
-			CreatePropertiesForSingleArrayElement(pField, pObj, 0, index);
+			CreatePropertiesForSingleArrayElement(pField, pObj, index);
 		}
 			break;
 
