@@ -148,7 +148,7 @@ namespace Editors
 		else if (isObject)
 		{
 			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(static_cast<Systems::Object*>(pObj), pField, index);
-			m_pPropertyGridWidget->AddProperty(pItem, depth);
+			Internal_AddPropertyGridItem(pItem, depth);
 
 			Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
 			CreatePropertiesForObject(pObject, depth + 1);
@@ -160,7 +160,7 @@ namespace Editors
 		else //pod
 		{
 			PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pObj, index);
-			m_pPropertyGridWidget->AddProperty(pItem, depth);
+			Internal_AddPropertyGridItem(pItem, depth);
 		}
 	}
 
@@ -184,14 +184,14 @@ namespace Editors
 			if (memberType->IsContainer())
 			{
 				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1);
-				m_pPropertyGridWidget->AddProperty(pItem, depth);
+				Internal_AddPropertyGridItem(pItem, depth);
 
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);
 				
 				if (m_canAddElementToArray)
 				{
 					ArrayAddElementItem* pItem = new ArrayAddElementItem(reinterpret_cast<Systems::Object*>(pData), pField);
-					m_pPropertyGridWidget->AddProperty(pItem, depth);
+					Internal_AddPropertyGridItem(pItem, depth);
 				}
 			}
 			else if (memberType->IsObject())
@@ -202,14 +202,14 @@ namespace Editors
 			else if (memberType->IsClass())
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
-				m_pPropertyGridWidget->AddProperty(pItem);
+				Internal_AddPropertyGridItem(pItem, depth);
 
 				CreatePropertiesForTypeMembers(memberType, pMemberPtr, depth + 1);
 			}
 			else //pod
 			{
 				PropertyGridItem* pItem = CreatePropertyItemForPODField(pField, pData, 0);
-				m_pPropertyGridWidget->AddProperty(pItem, depth);
+				Internal_AddPropertyGridItem(pItem, depth);
 			}
 		}
 
@@ -272,6 +272,11 @@ namespace Editors
 		}
 
 		return nullptr;
+	}
+
+	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth)
+	{
+		m_pPropertyGridWidget->AddProperty(pItem, depth);
 	}
 
 	PropertyGridItemFactory* PropertyGridPopulator::GetFactory(Core::Sid typeSid) const
