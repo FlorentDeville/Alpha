@@ -16,6 +16,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/ObjectHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
@@ -209,6 +210,11 @@ namespace Editors
 			}
 			else if (memberType->IsObject())
 			{
+				ObjectHeaderItem* pItem = new ObjectHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, 0);
+				Internal_AddPropertyGridItem(pItem);
+
+				ParentItemContextScope janitor(pItem, this);
+
 				Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pMemberPtr);
 				CreatePropertiesForObject(pObject);
 			}
