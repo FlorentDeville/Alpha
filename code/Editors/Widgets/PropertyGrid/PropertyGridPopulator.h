@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
 #include "Core/Sid/Sid.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
@@ -77,9 +78,31 @@ namespace Editors
 
 		std::map<const Systems::Object*, Core::CallbackId> m_watcherCallbackIds;
 
+		//Tree of property items mapping parent item to a list of children items
+		std::map<const PropertyGridItem*, Core::Array<const PropertyGridItem*>> m_propertyItemsTree;
+
 		//The object currently being displayed
 		Systems::Object* m_pObject;
 
 		bool m_canAddElementToArray;
+
+		struct ParentItemContext
+		{
+			PropertyGridItem* m_pParent;
+			int depth;
+		};
+
+		class ParentItemContextScope
+		{
+		public:
+			ParentItemContextScope(PropertyGridItem* m_pParent, PropertyGridPopulator* pPopulator);
+			~ParentItemContextScope();
+
+		private:
+			PropertyGridPopulator* m_pPopulator;
+			ParentItemContext m_previous;
+		};
+
+		ParentItemContext m_parentItemContext;
 	};
 }

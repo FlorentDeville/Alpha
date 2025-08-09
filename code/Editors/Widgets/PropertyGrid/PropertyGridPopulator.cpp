@@ -42,7 +42,11 @@ namespace Editors
 		, m_pObject(nullptr)
 		, m_canAddElementToArray(true)
 		, m_watcherCallbackIds()
-	{ }
+		, m_propertyItemsTree()
+	{
+		m_parentItemContext.m_pParent = nullptr;
+		m_parentItemContext.depth = 0;
+	}
 
 	PropertyGridPopulator::~PropertyGridPopulator()
 	{
@@ -65,6 +69,9 @@ namespace Editors
 		for (const std::pair<const Systems::Object*, Core::CallbackId>& pair : m_watcherCallbackIds)
 			ObjectWatcher::Get().RemoveWatcher(pair.first, pair.second);
 
+		m_parentItemContext.m_pParent = nullptr;
+		m_parentItemContext.depth = 0;
+		m_propertyItemsTree.clear();
 		m_pObject = pObject;
 		
 		CreatePropertiesForObject(pObject, 0);
@@ -186,6 +193,8 @@ namespace Editors
 				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1);
 				Internal_AddPropertyGridItem(pItem, depth);
 
+				ParentItemContextScope janitor(pItem, this);
+
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);
 				
 				if (m_canAddElementToArray)
@@ -203,6 +212,8 @@ namespace Editors
 			{
 				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 				Internal_AddPropertyGridItem(pItem, depth);
+
+				ParentItemContextScope janitor(pItem, this);
 
 				CreatePropertiesForTypeMembers(memberType, pMemberPtr, depth + 1);
 			}
@@ -277,6 +288,7 @@ namespace Editors
 	void PropertyGridPopulator::Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth)
 	{
 		m_pPropertyGridWidget->AddProperty(pItem, depth);
+		m_propertyItemsTree[m_parentItemContext.m_pParent].PushBack(pItem);
 	}
 
 	PropertyGridItemFactory* PropertyGridPopulator::GetFactory(Core::Sid typeSid) const
@@ -315,5 +327,18 @@ namespace Editors
 			m_pPropertyGridWidget->RemoveProperty(*it);
 			break;
 		}
+	}
+
+	PropertyGridPopulator::ParentItemContextScope::ParentItemContextScope(PropertyGridItem* m_pParent, PropertyGridPopulator* pPopulator)
+		: m_previous(pPopulator->m_parentItemContext)
+		, m_pPopulator(pPopulator)
+	{
+		pPopulator->m_parentItemContext.m_pParent = m_pParent;
+		++pPopulator->m_parentItemContext.depth;
+	}
+
+	PropertyGridPopulator::ParentItemContextScope::~ParentItemContextScope()
+	{
+		m_pPopulator->m_parentItemContext = m_previous;
 	}
 }
