@@ -157,6 +157,8 @@ namespace Editors
 			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(static_cast<Systems::Object*>(pObj), pField, index);
 			Internal_AddPropertyGridItem(pItem, depth);
 
+			ParentItemContextScope janitor(pItem, this);
+
 			Systems::Object* pObject = reinterpret_cast<Systems::Object*>(pElement);
 			CreatePropertiesForObject(pObject, depth + 1);
 		}
@@ -289,6 +291,25 @@ namespace Editors
 	{
 		m_pPropertyGridWidget->AddProperty(pItem, depth);
 		m_propertyItemsTree[m_parentItemContext.m_pParent].PushBack(pItem);
+		m_propertyItemParent[pItem] = m_parentItemContext.m_pParent;
+	}
+
+	void PropertyGridPopulator::DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete)
+	{
+		std::map<const PropertyGridItem*, Core::Array<PropertyGridItem*>>::iterator it = m_propertyItemsTree.find(pItemToDelete);
+		if (it == m_propertyItemsTree.end())
+			return;
+
+		Core::Array<PropertyGridItem*>& children = it->second;
+		for (PropertyGridItem* pChild : children)
+		{
+			DeletePropertyGridItemRecursively(pChild);
+			m_pPropertyGridWidget->RemoveProperty(pChild);
+			
+			m_propertyItemParent.erase(pChild);
+		}
+
+		m_propertyItemsTree.erase(pItemToDelete);
 	}
 
 	PropertyGridItemFactory* PropertyGridPopulator::GetFactory(Core::Sid typeSid) const
@@ -324,7 +345,21 @@ namespace Editors
 			break;
 
 		case ObjectWatcher::REMOVE_ELEMENT:
-			m_pPropertyGridWidget->RemoveProperty(*it);
+		{
+			PropertyGridItem* pItem = *it;
+			DeletePropertyGridItemRecursively(pItem);
+
+			std::map<const PropertyGridItem*, PropertyGridItem*>::iterator it = m_propertyItemParent.find(pItem);
+			if (it != m_propertyItemParent.end())
+			{
+				PropertyGridItem* pParent = it->second;
+				m_propertyItemsTree[pParent].Erase(pItem);
+			}
+
+			m_pPropertyGridWidget->RemoveProperty(pItem);
+			
+			// update index of all the following items
+		}
 			break;
 		}
 	}

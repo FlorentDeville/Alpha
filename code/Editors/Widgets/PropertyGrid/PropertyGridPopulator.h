@@ -67,6 +67,9 @@ namespace Editors
 
 		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, int depth);
 
+		//This function does not delete pItemToDelete. It deletes recursively all the children of pItemToDelete
+		void DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete);
+
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
 		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
@@ -79,7 +82,10 @@ namespace Editors
 		std::map<const Systems::Object*, Core::CallbackId> m_watcherCallbackIds;
 
 		//Tree of property items mapping parent item to a list of children items
-		std::map<const PropertyGridItem*, Core::Array<const PropertyGridItem*>> m_propertyItemsTree;
+		std::map<const PropertyGridItem*, Core::Array<PropertyGridItem*>> m_propertyItemsTree;
+
+		//Map from an item to its parent. The parent is ullptr if it's a root item.
+		std::map<const PropertyGridItem*, PropertyGridItem*> m_propertyItemParent;
 
 		//The object currently being displayed
 		Systems::Object* m_pObject;
