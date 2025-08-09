@@ -71,6 +71,7 @@ namespace Editors
 		for (const std::pair<const Systems::Object*, Core::CallbackId>& pair : m_watcherCallbackIds)
 			ObjectWatcher::Get().RemoveWatcher(pair.first, pair.second);
 
+		m_watcherCallbackIds.clear();
 		m_parentItemContext.m_pParent = nullptr;
 		m_parentItemContext.depth = 0;
 
@@ -87,6 +88,7 @@ namespace Editors
 
 	void PropertyGridPopulator::Repopulate()
 	{
+		m_pPropertyGridWidget->ClearAllItems();
 		Populate(m_pObject);
 	}
 
@@ -380,33 +382,17 @@ namespace Editors
 
 		case ObjectWatcher::ADD_ELEMENT:
 		{
-			Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField, index](PropertyGridItem* item)
-				{ return item->IsField(pObj, pField, -1); });
-
-			if (it == items.end())
-				return;
-
-			ParentItemContextScope janitor((*it), this);
-
-			CreatePropertiesForSingleArrayElement(pField, pObj, index);
+			//Trying to just add a new element is getting complicated so for now just repopulate the widget.
+			//It's simple and it works. I'll improve it if necessary later. No need to waste more time on this now.
+			Repopulate();
 		}
 			break;
 
 		case ObjectWatcher::REMOVE_ELEMENT:
 		{
-			PropertyGridItem* pItem = *it;
-			DeletePropertyGridItemRecursively(pItem);
-
-			std::map<const PropertyGridItem*, PropertyGridItem*>::iterator it = m_propertyItemParent.find(pItem);
-			if (it != m_propertyItemParent.end())
-			{
-				PropertyGridItem* pParent = it->second;
-				m_propertyItemsTree[pParent].Erase(pItem);
-			}
-
-			m_pPropertyGridWidget->RemoveProperty(pItem);
-			
-			// update index of all the following items
+			//Trying to just add a new element is getting complicated so for now just repopulate the widget.
+			//It's simple and it works. I'll improve it if necessary later. No need to waste more time on this now.
+			Repopulate();
 		}
 			break;
 		}
