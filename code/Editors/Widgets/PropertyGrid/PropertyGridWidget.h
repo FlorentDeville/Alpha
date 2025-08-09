@@ -26,6 +26,8 @@ namespace Editors
 		~PropertyGridWidget();
 
 		void AddProperty(PropertyGridItem* pProperty, int depth = 0);
+		void InsertProperty(PropertyGridItem* pNewProperty, const PropertyGridItem* pInsertAfter, int depth = 0);
+
 		void RemoveProperty(PropertyGridItem* pProperty);
 
 		void ClearAllItems();
