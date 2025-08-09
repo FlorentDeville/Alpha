@@ -11,7 +11,6 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
-#include "Editors/Widgets/PropertyGrid/Items/ArrayAddElementItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
@@ -192,18 +191,12 @@ namespace Editors
 
 			if (memberType->IsContainer())
 			{
-				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1);
+				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1, m_canAddElementToArray);
 				Internal_AddPropertyGridItem(pItem, depth);
 
 				ParentItemContextScope janitor(pItem, this);
 
 				CreatePropertiesForArrayElements(pField, pData, depth + 1);
-				
-				if (m_canAddElementToArray)
-				{
-					ArrayAddElementItem* pItem = new ArrayAddElementItem(reinterpret_cast<Systems::Object*>(pData), pField);
-					Internal_AddPropertyGridItem(pItem, depth);
-				}
 			}
 			else if (memberType->IsObject())
 			{
