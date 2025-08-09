@@ -147,7 +147,7 @@ namespace Editors
 		}
 
 		PropertyGridItem* pItem = new PropertyGridItem(pMatParamDesc->m_name, pWidget);
-		m_pPropertyGridWidget->AddProperty(pItem, depth);
+		m_pPopulator->AddPropertyGridItem(pItem);
 	}
 
 	Widgets::TextBox* PropertyGridItemFactory_MaterialParameterDescription::CreateSingleFloatWidget(float* pData)

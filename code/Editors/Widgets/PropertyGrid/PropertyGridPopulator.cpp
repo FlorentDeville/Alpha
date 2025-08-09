@@ -108,6 +108,11 @@ namespace Editors
 		m_canAddElementToArray = canAdd;
 	}
 
+	void PropertyGridPopulator::AddPropertyGridItem(PropertyGridItem* pItem)
+	{
+		Internal_AddPropertyGridItem(pItem);
+	}
+
 	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject)
 	{
 		Core::CallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,

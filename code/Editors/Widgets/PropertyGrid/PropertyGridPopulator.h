@@ -49,6 +49,8 @@ namespace Editors
 
 		void SetCanAddElementToArray(bool canAdd);
 
+		void AddPropertyGridItem(PropertyGridItem* pItem);
+
 	private:
 		// Create properties for an instance of a class deriving from Object.
 		void CreatePropertiesForObject(Systems::Object* pObject);
