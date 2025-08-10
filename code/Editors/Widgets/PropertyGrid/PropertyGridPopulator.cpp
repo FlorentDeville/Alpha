@@ -395,15 +395,23 @@ namespace Editors
 		{
 			//Trying to just add a new element is getting complicated so for now just repopulate the widget.
 			//It's simple and it works. I'll improve it if necessary later. No need to waste more time on this now.
-			Repopulate();
+			//Repopulate();
 		}
 			break;
 
 		case ObjectWatcher::REMOVE_ELEMENT:
 		{
-			//Trying to just add a new element is getting complicated so for now just repopulate the widget.
-			//It's simple and it works. I'll improve it if necessary later. No need to waste more time on this now.
-			Repopulate();
+			PropertyGridItem* pItem = *it;
+			DeletePropertyGridItemRecursively(pItem);
+
+			PropertyGridItem* pParent = m_propertyItemParent[pItem];
+			m_propertyItemsTree[pParent].Erase(pItem);
+			m_propertyItemParent.erase(pItem);
+			m_propertyItemDepth.erase(pItem);
+
+			m_pPropertyGridWidget->RemoveProperty(pItem);
+
+			//update the index of all the properties for the element of the array
 		}
 			break;
 		}
