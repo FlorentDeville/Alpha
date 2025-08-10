@@ -393,9 +393,14 @@ namespace Editors
 
 		case ObjectWatcher::ADD_ELEMENT:
 		{
-			//Trying to just add a new element is getting complicated so for now just repopulate the widget.
-			//It's simple and it works. I'll improve it if necessary later. No need to waste more time on this now.
-			//Repopulate();
+			Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField](PropertyGridItem* item)
+				{ return item->IsField(pObj, pField, -1); });
+
+			if (it == items.end())
+				return;
+
+			ParentItemContextScope janitor(*it, this);
+			CreatePropertiesForSingleArrayElement(pField, pObj, index);
 		}
 			break;
 
