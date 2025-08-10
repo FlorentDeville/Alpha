@@ -16,6 +16,8 @@ namespace Systems
 
 namespace Widgets
 {
+	class Button;
+	class Label;
 	class Widget;
 }
 
@@ -42,13 +44,23 @@ namespace Editors
 		// Check if this item corresponds to a certain field for an given object
 		bool IsField(const Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index) const;
 
+		//Change the index of the element this item represents. Use this when deleting/inserting an element in an array
+		virtual void ChangeIndex(uint32_t newIndex);
+
 		template<typename T> const T* GetDataPtr() const;
+
+		uint32_t GetIndex() const;
 
 	protected:
 
 		//The widgets are not owned by the item.
 		Widgets::Widget* m_pEditingWidget;
 		Widgets::Widget* m_pNameWidget;
+
+		//Label displaying the name of the field
+		Widgets::Label* m_pFieldName;
+
+		Widgets::Button* m_pDeleteButton;
 
 		//Object, field and optional index this item represents.
 		Systems::Object* m_pObj;
@@ -59,6 +71,8 @@ namespace Editors
 
 		Widgets::Widget* CreatePodItemLabel();
 		Widgets::Widget* CreateArrayItemLabel();
+
+		void ArrayItemLabel_Init();
 	};
 
 	template<typename T> const T* PropertyGridItem::GetDataPtr() const

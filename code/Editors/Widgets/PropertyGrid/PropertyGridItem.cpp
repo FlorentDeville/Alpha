@@ -25,6 +25,7 @@ namespace Editors
 		, m_pObj(nullptr)
 		, m_pField(nullptr)
 		, m_index(-1)
+		, m_pFieldName(nullptr)
 	{ }
 
 	PropertyGridItem::PropertyGridItem(const std::string& name, Widgets::Widget* pEditingWidget)
@@ -32,6 +33,7 @@ namespace Editors
 		, m_pObj(nullptr)
 		, m_pField(nullptr)
 		, m_index(-1)
+		, m_pFieldName(nullptr)
 	{
 		m_pNameWidget = new Widgets::Label(name);
 	}
@@ -42,6 +44,7 @@ namespace Editors
 		, m_pObj(nullptr)
 		, m_pField(nullptr)
 		, m_index(-1)
+		, m_pFieldName(nullptr)
 	{ }
 
 	PropertyGridItem::PropertyGridItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
@@ -50,6 +53,7 @@ namespace Editors
 		, m_pObj(pObj)
 		, m_pField(pField)
 		, m_index(index)
+		, m_pFieldName(nullptr)
 	{ }
 
 	Widgets::Widget* PropertyGridItem::GetNameWidget() const
@@ -73,6 +77,19 @@ namespace Editors
 		return m_pObj == pObj && m_pField == pField && m_index == index;
 	}
 
+	void PropertyGridItem::ChangeIndex(uint32_t newIndex)
+	{
+		assert(m_pField->GetType()->IsContainer()); //changing index only makes sense in arrays
+		m_index = newIndex;
+
+		ArrayItemLabel_Init();
+	}
+
+	uint32_t PropertyGridItem::GetIndex() const
+	{
+		return m_index;
+	}
+
 	Widgets::Widget* PropertyGridItem::CreateDefaultItemLabel()
 	{
 		if (m_pField->GetType()->IsContainer())
@@ -83,7 +100,8 @@ namespace Editors
 
 	Widgets::Widget* PropertyGridItem::CreatePodItemLabel()
 	{
-		return new Widgets::Label(m_pField->GetName());
+		m_pFieldName = new Widgets::Label(m_pField->GetName());
+		return m_pFieldName;
 	}
 
 	Widgets::Widget* PropertyGridItem::CreateArrayItemLabel()
@@ -99,10 +117,25 @@ namespace Editors
 		Rendering::TextureId deleteTextureId = widgetMgr.GetIconTextureId(Widgets::IconId::kIconClose);
 		Widgets::Icon* pDeleteIcon = new Widgets::Icon(deleteTextureId);
 
-		Widgets::Button* pDeleteButton = new Widgets::Button(12, 12, 0, 0);
-		pDeleteButton->AddWidget(pDeleteIcon);
-		pDeleteButton->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::NONE, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pDeleteButton->OnClick([this]()
+		m_pDeleteButton = new Widgets::Button(12, 12, 0, 0);
+		m_pDeleteButton->AddWidget(pDeleteIcon);
+		m_pDeleteButton->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::NONE, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+		
+		pNameLayout->AddWidget(m_pDeleteButton);
+
+		m_pFieldName = new Widgets::Label();
+		m_pFieldName->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		pNameLayout->AddWidget(m_pFieldName);
+
+		ArrayItemLabel_Init();
+
+		return pNameLayout;
+	}
+
+	void PropertyGridItem::ArrayItemLabel_Init()
+	{
+		m_pDeleteButton->ClearOnClick();
+		m_pDeleteButton->OnClick([this]()
 			{
 				Editors::OkCancelDialog* pDialog = new Editors::OkCancelDialog("Delete element", "Are you sure you want to delete this element from the array ?");
 				pDialog->OnOk([this]()
@@ -113,16 +146,17 @@ namespace Editors
 				pDialog->Open();
 			});
 
-		pNameLayout->AddWidget(pDeleteButton);
-
 		const int BUFFER_SIZE = 64;
 		char buffer[BUFFER_SIZE] = { '\0' };
 
 		if (m_pField->GetType()->GetElementType()->IsObject())
 		{
+			assert(m_pField->GetType()->IsElementPointer());
+
 			Core::BaseArray* pArray = m_pField->GetDataPtr<Core::BaseArray>(m_pObj);
 
-			const Systems::Object* pElement = static_cast<const Systems::Object*>(pArray->GetConstElement(m_index));
+			const uint64_t* pPtr = reinterpret_cast<const uint64_t*>(pArray->GetConstElement(m_index));
+			const Systems::Object* pElement = reinterpret_cast<const Systems::Object*>(*pPtr);
 			const Systems::TypeDescriptor* pObjectType = pElement->GetTypeDescriptor();
 			sprintf_s(buffer, "[%d] %s", m_index, pObjectType->GetName().c_str());
 		}
@@ -131,10 +165,6 @@ namespace Editors
 			sprintf_s(buffer, "[%d]", m_index);
 		}
 
-		Widgets::Label* pNameLabel = new Widgets::Label(buffer);
-		pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
-		pNameLayout->AddWidget(pNameLabel);
-
-		return pNameLayout;
+		m_pFieldName->SetText(buffer);
 	}
 }

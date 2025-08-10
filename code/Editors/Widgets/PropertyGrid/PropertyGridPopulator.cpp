@@ -404,14 +404,18 @@ namespace Editors
 			PropertyGridItem* pItem = *it;
 			DeletePropertyGridItemRecursively(pItem);
 
+			//update the index of all the properties for the element of the array
 			PropertyGridItem* pParent = m_propertyItemParent[pItem];
+			Core::Array<PropertyGridItem*>& children = m_propertyItemsTree[pParent];
+			for (uint32_t ii = pItem->GetIndex() + 1; ii < children.GetSize(); ++ii)
+				children[ii]->ChangeIndex(ii - 1);
+			
+			//clean the caches
 			m_propertyItemsTree[pParent].Erase(pItem);
 			m_propertyItemParent.erase(pItem);
 			m_propertyItemDepth.erase(pItem);
 
 			m_pPropertyGridWidget->RemoveProperty(pItem);
-
-			//update the index of all the properties for the element of the array
 		}
 			break;
 		}
