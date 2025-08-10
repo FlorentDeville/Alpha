@@ -44,6 +44,11 @@ namespace Core
 			m_callbackMap.erase(id);
 		}
 
+		void Clear()
+		{
+			m_callbackMap.clear();
+		}
+
 		operator bool() const
 		{
 			return !m_callbackMap.empty();
