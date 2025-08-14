@@ -28,9 +28,18 @@ namespace Editors
 	PropertyGridItemFactory_MaterialParameterDescription::~PropertyGridItemFactory_MaterialParameterDescription()
 	{ }
 
-	void PropertyGridItemFactory_MaterialParameterDescription::CreateItems(const Systems::TypeDescriptor* pType, void* pData, int depth)
+	void PropertyGridItemFactory_MaterialParameterDescription::CreateItems(void* pObj, const Systems::FieldDescriptor* pField, int index)
 	{
-		Systems::MaterialParameterDescription* pMatParamDesc = reinterpret_cast<Systems::MaterialParameterDescription*>(pData);
+		Systems::MaterialParameterDescription* pMatParamDesc = nullptr;
+		if (pField->GetType()->IsContainer())
+		{
+			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
+			pMatParamDesc = reinterpret_cast<Systems::MaterialParameterDescription*>(pArray->GetElement(index));
+		}
+		else
+		{
+			pMatParamDesc = pField->GetDataPtr<Systems::MaterialParameterDescription>(pObj);
+		}
 
 		Widgets::Widget* pWidget = nullptr;
 

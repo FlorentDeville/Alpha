@@ -6,7 +6,7 @@
 
 namespace Systems
 {
-	class TypeDescriptor;
+	class FieldDescriptor;
 }
 
 namespace Widgets
@@ -28,7 +28,7 @@ namespace Editors
 
 		void Init(PropertyGridWidget* pWidget, PropertyGridPopulator* pPopulator);
 
-		virtual void CreateItems(const Systems::TypeDescriptor* pType, void* pData, int depth) = 0;
+		virtual void CreateItems(void* pObj, const Systems::FieldDescriptor* pField, int index) = 0;
 
 	protected:
 		PropertyGridWidget* m_pPropertyGridWidget;
