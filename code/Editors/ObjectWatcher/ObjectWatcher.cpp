@@ -125,10 +125,13 @@ namespace Editors
 		}
 	}
 
-	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
+	void ObjectWatcher::SendFieldModifiedEvent(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index)
 	{
-		Core::CallbackId id = m_watchers[pObj].Connect(callback);
-		return ObjectWatcherCallbackId(pObj, id);
+		const WatcherCallbackList* pCallbacks = FindWatcherCallback(pObj);
+		if (!pCallbacks)
+			return;
+
+		(*pCallbacks)(pObj, pField, op, index);
 	}
 
 	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback)
@@ -138,6 +141,12 @@ namespace Editors
 
 		Core::CallbackId id = m_watchers[nonConstObj].Connect(callback);
 		return ObjectWatcherCallbackId(nonConstObj, id);
+	}
+
+	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
+	{
+		Core::CallbackId id = m_watchers[pObj].Connect(callback);
+		return ObjectWatcherCallbackId(pObj, id);
 	}
 
 	void ObjectWatcher::RemoveWatcher(ObjectWatcherCallbackId callbackId)
