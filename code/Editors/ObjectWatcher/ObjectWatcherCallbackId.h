@@ -20,6 +20,8 @@ namespace Editors
 
 		bool IsValid() const;
 
+		void Reset();
+
 	private:
 		void* m_pObj;
 		Core::CallbackId m_cid;

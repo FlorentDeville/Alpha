@@ -5,6 +5,9 @@
 #pragma once
 
 #include "Core/Singleton.h"
+
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
+
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
@@ -68,6 +71,8 @@ namespace Editors
 		DirectX::XMUINT2 m_mousePreviousPos;
 
 		Systems::MeshAsset* m_pMesh; //mesh to render in the viewport
+
+		ObjectWatcherCallbackId m_objWatcherCid;
 
 		void CreateMenu(Widgets::Widget* pParent);
 

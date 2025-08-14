@@ -23,4 +23,9 @@ namespace Editors
 	{
 		return m_cid.IsValid() && m_pObj; 
 	}
+
+	void ObjectWatcherCallbackId::Reset()
+	{
+		m_pObj = nullptr;
+	}
 }

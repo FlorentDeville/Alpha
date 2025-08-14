@@ -68,6 +68,7 @@ namespace Editors
 		, m_pMesh(nullptr)
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
+		, m_objWatcherCid()
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -335,6 +336,12 @@ namespace Editors
 	{
 		m_pPropertyGrid->ClearAllItems();
 
+		if (m_objWatcherCid.IsValid())
+		{
+			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
+			m_objWatcherCid.Reset();
+		}
+
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
 		if (!pContainer)
@@ -350,6 +357,8 @@ namespace Editors
 			return true;
 
 		m_pPropertyGridPopulator->Populate(pObject);
+
+		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](Systems::Object*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
 
 		return true;
 	}

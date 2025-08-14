@@ -64,6 +64,9 @@ namespace Editors
 		// Generic function, can do any operation
 		void ModifyField(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue);
 
+		//Manually send modified event. That's used when a field was modified without the object watcher but watchers should be aware of the change.
+		void SendFieldModifiedEvent(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index);
+
 		ObjectWatcherCallbackId AddWatcher(Systems::Object* pObj, const WatcherCallback& callback);
 		ObjectWatcherCallbackId AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback);
 		void RemoveWatcher(ObjectWatcherCallbackId callbackId);

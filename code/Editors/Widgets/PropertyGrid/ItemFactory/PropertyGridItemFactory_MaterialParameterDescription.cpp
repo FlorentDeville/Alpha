@@ -28,7 +28,7 @@ namespace Editors
 	PropertyGridItemFactory_MaterialParameterDescription::~PropertyGridItemFactory_MaterialParameterDescription()
 	{ }
 
-	void PropertyGridItemFactory_MaterialParameterDescription::CreateItems(void* pObj, const Systems::FieldDescriptor* pField, int index)
+	void PropertyGridItemFactory_MaterialParameterDescription::CreateItems(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 	{
 		Systems::MaterialParameterDescription* pMatParamDesc = nullptr;
 		if (pField->GetType()->IsContainer())
@@ -58,10 +58,10 @@ namespace Editors
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
 			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
 
-			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, ++pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, ++pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, ++pFloat));
 			pWidget = pLayout;
 		}
 		break;
@@ -95,32 +95,44 @@ namespace Editors
 			pColorWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
 			pLayout->AddWidget(pColorWidget);
 
-			pRedChannel->OnValidate([this, pColorWidget, pFloat](const float value)
+			pRedChannel->OnValidate([this, pField, pObj, index, pColorWidget, pFloat](const float value)
 				{
 					pFloat[0] = value;
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[0] = value;
+
+					ObjectWatcher::OPERATION op = pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+					ObjectWatcher::Get().SendFieldModifiedEvent(reinterpret_cast<Systems::Object*>(pObj), pField, op, index);
 				});
 
-			pGreenChannel->OnValidate([this, pColorWidget, pFloat](const float value)
+			pGreenChannel->OnValidate([this, pField, pObj, index, pColorWidget, pFloat](const float value)
 				{
 					pFloat[1] = value;
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[1] = value;
+
+					ObjectWatcher::OPERATION op = pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+					ObjectWatcher::Get().SendFieldModifiedEvent(reinterpret_cast<Systems::Object*>(pObj), pField, op, index);
 				});
 
-			pBlueChannel->OnValidate([this, pColorWidget, pFloat](const float value)
+			pBlueChannel->OnValidate([this, pField, pObj, index, pColorWidget, pFloat](const float value)
 				{
 					pFloat[2] = value;
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[2] = value;
+
+					ObjectWatcher::OPERATION op = pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+					ObjectWatcher::Get().SendFieldModifiedEvent(reinterpret_cast<Systems::Object*>(pObj), pField, op, index);
 				});
 
-			pAlphaChannel->OnValidate([this, pColorWidget, pFloat](const float value)
+			pAlphaChannel->OnValidate([this, pField, pObj, index, pColorWidget, pFloat](const float value)
 				{
 					pFloat[3] = value;
 
 					pColorWidget->GetDefaultStyle().GetBackgroundColor().m_channels[3] = value;
+
+					ObjectWatcher::OPERATION op = pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+					ObjectWatcher::Get().SendFieldModifiedEvent(reinterpret_cast<Systems::Object*>(pObj), pField, op, index);
 				});
 
 			pWidget = pLayout;
@@ -137,9 +149,9 @@ namespace Editors
 			pLayout->SetSpace(DirectX::XMINT2(SPACE, 0));
 			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
 
-			pLayout->AddWidget(CreateSingleFloatWidget(pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
-			pLayout->AddWidget(CreateSingleFloatWidget(++pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, ++pFloat));
+			pLayout->AddWidget(CreateSingleFloatWidget(pObj, pField, index, ++pFloat));
 			pWidget = pLayout;
 		}
 		break;
@@ -147,7 +159,7 @@ namespace Editors
 		case SID("float"):
 		{
 			float* pFloat = reinterpret_cast<float*>(pMatParamDesc->m_value.GetData());
-			pWidget = CreateSingleFloatWidget(pFloat);
+			pWidget = CreateSingleFloatWidget(pObj, pField, index, pFloat);
 		}
 		break;
 
@@ -159,7 +171,7 @@ namespace Editors
 		m_pPopulator->AddPropertyGridItem(pItem);
 	}
 
-	Widgets::TextBox* PropertyGridItemFactory_MaterialParameterDescription::CreateSingleFloatWidget(float* pData)
+	Widgets::TextBox* PropertyGridItemFactory_MaterialParameterDescription::CreateSingleFloatWidget(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, float* pData)
 	{
 		Widgets::TextBox* pWidget = new Widgets::TextBox();
 		pWidget->SetSize(Core::UInt2(TEXT_BOX_WIDTH, 20));
@@ -170,7 +182,7 @@ namespace Editors
 		sprintf_s(buffer, BUFFER_SIZE, "%f", *pData);
 		pWidget->SetText(buffer);
 
-		pWidget->OnValidate([this, pData](const std::string& value)
+		pWidget->OnValidate([this, pObj, pField, index, pData](const std::string& value)
 			{
 				char* pEnd = nullptr;
 
@@ -178,6 +190,11 @@ namespace Editors
 				if (value.c_str() != pEnd)
 				{
 					*pData = f;
+
+					assert(pField->GetType()->IsObject());
+
+					ObjectWatcher::OPERATION op = pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
+					ObjectWatcher::Get().SendFieldModifiedEvent(reinterpret_cast<Systems::Object*>(pObj), pField, op, index);
 				}
 			});
 

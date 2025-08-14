@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace Systems
 {
 	class FieldDescriptor;
@@ -28,7 +30,7 @@ namespace Editors
 
 		void Init(PropertyGridWidget* pWidget, PropertyGridPopulator* pPopulator);
 
-		virtual void CreateItems(void* pObj, const Systems::FieldDescriptor* pField, int index) = 0;
+		virtual void CreateItems(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index) = 0;
 
 	protected:
 		PropertyGridWidget* m_pPropertyGridWidget;
