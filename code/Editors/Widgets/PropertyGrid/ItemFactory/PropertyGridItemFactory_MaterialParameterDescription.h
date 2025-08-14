@@ -6,6 +6,8 @@
 
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 
+#include <cstdint>
+
 namespace Widgets
 {
 	class TextBox;
@@ -19,9 +21,9 @@ namespace Editors
 		PropertyGridItemFactory_MaterialParameterDescription();
 		~PropertyGridItemFactory_MaterialParameterDescription();
 
-		void CreateItems(void* pObj, const Systems::FieldDescriptor* pField, int index) override;
+		void CreateItems(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index) override;
 
 	private:
-		Widgets::TextBox* CreateSingleFloatWidget(float* pData);
+		Widgets::TextBox* CreateSingleFloatWidget(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, float* pData);
 	};
 }
