@@ -84,7 +84,7 @@ namespace Editors
 		//Map of type name sid to item factory
 		std::map<Core::Sid, PropertyGridItemFactory*> m_factories;
 
-		std::map<const Systems::Object*, Core::CallbackId> m_watcherCallbackIds;
+		Core::Array<ObjectWatcherCallbackId> m_watcherCallbackIds;
 
 		//Tree of property items mapping parent item to a list of children items
 		std::map<const PropertyGridItem*, Core::Array<PropertyGridItem*>> m_propertyItemsTree;

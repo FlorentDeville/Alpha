@@ -125,37 +125,29 @@ namespace Editors
 		}
 	}
 
-	Core::CallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
+	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
 	{
 		Core::CallbackId id = m_watchers[pObj].Connect(callback);
-		return id;
+		return ObjectWatcherCallbackId(pObj, id);
 	}
 
-	Core::CallbackId ObjectWatcher::AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback)
+	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback)
 	{
 		//ugly const cast here but I can't think of another solution
-		Core::CallbackId id = m_watchers[const_cast<Systems::Object*>(pObj)].Connect(callback);
-		return id;
+		Systems::Object* nonConstObj = const_cast<Systems::Object*>(pObj);
+
+		Core::CallbackId id = m_watchers[nonConstObj].Connect(callback);
+		return ObjectWatcherCallbackId(nonConstObj, id);
 	}
 
-	void ObjectWatcher::RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId)
+	void ObjectWatcher::RemoveWatcher(ObjectWatcherCallbackId callbackId)
 	{
-		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(pObj);
+		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(reinterpret_cast<Systems::Object*>(callbackId.m_pObj));
 		if (it == m_watchers.end())
 			return;
 
 		WatcherCallbackList& callbacks = it->second;
-		callbacks.Disconnect(callbackId);
-	}
-
-	void ObjectWatcher::RemoveWatcher(const Systems::Object* pObj, Core::CallbackId callbackId)
-	{
-		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(const_cast<Systems::Object*>(pObj));
-		if (it == m_watchers.end())
-			return;
-
-		WatcherCallbackList& callbacks = it->second;
-		callbacks.Disconnect(callbackId);
+		callbacks.Disconnect(callbackId.m_cid);
 	}
 
 	const ObjectWatcher::WatcherCallbackList* ObjectWatcher::FindWatcherCallback(Systems::Object* pObj) const

@@ -4,8 +4,11 @@
 
 #pragma once
 
-#include "Widgets/Models/AbstractViewModel.h"
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
+
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+
+#include "Widgets/Models/AbstractViewModel.h"
 
 namespace Systems
 {
@@ -57,7 +60,7 @@ namespace Editors
 			std::string m_type;
 			Core::Guid m_parent;
 			Core::Array<Core::Guid> m_children;
-			Core::CallbackId m_objWatcherCallbackId;
+			ObjectWatcherCallbackId m_objWatcherCid;
 		};
 
 		Core::Array<CachedItem*> m_cachedItemArray;			// flat list containing all the cached item

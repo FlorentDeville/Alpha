@@ -217,8 +217,7 @@ namespace Editors
 
 		BeforeRemoveRows(row, 1, parentModelIndex);
 
-		const Systems::GameObject* pGo = m_pLevel->FindGameObject(pItem->m_guid);
-		ObjectWatcher::Get().RemoveWatcher(static_cast<const Systems::Object*>(pGo), pItem->m_objWatcherCallbackId);
+		ObjectWatcher::Get().RemoveWatcher(pItem->m_objWatcherCid);
 
 		Core::Guid parentGuid = pItem->m_parent;
 
@@ -299,7 +298,7 @@ namespace Editors
 		pItem->m_parent = pGo->GetTransform().GetParentGuid();
 		pItem->m_children = pGo->GetTransform().GetChildrenGuid();
 
-		pItem->m_objWatcherCallbackId = ObjectWatcher::Get().AddWatcher(pGo, [this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
+		pItem->m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pGo, [this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
 			{
 				if (pField->GetName() == "m_name") // it's ugly to hardcode the name of the field here.
 				{
