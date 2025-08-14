@@ -7,6 +7,8 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Singleton.h"
 
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
+
 #include <map>
 #include <string>
 
@@ -25,6 +27,7 @@ namespace Editors
 {
 	class ObjectWatcher : public Core::Singleton<ObjectWatcher>
 	{
+
 	public:
 
 		enum OPERATION
@@ -61,10 +64,9 @@ namespace Editors
 		// Generic function, can do any operation
 		void ModifyField(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue);
 
-		Core::CallbackId AddWatcher(Systems::Object* pObj, const WatcherCallback& callback);
-		Core::CallbackId AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback);
-		void RemoveWatcher(Systems::Object* pObj, Core::CallbackId callbackId);
-		void RemoveWatcher(const Systems::Object* pObj, Core::CallbackId callbackId);
+		ObjectWatcherCallbackId AddWatcher(Systems::Object* pObj, const WatcherCallback& callback);
+		ObjectWatcherCallbackId AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback);
+		void RemoveWatcher(ObjectWatcherCallbackId callbackId);
 
 	private:
 		std::map<Systems::Object*, WatcherCallbackList> m_watchers;

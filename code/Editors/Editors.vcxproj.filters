@@ -180,6 +180,9 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\ObjectHeaderItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectWatcher\ObjectWatcherCallbackId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -336,6 +339,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\PropertyGrid\Items\ObjectHeaderItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectWatcher\ObjectWatcherCallbackId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

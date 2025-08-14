@@ -53,8 +53,8 @@ namespace Editors
 
 	PropertyGridPopulator::~PropertyGridPopulator()
 	{
-		for (const std::pair<const Systems::Object*, Core::CallbackId>& pair : m_watcherCallbackIds)
-			ObjectWatcher::Get().RemoveWatcher(pair.first, pair.second);
+		for (const ObjectWatcherCallbackId id : m_watcherCallbackIds)
+			ObjectWatcher::Get().RemoveWatcher(id);
 
 		for (const std::pair<Core::Sid, PropertyGridItemFactory*>& pair : m_factories)
 			delete pair.second;
@@ -69,10 +69,10 @@ namespace Editors
 
 	void PropertyGridPopulator::Populate(Systems::Object* pObject)
 	{
-		for (const std::pair<const Systems::Object*, Core::CallbackId>& pair : m_watcherCallbackIds)
-			ObjectWatcher::Get().RemoveWatcher(pair.first, pair.second);
+		for (const ObjectWatcherCallbackId id : m_watcherCallbackIds)
+			ObjectWatcher::Get().RemoveWatcher(id);
 
-		m_watcherCallbackIds.clear();
+		m_watcherCallbackIds.Clear();
 		m_parentItemContext.m_pParent = nullptr;
 		m_parentItemContext.depth = 0;
 
@@ -115,10 +115,10 @@ namespace Editors
 
 	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject)
 	{
-		Core::CallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
+		ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
 			[this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
 
-		m_watcherCallbackIds[pObject] = callbackId;
+		m_watcherCallbackIds.PushBack(callbackId);
 
 		const Systems::TypeDescriptor* pRealType = pObject->GetTypeDescriptor();
 		CreatePropertiesForObjectParentClass(pObject, pRealType);
