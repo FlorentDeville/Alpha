@@ -32,6 +32,7 @@
     <ClInclude Include="MaterialEditor\ShaderAutoGen.h" />
     <ClInclude Include="MaterialEditor\ShaderTemplate.h" />
     <ClInclude Include="ObjectWatcher\ObjectWatcher.h" />
+    <ClInclude Include="ObjectWatcher\ObjectWatcherCallbackId.h" />
     <ClInclude Include="Property.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="MaterialEditor\Compiler\MaterialParameters.h" />
@@ -88,6 +89,7 @@
     <ClCompile Include="MaterialEditor\ShaderAutoGen.cpp" />
     <ClCompile Include="MaterialEditor\ShaderTemplate.cpp" />
     <ClCompile Include="ObjectWatcher\ObjectWatcher.cpp" />
+    <ClCompile Include="ObjectWatcher\ObjectWatcherCallbackId.cpp" />
     <ClCompile Include="Property.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="MaterialEditor\Compiler\MaterialParameters.cpp" />
