@@ -149,12 +149,6 @@ namespace Editors
 		return ObjectWatcherCallbackId(nonConstObj, id);
 	}
 
-	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
-	{
-		Core::CallbackId id = m_watchers[pObj].Connect(callback);
-		return ObjectWatcherCallbackId(pObj, id);
-	}
-
 	void ObjectWatcher::RemoveWatcher(ObjectWatcherCallbackId callbackId)
 	{
 		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(reinterpret_cast<Systems::Object*>(callbackId.m_pObj));
