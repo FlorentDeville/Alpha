@@ -9,6 +9,7 @@
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Widgets/TableViewStyle.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Editors
 {
@@ -30,7 +31,12 @@ namespace Editors
 
 	void PropertyGridWidget::AddProperty(PropertyGridItem* pProperty, int depth)
 	{
-		m_properties.push_back(pProperty);
+		InsertProperty(pProperty, nullptr, depth);
+	}
+
+	void PropertyGridWidget::InsertProperty(PropertyGridItem* pNewProperty, const PropertyGridItem* pInsertAfter, int depth)
+	{
+		pNewProperty->CreateWidgets();
 
 		Widgets::Layout* pPropertyLayout = new Widgets::Layout();
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
@@ -43,11 +49,9 @@ namespace Editors
 
 		pPropertyLayout->GetHoverStyle().SetBackgroundColor(Widgets::TableViewStyle::s_hoverBackgroundColor);
 
-		m_pInternalLayout->AddWidget(pPropertyLayout);
-
 		int nameColumnWidth = m_nameColumnWidth;
 
-		if (Widgets::Widget* pNameWidget = pProperty->GetNameWidget())
+		if (Widgets::Widget* pNameWidget = pNewProperty->GetNameWidget())
 		{
 			if (depth != 0)
 			{
@@ -72,14 +76,42 @@ namespace Editors
 			pPropertyLayout->AddWidget(pSpacer);
 		}
 
-		if (pProperty->GetEditingWidget())
+		if (pNewProperty->GetEditingWidget())
 		{
 			Widgets::Widget* pSpacer = new Widgets::Widget(10, 0, 0, 0);
 			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
 
 			pPropertyLayout->AddWidget(pSpacer);
-			pPropertyLayout->AddWidget(pProperty->GetEditingWidget());
+			pPropertyLayout->AddWidget(pNewProperty->GetEditingWidget());
 		}
+
+		if (pInsertAfter)
+		{
+			uint32_t position = m_properties.GetSize();
+
+			Core::Array<PropertyGridItem*>::Iterator it = std::find(m_properties.cbegin(), m_properties.cend(), pInsertAfter);
+			if (it != m_properties.cend())
+				position = static_cast<uint32_t>(std::distance(m_properties.cbegin(), it) + 1);
+
+			m_properties.Insert(pNewProperty, position);
+			m_pInternalLayout->InsertWidget(pPropertyLayout, position);
+		}
+		else
+		{
+			m_properties.PushBack(pNewProperty);
+			m_pInternalLayout->AddWidget(pPropertyLayout);
+		}
+
+		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	void PropertyGridWidget::RemoveProperty(PropertyGridItem* pProperty)
+	{
+		Widgets::Widget* pPropertyWidget = pProperty->GetNameWidget()->GetParent();
+		Widgets::WidgetMgr::Get().RequestWidgetDeletion(pPropertyWidget);
+
+		m_properties.Erase(pProperty);
+		delete pProperty;		
 	}
 
 	void PropertyGridWidget::ClearAllItems()
@@ -87,8 +119,13 @@ namespace Editors
 		for (PropertyGridItem* pProperty : m_properties)
 			delete pProperty;
 
-		m_properties.clear();
+		m_properties.Clear();
 
 		m_pInternalLayout->DeleteAllChildren();
+	}
+
+	Core::Array<PropertyGridItem*>& PropertyGridWidget::GetPropertyGridItems()
+	{
+		return m_properties;
 	}
 }

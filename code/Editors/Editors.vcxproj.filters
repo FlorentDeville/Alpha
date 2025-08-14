@@ -150,6 +150,36 @@
     <ClInclude Include="Widgets\Dialog\ClassSelectionDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectWatcher\ObjectWatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\StringItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\UInt32Item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\SidItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\GuidItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\Mat44fItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\AssetIdItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\ObjectHeaderItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -276,6 +306,36 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Dialog\ClassSelectionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectWatcher\ObjectWatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\StringItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\UInt32Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\SidItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\GuidItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\Mat44fItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\AssetIdItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\ObjectHeaderItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -137,7 +137,6 @@ namespace Editors
 
 		CreateSceneTreeViewer(m_pLeftTabContainer);
 		CreateLevelBrowser(m_pLeftTabContainer);
-		//m_pLeftTabContainer->SetSelectedTab(0);
 
 		//gizmo callback registration
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
@@ -151,7 +150,6 @@ namespace Editors
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
 		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoParent) { OnLevelEditorModule_AddGameObject(pGo, pGoParent); });
-		levelEditorModule.OnRenameGameObject([this](const Core::Guid& guid, const std::string& newName) { OnLevelEditorModule_RenameGameObject(guid, newName); });
 		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
 		levelEditorModule.OnReparentGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent) { OnLevelEditorModule_ReparentGameObject(pGo, pGoOldParent, pGoNewParent); });
 	}
@@ -263,7 +261,6 @@ namespace Editors
 
 		m_pPropertyGridPopulator = new PropertyGridPopulator();
 		m_pPropertyGridPopulator->Init(m_pPropertyGridWidget);
-		m_pPropertyGridPopulator->OnDataChanged([this]() { m_pPropertyGridWidget->ClearAllItems(); m_pPropertyGridPopulator->Repopulate(); });
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
@@ -734,11 +731,6 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)
 	{
 		m_pSceneTreeModel->AddGameObject(pGo, pGoParent);
-	}
-
-	void LevelEditor::OnLevelEditorModule_RenameGameObject(const Core::Guid& guid, const std::string& newName)
-	{
-		m_pSceneTreeModel->RenameGameObject(guid, newName);
 	}
 
 	void LevelEditor::OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid)

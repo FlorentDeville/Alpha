@@ -4,8 +4,10 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackMacro.h"
+#include "Core/Collections/Array.h"
 #include "Core/Sid/Sid.h"
+
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include <map>
 
@@ -28,6 +30,7 @@ namespace Widgets
 
 namespace Editors
 {
+	class PropertyGridItem;
 	class PropertyGridItemFactory;
 	class PropertyGridWidget;
 
@@ -46,37 +49,74 @@ namespace Editors
 
 		void SetCanAddElementToArray(bool canAdd);
 
-		void SendDataChangedEvent();
-
-		EVENT_DECL(DataChanged, void())
+		void AddPropertyGridItem(PropertyGridItem* pItem);
 
 	private:
 		// Create properties for an instance of a class deriving from Object.
-		void CreatePropertiesForObject(Systems::Object* pObject, int depth);
+		void CreatePropertiesForObject(Systems::Object* pObject);
 
 		// Recursively goes up the inheritance hierarchy of an Object to display all its properties.
-		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType, int depth);
+		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType);
 
-		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pArrayPtr, int depth);
-		Widgets::Widget* CreateWidgetForPODField(const Systems::TypeDescriptor* pFieldType, void* pData, bool readOnly);
+		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj);
+
+		void CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, uint32_t index);
+		
+		PropertyGridItem* CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
 
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
-		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData, int depth);
+		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData);
 
-		void CreateArrayAddElementButton(const Systems::FieldDescriptor& member, void* pMemberPtr);
+		void Internal_AddPropertyGridItem(PropertyGridItem* pItem);
+
+		// Overload to add a property item at the given index in its parent
+		void Internal_AddPropertyGridItem(PropertyGridItem* pItem, uint32_t index);
+
+		//This function does not delete pItemToDelete. It deletes recursively all the children of pItemToDelete
+		void DeletePropertyGridItemRecursively(PropertyGridItem* pItemToDelete);
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
-		Widgets::Widget* CreateArrayItemName(Core::BaseArray* pArray, int elementIndex, bool elementIsObject, void* pElement);
+		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 
 		//Map of type name sid to item factory
 		std::map<Core::Sid, PropertyGridItemFactory*> m_factories;
 
+		std::map<const Systems::Object*, Core::CallbackId> m_watcherCallbackIds;
+
+		//Tree of property items mapping parent item to a list of children items
+		std::map<const PropertyGridItem*, Core::Array<PropertyGridItem*>> m_propertyItemsTree;
+
+		//Map from an item to its parent. The parent is ullptr if it's a root item.
+		std::map<const PropertyGridItem*, PropertyGridItem*> m_propertyItemParent;
+
+		// Map of property item to the depth of the property.
+		std::map< const PropertyGridItem*, uint32_t> m_propertyItemDepth;
+
 		//The object currently being displayed
 		Systems::Object* m_pObject;
 
 		bool m_canAddElementToArray;
+
+		struct ParentItemContext
+		{
+			PropertyGridItem* m_pParent;
+			int depth;
+		};
+
+		class ParentItemContextScope
+		{
+		public:
+			ParentItemContextScope(PropertyGridItem* m_pParent, PropertyGridPopulator* pPopulator);
+			~ParentItemContextScope();
+
+		private:
+			PropertyGridPopulator* m_pPopulator;
+			ParentItemContext m_previous;
+		};
+
+		ParentItemContext m_parentItemContext;
 	};
 }

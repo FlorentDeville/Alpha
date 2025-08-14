@@ -36,6 +36,12 @@ void DisconnectOn ## NAME (const Core::CallbackId& id) \
     EVENT_VARIABLE(NAME).Disconnect(id); \
 }
 
+#define CLEAR(NAME) \
+void ClearOn ## NAME () \
+{ \
+    EVENT_VARIABLE(NAME).Clear(); \
+}
+
 //This is the macro you want to use to declare a public event
 // Example : EVENT_DECL(MouseMove, void(const MouseEvent&))
 #define EVENT_DECL(NAME, FUNC) \
@@ -45,7 +51,8 @@ protected: \
     EVENT_VARIABLE_DECL(NAME) \
 public: \
     CONNECT(NAME) \
-    DISCONNECT(NAME)
+    DISCONNECT(NAME) \
+    CLEAR(NAME)
 
 //This is the macro you want to use to declare a private event
 // Example : PRIVATE_EVENT_DECL(MouseMove, void(const MouseEvent&))
@@ -54,4 +61,5 @@ private: \
     EVENT_TYPE_DECL(NAME, FUNC) \
     EVENT_VARIABLE_DECL(NAME) \
     CONNECT(NAME) \
-    DISCONNECT(NAME)
+    DISCONNECT(NAME) \
+    CLEAR(NAME)

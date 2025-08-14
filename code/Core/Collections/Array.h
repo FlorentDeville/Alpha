@@ -51,6 +51,8 @@ namespace Core
 
 		void PushBack(const T& item);
 
+		void Insert(const T& item, uint32_t position);
+
 		uint32_t GetSize() const override;
 
 		void* GetElement(uint32_t index) override;

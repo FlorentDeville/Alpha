@@ -172,7 +172,6 @@ namespace Editors
 			pRightPanelLayout->AddWidget(m_pPropertyGrid);
 
 			m_pPropertyGridPopulator->Init(m_pPropertyGrid);
-			m_pPropertyGridPopulator->OnDataChanged([this]() {PropertyGridPopulator_OnDataChanged(); });
 
 			Core::Sid typenameSid = Systems::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
 			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+
 #include "Widgets/Container.h"
 
 #include <vector>
@@ -24,11 +26,16 @@ namespace Editors
 		~PropertyGridWidget();
 
 		void AddProperty(PropertyGridItem* pProperty, int depth = 0);
+		void InsertProperty(PropertyGridItem* pNewProperty, const PropertyGridItem* pInsertAfter, int depth = 0);
+
+		void RemoveProperty(PropertyGridItem* pProperty);
 
 		void ClearAllItems();
 
+		Core::Array<PropertyGridItem*>& GetPropertyGridItems();
+
 	private:
-		std::vector<PropertyGridItem*> m_properties;
+		Core::Array<PropertyGridItem*> m_properties;
 
 		Widgets::Layout* m_pInternalLayout;
 

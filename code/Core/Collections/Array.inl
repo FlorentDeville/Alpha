@@ -48,6 +48,21 @@ namespace Core
 		++m_size;
 	}
 
+	template<typename T> void Array<T>::Insert(const T& item, uint32_t position)
+	{
+		uint32_t newSize = m_size + 1;
+		if (m_reservedSize < newSize)
+			Reserve((m_reservedSize * 2) + 1);
+
+		//there is a possible optimization here : Reserve will copy/move all the elements from the old array to the new array
+		//and then below I copy/move again to make space at position. I could do it all in a single copy/move.
+		for (uint32_t ii = m_size; ii > position; --ii)
+			m_pStart[ii] = std::move(m_pStart[ii - 1]);
+
+		m_pStart[position] = item;
+		m_size++;
+	}
+
 	template<typename T> uint32_t Array<T>::GetSize() const
 	{
 		return m_size;
