@@ -134,6 +134,12 @@ namespace Editors
 		(*pCallbacks)(pObj, pField, op, index);
 	}
 
+	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
+	{
+		Core::CallbackId id = m_watchers[pObj].Connect(callback);
+		return ObjectWatcherCallbackId(pObj, id);
+	}
+
 	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback)
 	{
 		//ugly const cast here but I can't think of another solution
