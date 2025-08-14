@@ -160,7 +160,7 @@ namespace Editors
 
 		if (PropertyGridItemFactory* pFactory = GetFactory(pElementType->GetSid()))
 		{
-			pFactory->CreateItems(pElementType, pElement, 0);
+			pFactory->CreateItems(pObj, pField, index);
 		}
 		else if (pElementType->IsContainer())
 		{
