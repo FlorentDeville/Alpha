@@ -76,7 +76,7 @@
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
 	{ \
 		Systems::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
-		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute::ATTRIBUTE); \
+		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute(ATTRIBUTE)); \
 	}
 
 // Macro to put first before the class
