@@ -37,8 +37,8 @@ namespace Systems
 		START_REFLECTION(Systems::TransformComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_localTransform)
-			ADD_FIELD(m_parent)
-			ADD_FIELD(m_children)
+			ADD_FIELD_ATTR(m_parent, Hidden)
+			ADD_FIELD_ATTR(m_children, Hidden)
 		END_REFLECTION()
 	};
 }
