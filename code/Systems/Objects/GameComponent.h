@@ -28,7 +28,7 @@ namespace Systems
 
 		START_REFLECTION(Systems::GameComponent)
 			ADD_BASETYPE(Systems::Object)
-			ADD_FIELD(m_guid)
+			ADD_FIELD_ATTR(m_guid, Hidden)
 		END_REFLECTION()
 	};
 
