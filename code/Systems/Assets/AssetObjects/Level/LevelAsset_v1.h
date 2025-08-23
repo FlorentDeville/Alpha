@@ -7,10 +7,16 @@
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Objects/AssetObject.h"
-#include "Systems/Objects/GameObject.h"
+
+namespace Core
+{
+	class Guid;
+}
 
 namespace Systems
 {
+	class GameObject;
+
 	ENABLE_REFLECTION_WITH_NS(Systems, LevelAsset_v1)
 	class LevelAsset_v1 : public AssetObject
 	{
