@@ -46,14 +46,14 @@ namespace Editors
 
 	void ArrayHeaderItem::OnClick_AddArrayElement()
 	{
-		if (!m_pField->GetType()->IsElementPointer())
+		if (!m_pField->GetType()->IsTemplateParamTypePointer())
 		{
 			ObjectWatcher::Get().AddArrayElement(m_pObj, m_pField, nullptr);
 			return;
 		}
 
 		//here I know it's an array of pointers, so I need to add an element to the array and also to create the object
-		const Systems::TypeDescriptor* pElementType = m_pField->GetType()->GetElementType();
+		const Systems::TypeDescriptor* pElementType = m_pField->GetType()->GetTemplateParamType();
 
 		const Systems::TypeDescriptor* pElementBaseType = pElementType;
 		while (pElementBaseType->GetBaseType())

@@ -82,12 +82,12 @@ namespace Editors
 
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 
-		if (pArrayType->IsElementPointer())
+		if (pArrayType->IsTemplateParamTypePointer())
 		{
 			void* pElement = pArray->GetElement(index); //pElement is actually a T** so I need to dereference it
 			uint64_t* pElementPtr = reinterpret_cast<uint64_t*>(pElement);
 			pElementPtr = reinterpret_cast<uint64_t*>(*pElementPtr);
-			pArrayType->GetElementType()->Destruct(pElementPtr);
+			pArrayType->GetTemplateParamType()->Destruct(pElementPtr);
 		}
 		
 		pArray->RemoveElement(index);
@@ -173,7 +173,7 @@ namespace Editors
 		void* pArrayElement = pArray->GetElement(index);
 
 		const Systems::TypeDescriptor* pArrayType = pField->GetType();
-		if (pArrayType->IsElementPointer())
+		if (pArrayType->IsTemplateParamTypePointer())
 		{
 			//if it's an array of pointer, just copy the pointer
 			uint64_t* pDst = static_cast<uint64_t*>(pArrayElement);
@@ -183,7 +183,7 @@ namespace Editors
 		else
 		{
 			//if it's an array of element, copy the element
-			pField->GetType()->GetElementType()->Copy(pValue, pArrayElement);
+			pField->GetType()->GetTemplateParamType()->Copy(pValue, pArrayElement);
 		}
 	}
 }

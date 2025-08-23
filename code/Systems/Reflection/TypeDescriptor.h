@@ -43,12 +43,12 @@ namespace Systems
 		Core::Sid GetSid() const;
 		const std::vector<FieldDescriptor*>& GetFields() const;
 		const TypeDescriptor* GetBaseType() const;
-		const TypeDescriptor* GetElementType() const;
+		const TypeDescriptor* GetTemplateParamType() const;
 		Core::Sid GetUpgradeType() const;
 		uint64_t GetSize() const;
 
 		bool IsContainer() const;
-		bool IsElementPointer() const;
+		bool IsTemplateParamTypePointer() const;
 
 		// True if this type inherits from baseClassSid
 		bool InheritsFrom(Core::Sid baseClassSid) const;
@@ -86,10 +86,16 @@ namespace Systems
 		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
-		Core::Sid m_upgradeType;			// Sid of the type this class should be upgraded to
-		bool m_isContainer;					// true if this is an array, m_pElementType is the type of the elements in the array.
-		bool m_isElementPointer;			// this is an array of pointer to m_pElementType.
-		TypeDescriptor* m_pElementType;		// this is the type of the elements when the field is a container. it must be iteratable with begin/end.
+		Core::Sid m_upgradeType;				// Sid of the type this class should be upgraded to
+		
+		bool m_isContainer : 1;					// True if this is an array, m_pTemplateType is the type of the elements in the array. Can be iterated with begin/end.
+		bool m_isTemplate : 1;					// True if this is a templated type. Arrays are templated types.
+		bool m_isTemplateParamTypePointer : 1;	// True if the current type uses a pointer to a templated type. For example Core::Array<T*>.
+
+		// This is the type of the template parameter. For example it is T in Core::Array<T> or A in HardAssetRed<A>.
+		// TypeDescriptor always represents the type itself, never a pointer to the type. So if the template type is T*, thwn
+		// m_isTemplateTypePointer is true.
+		TypeDescriptor* m_pTemplateParamType;
 	};
 
 	template<typename T> void TypeDescriptor::Init(T* /*ptr*/)
@@ -112,8 +118,8 @@ namespace Systems
 		m_isContainer = true;
 
 		using NonPointerElementType = typename RemovePointer<T>::type;
-		m_pElementType = TypeResolver<NonPointerElementType>::GetType();
+		m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
 
-		m_isElementPointer = IsPointer<T>::value;
+		m_isTemplateParamTypePointer = IsPointer<T>::value;
 	}
 }

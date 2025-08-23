@@ -148,11 +148,11 @@ namespace Editors
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		const Systems::TypeDescriptor* pArrayType = pField->GetType();
-		const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
+		const Systems::TypeDescriptor* pElementType = pArrayType->GetTemplateParamType();
 		bool isObject = pElementType->IsObject();
 
 		void* pElement = pArray->GetElement(index);
-		if (pArrayType->IsElementPointer())
+		if (pArrayType->IsTemplateParamTypePointer())
 		{
 			uint64_t* pCharPtr = reinterpret_cast<uint64_t*>(pElement);
 			pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
@@ -246,7 +246,7 @@ namespace Editors
 		const Systems::TypeDescriptor* pFieldType = pField->GetType();	
 		
 		if (pFieldType->IsContainer()) 
-			pFieldType = pFieldType->GetElementType();
+			pFieldType = pFieldType->GetTemplateParamType();
 
 		switch (pFieldType->GetSid())
 		{

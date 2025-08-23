@@ -14,8 +14,9 @@ namespace Systems
 		, m_pBaseType(nullptr)
 		, m_upgradeType(Core::INVALID_SID)
 		, m_isContainer(false)
-		, m_isElementPointer(false)
-		, m_pElementType(nullptr)
+		, m_isTemplate(false)
+		, m_isTemplateParamTypePointer(false)
+		, m_pTemplateParamType(nullptr)
 		, Construct()
 		, InPlaceConstruct()
 		, Destruct()
@@ -76,9 +77,9 @@ namespace Systems
 		return m_pBaseType;
 	}
 
-	const TypeDescriptor* TypeDescriptor::GetElementType() const
+	const TypeDescriptor* TypeDescriptor::GetTemplateParamType() const
 	{
-		return m_pElementType;
+		return m_pTemplateParamType;
 	}
 
 	Core::Sid TypeDescriptor::GetUpgradeType() const
@@ -91,9 +92,9 @@ namespace Systems
 		return m_isContainer;
 	}
 
-	bool TypeDescriptor::IsElementPointer() const
+	bool TypeDescriptor::IsTemplateParamTypePointer() const
 	{
-		return m_isElementPointer;
+		return m_isTemplateParamTypePointer;
 	}
 	
 	uint64_t TypeDescriptor::GetSize() const

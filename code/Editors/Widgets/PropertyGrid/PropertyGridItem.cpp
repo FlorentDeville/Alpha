@@ -149,9 +149,9 @@ namespace Editors
 		const int BUFFER_SIZE = 64;
 		char buffer[BUFFER_SIZE] = { '\0' };
 
-		if (m_pField->GetType()->GetElementType()->IsObject())
+		if (m_pField->GetType()->GetTemplateParamType()->IsObject())
 		{
-			assert(m_pField->GetType()->IsElementPointer());
+			assert(m_pField->GetType()->IsTemplateParamTypePointer());
 
 			Core::BaseArray* pArray = m_pField->GetDataPtr<Core::BaseArray>(m_pObj);
 
