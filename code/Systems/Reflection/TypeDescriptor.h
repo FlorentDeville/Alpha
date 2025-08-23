@@ -37,6 +37,7 @@ namespace Systems
 
 		const std::string& GetName() const;
 		Core::Sid GetSid() const;
+		Core::Sid GetSidWithoutTemplateParam() const;
 		const std::vector<FieldDescriptor*>& GetFields() const;
 		const TypeDescriptor* GetBaseType() const;
 		const TypeDescriptor* GetTemplateParamType() const;
@@ -44,6 +45,7 @@ namespace Systems
 		uint64_t GetSize() const;
 
 		bool IsContainer() const;
+		bool IsTemplate() const;
 		bool IsTemplateParamTypePointer() const;
 
 		// True if this type inherits from baseClassSid
@@ -77,9 +79,10 @@ namespace Systems
 		void (*Copy)(const void* pSrc, void* pDst);
 
 	private:
-		std::string m_name;
+		std::string m_name;						// Full name of the type with namespace and template parameters.
 		std::vector<FieldDescriptor*> m_fields;
-		Core::Sid m_sid; //sid of m_name. It is deterministic, can be serialized and used to compare types.
+		Core::Sid m_sid;						// Sid of m_name. It is deterministic, can be serialized and used to compare types.
+		Core::Sid m_sidWithoutTemplateParam;	// Sid of m_name without the template param. For example SID("Core::Array") or SID("Systems::HardAssetRef")
 		uint64_t m_size;
 		const TypeDescriptor* m_pBaseType;
 		Core::Sid m_upgradeType;				// Sid of the type this class should be upgraded to
@@ -120,6 +123,8 @@ namespace Systems
 
 			pType->m_isContainer = true;
 			pType->m_isTemplate = true;
+
+			pType->m_sidWithoutTemplateParam = CONSTSID("Core::Array");
 
 			using NonPointerElementType = typename RemovePointer<T>::type;
 			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();

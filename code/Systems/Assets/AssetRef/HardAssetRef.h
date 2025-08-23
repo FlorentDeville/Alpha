@@ -48,6 +48,8 @@ namespace Systems
 			pType->m_isContainer = false;
 			pType->m_isTemplate = true;
 
+			pType->m_sidWithoutTemplateParam = CONSTSID("Systems::HardAssetRef");
+
 			using NonPointerElementType = typename RemovePointer<T>::type;
 			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
 

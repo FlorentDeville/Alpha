@@ -21,8 +21,10 @@ namespace Systems
 		, InPlaceConstruct()
 		, Destruct()
 		, Upgrade()
+		, Copy()
 	{
 		m_sid = Core::MakeSid(name);
+		m_sidWithoutTemplateParam = m_sid;
 	}
 
 	TypeDescriptor::~TypeDescriptor()
@@ -67,6 +69,11 @@ namespace Systems
 		return m_sid;
 	}
 
+	Core::Sid TypeDescriptor::GetSidWithoutTemplateParam() const
+	{
+		return m_sidWithoutTemplateParam;
+	}
+
 	const std::vector<FieldDescriptor*>& TypeDescriptor::GetFields() const
 	{
 		return m_fields;
@@ -90,6 +97,11 @@ namespace Systems
 	bool TypeDescriptor::IsContainer() const
 	{
 		return m_isContainer;
+	}
+
+	bool TypeDescriptor::IsTemplate() const
+	{
+		return m_isTemplate;
 	}
 
 	bool TypeDescriptor::IsTemplateParamTypePointer() const
