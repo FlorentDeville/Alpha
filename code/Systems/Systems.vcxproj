@@ -27,6 +27,7 @@
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
+    <ClInclude Include="Assets\AssetRef\HardAssetRef.h" />
     <ClInclude Include="Assets\AssetType.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
     <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
@@ -107,6 +108,9 @@
     <ProjectReference Include="..\Rendering\Rendering.vcxproj">
       <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\AssetRef\HardAssetRef.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
