@@ -20,17 +20,13 @@ namespace Systems
 
 	class TypeDescriptor
 	{
+		template<typename T> friend class TypeInitializer;
+
 	public:
 		// This constructor creates a non initialized TypeDescriptor.
 		TypeDescriptor(const std::string& name);
 
 		~TypeDescriptor();
-
-		// Generic function to initialize the TypeDescriptor. I pass a dummy parameter otherwise I can't overload the function to specialize it.
-		template<typename T> void Init(T* ptr = nullptr);
-
-		// Initialize a Core::Array. I pass a dummy parameter otherwise I can't overload the function to specialize it.
-		template<typename T> void Init(Core::Array<T>* ptr = nullptr);
 
 		bool IsInitialized() const;
 
@@ -98,29 +94,37 @@ namespace Systems
 		TypeDescriptor* m_pTemplateParamType;
 	};
 
-	template<typename T> void TypeDescriptor::Init(T* /*ptr*/)
+	template<typename T> class TypeInitializer
 	{
-		m_size = sizeof(T);
-		Construct = []() -> void* { return new T(); };
-		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) T(); };
-		Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
-		Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<T*>(pDst) = *reinterpret_cast<const T*>(pSrc); };
-	}
+	public:
+		static void Run(TypeDescriptor* pType)
+		{
+			pType->m_size = sizeof(T);
+			pType->Construct = []() -> void* { return new T(); };
+			pType->InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) T(); };
+			pType->Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
+			pType->Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<T*>(pDst) = *reinterpret_cast<const T*>(pSrc); };
+		}
+	};
 
-	template<typename T> void TypeDescriptor::Init(Core::Array<T>* /*ptr*/)
+	template<typename T> class TypeInitializer<Core::Array<T>>
 	{
-		m_size = sizeof(Core::Array<T>);
-		Construct = []() -> void* { return new Core::Array<T>(); };
-		InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) Core::Array<T>(); };
-		Destruct = [](void* pObject) { delete reinterpret_cast<Core::Array<T>*>(pObject); };
-		Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<Core::Array<T>*>(pDst) = *reinterpret_cast<const Core::Array<T>*>(pSrc); };
+	public:
+		static void Run(TypeDescriptor* pType)
+		{
+			pType->m_size = sizeof(Core::Array<T>);
+			pType->Construct = []() -> void* { return new Core::Array<T>(); };
+			pType->InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) Core::Array<T>(); };
+			pType->Destruct = [](void* pObject) { delete reinterpret_cast<Core::Array<T>*>(pObject); };
+			pType->Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<Core::Array<T>*>(pDst) = *reinterpret_cast<const Core::Array<T>*>(pSrc); };
 
-		m_isContainer = true;
-		m_isTemplate = true;
+			pType->m_isContainer = true;
+			pType->m_isTemplate = true;
 
-		using NonPointerElementType = typename RemovePointer<T>::type;
-		m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
+			using NonPointerElementType = typename RemovePointer<T>::type;
+			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
 
-		m_isTemplateParamTypePointer = IsPointer<T>::value;
-	}
+			pType->m_isTemplateParamTypePointer = IsPointer<T>::value;
+		}
+	};
 }

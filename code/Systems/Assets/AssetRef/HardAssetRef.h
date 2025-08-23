@@ -33,6 +33,54 @@ namespace Systems
 		NewAssetId m_id;
 		T* m_pPtr;
 	};
+
+	template<typename T> class TypeInitializer<Systems::HardAssetRef<T>>
+	{
+	public:
+		static void Run(TypeDescriptor* pType)
+		{
+			pType->m_size = sizeof(HardAssetRef<T>);
+			pType->Construct = []() -> void* { return new HardAssetRef<T>(); };
+			pType->InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) HardAssetRef<T>(); };
+			pType->Destruct = [](void* pObject) { delete reinterpret_cast<HardAssetRef<T>*>(pObject); };
+			pType->Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<HardAssetRef<T>*>(pDst) = *reinterpret_cast<const HardAssetRef<T>*>(pSrc); };
+
+			pType->m_isContainer = false;
+			pType->m_isTemplate = true;
+
+			using NonPointerElementType = typename RemovePointer<T>::type;
+			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
+
+			pType->m_isTemplateParamTypePointer = false;
+		}
+	};
+
+	template<typename T> class FieldInitializer<Systems::HardAssetRef<T>>
+	{
+	public:
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		{
+			typedef RemovePointer<T>::type NonPointerTemplateParamType;
+			TypeDescriptor* pTemplateParamType = TypeResolver<NonPointerTemplateParamType>::GetType();
+
+			bool isTemplateParamPointer = IsPointer<T>::value;
+			assert(!isTemplateParamPointer); // HardAssetRef never use a pointer as template param type.
+
+			std::string templateTypename = "Systems::HardAssetRef<" + pTemplateParamType->GetName() + ">";
+
+			TypeDescriptor* pTemplateType = Systems::ReflectionMgr::Get().GetOrAddType(templateTypename);
+			if (!pTemplateType->IsInitialized())
+			{
+				TypeInitializer<HardAssetRef<T>>::Run(pTemplateType);
+			}
+
+			pField->m_name = name;
+			pField->m_offset = offset;
+			pField->m_pType = pTemplateType;
+			pField->m_isPointer = false;
+			pField->m_attribute = attribute;
+		}
+	};
 }
 
 #include "Systems/Assets/AssetRef/HardAssetRef.inl"

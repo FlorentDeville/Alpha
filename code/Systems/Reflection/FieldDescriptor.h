@@ -98,7 +98,7 @@ namespace Systems
 			TypeDescriptor* pArrayType = Systems::ReflectionMgr::Get().GetOrAddType(arrayTypename);
 			if (!pArrayType->IsInitialized())
 			{
-				pArrayType->Init((Core::Array<T>*)nullptr);
+				Systems::TypeInitializer<Core::Array<T>>::Run(pArrayType);
 			}
 
 			pField->m_name = name;
