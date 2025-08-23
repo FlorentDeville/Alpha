@@ -116,6 +116,7 @@ namespace Systems
 		Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<Core::Array<T>*>(pDst) = *reinterpret_cast<const Core::Array<T>*>(pSrc); };
 
 		m_isContainer = true;
+		m_isTemplate = true;
 
 		using NonPointerElementType = typename RemovePointer<T>::type;
 		m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
