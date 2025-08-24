@@ -29,6 +29,12 @@ namespace Systems
 		// Return true if a valid pointer is found, false otherwise.
 		bool Resolve();
 
+		static void RegisterFields(TypeDescriptor* pType)
+		{
+			Systems::FieldDescriptor* pIdField = pType->AddField();
+			Systems::FieldInitializer<decltype(HardAssetRef<T>::m_id)>::Run(pIdField, "m_id", offsetof(HardAssetRef<T>, m_id), Systems::FieldAttribute());
+		}
+
 	private:
 		NewAssetId m_id;
 		T* m_pPtr;
@@ -54,6 +60,8 @@ namespace Systems
 			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
 
 			pType->m_isTemplateParamTypePointer = false;
+
+			HardAssetRef<T>::RegisterFields(pType);
 		}
 	};
 
