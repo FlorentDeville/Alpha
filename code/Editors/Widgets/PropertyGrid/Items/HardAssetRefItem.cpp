@@ -39,7 +39,12 @@ namespace Editors
 		pButton->AddWidget(pLabel);
 		pButton->OnClick([this]()
 			{
-				AssetDialog* pDialog = new AssetDialog(Core::INVALID_SID);
+				const Systems::TypeDescriptor* pTemplateParamType = m_pField->GetType()->GetTemplateParamType();
+				const Systems::NewAssetType* pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(pTemplateParamType->GetSid());
+				if (!pAssetType)
+					return;
+
+				AssetDialog* pDialog = new AssetDialog(pAssetType->GetSid());
 				pDialog->Open();
 				pDialog->OnOk([this](Systems::NewAssetId id)
 					{
