@@ -12,6 +12,7 @@
 #include "Systems/Assets/AssetType/NewAssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 #include "Systems/Assets/NewAssetId.h"
+#include "Systems/Reflection/TypeResolver.h"
 
 #include <functional>
 #include <map>
@@ -57,6 +58,7 @@ namespace Systems
 		const std::vector<Asset*>& GetLevels() const;
 
 		const NewAssetType& GetAssetType(Core::Sid sid) const;
+		const NewAssetType* GetAssetTypeFromClassName(Core::Sid className) const;
 
 		void GetAssets(Core::Sid assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const;
 
@@ -108,6 +110,9 @@ namespace Systems
 	{
 		const std::string& name = T::GetAssetTypeName();
 		Core::Sid sid = T::GetAssetTypeNameSid();
-		m_assetTypes[sid] = NewAssetType(name, sid);
+
+		const std::string className = TypeResolver<T>::GetTypename();
+
+		m_assetTypes[sid] = NewAssetType(name, sid, SID(className.c_str()));
 	}
 }
