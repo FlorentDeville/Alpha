@@ -4,9 +4,11 @@
 
 #pragma once
 
-#include "Systems/Assets/NewAssetId.h"
-#include "Systems/Objects/GameComponent.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
+#include "Systems/Assets/AssetRef/HardAssetRef.h"
+#include "Systems/Objects/GameComponent.h"
 
 namespace Systems
 {
@@ -18,14 +20,13 @@ namespace Systems
 		~StaticMeshComponent();
 
 	private:
-
-		NewAssetId m_meshId;
-		NewAssetId m_materialId;
+		HardAssetRef<MeshAsset> m_mesh;
+		HardAssetRef<MaterialInstanceAsset> m_material;
 
 		START_REFLECTION(Systems::StaticMeshComponent)
 			ADD_BASETYPE(Systems::GameComponent)
-			ADD_FIELD(m_meshId)
-			ADD_FIELD(m_materialId)
+			ADD_FIELD(m_mesh)
+			ADD_FIELD(m_material)
 		END_REFLECTION()
 	};
 }

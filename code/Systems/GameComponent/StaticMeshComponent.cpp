@@ -8,8 +8,8 @@ namespace Systems
 {
 	StaticMeshComponent::StaticMeshComponent()
 		: GameComponent()
-		, m_meshId()
-		, m_materialId()
+		, m_mesh()
+		, m_material()
 	{ }
 
 	StaticMeshComponent::~StaticMeshComponent()
