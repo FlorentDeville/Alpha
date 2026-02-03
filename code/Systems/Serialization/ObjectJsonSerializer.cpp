@@ -21,10 +21,6 @@
 
 namespace Systems
 {
-	bool SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray);
-	bool SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj);
-	bool SerializeObject(const Object* pObject, Core::JsonObject& jsonObj);
-
 	template<typename T> bool SerializeData(const T& data, Core::JsonValue& value)
 	{
 		value.Set(data);
@@ -81,7 +77,7 @@ namespace Systems
 		return true;
 	}
 
-	bool SerializeField(const void* pFieldPtr, const FieldDescriptor* pField, const TypeDescriptor* pDescription, Core::JsonValue& value)
+	bool ObjectJsonSerializer::SerializeField(const void* pFieldPtr, const FieldDescriptor* pField, const TypeDescriptor* pDescription, Core::JsonValue& value)
 	{
 		if (pField && pField->IsPointer())
 		{
@@ -106,6 +102,15 @@ namespace Systems
 		}
 		else if (pDescription->IsClass())
 		{
+			//save the list of HardAssetRef
+			if (pDescription->GetSidWithoutTemplateParam() == CONSTSID("Systems::HardAssetRef"))
+			{
+				const std::vector<FieldDescriptor*>& fields = pDescription->GetFields();
+				const FieldDescriptor* pFieldId = fields[0];
+				const Systems::NewAssetId* pAssetId = pFieldId->GetDataPtr<Systems::NewAssetId>(pFieldPtr);
+				m_hardAssetRefArray.PushBack(*pAssetId);
+			}
+
 			Core::JsonObject* pJsonObject = new Core::JsonObject();
 			value.Set(pJsonObject);
 			return SerializeClass(pFieldPtr, pDescription, *pJsonObject);
@@ -220,7 +225,7 @@ namespace Systems
 		return true;
 	}
 
-	bool SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray)
+	bool ObjectJsonSerializer::SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray)
 	{
 		const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pArrayPtr);
 		const TypeDescriptor* pArrayType = pFieldArray->GetType();
@@ -247,7 +252,7 @@ namespace Systems
 		return true;
 	}
 
-	bool SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj)
+	bool ObjectJsonSerializer::SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj)
 	{
 		const TypeDescriptor* pBaseType = pType->GetBaseType();
 		if (pBaseType)
@@ -270,7 +275,7 @@ namespace Systems
 		return true;
 	}
 
-	bool SerializeObject(const Object* pObject, Core::JsonObject& jsonObj)
+	bool ObjectJsonSerializer::SerializeObject(const Object* pObject, Core::JsonObject& jsonObj)
 	{
 		const Systems::TypeDescriptor* pTypeDescriptor = pObject->GetTypeDescriptor();
 		if (!pTypeDescriptor)
@@ -296,5 +301,10 @@ namespace Systems
 	bool ObjectJsonSerializer::Serialize(const Object* pObject, Core::JsonObject& jsonObj)
 	{
 		return SerializeObject(pObject, jsonObj);
+	}
+
+	const Core::Array<Systems::NewAssetId>& ObjectJsonSerializer::GetHardAssetRefArray() const
+	{
+		return m_hardAssetRefArray;
 	}
 }

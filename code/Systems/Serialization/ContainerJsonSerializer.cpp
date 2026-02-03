@@ -4,6 +4,7 @@
 
 #include "Systems/Serialization/ContainerJsonSerializer.h"
 
+#include "Core/Collections/HashSet.h"
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonObject.h"
 
@@ -24,16 +25,30 @@ namespace Systems
 			pJsonHeader->AddMember("id", pContainer->GetId().ToString());
 		}
 
+		//write the list of hard asset reference
+		Core::JsonArray* pJsonHardAssetRefArray = pJsonObject.AddArray("hard-asset-refs");
+
 		//loop through every asset and serialize them
-		Core::JsonArray* pJsonArray = pJsonObject.AddArray("objects");
+		Core::JsonArray* pJsonObjectArray = pJsonObject.AddArray("objects");
 		const std::vector<Systems::AssetObject*>& objects = pContainer->GetAssets();
 		for (const Systems::AssetObject* obj : objects)
 		{
-			Core::JsonObject* pJsonObj = pJsonArray->AddObject();
+			Core::JsonObject* pJsonObj = pJsonObjectArray->AddObject();
 			ObjectJsonSerializer ser;
 			bool res = ser.Serialize(obj, *pJsonObj);
 			if (!res)
 				return false;
+
+			Core::HashSet<Systems::NewAssetId> uniqueHardAssetRef;
+
+			const Core::Array<Systems::NewAssetId>& hardAssetRefArray = ser.GetHardAssetRefArray();
+			for (const Systems::NewAssetId& id : hardAssetRefArray)
+			{
+				bool alreadyExists = uniqueHardAssetRef.Insert(id);
+
+				if(!alreadyExists)
+					pJsonHardAssetRefArray->AddElement(id.ToString());
+			}
 		}
 
 		return true;
