@@ -191,6 +191,18 @@ namespace Systems
 		return it->second;
 	}
 
+	const NewAssetType* AssetMgr::GetAssetTypeFromClassName(Core::Sid className) const
+	{
+		for (const std::pair<const Core::Sid, NewAssetType>& element : m_assetTypes)
+		{
+			const NewAssetType& assetType = element.second;
+			if (assetType.GetClassName() == className)
+				return &assetType;
+		}
+
+		return nullptr;
+	}
+
 	void AssetMgr::GetAssets(Core::Sid assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const
 	{
 		for(const std::pair<const NewAssetId, AssetMetadata>& pair : m_metadata)

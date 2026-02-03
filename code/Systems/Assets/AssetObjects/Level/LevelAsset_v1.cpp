@@ -4,6 +4,8 @@
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
 
+#include "Systems/Objects/GameObject.h"
+
 namespace Systems
 {
 	LevelAsset_v1::LevelAsset_v1()

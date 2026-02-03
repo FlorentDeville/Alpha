@@ -74,7 +74,7 @@ namespace Systems
 		if (pFieldType->IsContainer())
 		{
 			Core::BaseArray* pArray = reinterpret_cast<Core::BaseArray*>(pFieldPtr);
-			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldType->GetElementType(), pFieldType->IsElementPointer(), *pArray);
+			bool res = DeserializeArray(*jsonFieldValue.GetValueAsArray(), pFieldType->GetTemplateParamType(), pFieldType->IsTemplateParamTypePointer(), *pArray);
 			return res;
 		}
 		else if (pFieldType->IsObject())

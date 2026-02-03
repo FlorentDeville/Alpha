@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Guid/Guid.h"
+
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"

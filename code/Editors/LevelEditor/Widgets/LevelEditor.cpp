@@ -29,6 +29,8 @@
 
 #include "Rendering/RenderModule.h"
 
+#include "Systems/Objects/GameObject.h"
+
 #include "Widgets/Container.h"
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"

@@ -230,7 +230,7 @@ namespace Systems
 		for(int ii = 0; ii < size; ++ii)
 		{
 			const void* pItem = pArray->GetConstElement(ii);
-			if (pArrayType->IsElementPointer())
+			if (pArrayType->IsTemplateParamTypePointer())
 			{
 				const uint64_t* pPtr = reinterpret_cast<const uint64_t*>(pItem);
 				pItem = reinterpret_cast<const void*>(*pPtr);
@@ -239,7 +239,7 @@ namespace Systems
 			Core::JsonValue* pNewValue = new Core::JsonValue();
 			jsonArray.AddElement(pNewValue);
 
-			bool res = SerializeField(pItem, nullptr, pArrayType->GetElementType(), *pNewValue);
+			bool res = SerializeField(pItem, nullptr, pArrayType->GetTemplateParamType(), *pNewValue);
 			if (!res)
 				return false;
 		}

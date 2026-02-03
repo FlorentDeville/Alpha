@@ -8,6 +8,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+#include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Models/ModelIndex.h"
 #include "Widgets/Models/SelectionModel.h"

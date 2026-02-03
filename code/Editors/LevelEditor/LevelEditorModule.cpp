@@ -20,6 +20,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Loader.h"
+#include "Systems/Objects/GameObject.h"
 
 //#pragma optimize("", off)
 

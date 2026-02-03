@@ -9,17 +9,13 @@ namespace Systems
 	NewAssetType::NewAssetType()
 		: m_name()
 		, m_sid(Core::INVALID_SID)
+		, m_classNameSid(Core::INVALID_SID)
 	{ }
 
-	NewAssetType::NewAssetType(const std::string& name)
-		: m_name()
-	{
-		SID(m_name);
-	}
-
-	NewAssetType::NewAssetType(const std::string& name, Core::Sid sid)
+	NewAssetType::NewAssetType(const std::string& name, Core::Sid sid, Core::Sid classNameSid)
 		: m_name(name)
 		, m_sid(sid)
+		, m_classNameSid(classNameSid)
 	{ }
 
 	NewAssetType::~NewAssetType()
@@ -33,5 +29,10 @@ namespace Systems
 	Core::Sid NewAssetType::GetSid() const
 	{
 		return m_sid;
+	}
+
+	Core::Sid NewAssetType::GetClassName() const
+	{
+		return m_classNameSid;
 	}
 }

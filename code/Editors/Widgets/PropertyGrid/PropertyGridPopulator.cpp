@@ -15,6 +15,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ObjectHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
@@ -148,11 +149,11 @@ namespace Editors
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		const Systems::TypeDescriptor* pArrayType = pField->GetType();
-		const Systems::TypeDescriptor* pElementType = pArrayType->GetElementType();
+		const Systems::TypeDescriptor* pElementType = pArrayType->GetTemplateParamType();
 		bool isObject = pElementType->IsObject();
 
 		void* pElement = pArray->GetElement(index);
-		if (pArrayType->IsElementPointer())
+		if (pArrayType->IsTemplateParamTypePointer())
 		{
 			uint64_t* pCharPtr = reinterpret_cast<uint64_t*>(pElement);
 			pElement = reinterpret_cast<uint64_t*>(*pCharPtr);
@@ -225,12 +226,20 @@ namespace Editors
 			}
 			else if (memberType->IsClass())
 			{
-				PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
-				Internal_AddPropertyGridItem(pItem);
+				if (memberType->GetSidWithoutTemplateParam() == CONSTSID("Systems::HardAssetRef"))
+				{
+					HardAssetRefItem* pItem = new HardAssetRefItem(static_cast<Systems::Object*>(pData), pField, 0);
+					Internal_AddPropertyGridItem(pItem);
+				}
+				else
+				{
+					PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
+					Internal_AddPropertyGridItem(pItem);
 
-				ParentItemContextScope janitor(pItem, this);
+					ParentItemContextScope janitor(pItem, this);
 
-				CreatePropertiesForTypeMembers(memberType, pMemberPtr);
+					CreatePropertiesForTypeMembers(memberType, pMemberPtr);
+				}
 			}
 			else //pod
 			{
@@ -246,7 +255,7 @@ namespace Editors
 		const Systems::TypeDescriptor* pFieldType = pField->GetType();	
 		
 		if (pFieldType->IsContainer()) 
-			pFieldType = pFieldType->GetElementType();
+			pFieldType = pFieldType->GetTemplateParamType();
 
 		switch (pFieldType->GetSid())
 		{
