@@ -10,6 +10,8 @@
 
 namespace Systems
 {
+	class GameObject;
+
 	ENABLE_REFLECTION_WITH_NS(Systems, TransformComponent)
 	class TransformComponent : public GameComponent
 	{
@@ -21,7 +23,7 @@ namespace Systems
 		void SetLocalTx(const Core::Mat44f& localTx);
 
 		const Core::Guid& GetParentGuid() const;
-		void SetParentGuid(const Core::Guid& parentGuid);
+		void SetParent(Systems::GameObject* pParentGo);
 
 		const Core::Array<Core::Guid>& GetChildrenGuid() const;
 
@@ -40,6 +42,9 @@ namespace Systems
 			ADD_FIELD_ATTR(m_parent, Hidden)
 			ADD_FIELD_ATTR(m_children, Hidden)
 		END_REFLECTION()
+
+		// Cached pointer to the parent game object.
+		Systems::GameObject* m_pParentGo;
 	};
 }
 

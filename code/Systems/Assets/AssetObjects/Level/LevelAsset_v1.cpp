@@ -50,7 +50,7 @@ namespace Systems
 			return;
 
 		pGoParent->GetTransform().AddChild(pGo->GetGuid());
-		pGo->GetTransform().SetParentGuid(pGoParent->GetGuid());
+		pGo->GetTransform().SetParent(pGoParent);
 	}
 
 	void LevelAsset_v1::DeleteGameObject(GameObject* pGo)
@@ -93,5 +93,21 @@ namespace Systems
 	const Core::Array<GameObject*>& LevelAsset_v1::GetGameObjectsArray() const
 	{
 		return m_gameObjectsArray;
+	}
+
+	void LevelAsset_v1::PostLoad()
+	{
+		for (Systems::GameObject* pGo : m_gameObjectsArray)
+		{
+			const Core::Guid& parentGuid = pGo->GetTransform().GetParentGuid();
+			if (!parentGuid.IsValid())
+				continue;
+
+			GameObject* pParentGo = FindGameObject(parentGuid);
+			if (!pParentGo)
+				continue;
+
+			pGo->GetTransform().SetParent(pParentGo);
+		}
 	}
 }

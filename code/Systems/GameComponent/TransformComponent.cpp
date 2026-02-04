@@ -4,6 +4,8 @@
 
 #include "Systems/GameComponent/TransformComponent.h"
 
+#include "Systems/Objects/GameObject.h"
+
 namespace Systems
 {
 	TransformComponent::TransformComponent()
@@ -31,9 +33,12 @@ namespace Systems
 		return m_parent;
 	}
 
-	void TransformComponent::SetParentGuid(const Core::Guid& parentGuid)
+	void TransformComponent::SetParent(Systems::GameObject* pParentGo)
 	{
-		m_parent = parentGuid;
+		m_pParentGo = pParentGo;
+
+		if (m_pParentGo)
+			m_parent = m_pParentGo->GetGuid();
 	}
 
 	const Core::Array<Core::Guid>& TransformComponent::GetChildrenGuid() const

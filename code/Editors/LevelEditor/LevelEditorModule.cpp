@@ -296,7 +296,7 @@ namespace Editors
 		}
 
 		//set the new parent to the child
-		pGoChild->GetTransform().SetParentGuid(parent);
+		pGoChild->GetTransform().SetParent(pGoNewParent);
 
 		m_onReparentGameObject(pGoChild, pGoOldParent, pGoNewParent);
 	}

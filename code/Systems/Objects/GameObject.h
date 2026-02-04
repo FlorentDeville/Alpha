@@ -37,7 +37,7 @@ namespace Systems
 		TransformComponent& GetTransform();
 		const TransformComponent& GetTransform() const;
 
-		void PostLoad();
+		void PostLoad() override;
 
 	private:
 		std::string m_name;
