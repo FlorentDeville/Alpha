@@ -13,6 +13,7 @@
 #include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/AssetId.h"
+#include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/Object.h"
 #include "Systems/Reflection/ReflectionMgr.h"
@@ -23,11 +24,7 @@
 
 namespace Systems
 {
-	bool DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject);
-	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer);
-	bool DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject, bool constructInPlace);
-
-	bool DeserializeArray(const Core::JsonArray& jsonArray, const TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array)
+	bool ObjectJsonDeserializer::DeserializeArray(const Core::JsonArray& jsonArray, const TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array)
 	{
 		size_t size = jsonArray.GetSize();
 		array.Resize(static_cast<int32_t>(size));
@@ -55,7 +52,7 @@ namespace Systems
 		return true;
 	}
 
-	bool DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer)
+	bool ObjectJsonDeserializer::DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer)
 	{
 		//Watch out : pFieldDescriptor can be null if this is a field from an array
 		void* ptr = pFieldPtr;
@@ -238,7 +235,7 @@ namespace Systems
 		return true;
 	}
 
-	bool DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject, bool constructInPlace)
+	bool ObjectJsonDeserializer::DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject, bool constructInPlace)
 	{
 		const std::vector<Core::JsonMember*>& members = jsonObject->GetMembers();
 
@@ -295,7 +292,7 @@ namespace Systems
 		return true;
 	}
 
-	bool DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject)
+	bool ObjectJsonDeserializer::DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject)
 	{
 		const TypeDescriptor* pBaseType = pType->GetBaseType();
 		if (pBaseType)
@@ -318,11 +315,21 @@ namespace Systems
 				return false;
 		}
 
+		if (pType->GetSidWithoutTemplateParam() == CONSTSID("Systems::HardAssetRef"))
+		{
+			m_hardAssetRefArray.PushBack(pObject);
+		}
+
 		return true;
 	}
 
 	bool ObjectJsonDeserializer::Deserialize(const Core::JsonObject& jsonObject, Object** ppObject)
 	{
 		return DeserializeObject(&jsonObject, ppObject, false);
+	}
+
+	const Core::Array<void*>& ObjectJsonDeserializer::GetHardAssetRefArray() const
+	{
+		return m_hardAssetRefArray;
 	}
 }
