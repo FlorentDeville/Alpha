@@ -42,6 +42,8 @@ namespace Systems
 
 		const Core::Array<GameObject*>& GetGameObjectsArray() const;
 
+		Core::Array<GameObject*>& GetRootGameObjects();
+
 		void PostLoad() override;
 
 	private:

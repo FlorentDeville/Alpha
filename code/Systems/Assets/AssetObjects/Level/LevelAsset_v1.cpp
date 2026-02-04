@@ -112,6 +112,11 @@ namespace Systems
 		return m_gameObjectsArray;
 	}
 
+	Core::Array<GameObject*>& LevelAsset_v1::GetRootGameObjects()
+	{
+		return m_rootsGameObject;
+	}
+
 	void LevelAsset_v1::PostLoad()
 	{
 		for (const Core::Guid& root : m_roots)
