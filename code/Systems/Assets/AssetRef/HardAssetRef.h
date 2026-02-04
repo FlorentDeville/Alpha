@@ -5,6 +5,8 @@
 #pragma once
 
 #include "Systems/Assets/NewAssetId.h"
+#include "Systems/Reflection/FieldDescriptor.h"
+#include "Systems/Reflection/TypeDescriptor.h"
 
 namespace Systems
 {

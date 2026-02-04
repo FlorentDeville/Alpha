@@ -95,6 +95,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Callbacks\CallbackId.cpp" />
+    <None Include="Collections\HashSet.inl">
+      <FileType>Document</FileType>
+    </None>
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Guid\Guid.cpp" />
     <ClCompile Include="Helper.cpp" />
@@ -120,6 +123,7 @@
     <ClInclude Include="Callbacks\CallbackMacro.h" />
     <ClInclude Include="Collections\Array.h" />
     <ClInclude Include="Collections\BaseArray.h" />
+    <ClInclude Include="Collections\HashSet.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Guid\Guid.h" />
     <ClInclude Include="Helper.h" />

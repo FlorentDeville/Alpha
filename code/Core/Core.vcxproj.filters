@@ -155,10 +155,16 @@
     <ClInclude Include="Guid\Guid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Collections\HashSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Collections\Array.inl">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="Collections\HashSet.inl">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>
