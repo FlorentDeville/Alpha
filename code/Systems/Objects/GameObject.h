@@ -37,6 +37,8 @@ namespace Systems
 		TransformComponent& GetTransform();
 		const TransformComponent& GetTransform() const;
 
+		void PostLoad();
+
 	private:
 		std::string m_name;
 		

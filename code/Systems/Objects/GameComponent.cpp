@@ -9,6 +9,7 @@ namespace Systems
 	GameComponent::GameComponent()
 		: Object()
 		, m_guid()
+		, m_pOwnerGo(nullptr)
 	{ }
 
 	GameComponent::~GameComponent()
@@ -23,6 +24,11 @@ namespace Systems
 	void GameComponent::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;
+	}
+
+	void GameComponent::SetOwner(GameObject* pOwnerGo)
+	{
+		m_pOwnerGo = pOwnerGo;
 	}
 
 	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType)
