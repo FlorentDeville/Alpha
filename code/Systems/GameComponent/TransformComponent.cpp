@@ -13,6 +13,7 @@ namespace Systems
 		, m_localTransform()
 		, m_parent()
 		, m_children()
+		, m_pParentGo(nullptr)
 	{ }
 
 	TransformComponent::~TransformComponent()
@@ -21,6 +22,11 @@ namespace Systems
 	const Core::Mat44f& TransformComponent::GetLocalTx() const
 	{
 		return m_localTransform;
+	}
+
+	const Core::Mat44f& TransformComponent::GetWorldTx() const
+	{
+		return m_wsTransform;
 	}
 
 	void TransformComponent::SetLocalTx(const Core::Mat44f& localTx)
@@ -57,5 +63,20 @@ namespace Systems
 	void TransformComponent::RemoveChild(const Core::Guid& child)
 	{
 		m_children.Erase(child);
+	}
+
+	void TransformComponent::Update()
+	{
+		if (!m_parent.IsValid())
+		{
+			m_wsTransform = m_localTransform;
+			return;
+		}
+
+		if (m_pParentGo)
+		{
+			const Core::Mat44f& parentWorld = m_pParentGo->GetTransform().GetWorldTx();
+			m_wsTransform = m_localTransform * parentWorld;
+		}
 	}
 }

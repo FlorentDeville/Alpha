@@ -23,10 +23,18 @@ namespace Systems
 	}
 
 	void GameObject::Update()
-	{ }
+	{
+		m_transform.Update();
+
+		for (GameComponent* pComponent : m_components)
+			pComponent->Update();
+	}
 
 	void GameObject::Render()
-	{ }
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->Render();
+	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{

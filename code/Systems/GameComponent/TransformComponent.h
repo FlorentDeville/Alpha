@@ -20,6 +20,8 @@ namespace Systems
 		~TransformComponent();
 
 		const Core::Mat44f& GetLocalTx() const;
+		const Core::Mat44f& GetWorldTx() const;
+
 		void SetLocalTx(const Core::Mat44f& localTx);
 
 		const Core::Guid& GetParentGuid() const;
@@ -29,6 +31,8 @@ namespace Systems
 
 		void AddChild(const Core::Guid& child);
 		void RemoveChild(const Core::Guid& child);
+
+		void Update() override;
 
 	private:
 		Core::Mat44f m_localTransform;
@@ -45,6 +49,8 @@ namespace Systems
 
 		// Cached pointer to the parent game object.
 		Systems::GameObject* m_pParentGo;
+
+		Core::Mat44f m_wsTransform;
 	};
 }
 
