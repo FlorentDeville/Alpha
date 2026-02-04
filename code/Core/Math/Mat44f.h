@@ -47,7 +47,7 @@ namespace Core
 		static Mat44f CreateScaleMatrix(const Vec4f& scale);
 		static Mat44f CreateTransformMatrix(const Sqt& sqt);
 
-	private:
+	//private:
 
 		DirectX::XMMATRIX m_matrix;
 	};
