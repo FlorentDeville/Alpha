@@ -44,4 +44,9 @@ namespace Systems
 		m_pPtr = AssetUtil::GetAsset(m_id);
 		return m_pPtr != nullptr;
 	}
+
+	template<typename T> T* HardAssetRef<T>::GetPtr()
+	{
+		return m_pPtr;
+	}
 }
