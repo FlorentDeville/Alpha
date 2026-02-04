@@ -11,6 +11,8 @@ namespace Systems
 	LevelAsset_v1::LevelAsset_v1()
 		: AssetObject()
 		, m_gameObjectsArray()
+		, m_roots()
+		, m_rootsGameObject()
 	{ }
 
 	LevelAsset_v1::~LevelAsset_v1()
@@ -19,6 +21,8 @@ namespace Systems
 			delete pGameObject;
 
 		m_gameObjectsArray.Clear();
+		m_roots.Clear();
+		m_rootsGameObject.Clear();
 	}
 
 	const std::string& LevelAsset_v1::GetAssetTypeName()
@@ -36,14 +40,20 @@ namespace Systems
 	void LevelAsset_v1::AddGameObject(GameObject* pGo)
 	{
 		m_gameObjectsArray.PushBack(pGo);
+
+		m_roots.PushBack(pGo->GetGuid());
+		m_rootsGameObject.PushBack(pGo);
 	}
 
 	void LevelAsset_v1::AddGameObject(GameObject* pGo, const Core::Guid& parent)
 	{
-		AddGameObject(pGo);
-
 		if (!parent.IsValid())
+		{
+			AddGameObject(pGo);
 			return;
+		}
+
+		m_gameObjectsArray.PushBack(pGo);
 
 		GameObject* pGoParent = FindGameObject(parent);
 		if (!pGoParent)
@@ -57,7 +67,14 @@ namespace Systems
 	{
 		const Core::Guid& parentGuid = pGo->GetTransform().GetParentGuid();
 		if (GameObject* pGoParent = FindGameObject(parentGuid))
+		{
 			pGoParent->GetTransform().RemoveChild(pGo->GetGuid());
+		}
+		else
+		{
+			m_roots.Erase(pGo->GetGuid());
+			m_rootsGameObject.Erase(pGo);
+		}
 
 		m_gameObjectsArray.Erase(pGo);
 		Systems::DeleteObject(pGo);
@@ -97,6 +114,12 @@ namespace Systems
 
 	void LevelAsset_v1::PostLoad()
 	{
+		for (const Core::Guid& root : m_roots)
+		{
+			if (GameObject* pRootGo = FindGameObject(root))
+				m_rootsGameObject.PushBack(pRootGo);
+		}
+
 		for (Systems::GameObject* pGo : m_gameObjectsArray)
 		{
 			const Core::Guid& parentGuid = pGo->GetTransform().GetParentGuid();
