@@ -79,15 +79,21 @@ namespace Editors
 		return txWs;
 	}
 
-	void GizmoModel::Translate(const Core::Vec4f& translate)
+	void GizmoModel::Translate(const Core::Vec4f& worldPos)
 	{
 		if (!m_pGo)
 			return;
-		
-		Core::Mat44f txLs = m_pGo->GetTransform().GetLocalTx();
-		txLs.SetRow(3, translate);
+	
+		//new world transform
+		Core::Mat44f newWorldTx = m_pGo->GetTransform().GetWorldTx();
+		newWorldTx.SetRow(3, worldPos);
 
-		m_pGo->GetTransform().SetLocalTx(txLs);
+		Core::Mat44f parentTx = m_pGo->GetTransform().GetParentWorldTx();
+		Core::Mat44f invParentTx = parentTx.Inverse();
+
+		Core::Mat44f newLocalTx = newWorldTx * invParentTx;
+
+		m_pGo->GetTransform().SetLocalTx(newLocalTx);
 
 		SendSignalToObjectWatcher();
 	}
