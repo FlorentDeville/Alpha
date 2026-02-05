@@ -88,6 +88,8 @@ namespace Editors
 		txLs.SetRow(3, translate);
 
 		m_pGo->GetTransform().SetLocalTx(txLs);
+
+		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModel::Rotate(const Core::Mat44f& rotation)
@@ -110,6 +112,8 @@ namespace Editors
 
 		Core::Mat44f txLs = txWs * invTxPs;
 		m_pGo->GetTransform().SetLocalTx(txLs);
+
+		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModel::Scale(const Core::Vec4f& scale)
@@ -127,5 +131,14 @@ namespace Editors
 
 		Core::Mat44f txLs = newTxWs * invTxPs;
 		m_pGo->GetTransform().SetLocalTx(txLs);
+
+		SendSignalToObjectWatcher();
+	}
+
+	void GizmoModel::SendSignalToObjectWatcher()
+	{
+		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
+		Systems::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
+		ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
 	}
 }

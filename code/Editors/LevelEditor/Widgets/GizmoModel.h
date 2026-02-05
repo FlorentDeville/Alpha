@@ -56,5 +56,8 @@ namespace Editors
 
 		//Callback attached to the object watcher transform
 		ObjectWatcherCallbackId m_cidOnTransformChanged;
+
+		//When the gizmo modifies the transform, send a signal to the object watcher so other widgets can refresh.
+		void SendSignalToObjectWatcher();
 	};
 }
