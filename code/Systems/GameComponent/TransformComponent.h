@@ -43,14 +43,14 @@ namespace Systems
 		void ComputeWorldTx();
 
 	private:
-		Core::Mat44f m_localTransform;
+		Core::Mat44f m_localTx;
 
 		Core::Guid m_parent;
 		Core::Array<Core::Guid> m_children;
 
 		START_REFLECTION(Systems::TransformComponent)
 			ADD_BASETYPE(Systems::GameComponent)
-			ADD_FIELD(m_localTransform)
+			ADD_FIELD(m_localTx)
 			ADD_FIELD_ATTR(m_parent, Hidden)
 			ADD_FIELD_ATTR(m_children, Hidden)
 		END_REFLECTION()
@@ -61,7 +61,7 @@ namespace Systems
 		// Cached pointers to the children game objects.
 		Core::Array<Systems::GameObject*> m_childrenGo;
 
-		Core::Mat44f m_wsTransform;
+		Core::Mat44f m_worldTx;
 	};
 }
 
