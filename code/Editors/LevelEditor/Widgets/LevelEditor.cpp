@@ -10,7 +10,6 @@
 #include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTreeModel.h"
-#include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
@@ -20,8 +19,6 @@
 
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
-#include "Editors/Widgets/Entity/EntityModel.h"
-#include "Editors/Widgets/Entity/EntityWidget.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -647,7 +644,8 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_DuplicateEntity()
 	{
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		return;
+		/*LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
@@ -664,7 +662,7 @@ namespace Editors
 
 		levelEditorModule.ClearSelection();
 		for (const Core::Guid& guid : newNodes)
-			levelEditorModule.AddToSelection(guid);
+			levelEditorModule.AddToSelection(guid);*/
 	}
 
 	void LevelEditor::OnClickEditMenu_ReparentGameObject()

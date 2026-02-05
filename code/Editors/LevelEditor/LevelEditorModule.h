@@ -73,7 +73,6 @@ namespace Editors
 		void AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid);
 		void DeleteGameObject(const Core::Guid & nodeGuid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& name);
-		void DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode);
 
 		void ReparentGameObject(const Core::Guid& parent, const Core::Guid& child);
 

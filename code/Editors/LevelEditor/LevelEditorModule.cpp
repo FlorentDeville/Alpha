@@ -6,9 +6,7 @@
 
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
@@ -26,29 +24,6 @@
 
 namespace Editors
 {
-	Component* CreateComponentTransform()
-	{
-		Component* pTransform = new Component("Transform");
-
-		Property* pTransformProperty = new Property("Local", Core::Mat44f());
-		pTransform->AddProperty(pTransformProperty);
-
-		return pTransform;
-	}
-
-	Component* CreateComponentRendering()
-	{
-		Component* pRendering = new Component("Rendering");
-
-		Property* pMeshProperty = new Property("Mesh", kAssetMesh, Systems::AssetId::INVALID);
-		Property* pMaterialProperty = new Property("Material", kAssetMaterial, Systems::AssetId::INVALID);
-
-		pRendering->AddProperty(pMeshProperty);
-		pRendering->AddProperty(pMaterialProperty);
-
-		return pRendering;
-	}
-
 	LevelEditorModule::LevelEditorModule()
 		: m_fovRad(DirectX::XMConvertToRadians(45.f))
 		, m_pLevelMgr(nullptr)
@@ -62,8 +37,6 @@ namespace Editors
 
 	void LevelEditorModule::Init()
 	{
-		InitializePropertyDescriptor();
-
 		m_pLevelMgr = new LevelMgr();
 		m_pSelectionMgr = new SelectionMgr();
 	}
@@ -225,37 +198,6 @@ namespace Editors
 		const Systems::FieldDescriptor* pField = *it;
 		const void* pValue = reinterpret_cast<const void*>(&name);
 		ObjectWatcher::Get().ModifyField(pGo, pField, ObjectWatcher::SET_FIELD, 0, pValue);
-	}
-
-	void LevelEditorModule::DuplicateEntity(const Core::Guid& originalNode, Core::Guid& newNode)
-	{
-		if (!originalNode.IsValid())
-			return;
-
-		SceneTree* pSceneTree = m_pLevelMgr->GetSceneTree();
-
-		const Node* pOriginalNode = pSceneTree->GetConstNode(originalNode);
-		if (!pOriginalNode)
-			return;
-
-		const Entity* pOriginalEntity = pOriginalNode->ToConstEntity();
-		if (!pOriginalEntity)
-			return;
-
-		Entity* pNewEntity = new Entity(pOriginalEntity->GetName() + "_copy");
-		newNode = pNewEntity->GetConstGuid();
-
-		for (int ii = 0; ii < pOriginalEntity->GetComponentCount(); ++ii)
-		{
-			const Component* pOriginalComponent = pOriginalEntity->GetComponent(ii);
-			Component* pCopyComponent = new Component(*pOriginalComponent);
-			pNewEntity->AddComponent(pCopyComponent);
-		}
-
-		pSceneTree->AddNode(pNewEntity, pOriginalNode->GetConstParent()->GetConstGuid());
-
-		if (m_onDuplicateEntity)
-			m_onDuplicateEntity(originalNode, newNode);
 	}
 
 	void LevelEditorModule::ReparentGameObject(const Core::Guid& parent, const Core::Guid& child)

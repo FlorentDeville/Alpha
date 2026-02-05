@@ -7,10 +7,8 @@
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 
@@ -26,18 +24,18 @@ namespace Editors
 
 	GizmoModel::~GizmoModel()
 	{
-		if (Entity* pEntity = GetEntity())
+		/*if (Entity* pEntity = GetEntity())
 		{
 			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
 			{
 				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
 			}
-		}
+		}*/
 	}
 
 	void GizmoModel::SetNode(const Core::Guid& nodeGuid)
 	{
-		if (m_nodeGuid == nodeGuid)
+		/*if (m_nodeGuid == nodeGuid)
 			return;
 
 		if (Entity* pEntity = GetEntity())
@@ -64,7 +62,7 @@ namespace Editors
 			}
 		}
 		
-		m_onNodeChangedEvent(nodeGuid);
+		m_onNodeChangedEvent(nodeGuid);*/
 	}
 
 	bool GizmoModel::ShouldRender()
@@ -79,74 +77,75 @@ namespace Editors
 
 	const Core::Mat44f GizmoModel::GetTransform() const
 	{
-		const Entity* pEntity = GetConstEntity();
-		if (!pEntity)
-			return m_default;
+		//const Entity* pEntity = GetConstEntity();
+		//if (!pEntity)
+		//	return m_default;
 
-		Core::Mat44f txWs = pEntity->ComputeWs();
+		//Core::Mat44f txWs = pEntity->ComputeWs();
 
-		//remove the scale
-		for (int ii = 0; ii < 3; ++ii)
-		{
-			Core::Vec4f axis = txWs.GetRow(ii);
-			axis.Normalize();
-			txWs.SetRow(ii, axis);
-		}
+		////remove the scale
+		//for (int ii = 0; ii < 3; ++ii)
+		//{
+		//	Core::Vec4f axis = txWs.GetRow(ii);
+		//	axis.Normalize();
+		//	txWs.SetRow(ii, axis);
+		//}
 
-		return txWs;
+		//return txWs;
+		return Core::Mat44f();
 	}
 
 	void GizmoModel::Translate(const Core::Vec4f& translate)
 	{
-		Entity* pEntity = GetEntity();
+		/*Entity* pEntity = GetEntity();
 		if (!pEntity)
 			return;
 
 		Core::Mat44f txLs = pEntity->GetLs();
 		txLs.SetRow(3, translate);
 
-		pEntity->SetLs(txLs);
+		pEntity->SetLs(txLs);*/
 	}
 
 	void GizmoModel::Rotate(const Core::Mat44f& rotation)
 	{
-		Entity* pEntity = GetEntity();
-		if (!pEntity)
-			return;
+		//Entity* pEntity = GetEntity();
+		//if (!pEntity)
+		//	return;
 
-		Core::Mat44f oldTxWs = pEntity->ComputeWs();
+		//Core::Mat44f oldTxWs = pEntity->ComputeWs();
 
-		Core::Sqt sqtWs(oldTxWs);
-		Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
+		//Core::Sqt sqtWs(oldTxWs);
+		//Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
 
-		sqtWs.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
-		Core::Mat44f baseTransformation = sqtWs.GetMatrix();
+		//sqtWs.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
+		//Core::Mat44f baseTransformation = sqtWs.GetMatrix();
 
-		Core::Mat44f txWs = baseScale * rotation * baseTransformation;
+		//Core::Mat44f txWs = baseScale * rotation * baseTransformation;
 
-		Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
-		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+		//Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
+		//Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
 
-		Core::Mat44f txLs = txWs * invTxPs;
-		pEntity->SetLs(txLs);
+		//Core::Mat44f txLs = txWs * invTxPs;
+		//pEntity->SetLs(txLs);
 	}
 
 	void GizmoModel::Scale(const Core::Vec4f& scale)
 	{
-		Entity* pEntity = GetEntity();
-		if (!pEntity)
-			return;
+		//Entity* pEntity = GetEntity();
+		//if (!pEntity)
+		//	return;
 
-		Core::Mat44f oldTxWs = pEntity->ComputeWs();
+		//Core::Mat44f oldTxWs = pEntity->ComputeWs();
 
-		Core::Mat44f newScale = Core::Mat44f::CreateScaleMatrix(scale);
-		Core::Mat44f newTxWs = newScale * oldTxWs;
+		//Core::Mat44f newScale = Core::Mat44f::CreateScaleMatrix(scale);
+		//Core::Mat44f newTxWs = newScale * oldTxWs;
 
-		Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
-		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+		//Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
+		//Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
 
-		Core::Mat44f txLs = newTxWs * invTxPs;
-		pEntity->SetLs(txLs);
+		//Core::Mat44f txLs = newTxWs * invTxPs;
+		//pEntity->SetLs(txLs);
 	}
 
 	const Entity* GizmoModel::GetConstEntity() const

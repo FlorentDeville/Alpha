@@ -7,11 +7,8 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
-
-#include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/Entity.h"
 #include "Editors/LevelEditor/SceneTree/Node.h"
 #include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
@@ -34,88 +31,6 @@ using namespace DirectX;
 
 namespace Editors
 {
-	void RenderTreeNodeRecursive(const Node* pNode, const DirectX::XMMATRIX& parentWVP, const std::map<Systems::AssetId, Rendering::MeshId>& assetIdToMeshId,
-		const std::map<Systems::AssetId, Rendering::MaterialId>& assetIdToMaterialId)
-	{
-		DirectX::XMMATRIX currentWVP = parentWVP;
-
-		const Entity* pEntity = pNode->ToConstEntity();
-		if (!pEntity)
-			return;
-
-		const Component* pTransformComponent = pEntity->GetComponent("Transform");
-		if (pTransformComponent)
-		{
-			Core::Mat44f local;
-			pTransformComponent->GetPropertyValue("Local", local);
-
-			DirectX::XMMATRIX dxLocal(
-				local.GetX().GetX(), local.GetX().GetY(), local.GetX().GetZ(), local.GetX().GetW(),
-				local.GetY().GetX(), local.GetY().GetY(), local.GetY().GetZ(), local.GetY().GetW(),
-				local.GetZ().GetX(), local.GetZ().GetY(), local.GetZ().GetZ(), local.GetZ().GetW(),
-				local.GetT().GetX(), local.GetT().GetY(), local.GetT().GetZ(), local.GetT().GetW()
-			);
-
-			currentWVP = dxLocal * currentWVP;
-		}
-
-		const Component* pRenderingComponent = pEntity->GetComponent("Rendering");
-		if (pRenderingComponent)
-		{
-			Systems::AssetId meshAssetId;
-			Systems::AssetId materialAssetId;
-			pRenderingComponent->GetPropertyValue("Mesh", meshAssetId);
-			pRenderingComponent->GetPropertyValue("Material", materialAssetId);
-
-			if (meshAssetId != Systems::AssetId::INVALID && materialAssetId != Systems::AssetId::INVALID)
-			{
-				Rendering::MeshId meshId = Rendering::MeshId::INVALID;
-
-				std::map<Systems::AssetId, Rendering::MeshId>::const_iterator it = assetIdToMeshId.find(meshAssetId);
-				if (it == assetIdToMeshId.cend())
-				{
-					//Load mesh
-					meshId = Editors::LevelEditorModule::Get().LoadMesh(meshAssetId);
-				}
-				else
-				{
-					meshId = it->second;
-				}
-
-				std::map<Systems::AssetId, Rendering::MaterialId>::const_iterator itMaterial = assetIdToMaterialId.find(materialAssetId);
-				Rendering::MaterialId materialId = Rendering::MaterialId::INVALID;
-				if (itMaterial == assetIdToMaterialId.cend())
-				{
-					materialId = Editors::LevelEditorModule::Get().LoadMaterial(materialAssetId);
-				}
-				else
-				{
-					materialId = itMaterial->second;
-				}
-
-				if (meshId != Rendering::MeshId::INVALID)
-				{
-					Rendering::MaterialId materialId = assetIdToMaterialId.find(materialAssetId)->second;
-
-					Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
-
-					const Rendering::Material* pMaterial = Rendering::MaterialMgr::Get().GetMaterial(materialId);
-					renderer.BindMaterial(*pMaterial, currentWVP);
-
-					const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(meshId);
-					renderer.RenderMesh(*pMesh);
-				}
-			}
-		}
-
-		//recursive call to children
-		const std::vector<Node*>& children = pNode->GetConstChildren();
-		for (const Node* pChild : children)
-		{
-			RenderTreeNodeRecursive(pChild, currentWVP, assetIdToMeshId, assetIdToMaterialId);
-		}
-	}
-
 	LevelEditorViewportWidget::LevelEditorViewportWidget(int width, int height)
 		: Widgets::Viewport_v2(width, height)
 		, m_enableViewportControl(false)
