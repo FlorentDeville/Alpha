@@ -128,14 +128,11 @@ namespace Systems
 		for (Systems::GameObject* pGo : m_gameObjectsArray)
 		{
 			const Core::Guid& parentGuid = pGo->GetTransform().GetParentGuid();
-			if (!parentGuid.IsValid())
-				continue;
-
-			GameObject* pParentGo = FindGameObject(parentGuid);
-			if (!pParentGo)
-				continue;
-
-			pGo->GetTransform().SetParent(pParentGo);
+			if (parentGuid.IsValid())
+			{
+				if(GameObject* pParentGo = FindGameObject(parentGuid))
+					pGo->GetTransform().SetParent(pParentGo);
+			}
 
 			const Core::Array<Core::Guid>& children = pGo->GetTransform().GetChildrenGuid();
 			for (const Core::Guid& childGuid : children)
