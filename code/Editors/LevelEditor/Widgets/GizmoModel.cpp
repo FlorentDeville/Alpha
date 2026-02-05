@@ -8,26 +8,22 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
+
+#include "Systems/Objects/GameObject.h"
 
 namespace Editors
 {
 	GizmoModel::GizmoModel()
 		: m_pGo(nullptr)
-		//, m_onNodeChangedEvent()
-		//, m_cidOnPropertyValueChanged()
-	{
-		m_default.SetIdentity();
-	}
+		, m_onNodeChangedEvent()
+		, m_cidOnTransformChanged()
+	{ }
 
 	GizmoModel::~GizmoModel()
 	{
-		/*if (Entity* pEntity = GetEntity())
-		{
-			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
-			{
-				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
-			}
-		}*/
+		if (m_cidOnTransformChanged.IsValid())
+			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
 	}
 
 	void GizmoModel::SetGameObject(Systems::GameObject* pGo)
@@ -35,13 +31,24 @@ namespace Editors
 		if (m_pGo == pGo)
 			return;
 
+		if (m_cidOnTransformChanged.IsValid())
+			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
+
 		m_pGo = pGo;
 
 		Core::Guid guid;
 		if (pGo)
+		{
 			guid = pGo->GetGuid();
+			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](Systems::Object*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
+				{
+					m_onNodeChangedEvent(m_pGo->GetGuid());
+				});
+		}
 
 		m_onNodeChangedEvent(guid);
+		
+		
 		/*if (m_nodeGuid == nodeGuid)
 			return;
 
@@ -85,7 +92,7 @@ namespace Editors
 	const Core::Mat44f GizmoModel::GetTransform() const
 	{
 		if (!m_pGo)
-			return m_default;
+			return Core::Mat44f::s_identity;
 
 		Core::Mat44f txWs = m_pGo->GetTransform().GetWorldTx();
 		

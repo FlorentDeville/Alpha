@@ -5,13 +5,19 @@
 #pragma once
 
 #include "Core/Callbacks/CallbackList.h"
-#include "Core/Math/Mat44f.h"
 
-#include "Systems/Objects/GameObject.h"
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
 namespace Core
 {
+	class Guid;
 	class Mat44f;
+	class Vec4f;
+}
+
+namespace Systems
+{
+	class GameObject;
 }
 
 namespace Editors
@@ -48,8 +54,7 @@ namespace Editors
 		//Event called when the game object tracked by the gizmo has changed. Typically when the selected game object has changed.
 		OnNodeChangedEvent m_onNodeChangedEvent;
 
-		//Core::CallbackId m_cidOnPropertyValueChanged;
-
-		Core::Mat44f m_default;
+		//Callback attached to the object watcher transform
+		ObjectWatcherCallbackId m_cidOnTransformChanged;
 	};
 }
