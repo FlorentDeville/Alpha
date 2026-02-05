@@ -46,6 +46,11 @@ namespace Systems
 		return Core::Uint64ToHexa(m_id);
 	}
 
+	uint64_t NewAssetId::ToUint64() const
+	{
+		return m_id;
+	}
+
 	bool NewAssetId::operator<(NewAssetId other) const
 	{
 		return m_id < other.m_id;
