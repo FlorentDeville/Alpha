@@ -46,9 +46,14 @@ namespace Core
 		static Mat44f CreateTranslationMatrix(const Vec4f& translation);
 		static Mat44f CreateScaleMatrix(const Vec4f& scale);
 		static Mat44f CreateTransformMatrix(const Sqt& sqt);
+		static Mat44f CreateIdentity();
+
+		static Mat44f s_identity;
 
 	//private:
 
 		DirectX::XMMATRIX m_matrix;
+
+		
 	};
 }

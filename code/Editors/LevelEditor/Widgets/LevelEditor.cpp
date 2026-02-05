@@ -8,11 +8,7 @@
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
-#include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTreeModel.h"
-#include "Editors/LevelEditor/SceneTree/Entity.h"
-#include "Editors/LevelEditor/SceneTree/Node.h"
-#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
@@ -20,8 +16,6 @@
 
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
-#include "Editors/Widgets/Entity/EntityModel.h"
-#include "Editors/Widgets/Entity/EntityWidget.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -461,30 +455,19 @@ namespace Editors
 		m_pPropertyGridPopulator->Populate(pGo);
 	}
 
-	void LevelEditor::OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid)
-	{
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-
-		SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
-		Node* pNode = pSceneTree->GetNode(nodeGuid);
-		if (!pNode)
-			return;
-
-		Entity* pEntity = pNode->ToEntity();
-		if (!pEntity)
-			return;
-	}
-
 	void LevelEditor::OnSelectionCleared_Gizmo()
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(Core::Guid());
+		pGizmoModel->SetGameObject(nullptr);
 	}
 
 	void LevelEditor::OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid)
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(nodeGuid);
+
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
+		pGizmoModel->SetGameObject(pSelectedGo);
 	}
 
 	void LevelEditor::OnRemovedFromSelection_Gizmo(const Core::Guid& nodeGuid)
@@ -496,13 +479,15 @@ namespace Editors
 		if (selectionList.empty())
 		{
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-			pGizmoModel->SetNode(Core::Guid());
+			pGizmoModel->SetGameObject(nullptr);
 
 		}
 		else
 		{
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-			pGizmoModel->SetNode(nodeGuid);
+			LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+			Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
+			pGizmoModel->SetGameObject(pSelectedGo);
 		}
 	}
 
@@ -647,7 +632,8 @@ namespace Editors
 
 	void LevelEditor::OnClickEditMenu_DuplicateEntity()
 	{
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		return;
+		/*LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
@@ -664,7 +650,7 @@ namespace Editors
 
 		levelEditorModule.ClearSelection();
 		for (const Core::Guid& guid : newNodes)
-			levelEditorModule.AddToSelection(guid);
+			levelEditorModule.AddToSelection(guid);*/
 	}
 
 	void LevelEditor::OnClickEditMenu_ReparentGameObject()

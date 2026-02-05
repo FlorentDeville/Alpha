@@ -7,69 +7,53 @@
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/Component.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
-#include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/Entity.h"
-#include "Editors/LevelEditor/SceneTree/Node.h"
-#include "Editors/LevelEditor/SceneTree/SceneTree.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
+
+#include "Systems/Objects/GameObject.h"
 
 namespace Editors
 {
 	GizmoModel::GizmoModel()
-		: m_nodeGuid()
+		: m_pGo(nullptr)
 		, m_onNodeChangedEvent()
-		, m_cidOnPropertyValueChanged()
-	{
-		m_default.SetIdentity();
-	}
+		, m_cidOnTransformChanged()
+	{ }
 
 	GizmoModel::~GizmoModel()
 	{
-		if (Entity* pEntity = GetEntity())
-		{
-			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
-			{
-				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
-			}
-		}
+		if (m_cidOnTransformChanged.IsValid())
+			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
 	}
 
-	void GizmoModel::SetNode(const Core::Guid& nodeGuid)
+	void GizmoModel::SetGameObject(Systems::GameObject* pGo)
 	{
-		if (m_nodeGuid == nodeGuid)
+		if (m_pGo == pGo)
 			return;
 
-		if (Entity* pEntity = GetEntity())
-		{
-			if(Property* pProperty = pEntity->GetProperty("Transform", "Local"))
-			{
-				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
-			}
-		}
-		
-		m_nodeGuid = nodeGuid;
+		if (m_cidOnTransformChanged.IsValid())
+			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
 
-		if (Entity* pEntity = GetEntity())
+		m_pGo = pGo;
+
+		Core::Guid guid;
+		if (pGo)
 		{
-			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
-			{
-				m_cidOnPropertyValueChanged = pProperty->OnValueChanged([this](const PropertyValue& oldValue, const PropertyValue& newValue) 
-					{
-						if (m_onNodeChangedEvent)
-						{
-							m_onNodeChangedEvent(m_nodeGuid);
-						}
-					});
-			}
+			guid = pGo->GetGuid();
+			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](Systems::Object*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
+				{
+					//I need to compute manually the world transform here cause the Update didn't run yet.
+					m_pGo->GetTransform().ComputeWorldTx();
+					m_onNodeChangedEvent(m_pGo->GetGuid());
+				});
 		}
-		
-		m_onNodeChangedEvent(nodeGuid);
+
+		m_onNodeChangedEvent(guid);
 	}
 
 	bool GizmoModel::ShouldRender()
 	{
-		return m_nodeGuid.IsValid();
+		return m_pGo != nullptr;
 	}
 
 	Core::CallbackId GizmoModel::OnNodeChanged(const OnNodeChangedEvent::Callback& callback)
@@ -79,12 +63,11 @@ namespace Editors
 
 	const Core::Mat44f GizmoModel::GetTransform() const
 	{
-		const Entity* pEntity = GetConstEntity();
-		if (!pEntity)
-			return m_default;
+		if (!m_pGo)
+			return Core::Mat44f::s_identity;
 
-		Core::Mat44f txWs = pEntity->ComputeWs();
-
+		Core::Mat44f txWs = m_pGo->GetTransform().GetWorldTx();
+		
 		//remove the scale
 		for (int ii = 0; ii < 3; ++ii)
 		{
@@ -96,25 +79,31 @@ namespace Editors
 		return txWs;
 	}
 
-	void GizmoModel::Translate(const Core::Vec4f& translate)
+	void GizmoModel::Translate(const Core::Vec4f& worldPos)
 	{
-		Entity* pEntity = GetEntity();
-		if (!pEntity)
+		if (!m_pGo)
 			return;
+	
+		//new world transform
+		Core::Mat44f newWorldTx = m_pGo->GetTransform().GetWorldTx();
+		newWorldTx.SetRow(3, worldPos);
 
-		Core::Mat44f txLs = pEntity->GetLs();
-		txLs.SetRow(3, translate);
+		Core::Mat44f parentTx = m_pGo->GetTransform().GetParentWorldTx();
+		Core::Mat44f invParentTx = parentTx.Inverse();
 
-		pEntity->SetLs(txLs);
+		Core::Mat44f newLocalTx = newWorldTx * invParentTx;
+
+		m_pGo->GetTransform().SetLocalTx(newLocalTx);
+
+		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModel::Rotate(const Core::Mat44f& rotation)
 	{
-		Entity* pEntity = GetEntity();
-		if (!pEntity)
+		if (!m_pGo)
 			return;
 
-		Core::Mat44f oldTxWs = pEntity->ComputeWs();
+		Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
 
 		Core::Sqt sqtWs(oldTxWs);
 		Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
@@ -124,62 +113,38 @@ namespace Editors
 
 		Core::Mat44f txWs = baseScale * rotation * baseTransformation;
 
-		Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
+		Core::Mat44f txPs = m_pGo->GetTransform().GetParentWorldTx();
 		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
 
 		Core::Mat44f txLs = txWs * invTxPs;
-		pEntity->SetLs(txLs);
+		m_pGo->GetTransform().SetLocalTx(txLs);
+
+		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModel::Scale(const Core::Vec4f& scale)
 	{
-		Entity* pEntity = GetEntity();
-		if (!pEntity)
+		if (!m_pGo)
 			return;
 
-		Core::Mat44f oldTxWs = pEntity->ComputeWs();
+		Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
 
 		Core::Mat44f newScale = Core::Mat44f::CreateScaleMatrix(scale);
 		Core::Mat44f newTxWs = newScale * oldTxWs;
 
-		Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
+		Core::Mat44f txPs = m_pGo->GetTransform().GetParentWorldTx();
 		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
 
 		Core::Mat44f txLs = newTxWs * invTxPs;
-		pEntity->SetLs(txLs);
+		m_pGo->GetTransform().SetLocalTx(txLs);
+
+		SendSignalToObjectWatcher();
 	}
 
-	const Entity* GizmoModel::GetConstEntity() const
+	void GizmoModel::SendSignalToObjectWatcher()
 	{
-		if (!m_nodeGuid.IsValid())
-			return nullptr;
-
-		const LevelMgr* pLevelMgr = LevelEditorModule::Get().GetConstLevelMgr();
-		if (!pLevelMgr)
-			return nullptr;
-
-		const Node* pNode = pLevelMgr->GetConstSceneTree()->GetConstNode(m_nodeGuid);
-		if (!pNode)
-			return nullptr;
-
-		const Entity* pEntity = pNode->ToConstEntity();
-		return pEntity;
-	}
-
-	Entity* GizmoModel::GetEntity() const
-	{
-		if (!m_nodeGuid.IsValid())
-			return nullptr;
-
-		LevelMgr* pLevelMgr = LevelEditorModule::Get().GetLevelMgr();
-		if (!pLevelMgr)
-			return nullptr;
-
-		Node* pNode = pLevelMgr->GetSceneTree()->GetNode(m_nodeGuid);
-		if (!pNode)
-			return nullptr;
-
-		Entity* pEntity = pNode->ToEntity();
-		return pEntity;
+		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
+		Systems::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
+		ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
 	}
 }

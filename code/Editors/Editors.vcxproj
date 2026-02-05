@@ -12,14 +12,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GamePlayer\GamePlayer.h" />
-    <ClInclude Include="LevelEditor\Component.h" />
     <ClInclude Include="LevelEditor\LevelListModel.h" />
     <ClInclude Include="LevelEditor\SceneTreeModel.h" />
-    <ClInclude Include="LevelEditor\SceneTree\Entity.h" />
-    <ClInclude Include="LevelEditor\LevelMgr.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
-    <ClInclude Include="LevelEditor\SceneTree\Node.h" />
-    <ClInclude Include="LevelEditor\SceneTree\SceneTree.h" />
     <ClInclude Include="LevelEditor\SelectionMgr.h" />
     <ClInclude Include="LevelEditor\Widgets\CameraWidget.h" />
     <ClInclude Include="LevelEditor\Widgets\GizmoAxis.h" />
@@ -33,7 +28,6 @@
     <ClInclude Include="MaterialEditor\ShaderTemplate.h" />
     <ClInclude Include="ObjectWatcher\ObjectWatcher.h" />
     <ClInclude Include="ObjectWatcher\ObjectWatcherCallbackId.h" />
-    <ClInclude Include="Property.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
     <ClInclude Include="MaterialEditor\Compiler\MaterialParameters.h" />
     <ClInclude Include="MaterialEditor\Compiler\RootSignatureDescription.h" />
@@ -43,14 +37,10 @@
     <ClInclude Include="MaterialEditor\MaterialListModel.h" />
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
-    <ClInclude Include="Widgets\Component\ComponentModel.h" />
-    <ClInclude Include="Widgets\Component\ComponentWidget.h" />
     <ClInclude Include="Widgets\Dialog\AssetDialog.h" />
     <ClInclude Include="Widgets\Dialog\ClassSelectionDialog.h" />
     <ClInclude Include="Widgets\Dialog\OkCancelDialog.h" />
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h" />
-    <ClInclude Include="Widgets\Entity\EntityModel.h" />
-    <ClInclude Include="Widgets\Entity\EntityWidget.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.h" />
@@ -71,14 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
-    <ClCompile Include="LevelEditor\Component.cpp" />
     <ClCompile Include="LevelEditor\LevelListModel.cpp" />
     <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />
-    <ClCompile Include="LevelEditor\SceneTree\Entity.cpp" />
-    <ClCompile Include="LevelEditor\LevelMgr.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
-    <ClCompile Include="LevelEditor\SceneTree\Node.cpp" />
-    <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp" />
     <ClCompile Include="LevelEditor\SelectionMgr.cpp" />
     <ClCompile Include="LevelEditor\Widgets\CameraWidget.cpp" />
     <ClCompile Include="LevelEditor\Widgets\GizmoAxis.cpp" />
@@ -91,7 +76,6 @@
     <ClCompile Include="MaterialEditor\ShaderTemplate.cpp" />
     <ClCompile Include="ObjectWatcher\ObjectWatcher.cpp" />
     <ClCompile Include="ObjectWatcher\ObjectWatcherCallbackId.cpp" />
-    <ClCompile Include="Property.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />
     <ClCompile Include="MaterialEditor\Compiler\MaterialParameters.cpp" />
     <ClCompile Include="MaterialEditor\Compiler\ShaderCompiler.cpp" />
@@ -99,14 +83,10 @@
     <ClCompile Include="MaterialEditor\MaterialEditorModule.cpp" />
     <ClCompile Include="MaterialEditor\MaterialListModel.cpp" />
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
-    <ClCompile Include="Widgets\Component\ComponentModel.cpp" />
-    <ClCompile Include="Widgets\Component\ComponentWidget.cpp" />
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\ClassSelectionDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp" />
-    <ClCompile Include="Widgets\Entity\EntityModel.cpp" />
-    <ClCompile Include="Widgets\Entity\EntityWidget.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.cpp" />

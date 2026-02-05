@@ -11,6 +11,8 @@
 
 namespace Core
 {
+	Mat44f Mat44f::s_identity = Mat44f::CreateIdentity();
+
 	Mat44f::Mat44f()
 		: m_matrix()
 	{}
@@ -120,6 +122,13 @@ namespace Core
 
 		Mat44f res = s * q * t;
 		return res;
+	}
+
+	Mat44f Mat44f::CreateIdentity()
+	{
+		Mat44f matrix;
+		matrix.SetIdentity();
+		return matrix;
 	}
 
 	Mat44f::Mat44f(const DirectX::XMMATRIX& matrix)

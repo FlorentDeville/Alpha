@@ -5,27 +5,30 @@
 #pragma once
 
 #include "Core/Callbacks/CallbackList.h"
-#include "Core/Math/Mat44f.h"
 
-#include "Core/Guid/Guid.h"
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
 namespace Core
 {
+	class Guid;
 	class Mat44f;
+	class Vec4f;
+}
+
+namespace Systems
+{
+	class GameObject;
 }
 
 namespace Editors
 {
-	class Entity;
-	class Node;
-
 	class GizmoModel
 	{
 	public:
 		GizmoModel();
 		~GizmoModel();
 
-		void SetNode(const Core::Guid& nodeGuid);
+		void SetGameObject(Systems::GameObject* pGo);
 
 		bool ShouldRender();
 
@@ -36,8 +39,8 @@ namespace Editors
 		//Function called by the gizmo to be placed in the correct location/orientation. Typically doesn't contain the scale.
 		virtual const Core::Mat44f GetTransform() const;
 
-		//The gizmo sends the new world space position
-		virtual void Translate(const Core::Vec4f& translate);
+		//The gizmo sends the new world position
+		virtual void Translate(const Core::Vec4f& worldPos);
 
 		//The gizmo sends the new rotation to apply
 		virtual void Rotate(const Core::Mat44f& rotation);
@@ -46,15 +49,15 @@ namespace Editors
 		virtual void Scale(const Core::Vec4f& scale);
 
 	private:
-		Core::Guid m_nodeGuid;
+		Systems::GameObject* m_pGo;
 
+		//Event called when the game object tracked by the gizmo has changed. Typically when the selected game object has changed.
 		OnNodeChangedEvent m_onNodeChangedEvent;
 
-		Core::CallbackId m_cidOnPropertyValueChanged;
+		//Callback attached to the object watcher transform
+		ObjectWatcherCallbackId m_cidOnTransformChanged;
 
-		Core::Mat44f m_default;
-
-		const Entity* GetConstEntity() const;
-		Entity* GetEntity() const;
+		//When the gizmo modifies the transform, send a signal to the object watcher so other widgets can refresh.
+		void SendSignalToObjectWatcher();
 	};
 }
