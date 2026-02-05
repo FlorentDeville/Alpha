@@ -31,6 +31,8 @@ namespace Systems
 		// Return true if a valid pointer is found, false otherwise.
 		bool Resolve();
 
+		T* GetPtr();
+
 		static void RegisterFields(TypeDescriptor* pType)
 		{
 			Systems::FieldDescriptor* pIdField = pType->AddField();

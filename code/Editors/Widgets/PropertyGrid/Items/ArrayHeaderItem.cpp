@@ -74,7 +74,11 @@ namespace Editors
 				void* pNewItem = nullptr;
 
 				if (pTypeToCreate->IsGameComponent())
-					pNewItem = Systems::CreateNewGameComponent(pTypeToCreate);
+				{
+					Systems::GameComponent* pComponent = Systems::CreateNewGameComponent(pTypeToCreate);
+					pComponent->SetOwner(static_cast<Systems::GameObject*>(m_pObj));
+					pNewItem = pComponent;
+				}
 				else if (pTypeToCreate->IsGameObject())
 					pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
 				else if (pTypeToCreate->IsObject())

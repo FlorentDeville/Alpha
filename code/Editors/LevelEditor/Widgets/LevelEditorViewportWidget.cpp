@@ -25,6 +25,8 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
+#include "Systems/Objects/GameObject.h"
+
 //needed for the operator* between vectors and floats.
 using namespace DirectX;
 
@@ -144,20 +146,20 @@ namespace Editors
 	{
 		m_pCamera->Render(m_aspectRatio);
 
-		const Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-		const Rendering::Camera* pCamera = renderModule.GetConstCamera();
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+		if (!pLevel)
+			return;
 
-		//loop through the tree
-		const Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		const Node* pRoot = levelEditorModule.GetConstLevelMgr()->GetConstSceneTree()->GetConstRoot();
-		if (pRoot)
-		{
-			DirectX::XMMATRIX currentWVP = pCamera->GetViewMatrix() * pCamera->GetProjectionMatrix();
+		const Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
+		for (Systems::GameObject* pRoot : roots)
+			pRoot->UpdateTransform();
 
-			RenderTreeNodeRecursive(pRoot, currentWVP, levelEditorModule.m_assetIdToMeshId, levelEditorModule.m_assetIdToMaterialId);
+		const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+		for (Systems::GameObject* pGo : gameObjects)
+			pGo->Render();
 
-			ClearDepthBuffer();
-		}
+		ClearDepthBuffer();
 
 		m_pGizmoWidget->Render();
 	}
@@ -176,6 +178,17 @@ namespace Editors
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
+
+		{
+			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+			if (!pLevel)
+				return;
+
+			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+			for (Systems::GameObject* pGo : gameObjects)
+				pGo->Update();
+		}
 	}
 
 	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)

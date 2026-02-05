@@ -19,6 +19,8 @@ namespace Systems
 		StaticMeshComponent();
 		~StaticMeshComponent();
 
+		void Render() override;
+
 	private:
 		HardAssetRef<MeshAsset> m_mesh;
 		HardAssetRef<MaterialInstanceAsset> m_material;

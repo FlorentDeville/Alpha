@@ -11,6 +11,7 @@ namespace Systems
 		, m_name(name)
 	{
 		Systems::CreateObjectInPlace(&m_transform);
+		m_transform.SetOwner(this);
 	}
 
 	GameObject::~GameObject()
@@ -22,10 +23,21 @@ namespace Systems
 	}
 
 	void GameObject::Update()
-	{ }
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->Update();
+	}
+
+	void GameObject::UpdateTransform()
+	{
+		m_transform.Update();
+	}
 
 	void GameObject::Render()
-	{ }
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->Render();
+	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{
@@ -55,6 +67,16 @@ namespace Systems
 	const TransformComponent& GameObject::GetTransform() const
 	{
 		return m_transform;
+	}
+
+	void GameObject::PostLoad()
+	{
+		Object::PostLoad();
+
+		m_transform.SetOwner(this);
+
+		for (GameComponent* pComponent : m_components)
+			pComponent->SetOwner(this);
 	}
 
 	GameObject* CreateNewGameObject(const TypeDescriptor* pType)

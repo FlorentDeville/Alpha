@@ -26,6 +26,7 @@ namespace Systems
 		virtual ~GameObject();
 
 		virtual void Update();
+		virtual void UpdateTransform();
 		virtual void Render();
 
 		void SetGuid(const Core::Guid& guid);
@@ -36,6 +37,8 @@ namespace Systems
 
 		TransformComponent& GetTransform();
 		const TransformComponent& GetTransform() const;
+
+		void PostLoad() override;
 
 	private:
 		std::string m_name;

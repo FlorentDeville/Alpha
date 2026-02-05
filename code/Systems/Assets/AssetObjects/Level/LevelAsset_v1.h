@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Guid/Guid.h"
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Objects/AssetObject.h"
@@ -41,13 +42,22 @@ namespace Systems
 
 		const Core::Array<GameObject*>& GetGameObjectsArray() const;
 
+		Core::Array<GameObject*>& GetRootGameObjects();
+
+		void PostLoad() override;
+
 	private:
 
 		Core::Array<GameObject*> m_gameObjectsArray;
+		Core::Array<Core::Guid> m_roots;
 
 		START_REFLECTION(Systems::LevelAsset_v1)
 			ADD_BASETYPE(Systems::Object)
 			ADD_FIELD(m_gameObjectsArray)
+			ADD_FIELD(m_roots)
 		END_REFLECTION()
+
+		//Cached pointers to the root game objects
+		Core::Array<GameObject*> m_rootsGameObject;
 	};
 }

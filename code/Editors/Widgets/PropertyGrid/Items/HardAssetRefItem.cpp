@@ -49,7 +49,11 @@ namespace Editors
 				pDialog->OnOk([this](Systems::NewAssetId id)
 					{
 						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
-						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &id);
+
+						uint64_t memory[2];
+						memory[0] = id.ToUint64();
+						memory[1] = reinterpret_cast<uint64_t>(Systems::AssetUtil::LoadAsset(id));
+						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, memory);
 					});
 			});
 

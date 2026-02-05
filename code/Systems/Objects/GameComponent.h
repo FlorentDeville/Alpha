@@ -11,6 +11,8 @@
 
 namespace Systems
 {
+	class GameObject;
+
 	ENABLE_REFLECTION_WITH_NS(Systems, GameComponent)
 	class GameComponent : public Object
 	{
@@ -23,6 +25,8 @@ namespace Systems
 
 		void SetGuid(const Core::Guid& guid);
 
+		void SetOwner(GameObject* pOwnerGo);
+
 	private:
 		Core::Guid m_guid;
 
@@ -30,6 +34,8 @@ namespace Systems
 			ADD_BASETYPE(Systems::Object)
 			ADD_FIELD_ATTR(m_guid, Hidden)
 		END_REFLECTION()
+
+		GameObject* m_pOwnerGo;
 	};
 
 	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType);

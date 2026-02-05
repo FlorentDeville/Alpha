@@ -25,6 +25,7 @@ namespace Systems
 		~NewAssetId();
 
 		std::string ToString() const;
+		uint64_t ToUint64() const;
 
 		ContainerId GetContainerId() const;
 		ObjectId GetObjectId() const;

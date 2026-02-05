@@ -4,6 +4,15 @@
 
 #include "Systems/GameComponent/StaticMeshComponent.h"
 
+#include "Rendering/Camera.h"
+#include "Rendering/ConstantBuffer/LightsCBuffer.h"
+#include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
+#include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
+#include "Rendering/RenderModule.h"
+
+#include "Systems/Objects/GameObject.h"
+#include "Systems/Rendering/MaterialRendering.h"
+
 namespace Systems
 {
 	StaticMeshComponent::StaticMeshComponent()
@@ -14,4 +23,38 @@ namespace Systems
 
 	StaticMeshComponent::~StaticMeshComponent()
 	{ }
+
+	void StaticMeshComponent::Render()
+	{
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+		Rendering::Camera* pCamera = renderModule.GetCamera();
+
+		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
+		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
+
+		const Core::Mat44f& world = m_pOwnerGo->GetTransform().GetWorldTx();
+		DirectX::XMMATRIX wvp = proj * (view * world.m_matrix);
+
+		Systems::MeshAsset* pMesh = m_mesh.GetPtr();
+		if (!pMesh)
+			return;
+
+		Systems::MaterialInstanceAsset* pMaterial = m_material.GetPtr();
+		if (pMaterial && pMaterial->GetBaseMaterial() && pMaterial->GetBaseMaterial()->IsValidForRendering())
+		{
+			Rendering::PerObjectCBuffer perObjectData(world.m_matrix);
+
+			DirectX::XMFLOAT3 cameraPosFloat3;
+			DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
+			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+
+			Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+			Rendering::LightsCBuffer lights(dirLight);
+
+			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
+
+			const Rendering::Mesh* pMesh = m_mesh->GetRenderingMesh();
+			renderModule.RenderMesh(*pMesh);
+		}
+	}
 }
