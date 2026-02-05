@@ -47,36 +47,6 @@ namespace Editors
 		}
 
 		m_onNodeChangedEvent(guid);
-		
-		
-		/*if (m_nodeGuid == nodeGuid)
-			return;
-
-		if (Entity* pEntity = GetEntity())
-		{
-			if(Property* pProperty = pEntity->GetProperty("Transform", "Local"))
-			{
-				pProperty->DisconnectOnValueChanged(m_cidOnPropertyValueChanged);
-			}
-		}
-		
-		m_nodeGuid = nodeGuid;
-
-		if (Entity* pEntity = GetEntity())
-		{
-			if (Property* pProperty = pEntity->GetProperty("Transform", "Local"))
-			{
-				m_cidOnPropertyValueChanged = pProperty->OnValueChanged([this](const PropertyValue& oldValue, const PropertyValue& newValue) 
-					{
-						if (m_onNodeChangedEvent)
-						{
-							m_onNodeChangedEvent(m_nodeGuid);
-						}
-					});
-			}
-		}
-		
-		m_onNodeChangedEvent(nodeGuid);*/
 	}
 
 	bool GizmoModel::ShouldRender()
