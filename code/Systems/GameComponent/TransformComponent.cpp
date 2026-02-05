@@ -29,6 +29,14 @@ namespace Systems
 		return m_wsTransform;
 	}
 
+	const Core::Mat44f& TransformComponent::GetParentWorldTx() const
+	{
+		if (!m_pParentGo)
+			return Core::Mat44f::s_identity;
+
+		return m_pParentGo->GetTransform().GetWorldTx();
+	}
+
 	void TransformComponent::SetLocalTx(const Core::Mat44f& localTx)
 	{
 		m_localTransform = localTx;
@@ -37,6 +45,11 @@ namespace Systems
 	const Core::Guid& TransformComponent::GetParentGuid() const
 	{
 		return m_parent;
+	}
+
+	const Systems::GameObject* TransformComponent::GetParent() const
+	{
+		return m_pParentGo;
 	}
 
 	void TransformComponent::SetParent(Systems::GameObject* pParentGo)
