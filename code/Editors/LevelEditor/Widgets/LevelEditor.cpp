@@ -458,13 +458,16 @@ namespace Editors
 	void LevelEditor::OnSelectionCleared_Gizmo()
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(Core::Guid());
+		pGizmoModel->SetGameObject(nullptr);
 	}
 
 	void LevelEditor::OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid)
 	{
 		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-		pGizmoModel->SetNode(nodeGuid);
+
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
+		pGizmoModel->SetGameObject(pSelectedGo);
 	}
 
 	void LevelEditor::OnRemovedFromSelection_Gizmo(const Core::Guid& nodeGuid)
@@ -476,13 +479,15 @@ namespace Editors
 		if (selectionList.empty())
 		{
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-			pGizmoModel->SetNode(Core::Guid());
+			pGizmoModel->SetGameObject(nullptr);
 
 		}
 		else
 		{
 			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
-			pGizmoModel->SetNode(nodeGuid);
+			LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+			Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
+			pGizmoModel->SetGameObject(pSelectedGo);
 		}
 	}
 

@@ -12,9 +12,9 @@
 namespace Editors
 {
 	GizmoModel::GizmoModel()
-		: m_nodeGuid()
-		, m_onNodeChangedEvent()
-		, m_cidOnPropertyValueChanged()
+		: m_pGo(nullptr)
+		//, m_onNodeChangedEvent()
+		//, m_cidOnPropertyValueChanged()
 	{
 		m_default.SetIdentity();
 	}
@@ -30,8 +30,18 @@ namespace Editors
 		}*/
 	}
 
-	void GizmoModel::SetNode(const Core::Guid& nodeGuid)
+	void GizmoModel::SetGameObject(Systems::GameObject* pGo)
 	{
+		if (m_pGo == pGo)
+			return;
+
+		m_pGo = pGo;
+
+		Core::Guid guid;
+		if (pGo)
+			guid = pGo->GetGuid();
+
+		m_onNodeChangedEvent(guid);
 		/*if (m_nodeGuid == nodeGuid)
 			return;
 
@@ -64,7 +74,7 @@ namespace Editors
 
 	bool GizmoModel::ShouldRender()
 	{
-		return m_nodeGuid.IsValid();
+		return m_pGo != nullptr;
 	}
 
 	Core::CallbackId GizmoModel::OnNodeChanged(const OnNodeChangedEvent::Callback& callback)
@@ -74,74 +84,69 @@ namespace Editors
 
 	const Core::Mat44f GizmoModel::GetTransform() const
 	{
-		//const Entity* pEntity = GetConstEntity();
-		//if (!pEntity)
-		//	return m_default;
+		if (!m_pGo)
+			return m_default;
 
-		//Core::Mat44f txWs = pEntity->ComputeWs();
+		Core::Mat44f txWs = m_pGo->GetTransform().GetWorldTx();
+		
+		//remove the scale
+		for (int ii = 0; ii < 3; ++ii)
+		{
+			Core::Vec4f axis = txWs.GetRow(ii);
+			axis.Normalize();
+			txWs.SetRow(ii, axis);
+		}
 
-		////remove the scale
-		//for (int ii = 0; ii < 3; ++ii)
-		//{
-		//	Core::Vec4f axis = txWs.GetRow(ii);
-		//	axis.Normalize();
-		//	txWs.SetRow(ii, axis);
-		//}
-
-		//return txWs;
-		return Core::Mat44f();
+		return txWs;
 	}
 
 	void GizmoModel::Translate(const Core::Vec4f& translate)
 	{
-		/*Entity* pEntity = GetEntity();
-		if (!pEntity)
+		if (!m_pGo)
 			return;
-
-		Core::Mat44f txLs = pEntity->GetLs();
+		
+		Core::Mat44f txLs = m_pGo->GetTransform().GetLocalTx();
 		txLs.SetRow(3, translate);
 
-		pEntity->SetLs(txLs);*/
+		m_pGo->GetTransform().SetLocalTx(txLs);
 	}
 
 	void GizmoModel::Rotate(const Core::Mat44f& rotation)
 	{
-		//Entity* pEntity = GetEntity();
-		//if (!pEntity)
-		//	return;
+		if (!m_pGo)
+			return;
 
-		//Core::Mat44f oldTxWs = pEntity->ComputeWs();
+		Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
 
-		//Core::Sqt sqtWs(oldTxWs);
-		//Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
+		Core::Sqt sqtWs(oldTxWs);
+		Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
 
-		//sqtWs.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
-		//Core::Mat44f baseTransformation = sqtWs.GetMatrix();
+		sqtWs.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
+		Core::Mat44f baseTransformation = sqtWs.GetMatrix();
 
-		//Core::Mat44f txWs = baseScale * rotation * baseTransformation;
+		Core::Mat44f txWs = baseScale * rotation * baseTransformation;
 
-		//Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
-		//Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+		Core::Mat44f txPs = m_pGo->GetTransform().GetParentWorldTx();
+		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
 
-		//Core::Mat44f txLs = txWs * invTxPs;
-		//pEntity->SetLs(txLs);
+		Core::Mat44f txLs = txWs * invTxPs;
+		m_pGo->GetTransform().SetLocalTx(txLs);
 	}
 
 	void GizmoModel::Scale(const Core::Vec4f& scale)
 	{
-		//Entity* pEntity = GetEntity();
-		//if (!pEntity)
-		//	return;
+		if (!m_pGo)
+			return;
 
-		//Core::Mat44f oldTxWs = pEntity->ComputeWs();
+		Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
 
-		//Core::Mat44f newScale = Core::Mat44f::CreateScaleMatrix(scale);
-		//Core::Mat44f newTxWs = newScale * oldTxWs;
+		Core::Mat44f newScale = Core::Mat44f::CreateScaleMatrix(scale);
+		Core::Mat44f newTxWs = newScale * oldTxWs;
 
-		//Core::Mat44f txPs = pEntity->ComputeParentWs(); //should be cached
-		//Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+		Core::Mat44f txPs = m_pGo->GetTransform().GetParentWorldTx();
+		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
 
-		//Core::Mat44f txLs = newTxWs * invTxPs;
-		//pEntity->SetLs(txLs);
+		Core::Mat44f txLs = newTxWs * invTxPs;
+		m_pGo->GetTransform().SetLocalTx(txLs);
 	}
 }

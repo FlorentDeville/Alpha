@@ -7,7 +7,7 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 
-#include "Core/Guid/Guid.h"
+#include "Systems/Objects/GameObject.h"
 
 namespace Core
 {
@@ -22,7 +22,7 @@ namespace Editors
 		GizmoModel();
 		~GizmoModel();
 
-		void SetNode(const Core::Guid& nodeGuid);
+		void SetGameObject(Systems::GameObject* pGo);
 
 		bool ShouldRender();
 
@@ -33,7 +33,7 @@ namespace Editors
 		//Function called by the gizmo to be placed in the correct location/orientation. Typically doesn't contain the scale.
 		virtual const Core::Mat44f GetTransform() const;
 
-		//The gizmo sends the new world space position
+		//The gizmo sends the new translation to apply
 		virtual void Translate(const Core::Vec4f& translate);
 
 		//The gizmo sends the new rotation to apply
@@ -43,11 +43,12 @@ namespace Editors
 		virtual void Scale(const Core::Vec4f& scale);
 
 	private:
-		Core::Guid m_nodeGuid;
+		Systems::GameObject* m_pGo;
 
+		//Event called when the game object tracked by the gizmo has changed. Typically when the selected game object has changed.
 		OnNodeChangedEvent m_onNodeChangedEvent;
 
-		Core::CallbackId m_cidOnPropertyValueChanged;
+		//Core::CallbackId m_cidOnPropertyValueChanged;
 
 		Core::Mat44f m_default;
 	};
