@@ -101,6 +101,14 @@ namespace Systems
 
 	void TransformComponent::Update()
 	{
+		ComputeWorldTx();
+
+		for (Systems::GameObject* pChildGo : m_childrenGo)
+			pChildGo->UpdateTransform();
+	}
+
+	void TransformComponent::ComputeWorldTx()
+	{
 		if (!m_parent.IsValid())
 		{
 			m_wsTransform = m_localTransform;
@@ -110,8 +118,5 @@ namespace Systems
 			const Core::Mat44f& parentWorld = m_pParentGo->GetTransform().GetWorldTx();
 			m_wsTransform = m_localTransform * parentWorld;
 		}
-
-		for (Systems::GameObject* pChildGo : m_childrenGo)
-			pChildGo->UpdateTransform();
 	}
 }

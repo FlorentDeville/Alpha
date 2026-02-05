@@ -40,6 +40,8 @@ namespace Systems
 
 		void Update() override;
 
+		void ComputeWorldTx();
+
 	private:
 		Core::Mat44f m_localTransform;
 
