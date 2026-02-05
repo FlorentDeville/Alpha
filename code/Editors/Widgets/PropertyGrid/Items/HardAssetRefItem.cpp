@@ -8,7 +8,7 @@
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 
 #include "Systems/Assets/AssetMgr.h"
-#include "Systems/Assets/AssetRef/HardAssetRef.h"
+#include "Systems/Assets/AssetRef/HardAssetRefRaw.h"
 #include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/Button.h"
@@ -50,10 +50,10 @@ namespace Editors
 					{
 						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 
-						uint64_t memory[2];
-						memory[0] = id.ToUint64();
-						memory[1] = reinterpret_cast<uint64_t>(Systems::AssetUtil::LoadAsset(id));
-						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, memory);
+						Systems::HardAssetRefRaw hardRef(id);
+						hardRef.Resolve();
+
+						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &hardRef);
 					});
 			});
 

@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Systems/Assets/AssetRef/HardAssetRefRaw.h"
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/TypeDescriptor.h"
@@ -36,12 +37,11 @@ namespace Systems
 		static void RegisterFields(TypeDescriptor* pType)
 		{
 			Systems::FieldDescriptor* pIdField = pType->AddField();
-			Systems::FieldInitializer<decltype(HardAssetRef<T>::m_id)>::Run(pIdField, "m_id", offsetof(HardAssetRef<T>, m_id), Systems::FieldAttribute());
+			Systems::FieldInitializer<decltype(HardAssetRef<T>::m_internalRef.m_id)>::Run(pIdField, "m_id", offsetof(HardAssetRef<T>, m_internalRef.m_id), Systems::FieldAttribute());
 		}
 
 	private:
-		NewAssetId m_id;
-		T* m_pPtr;
+		HardAssetRefRaw m_internalRef;
 	};
 
 	template<typename T> class TypeInitializer<Systems::HardAssetRef<T>>
