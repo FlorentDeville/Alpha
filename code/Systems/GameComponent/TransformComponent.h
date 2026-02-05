@@ -29,8 +29,10 @@ namespace Systems
 
 		const Core::Array<Core::Guid>& GetChildrenGuid() const;
 
-		void AddChild(const Core::Guid& child);
+		void AddChild(Systems::GameObject* pChild);
 		void RemoveChild(const Core::Guid& child);
+
+		void AddChildCachedPointer(Systems::GameObject* pGo);
 
 		void Update() override;
 
@@ -49,6 +51,9 @@ namespace Systems
 
 		// Cached pointer to the parent game object.
 		Systems::GameObject* m_pParentGo;
+
+		// Cached pointers to the children game objects.
+		Core::Array<Systems::GameObject*> m_childrenGo;
 
 		Core::Mat44f m_wsTransform;
 	};

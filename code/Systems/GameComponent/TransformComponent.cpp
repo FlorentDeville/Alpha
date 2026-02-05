@@ -52,17 +52,38 @@ namespace Systems
 		return m_children;
 	}
 
-	void TransformComponent::AddChild(const Core::Guid& child)
+	void TransformComponent::AddChild(Systems::GameObject* pChild)
 	{
-		Core::Array<Core::Guid>::Iterator it = std::find(m_children.cbegin(), m_children.cend(), child);
+		Core::Array<Core::Guid>::Iterator it = std::find(m_children.cbegin(), m_children.cend(), pChild->GetGuid());
 
-		if(it == m_children.cend())
-			m_children.PushBack(child);
+		if (it != m_children.cend())
+			return;
+
+		m_children.PushBack(pChild->GetGuid());
+		m_childrenGo.PushBack(pChild);
 	}
 
 	void TransformComponent::RemoveChild(const Core::Guid& child)
 	{
 		m_children.Erase(child);
+
+		Systems::GameObject* pChildGo = nullptr;
+		for (Systems::GameObject* pGo : m_childrenGo)
+		{
+			if (pGo->GetGuid() == child)
+			{
+				pChildGo = pGo;
+				break;
+			}
+		}
+
+		if(pChildGo)
+			m_childrenGo.Erase(pChildGo);
+	}
+
+	void TransformComponent::AddChildCachedPointer(Systems::GameObject* pGo)
+	{
+		m_childrenGo.PushBack(pGo);
 	}
 
 	void TransformComponent::Update()
@@ -78,5 +99,8 @@ namespace Systems
 			const Core::Mat44f& parentWorld = m_pParentGo->GetTransform().GetWorldTx();
 			m_wsTransform = m_localTransform * parentWorld;
 		}
+
+		for (Systems::GameObject* pChildGo : m_childrenGo)
+			pChildGo->Update();
 	}
 }

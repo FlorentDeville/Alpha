@@ -286,7 +286,7 @@ namespace Editors
 
 		//add the child to its new parent if any
 		if (pGoNewParent)
-			pGoNewParent->GetTransform().AddChild(child);
+			pGoNewParent->GetTransform().AddChild(pGoChild);
 
 		//remove the child from its old parent
 		if (pGoOldParent)

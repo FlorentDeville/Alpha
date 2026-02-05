@@ -59,7 +59,7 @@ namespace Systems
 		if (!pGoParent)
 			return;
 
-		pGoParent->GetTransform().AddChild(pGo->GetGuid());
+		pGoParent->GetTransform().AddChild(pGo);
 		pGo->GetTransform().SetParent(pGoParent);
 	}
 
@@ -136,6 +136,16 @@ namespace Systems
 				continue;
 
 			pGo->GetTransform().SetParent(pParentGo);
+
+			const Core::Array<Core::Guid>& children = pGo->GetTransform().GetChildrenGuid();
+			for (const Core::Guid& childGuid : children)
+			{
+				GameObject* pChildGo = FindGameObject(childGuid);
+				if (!pChildGo)
+					continue;
+
+				pGo->GetTransform().AddChildCachedPointer(pChildGo);
+			}
 		}
 	}
 }
