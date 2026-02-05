@@ -91,16 +91,14 @@ namespace Systems
 		if (!m_parent.IsValid())
 		{
 			m_wsTransform = m_localTransform;
-			return;
 		}
-
-		if (m_pParentGo)
+		else if (m_pParentGo)
 		{
 			const Core::Mat44f& parentWorld = m_pParentGo->GetTransform().GetWorldTx();
 			m_wsTransform = m_localTransform * parentWorld;
 		}
 
 		for (Systems::GameObject* pChildGo : m_childrenGo)
-			pChildGo->Update();
+			pChildGo->UpdateTransform();
 	}
 }

@@ -26,6 +26,7 @@ namespace Systems
 		virtual ~GameObject();
 
 		virtual void Update();
+		virtual void UpdateTransform();
 		virtual void Render();
 
 		void SetGuid(const Core::Guid& guid);

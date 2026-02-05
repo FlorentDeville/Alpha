@@ -24,10 +24,13 @@ namespace Systems
 
 	void GameObject::Update()
 	{
-		m_transform.Update();
-
 		for (GameComponent* pComponent : m_components)
 			pComponent->Update();
+	}
+
+	void GameObject::UpdateTransform()
+	{
+		m_transform.Update();
 	}
 
 	void GameObject::Render()
