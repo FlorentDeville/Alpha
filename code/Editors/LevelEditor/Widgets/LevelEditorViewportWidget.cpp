@@ -8,9 +8,6 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
-#include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/Node.h"
-#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"

@@ -16,9 +16,6 @@ namespace Core
 
 namespace Editors
 {
-	class Entity;
-	class Node;
-
 	class GizmoModel
 	{
 	public:
@@ -53,8 +50,5 @@ namespace Editors
 		Core::CallbackId m_cidOnPropertyValueChanged;
 
 		Core::Mat44f m_default;
-
-		const Entity* GetConstEntity() const;
-		Entity* GetEntity() const;
 	};
 }

@@ -14,10 +14,7 @@
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\LevelListModel.h" />
     <ClInclude Include="LevelEditor\SceneTreeModel.h" />
-    <ClInclude Include="LevelEditor\LevelMgr.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
-    <ClInclude Include="LevelEditor\SceneTree\Node.h" />
-    <ClInclude Include="LevelEditor\SceneTree\SceneTree.h" />
     <ClInclude Include="LevelEditor\SelectionMgr.h" />
     <ClInclude Include="LevelEditor\Widgets\CameraWidget.h" />
     <ClInclude Include="LevelEditor\Widgets\GizmoAxis.h" />
@@ -66,10 +63,7 @@
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\LevelListModel.cpp" />
     <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />
-    <ClCompile Include="LevelEditor\LevelMgr.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
-    <ClCompile Include="LevelEditor\SceneTree\Node.cpp" />
-    <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp" />
     <ClCompile Include="LevelEditor\SelectionMgr.cpp" />
     <ClCompile Include="LevelEditor\Widgets\CameraWidget.cpp" />
     <ClCompile Include="LevelEditor\Widgets\GizmoAxis.cpp" />

@@ -42,7 +42,6 @@ namespace Editors
 {
 	class Node;
 	class GizmoWidget;
-	class LevelMgr;
 	class SelectionMgr;
 
 	class LevelEditorModule : public Core::Singleton<LevelEditorModule>
@@ -53,9 +52,6 @@ namespace Editors
 
 		void Init() override;
 		void Shutdown() override;
-
-		const LevelMgr* GetConstLevelMgr() const;
-		LevelMgr* GetLevelMgr();
 
 		const SelectionMgr* GetConstSelectionMgr() const;
 		SelectionMgr* GetSelectionMgr();
@@ -114,7 +110,6 @@ namespace Editors
 		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
 
 	private:
-		LevelMgr* m_pLevelMgr;
 		SelectionMgr* m_pSelectionMgr;
 
 		Systems::NewAssetId m_loadedLevelAssetId;

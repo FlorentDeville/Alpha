@@ -8,9 +8,6 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
-#include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/Node.h"
-#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 
 namespace Editors
 {
@@ -146,39 +143,5 @@ namespace Editors
 
 		//Core::Mat44f txLs = newTxWs * invTxPs;
 		//pEntity->SetLs(txLs);
-	}
-
-	const Entity* GizmoModel::GetConstEntity() const
-	{
-		if (!m_nodeGuid.IsValid())
-			return nullptr;
-
-		const LevelMgr* pLevelMgr = LevelEditorModule::Get().GetConstLevelMgr();
-		if (!pLevelMgr)
-			return nullptr;
-
-		const Node* pNode = pLevelMgr->GetConstSceneTree()->GetConstNode(m_nodeGuid);
-		if (!pNode)
-			return nullptr;
-
-		const Entity* pEntity = pNode->ToConstEntity();
-		return pEntity;
-	}
-
-	Entity* GizmoModel::GetEntity() const
-	{
-		if (!m_nodeGuid.IsValid())
-			return nullptr;
-
-		LevelMgr* pLevelMgr = LevelEditorModule::Get().GetLevelMgr();
-		if (!pLevelMgr)
-			return nullptr;
-
-		Node* pNode = pLevelMgr->GetSceneTree()->GetNode(m_nodeGuid);
-		if (!pNode)
-			return nullptr;
-
-		Entity* pEntity = pNode->ToEntity();
-		return pEntity;
 	}
 }

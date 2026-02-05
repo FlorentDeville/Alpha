@@ -6,8 +6,6 @@
 
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/LevelMgr.h"
-#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
@@ -26,7 +24,6 @@ namespace Editors
 {
 	LevelEditorModule::LevelEditorModule()
 		: m_fovRad(DirectX::XMConvertToRadians(45.f))
-		, m_pLevelMgr(nullptr)
 		, m_pSelectionMgr(nullptr)
 		, m_loadedLevelAssetId()
 		, m_pLevel(nullptr)
@@ -37,7 +34,6 @@ namespace Editors
 
 	void LevelEditorModule::Init()
 	{
-		m_pLevelMgr = new LevelMgr();
 		m_pSelectionMgr = new SelectionMgr();
 	}
 
@@ -45,19 +41,6 @@ namespace Editors
 	{
 		delete m_pSelectionMgr;
 		m_pSelectionMgr = nullptr;
-
-		delete m_pLevelMgr;
-		m_pLevelMgr = nullptr;
-	}
-
-	const LevelMgr* LevelEditorModule::GetConstLevelMgr() const
-	{
-		return m_pLevelMgr;
-	}
-
-	LevelMgr* LevelEditorModule::GetLevelMgr()
-	{
-		return m_pLevelMgr;
 	}
 
 	const SelectionMgr* LevelEditorModule::GetConstSelectionMgr() const

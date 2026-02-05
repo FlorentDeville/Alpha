@@ -27,9 +27,6 @@
     <ClInclude Include="MaterialEditor\MaterialEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\LevelMgr.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Widgets\AssetId\AssetIdWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,12 +34,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelEditor\SceneTree\Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LevelEditor\SceneTree\SceneTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\Widgets\CameraWidget.h">
@@ -179,19 +170,10 @@
     <ClCompile Include="MaterialEditor\MaterialEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\LevelMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelEditor\SceneTree\Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelEditor\SceneTree\SceneTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\Widgets\CameraWidget.cpp">

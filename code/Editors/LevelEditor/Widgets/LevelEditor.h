@@ -101,7 +101,6 @@ namespace Editors
 		void OnSelectionCleared_GameObjectProperties();
 		void OnAddedToSelection_GameObjectProperties(const Core::Guid& guid);
 		void OnRemovedFromSelection_GameObjectProperties(const Core::Guid& nodeGuid);
-		void OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid);
 
 		void OnSelectionCleared_Gizmo();
 		void OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid);

@@ -8,10 +8,7 @@
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
-#include "Editors/LevelEditor/LevelMgr.h"
 #include "Editors/LevelEditor/SceneTreeModel.h"
-#include "Editors/LevelEditor/SceneTree/Node.h"
-#include "Editors/LevelEditor/SceneTree/SceneTree.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
@@ -456,20 +453,6 @@ namespace Editors
 			return;
 
 		m_pPropertyGridPopulator->Populate(pGo);
-	}
-
-	void LevelEditor::OnRenameEntity_EntityProperties(const Core::Guid& nodeGuid)
-	{
-		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-
-		SceneTree* pSceneTree = levelEditorModule.GetLevelMgr()->GetSceneTree();
-		Node* pNode = pSceneTree->GetNode(nodeGuid);
-		if (!pNode)
-			return;
-
-		Entity* pEntity = pNode->ToEntity();
-		if (!pEntity)
-			return;
 	}
 
 	void LevelEditor::OnSelectionCleared_Gizmo()
