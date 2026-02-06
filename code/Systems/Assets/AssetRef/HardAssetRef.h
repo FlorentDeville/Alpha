@@ -33,6 +33,7 @@ namespace Systems
 		bool Resolve();
 
 		T* GetPtr();
+		const T* GetPtr() const;
 
 		static void RegisterFields(TypeDescriptor* pType)
 		{
