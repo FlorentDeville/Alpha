@@ -209,7 +209,7 @@ namespace Widgets
 
 		void ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
 
-	private:
+	protected:
 		virtual void Internal_Render(); //only used by widgets rendering 3d like a viewport
 
 	};

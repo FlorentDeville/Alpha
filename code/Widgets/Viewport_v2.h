@@ -36,8 +36,9 @@ namespace Widgets
 
 		float m_aspectRatio;
 
-	private:
 		Rendering::RenderTarget* m_pRenderTarget; //the render target where this viewport will do the rendering
+
+	private:
 
 		bool m_updateEnabled; //true if the update event should be called
 

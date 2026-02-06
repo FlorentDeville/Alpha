@@ -18,6 +18,7 @@
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/RenderTargets/RenderTarget.h"
 
 #include "Systems/Objects/GameObject.h"
 
@@ -44,8 +45,6 @@ namespace Editors
 		m_pGizmoWidget = new GizmoWidget();
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
-
-		OnRender([this]() { Render(); });
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -116,5 +115,12 @@ namespace Editors
 	GizmoModel* LevelEditorViewportWidget::GetGizmoModel()
 	{
 		return m_pGizmoModel;
+	}
+
+	void LevelEditorViewportWidget::Internal_Render()
+	{
+		m_pRenderTarget->BeginScene();
+		Render();
+		m_pRenderTarget->EndScene();
 	}
 }

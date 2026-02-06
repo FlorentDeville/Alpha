@@ -35,5 +35,7 @@ namespace Editors
 		bool m_enableViewportControl;
 		
 		bool m_isPanning; //when the user is panning the camera	
+
+		void Internal_Render() override;
 	};
 }
