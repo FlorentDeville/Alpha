@@ -116,6 +116,8 @@ namespace Widgets
 		Rendering::MaterialId GetWidgetMaterialId() const;
 		Rendering::MeshId GetQuadMeshId() const;
 
+		Rendering::PipelineStateId GetObjectIdsPsoId() const;
+
 	private:
 
 		std::set<Widget*> m_widgets;
@@ -140,6 +142,8 @@ namespace Widgets
 		Rendering::FontId m_segoeUIFontId;
 
 		Rendering::TextureId m_iconTextureIdArray[static_cast<int>(IconId::kCount)];
+
+		Rendering::PipelineStateId m_objectIdsPsoId; //pso used to render the object ids frame buffer. This should not be here, it's specific to the level editor
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;
