@@ -6,6 +6,11 @@
 
 #include "Widgets/Viewport_v2.h"
 
+namespace Rendering
+{
+	class RenderTarget;
+}
+
 namespace Editors
 {
 	class CameraWidget;
@@ -35,6 +40,8 @@ namespace Editors
 		bool m_enableViewportControl;
 		
 		bool m_isPanning; //when the user is panning the camera	
+
+		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
 
 		void Internal_Render() override;
 	};

@@ -15,12 +15,15 @@
 #include "Inputs/InputMgr.h"
 
 #include "Rendering/Camera.h"
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 
+#include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
+
+#include "Widgets/WidgetMgr.h"
 
 //needed for the operator* between vectors and floats.
 using namespace DirectX;
@@ -29,6 +32,19 @@ using namespace DirectX;
 
 namespace Editors
 {
+	struct ConstBufferPerObject
+	{
+		Core::Mat44f m_world;
+		float m_objectId[3];
+		float m_padding;
+	};
+
+	struct ConstBufferPerFrame
+	{
+		Core::Mat44f m_view;
+		Core::Mat44f m_proj;
+	};
+
 	LevelEditorViewportWidget::LevelEditorViewportWidget(int width, int height)
 		: Widgets::Viewport_v2(width, height)
 		, m_enableViewportControl(false)
@@ -45,12 +61,15 @@ namespace Editors
 		m_pGizmoWidget = new GizmoWidget();
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
+
+		m_pObjectIdRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
 	{
 		delete m_pCamera;
 		delete m_pGizmoWidget;
+		delete m_pObjectIdRenderTarget;
 	}
 
 	void LevelEditorViewportWidget::Render()
@@ -70,7 +89,7 @@ namespace Editors
 		for (Systems::GameObject* pGo : gameObjects)
 			pGo->Render();
 
-		ClearDepthBuffer();
+		m_pRenderTarget->ClearDepthBuffer();
 
 		m_pGizmoWidget->Render();
 	}
@@ -122,5 +141,58 @@ namespace Editors
 		m_pRenderTarget->BeginScene();
 		Render();
 		m_pRenderTarget->EndScene();
+
+
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+		if (pLevel)
+		{
+			Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+			Rendering::PipelineStateId objectIdsPsoId = widgetMgr.GetObjectIdsPsoId();
+			Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(objectIdsPsoId);
+
+			Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+
+			ConstBufferPerFrame perFrame;
+			perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix();
+			perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix();
+
+			m_pObjectIdRenderTarget->BeginScene();
+
+			renderModule.BindMaterial(*pPso);
+
+			renderModule.SetConstantBuffer(1, sizeof(ConstBufferPerFrame), &perFrame, 0);
+
+			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+			for (const Systems::GameObject* pGo : gameObjects)
+			{
+				const Core::Array<Systems::GameComponent*> components = pGo->GetComponents();
+				for (const Systems::GameComponent* pComponent : components)
+				{
+					const Systems::StaticMeshComponent* pMeshComponent = dynamic_cast<const Systems::StaticMeshComponent*>(pComponent);
+					if (!pMeshComponent)
+						continue;
+
+					const Systems::MeshAsset* pMesh = pMeshComponent->GetMesh();
+					if (!pMesh)
+						continue;
+
+					const Core::Mat44f& world = pGo->GetTransform().GetWorldTx();
+					ConstBufferPerObject perObject;
+					perObject.m_world = world;
+					perObject.m_objectId[0] = 1;
+					perObject.m_objectId[1] = 0;
+					perObject.m_objectId[2] = 0;
+
+					renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
+
+					const Rendering::Mesh* pRenderingMesh = pMesh->GetRenderingMesh();
+					renderModule.RenderMesh(*pRenderingMesh);
+				}
+			}
+
+
+			m_pObjectIdRenderTarget->EndScene();
+		}
 	}
 }
