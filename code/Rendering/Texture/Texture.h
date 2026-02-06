@@ -21,6 +21,8 @@ namespace Rendering
 		void Init(const std::string& path);
 		void InitAsRenderTarget(int width, int height, float* clearColor);
 
+		void TransitionTo(D3D12_RESOURCE_STATES nextState);
+
 		const ID3D12DescriptorHeap* GetSRV() const;
 		ID3D12DescriptorHeap* GetSRV();
 
@@ -33,6 +35,8 @@ namespace Rendering
 		ID3D12Resource* m_pResource;
 		D3D12_RESOURCE_DESC m_resourceDesc;
 		ID3D12DescriptorHeap* m_pSrvDescriptorHeap;
+
+		D3D12_RESOURCE_STATES m_currentState;
 
 		void Internal_Init(const unsigned char* pData, int width, int height, int channel);
 	};

@@ -22,7 +22,6 @@ namespace Rendering
 		, m_texture()
 		, m_rtv()
 		, m_dsv()
-		, m_currentState(D3D12_RESOURCE_STATE_RENDER_TARGET)
 	{
 		m_clearColor[0] = m_clearColor[1] = m_clearColor[2] = 0.27f;
 		m_clearColor[3] = 1.f;
@@ -65,24 +64,9 @@ namespace Rendering
 		delete m_pDSVHeap;
 	}
 
-	void RenderTarget::TransitionTo(D3D12_RESOURCE_STATES nextState)
-	{
-		if (nextState == m_currentState)
-			return;
-
-		RenderModule& renderModule = RenderModule::Get();
-		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
-
-		ID3D12Resource* pTexture = m_texture->GetResource();
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, m_currentState, nextState);
-		commandList->ResourceBarrier(1, &barrier);
-
-		m_currentState = nextState;
-	}
-
 	void RenderTarget::BeginScene()
 	{
-		TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_texture->TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		RenderModule& renderModule = RenderModule::Get();
 		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
@@ -104,7 +88,7 @@ namespace Rendering
 
 	void RenderTarget::EndScene()
 	{
-		TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+		m_texture->TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 	}
 
 	void RenderTarget::ClearDepthBuffer()

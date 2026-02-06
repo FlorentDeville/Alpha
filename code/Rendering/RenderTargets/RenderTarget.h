@@ -22,8 +22,6 @@ namespace Rendering
 		RenderTarget(int width, int height);
 		~RenderTarget();
 
-		void TransitionTo(D3D12_RESOURCE_STATES nextState);
-
 		void BeginScene();
 		void EndScene();
 
@@ -40,8 +38,6 @@ namespace Rendering
 		D3D12_CPU_DESCRIPTOR_HANDLE m_dsv;		// Depth stencil view
 		D3D12_VIEWPORT m_viewport;				// The sub rectangle of the render target where to render the scene
 		D3D12_RECT m_scissorRect;				// A rectangle within the viewport cullling out the pixels outside the scissor.
-
-		D3D12_RESOURCE_STATES m_currentState;	// Current state
 
 		float m_clearColor[4];
 
