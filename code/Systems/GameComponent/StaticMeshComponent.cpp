@@ -57,4 +57,9 @@ namespace Systems
 			renderModule.RenderMesh(*pMesh);
 		}
 	}
+
+	const MeshAsset* StaticMeshComponent::GetMesh() const
+	{
+		return m_mesh.GetPtr();
+	}
 }

@@ -21,6 +21,8 @@ namespace Systems
 
 		void Render() override;
 
+		const MeshAsset* GetMesh() const;
+
 	private:
 		HardAssetRef<MeshAsset> m_mesh;
 		HardAssetRef<MaterialInstanceAsset> m_material;
