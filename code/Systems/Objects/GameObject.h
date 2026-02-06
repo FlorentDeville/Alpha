@@ -38,6 +38,8 @@ namespace Systems
 		TransformComponent& GetTransform();
 		const TransformComponent& GetTransform() const;
 
+		const Core::Array<GameComponent*>& GetComponents() const;
+
 		void PostLoad() override;
 
 	private:
