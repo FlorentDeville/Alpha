@@ -38,7 +38,7 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_texture, m_textureId);
-		m_texture->Init_RenderTarget(width, height, m_clearColor);
+		m_texture->InitAsRenderTarget(width, height, m_clearColor);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_texture->GetResource(), nullptr, m_rtv);

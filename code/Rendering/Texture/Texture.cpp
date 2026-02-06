@@ -56,7 +56,7 @@ namespace Rendering
 		stbi_image_free(pData);
 	}
 
-	void Texture::Init_RenderTarget(int width, int height, float* clearColor)
+	void Texture::InitAsRenderTarget(int width, int height, float* clearColor)
 	{
 		DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 

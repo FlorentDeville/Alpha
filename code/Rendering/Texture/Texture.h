@@ -19,7 +19,7 @@ namespace Rendering
 
 		void Init(const char* ptr, uint32_t size);
 		void Init(const std::string& path);
-		void Init_RenderTarget(int width, int height, float* clearColor);
+		void InitAsRenderTarget(int width, int height, float* clearColor);
 
 		const ID3D12DescriptorHeap* GetSRV() const;
 		ID3D12DescriptorHeap* GetSRV();
