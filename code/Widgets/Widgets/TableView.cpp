@@ -17,6 +17,7 @@
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Split.h"
+#include "Widgets/Tools/AlternateColorCBuffer.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -76,24 +77,17 @@ namespace Widgets
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
 
-			struct AlternateColor
-			{
-				Color m_color1;
-				Color m_color2;
-				uint32_t m_size;
-			};
-
-			AlternateColor altColor;
+			AlternateColorCBuffer altColor;
 			altColor.m_color1 = m_evenRowBackgroundColor;
 			altColor.m_color2 = m_oddRowBackgroundColor;
 			altColor.m_size = 20;
-			render.SetConstantBuffer(6, sizeof(AlternateColor), &altColor, 0);
+			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
 
 			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());
 			render.RenderMesh(*pMesh);
 
 			altColor.m_size = 0;
-			render.SetConstantBuffer(6, sizeof(AlternateColor), &altColor, 0);
+			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
 		}
 
 		for (Widget* pWidget : m_children)

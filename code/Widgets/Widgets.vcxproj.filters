@@ -150,6 +150,9 @@
     <ClInclude Include="Widgets\TreeView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\AlternateColorCBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">

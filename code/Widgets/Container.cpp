@@ -9,6 +9,7 @@
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 
+#include "Widgets/Tools/AlternateColorCBuffer.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -70,6 +71,11 @@ namespace Widgets
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
 			render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
+
+			//containers don't use alternate color but if the constant buffer is not set, it messes up the shader execution.
+			AlternateColorCBuffer altColor;
+			altColor.m_size = 0;
+			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
 
 			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.m_quadMeshId);
 			render.RenderMesh(*pMesh);
