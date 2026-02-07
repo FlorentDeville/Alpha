@@ -6,9 +6,14 @@
 
 #include "Widgets/Viewport_v2.h"
 
+#include "Core/Guid/Guid.h"
+
+#include <map>
+
 namespace Rendering
 {
 	class RenderTarget;
+	class Texture;
 }
 
 namespace Editors
@@ -42,6 +47,9 @@ namespace Editors
 		bool m_isPanning; //when the user is panning the camera	
 
 		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
+		Rendering::Texture* m_pReadbackBuffer;
+
+		std::map<uint32_t, Core::Guid> m_objectIdToGuid;
 
 		void Internal_Render() override;
 	};

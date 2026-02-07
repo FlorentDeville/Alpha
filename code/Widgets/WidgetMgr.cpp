@@ -185,7 +185,7 @@ namespace Widgets
 			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\object_ids.ps.cso");
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_objectIdsPsoId);
-			pPipelineState->Init_Generic(rsId, vsId, psId);
+			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UINT);
 		}
 
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();

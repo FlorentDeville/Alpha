@@ -19,6 +19,8 @@
 #include "Rendering/RenderModule.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/Texture/Texture.h"
+#include "Rendering/Texture/TextureMgr.h"
 
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
@@ -35,8 +37,7 @@ namespace Editors
 	struct ConstBufferPerObject
 	{
 		Core::Mat44f m_world;
-		float m_objectId[3];
-		float m_padding;
+		uint32_t m_objectId[4];
 	};
 
 	struct ConstBufferPerFrame
@@ -49,6 +50,7 @@ namespace Editors
 		: Widgets::Viewport_v2(width, height)
 		, m_enableViewportControl(false)
 		, m_isPanning(false)
+		, m_objectIdToGuid()
 	{
 		m_pCamera = new CameraWidget();
 		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditorModule::Get().SetCameraWs(mat); });
@@ -62,7 +64,11 @@ namespace Editors
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
 
-		m_pObjectIdRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
+		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UINT, Core::Vec4f(0, 0, 0, 0));
+
+		Rendering::TextureId readbackTextureId;
+		Rendering::TextureMgr::Get().CreateTexture(&m_pReadbackBuffer, readbackTextureId);
+		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -119,6 +125,16 @@ namespace Editors
 			for (Systems::GameObject* pGo : gameObjects)
 				pGo->Update();
 		}
+
+		//D3D12_RANGE readbackBufferRange{ 0, m_size.x * m_size.y * 12 };
+		FLOAT* pReadbackBufferData{};
+		HRESULT res = m_pReadbackBuffer->GetResource()->Map(0, nullptr, reinterpret_cast<void**>(&pReadbackBufferData));
+		
+		//read data here
+		uint32_t pixel = *reinterpret_cast<uint32_t*>(&pReadbackBufferData[0]);
+
+		D3D12_RANGE emptyRange{ 0, 0 };
+		m_pReadbackBuffer->GetResource()->Unmap(0, &emptyRange);
 	}
 
 	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
@@ -163,6 +179,8 @@ namespace Editors
 
 			renderModule.SetConstantBuffer(1, sizeof(ConstBufferPerFrame), &perFrame, 0);
 
+			uint32_t objectIdCounter = 0;
+
 			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 			for (const Systems::GameObject* pGo : gameObjects)
 			{
@@ -177,12 +195,17 @@ namespace Editors
 					if (!pMesh)
 						continue;
 
+					++objectIdCounter;
+
 					const Core::Mat44f& world = pGo->GetTransform().GetWorldTx();
 					ConstBufferPerObject perObject;
 					perObject.m_world = world;
-					perObject.m_objectId[0] = 1;
-					perObject.m_objectId[1] = 0;
-					perObject.m_objectId[2] = 0;
+					perObject.m_objectId[3] = (objectIdCounter & 0xFF000000) >> 24;
+					perObject.m_objectId[2] = (objectIdCounter & 0x00FF0000) >> 16;
+					perObject.m_objectId[1] = (objectIdCounter & 0x0000FF00) >> 8;
+					perObject.m_objectId[0] = (objectIdCounter & 0x000000FF);
+
+					m_objectIdToGuid[objectIdCounter] = pGo->GetGuid();
 
 					renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
 
@@ -191,8 +214,9 @@ namespace Editors
 				}
 			}
 
-
 			m_pObjectIdRenderTarget->EndScene();
+
+			m_pObjectIdRenderTarget->CopyToReabackBuffer(m_pReadbackBuffer);
 		}
 	}
 }
