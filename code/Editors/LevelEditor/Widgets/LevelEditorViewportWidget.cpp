@@ -125,16 +125,37 @@ namespace Editors
 			for (Systems::GameObject* pGo : gameObjects)
 				pGo->Update();
 		}
+	}
 
-		//D3D12_RANGE readbackBufferRange{ 0, m_size.x * m_size.y * 12 };
-		FLOAT* pReadbackBufferData{};
-		HRESULT res = m_pReadbackBuffer->GetResource()->Map(0, nullptr, reinterpret_cast<void**>(&pReadbackBufferData));
-		
-		//read data here
-		uint32_t pixel = *reinterpret_cast<uint32_t*>(&pReadbackBufferData[0]);
+	bool LevelEditorViewportWidget::Handle(const Widgets::BaseEvent& event)
+	{
+		bool handled = false;
 
-		D3D12_RANGE emptyRange{ 0, 0 };
-		m_pReadbackBuffer->GetResource()->Unmap(0, &emptyRange);
+		if(event.m_id == Widgets::EventType::kMouseUp)
+		{
+			const Widgets::MouseEvent& mouseEvent = static_cast<const Widgets::MouseEvent&>(event);
+			if (mouseEvent.HasButton(Widgets::MouseButton::LeftButton))
+			{
+				handled = true;
+				int widgetPixelX = mouseEvent.GetX() - GetScreenX();
+				int widgetPixelY = mouseEvent.GetY() - GetScreenY();
+
+				uint32_t objectId = GetObjectId(widgetPixelX, widgetPixelY);
+				if (objectId == 0)
+					return handled;
+
+				LevelEditorModule::Get().ClearSelection();
+
+				std::map<uint32_t, Core::Guid>::const_iterator it = m_objectIdToGuid.find(objectId);
+				if (it == m_objectIdToGuid.cend())
+					return handled;
+
+				LevelEditorModule::Get().AddToSelection(it->second);
+				return handled;
+			}
+		}
+
+		return Viewport_v2::Handle(event);
 	}
 
 	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
@@ -218,5 +239,54 @@ namespace Editors
 
 			m_pObjectIdRenderTarget->CopyToReabackBuffer(m_pReadbackBuffer);
 		}
+	}
+
+	uint32_t LevelEditorViewportWidget::GetObjectId(int mouseX, int mouseY) const
+	{
+		float uvX = mouseX / static_cast<float>(GetWidth());
+		float uvY = mouseY / static_cast<float>(GetHeight());
+
+		float textureRatio = m_width / static_cast<float>(m_height);
+
+		float stretchTextureHeight = static_cast<float>(GetHeight());
+		float stretchTextureWidth = stretchTextureHeight * textureRatio;
+		if (stretchTextureWidth < GetWidth())
+		{
+			stretchTextureWidth = static_cast<float>(GetWidth());
+			stretchTextureHeight = stretchTextureWidth / textureRatio;
+		}
+
+		float dw = stretchTextureWidth - GetWidth();
+		float pixelOffsetX = dw / 2;
+		float uvOffsetX = pixelOffsetX / stretchTextureWidth;
+
+		float dh = stretchTextureHeight - GetHeight();
+		float pixelOffsetY = dh / 2;
+		float uvOffsetY = pixelOffsetY / stretchTextureHeight;
+
+		float uvXStart = uvOffsetX;
+		float uvXEnd = 1 - uvOffsetX;
+		float uvYStart = uvOffsetY;
+		float uvYEnd = 1 - uvOffsetY;
+
+		int pixelX = static_cast<int>((uvX * (uvXEnd - uvXStart) + uvXStart) * m_width);
+		int pixelY = static_cast<int>((uvY * (uvYEnd - uvYStart) + uvYStart) * m_height);
+
+		int backBufferIndex = pixelY * m_width + pixelX;
+
+		FLOAT* pReadbackBufferData = nullptr;
+		HRESULT res = m_pReadbackBuffer->GetResource()->Map(0, nullptr, reinterpret_cast<void**>(&pReadbackBufferData));
+
+		//read data here
+		uint32_t objectId = *reinterpret_cast<uint32_t*>(&pReadbackBufferData[backBufferIndex]);
+
+		char buffer[500];
+		sprintf_s(buffer, 500, "[%d %d] Object id %d \n", pixelX, pixelY, objectId);
+		OutputDebugString(buffer);
+
+		D3D12_RANGE emptyRange{ 0, 0 };
+		m_pReadbackBuffer->GetResource()->Unmap(0, &emptyRange);
+
+		return objectId;
 	}
 }

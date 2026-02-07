@@ -31,6 +31,8 @@ namespace Editors
 		void Render();
 		void Update(uint64_t dt) override;
 
+		bool Handle(const Widgets::BaseEvent& event) override;
+
 		void SetEnableViewportControl(bool enable);
 
 		GizmoWidget* GetGizmoWidget();
@@ -52,5 +54,8 @@ namespace Editors
 		std::map<uint32_t, Core::Guid> m_objectIdToGuid;
 
 		void Internal_Render() override;
+
+		// Find the object id from the mouse position. The mouse position is local to the widget.
+		uint32_t GetObjectId(int mouseX, int mouseY) const;
 	};
 }
