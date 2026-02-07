@@ -101,6 +101,27 @@ namespace Rendering
 		commandList->ClearDepthStencilView(m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
 	}
 
+	void RenderTarget::CopyToReabackBuffer(Texture* pDestTexture)
+	{
+		m_texture->TransitionTo(D3D12_RESOURCE_STATE_COPY_SOURCE);
+
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* pCommandList = renderModule.GetRenderCommandList();
+
+		D3D12_TEXTURE_COPY_LOCATION dest;
+		dest.pResource = pDestTexture->GetResource();
+		dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+
+		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
+		renderModule.GetDevice()->GetCopyableFootprints(&m_texture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
+
+		dest.PlacedFootprint = footprint;
+
+		const CD3DX12_TEXTURE_COPY_LOCATION copySrc(m_texture->GetResource(), 0);
+
+		pCommandList->CopyTextureRegion(&dest, 0, 0, 0, &copySrc, nullptr);
+	}
+
 	void RenderTarget::CreateDepthBuffer(int width, int height)
 	{
 		RenderModule& renderModule = RenderModule::Get();
