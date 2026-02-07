@@ -98,6 +98,18 @@ namespace Rendering
 		}
 	}
 
+	void Texture::InitAsReadbackBuffer(int width, int height, int depth)
+	{
+		int bufferSize = width * height * depth;
+		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
+
+		D3D12_HEAP_PROPERTIES readbackHeapProperties { CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK) };
+		D3D12_RESOURCE_DESC m_resourceDesc{ CD3DX12_RESOURCE_DESC::Buffer(bufferSize) };
+		HRESULT res = pDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAG_NONE, &m_resourceDesc, m_currentState,
+			nullptr, IID_PPV_ARGS(&m_pResource));
+	}
+
 	void Texture::TransitionTo(D3D12_RESOURCE_STATES nextState)
 	{
 		if (nextState == m_currentState)
@@ -125,6 +137,11 @@ namespace Rendering
 	ID3D12Resource* Texture::GetResource()
 	{
 		return m_pResource;
+	}
+
+	const D3D12_RESOURCE_DESC& Texture::GetResourceDesc() const
+	{
+		return m_resourceDesc;
 	}
 
 	uint64_t Texture::GetWidth() const

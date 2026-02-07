@@ -20,6 +20,7 @@ namespace Rendering
 		void Init(const char* ptr, uint32_t size);
 		void Init(const std::string& path);
 		void InitAsRenderTarget(int width, int height, float* clearColor);
+		void InitAsReadbackBuffer(int width, int height, int depth);
 
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);
 
@@ -27,6 +28,7 @@ namespace Rendering
 		ID3D12DescriptorHeap* GetSRV();
 
 		ID3D12Resource* GetResource();
+		const D3D12_RESOURCE_DESC& GetResourceDesc() const;
 
 		uint64_t GetWidth() const;
 		uint64_t GetHeight() const;
