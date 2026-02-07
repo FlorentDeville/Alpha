@@ -4,6 +4,7 @@
 
 #include "Rendering/RenderTargets/RenderTarget.h"
 
+#include "Core/Math/Vec4f.h"
 #include "Core/Helper.h"
 
 #include "Rendering/CommandQueue.h"
@@ -18,13 +19,23 @@
 namespace Rendering
 {
 	RenderTarget::RenderTarget(int width, int height)
+		: RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UNORM)
+	{ }
+
+	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format)
+		: RenderTarget(width, height, format, Core::Vec4f(0.27f, 0.27f, 0.27f, 1.f))
+	{ }
+
+	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format, const Core::Vec4f& clearColor)
 		: m_textureId()
 		, m_texture()
 		, m_rtv()
 		, m_dsv()
 	{
-		m_clearColor[0] = m_clearColor[1] = m_clearColor[2] = 0.27f;
-		m_clearColor[3] = 1.f;
+		m_clearColor[0] = clearColor.GetX();
+		m_clearColor[1] = clearColor.GetY();
+		m_clearColor[2] = clearColor.GetZ();
+		m_clearColor[3] = clearColor.GetW();
 
 		RenderModule& renderModule = RenderModule::Get();
 
@@ -37,7 +48,7 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_texture, m_textureId);
-		m_texture->InitAsRenderTarget(width, height, m_clearColor);
+		m_texture->InitAsRenderTarget(width, height, m_clearColor, format);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_texture->GetResource(), nullptr, m_rtv);

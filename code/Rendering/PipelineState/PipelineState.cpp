@@ -227,13 +227,18 @@ namespace Rendering
 
 	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
 	{
+		Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM);
+	}
+
+	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format)
+	{
 		m_rsId = rsId;
 		m_vsId = vsId;
 		m_psId = psId;
 
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 		rtvFormats.NumRenderTargets = 1;
-		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		rtvFormats.RTFormats[0] = format;
 
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 		ShaderMgr& shaderMgr = ShaderMgr::Get();

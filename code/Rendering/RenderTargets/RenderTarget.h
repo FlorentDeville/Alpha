@@ -8,6 +8,11 @@
 
 #include <d3d12.h>
 
+namespace Core
+{
+	class Vec4f;
+}
+
 namespace Rendering
 {
 	class DescriptorHeap;
@@ -20,6 +25,8 @@ namespace Rendering
 
 	public:
 		RenderTarget(int width, int height);
+		RenderTarget(int width, int height, DXGI_FORMAT format);
+		RenderTarget(int width, int height, DXGI_FORMAT format, const Core::Vec4f& clearColor);
 		~RenderTarget();
 
 		void BeginScene();

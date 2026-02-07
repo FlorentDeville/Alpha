@@ -20,6 +20,8 @@ namespace Rendering
 		void Init(const char* ptr, uint32_t size);
 		void Init(const std::string& path);
 		void InitAsRenderTarget(int width, int height, float* clearColor);
+		void InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format);
+
 		void InitAsReadbackBuffer(int width, int height, int depth);
 
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);

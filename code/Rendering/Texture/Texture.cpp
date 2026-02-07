@@ -20,6 +20,7 @@ namespace Rendering
 		: m_pResource(nullptr)
 		, m_resourceDesc()
 		, m_pSrvDescriptorHeap(nullptr)
+		, m_currentState()
 	{}
 
 	Texture::~Texture()
@@ -58,8 +59,12 @@ namespace Rendering
 
 	void Texture::InitAsRenderTarget(int width, int height, float* clearColor)
 	{
+		InitAsRenderTarget(width, height, clearColor, DXGI_FORMAT_R8G8B8A8_UNORM);
+	}
+
+	void Texture::InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format)
+	{
 		m_currentState = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 		//Create a description
 		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
