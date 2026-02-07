@@ -16,15 +16,14 @@ struct VS_Input
 
 struct VS_Ouput
 {
-    float4 color : COLOR;
+    uint4 color : COLOR;
     float4 vertex : SV_Position;
 };
 
 cbuffer PerObject
 {
     matrix worldMatrix;
-    float3 objectId;
-    float padding;
+    uint4 objectId;
 };
 
 cbuffer PerFrame
@@ -43,6 +42,6 @@ VS_Ouput main(VS_Input input)
     output.vertex = mul(output.vertex, viewMatrix);
     output.vertex = mul(output.vertex, projMatrix);
     
-    output.color = float4(objectId, 1.f);
+    output.color = objectId;
     return output;
 }

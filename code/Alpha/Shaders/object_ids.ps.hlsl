@@ -6,11 +6,11 @@
 
 struct PixelShaderInput
 {
-    float4 Color : COLOR;
+    uint4 Color : COLOR;
 };
 
 [RootSignature(RS)]
-float4 main(PixelShaderInput IN) : SV_Target
+uint4 main(PixelShaderInput IN) : SV_Target
 {
     return IN.Color;
 }
