@@ -69,6 +69,11 @@ namespace Systems
 		return m_transform;
 	}
 
+	const Core::Array<GameComponent*>& GameObject::GetComponents() const
+	{
+		return m_components;
+	}
+
 	void GameObject::PostLoad()
 	{
 		Object::PostLoad();

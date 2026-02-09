@@ -106,6 +106,10 @@ namespace Editors
 		void OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid);
 		void OnRemovedFromSelection_Gizmo(const Core::Guid& nodeGuid);
 
+		void OnSelectionCleared_SceneTree();
+		void OnAddedToSelection_SceneTree(const Core::Guid& guid);
+		void OnRemovedFromSelectionSceneTree(const Core::Guid& guid);
+
 		void OnClickFileMenu_NewLevel();
 		void OnClickFileMenu_OpenLevel();
 		void OnClickFileMenu_SaveLevel();

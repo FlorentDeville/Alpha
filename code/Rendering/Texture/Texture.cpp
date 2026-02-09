@@ -20,6 +20,7 @@ namespace Rendering
 		: m_pResource(nullptr)
 		, m_resourceDesc()
 		, m_pSrvDescriptorHeap(nullptr)
+		, m_currentState()
 	{}
 
 	Texture::~Texture()
@@ -56,9 +57,14 @@ namespace Rendering
 		stbi_image_free(pData);
 	}
 
-	void Texture::Init_RenderTarget(int width, int height, float* clearColor)
+	void Texture::InitAsRenderTarget(int width, int height, float* clearColor)
 	{
-		DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		InitAsRenderTarget(width, height, clearColor, DXGI_FORMAT_R8G8B8A8_UNORM);
+	}
+
+	void Texture::InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format)
+	{
+		m_currentState = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 		//Create a description
 		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
@@ -74,7 +80,7 @@ namespace Rendering
 
 		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 		pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &m_resourceDesc,
-			D3D12_RESOURCE_STATE_RENDER_TARGET, &clear, IID_PPV_ARGS(&m_pResource));
+			m_currentState, &clear, IID_PPV_ARGS(&m_pResource));
 
 		//Create the SRV heap
 		{
@@ -97,6 +103,32 @@ namespace Rendering
 		}
 	}
 
+	void Texture::InitAsReadbackBuffer(int width, int height, int depth)
+	{
+		int bufferSize = width * height * depth;
+		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
+
+		D3D12_HEAP_PROPERTIES readbackHeapProperties { CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK) };
+		D3D12_RESOURCE_DESC m_resourceDesc{ CD3DX12_RESOURCE_DESC::Buffer(bufferSize) };
+		HRESULT res = pDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAG_NONE, &m_resourceDesc, m_currentState,
+			nullptr, IID_PPV_ARGS(&m_pResource));
+	}
+
+	void Texture::TransitionTo(D3D12_RESOURCE_STATES nextState)
+	{
+		if (nextState == m_currentState)
+			return;
+
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* pCommandList = renderModule.GetRenderCommandList();
+
+		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_pResource, m_currentState, nextState);
+		pCommandList->ResourceBarrier(1, &barrier);
+
+		m_currentState = nextState;
+	}
+
 	const ID3D12DescriptorHeap* Texture::GetSRV() const
 	{
 		return m_pSrvDescriptorHeap;
@@ -110,6 +142,11 @@ namespace Rendering
 	ID3D12Resource* Texture::GetResource()
 	{
 		return m_pResource;
+	}
+
+	const D3D12_RESOURCE_DESC& Texture::GetResourceDesc() const
+	{
+		return m_resourceDesc;
 	}
 
 	uint64_t Texture::GetWidth() const
@@ -126,11 +163,7 @@ namespace Rendering
 	{
 		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 
-		//Load the texture
-		//int textureWidth = 0;
-		//int textureHeight = 0;
-		//int channelCount = 0;
-		//unsigned char* pData = stbi_load(path.c_str(), &textureWidth, &textureHeight, &channelCount, 4);
+		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
 
 		//Create a resource description
 		m_resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -148,7 +181,7 @@ namespace Rendering
 		{
 			//Create the texture resource
 			D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-			HRESULT res = pDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &m_resourceDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m_pResource));
+			HRESULT res = pDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &m_resourceDesc, m_currentState, nullptr, IID_PPV_ARGS(&m_pResource));
 			ThrowIfFailed(res);
 		}
 
@@ -178,6 +211,8 @@ namespace Rendering
 
 			D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_pResource, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
 			pCommandList->ResourceBarrier(1, &barrier);
+
+			m_currentState = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
 
 			//Execute the commands
 			uint64_t fence = pCopyCommandQueue->ExecuteCommandList(pCommandList);

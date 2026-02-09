@@ -36,16 +36,32 @@ namespace Widgets
 	{
 		std::vector<SelectionRow> deselect;
 		deselect.reserve(m_selectedRows.size());
-		for (SelectionRow& oldSelectedRow : m_selectedRows)
-			deselect.push_back(oldSelectedRow);
+		
+		std::vector<SelectionRow> select;
+
+		if (!IsRowSelected(row))
+		{
+			for (SelectionRow& oldSelectedRow : m_selectedRows)
+				deselect.push_back(oldSelectedRow);
+
+			select.push_back(row);
+		}
+		else
+		{
+			//if the row is already selected, only deselect everything else
+			for (SelectionRow& oldSelectedRow : m_selectedRows)
+			{
+				if(oldSelectedRow != row)
+					deselect.push_back(oldSelectedRow);
+			}
+		}
 
 		m_selectedRows.clear();
 		m_selectedRows.push_back(row);
 
-		std::vector<SelectionRow> select;
-		select.push_back(row);
-
-		m_onSelectionChanged(select, deselect);
+		//only call the event if we made a change
+		if(!select.empty() || !deselect.empty())
+			m_onSelectionChanged(select, deselect);
 	}
 
 	void SelectionModel::SelectRow(const SelectionRow& row)
@@ -82,6 +98,22 @@ namespace Widgets
 
 		if (found)
 			m_onSelectionChanged(select, deselect);
+	}
+
+	void SelectionModel::ClearSelectedRows()
+	{
+		if (m_selectedRows.empty())
+			return;
+
+		std::vector<SelectionRow> deselect;
+		deselect.reserve(m_selectedRows.size());
+		for (SelectionRow& oldSelectedRow : m_selectedRows)
+			deselect.push_back(oldSelectedRow);
+
+		m_selectedRows.clear();
+
+		std::vector<SelectionRow> select;
+		m_onSelectionChanged(select, deselect);
 	}
 
 	void SelectionModel::CommitInsertRows(int start, int count, const ModelIndex& parent)

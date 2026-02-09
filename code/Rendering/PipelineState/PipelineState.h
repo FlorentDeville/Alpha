@@ -7,6 +7,8 @@
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/Shaders/ShaderId.h"
 
+#include <dxgiformat.h>
+
 struct ID3D12PipelineState;
 
 namespace Rendering
@@ -28,6 +30,7 @@ namespace Rendering
 
 		//this is the generic pipeline state for meshes containing every vertex attributes
 		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format);
 		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps);
 
 		ID3D12PipelineState* GetPipelineState() const;

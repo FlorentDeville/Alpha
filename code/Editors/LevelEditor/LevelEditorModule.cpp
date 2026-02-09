@@ -287,6 +287,11 @@ namespace Editors
 		return materialId;
 	}
 
+	bool LevelEditorModule::IsSelected(const Core::Guid& nodeGuid) const
+	{
+		return m_pSelectionMgr->IsSelected(nodeGuid);
+	}
+
 	bool LevelEditorModule::AddToSelection(const Core::Guid& nodeGuid)
 	{
 		return m_pSelectionMgr->Add(nodeGuid);

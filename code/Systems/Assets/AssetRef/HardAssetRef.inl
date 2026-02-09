@@ -44,4 +44,9 @@ namespace Systems
 	{
 		return static_cast<T*>(m_internalRef.m_pPtr);
 	}
+
+	template<typename T> const T* HardAssetRef<T>::GetPtr() const
+	{
+		return static_cast<const T*>(m_internalRef.m_pPtr);
+	}
 }

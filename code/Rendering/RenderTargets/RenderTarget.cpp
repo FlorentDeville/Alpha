@@ -4,6 +4,7 @@
 
 #include "Rendering/RenderTargets/RenderTarget.h"
 
+#include "Core/Math/Vec4f.h"
 #include "Core/Helper.h"
 
 #include "Rendering/CommandQueue.h"
@@ -18,14 +19,23 @@
 namespace Rendering
 {
 	RenderTarget::RenderTarget(int width, int height)
+		: RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UNORM)
+	{ }
+
+	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format)
+		: RenderTarget(width, height, format, Core::Vec4f(0.27f, 0.27f, 0.27f, 1.f))
+	{ }
+
+	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format, const Core::Vec4f& clearColor)
 		: m_textureId()
 		, m_texture()
 		, m_rtv()
 		, m_dsv()
-		, m_currentState(D3D12_RESOURCE_STATE_RENDER_TARGET)
 	{
-		m_clearColor[0] = m_clearColor[1] = m_clearColor[2] = 0.27f;
-		m_clearColor[3] = 1.f;
+		m_clearColor[0] = clearColor.GetX();
+		m_clearColor[1] = clearColor.GetY();
+		m_clearColor[2] = clearColor.GetZ();
+		m_clearColor[3] = clearColor.GetW();
 
 		RenderModule& renderModule = RenderModule::Get();
 
@@ -38,7 +48,7 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_texture, m_textureId);
-		m_texture->Init_RenderTarget(width, height, m_clearColor);
+		m_texture->InitAsRenderTarget(width, height, m_clearColor, format);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_texture->GetResource(), nullptr, m_rtv);
@@ -65,24 +75,9 @@ namespace Rendering
 		delete m_pDSVHeap;
 	}
 
-	void RenderTarget::TransitionTo(D3D12_RESOURCE_STATES nextState)
-	{
-		if (nextState == m_currentState)
-			return;
-
-		RenderModule& renderModule = RenderModule::Get();
-		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
-
-		ID3D12Resource* pTexture = m_texture->GetResource();
-		CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(pTexture, m_currentState, nextState);
-		commandList->ResourceBarrier(1, &barrier);
-
-		m_currentState = nextState;
-	}
-
 	void RenderTarget::BeginScene()
 	{
-		TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_texture->TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		RenderModule& renderModule = RenderModule::Get();
 		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
@@ -104,7 +99,7 @@ namespace Rendering
 
 	void RenderTarget::EndScene()
 	{
-		TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+		m_texture->TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 	}
 
 	void RenderTarget::ClearDepthBuffer()
@@ -115,6 +110,27 @@ namespace Rendering
 		// Clear the depth buffer
 		float depthValue = 1.f;
 		commandList->ClearDepthStencilView(m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+	}
+
+	void RenderTarget::CopyToReabackBuffer(Texture* pDestTexture)
+	{
+		m_texture->TransitionTo(D3D12_RESOURCE_STATE_COPY_SOURCE);
+
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* pCommandList = renderModule.GetRenderCommandList();
+
+		D3D12_TEXTURE_COPY_LOCATION dest;
+		dest.pResource = pDestTexture->GetResource();
+		dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+
+		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
+		renderModule.GetDevice()->GetCopyableFootprints(&m_texture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
+
+		dest.PlacedFootprint = footprint;
+
+		const CD3DX12_TEXTURE_COPY_LOCATION copySrc(m_texture->GetResource(), 0);
+
+		pCommandList->CopyTextureRegion(&dest, 0, 0, 0, &copySrc, nullptr);
 	}
 
 	void RenderTarget::CreateDepthBuffer(int width, int height)

@@ -155,6 +155,11 @@ namespace Editors
 		return m_snapEnabled;
 	}
 
+	bool GizmoWidget::IsManipulating() const
+	{
+		return m_internalState == InternalState::kMoving;
+	}
+
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
 	{
 		UpdateMouseHover(mouse3dPosition);

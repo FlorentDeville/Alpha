@@ -6,6 +6,16 @@
 
 #include "Widgets/Viewport_v2.h"
 
+#include "Core/Guid/Guid.h"
+
+#include <map>
+
+namespace Rendering
+{
+	class RenderTarget;
+	class Texture;
+}
+
 namespace Editors
 {
 	class CameraWidget;
@@ -21,6 +31,8 @@ namespace Editors
 		void Render();
 		void Update(uint64_t dt) override;
 
+		bool Handle(const Widgets::BaseEvent& event) override;
+
 		void SetEnableViewportControl(bool enable);
 
 		GizmoWidget* GetGizmoWidget();
@@ -35,5 +47,15 @@ namespace Editors
 		bool m_enableViewportControl;
 		
 		bool m_isPanning; //when the user is panning the camera	
+
+		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
+		Rendering::Texture* m_pReadbackBuffer;
+
+		std::map<uint32_t, Core::Guid> m_objectIdToGuid;
+
+		void Internal_Render() override;
+
+		// Find the object id from the mouse position. The mouse position is local to the widget.
+		uint32_t GetObjectId(int mouseX, int mouseY) const;
 	};
 }

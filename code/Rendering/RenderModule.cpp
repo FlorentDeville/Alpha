@@ -293,6 +293,13 @@ namespace Rendering
 		}
 	}
 
+	void RenderModule::BindMaterial(const PipelineState& pso)
+	{
+		Rendering::RootSignatureId rsId = pso.GetRootSignatureId();
+		Rendering::RootSignature* pRs = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		BindMaterial(pso, *pRs);
+	}
+
 	void RenderModule::BindMaterial(const PipelineState& pso, const RootSignature& rs)
 	{
 		m_pRenderCommandList->SetPipelineState(pso.GetPipelineState());

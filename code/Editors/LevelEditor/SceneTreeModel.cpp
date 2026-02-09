@@ -276,6 +276,12 @@ namespace Editors
 		return pItem->m_guid;
 	}
 
+	void SceneTreeModel::ClearSelection()
+	{
+		if (Widgets::SelectionModel* pSelection = GetSelectionModel())
+			pSelection->ClearSelectedRows();
+	}
+
 	void SceneTreeModel::SelectGameObject(const Core::Guid& guid)
 	{
 		const CachedItem* pItem = FindCachedItem(guid);
@@ -288,6 +294,20 @@ namespace Editors
 		Widgets::SelectionRow row(startIndex, endIndex);
 		Widgets::SelectionModel* pSelection = GetSelectionModel();
 		pSelection->SetSelectionRow(row);
+	}
+
+	void SceneTreeModel::DeselectGameObject(const Core::Guid& guid)
+	{
+		const CachedItem* pItem = FindCachedItem(guid);
+		if (!pItem)
+			return;
+
+		Widgets::ModelIndex startIndex = GetModelIndex(pItem);
+		Widgets::ModelIndex endIndex = startIndex.GetSiblingAtColumn(Columns::Count - 1);
+
+		Widgets::SelectionRow row(startIndex, endIndex);
+		Widgets::SelectionModel* pSelection = GetSelectionModel();
+		pSelection->DeselectRow(row);
 	}
 
 	const SceneTreeModel::CachedItem* SceneTreeModel::CreateCachedItem(const Systems::GameObject* pGo)
