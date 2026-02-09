@@ -14,6 +14,8 @@
 
 #include "Inputs/InputMgr.h"
 
+#include "OsWin/Input.h"
+
 #include "Rendering/Camera.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
@@ -144,13 +146,26 @@ namespace Editors
 				if (objectId == 0)
 					return handled;
 
-				LevelEditorModule::Get().ClearSelection();
-
 				std::map<uint32_t, Core::Guid>::const_iterator it = m_objectIdToGuid.find(objectId);
 				if (it == m_objectIdToGuid.cend())
 					return handled;
 
-				LevelEditorModule::Get().AddToSelection(it->second);
+				bool toggle = false;
+				if (Os::IsKeyDown(Os::VKeyCodes::Control))
+					toggle = true;
+
+				LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+				bool isAlreadySelected = levelEditorModule.IsSelected(it->second);
+				if (isAlreadySelected && toggle)
+				{
+					levelEditorModule.RemoveFromSelection(it->second);
+				}
+				else if (!isAlreadySelected)
+				{
+					levelEditorModule.ClearSelection();
+					levelEditorModule.AddToSelection(it->second);
+				}
+
 				return handled;
 			}
 		}
