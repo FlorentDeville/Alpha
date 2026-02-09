@@ -51,7 +51,9 @@ namespace Editors
 
 		Core::Guid FindGameObject(const Widgets::ModelIndex& index) const;
 
+		void ClearSelection();
 		void SelectGameObject(const Core::Guid& guid);
+		void DeselectGameObject(const Core::Guid& guid);
 
 	private:
 

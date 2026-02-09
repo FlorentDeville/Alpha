@@ -33,6 +33,7 @@ namespace Widgets
 		void SetSelectionRow(const SelectionRow& row);
 		void SelectRow(const SelectionRow& row);
 		void DeselectRow(const SelectionRow& row);
+		void ClearSelectedRows();
 
 		EVENT_DECL(SelectionChanged, void(const std::vector<SelectionRow>& selected, const std::vector<SelectionRow>& deselected));
 

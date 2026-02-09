@@ -286,6 +286,13 @@ namespace Editors
 		m_pSceneTree->OnDropItem([this](const Widgets::ModelIndex& index, const Widgets::ModelIndex& parent) { OnSceneTreeView_OnDropItem(index, parent); });
 
 		m_pSceneTreeFrame->AddWidget(m_pSceneTree);
+
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+
+		pSelectionMgr->OnClear([this]() { OnSelectionCleared_SceneTree(); });
+		pSelectionMgr->OnItemAdded([this](const Core::Guid& guid) { OnAddedToSelection_SceneTree(guid); });
+		pSelectionMgr->OnItemRemoved([this](const Core::Guid& guid) { OnRemovedFromSelectionSceneTree(guid); });
 	}
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
@@ -489,6 +496,30 @@ namespace Editors
 			Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
 			pGizmoModel->SetGameObject(pSelectedGo);
 		}
+	}
+
+	void LevelEditor::OnSelectionCleared_SceneTree()
+	{
+		if (!m_pSceneTreeModel)
+			return;
+
+		m_pSceneTreeModel->ClearSelection();
+	}
+
+	void LevelEditor::OnAddedToSelection_SceneTree(const Core::Guid& guid)
+	{
+		if (!m_pSceneTreeModel)
+			return;
+
+		m_pSceneTreeModel->SelectGameObject(guid);
+	}
+
+	void LevelEditor::OnRemovedFromSelectionSceneTree(const Core::Guid& guid)
+	{
+		if (!m_pSceneTreeModel)
+			return;
+
+		m_pSceneTreeModel->DeselectGameObject(guid);
 	}
 
 	void LevelEditor::OnClickFileMenu_NewLevel()
