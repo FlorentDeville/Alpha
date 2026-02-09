@@ -131,7 +131,7 @@ namespace Editors
 	{
 		bool handled = false;
 
-		if(event.m_id == Widgets::EventType::kMouseUp)
+		if(event.m_id == Widgets::EventType::kMouseUp && !m_pGizmoWidget->IsManipulating())
 		{
 			const Widgets::MouseEvent& mouseEvent = static_cast<const Widgets::MouseEvent&>(event);
 			if (mouseEvent.HasButton(Widgets::MouseButton::LeftButton))
