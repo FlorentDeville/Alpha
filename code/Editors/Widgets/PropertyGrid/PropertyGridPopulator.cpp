@@ -21,6 +21,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
+#include "Editors/Widgets/PropertyGrid/Items/Vec4fItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItemFactory.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -290,6 +291,13 @@ namespace Editors
 		case SID("Core::Mat44f"):
 		{
 			Mat44fItem* pItem = new Mat44fItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
+		case SID("Core::Vec4f"):
+		{
+			Vec4fItem* pItem = new Vec4fItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
 			return pItem;
 		}
 		break;
