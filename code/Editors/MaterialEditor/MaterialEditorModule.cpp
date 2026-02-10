@@ -18,11 +18,17 @@
 
 namespace Editors
 {
-	static bool CompileSingleShader(const std::string& filename, const std::string& includePath, Core::Array<char>& bytecode)
+	static bool CompileSingleShader(const std::string& filename, const std::string& includePath, Core::Array<char>& bytecode, bool debug)
 	{
-		const std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
+		std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
+		if (debug)
+		{
+			size_t pos = filename.find_last_of('\\');
+			tempCsoFile = "c:\\tmp\\" + filename.substr(pos) + ".cso";
+		}
+
 		ShaderCompiler compiler;
-		bool res = compiler.CompileShader(filename, includePath, tempCsoFile);
+		bool res = compiler.CompileShader(filename, includePath, tempCsoFile, debug);
 		if (!res)
 			return false;
 
@@ -134,6 +140,23 @@ namespace Editors
 
 	bool MaterialEditorModule::SaveMaterial(Systems::NewAssetId id)
 	{
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		if (pMetadata->GetAssetType() == Systems::MaterialAsset::GetAssetTypeNameSid())
+		{
+			const Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(id);
+			if (!pMaterial)
+				return false;
+
+			if (pMaterial->IsDebug())
+			{
+				Core::LogModule::Get().LogError("Cannot save debug material.");
+				return false;
+			}
+		}
+
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		bool res = containerMgr.SaveContainer(id.GetContainerId());
 		return res;
@@ -179,7 +202,7 @@ namespace Editors
 		return m_allMaterials;
 	}
 
-	bool MaterialEditorModule::CompileMaterial(Systems::NewAssetId id)
+	bool MaterialEditorModule::CompileMaterial(Systems::NewAssetId id, bool debug)
 	{
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
 		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
@@ -190,13 +213,15 @@ namespace Editors
 		if (!pMaterial)
 			return false;
 
-		bool shaderCompiled = CompileSingleShader(pMaterial->GetSourceFileVs(), m_autoGenShaderFolder, pMaterial->GetVsBlob());
+		bool shaderCompiled = CompileSingleShader(pMaterial->GetSourceFileVs(), m_autoGenShaderFolder, pMaterial->GetVsBlob(), debug);
 		if (!shaderCompiled)
 			return false;
 
-		shaderCompiled = CompileSingleShader(pMaterial->GetSourceFilePs(), m_autoGenShaderFolder, pMaterial->GetPsBlob());
+		shaderCompiled = CompileSingleShader(pMaterial->GetSourceFilePs(), m_autoGenShaderFolder, pMaterial->GetPsBlob(), debug);
 		if (!shaderCompiled)
 			return false;
+
+		pMaterial->SetIsDebug(debug);
 
 		RootSignatureDescription rootSignatureDesc;
 		rootSignatureDesc.m_pRootSignatureBlob = &pMaterial->GetRsBlob();

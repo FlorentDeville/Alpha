@@ -17,6 +17,7 @@ namespace Systems
 		, m_pPs(nullptr)
 		, m_pRs(nullptr)
 		, m_pPipelineState(nullptr)
+		, m_isDebug(false)
 	{ }
 
 	MaterialAsset_v1::~MaterialAsset_v1()
@@ -149,6 +150,16 @@ namespace Systems
 	bool MaterialAsset_v1::IsValidForRendering() const
 	{
 		return m_pPipelineState && m_pRs;
+	}
+
+	void MaterialAsset_v1::SetIsDebug(bool debug)
+	{
+		m_isDebug = debug;
+	}
+
+	bool MaterialAsset_v1::IsDebug() const
+	{
+		return m_isDebug;
 	}
 
 	const std::string& MaterialAsset_v1::GetAssetTypeName()

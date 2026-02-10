@@ -51,6 +51,9 @@ namespace Systems
 
 		bool IsValidForRendering() const;
 
+		void SetIsDebug(bool debug);
+		bool IsDebug() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
@@ -67,12 +70,6 @@ namespace Systems
 
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
 
-		//No reflected variables
-		Rendering::Shader* m_pVs;
-		Rendering::Shader* m_pPs;
-		Rendering::RootSignature* m_pRs;
-		Rendering::PipelineState* m_pPipelineState;
-
 		START_REFLECTION(Systems::MaterialAsset_v1)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
@@ -82,7 +79,14 @@ namespace Systems
 			ADD_FIELD_ATTR(m_rsBlob, Hidden)
 			ADD_FIELD_ATTR(m_bindingInfoArray, Hidden)
 			ADD_FIELD(m_perMaterialParameters)
-
 		END_REFLECTION()
+
+		//No reflected variables
+		Rendering::Shader* m_pVs;
+		Rendering::Shader* m_pPs;
+		Rendering::RootSignature* m_pRs;
+		Rendering::PipelineState* m_pPipelineState;
+
+		bool m_isDebug; //true if the shader is compiled in debug
 	};
 }

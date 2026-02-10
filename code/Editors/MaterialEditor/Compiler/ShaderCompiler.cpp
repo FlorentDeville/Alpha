@@ -195,7 +195,7 @@ namespace Editors
 	ShaderCompiler::~ShaderCompiler()
 	{ }
 
-	bool ShaderCompiler::CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile)
+	bool ShaderCompiler::CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile, bool debug)
 	{
 		const char* PS_EXT = "ps.hlsl";
 		const char* VS_EXT = "vs.hlsl";
@@ -237,6 +237,12 @@ namespace Editors
 		cmdline += " \"" + input + "\"";
 
 		cmdline += " /I " + includePath;
+
+		if (debug)
+		{
+			///Od to disable optimizations and /Zi to include debug info
+			cmdline += " /Od /Zi";
+		}
 
 		Core::LogModule& log = Core::LogModule::Get();
 		{

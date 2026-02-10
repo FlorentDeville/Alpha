@@ -19,7 +19,7 @@ namespace Editors
 		ShaderCompiler();
 		~ShaderCompiler();
 
-		bool CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile);
+		bool CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile, bool debug = false);
 
 		bool GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, RootSignatureDescription& rs);
 
