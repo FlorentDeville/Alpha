@@ -37,6 +37,7 @@
     <ClInclude Include="Container\ContainerId.h" />
     <ClInclude Include="Container\ContainerMgr.h" />
     <ClInclude Include="Container\ObjectId.h" />
+    <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="Loader.h" />
     <ClInclude Include="Objects\AssetObject.h" />
@@ -82,6 +83,7 @@
     <ClCompile Include="Container\ContainerMgr.cpp" />
     <ClCompile Include="Container\ObjectId.cpp" />
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
+    <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Loader.cpp" />
