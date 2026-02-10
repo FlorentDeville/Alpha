@@ -113,12 +113,24 @@ namespace Editors
 		//set the matrix as row major
 		fileContent += "#pragma pack_matrix(row_major)" + NEW_LINE + NEW_LINE;
 
+		//define constant
+		fileContent += "#define MAX_LIGHT_COUNT 8 \n\n"
+			"#define DIRECTIONAL_LIGHT 0\n"
+			"#define POINT_LIGHT 1\n"
+			"#define SPOT_LIGHT 2\n" + NEW_LINE;
+
 		//write the light structure
 		fileContent += "struct Light\n"
 			"{\n"
 			"\tfloat3 position;\n"
-			"\tfloat3 direction;\n"
-			"\tfloat coneAngle; // only used for spot light\n"
+			"\tfloat3 direction;\n\n"
+			"\tfloat3 ambient;\n"
+			"\tfloat3 diffuse;\n"
+			"\tfloat3 specular;\n\n"
+			"\tfloat constantAttenuation;\n"
+			"\tfloat linearAttenuation;\n"
+			"\tfloat quadraticAttenuation;\n\n"
+			"\tfloat cutOff;\n\n"
 			"\tint type; //0 : directional, 1 : point, 2 : spot\n"
 			"};\n" + NEW_LINE;
 
@@ -126,7 +138,7 @@ namespace Editors
 		fileContent += "cbuffer CBufferLights\n"
 			"{\n"
 			"\tint numLights;\n"
-			"\tLight lightArray[8];\n"
+			"\tLight lightArray[MAX_LIGHT_COUNT];\n"
 			"};\n" + NEW_LINE;
 
 		fileContent += "#endif // ifndef CBUFFER_LIGHTS_HLSL " + NEW_LINE;
