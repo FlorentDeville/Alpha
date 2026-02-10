@@ -13,7 +13,7 @@ namespace Rendering
 		, m_type(LightType::Directional)
 	{ }
 
-	Light Light::MakeDirectionalLight(const DirectX::XMFLOAT3& direction)
+	Light Light::MakeDirectionalLight(const Core::Float3& direction)
 	{
 		Light newLight;
 		newLight.m_direction = direction;

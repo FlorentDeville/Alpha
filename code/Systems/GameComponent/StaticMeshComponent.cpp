@@ -48,7 +48,7 @@ namespace Systems
 			DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
-			Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
+			Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(Core::Float3(0, -1, 0));
 			Rendering::LightsCBuffer lights(dirLight);
 
 			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);

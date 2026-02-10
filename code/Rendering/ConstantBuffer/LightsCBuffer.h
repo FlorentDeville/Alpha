@@ -4,12 +4,13 @@
 
 #pragma once
 
-#include <DirectXMath.h>
+#include "Core/Math/Vectors.h"
 
 namespace Rendering
 {
 	enum LightType : int
 	{
+		Unknown = -1,
 		Directional = 0,
 		Point,
 		Spot,
@@ -22,12 +23,12 @@ namespace Rendering
 	public:
 		Light();
 
-		static Light MakeDirectionalLight(const DirectX::XMFLOAT3& direction);
+		static Light MakeDirectionalLight(const Core::Float3& direction);
 
 	private:
-		DirectX::XMFLOAT3 m_position;
+		Core::Float3 m_position;
 		char m_padding0[4];
-		DirectX::XMFLOAT3 m_direction;
+		Core::Float3 m_direction;
 		float m_coneAngle;
 		LightType m_type;
 		char m_padding1[12];
