@@ -14,6 +14,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
@@ -270,6 +271,13 @@ namespace Editors
 		case SID("uint32_t"):
 		{
 			UInt32Item* pItem = new UInt32Item(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
+		case SID("float"):
+		{
+			FloatItem* pItem = new FloatItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
 			return pItem;
 		}
 		break;
