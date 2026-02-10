@@ -295,9 +295,9 @@ namespace Editors
 		//read data here
 		uint32_t objectId = *reinterpret_cast<uint32_t*>(&pReadbackBufferData[backBufferIndex]);
 
-		char buffer[500];
-		sprintf_s(buffer, 500, "[%d %d] Object id %d \n", pixelX, pixelY, objectId);
-		OutputDebugString(buffer);
+		//char buffer[500];
+		//sprintf_s(buffer, 500, "[%d %d] Object id %d \n", pixelX, pixelY, objectId);
+		//OutputDebugString(buffer);
 
 		D3D12_RANGE emptyRange{ 0, 0 };
 		m_pReadbackBuffer->GetResource()->Unmap(0, &emptyRange);
