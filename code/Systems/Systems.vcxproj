@@ -81,6 +81,7 @@
     <ClCompile Include="Container\ContainerId.cpp" />
     <ClCompile Include="Container\ContainerMgr.cpp" />
     <ClCompile Include="Container\ObjectId.cpp" />
+    <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Loader.cpp" />
@@ -113,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
+    <ClInclude Include="GameComponent\Lights\DirectionalLightComponent.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

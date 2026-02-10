@@ -11,6 +11,7 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
+#include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Systems/Reflection/ReflectionMacro.h"
@@ -31,6 +32,7 @@ namespace Systems
 		Systems::GameComponent::RegisterReflection();
 		Systems::StaticMeshComponent::RegisterReflection();
 		Systems::TransformComponent::RegisterReflection();
+		Systems::DirectionalLightComponent::RegisterReflection();
 
 		Systems::AssetObject::RegisterReflection();
 		Systems::LevelAsset_v1::RegisterReflection();
