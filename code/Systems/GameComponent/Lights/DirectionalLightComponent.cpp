@@ -25,7 +25,7 @@ namespace Systems
 		const GameObject* pOwner = GetOwner();
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
-		DirectX::XMFLOAT4 colorWhite(1, 1, 1, 1);
+		DirectX::XMFLOAT4 colorWhite(m_ambient.GetX(), m_ambient.GetY(), m_ambient.GetZ(), m_ambient.GetW());
 
 		const Core::Mat44f& worldTx = pOwner->GetTransform().GetWorldTx();
 
