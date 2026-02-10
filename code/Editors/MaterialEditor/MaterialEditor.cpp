@@ -518,8 +518,8 @@ namespace Editors
 				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
 				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
-				Rendering::LightsCBuffer lights(dirLight);
+				Rendering::LightsCBuffer lights;
+				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
@@ -539,8 +539,8 @@ namespace Editors
 				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
 				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
-				Rendering::LightsCBuffer lights(dirLight);
+				Rendering::LightsCBuffer lights;
+				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
 

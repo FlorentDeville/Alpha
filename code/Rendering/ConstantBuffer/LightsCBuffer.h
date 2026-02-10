@@ -25,7 +25,7 @@ namespace Rendering
 	public:
 		Light();
 
-		static Light MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular);
+		void MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular);
 
 	private:
 		Core::Float3 m_position;
@@ -55,11 +55,14 @@ namespace Rendering
 	{
 	public:
 		LightsCBuffer();
-		LightsCBuffer(const Light& light);
+		
+		Light* AddLight();
 
 	private:
+		static const int MAX_LIGHT_COUNT = 8;
+
 		int m_numLight;
 		char m_padding[12];
-		Light m_lightArray[8];
+		Light m_lightArray[MAX_LIGHT_COUNT];
 	};
 }
