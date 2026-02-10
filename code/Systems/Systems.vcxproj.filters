@@ -52,6 +52,7 @@
     <ClInclude Include="Assets\AssetRef\HardAssetRefRaw.h" />
     <ClInclude Include="GameComponent\Lights\DirectionalLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
+    <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Loader.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="Assets\AssetRef\HardAssetRefRaw.cpp" />
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
+    <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
