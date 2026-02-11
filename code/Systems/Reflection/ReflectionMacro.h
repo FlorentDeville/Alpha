@@ -7,6 +7,8 @@
 #include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 
+#include "Core/Sid/Sid.h"
+
 // Define macros to enable reflection of a class
 // To have reflection working :
 //  - Create an instance of TypeDescriptor. This class describes a type. 
@@ -56,6 +58,7 @@
 	{ \
 	public: \
 		static const std::string& GetTypename() { static const std::string typeName = #TYPE; return typeName; } \
+		static Core::Sid GetTypenameSid() { return CONSTSID(#TYPE); } \
 		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
 		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
 	};
