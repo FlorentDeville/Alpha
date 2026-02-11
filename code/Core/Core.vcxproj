@@ -136,6 +136,7 @@
     <ClInclude Include="Json\JsonValue.h" />
     <ClInclude Include="Log\LogModule.h" />
     <ClInclude Include="Math\Aabb.h" />
+    <ClInclude Include="Math\Constants.h" />
     <ClInclude Include="Math\Vectors.h" />
     <ClInclude Include="Math\Intersection.h" />
     <ClInclude Include="Math\Mat44f.h" />

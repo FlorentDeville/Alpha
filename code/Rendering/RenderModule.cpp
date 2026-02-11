@@ -59,6 +59,7 @@ namespace Rendering
 		, m_pRenderCommandList(nullptr)
 		, m_pCamera(nullptr)
 		, m_pCubeMesh(nullptr)
+		, m_pSphereMesh(nullptr)
 		, m_pLinearCBufferPool(nullptr)
 	{
 		m_clearColor[0] = 0.4f;
@@ -137,6 +138,10 @@ namespace Rendering
 		MeshId cubeMeshId;
 		meshMgr.CreateMesh(&m_pCubeMesh, cubeMeshId);
 		BaseShape::CreateCube(m_pCubeMesh);
+
+		MeshId sphereMeshId;
+		meshMgr.CreateMesh(&m_pSphereMesh, sphereMeshId);
+		BaseShape::CreateSphere(m_pSphereMesh, 10, 10);
 
 		//basic shape material (should be an app resources?)
 		{
@@ -352,6 +357,11 @@ namespace Rendering
 	void RenderModule::RenderPrimitiveCube(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
 	{
 		RenderBaseShape(m_pCubeMesh, world, color);
+	}
+
+	void RenderModule::RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	{
+		RenderBaseShape(m_pSphereMesh, world, color);
 	}
 
 	void RenderModule::ExecuteRenderCommand()

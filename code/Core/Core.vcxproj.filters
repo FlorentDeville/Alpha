@@ -158,6 +158,9 @@
     <ClInclude Include="Collections\HashSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Collections\Array.inl">

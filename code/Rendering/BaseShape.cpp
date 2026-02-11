@@ -4,6 +4,9 @@
 
 #include "Rendering/BaseShape.h"
 
+#include "Core/Collections/Array.h"
+#include "Core/Math/Constants.h"
+
 #include "Rendering/Mesh/Mesh.h"
 
 #include <cmath>
@@ -344,5 +347,108 @@ namespace Rendering
         indices[35] = 5;
 
         pMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
+    }
+
+    void BaseShape::CreateSphere(Mesh* pMesh, uint32_t stacks, uint32_t slices)
+    {
+        Core::Array<VertexPosColor> vertices;
+        Core::Array<uint16_t> indices;
+
+        float fStacks = static_cast<float>(stacks);
+        float fSlices = static_cast<float>(slices);
+
+        //go up and down along the sphere, or polar angle. The angle starts from the axis between the poles, not the equator
+        for (uint32_t ii = 0; ii < stacks; ii++)
+        {
+            float theta1 = (ii / fStacks) * Core::PI;
+            float theta2 = ((ii + 1) / fStacks) * Core::PI;
+
+            float cosTheta1 = cos(theta1);
+            float sinTheta1 = sin(theta1);
+
+            float cosTheta2 = cos(theta2);
+            float sinTheta2 = sin(theta2);
+
+            for (uint32_t jj = 0; jj < slices; jj++) // go around the sphere, or azimut angle
+            {
+                float phi1 = (jj / fSlices) * Core::TWO_PI;
+                float phi2 = ((jj + 1) / fSlices) * Core::TWO_PI;
+
+                float cosPhi1 = cos(phi1);
+                float sinPhi1 = sin(phi1);
+
+                float cosPhi2 = cos(phi2);
+                float sinPhi2 = sin(phi2);
+
+                //phi2   phi1
+                // |      |
+                // 2------1 -- theta1
+                // |\ _   |
+                // |    \ |
+                // 3------4 -- theta2
+                //
+
+                //convert polar coordinates to cartesian coordinates
+                VertexPosColor vertex1;
+                vertex1.Position.x = sinTheta1 * cosPhi1;
+                vertex1.Position.y = sinTheta1 * sinPhi1;
+                vertex1.Position.z = cosTheta1;
+                vertex1.Color = DirectX::XMFLOAT3(0, 0, 0);
+
+                VertexPosColor vertex2;
+                vertex2.Position.x = sinTheta1 * cosPhi2;
+                vertex2.Position.y = sinTheta1 * sinPhi2;
+                vertex2.Position.z = cosTheta1;
+                vertex2.Color = DirectX::XMFLOAT3(0, 0, 0);
+
+                VertexPosColor vertex3;
+                vertex3.Position.x = sinTheta2 * cosPhi2;
+                vertex3.Position.y = sinTheta2 * sinPhi2;
+                vertex3.Position.z = cosTheta2;
+                vertex3.Color = DirectX::XMFLOAT3(0, 0, 0);
+
+                VertexPosColor vertex4;
+                vertex4.Position.x = sinTheta2 * cosPhi1;
+                vertex4.Position.y = sinTheta2 * sinPhi1;
+                vertex4.Position.z = cosTheta2;
+                vertex4.Color = DirectX::XMFLOAT3(0, 0, 0);
+
+                int indexVertex1 = vertices.GetSize();
+                int indexVertex2 = indexVertex1 + 1;
+                int indexVertex3 = indexVertex2 + 1;
+                int indexVertex4 = indexVertex3 + 1;
+
+                vertices.PushBack(vertex1);
+                vertices.PushBack(vertex2);
+                vertices.PushBack(vertex3);
+                vertices.PushBack(vertex4);
+
+                // facing out
+                if (ii == 0) // top cap
+                {
+                    indices.PushBack(indexVertex1);
+                    indices.PushBack(indexVertex3);
+                    indices.PushBack(indexVertex4);
+                }
+                else if (ii + 1 == stacks) //end cap
+                {
+                    indices.PushBack(indexVertex3);
+                    indices.PushBack(indexVertex1);
+                    indices.PushBack(indexVertex2);
+                }
+                else
+                {
+                    indices.PushBack(indexVertex1);
+                    indices.PushBack(indexVertex2);
+                    indices.PushBack(indexVertex4);
+
+                    indices.PushBack(indexVertex2);
+                    indices.PushBack(indexVertex3);
+                    indices.PushBack(indexVertex4);
+                }
+            }
+        }
+
+        pMesh->LoadVertexAndIndexBuffer(vertices.GetData(), vertices.GetSize(), indices.GetData(), indices.GetSize());
     }
 }

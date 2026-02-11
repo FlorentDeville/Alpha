@@ -71,6 +71,7 @@ namespace Rendering
 		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 		void RenderPrimitiveCube(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
+		void RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
 
 		void ExecuteRenderCommand();
 
@@ -162,6 +163,7 @@ namespace Rendering
 		Mesh* m_pConeMesh;
 		Mesh* m_pTorusMesh;
 		Mesh* m_pCubeMesh;
+		Mesh* m_pSphereMesh;
 
 		Material* m_pBaseShapeMaterial;
 
@@ -187,6 +189,7 @@ namespace Rendering
 		void ResizeSwapChain(uint32_t width, uint32_t height);
 		void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 
+	public:
 		void RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& wvp, const DirectX::XMFLOAT4& color) const;
 	};
 }

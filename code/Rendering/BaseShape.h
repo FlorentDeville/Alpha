@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace Rendering
 {
 	class Mesh;
@@ -16,5 +18,8 @@ namespace Rendering
 		static void CreateCone(Mesh* pMesh, float diameter, float height, size_t tessellation);
 		static void CreateTorus(Mesh* pMesh, float diameter, float thickness, int tessellation);
 		static void CreateCube(Mesh* pMesh);
+
+		//Generate a mesh of a unit sphere. Stacks is the number of horizontal subdivision. Slices is the number of vertical subdivision.
+		static void CreateSphere(Mesh* pMesh, uint32_t stacks, uint32_t slices);
 	};
 }
