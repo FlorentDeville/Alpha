@@ -33,6 +33,11 @@ struct ID3D12Device2;
 
 class CommandQueue;
 
+namespace Core
+{
+	class Float4;
+}
+
 namespace Rendering
 {
 	class Camera;
@@ -67,11 +72,11 @@ namespace Rendering
 
 		void SetScissorRectangle(const D3D12_RECT& rect);
 
-		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
-		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
-		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
-		void RenderPrimitiveCube(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
-		void RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color);
+		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const Core::Float4& color);
+		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const Core::Float4& color);
+		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const Core::Float4& color);
+		void RenderPrimitiveCube(const DirectX::XMMATRIX& world, const Core::Float4& color);
+		void RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const Core::Float4& color);
 
 		void ExecuteRenderCommand();
 
@@ -190,6 +195,6 @@ namespace Rendering
 		void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 
 	public:
-		void RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& wvp, const DirectX::XMFLOAT4& color) const;
+		void RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& wvp, const Core::Float4& color) const;
 	};
 }

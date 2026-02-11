@@ -339,27 +339,27 @@ namespace Rendering
 		m_pRenderCommandList->RSSetScissorRects(1, &rect);
 	}
 
-	void RenderModule::RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	void RenderModule::RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const Core::Float4& color)
 	{
 		RenderBaseShape(m_pCylinderMesh, world, color);
 	}
 
-	void RenderModule::RenderPrimitiveCone(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	void RenderModule::RenderPrimitiveCone(const DirectX::XMMATRIX& world, const Core::Float4& color)
 	{
 		RenderBaseShape(m_pConeMesh, world, color);
 	}
 
-	void RenderModule::RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	void RenderModule::RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const Core::Float4& color)
 	{
 		RenderBaseShape(m_pTorusMesh, world, color);
 	}
 
-	void RenderModule::RenderPrimitiveCube(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	void RenderModule::RenderPrimitiveCube(const DirectX::XMMATRIX& world, const Core::Float4& color)
 	{
 		RenderBaseShape(m_pCubeMesh, world, color);
 	}
 
-	void RenderModule::RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const DirectX::XMFLOAT4& color)
+	void RenderModule::RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const Core::Float4& color)
 	{
 		RenderBaseShape(m_pSphereMesh, world, color);
 	}
@@ -893,7 +893,7 @@ namespace Rendering
 		}
 	}
 
-	void RenderModule::RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color) const
+	void RenderModule::RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& txWs, const Core::Float4& color) const
 	{
 		m_pRenderCommandList->SetPipelineState(m_pBaseShapeMaterial->m_pPipelineState->GetPipelineState());
 		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeMaterial->m_pRootSignature->GetRootSignature());
