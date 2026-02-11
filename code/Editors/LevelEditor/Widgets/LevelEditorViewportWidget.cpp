@@ -29,6 +29,7 @@
 
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
+#include "Systems/GameComponent/Lights/SpotLightComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
@@ -151,6 +152,30 @@ namespace Editors
 					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
 					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
 					pGfxLight->MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
+				}
+				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
+				{
+					uint32_t index = allLights.GetSize();
+					allLights.Resize(index + 1);
+					Rendering::Light* pGfxLight = &allLights[index];
+
+					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
+					Core::Vec4f lightPosition = pLight->GetPosition();
+					lightPosition.Set(3, 1);
+					Core::Vec4f worldPosition = lightPosition * worldTx;
+
+					Core::Vec4f localDirection = pLight->GetDirection();
+					localDirection.Set(3, 0);
+					Core::Vec4f worldDirection = localDirection * worldTx;
+
+					Core::Float3 position(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ());
+					Core::Float3 direction(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ());
+					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
+					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
+					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
+					pGfxLight->MakeSpotLight(position, direction, ambient, diffuse, specular, 
+						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(), 
+						pLight->GetCutOff(), pLight->GetOuterCutOff());
 				}
 				else if (const Systems::StaticMeshComponent* pStaticMesh = pComponent->Cast<Systems::StaticMeshComponent>())
 				{

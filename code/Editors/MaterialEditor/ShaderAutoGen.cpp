@@ -123,6 +123,7 @@ namespace Editors
 		fileContent += "struct Light\n"
 			"{\n"
 			"\tfloat3 position;\n"
+			"\tfloat outerCutOff;\n"
 			"\tfloat3 direction;\n\n"
 			"\tfloat3 ambient;\n"
 			"\tfloat3 diffuse;\n"

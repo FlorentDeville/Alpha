@@ -28,10 +28,13 @@ namespace Rendering
 		void MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular);
 		void MakePointLight(const Core::Float3& position, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
 			float constant, float linear, float quadratic);
+		void MakeSpotLight(const Core::Float3& position, const Core::Float3& direction, 
+			const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
+			float constant, float linear, float quadratic, float cutOff, float outerCutOff);
 
 	private:
 		Core::Float3 m_position;
-		char m_padding0[4];
+		float m_outerCutOff;
 
 		Core::Float3 m_direction;
 		char m_padding1[4];
