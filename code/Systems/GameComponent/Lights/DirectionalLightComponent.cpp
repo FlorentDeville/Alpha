@@ -80,4 +80,24 @@ namespace Systems
 			renderModule.RenderPrimitiveCone(arrowTipWorld.m_matrix, colorWhite);
 		}
 	}
+
+	const Core::Vec4f& DirectionalLightComponent::GetDirection() const
+	{
+		return m_direction;
+	}
+
+	const Core::Vec4f& DirectionalLightComponent::GetAmbient() const
+	{
+		return m_ambient;
+	}
+
+	const Core::Vec4f& DirectionalLightComponent::GetDiffuse() const
+	{
+		return m_diffuse;
+	}
+
+	const Core::Vec4f& DirectionalLightComponent::GetSpecular() const
+	{
+		return m_specular;
+	}
 }

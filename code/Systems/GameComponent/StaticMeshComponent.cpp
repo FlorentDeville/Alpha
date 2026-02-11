@@ -62,4 +62,9 @@ namespace Systems
 	{
 		return m_mesh.GetPtr();
 	}
+
+	const MaterialInstanceAsset* StaticMeshComponent::GetMaterialInstance() const
+	{
+		return m_material.GetPtr();
+	}
 }

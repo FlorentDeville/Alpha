@@ -18,6 +18,11 @@ namespace Systems
 
 		void Render() override;
 
+		const Core::Vec4f& GetDirection() const;
+		const Core::Vec4f& GetAmbient() const;
+		const Core::Vec4f& GetDiffuse() const;
+		const Core::Vec4f& GetSpecular() const;
+
 	private:
 		Core::Vec4f m_direction;
 
