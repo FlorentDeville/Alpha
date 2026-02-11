@@ -17,6 +17,9 @@
 #include "OsWin/Input.h"
 
 #include "Rendering/Camera.h"
+#include "Rendering/ConstantBuffer/LightsCBuffer.h"
+#include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
+#include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
@@ -24,8 +27,10 @@
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 
+#include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
+#include "Systems/Rendering/MaterialRendering.h"
 
 #include "Widgets/WidgetMgr.h"
 
@@ -94,8 +99,95 @@ namespace Editors
 			pRoot->UpdateTransform();
 
 		const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+		
+		//make the list of renderables and lights
+		struct Renderable
+		{
+			const Rendering::Mesh* m_pMesh;
+			const Systems::MaterialInstanceAsset* m_pMaterial;
+			Core::Mat44f m_worldTx;
+		};
+		Core::Array<Renderable> allRenderables;
+		allRenderables.Reserve(10);
+
+		Core::Array<Rendering::Light> allLights;
+		allLights.Reserve(10);
 		for (Systems::GameObject* pGo : gameObjects)
-			pGo->Render();
+		{
+			const Core::Array<Systems::GameComponent*>& components = pGo->GetComponents();
+			for (const Systems::GameComponent* pComponent : components)
+			{
+				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
+				{
+					uint32_t index = allLights.GetSize();
+					allLights.Resize(index + 1);
+					Rendering::Light* pGfxLight = &allLights[index];
+
+					Core::Float3 direction(pLight->GetDirection().GetX(), pLight->GetDirection().GetY(), pLight->GetDirection().GetZ());
+					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
+					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
+					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
+					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
+				}
+				else if (const Systems::StaticMeshComponent* pStaticMesh = pComponent->Cast<Systems::StaticMeshComponent>())
+				{
+					const Rendering::Mesh* pMesh = nullptr;
+					const Systems::MaterialInstanceAsset* pMaterial = nullptr;
+					if (pStaticMesh->GetMesh() && pStaticMesh->GetMesh()->GetRenderingMesh())
+						pMesh = pStaticMesh->GetMesh()->GetRenderingMesh();
+
+					pMaterial = pStaticMesh->GetMaterialInstance();
+
+					if (pMesh && pMaterial)
+					{
+						uint32_t index = allRenderables.GetSize();
+						allRenderables.PushBack(Renderable());
+						Renderable& renderable = allRenderables[index];
+
+						renderable.m_pMesh = pMesh;
+						renderable.m_pMaterial = pMaterial;
+						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
+					}
+				}
+			}
+		}
+
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+		Rendering::Camera* pCamera = renderModule.GetCamera();
+
+		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
+		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
+
+		DirectX::XMFLOAT3 cameraPosFloat3;
+		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
+		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+
+		//for now add all lights
+		Rendering::LightsCBuffer lights;
+		uint32_t lightCount = Rendering::LightsCBuffer::MAX_LIGHT_COUNT;
+		if (lightCount > allLights.GetSize())
+			lightCount = allLights.GetSize();
+
+		for (int ii = 0; ii < lightCount; ++ii)
+		{
+			Rendering::Light* pLight = lights.AddLight();
+			*pLight = allLights[ii];
+		}
+
+		//now render all renderables
+		for(const Renderable& renderable : allRenderables)
+		{
+			DirectX::XMMATRIX wvp = proj * (view * renderable.m_worldTx.m_matrix);
+
+			if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
+			{
+				Rendering::PerObjectCBuffer perObjectData(renderable.m_worldTx.m_matrix);
+
+				Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lights);
+
+				renderModule.RenderMesh(*renderable.m_pMesh);
+			}
+		}
 
 		m_pRenderTarget->ClearDepthBuffer();
 

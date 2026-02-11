@@ -58,9 +58,9 @@ namespace Rendering
 		
 		Light* AddLight();
 
-	private:
 		static const int MAX_LIGHT_COUNT = 8;
 
+	private:
 		int m_numLight;
 		char m_padding[12];
 		Light m_lightArray[MAX_LIGHT_COUNT];
