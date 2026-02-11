@@ -25,12 +25,38 @@ namespace Systems
 
 		virtual void PostLoad();
 
+		template<class T> bool IsA() const;
+
+		template<class T> T* Cast();
+		template<class T> const T* Cast() const;
+
 	private:
 		const TypeDescriptor* m_pTypeDescriptor;
 
 		START_REFLECTION(Systems::Object)
 		END_REFLECTION()
 	};
+
+	template<class T> bool Object::IsA() const
+	{
+		return m_pTypeDescriptor->GetSid() == TypeResolver<T>::GetTypenameSid();
+	}
+
+	template<class T> T* Object::Cast()
+	{
+		if (!IsA<T>())
+			return nullptr;
+
+		return static_cast<T*>(this);
+	}
+
+	template<class T> const T* Object::Cast() const
+	{
+		if (!IsA<T>())
+			return nullptr;
+
+		return static_cast<const T*>(this);
+	}
 
 	Object* CreateObject(const TypeDescriptor* pType);
 

@@ -45,6 +45,7 @@
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\AssetIdItem.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\FloatItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\GuidItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\HardAssetRefItem.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\SidItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\StringItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\UInt32Item.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\Vec4fItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridPopulator.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h" />
@@ -92,6 +94,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\AssetIdItem.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\FloatItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\GuidItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\HardAssetRefItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\Mat44fItem.cpp" />
@@ -99,6 +102,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\SidItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\StringItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\UInt32Item.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\Vec4fItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridPopulator.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp" />

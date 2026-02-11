@@ -191,8 +191,6 @@ namespace Editors
 				{
 					*pData = f;
 
-					assert(pField->GetType()->IsObject());
-
 					ObjectWatcher::OPERATION op = pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 					ObjectWatcher::Get().SendFieldModifiedEvent(reinterpret_cast<Systems::Object*>(pObj), pField, op, index);
 				}

@@ -38,7 +38,7 @@ namespace Editors
 
 		const std::vector<Systems::NewAssetId>& GetAllMaterials() const;
 
-		bool CompileMaterial(Systems::NewAssetId id);
+		bool CompileMaterial(Systems::NewAssetId id, bool debug);
 
 		EVENT_DECL(MaterialCreated, void(const Systems::AssetMetadata* pMetadata));
 		EVENT_DECL(MaterialInstanceCreated, void(const Systems::AssetMetadata* pMetadata));

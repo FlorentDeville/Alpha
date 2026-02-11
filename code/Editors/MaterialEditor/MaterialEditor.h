@@ -84,6 +84,7 @@ namespace Editors
 
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();
+		bool OnCompileDebugClicked();
 		bool OnNewHlslClicked();
 
 		void PropertyGridPopulator_OnDataChanged();
@@ -96,5 +97,7 @@ namespace Editors
 		void Viewport_OnUpdate(uint64_t dt);
 
 		void RefreshPropertyGrid();
+
+		bool InternalOnCompileClicked(bool debug);
 	};
 }

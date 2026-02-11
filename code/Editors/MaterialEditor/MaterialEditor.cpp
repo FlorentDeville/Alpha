@@ -167,6 +167,13 @@ namespace Editors
 			pButtonLayout->AddWidget(pButton);
 		}
 
+		//add debug compile button
+		{
+			Widgets::Button* pButton = new Widgets::Button("Compile Debug");
+			pButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
+			pButtonLayout->AddWidget(pButton);
+		}
+
 		//add property grid
 		{
 			m_pPropertyGrid = new PropertyGridWidget();
@@ -300,9 +307,10 @@ namespace Editors
 
 		const Widgets::SelectionRow& row = selection.front();
 		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
-		MaterialEditorModule::Get().SaveMaterial(id);
+		bool materialSaved = MaterialEditorModule::Get().SaveMaterial(id);
 
-		m_pMaterialListModel->ClearShaderModified(id);
+		if(materialSaved)
+			m_pMaterialListModel->ClearShaderModified(id);
 	}
 
 	void MaterialEditor::MenuFile_Delete_OnClicked()
@@ -365,24 +373,12 @@ namespace Editors
 
 	bool MaterialEditor::OnCompileClicked()
 	{
-		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
-		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
-		if (selection.empty())
-			return true;
+		return InternalOnCompileClicked(false);
+	}
 
-		const Widgets::SelectionRow& row = selection.front();
-		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
-
-		bool res = MaterialEditorModule::Get().CompileMaterial(id);
-
-		RefreshPropertyGrid();
-
-		if (!res)
-			return true;
-
-		m_pMaterialListModel->SetShaderModified(id);
-
-		return true;
+	bool MaterialEditor::OnCompileDebugClicked()
+	{
+		return InternalOnCompileClicked(true);
 	}
 
 	bool MaterialEditor::OnNewHlslClicked()
@@ -522,8 +518,8 @@ namespace Editors
 				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
 				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
-				Rendering::LightsCBuffer lights(dirLight);
+				Rendering::LightsCBuffer lights;
+				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
@@ -543,8 +539,8 @@ namespace Editors
 				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
 				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-				Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
-				Rendering::LightsCBuffer lights(dirLight);
+				Rendering::LightsCBuffer lights;
+				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
 
@@ -615,5 +611,27 @@ namespace Editors
 			return;
 
 		m_pPropertyGridPopulator->Populate(pObject);
+	}
+
+	bool MaterialEditor::InternalOnCompileClicked(bool debug)
+	{
+		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
+		const std::list<Widgets::SelectionRow>& selection = pSelectionModel->GetSelectedRows();
+		if (selection.empty())
+			return true;
+
+		const Widgets::SelectionRow& row = selection.front();
+		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
+
+		bool res = MaterialEditorModule::Get().CompileMaterial(id, debug);
+
+		RefreshPropertyGrid();
+
+		if (!res)
+			return true;
+
+		m_pMaterialListModel->SetShaderModified(id);
+
+		return true;
 	}
 }

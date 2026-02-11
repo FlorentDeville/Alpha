@@ -48,8 +48,8 @@ namespace Systems
 			DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
-			Rendering::Light dirLight = Rendering::Light::MakeDirectionalLight(DirectX::XMFLOAT3(0, -1, 0));
-			Rendering::LightsCBuffer lights(dirLight);
+			Rendering::LightsCBuffer lights;
+			lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
@@ -61,5 +61,10 @@ namespace Systems
 	const MeshAsset* StaticMeshComponent::GetMesh() const
 	{
 		return m_mesh.GetPtr();
+	}
+
+	const MaterialInstanceAsset* StaticMeshComponent::GetMaterialInstance() const
+	{
+		return m_material.GetPtr();
 	}
 }

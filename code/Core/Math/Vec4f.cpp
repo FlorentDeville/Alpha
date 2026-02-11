@@ -87,6 +87,11 @@ namespace Core
 		return Vec4f(f * m_vector);
 	}
 
+	bool Vec4f::operator==(const Vec4f& other) const
+	{
+		return DirectX::XMVector4Equal(m_vector, other.m_vector);
+	}
+
 	Vec4f Vec4f::QuaternionToEulerAngles(const Vec4f& quaternion)
 	{
 		float x = quaternion.GetX();

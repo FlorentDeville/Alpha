@@ -40,6 +40,7 @@ namespace Core
 		Vec4f operator-(const Vec4f& other) const;
 		Vec4f operator*(const Mat44f& other) const;
 		Vec4f operator*(float f) const;
+		bool operator==(const Vec4f& other) const;
 
 		static Vec4f QuaternionToEulerAngles(const Vec4f& quaternion);
 
