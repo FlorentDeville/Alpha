@@ -26,6 +26,8 @@ namespace Rendering
 		Light();
 
 		void MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular);
+		void MakePointLight(const Core::Float3& position, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
+			float constant, float linear, float quadratic);
 
 	private:
 		Core::Float3 m_position;

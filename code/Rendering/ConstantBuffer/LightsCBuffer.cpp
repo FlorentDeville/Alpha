@@ -21,6 +21,19 @@ namespace Rendering
 		m_type = LightType::Directional;
 	}
 
+	void Light::MakePointLight(const Core::Float3& position, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
+		float constant, float linear, float quadratic)
+	{
+		m_position = position;
+		m_ambient = ambient;
+		m_diffuse = diffuse;
+		m_specular = specular;
+		m_constant = constant;
+		m_linear = linear;
+		m_quadratic = quadratic;
+		m_type = LightType::Point;
+	}
+
 	LightsCBuffer::LightsCBuffer()
 		: m_numLight(0)
 	{ }

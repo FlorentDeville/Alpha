@@ -25,4 +25,39 @@ namespace Systems
 
 	void PointLightComponent::Render()
 	{ }
+
+	const Core::Vec4f& PointLightComponent::GetPosition() const
+	{
+		return m_position;
+	}
+
+	const Core::Vec4f& PointLightComponent::GetAmbient() const
+	{
+		return m_ambient;
+	}
+
+	const Core::Vec4f& PointLightComponent::GetDiffuse() const
+	{
+		return m_diffuse;
+	}
+
+	const Core::Vec4f& PointLightComponent::GetSpecular() const
+	{
+		return m_specular;
+	}
+
+	float PointLightComponent::GetConstant() const
+	{
+		return m_constant;
+	}
+
+	float PointLightComponent::GetLinear() const
+	{
+		return m_linear;
+	}
+
+	float PointLightComponent::GetQuadratic() const
+	{
+		return m_quadratic;
+	}
 }
