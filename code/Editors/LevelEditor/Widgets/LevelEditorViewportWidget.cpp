@@ -320,9 +320,15 @@ namespace Editors
 						renderables.PushBack(Renderable());
 						Renderable& renderable = renderables[index];
 
+						const float SIZE = 0.5f;
+						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
+						Core::Sqt sqt;
+						sqt.SetTranslation(worldPosition);
+						sqt.SetScale(Core::Vec4f(realSize, realSize, realSize, 0));
+						Core::Mat44f proxyWorldTx = Core::Mat44f::CreateTransformMatrix(sqt);
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pSphereMesh;
 						renderable.m_pMaterial = nullptr;
-						renderable.m_worldTx = worldTx;
+						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
 					}
@@ -460,5 +466,19 @@ namespace Editors
 			const Rendering::Mesh* pRenderingMesh = renderable.m_pMesh;
 			renderModule.RenderMesh(*pRenderingMesh);
 		}
+	}
+
+	float LevelEditorViewportWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
+	{
+		const LevelEditorModule& levelEditor = LevelEditorModule::Get();
+		const Core::Mat44f& camera = levelEditor.GetCameraWs();
+		float fov = levelEditor.GetFovRad();
+
+		Core::Vec4f dt = camera.GetT() - objectPosition;
+		float distance = dt.Length();
+		float worldSize = (2 * tanf(fov * 0.5f)) * distance;
+		const float SCREEN_RATIO = 0.025f;
+		float size = SCREEN_RATIO * worldSize;
+		return size;
 	}
 }

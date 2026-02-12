@@ -83,5 +83,7 @@ namespace Editors
 
 		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
 		void RenderView_ObjectId(Core::Array<Renderable>& renderables);
+
+		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};
 }
