@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
@@ -62,7 +61,6 @@
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />

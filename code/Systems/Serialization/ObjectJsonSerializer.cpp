@@ -14,7 +14,6 @@
 #include "Core/Math/Vec4f.h"
 #include "Core/String/BytesToHexa.h"
 
-#include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/Object.h"
 #include "Systems/Serialization/ObjectHeader.h"
@@ -62,12 +61,6 @@ namespace Systems
 
 		value.Set(pArray);
 
-		return true;
-	}
-
-	template<> bool SerializeData<Systems::AssetId>(const Systems::AssetId& data, Core::JsonValue& value)
-	{
-		value.Set(data.ToString());
 		return true;
 	}
 
@@ -164,13 +157,6 @@ namespace Systems
 		{
 			const bool* pValue = reinterpret_cast<const bool*>(pFieldPtr);
 			SerializeData(*pValue, value);
-		}
-		break;
-
-		case SID("Systems::AssetId"):
-		{
-			const Systems::AssetId* pAssetId = reinterpret_cast<const Systems::AssetId*>(pFieldPtr);
-			SerializeData(*pAssetId, value);
 		}
 		break;
 

@@ -26,7 +26,6 @@ namespace Systems
 {
 	void RegisterSystemsTypesToReflection()
 	{
-		REGISTER_TYPE(Systems::AssetId);
 		REGISTER_TYPE(Systems::NewAssetId);
 
 		Systems::Object::RegisterReflection();

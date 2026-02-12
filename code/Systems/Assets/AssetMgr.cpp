@@ -134,12 +134,6 @@ namespace Systems
 		return true;
 	}
 
-	std::string AssetMgr::ConstructAssetPath(AssetId id, AssetType type) const
-	{
-		std::string subFolder = GetAssetFolder(type);
-		return m_root + "\\" + subFolder + "\\" + id.ToString();
-	}
-
 	bool AssetMgr::LoadMetadataTable()
 	{
 		std::string filename = GetMetadataTableFilePath();

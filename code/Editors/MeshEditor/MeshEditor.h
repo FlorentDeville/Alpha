@@ -11,7 +11,6 @@
 #include "Rendering/Material/MaterialId.h"
 #include "Rendering/Texture/TextureId.h"
 
-#include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 

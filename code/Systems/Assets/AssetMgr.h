@@ -7,7 +7,6 @@
 #include "Core/Collections/Array.h"
 #include "Core/Singleton.h"
 
-#include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetType.h"
 #include "Systems/Assets/AssetType/NewAssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
@@ -73,8 +72,6 @@ namespace Systems
 		// but the underlying asset type is the same. So to not resave entirely the metadata table when renaming
 		// a class, the asset type is separated.
 		std::map<Core::Sid, NewAssetType> m_assetTypes;
-
-		std::string ConstructAssetPath(AssetId id, AssetType type) const;
 
 		std::string GetMetadataTableFilePath() const;
 	};

@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="Assets\AssetType.h" />
-    <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Reflection\FieldDescriptor.h" />
@@ -53,7 +52,6 @@
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetType.cpp" />
     <ClCompile Include="Reflection\FieldDescriptor.cpp" />

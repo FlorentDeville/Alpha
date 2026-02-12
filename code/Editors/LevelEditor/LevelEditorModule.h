@@ -10,7 +10,6 @@
 #include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Math/Mat44f.h"
 
-#include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
 #include <map>
@@ -29,7 +28,6 @@ namespace Rendering
 
 namespace Systems
 {
-	class AssetId;
 	class AssetMetadata;
 }
 
@@ -102,10 +100,6 @@ namespace Editors
 		EVENT_DECL(AfterDeleteGameObject, void(const Core::Guid& nodeGuid))
 		EVENT_DECL(DuplicateEntity, void(const Core::Guid& src, const Core::Guid& copy))
 		EVENT_DECL(ReparentGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent))
-
-		//temp
-		std::map<Systems::AssetId, Rendering::MeshId> m_assetIdToMeshId;
-		std::map<Systems::AssetId, Rendering::MaterialId> m_assetIdToMaterialId;
 
 	private:
 		SelectionMgr* m_pSelectionMgr;
