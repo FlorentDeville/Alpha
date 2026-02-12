@@ -195,7 +195,11 @@ namespace Widgets
 	void SliderFloat::DrawSliderText(const Core::Float2& windowSize, const D3D12_RECT& localScissor)
 	{
 		//All of this should be cached
-		std::string strValue = std::to_string(m_currentValue);
+		const int BUFFER_SIZE = 64;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		sprintf_s(buffer, BUFFER_SIZE, "%g", m_currentValue);
+
+		std::string strValue = buffer;
 
 		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
 		DirectX::XMUINT2 textRect;
@@ -203,11 +207,9 @@ namespace Widgets
 		// until here at least
 
 		float fontScale = 1.f;
-		const int textXOffset = 5;
-		const int textYOffset = 0;
 
 		//center the text
-		float x = (float)m_absPos.x + m_size.x * 0.5f - textRect.x * 0.5f;
+		float x = (float)m_absPos.x + m_size.x * 0.5f - static_cast<float>(ceil(textRect.x * 0.5f)); // Us ceil here cause if the text is small, half of it could be too small or 0.
 		float y = (float)m_absPos.y + m_size.y * 0.5f - textRect.y * 0.5f;
 		DirectX::XMFLOAT3 uiPos(x, y, (float)m_absPos.z - 2);
 
