@@ -298,6 +298,53 @@ namespace Editors
 					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
 					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
 					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
+
+					{
+						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(Core::Vec4f(0, 0, 0, 1), localDirection, Core::Vec4f(0, 1, 0, 0));
+						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
+						localTx = rot * localTx;
+
+						const float SIZE = 0.5f;
+						const float LENGTH = 3.f;
+						float screenScale = ComputeConstantScreenSizeScale(worldTx.GetT());
+
+						float realSize = screenScale * SIZE;
+						float realLength = LENGTH * screenScale;
+
+						Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realSize, realLength, realSize, 0));
+
+						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
+
+						{
+							uint32_t index = renderables.GetSize();
+							renderables.PushBack(Renderable());
+							Renderable& renderable = renderables[index];
+
+							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
+							renderable.m_pMaterial = nullptr;
+							renderable.m_worldTx = proxyWorldTx;
+							renderable.m_primitiveMesh = true;
+							renderable.m_pOwner = pGo;
+						}
+
+						{
+							uint32_t index = renderables.GetSize();
+							renderables.PushBack(Renderable());
+							Renderable& renderable = renderables[index];
+
+							float arrowTipScaleValue = 1.f * screenScale;
+
+							Core::Mat44f arrowTipOffset = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, -realLength * 0.5f - (arrowTipScaleValue * 0.5f), 0, 1));
+							Core::Mat44f arrowTipRotation = Core::Mat44f::CreateRotationMatrixFromEulerAngles(Core::Vec4f(Core::PI, 0, 0, 0));
+							Core::Mat44f arrowTipScale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(arrowTipScaleValue, arrowTipScaleValue, arrowTipScaleValue, 0));
+
+							renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
+							renderable.m_pMaterial = nullptr;
+							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
+							renderable.m_primitiveMesh = true;
+							renderable.m_pOwner = pGo;
+						}
+					}
 				}
 				else if (const Systems::PointLightComponent* pLight = pComponent->Cast<Systems::PointLightComponent>())
 				{
@@ -362,6 +409,13 @@ namespace Editors
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
 						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
 						localTx = rot * localTx;
+
+						Core::Vec4f x = localTx.GetX();
+						x.Normalize();
+						Core::Vec4f y = localTx.GetY();
+						y.Normalize();
+						Core::Vec4f z = localTx.GetZ();
+						z.Normalize();
 
 						const float SIZE = 1.f;
 						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
