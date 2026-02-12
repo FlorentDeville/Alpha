@@ -77,9 +77,6 @@ namespace Editors
 
 		float GetFovRad() const;
 
-		Rendering::MeshId LoadMesh(Systems::AssetId id);
-		Rendering::MaterialId LoadMaterial(Systems::AssetId id);
-
 		bool IsSelected(const Core::Guid& nodeGuid) const;
 		bool AddToSelection(const Core::Guid& nodeGuid);
 		bool RemoveFromSelection(const Core::Guid& nodeGuid);

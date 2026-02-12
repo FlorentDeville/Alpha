@@ -34,7 +34,6 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
-#include "Systems/Loader.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
 #include "Widgets/Button.h"
