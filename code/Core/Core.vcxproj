@@ -98,6 +98,7 @@
     <None Include="Collections\HashSet.inl">
       <FileType>Document</FileType>
     </None>
+    <ClCompile Include="Color\Color.cpp" />
     <ClCompile Include="CommandLine.cpp" />
     <ClCompile Include="Guid\Guid.cpp" />
     <ClCompile Include="Helper.cpp" />
@@ -124,6 +125,7 @@
     <ClInclude Include="Collections\Array.h" />
     <ClInclude Include="Collections\BaseArray.h" />
     <ClInclude Include="Collections\HashSet.h" />
+    <ClInclude Include="Color\Color.h" />
     <ClInclude Include="CommandLine.h" />
     <ClInclude Include="Guid\Guid.h" />
     <ClInclude Include="Helper.h" />

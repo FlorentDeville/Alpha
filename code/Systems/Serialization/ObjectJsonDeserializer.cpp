@@ -4,6 +4,7 @@
 
 #include "Systems/Serialization/ObjectJsonDeserializer.h"
 
+#include "Core/Color/Color.h"
 #include "Core/Guid/Guid.h"
 #include "Core/Json/JsonArray.h"
 #include "Core/Json/JsonMember.h"
@@ -210,6 +211,16 @@ namespace Systems
 
 			const std::string& strSid = jsonFieldValue.GetValueAsString();
 			*pValue = Core::HexaToUint64(strSid);
+		}
+		break;
+
+		case SID("Core::Color"):
+		{
+			Core::Color* pValue = reinterpret_cast<Core::Color*>(ptr);
+			Core::JsonArray* pJsonArray = jsonFieldValue.GetValueAsArray();
+			pValue->SetRed(static_cast<float>(pJsonArray->GetElement(0)->GetValueAsDouble()));
+			pValue->SetGreen(static_cast<float>(pJsonArray->GetElement(1)->GetValueAsDouble()));
+			pValue->SetBlue(static_cast<float>(pJsonArray->GetElement(2)->GetValueAsDouble()));
 		}
 		break;
 

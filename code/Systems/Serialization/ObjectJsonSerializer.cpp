@@ -8,6 +8,7 @@
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonValue.h"
 
+#include "Core/Color/Color.h"
 #include "Core/Collections/BaseArray.h"
 #include "Core/Guid/Guid.h"
 #include "Core/Math/Mat44f.h"
@@ -58,6 +59,18 @@ namespace Systems
 		pArray->AddElement(data.GetY());
 		pArray->AddElement(data.GetZ());
 		pArray->AddElement(data.GetW());
+
+		value.Set(pArray);
+
+		return true;
+	}
+
+	template<> bool SerializeData<Core::Color>(const Core::Color& data, Core::JsonValue& value)
+	{
+		Core::JsonArray* pArray = new Core::JsonArray();
+		pArray->AddElement(data.GetRed());
+		pArray->AddElement(data.GetGreen());
+		pArray->AddElement(data.GetBlue());
 
 		value.Set(pArray);
 
@@ -200,6 +213,13 @@ namespace Systems
 			const Core::Sid* pSid = reinterpret_cast<const Core::Sid*>(pFieldPtr);
 			std::string strSid = Core::Uint64ToHexa(*pSid);
 			SerializeData(strSid, value);
+		}
+		break;
+
+		case SID("Core::Color"):
+		{
+			const Core::Color* pColor = reinterpret_cast<const Core::Color*>(pFieldPtr);
+			SerializeData(*pColor, value);
 		}
 		break;
 
