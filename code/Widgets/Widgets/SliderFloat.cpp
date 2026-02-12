@@ -149,6 +149,13 @@ namespace Widgets
 		
 	}
 
+	void SliderFloat::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
+	{
+		m_pSlider->SetX(CalculateSliderLocalX());
+		m_pTextbox->SetSize(m_size);
+		Widget::Resize(parentAbsPos, parentSize);
+	}
+
 	void SliderFloat::SetValue(float value)
 	{
 		if (m_currentValue != value)
