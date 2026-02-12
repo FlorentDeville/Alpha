@@ -7,7 +7,6 @@
 #include "Core/Collections/Array.h"
 #include "Core/Singleton.h"
 
-#include "Systems/Assets/AssetType.h"
 #include "Systems/Assets/AssetType/NewAssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 #include "Systems/Assets/NewAssetId.h"

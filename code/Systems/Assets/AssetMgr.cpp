@@ -25,9 +25,6 @@ namespace Systems
 	bool AssetMgr::Init(const std::string& root)
 	{
 		m_root = root;
-
-		InitAssetTypeDescription();
-
 		return true;
 	}
 

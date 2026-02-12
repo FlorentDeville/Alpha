@@ -559,8 +559,6 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::MeshEditorParameter meshEditorParameter;
 	meshEditorParameter.pParent = pMiddleTabContainer;
-	meshEditorParameter.m_dataMaterialPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMaterial);
-	meshEditorParameter.m_dataMeshPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMesh);
 	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
 	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
 	meshEditorParameter.m_blender = configuration.m_blender;

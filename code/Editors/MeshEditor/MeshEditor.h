@@ -52,8 +52,6 @@ namespace Editors
 	{
 	public:
 		Widgets::Widget* pParent;
-		std::string m_dataMeshPath;
-		std::string m_dataMaterialPath;
 		std::string m_rawBlenderPath;
 		std::string m_editorScriptsPath;
 		std::string m_blender;
