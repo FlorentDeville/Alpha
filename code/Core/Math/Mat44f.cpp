@@ -131,6 +131,25 @@ namespace Core
 		return matrix;
 	}
 
+	Mat44f Mat44f::CreateLookAt(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up)
+	{
+		Core::Vec4f forward = dir;
+		forward.Normalize();
+
+		Core::Vec4f localUp = up;
+		Core::Vec4f right = up.Cross(forward);
+		float rightDot = right.Dot(right);
+		if (rightDot == 0)
+		{
+			localUp = Core::Vec4f(0, 0, 1, 0);
+			right = localUp.Cross(forward);
+		}
+
+		localUp = forward.Cross(right);
+
+		return Core::Mat44f(right, localUp, forward, pos);
+	}
+
 	Mat44f::Mat44f(const DirectX::XMMATRIX& matrix)
 		: m_matrix(matrix)
 	{}

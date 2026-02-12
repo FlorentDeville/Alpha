@@ -8,4 +8,5 @@ namespace Core
 {
 	constexpr float PI = 3.141592654f;
 	constexpr float TWO_PI = 6.283185307f;
+	constexpr float PI_OVER_TWO = PI * 0.5f;
 }

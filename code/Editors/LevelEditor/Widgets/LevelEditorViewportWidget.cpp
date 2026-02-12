@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
+#include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
@@ -356,6 +357,30 @@ namespace Editors
 					pGfxLight->MakeSpotLight(position, direction, ambient, diffuse, specular,
 						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(),
 						pLight->GetCutOff(), pLight->GetOuterCutOff());
+
+					{
+						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
+						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
+						localTx = rot * localTx;
+
+						const float SIZE = 1.f;
+						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
+						
+						Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realSize, realSize, realSize, 0));
+						
+						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
+
+						uint32_t index = renderables.GetSize();
+						renderables.PushBack(Renderable());
+						Renderable& renderable = renderables[index];
+
+						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
+						renderable.m_pMaterial = nullptr;
+						renderable.m_worldTx = proxyWorldTx;
+						renderable.m_primitiveMesh = true;
+						renderable.m_pOwner = pGo;
+					}
+
 				}
 				else if (const Systems::StaticMeshComponent* pStaticMesh = pComponent->Cast<Systems::StaticMeshComponent>())
 				{
