@@ -52,7 +52,6 @@
 
 #include "Resources/ResourcesMgr.h"
 
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Container/ContainerMgr.h"

@@ -27,7 +27,6 @@
 
 #include "Resources/ResourcesMgr.h"
 
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"

@@ -4,9 +4,6 @@
 
 #include "Editors/Widgets/AssetId/AssetIdWidget.h"
 
-//#include "Editors/Widgets/List/Models/AssetListModel.h"
-
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetId.h"
 
 #include "Widgets/Button.h"
