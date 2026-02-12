@@ -31,7 +31,8 @@ namespace Editors
 	void ColorItem::CreateWidgets()
 	{
 		const int TEXT_BOX_WIDTH = 100;
-		const int SPACE = 10;
+		const int SPACE = 5;
+		const int SLIDER_WIDTH = 50;
 
 		const Core::Color* pValue = GetDataPtr<Core::Color>();
 
@@ -44,12 +45,15 @@ namespace Editors
 		pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
 
 		m_pSliderRedChannel = new Widgets::SliderFloat(0, 1, pValue->GetRed());
+		m_pSliderRedChannel->SetWidth(SLIDER_WIDTH);
 		pLayout->AddWidget(m_pSliderRedChannel);
 
 		m_pSliderGreenChannel = new Widgets::SliderFloat(0, 1, pValue->GetGreen());
+		m_pSliderGreenChannel->SetWidth(SLIDER_WIDTH);
 		pLayout->AddWidget(m_pSliderGreenChannel);
 
 		m_pSliderBlueChannel = new Widgets::SliderFloat(0, 1, pValue->GetBlue());
+		m_pSliderBlueChannel->SetWidth(SLIDER_WIDTH);
 		pLayout->AddWidget(m_pSliderBlueChannel);
 
 		m_pColorWidget = new Widgets::Container(20, 20);
