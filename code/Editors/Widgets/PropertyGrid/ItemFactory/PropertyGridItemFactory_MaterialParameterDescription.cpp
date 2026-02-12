@@ -70,7 +70,7 @@ namespace Editors
 		{
 			float* pFloat = reinterpret_cast<float*>(pMatParamDesc->m_value.GetData());
 
-			Widgets::Color currentColor(pFloat[0], pFloat[1], pFloat[2], pFloat[3]);
+			Widgets::Color currentColor(pFloat[0], pFloat[1], pFloat[2], 1.f);
 
 			Widgets::Layout* pLayout = new Widgets::Layout();
 			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
