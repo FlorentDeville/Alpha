@@ -6,14 +6,25 @@
 
 #include "Widgets/Viewport_v2.h"
 
+#include "Core/Collections/Array.h"
 #include "Core/Guid/Guid.h"
+#include "Core/Math/Mat44f.h"
+
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
 #include <map>
 
 namespace Rendering
 {
+	class Light;
+	class Mesh;
 	class RenderTarget;
 	class Texture;
+}
+
+namespace Systems
+{
+	class GameObject;
 }
 
 namespace Editors
@@ -28,7 +39,6 @@ namespace Editors
 		LevelEditorViewportWidget(int width, int height);
 		~LevelEditorViewportWidget();
 
-		void Render();
 		void Update(uint64_t dt) override;
 
 		bool Handle(const Widgets::BaseEvent& event) override;
@@ -39,6 +49,17 @@ namespace Editors
 		GizmoModel* GetGizmoModel();
 
 	private:
+		
+		struct Renderable
+		{
+			const Rendering::Mesh* m_pMesh;
+			const Systems::MaterialInstanceAsset* m_pMaterial;
+			const Systems::GameObject* m_pOwner;
+			Core::Mat44f m_worldTx;
+			
+			bool m_primitiveMesh; // Call RenderBaseShape and don't use m_pMaterial
+		};
+
 		GizmoWidget* m_pGizmoWidget;
 		GizmoModel* m_pGizmoModel;
 
@@ -57,5 +78,12 @@ namespace Editors
 
 		// Find the object id from the mouse position. The mouse position is local to the widget.
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
+
+		void CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
+
+		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
+		void RenderView_ObjectId(Core::Array<Renderable>& renderables);
+
+		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};
 }

@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+//Those structure are intended to replace the XMINTX, XMFLOATX.
 namespace Core
 {
 	class UInt2
@@ -86,6 +87,29 @@ namespace Core
 			: x(_x)
 			, y(_y)
 			, z(_z)
+		{ }
+	};
+
+	class Float4
+	{
+	public:
+		float x;
+		float y;
+		float z;
+		float w;
+
+		Float4()
+			: x(0)
+			, y(0)
+			, z(0)
+			, w(0)
+		{ }
+
+		Float4(float _x, float _y, float _z, float _w)
+			: x(_x)
+			, y(_y)
+			, z(_z)
+			, w(_w)
 		{ }
 	};
 

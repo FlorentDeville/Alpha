@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
+#include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
@@ -85,161 +86,6 @@ namespace Editors
 		delete m_pCamera;
 		delete m_pGizmoWidget;
 		delete m_pObjectIdRenderTarget;
-	}
-
-	void LevelEditorViewportWidget::Render()
-	{
-		m_pCamera->Render(m_aspectRatio);
-
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
-		if (!pLevel)
-			return;
-
-		const Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
-		for (Systems::GameObject* pRoot : roots)
-			pRoot->UpdateTransform();
-
-		const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
-		
-		//make the list of renderables and lights
-		struct Renderable
-		{
-			const Rendering::Mesh* m_pMesh;
-			const Systems::MaterialInstanceAsset* m_pMaterial;
-			Core::Mat44f m_worldTx;
-		};
-		Core::Array<Renderable> allRenderables;
-		allRenderables.Reserve(10);
-
-		Core::Array<Rendering::Light> allLights;
-		allLights.Reserve(10);
-		for (Systems::GameObject* pGo : gameObjects)
-		{
-			const Core::Array<Systems::GameComponent*>& components = pGo->GetComponents();
-			for (const Systems::GameComponent* pComponent : components)
-			{
-				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
-				{
-					uint32_t index = allLights.GetSize();
-					allLights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &allLights[index];
-
-					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
-					Core::Vec4f localDirection = pLight->GetDirection();
-					localDirection.Set(3, 0);
-					Core::Vec4f worldDirection = localDirection * worldTx;
-
-					Core::Float3 direction(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ());
-					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
-					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
-					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
-					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
-				}
-				else if (const Systems::PointLightComponent* pLight = pComponent->Cast<Systems::PointLightComponent>())
-				{
-					uint32_t index = allLights.GetSize();
-					allLights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &allLights[index];
-
-					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
-					Core::Vec4f lightPosition = pLight->GetPosition();
-					lightPosition.Set(3, 1);
-					Core::Vec4f worldPosition = lightPosition * worldTx;
-
-					Core::Float3 position(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ());
-					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
-					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
-					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
-					pGfxLight->MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
-				}
-				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
-				{
-					uint32_t index = allLights.GetSize();
-					allLights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &allLights[index];
-
-					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
-					Core::Vec4f lightPosition = pLight->GetPosition();
-					lightPosition.Set(3, 1);
-					Core::Vec4f worldPosition = lightPosition * worldTx;
-
-					Core::Vec4f localDirection = pLight->GetDirection();
-					localDirection.Set(3, 0);
-					Core::Vec4f worldDirection = localDirection * worldTx;
-
-					Core::Float3 position(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ());
-					Core::Float3 direction(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ());
-					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
-					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
-					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
-					pGfxLight->MakeSpotLight(position, direction, ambient, diffuse, specular, 
-						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(), 
-						pLight->GetCutOff(), pLight->GetOuterCutOff());
-				}
-				else if (const Systems::StaticMeshComponent* pStaticMesh = pComponent->Cast<Systems::StaticMeshComponent>())
-				{
-					const Rendering::Mesh* pMesh = nullptr;
-					const Systems::MaterialInstanceAsset* pMaterial = nullptr;
-					if (pStaticMesh->GetMesh() && pStaticMesh->GetMesh()->GetRenderingMesh())
-						pMesh = pStaticMesh->GetMesh()->GetRenderingMesh();
-
-					pMaterial = pStaticMesh->GetMaterialInstance();
-
-					if (pMesh && pMaterial)
-					{
-						uint32_t index = allRenderables.GetSize();
-						allRenderables.PushBack(Renderable());
-						Renderable& renderable = allRenderables[index];
-
-						renderable.m_pMesh = pMesh;
-						renderable.m_pMaterial = pMaterial;
-						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
-					}
-				}
-			}
-		}
-
-		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-		Rendering::Camera* pCamera = renderModule.GetCamera();
-
-		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
-		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
-
-		DirectX::XMFLOAT3 cameraPosFloat3;
-		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
-		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
-
-		//for now add all lights
-		Rendering::LightsCBuffer lights;
-		uint32_t lightCount = Rendering::LightsCBuffer::MAX_LIGHT_COUNT;
-		if (lightCount > allLights.GetSize())
-			lightCount = allLights.GetSize();
-
-		for (uint32_t ii = 0; ii < lightCount; ++ii)
-		{
-			Rendering::Light* pLight = lights.AddLight();
-			*pLight = allLights[ii];
-		}
-
-		//now render all renderables
-		for(const Renderable& renderable : allRenderables)
-		{
-			DirectX::XMMATRIX wvp = proj * (view * renderable.m_worldTx.m_matrix);
-
-			if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
-			{
-				Rendering::PerObjectCBuffer perObjectData(renderable.m_worldTx.m_matrix);
-
-				Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lights);
-
-				renderModule.RenderMesh(*renderable.m_pMesh);
-			}
-		}
-
-		m_pRenderTarget->ClearDepthBuffer();
-
-		m_pGizmoWidget->Render();
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
@@ -330,70 +176,47 @@ namespace Editors
 
 	void LevelEditorViewportWidget::Internal_Render()
 	{
-		m_pRenderTarget->BeginScene();
-		Render();
-		m_pRenderTarget->EndScene();
+		//compute the camera
+		m_pCamera->Render(m_aspectRatio);
 
-
-		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
-		if (pLevel)
+		//create the render scene
+		Core::Array<Renderable> allRenderables;
+		Core::Array<Rendering::Light> allLights;
 		{
-			Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
-			Rendering::PipelineStateId objectIdsPsoId = widgetMgr.GetObjectIdsPsoId();
-			Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(objectIdsPsoId);
-
-			Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-
-			ConstBufferPerFrame perFrame;
-			perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix();
-			perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix();
-
-			m_pObjectIdRenderTarget->BeginScene();
-
-			renderModule.BindMaterial(*pPso);
-
-			renderModule.SetConstantBuffer(1, sizeof(ConstBufferPerFrame), &perFrame, 0);
-
-			uint32_t objectIdCounter = 0;
-
-			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
-			for (const Systems::GameObject* pGo : gameObjects)
+			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+			if (!pLevel)
 			{
-				const Core::Array<Systems::GameComponent*> components = pGo->GetComponents();
-				for (const Systems::GameComponent* pComponent : components)
-				{
-					const Systems::StaticMeshComponent* pMeshComponent = dynamic_cast<const Systems::StaticMeshComponent*>(pComponent);
-					if (!pMeshComponent)
-						continue;
-
-					const Systems::MeshAsset* pMesh = pMeshComponent->GetMesh();
-					if (!pMesh)
-						continue;
-
-					++objectIdCounter;
-
-					const Core::Mat44f& world = pGo->GetTransform().GetWorldTx();
-					ConstBufferPerObject perObject;
-					perObject.m_world = world;
-					perObject.m_objectId[3] = (objectIdCounter & 0xFF000000) >> 24;
-					perObject.m_objectId[2] = (objectIdCounter & 0x00FF0000) >> 16;
-					perObject.m_objectId[1] = (objectIdCounter & 0x0000FF00) >> 8;
-					perObject.m_objectId[0] = (objectIdCounter & 0x000000FF);
-
-					m_objectIdToGuid[objectIdCounter] = pGo->GetGuid();
-
-					renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
-
-					const Rendering::Mesh* pRenderingMesh = pMesh->GetRenderingMesh();
-					renderModule.RenderMesh(*pRenderingMesh);
-				}
+				//render an empty scene
+				m_pRenderTarget->BeginScene();
+				m_pRenderTarget->EndScene();
+				return;
 			}
 
-			m_pObjectIdRenderTarget->EndScene();
+			const Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
+			for (Systems::GameObject* pRoot : roots)
+				pRoot->UpdateTransform();
 
-			m_pObjectIdRenderTarget->CopyToReabackBuffer(m_pReadbackBuffer);
+			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+
+			CreateRenderScene(allRenderables, allLights);
 		}
+
+		//now render the level editor view of the scene.
+		m_pRenderTarget->BeginScene();
+		
+		RenderView_LevelEditor(allRenderables, allLights);
+		m_pRenderTarget->ClearDepthBuffer();
+		m_pGizmoWidget->Render();
+
+		m_pRenderTarget->EndScene();
+
+		//now render the object ids view
+		m_pObjectIdRenderTarget->BeginScene();
+		RenderView_ObjectId(allRenderables);
+		m_pObjectIdRenderTarget->EndScene();
+
+		m_pObjectIdRenderTarget->CopyToReabackBuffer(m_pReadbackBuffer);
 	}
 
 	uint32_t LevelEditorViewportWidget::GetObjectId(int mouseX, int mouseY) const
@@ -443,5 +266,298 @@ namespace Editors
 		m_pReadbackBuffer->GetResource()->Unmap(0, &emptyRange);
 
 		return objectId;
+	}
+
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	{
+		renderables.Reserve(10);
+		lights.Reserve(10);
+
+		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
+		const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+
+		for (Systems::GameObject* pGo : gameObjects)
+		{
+			const Core::Array<Systems::GameComponent*>& components = pGo->GetComponents();
+			for (const Systems::GameComponent* pComponent : components)
+			{
+				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
+				{
+					uint32_t index = lights.GetSize();
+					lights.Resize(index + 1);
+					Rendering::Light* pGfxLight = &lights[index];
+
+					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
+					Core::Vec4f localDirection = pLight->GetDirection();
+					localDirection.Set(3, 0);
+					Core::Vec4f worldDirection = localDirection * worldTx;
+
+					Core::Float3 direction(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ());
+					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
+					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
+					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
+					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
+
+					{
+						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(Core::Vec4f(0, 0, 0, 1), localDirection, Core::Vec4f(0, 1, 0, 0));
+						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
+						localTx = rot * localTx;
+
+						const float SIZE = 0.5f;
+						const float LENGTH = 3.f;
+						float screenScale = ComputeConstantScreenSizeScale(worldTx.GetT());
+
+						float realSize = screenScale * SIZE;
+						float realLength = LENGTH * screenScale;
+
+						Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realSize, realLength, realSize, 0));
+
+						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
+
+						{
+							uint32_t index = renderables.GetSize();
+							renderables.PushBack(Renderable());
+							Renderable& renderable = renderables[index];
+
+							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
+							renderable.m_pMaterial = nullptr;
+							renderable.m_worldTx = proxyWorldTx;
+							renderable.m_primitiveMesh = true;
+							renderable.m_pOwner = pGo;
+						}
+
+						{
+							uint32_t index = renderables.GetSize();
+							renderables.PushBack(Renderable());
+							Renderable& renderable = renderables[index];
+
+							float arrowTipScaleValue = 1.f * screenScale;
+
+							Core::Mat44f arrowTipOffset = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, -realLength * 0.5f - (arrowTipScaleValue * 0.5f), 0, 1));
+							Core::Mat44f arrowTipRotation = Core::Mat44f::CreateRotationMatrixFromEulerAngles(Core::Vec4f(Core::PI, 0, 0, 0));
+							Core::Mat44f arrowTipScale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(arrowTipScaleValue, arrowTipScaleValue, arrowTipScaleValue, 0));
+
+							renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
+							renderable.m_pMaterial = nullptr;
+							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
+							renderable.m_primitiveMesh = true;
+							renderable.m_pOwner = pGo;
+						}
+					}
+				}
+				else if (const Systems::PointLightComponent* pLight = pComponent->Cast<Systems::PointLightComponent>())
+				{
+					uint32_t index = lights.GetSize();
+					lights.Resize(index + 1);
+					Rendering::Light* pGfxLight = &lights[index];
+
+					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
+					Core::Vec4f lightPosition = pLight->GetPosition();
+					lightPosition.Set(3, 1);
+					Core::Vec4f worldPosition = lightPosition * worldTx;
+
+					Core::Float3 position(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ());
+					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
+					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
+					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
+					pGfxLight->MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
+
+					{
+						uint32_t index = renderables.GetSize();
+						renderables.PushBack(Renderable());
+						Renderable& renderable = renderables[index];
+
+						const float SIZE = 0.5f;
+						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
+						Core::Sqt sqt;
+						sqt.SetTranslation(worldPosition);
+						sqt.SetScale(Core::Vec4f(realSize, realSize, realSize, 0));
+						Core::Mat44f proxyWorldTx = Core::Mat44f::CreateTransformMatrix(sqt);
+						renderable.m_pMesh = Rendering::RenderModule::Get().m_pSphereMesh;
+						renderable.m_pMaterial = nullptr;
+						renderable.m_worldTx = proxyWorldTx;
+						renderable.m_primitiveMesh = true;
+						renderable.m_pOwner = pGo;
+					}
+				}
+				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
+				{
+					uint32_t index = lights.GetSize();
+					lights.Resize(index + 1);
+					Rendering::Light* pGfxLight = &lights[index];
+
+					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
+					Core::Vec4f lightPosition = pLight->GetPosition();
+					lightPosition.Set(3, 1);
+					Core::Vec4f worldPosition = lightPosition * worldTx;
+
+					Core::Vec4f localDirection = pLight->GetDirection();
+					localDirection.Set(3, 0);
+					Core::Vec4f worldDirection = localDirection * worldTx;
+
+					Core::Float3 position(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ());
+					Core::Float3 direction(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ());
+					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
+					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
+					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
+					pGfxLight->MakeSpotLight(position, direction, ambient, diffuse, specular,
+						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(),
+						pLight->GetCutOff(), pLight->GetOuterCutOff());
+
+					{
+						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
+						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
+						localTx = rot * localTx;
+
+						Core::Vec4f x = localTx.GetX();
+						x.Normalize();
+						Core::Vec4f y = localTx.GetY();
+						y.Normalize();
+						Core::Vec4f z = localTx.GetZ();
+						z.Normalize();
+
+						const float SIZE = 1.f;
+						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
+						
+						Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realSize, realSize, realSize, 0));
+						
+						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
+
+						uint32_t index = renderables.GetSize();
+						renderables.PushBack(Renderable());
+						Renderable& renderable = renderables[index];
+
+						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
+						renderable.m_pMaterial = nullptr;
+						renderable.m_worldTx = proxyWorldTx;
+						renderable.m_primitiveMesh = true;
+						renderable.m_pOwner = pGo;
+					}
+
+				}
+				else if (const Systems::StaticMeshComponent* pStaticMesh = pComponent->Cast<Systems::StaticMeshComponent>())
+				{
+					const Rendering::Mesh* pMesh = nullptr;
+					const Systems::MaterialInstanceAsset* pMaterial = nullptr;
+					if (pStaticMesh->GetMesh() && pStaticMesh->GetMesh()->GetRenderingMesh())
+						pMesh = pStaticMesh->GetMesh()->GetRenderingMesh();
+
+					pMaterial = pStaticMesh->GetMaterialInstance();
+
+					if (pMesh && pMaterial)
+					{
+						uint32_t index = renderables.GetSize();
+						renderables.PushBack(Renderable());
+						Renderable& renderable = renderables[index];
+
+						renderable.m_pMesh = pMesh;
+						renderable.m_pMaterial = pMaterial;
+						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
+						renderable.m_primitiveMesh = false;
+						renderable.m_pOwner = pGo;
+					}
+				}
+			}
+		}
+	}
+
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	{
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+		Rendering::Camera* pCamera = renderModule.GetCamera();
+
+		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
+		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
+
+		DirectX::XMFLOAT3 cameraPosFloat3;
+		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
+		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+
+		//for now add all lights
+		Rendering::LightsCBuffer lightsConstBuffer;
+		uint32_t lightCount = Rendering::LightsCBuffer::MAX_LIGHT_COUNT;
+		if (lightCount > lights.GetSize())
+			lightCount = lights.GetSize();
+
+		for (uint32_t ii = 0; ii < lightCount; ++ii)
+		{
+			Rendering::Light* pLight = lightsConstBuffer.AddLight();
+			*pLight = lights[ii];
+		}
+
+		//now render all renderables
+		for (const Renderable& renderable : renderables)
+		{
+			if (renderable.m_primitiveMesh)
+			{
+				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx.m_matrix, Core::Float4(1, 1, 1, 1));
+			}
+			else
+			{
+				DirectX::XMMATRIX wvp = proj * (view * renderable.m_worldTx.m_matrix);
+
+				if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
+				{
+					Rendering::PerObjectCBuffer perObjectData(renderable.m_worldTx.m_matrix);
+
+					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
+
+					renderModule.RenderMesh(*renderable.m_pMesh);
+				}
+			}
+		}
+	}
+
+	void LevelEditorViewportWidget::RenderView_ObjectId(Core::Array<Renderable>& renderables)
+	{
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+
+		ConstBufferPerFrame perFrame;
+		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix();
+		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix();
+
+		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		Rendering::PipelineStateId objectIdsPsoId = widgetMgr.GetObjectIdsPsoId();
+		Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(objectIdsPsoId);
+		renderModule.BindMaterial(*pPso);
+
+		renderModule.SetConstantBuffer(1, sizeof(ConstBufferPerFrame), &perFrame, 0);
+
+		uint32_t objectIdCounter = 0;
+
+		for (const Renderable& renderable : renderables)
+		{
+			++objectIdCounter;
+
+			const Core::Mat44f& world = renderable.m_worldTx;
+			ConstBufferPerObject perObject;
+			perObject.m_world = world;
+			perObject.m_objectId[3] = (objectIdCounter & 0xFF000000) >> 24;
+			perObject.m_objectId[2] = (objectIdCounter & 0x00FF0000) >> 16;
+			perObject.m_objectId[1] = (objectIdCounter & 0x0000FF00) >> 8;
+			perObject.m_objectId[0] = (objectIdCounter & 0x000000FF);
+
+			m_objectIdToGuid[objectIdCounter] = renderable.m_pOwner->GetGuid();
+
+			renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
+
+			const Rendering::Mesh* pRenderingMesh = renderable.m_pMesh;
+			renderModule.RenderMesh(*pRenderingMesh);
+		}
+	}
+
+	float LevelEditorViewportWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
+	{
+		const LevelEditorModule& levelEditor = LevelEditorModule::Get();
+		const Core::Mat44f& camera = levelEditor.GetCameraWs();
+		float fov = levelEditor.GetFovRad();
+
+		Core::Vec4f dt = camera.GetT() - objectPosition;
+		float distance = dt.Length();
+		float worldSize = (2 * tanf(fov * 0.5f)) * distance;
+		const float SCREEN_RATIO = 0.025f;
+		float size = SCREEN_RATIO * worldSize;
+		return size;
 	}
 }

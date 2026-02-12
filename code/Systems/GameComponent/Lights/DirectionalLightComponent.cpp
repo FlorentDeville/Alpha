@@ -4,7 +4,10 @@
 
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 
+#include "Core/Math/Vectors.h"
+
 #include "Rendering/RenderModule.h"
+
 #include "Systems/Objects/GameObject.h"
 
 namespace Systems
@@ -25,7 +28,7 @@ namespace Systems
 		const GameObject* pOwner = GetOwner();
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
-		DirectX::XMFLOAT4 colorWhite(m_ambient.GetX(), m_ambient.GetY(), m_ambient.GetZ(), m_ambient.GetW());
+		Core::Float4 colorWhite(m_ambient.GetX(), m_ambient.GetY(), m_ambient.GetZ(), m_ambient.GetW());
 
 		const Core::Mat44f& worldTx = pOwner->GetTransform().GetWorldTx();
 

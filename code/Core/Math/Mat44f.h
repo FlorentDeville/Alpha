@@ -47,6 +47,7 @@ namespace Core
 		static Mat44f CreateScaleMatrix(const Vec4f& scale);
 		static Mat44f CreateTransformMatrix(const Sqt& sqt);
 		static Mat44f CreateIdentity();
+		static Mat44f CreateLookAt(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up);
 
 		static Mat44f s_identity;
 

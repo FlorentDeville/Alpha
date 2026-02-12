@@ -17,6 +17,7 @@
 
 namespace Core
 {
+	class Float4;
 	class Vec4f;
 }
 
@@ -82,8 +83,8 @@ namespace Editors
 		void RenderTranslationManipulator();
 		void RenderScaleManipulator();
 
-		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color);
-		void RenderScaleSingleAxis(const DirectX::XMMATRIX& txWs, const DirectX::XMFLOAT4& color) const;
+		void RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const Core::Float4& color);
+		void RenderScaleSingleAxis(const DirectX::XMMATRIX& txWs, const Core::Float4& color) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 
