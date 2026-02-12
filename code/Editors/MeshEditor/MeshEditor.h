@@ -11,7 +11,6 @@
 #include "Rendering/Material/MaterialId.h"
 #include "Rendering/Texture/TextureId.h"
 
-#include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
@@ -53,8 +52,6 @@ namespace Editors
 	{
 	public:
 		Widgets::Widget* pParent;
-		std::string m_dataMeshPath;
-		std::string m_dataMaterialPath;
 		std::string m_rawBlenderPath;
 		std::string m_editorScriptsPath;
 		std::string m_blender;

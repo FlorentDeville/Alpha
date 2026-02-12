@@ -27,14 +27,12 @@
 
 #include "Resources/ResourcesMgr.h"
 
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
-#include "Systems/Loader.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
 #include "Widgets/Button.h"

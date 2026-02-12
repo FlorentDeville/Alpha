@@ -12,10 +12,8 @@
 #include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
-#include "Systems/Loader.h"
 #include "Systems/Objects/GameObject.h"
 
 //#pragma optimize("", off)
@@ -239,52 +237,6 @@ namespace Editors
 	float LevelEditorModule::GetFovRad() const
 	{
 		return m_fovRad;
-	}
-
-	Rendering::MeshId LevelEditorModule::LoadMesh(Systems::AssetId id)
-	{
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		Systems::Loader& loader = Systems::Loader::Get();
-		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
-		
-		const Systems::Asset* pAsset = assetMgr.GetAsset(id);
-		if (!pAsset)
-			return Rendering::MeshId::INVALID;
-
-		Rendering::Mesh* pMesh = nullptr;
-		Rendering::MeshId meshId;
-		
-		meshMgr.CreateMesh(&pMesh, meshId);
-		bool res = loader.LoadMesh(pAsset->GetPath(), *pMesh);
-		if (!res)
-			return Rendering::MeshId::INVALID;
-
-		m_assetIdToMeshId[pAsset->GetId()] = meshId;
-
-		return meshId;
-	}
-
-	Rendering::MaterialId LevelEditorModule::LoadMaterial(Systems::AssetId id)
-	{
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		Systems::Loader& loader = Systems::Loader::Get();
-		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-
-		const Systems::Asset* pAsset = assetMgr.GetAsset(id);
-		if (!pAsset)
-			return Rendering::MaterialId::INVALID;
-
-		Rendering::Material* pMaterial = nullptr;
-		Rendering::MaterialId materialId;
-
-		materialMgr.CreateMaterial(&pMaterial, materialId);
-		bool res = loader.LoadMaterial(pAsset->GetPath(), *pMaterial);
-		if (!res)
-			return Rendering::MaterialId::INVALID;
-
-		m_assetIdToMaterialId[pAsset->GetId()] = materialId;
-
-		return materialId;
 	}
 
 	bool LevelEditorModule::IsSelected(const Core::Guid& nodeGuid) const

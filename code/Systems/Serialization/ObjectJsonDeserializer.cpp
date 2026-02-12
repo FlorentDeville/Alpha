@@ -12,7 +12,6 @@
 #include "Core/Math/Vec4f.h"
 #include "Core/String/BytesToHexa.h"
 
-#include "Systems/Assets/AssetId.h"
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/Object.h"
@@ -154,19 +153,6 @@ namespace Systems
 		}
 		break;
 
-		case SID("Systems::AssetId"):
-		{
-			Systems::AssetId* pValue = reinterpret_cast<Systems::AssetId*>(ptr);
-
-			std::string valueStr = jsonFieldValue.GetValueAsString();
-			std::stringstream ss(valueStr);
-			size_t value = 0;
-			ss >> value;
-
-			new (pValue) Systems::AssetId(value);
-		}
-		break;
-
 		case SID("Systems::NewAssetId"):
 		{
 			Systems::NewAssetId* pValue = reinterpret_cast<Systems::NewAssetId*>(ptr);
@@ -174,7 +160,7 @@ namespace Systems
 			std::string valueStr = jsonFieldValue.GetValueAsString();
 			uint64_t value = Core::HexaToUint64(valueStr);
 
-			new (pValue) Systems::AssetId(value);
+			new (pValue) Systems::NewAssetId(value);
 		}
 		break;
 

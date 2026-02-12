@@ -11,8 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets\Asset.h" />
-    <ClInclude Include="Assets\AssetId.h" />
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
@@ -29,7 +27,6 @@
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRef.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRefRaw.h" />
-    <ClInclude Include="Assets\AssetType.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
     <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
     <ClInclude Include="Assets\NewAssetId.h" />
@@ -40,7 +37,6 @@
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
-    <ClInclude Include="Loader.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="Objects\GameObject.h" />
@@ -64,8 +60,6 @@
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Assets\Asset.cpp" />
-    <ClCompile Include="Assets\AssetId.cpp" />
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
@@ -75,7 +69,6 @@
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetRef\HardAssetRefRaw.cpp" />
-    <ClCompile Include="Assets\AssetType.cpp" />
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
     <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />
     <ClCompile Include="Assets\NewAssetId.cpp" />
@@ -88,7 +81,6 @@
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
-    <ClCompile Include="Loader.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />

@@ -35,7 +35,6 @@
     <ClInclude Include="MaterialEditor\MaterialEditor.h" />
     <ClInclude Include="MaterialEditor\MaterialEditorModule.h" />
     <ClInclude Include="MaterialEditor\MaterialListModel.h" />
-    <ClInclude Include="Widgets\AssetId\AssetIdWidget.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Dialog\AssetDialog.h" />
     <ClInclude Include="Widgets\Dialog\ClassSelectionDialog.h" />
@@ -84,7 +83,6 @@
     <ClCompile Include="MaterialEditor\MaterialEditor.cpp" />
     <ClCompile Include="MaterialEditor\MaterialEditorModule.cpp" />
     <ClCompile Include="MaterialEditor\MaterialListModel.cpp" />
-    <ClCompile Include="Widgets\AssetId\AssetIdWidget.cpp" />
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\ClassSelectionDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp" />

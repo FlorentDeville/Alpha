@@ -8,8 +8,6 @@
 
 #include "Widgets/ModalWindow.h"
 
-#include "Systems/Assets/AssetType.h"
-
 namespace Systems
 {
 	class NewAssetId;

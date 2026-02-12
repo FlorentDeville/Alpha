@@ -52,11 +52,9 @@
 
 #include "Resources/ResourcesMgr.h"
 
-#include "Systems/Assets/Asset.h"
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Container/ContainerMgr.h"
-#include "Systems/Loader.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
 #include "Systems/Reflection/ReflectionMgr.h"
@@ -561,8 +559,6 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::MeshEditorParameter meshEditorParameter;
 	meshEditorParameter.pParent = pMiddleTabContainer;
-	meshEditorParameter.m_dataMaterialPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMaterial);
-	meshEditorParameter.m_dataMeshPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMesh);
 	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
 	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
 	meshEditorParameter.m_blender = configuration.m_blender;
@@ -668,14 +664,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	containerMgr.Init(containerRoot);
 
-	Systems::Loader& loader = Systems::Loader::InitSingleton();
-	Systems::LoaderParameter loaderParameter;
-	loaderParameter.m_dataMaterialPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMaterial);
-	loaderParameter.m_dataMeshPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kMesh);
-	loaderParameter.m_dataShaderPath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kShader);
-	loaderParameter.m_dataTexturePath = configuration.m_dataRoot + "\\" + Systems::GetAssetFolder(Systems::kTexture);
-	loader.Init(loaderParameter);
-
 	DirectX::XMUINT2 windowResolution(1080, 789);
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
@@ -764,7 +752,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	delete g_pWindow;
 
-	Systems::Loader::ReleaseSingleton();
 	containerMgr.Shutdown();
 	Systems::ContainerMgr::ReleaseSingleton();
 	Systems::AssetMgr::ReleaseSingleton();
