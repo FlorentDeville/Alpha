@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Color/Color.h"
 #include "Core/Math/Vec4f.h"
 #include "Systems/Objects/GameComponent.h"
 
@@ -16,19 +17,17 @@ namespace Systems
 		DirectionalLightComponent();
 		~DirectionalLightComponent();
 
-		void Render() override;
-
 		const Core::Vec4f& GetDirection() const;
-		const Core::Vec4f& GetAmbient() const;
-		const Core::Vec4f& GetDiffuse() const;
-		const Core::Vec4f& GetSpecular() const;
+		const Core::Color& GetAmbient() const;
+		const Core::Color& GetDiffuse() const;
+		const Core::Color& GetSpecular() const;
 
 	private:
 		Core::Vec4f m_direction;
 
-		Core::Vec4f m_ambient;
-		Core::Vec4f m_diffuse;
-		Core::Vec4f m_specular;
+		Core::Color m_ambient;
+		Core::Color m_diffuse;
+		Core::Color m_specular;
 
 		START_REFLECTION(Systems::DirectionalLightComponent)
 			ADD_BASETYPE(Systems::GameComponent)
