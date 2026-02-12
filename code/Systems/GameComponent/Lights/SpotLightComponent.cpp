@@ -13,9 +13,9 @@ namespace Systems
 		: GameComponent()
 		, m_position(0, 0, 0, 1)
 		, m_direction(0, -1, 0, 0)
-		, m_ambient(1, 1, 1, 1)
-		, m_diffuse(1, 1, 1, 1)
-		, m_specular(1, 1, 1, 1)
+		, m_ambient(1, 1, 1)
+		, m_diffuse(1, 1, 1)
+		, m_specular(1, 1, 1)
 		, m_constant(1)
 		, m_linear(0.22f)
 		, m_quadratic(0.2f)
@@ -38,17 +38,17 @@ namespace Systems
 		return m_direction;
 	}
 
-	const Core::Vec4f& SpotLightComponent::GetAmbient() const
+	const Core::Color& SpotLightComponent::GetAmbient() const
 	{
 		return m_ambient;
 	}
 
-	const Core::Vec4f& SpotLightComponent::GetDiffuse() const
+	const Core::Color& SpotLightComponent::GetDiffuse() const
 	{
 		return m_diffuse;
 	}
 
-	const Core::Vec4f& SpotLightComponent::GetSpecular() const
+	const Core::Color& SpotLightComponent::GetSpecular() const
 	{
 		return m_specular;
 	}

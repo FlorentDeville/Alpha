@@ -12,9 +12,9 @@ namespace Systems
 	PointLightComponent::PointLightComponent()
 		: GameComponent()
 		, m_position(0, 0, 0, 0)
-		, m_ambient(1, 1, 1, 1)
-		, m_diffuse(1, 1, 1, 1)
-		, m_specular(1, 1, 1, 1)
+		, m_ambient(1, 1, 1)
+		, m_diffuse(1, 1, 1)
+		, m_specular(1, 1, 1)
 		, m_constant(1)
 		, m_linear(0.22f)
 		, m_quadratic(0.2f)
@@ -31,17 +31,17 @@ namespace Systems
 		return m_position;
 	}
 
-	const Core::Vec4f& PointLightComponent::GetAmbient() const
+	const Core::Color& PointLightComponent::GetAmbient() const
 	{
 		return m_ambient;
 	}
 
-	const Core::Vec4f& PointLightComponent::GetDiffuse() const
+	const Core::Color& PointLightComponent::GetDiffuse() const
 	{
 		return m_diffuse;
 	}
 
-	const Core::Vec4f& PointLightComponent::GetSpecular() const
+	const Core::Color& PointLightComponent::GetSpecular() const
 	{
 		return m_specular;
 	}

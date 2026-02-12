@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Color/Color.h"
 #include "Core/Math/Vec4f.h"
 #include "Systems/Objects/GameComponent.h"
 
@@ -20,9 +21,9 @@ namespace Systems
 
 		const Core::Vec4f& GetPosition() const;
 
-		const Core::Vec4f& GetAmbient() const;
-		const Core::Vec4f& GetDiffuse() const;
-		const Core::Vec4f& GetSpecular() const;
+		const Core::Color& GetAmbient() const;
+		const Core::Color& GetDiffuse() const;
+		const Core::Color& GetSpecular() const;
 		
 		float GetConstant() const;
 		float GetLinear() const;
@@ -31,9 +32,9 @@ namespace Systems
 	private:
 		Core::Vec4f m_position;
 
-		Core::Vec4f m_ambient;
-		Core::Vec4f m_diffuse;
-		Core::Vec4f m_specular;
+		Core::Color m_ambient;
+		Core::Color m_diffuse;
+		Core::Color m_specular;
 
 		float m_constant;
 		float m_linear;
