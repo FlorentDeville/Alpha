@@ -44,6 +44,7 @@
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\AssetIdItem.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\ColorItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\FloatItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\GuidItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.h" />
@@ -92,6 +93,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\AssetIdItem.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\ColorItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\FloatItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\GuidItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\HardAssetRefItem.cpp" />

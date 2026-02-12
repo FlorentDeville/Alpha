@@ -145,6 +145,15 @@ namespace Widgets
 		
 	}
 
+	void SliderFloat::SetValue(float value)
+	{
+		if (m_currentValue != value)
+		{
+			m_currentValue = value;
+			m_onValidate(value);
+		}
+	}
+
 	int SliderFloat::CalculateSliderLocalX()
 	{
 		float range = m_maxValue - m_minValue;

@@ -294,9 +294,9 @@ namespace Editors
 					Core::Vec4f worldDirection = localDirection * worldTx;
 
 					Core::Float3 direction(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ());
-					Core::Float3 ambient(pLight->GetAmbient().GetX(), pLight->GetAmbient().GetY(), pLight->GetAmbient().GetZ());
-					Core::Float3 diffuse(pLight->GetDiffuse().GetX(), pLight->GetDiffuse().GetY(), pLight->GetDiffuse().GetZ());
-					Core::Float3 specular(pLight->GetSpecular().GetX(), pLight->GetSpecular().GetY(), pLight->GetSpecular().GetZ());
+					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
+					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
+					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
 					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
 
 					{

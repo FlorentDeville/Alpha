@@ -14,6 +14,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
@@ -306,6 +307,13 @@ namespace Editors
 		case SID("Core::Vec4f"):
 		{
 			Vec4fItem* pItem = new Vec4fItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
+		case SID("Core::Color"):
+		{
+			ColorItem* pItem = new ColorItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
 			return pItem;
 		}
 		break;
