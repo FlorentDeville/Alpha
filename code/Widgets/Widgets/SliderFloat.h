@@ -41,6 +41,9 @@ namespace Widgets
 		float m_maxValue;
 		float m_currentValue;
 
+		//m_currentValue as a string. Needs to be updated everytime m_currentValue is changed.
+		std::string m_strCurrentValue;
+
 		InputMode m_mode;
 
 		Container* m_pSlider;
@@ -68,5 +71,7 @@ namespace Widgets
 
 		void TextBox_OnValidate(const std::string& value);
 		void TextBox_OnFocusLost();
+
+		void RefreshStringCurrentValue();
 	};
 }
