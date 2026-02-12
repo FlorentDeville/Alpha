@@ -147,6 +147,9 @@ namespace Core
 
 		localUp = forward.Cross(right);
 
+		right.Normalize();
+		localUp.Normalize();
+
 		return Core::Mat44f(right, localUp, forward, pos);
 	}
 
