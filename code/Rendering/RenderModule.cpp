@@ -381,7 +381,7 @@ namespace Rendering
 		m_pRenderCommandList = nullptr;
 	}
 
-	void RenderModule::SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, void* pData, int32_t offset)
+	void RenderModule::SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, const void* pData, int32_t offset)
 	{
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(registerId, sizeInBytes / 4, pData, offset);
 	}
