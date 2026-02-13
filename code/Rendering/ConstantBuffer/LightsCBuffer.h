@@ -32,7 +32,7 @@ namespace Rendering
 			const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
 			float constant, float linear, float quadratic, float cutOff, float outerCutOff);
 
-	private:
+	//private:
 		Core::Float3 m_position;
 		float m_outerCutOff;
 

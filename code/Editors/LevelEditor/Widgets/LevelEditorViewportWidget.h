@@ -69,6 +69,8 @@ namespace Editors
 		
 		bool m_isPanning; //when the user is panning the camera	
 
+		Rendering::RenderTarget* m_pShadowRenderTarget;
+
 		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
 		Rendering::Texture* m_pReadbackBuffer;
 
@@ -83,6 +85,7 @@ namespace Editors
 
 		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
 		void RenderView_ObjectId(Core::Array<Renderable>& renderables);
+		void RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};

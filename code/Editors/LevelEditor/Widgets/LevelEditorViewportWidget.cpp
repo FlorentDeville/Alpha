@@ -79,6 +79,8 @@ namespace Editors
 		Rendering::TextureId readbackTextureId;
 		Rendering::TextureMgr::Get().CreateTexture(&m_pReadbackBuffer, readbackTextureId);
 		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
+
+		m_pShadowRenderTarget = new Rendering::RenderTarget(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, Core::Vec4f(0, 0, 0, 0));
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -201,6 +203,9 @@ namespace Editors
 
 			CreateRenderScene(allRenderables, allLights);
 		}
+
+		//first do the shadow maps
+		RenderView_ShadowMap(allRenderables, allLights);
 
 		//now render the level editor view of the scene.
 		m_pRenderTarget->BeginScene();
@@ -545,6 +550,54 @@ namespace Editors
 			const Rendering::Mesh* pRenderingMesh = renderable.m_pMesh;
 			renderModule.RenderMesh(*pRenderingMesh);
 		}
+	}
+
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	{
+		//find the directional light
+		const Rendering::Light* pDirLight = nullptr;
+		for (const Rendering::Light& light : lights)
+		{
+			if (light.m_type == Rendering::LightType::Directional)
+			{
+				pDirLight = &light;
+				break;
+			}
+		}
+
+		if (!pDirLight)
+			return;
+
+		Core::Vec4f lightDir(pDirLight->m_direction.x, pDirLight->m_direction.y, pDirLight->m_direction.z, 0);
+		Core::Mat44f lightView = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), lightDir, Core::Vec4f(0, 1, 0, 0));
+
+		//compute the orthogonal projection. To do this I should find all the objects in the frustum and create the orthogonal plane with it.
+		//for now just hardcode it for a box with its centre at the orign and a side of 20.
+		float side = 40;
+		Core::Mat44f lightProjection = Core::Mat44f::CreateOrtho(-side, side, -side, side, -side, side);
+
+		Core::Mat44f lightSpace = lightProjection * lightView;
+
+		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		Rendering::PipelineStateId shadowMapPsoId = widgetMgr.GetShadowMapPsoId();
+		Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapPsoId);
+
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+		renderModule.BindMaterial(*pPso);
+
+		//bind the light space matrix
+		renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &lightSpace, 0);
+
+		m_pShadowRenderTarget->BeginScene();
+
+		//loop through renderable
+		for (const Renderable& renderable : renderables)
+		{
+			renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
+			renderModule.RenderMesh(*renderable.m_pMesh);
+		}
+
+		m_pShadowRenderTarget->EndScene();
 	}
 
 	float LevelEditorViewportWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
