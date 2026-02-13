@@ -73,6 +73,15 @@
     <FxCompile Include="Shaders\object_ids.vs.hlsl" />
     <FxCompile Include="Shaders\object_ids.ps.hlsl" />
     <FxCompile Include="Shaders\object_ids.rs.hlsl" />
+    <FxCompile Include="Shaders\shadowmap.vs.hlsl">
+      <Filter>Source Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\shadowmap.rs.hlsl">
+      <Filter>Source Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\shadowmap.ps.hlsl">
+      <Filter>Source Files</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMgr.h" />
