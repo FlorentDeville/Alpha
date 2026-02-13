@@ -72,6 +72,9 @@
     <ClCompile Include="Guid\Guid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Color\Color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -159,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Math\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Color\Color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

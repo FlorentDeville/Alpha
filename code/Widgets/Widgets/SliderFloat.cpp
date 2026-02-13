@@ -25,6 +25,8 @@ namespace Widgets
 		, m_mouseDragPreviousX(0)
 		, m_mode(Slider)
 	{
+		RefreshStringCurrentValue();
+
 		m_defaultStyle.SetBackgroundColor(Widgets::Color(0.22f, 0.22f, 0.22f));
 		m_defaultStyle.SetBorderColor(Widgets::Color(0.26f, 0.26f, 0.26f));
 		m_defaultStyle.SetShowBorder(true);
@@ -54,7 +56,7 @@ namespace Widgets
 
 		m_pTextbox = new TextBox();
 		m_pTextbox->Disable();
-		m_pTextbox->SetText(std::to_string(m_currentValue));
+		m_pTextbox->SetText(m_strCurrentValue);
 		m_pTextbox->SetSize(Core::UInt2(100, 20));
 		m_pTextbox->SetTextAlignment(TextBox::Center);
 		m_pTextbox->OnValidate([this](const std::string& strValue) { TextBox_OnValidate(strValue); });
@@ -99,6 +101,8 @@ namespace Widgets
 			m_pSlider->ReComputePosition(m_absPos, m_size);
 
 			m_mouseDragPreviousX = currentMousePosition.x;
+
+			RefreshStringCurrentValue();
 
 			m_onValidate(m_currentValue);
 		}
@@ -145,6 +149,23 @@ namespace Widgets
 		
 	}
 
+	void SliderFloat::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
+	{
+		m_pSlider->SetX(CalculateSliderLocalX());
+		m_pTextbox->SetSize(m_size);
+		Widget::Resize(parentAbsPos, parentSize);
+	}
+
+	void SliderFloat::SetValue(float value)
+	{
+		if (m_currentValue != value)
+		{
+			m_currentValue = value;
+			RefreshStringCurrentValue();
+			m_onValidate(value);
+		}
+	}
+
 	int SliderFloat::CalculateSliderLocalX()
 	{
 		float range = m_maxValue - m_minValue;
@@ -186,19 +207,15 @@ namespace Widgets
 	void SliderFloat::DrawSliderText(const Core::Float2& windowSize, const D3D12_RECT& localScissor)
 	{
 		//All of this should be cached
-		std::string strValue = std::to_string(m_currentValue);
-
 		const Rendering::Font* pFont = Rendering::FontMgr::Get().GetFont(WidgetMgr::Get().GetUIFontId());
 		DirectX::XMUINT2 textRect;
-		pFont->ComputeRect(strValue, textRect);
+		pFont->ComputeRect(m_strCurrentValue, textRect);
 		// until here at least
 
-		float fontScale = 1.f;
-		const int textXOffset = 5;
-		const int textYOffset = 0;
+		const float fontScale = 1.f;
 
 		//center the text
-		float x = (float)m_absPos.x + m_size.x * 0.5f - textRect.x * 0.5f;
+		float x = (float)m_absPos.x + m_size.x * 0.5f - static_cast<float>(ceil(textRect.x * 0.5f)); // Us ceil here cause if the text is small, half of it could be too small or 0.
 		float y = (float)m_absPos.y + m_size.y * 0.5f - textRect.y * 0.5f;
 		DirectX::XMFLOAT3 uiPos(x, y, (float)m_absPos.z - 2);
 
@@ -207,7 +224,7 @@ namespace Widgets
 
 		int32_t bottom = static_cast<int32_t>(y) + textRect.y;
 		if (bottom <= localScissor.bottom)
-			Rendering::RenderModule::Get().PrepareRenderText(strValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissorText, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
+			Rendering::RenderModule::Get().PrepareRenderText(m_strCurrentValue, WidgetMgr::Get().GetUIFontId(), uiPos, DirectX::XMFLOAT2(fontScale, fontScale), localScissorText, Widget::NEAR_CAMERA_PLANE, Widget::FAR_CAMERA_PLANE);
 	}
 
 	void SliderFloat::TransitionTextToSlider(bool valueChanged)
@@ -218,6 +235,7 @@ namespace Widgets
 
 		if (valueChanged)
 		{
+			RefreshStringCurrentValue();
 			m_pSlider->SetX(CalculateSliderLocalX());
 			m_pSlider->ReComputePosition(m_absPos, m_size);
 			m_onValidate(m_currentValue);
@@ -228,7 +246,7 @@ namespace Widgets
 	{
 		m_pTextbox->Enable();
 		m_pTextbox->ReComputePosition(m_absPos, m_size);
-		m_pTextbox->SetText(std::to_string(m_currentValue));
+		m_pTextbox->SetText(m_strCurrentValue);
 		m_pSlider->Disable();
 		m_mode = Text;
 	}
@@ -282,5 +300,14 @@ namespace Widgets
 			TransitionTextToSlider(false);
 			m_hover = false;
 		}
+	}
+
+	void SliderFloat::RefreshStringCurrentValue()
+	{
+		const int BUFFER_SIZE = 64;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		sprintf_s(buffer, BUFFER_SIZE, "%g", m_currentValue);
+
+		m_strCurrentValue = buffer;
 	}
 }

@@ -22,6 +22,9 @@ namespace Widgets
 
 		void Update(uint64_t dt) override;
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
+		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
+
+		void SetValue(float value);
 
 		EVENT_DECL(Validate, void(const float value))
 
@@ -38,6 +41,9 @@ namespace Widgets
 		float m_minValue;
 		float m_maxValue;
 		float m_currentValue;
+
+		//m_currentValue as a string. Needs to be updated everytime m_currentValue is changed.
+		std::string m_strCurrentValue;
 
 		InputMode m_mode;
 
@@ -66,5 +72,7 @@ namespace Widgets
 
 		void TextBox_OnValidate(const std::string& value);
 		void TextBox_OnFocusLost();
+
+		void RefreshStringCurrentValue();
 	};
 }
