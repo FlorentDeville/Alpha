@@ -153,6 +153,20 @@ namespace Core
 		return Core::Mat44f(right, localUp, forward, pos);
 	}
 
+	Mat44f Mat44f::CreateView(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up)
+	{
+		Core::Mat44f view = CreateLookAt(pos, dir, up);
+		view.Transpose();
+		return view;
+	}
+
+	Mat44f Mat44f::CreateOrtho(float left, float right, float bottom, float top, float near, float far)
+	{
+		Core::Mat44f proj;
+		proj.m_matrix = DirectX::XMMatrixOrthographicOffCenterLH(left, right, bottom, top, near, far);
+		return proj;
+	}
+
 	Mat44f::Mat44f(const DirectX::XMMATRIX& matrix)
 		: m_matrix(matrix)
 	{}

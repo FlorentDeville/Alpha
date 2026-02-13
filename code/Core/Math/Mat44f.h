@@ -48,6 +48,8 @@ namespace Core
 		static Mat44f CreateTransformMatrix(const Sqt& sqt);
 		static Mat44f CreateIdentity();
 		static Mat44f CreateLookAt(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up);
+		static Mat44f CreateView(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up); //Inverse of the LookAt
+		static Mat44f CreateOrtho(float left, float right, float bottom, float top, float nearZ, float farZ);
 
 		static Mat44f s_identity;
 
