@@ -4,7 +4,9 @@
 
 #include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
 
+#include "Core/Collections/Array.h"
 #include "Core/Log/LogModule.h"
+
 #include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
 #include "Editors/MaterialEditor/Compiler/RootSignatureDescription.h"
 #include "OsWin/Process.h"
@@ -15,11 +17,29 @@
 
 namespace Editors
 {
-	struct RootParameterDescription
+	struct BoundResourceConstBuffer
 	{
-		D3D12_ROOT_PARAMETER m_dx12RootParameter;
-		std::string name;
-		int index;
+		D3D12_ROOT_PARAMETER m_dx12Parameter; //parameter used to create the root signature
+		std::string m_name;
+	};
+
+	struct BoundResourceTexture
+	{
+		D3D12_ROOT_PARAMETER m_dx12Parameter; //parameter used to create the root signature
+		std::string m_name;
+	};
+
+	struct BoundResourceSample
+	{
+		D3D12_STATIC_SAMPLER_DESC m_dx12Parameter; //used to create the sample in the root signature
+		std::string m_name;
+	};
+
+	struct RootSigBoundResources
+	{
+		Core::Array<BoundResourceConstBuffer> m_constBuffer;
+		Core::Array<BoundResourceTexture> m_texture;
+		Core::Array<BoundResourceSample> m_sampleParameters;
 	};
 
 	enum SHADER_TYPE
@@ -30,8 +50,7 @@ namespace Editors
 		Count
 	};
 
-	bool GetRootSignatureParameters(ID3D12ShaderReflection* pReflector, std::vector<RootParameterDescription>& rootParameters,
-		std::vector<D3D12_STATIC_SAMPLER_DESC>& sampleParameters, SHADER_TYPE shaderType)
+	bool GetRootSignatureParameters(ID3D12ShaderReflection* pReflector, RootSigBoundResources& boundResources, SHADER_TYPE shaderType)
 	{
 		D3D12_SHADER_DESC shaderDesc;
 		HRESULT res = pReflector->GetDesc(&shaderDesc);
@@ -49,15 +68,10 @@ namespace Editors
 			{
 			case D3D_SIT_CBUFFER:
 			{
-				RootParameterDescription rootParamDesc;
-				rootParamDesc.name = bind.Name;
-				rootParamDesc.index = static_cast<int>(rootParameters.size());
+				BoundResourceConstBuffer constBuffer;
+				constBuffer.m_name = bind.Name;
 
-				ID3D12ShaderReflectionConstantBuffer* pCBuffer = pReflector->GetConstantBufferByName(bind.Name);
-				D3D12_SHADER_BUFFER_DESC bufferDesc;
-				pCBuffer->GetDesc(&bufferDesc);
-
-				D3D12_ROOT_PARAMETER& rootParameter = rootParamDesc.m_dx12RootParameter;
+				D3D12_ROOT_PARAMETER& rootParameter = constBuffer.m_dx12Parameter;
 				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
 				rootParameter.Descriptor.RegisterSpace = bind.Space;
@@ -67,53 +81,53 @@ namespace Editors
 				else if (shaderType == SHADER_TYPE::Vertex)
 					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-				rootParameters.push_back(rootParamDesc);
+				boundResources.m_constBuffer.PushBack(constBuffer);
 			}
-
-				break;
+			break;
 
 			case D3D_SIT_TEXTURE:
 			{
-				RootParameterDescription rootParamDesc;
-				rootParamDesc.name = bind.Name;
-				rootParamDesc.index = static_cast<int>(rootParameters.size());
+				BoundResourceTexture boundResource;
+				boundResource.m_name = bind.Name;
 
-				ID3D12ShaderReflectionConstantBuffer* pCBuffer = pReflector->GetConstantBufferByName(bind.Name);
-				D3D12_SHADER_BUFFER_DESC bufferDesc;
-				pCBuffer->GetDesc(&bufferDesc);
+				D3D12_DESCRIPTOR_RANGE* pDx12Range = new D3D12_DESCRIPTOR_RANGE();
+				pDx12Range->RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+				pDx12Range->NumDescriptors = bind.BindCount; // Only one texture
+				pDx12Range->BaseShaderRegister = bind.BindPoint; // The register in the shader (e.g., t0)
+				pDx12Range->RegisterSpace = 0;
+				pDx12Range->OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-				D3D12_ROOT_PARAMETER& rootParameter = rootParamDesc.m_dx12RootParameter;
-				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+				boundResource.m_dx12Parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+				boundResource.m_dx12Parameter.DescriptorTable.NumDescriptorRanges = 1;
+				boundResource.m_dx12Parameter.DescriptorTable.pDescriptorRanges = pDx12Range;
 
-				//this might need to be a descriptor table
-				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
-				rootParameter.Descriptor.RegisterSpace = bind.Space;
 				if (shaderType == SHADER_TYPE::Pixel)
-					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+					boundResource.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 				else if (shaderType == SHADER_TYPE::Vertex)
-					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+					boundResource.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-				rootParameters.push_back(rootParamDesc);
+				boundResources.m_texture.PushBack(boundResource);
 			}
 				break;
 
 			case D3D_SIT_SAMPLER:
 			{
-				D3D12_STATIC_SAMPLER_DESC sampler;
-				memset(&sampler, 0, sizeof(D3D12_STATIC_SAMPLER_DESC));
+				BoundResourceSample boundResourceSample;
+	
+				memset(&boundResourceSample.m_dx12Parameter, 0, sizeof(D3D12_STATIC_SAMPLER_DESC));
 
-				sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-				sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-				sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-				sampler.RegisterSpace = bind.Space;
-				sampler.ShaderRegister = bind.BindPoint;
+				boundResourceSample.m_dx12Parameter.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+				boundResourceSample.m_dx12Parameter.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+				boundResourceSample.m_dx12Parameter.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+				boundResourceSample.m_dx12Parameter.RegisterSpace = bind.Space;
+				boundResourceSample.m_dx12Parameter.ShaderRegister = bind.BindPoint;
 
 				if (shaderType == SHADER_TYPE::Pixel)
-					sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+					boundResourceSample.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 				else if(shaderType == SHADER_TYPE::Vertex)
-					sampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+					boundResourceSample.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-				sampleParameters.push_back(sampler);
+				boundResources.m_sampleParameters.PushBack(boundResourceSample);
 			}
 			break;
 
@@ -292,8 +306,7 @@ namespace Editors
 
 	bool ShaderCompiler::GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, RootSignatureDescription& rs)
 	{
-		std::vector<RootParameterDescription> rootParametersDescription;
-		std::vector< D3D12_STATIC_SAMPLER_DESC> staticSamples;
+		RootSigBoundResources rootSigBoundResources;
 
 		//vertex shader
 		{
@@ -302,7 +315,7 @@ namespace Editors
 			if (res != S_OK)
 				return false;
 
-			GetRootSignatureParameters(pReflector, rootParametersDescription, staticSamples, SHADER_TYPE::Vertex);
+			GetRootSignatureParameters(pReflector, rootSigBoundResources, SHADER_TYPE::Vertex);
 			pReflector->Release();
 		}
 
@@ -313,7 +326,7 @@ namespace Editors
 			if (res != S_OK)
 				return false;
 
-			GetRootSignatureParameters(pReflector, rootParametersDescription, staticSamples, SHADER_TYPE::Pixel);
+			GetRootSignatureParameters(pReflector, rootSigBoundResources, SHADER_TYPE::Pixel);
 			pReflector->Release();
 		}
 
@@ -324,25 +337,35 @@ namespace Editors
 		rootSignatureDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 		rootSignatureDesc.Flags |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-		rootSignatureDesc.NumParameters = static_cast<UINT>(rootParametersDescription.size());
+		rootSignatureDesc.NumParameters = static_cast<UINT>(rootSigBoundResources.m_constBuffer.GetSize() + rootSigBoundResources.m_texture.GetSize());
 
-		std::vector<D3D12_ROOT_PARAMETER> rootParameters;
-		rootParameters.reserve(rootParametersDescription.size());
-		rs.m_parameters.reserve(rootParametersDescription.size());
-		for (const RootParameterDescription& desc : rootParametersDescription)
+		Core::Array<D3D12_ROOT_PARAMETER> rootParameters;
+		rootParameters.Reserve(rootSignatureDesc.NumParameters);
+		for (const BoundResourceConstBuffer& boundResource : rootSigBoundResources.m_constBuffer)
 		{
-			RootSigParameterIndex paramIndex;
-			paramIndex.m_cbufferName = desc.name;
-			paramIndex.m_rootSigParamIndex = static_cast<int>(rootParameters.size());
-			rs.m_parameters.push_back(paramIndex);
+			RootSigParameterIndex cBuffer;
+			cBuffer.m_cbufferName = boundResource.m_name;
+			cBuffer.m_rootSigParamIndex = rootParameters.GetSize(); //root param index is different from the bind point (t0, b0). It is the param index in the root signature
+			rs.m_parameters.push_back(cBuffer);
 
-			rootParameters.push_back(desc.m_dx12RootParameter);
+			rootParameters.PushBack(boundResource.m_dx12Parameter);
 		}
+			
+		for (const BoundResourceTexture& boundResource : rootSigBoundResources.m_texture)
+		{
+			rootParameters.PushBack(boundResource.m_dx12Parameter);
+		}
+		
+		rootSignatureDesc.pParameters = rootParameters.GetData();
 
-		rootSignatureDesc.pParameters = rootParameters.data();
+		rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(rootSigBoundResources.m_texture.GetSize());
 
-		rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(staticSamples.size());
-		rootSignatureDesc.pStaticSamplers = staticSamples.data();
+		Core::Array<D3D12_STATIC_SAMPLER_DESC> dx12StaticSamplerArray;
+		dx12StaticSamplerArray.Reserve(rootSignatureDesc.NumStaticSamplers);
+		for (const BoundResourceSample& boundResource : rootSigBoundResources.m_sampleParameters)
+			dx12StaticSamplerArray.PushBack(boundResource.m_dx12Parameter);
+
+		rootSignatureDesc.pStaticSamplers = dx12StaticSamplerArray.GetData();
 
 		ID3DBlob* pBlob = nullptr;
 		ID3DBlob* pErrorBlob = nullptr;
@@ -358,6 +381,11 @@ namespace Editors
 		memcpy(rs.m_pRootSignatureBlob->GetData(), pBlob->GetBufferPointer(), pBlob->GetBufferSize());
 
 		pBlob->Release();
+	
+		for (BoundResourceTexture& boundResource : rootSigBoundResources.m_texture)
+		{
+			delete boundResource.m_dx12Parameter.DescriptorTable.pDescriptorRanges;
+		}
 
 		return true;
 	}
