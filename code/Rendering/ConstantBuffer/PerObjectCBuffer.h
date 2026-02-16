@@ -15,7 +15,7 @@ namespace Rendering
 	public:
 		PerObjectCBuffer(const DirectX::XMMATRIX& world);
 
-	private:
 		DirectX::XMMATRIX m_world;
+		DirectX::XMMATRIX m_lightSpaceMatrix;
 	};
 }

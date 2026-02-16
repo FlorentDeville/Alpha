@@ -80,7 +80,7 @@ namespace Editors
 		Rendering::TextureMgr::Get().CreateTexture(&m_pReadbackBuffer, readbackTextureId);
 		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
 
-		m_pShadowRenderTarget = new Rendering::RenderTarget(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, Core::Vec4f(0, 0, 0, 0));
+		m_pShadowRenderTarget = new Rendering::RenderTarget(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, Core::Vec4f(1, 1, 1, 1));
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -305,6 +305,19 @@ namespace Editors
 					pGfxLight->m_cbuffer.MakeDirectionalLight(direction, ambient, diffuse, specular);
 
 					{
+						Core::Vec4f lightDir = worldDirection;
+						Core::Mat44f lightView = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), lightDir, Core::Vec4f(0, 1, 0, 0));
+
+						//compute the orthogonal projection. To do this I should find all the objects in the frustum and create the orthogonal plane with it.
+						//for now just hardcode it for a box with its centre at the orign and a side of 20.
+						float side = 40;
+						Core::Mat44f lightProjection = Core::Mat44f::CreateOrtho(-side, side, -side, side, -side, side);
+
+						Core::Mat44f lightSpace = lightView * lightProjection;
+						pGfxLight->m_lightSpaceTX = lightSpace;
+					}
+
+					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(Core::Vec4f(0, 0, 0, 1), localDirection, Core::Vec4f(0, 1, 0, 0));
 						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
 						localTx = rot * localTx;
@@ -479,16 +492,24 @@ namespace Editors
 		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
+		//bind the shadow map
+		Rendering::Texture* pShadowMapTexture = m_pShadowRenderTarget->GetColorTexture();
+		pShadowMapTexture->TransitionToShaderResource();
+
 		//for now add all lights
 		Rendering::LightsArrayCBuffer lightsConstBuffer;
 		uint32_t lightCount = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
 		if (lightCount > lights.GetSize())
 			lightCount = lights.GetSize();
 
+		Core::Mat44f lightSpace;
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
 			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
 			*pLight = lights[ii].m_cbuffer;
+
+			if (pLight->m_type == Rendering::LightType::Directional)
+				lightSpace = lights[ii].m_lightSpaceTX;
 		}
 
 		//now render all renderables
@@ -505,8 +526,13 @@ namespace Editors
 				if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
 				{
 					Rendering::PerObjectCBuffer perObjectData(renderable.m_worldTx.m_matrix);
-
+					perObjectData.m_lightSpaceMatrix = lightSpace.m_matrix;
 					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
+
+					ID3D12DescriptorHeap* pSrv = pShadowMapTexture->GetSRV();
+					ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+					renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+					renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(4, pSrv->GetGPUDescriptorHandleForHeapStart());
 
 					renderModule.RenderMesh(*renderable.m_pMesh);
 				}
@@ -555,28 +581,18 @@ namespace Editors
 	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		//find the directional light
-		const Rendering::LightCBuffer* pDirLight = nullptr;
+		const Light* pDirLight = nullptr;
 		for (const Light& light : lights)
 		{
 			if (light.m_cbuffer.m_type == Rendering::LightType::Directional)
 			{
-				pDirLight = &light.m_cbuffer;
+				pDirLight = &light;
 				break;
 			}
 		}
 
 		if (!pDirLight)
 			return;
-
-		Core::Vec4f lightDir(pDirLight->m_direction.x, pDirLight->m_direction.y, pDirLight->m_direction.z, 0);
-		Core::Mat44f lightView = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), lightDir, Core::Vec4f(0, 1, 0, 0));
-
-		//compute the orthogonal projection. To do this I should find all the objects in the frustum and create the orthogonal plane with it.
-		//for now just hardcode it for a box with its centre at the orign and a side of 20.
-		float side = 40;
-		Core::Mat44f lightProjection = Core::Mat44f::CreateOrtho(-side, side, -side, side, -side, side);
-
-		Core::Mat44f lightSpace = lightProjection * lightView;
 
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::PipelineStateId shadowMapPsoId = widgetMgr.GetShadowMapPsoId();
@@ -586,7 +602,7 @@ namespace Editors
 		renderModule.BindMaterial(*pPso);
 
 		//bind the light space matrix
-		renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &lightSpace, 0);
+		renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &pDirLight->m_lightSpaceTX, 0);
 
 		m_pShadowRenderTarget->BeginScene();
 

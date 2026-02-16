@@ -83,6 +83,7 @@ namespace Editors
 		fileContent += "cbuffer PerObject" + NEW_LINE;
 		fileContent += "{" + NEW_LINE;
 		fileContent += "\tmatrix worldMatrix;" + NEW_LINE;
+		fileContent += "\tmatrix lightSpaceMatrix;" + NEW_LINE;
 		fileContent += "};" + NEW_LINE + NEW_LINE;
 
 		fileContent += "#endif // ifndef CBUFFER_PER_OBJECT_HLSL " + NEW_LINE;
