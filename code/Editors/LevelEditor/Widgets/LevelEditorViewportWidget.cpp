@@ -480,8 +480,8 @@ namespace Editors
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 		//for now add all lights
-		Rendering::LightsCBuffer lightsConstBuffer;
-		uint32_t lightCount = Rendering::LightsCBuffer::MAX_LIGHT_COUNT;
+		Rendering::LightsArrayCBuffer lightsConstBuffer;
+		uint32_t lightCount = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
 		if (lightCount > lights.GetSize())
 			lightCount = lights.GetSize();
 

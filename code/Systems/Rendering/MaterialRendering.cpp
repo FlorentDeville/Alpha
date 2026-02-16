@@ -14,7 +14,7 @@ namespace Systems
 {
 	void MaterialRendering::Bind(const MaterialAsset& material, const Rendering::PerObjectCBuffer& perObjectCBuffer, 
 		const Rendering::PerFrameCBuffer& perFrameCBuffer,
-		const Rendering::LightsCBuffer& lights)
+		const Rendering::LightsArrayCBuffer& lights)
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -62,7 +62,7 @@ namespace Systems
 				{
 					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 					lightsPoolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-					pCBufferPool->Copy(lightsPoolIndex, &lights, sizeof(Rendering::LightsCBuffer));
+					pCBufferPool->Copy(lightsPoolIndex, &lights, sizeof(Rendering::LightsArrayCBuffer));
 				}
 
 				renderer.BindCBuffer(bindingInfo.m_sigRootParamIndex, lightsPoolIndex);
@@ -103,7 +103,7 @@ namespace Systems
 
 	void MaterialRendering::Bind(const MaterialInstanceAsset& materialInstance, const Rendering::PerObjectCBuffer& perObjectCBuffer,
 		const Rendering::PerFrameCBuffer& perFrameCBuffer,
-		const Rendering::LightsCBuffer& lights)
+		const Rendering::LightsArrayCBuffer& lights)
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -153,7 +153,7 @@ namespace Systems
 				{
 					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 					lightsPoolIndex = pCBufferPool->GetFreeConstantBufferIndex();
-					pCBufferPool->Copy(lightsPoolIndex, &lights, sizeof(Rendering::LightsCBuffer));
+					pCBufferPool->Copy(lightsPoolIndex, &lights, sizeof(Rendering::LightsArrayCBuffer));
 				}
 
 				renderer.BindCBuffer(bindingInfo.m_sigRootParamIndex, lightsPoolIndex);

@@ -51,11 +51,11 @@ namespace Rendering
 		m_type = LightType::Spot;
 	}
 
-	LightsCBuffer::LightsCBuffer()
+	LightsArrayCBuffer::LightsArrayCBuffer()
 		: m_numLight(0)
 	{ }
 
-	Light* LightsCBuffer::AddLight()
+	Light* LightsArrayCBuffer::AddLight()
 	{
 		if (m_numLight >= MAX_LIGHT_COUNT)
 			return nullptr;

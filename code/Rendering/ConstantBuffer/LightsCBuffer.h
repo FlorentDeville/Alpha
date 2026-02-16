@@ -56,10 +56,10 @@ namespace Rendering
 
 	// This is the structure representing the lights const buffer. It needs to match the structure passed to shaders
 	// and defined in includes\CBufferLights.hlsl.
-	class LightsCBuffer
+	class LightsArrayCBuffer
 	{
 	public:
-		LightsCBuffer();
+		LightsArrayCBuffer();
 		
 		Light* AddLight();
 

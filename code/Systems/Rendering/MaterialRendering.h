@@ -9,7 +9,7 @@
 
 namespace Rendering
 {
-	class LightsCBuffer;
+	class LightsArrayCBuffer;
 	class PerObjectCBuffer;
 	class PerFrameCBuffer;
 }
@@ -21,10 +21,10 @@ namespace Systems
 	public:
 		static void Bind(const MaterialAsset& material, const Rendering::PerObjectCBuffer& perObjectCBuffer, 
 			const Rendering::PerFrameCBuffer& perFrameCBuffer,
-			const Rendering::LightsCBuffer& lights);
+			const Rendering::LightsArrayCBuffer& lights);
 
 		static void Bind(const MaterialInstanceAsset& materialInstance, const Rendering::PerObjectCBuffer& perObjectCBuffer,
 			const Rendering::PerFrameCBuffer& perFrameCBuffer,
-			const Rendering::LightsCBuffer& lights);
+			const Rendering::LightsArrayCBuffer& lights);
 	};
 }
