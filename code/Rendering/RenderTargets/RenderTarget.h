@@ -36,14 +36,16 @@ namespace Rendering
 
 		void CopyToReabackBuffer(Texture* pTexture);
 
+		Rendering::Texture* GetColorTexture();
+
 	private:
 		DescriptorHeap* m_pRTVHeap;				// memory heap for the render target view
 		DescriptorHeap* m_pDSVHeap;				// memory heap for the depth stencil view
 
-		Rendering::TextureId m_textureId;		// Id of the texture used as render targets
-		Rendering::Texture* m_texture;			// texture used as render target
+		Rendering::TextureId m_textureId;		// Id of the color texture.
+		Rendering::Texture* m_pTexture;			// Texture used to store color values
 		D3D12_CPU_DESCRIPTOR_HANDLE m_rtv;		// render target view
-		ID3D12Resource* m_pDepthBuffer;			// Depth buffer for this render target
+		ID3D12Resource* m_pDepthBuffer;			// Depth/stencil buffer for this render target
 		D3D12_CPU_DESCRIPTOR_HANDLE m_dsv;		// Depth stencil view
 		D3D12_VIEWPORT m_viewport;				// The sub rectangle of the render target where to render the scene
 		D3D12_RECT m_scissorRect;				// A rectangle within the viewport cullling out the pixels outside the scissor.

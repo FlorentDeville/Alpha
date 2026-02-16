@@ -28,7 +28,7 @@ namespace Rendering
 
 	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format, const Core::Vec4f& clearColor)
 		: m_textureId()
-		, m_texture()
+		, m_pTexture(nullptr)
 		, m_rtv()
 		, m_dsv()
 	{
@@ -47,11 +47,11 @@ namespace Rendering
 		ID3D12Device2* pDevice = renderModule.GetDevice();
 
 		//Create render texture and rtv
-		textureMgr.CreateTexture(&m_texture, m_textureId);
-		m_texture->InitAsRenderTarget(width, height, m_clearColor, format);
+		textureMgr.CreateTexture(&m_pTexture, m_textureId);
+		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
-		pDevice->CreateRenderTargetView(m_texture->GetResource(), nullptr, m_rtv);
+		pDevice->CreateRenderTargetView(m_pTexture->GetResource(), nullptr, m_rtv);
 
 		m_scissorRect = CD3DX12_RECT(0, 0, LONG_MAX, LONG_MAX);
 		m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
@@ -77,7 +77,7 @@ namespace Rendering
 
 	void RenderTarget::BeginScene()
 	{
-		m_texture->TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_pTexture->TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		RenderModule& renderModule = RenderModule::Get();
 		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
@@ -99,7 +99,7 @@ namespace Rendering
 
 	void RenderTarget::EndScene()
 	{
-		m_texture->TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+		m_pTexture->TransitionTo(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 	}
 
 	void RenderTarget::ClearDepthBuffer()
@@ -114,7 +114,7 @@ namespace Rendering
 
 	void RenderTarget::CopyToReabackBuffer(Texture* pDestTexture)
 	{
-		m_texture->TransitionTo(D3D12_RESOURCE_STATE_COPY_SOURCE);
+		m_pTexture->TransitionTo(D3D12_RESOURCE_STATE_COPY_SOURCE);
 
 		RenderModule& renderModule = RenderModule::Get();
 		ID3D12GraphicsCommandList2* pCommandList = renderModule.GetRenderCommandList();
@@ -124,13 +124,18 @@ namespace Rendering
 		dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
-		renderModule.GetDevice()->GetCopyableFootprints(&m_texture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
+		renderModule.GetDevice()->GetCopyableFootprints(&m_pTexture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
 
 		dest.PlacedFootprint = footprint;
 
-		const CD3DX12_TEXTURE_COPY_LOCATION copySrc(m_texture->GetResource(), 0);
+		const CD3DX12_TEXTURE_COPY_LOCATION copySrc(m_pTexture->GetResource(), 0);
 
 		pCommandList->CopyTextureRegion(&dest, 0, 0, 0, &copySrc, nullptr);
+	}
+
+	Rendering::Texture* RenderTarget::GetColorTexture()
+	{
+		return m_pTexture;
 	}
 
 	void RenderTarget::CreateDepthBuffer(int width, int height)

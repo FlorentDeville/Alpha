@@ -129,6 +129,12 @@ namespace Rendering
 		m_currentState = nextState;
 	}
 
+	void Texture::TransitionToShaderResource()
+	{
+		D3D12_RESOURCE_STATES nextState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE | D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+		TransitionTo(nextState);
+	}
+
 	const ID3D12DescriptorHeap* Texture::GetSRV() const
 	{
 		return m_pSrvDescriptorHeap;
