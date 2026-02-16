@@ -16,7 +16,7 @@
 
 namespace Rendering
 {
-	class Light;
+	class LightCBuffer;
 	class Mesh;
 	class RenderTarget;
 	class Texture;
@@ -81,11 +81,11 @@ namespace Editors
 		// Find the object id from the mouse position. The mouse position is local to the widget.
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
 
-		void CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
+		void CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const;
 
-		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
+		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const;
 		void RenderView_ObjectId(Core::Array<Renderable>& renderables);
-		void RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const;
+		void RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};

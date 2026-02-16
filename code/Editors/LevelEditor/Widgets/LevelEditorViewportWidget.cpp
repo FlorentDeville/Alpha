@@ -183,7 +183,7 @@ namespace Editors
 
 		//create the render scene
 		Core::Array<Renderable> allRenderables;
-		Core::Array<Rendering::Light> allLights;
+		Core::Array<Rendering::LightCBuffer> allLights;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -273,7 +273,7 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const
 	{
 		renderables.Reserve(10);
 		lights.Reserve(10);
@@ -291,7 +291,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &lights[index];
+					Rendering::LightCBuffer* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f localDirection = pLight->GetDirection();
@@ -355,7 +355,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &lights[index];
+					Rendering::LightCBuffer* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -390,7 +390,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &lights[index];
+					Rendering::LightCBuffer* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -467,7 +467,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -487,7 +487,7 @@ namespace Editors
 
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
-			Rendering::Light* pLight = lightsConstBuffer.AddLight();
+			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
 			*pLight = lights[ii];
 		}
 
@@ -552,11 +552,11 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const
 	{
 		//find the directional light
-		const Rendering::Light* pDirLight = nullptr;
-		for (const Rendering::Light& light : lights)
+		const Rendering::LightCBuffer* pDirLight = nullptr;
+		for (const Rendering::LightCBuffer& light : lights)
 		{
 			if (light.m_type == Rendering::LightType::Directional)
 			{
