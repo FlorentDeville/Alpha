@@ -10,13 +10,14 @@
 #include "Core/Guid/Guid.h"
 #include "Core/Math/Mat44f.h"
 
+#include "Rendering/ConstantBuffer/LightsCBuffer.h"
+
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
 #include <map>
 
 namespace Rendering
 {
-	class LightCBuffer;
 	class Mesh;
 	class RenderTarget;
 	class Texture;
@@ -60,6 +61,12 @@ namespace Editors
 			bool m_primitiveMesh; // Call RenderBaseShape and don't use m_pMaterial
 		};
 
+		struct Light
+		{
+			Core::Mat44f m_lightSpaceTX; // transform from world space to light space.
+			Rendering::LightCBuffer m_cbuffer;
+		};
+
 		GizmoWidget* m_pGizmoWidget;
 		GizmoModel* m_pGizmoModel;
 
@@ -81,11 +88,11 @@ namespace Editors
 		// Find the object id from the mouse position. The mouse position is local to the widget.
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
 
-		void CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const;
+		void CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const;
 
-		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const;
+		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const;
 		void RenderView_ObjectId(Core::Array<Renderable>& renderables);
-		void RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const;
+		void RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};

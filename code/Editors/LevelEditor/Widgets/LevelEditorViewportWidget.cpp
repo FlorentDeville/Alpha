@@ -183,7 +183,7 @@ namespace Editors
 
 		//create the render scene
 		Core::Array<Renderable> allRenderables;
-		Core::Array<Rendering::LightCBuffer> allLights;
+		Core::Array<Light> allLights;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -273,7 +273,7 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		renderables.Reserve(10);
 		lights.Reserve(10);
@@ -291,7 +291,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::LightCBuffer* pGfxLight = &lights[index];
+					Light* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f localDirection = pLight->GetDirection();
@@ -302,7 +302,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
+					pGfxLight->m_cbuffer.MakeDirectionalLight(direction, ambient, diffuse, specular);
 
 					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(Core::Vec4f(0, 0, 0, 1), localDirection, Core::Vec4f(0, 1, 0, 0));
@@ -355,7 +355,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::LightCBuffer* pGfxLight = &lights[index];
+					Light* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -366,7 +366,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
+					pGfxLight->m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
 					{
 						uint32_t index = renderables.GetSize();
@@ -390,7 +390,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::LightCBuffer* pGfxLight = &lights[index];
+					Light* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -406,7 +406,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->MakeSpotLight(position, direction, ambient, diffuse, specular,
+					pGfxLight->m_cbuffer.MakeSpotLight(position, direction, ambient, diffuse, specular,
 						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(),
 						pLight->GetCutOff(), pLight->GetOuterCutOff());
 
@@ -467,7 +467,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -488,7 +488,7 @@ namespace Editors
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
 			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
-			*pLight = lights[ii];
+			*pLight = lights[ii].m_cbuffer;
 		}
 
 		//now render all renderables
@@ -552,15 +552,15 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Rendering::LightCBuffer>& lights) const
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		//find the directional light
 		const Rendering::LightCBuffer* pDirLight = nullptr;
-		for (const Rendering::LightCBuffer& light : lights)
+		for (const Light& light : lights)
 		{
-			if (light.m_type == Rendering::LightType::Directional)
+			if (light.m_cbuffer.m_type == Rendering::LightType::Directional)
 			{
-				pDirLight = &light;
+				pDirLight = &light.m_cbuffer;
 				break;
 			}
 		}
