@@ -37,8 +37,5 @@ VS_Ouput main(VS_Input input)
 	float4 pos = float4(input.vertex, 1.f);
 	output.vertex = mul(pos, worldMatrix);
 	output.vertex = mul(output.vertex, lightSpace);
-	//output.vertex = mul(output.vertex, projMatrix);
-    
-	//output.color = objectId;
 	return output;
 }
