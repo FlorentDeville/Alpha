@@ -42,7 +42,8 @@ namespace Systems
 		Systems::MaterialInstanceAsset* pMaterial = m_material.GetPtr();
 		if (pMaterial && pMaterial->GetBaseMaterial() && pMaterial->GetBaseMaterial()->IsValidForRendering())
 		{
-			Rendering::PerObjectCBuffer perObjectData(world.m_matrix);
+			Rendering::PerObjectCBuffer perObjectData; 
+			perObjectData.m_world = world.m_matrix;
 
 			DirectX::XMFLOAT3 cameraPosFloat3;
 			DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));

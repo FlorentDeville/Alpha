@@ -6,6 +6,8 @@
 
 #include <DirectXMath.h>
 
+#include "Rendering/ConstantBuffer/LightsCBuffer.h"
+
 namespace Rendering
 {
 	// This is the structure repsrenting the per object const buffer. It needs to match the structure passed to shaders
@@ -13,9 +15,9 @@ namespace Rendering
 	class PerObjectCBuffer
 	{
 	public:
-		PerObjectCBuffer(const DirectX::XMMATRIX& world);
+		PerObjectCBuffer();
 
 		DirectX::XMMATRIX m_world;
-		DirectX::XMMATRIX m_lightSpaceMatrix;
+		DirectX::XMMATRIX m_lightSpaceMatrix[LightsArrayCBuffer::MAX_LIGHT_COUNT];
 	};
 }

@@ -508,14 +508,13 @@ namespace Editors
 		if (lightCount > lights.GetSize())
 			lightCount = lights.GetSize();
 
-		Core::Mat44f lightSpace;
+
+		Core::Mat44f lightSpace[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
 			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
 			*pLight = lights[ii].m_cbuffer;
-
-			if (pLight->m_type == Rendering::LightType::Directional)
-				lightSpace = lights[ii].m_lightSpaceTX;
+			lightSpace[ii] = lights[ii].m_lightSpaceTX;
 		}
 
 		//now render all renderables
@@ -534,8 +533,10 @@ namespace Editors
 
 				if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
 				{
-					Rendering::PerObjectCBuffer perObjectData(renderable.m_worldTx.m_matrix);
-					perObjectData.m_lightSpaceMatrix = lightSpace.m_matrix;
+					Rendering::PerObjectCBuffer perObjectData;
+					perObjectData.m_world = renderable.m_worldTx.m_matrix;
+					memcpy(perObjectData.m_lightSpaceMatrix, lightSpace, sizeof(Core::Mat44f) * Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+
 					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
 
 					ID3D12DescriptorHeap* pSrv = pShadowMapTexture->GetSRV();

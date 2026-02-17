@@ -450,7 +450,8 @@ namespace Editors
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
-				Rendering::PerObjectCBuffer perObjectData(world);
+				Rendering::PerObjectCBuffer perObjectData;
+				perObjectData.m_world = world;
 
 				DirectX::XMFLOAT3 cameraPosFloat3;
 				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);

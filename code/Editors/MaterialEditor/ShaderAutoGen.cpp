@@ -80,11 +80,13 @@ namespace Editors
 		//set the matrix as row major
 		fileContent += "#pragma pack_matrix(row_major)" + NEW_LINE + NEW_LINE;
 
+		fileContent += "#include \"LightTypes.hlsl\"" + NEW_LINE + NEW_LINE;
+
 		//now write the definition of the cbuffer PerFrame
 		fileContent += "cbuffer PerObject" + NEW_LINE;
 		fileContent += "{" + NEW_LINE;
 		fileContent += "\tmatrix worldMatrix;" + NEW_LINE;
-		fileContent += "\tmatrix lightSpaceMatrix;" + NEW_LINE;
+		fileContent += "\tmatrix lightSpaceMatrix[MAX_LIGHT_COUNT];" + NEW_LINE;
 		fileContent += "};" + NEW_LINE + NEW_LINE;
 
 		fileContent += "#endif // ifndef CBUFFER_PER_OBJECT_HLSL " + NEW_LINE;
