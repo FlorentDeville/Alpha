@@ -44,6 +44,7 @@ using namespace DirectX;
 
 namespace Editors
 {
+	
 	struct ConstBufferPerObject
 	{
 		Core::Mat44f m_world;
@@ -343,6 +344,7 @@ namespace Editors
 							renderable.m_worldTx = proxyWorldTx;
 							renderable.m_primitiveMesh = true;
 							renderable.m_pOwner = pGo;
+							renderable.m_view = RenderView::Game | RenderView::ObjectId;
 						}
 
 						{
@@ -361,6 +363,7 @@ namespace Editors
 							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
 							renderable.m_primitiveMesh = true;
 							renderable.m_pOwner = pGo;
+							renderable.m_view = RenderView::Game | RenderView::ObjectId;
 						}
 					}
 				}
@@ -397,6 +400,7 @@ namespace Editors
 						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game | RenderView::ObjectId;
 					}
 				}
 				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
@@ -451,6 +455,7 @@ namespace Editors
 						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game | RenderView::ObjectId;
 					}
 
 				}
@@ -474,6 +479,7 @@ namespace Editors
 						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
 						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game | RenderView::ShadowMap | RenderView::ObjectId;
 					}
 				}
 			}
@@ -515,6 +521,9 @@ namespace Editors
 		//now render all renderables
 		for (const Renderable& renderable : renderables)
 		{
+			if (!(renderable.m_view & RenderView::Game))
+				continue;
+
 			if (renderable.m_primitiveMesh)
 			{
 				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx.m_matrix, Core::Float4(1, 1, 1, 1));
@@ -559,6 +568,9 @@ namespace Editors
 
 		for (const Renderable& renderable : renderables)
 		{
+			if (!(renderable.m_view & RenderView::ObjectId))
+				continue;
+
 			++objectIdCounter;
 
 			const Core::Mat44f& world = renderable.m_worldTx;
@@ -609,6 +621,9 @@ namespace Editors
 		//loop through renderable
 		for (const Renderable& renderable : renderables)
 		{
+			if (!(renderable.m_view & RenderView::ShadowMap))
+				continue;
+
 			renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
 			renderModule.RenderMesh(*renderable.m_pMesh);
 		}
