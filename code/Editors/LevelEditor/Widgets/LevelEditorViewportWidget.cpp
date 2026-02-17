@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
+#include "Core/Helper.h"
 #include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
@@ -81,7 +82,7 @@ namespace Editors
 		Rendering::TextureMgr::Get().CreateTexture(&m_pReadbackBuffer, readbackTextureId);
 		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
 
-		m_pShadowRenderTarget = new Rendering::RenderTarget(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, Core::Vec4f(1, 1, 1, 1));
+		CreateShadowMaps();
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -499,17 +500,17 @@ namespace Editors
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 		//bind the shadow map
-		Rendering::Texture* pShadowMapTexture = m_pShadowRenderTarget->GetColorTexture();
-		pShadowMapTexture->TransitionToShaderResource();
+		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
+		{
+			Rendering::Texture* pShadowMapTexture = m_pShadowRenderTarget[ii]->GetColorTexture();
+			pShadowMapTexture->TransitionToShaderResource();
+		}
 
 		//for now add all lights
 		Rendering::LightsArrayCBuffer lightsConstBuffer;
-		uint32_t lightCount = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
-		if (lightCount > lights.GetSize())
-			lightCount = lights.GetSize();
-
-
 		Core::Mat44f lightSpace[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
+
+		uint32_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
 			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
@@ -539,10 +540,9 @@ namespace Editors
 
 					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
 
-					ID3D12DescriptorHeap* pSrv = pShadowMapTexture->GetSRV();
-					ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+					ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowMapSrvDescriptorHeap };
 					renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-					renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(4, pSrv->GetGPUDescriptorHandleForHeapStart());
+					renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(4, m_pShadowMapSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 					renderModule.RenderMesh(*renderable.m_pMesh);
 				}
@@ -593,20 +593,6 @@ namespace Editors
 
 	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
-		//find the directional light
-		const Light* pDirLight = nullptr;
-		for (const Light& light : lights)
-		{
-			if (light.m_cbuffer.m_type == Rendering::LightType::Directional)
-			{
-				pDirLight = &light;
-				break;
-			}
-		}
-
-		if (!pDirLight)
-			return;
-
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::PipelineStateId shadowMapPsoId = widgetMgr.GetShadowMapPsoId();
 		Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapPsoId);
@@ -614,22 +600,30 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		renderModule.BindMaterial(*pPso);
 
-		//bind the light space matrix
-		renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &pDirLight->m_lightSpaceTX, 0);
-
-		m_pShadowRenderTarget->BeginScene();
-
-		//loop through renderable
-		for (const Renderable& renderable : renderables)
+		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+		for(int ii = 0; ii < lightCount; ++ii)
 		{
-			if (!(renderable.m_view & RenderView::ShadowMap))
+			const Light& light = lights[ii];
+			if (light.m_cbuffer.m_type != Rendering::LightType::Directional)
 				continue;
 
-			renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
-			renderModule.RenderMesh(*renderable.m_pMesh);
-		}
+			//bind the light space matrix
+			renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
 
-		m_pShadowRenderTarget->EndScene();
+			m_pShadowRenderTarget[ii]->BeginScene();
+
+			//loop through renderable
+			for (const Renderable& renderable : renderables)
+			{
+				if (!(renderable.m_view & RenderView::ShadowMap))
+					continue;
+
+				renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
+				renderModule.RenderMesh(*renderable.m_pMesh);
+			}
+
+			m_pShadowRenderTarget[ii]->EndScene();
+		}
 	}
 
 	float LevelEditorViewportWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
@@ -644,5 +638,40 @@ namespace Editors
 		const float SCREEN_RATIO = 0.025f;
 		float size = SCREEN_RATIO * worldSize;
 		return size;
+	}
+
+	void LevelEditorViewportWidget::CreateShadowMaps()
+	{
+		ID3D12Device2* pDevice = Rendering::RenderModule::Get().GetDevice();
+
+		UINT srvSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pShadowMapSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
+		{
+			m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, Core::Vec4f(1, 1, 1, 1));
+
+			//Create the srv descriptor
+			{
+				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+				srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+				srvDesc.Texture2D.MipLevels = 1;
+
+				D3D12_CPU_DESCRIPTOR_HANDLE handle;
+				handle.ptr = SIZE_T(uint64_t(m_pShadowMapSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr) + INT64(ii) * srvSize);
+				pDevice->CreateShaderResourceView(m_pShadowRenderTarget[ii]->GetColorTexture()->GetResource(), &srvDesc, handle);
+			}
+		}
 	}
 }
