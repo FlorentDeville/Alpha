@@ -90,6 +90,11 @@ namespace Editors
 		delete m_pCamera;
 		delete m_pGizmoWidget;
 		delete m_pObjectIdRenderTarget;
+
+		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
+			delete m_pShadowRenderTarget[ii];
+
+		m_pShadowMapSrvDescriptorHeap->Release();
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
