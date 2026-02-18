@@ -17,9 +17,9 @@ cbuffer PerFrame : register(b1)
 };
 
 [RootSignature(RS)]
-float4 main(PixelShaderInput IN) : SV_Target
+float main(PixelShaderInput IN) : SV_Target
 {
     float depth = distance(IN.worldPos.xyz, lightWorldPos.xyz);
     depth = depth + fwidth(depth);
-	return float4(depth, depth, depth, 1);
+    return depth;
 }
