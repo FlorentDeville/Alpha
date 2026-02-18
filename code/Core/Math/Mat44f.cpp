@@ -131,13 +131,13 @@ namespace Core
 		return matrix;
 	}
 
-	Mat44f Mat44f::CreateLookAt(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up)
+	Mat44f Mat44f::CreateLookAt(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& worldUp)
 	{
 		Core::Vec4f forward = dir;
 		forward.Normalize();
 
-		Core::Vec4f localUp = up;
-		Core::Vec4f right = up.Cross(forward);
+		Core::Vec4f localUp = worldUp;
+		Core::Vec4f right = worldUp.Cross(forward);
 		float rightDot = right.Dot(right);
 		if (rightDot == 0)
 		{
@@ -153,17 +153,42 @@ namespace Core
 		return Core::Mat44f(right, localUp, forward, pos);
 	}
 
-	Mat44f Mat44f::CreateView(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& up)
+	Mat44f Mat44f::CreateView(const Core::Vec4f& pos, const Core::Vec4f& dir, const Vec4f& worldUp)
 	{
-		Core::Mat44f view = CreateLookAt(pos, dir, up);
+		Core::Vec4f forward = dir;
+		forward.Normalize();
+
+		Core::Vec4f right = worldUp.Cross(forward);
+		right.Normalize();
+
+		Core::Vec4f up = forward.Cross(right);
+
+		Core::Vec4f negPos = pos * -1;
+
+		float x = right.Dot(negPos);
+		float y = up.Dot(negPos);
+		float z = forward.Dot(negPos);
+		right.Set(3, x);
+		up.Set(3, y);
+		forward.Set(3, z);
+
+		Core::Mat44f view(right, up, forward, Core::Vec4f(0, 0, 0, 1));
 		view.Transpose();
+
 		return view;
 	}
 
-	Mat44f Mat44f::CreateOrtho(float left, float right, float bottom, float top, float near, float far)
+	Mat44f Mat44f::CreateOrthographic(float left, float right, float bottom, float top, float near, float far)
 	{
 		Core::Mat44f proj;
 		proj.m_matrix = DirectX::XMMatrixOrthographicOffCenterLH(left, right, bottom, top, near, far);
+		return proj;
+	}
+
+	Mat44f Mat44f::CreatePerspective(float fovAngleY, float aspectRatio, float nearZ, float farZ)
+	{
+		Core::Mat44f proj;
+		proj.m_matrix = DirectX::XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, nearZ, farZ);
 		return proj;
 	}
 
