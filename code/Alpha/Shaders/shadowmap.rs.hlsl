@@ -5,12 +5,8 @@
 #ifndef SHADOWMAP_RS_HLSL
 #define SHADOWMAP_RS_HLSL
 
-#define RS "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |" \
-					"DENY_HULL_SHADER_ROOT_ACCESS |" \
-					"DENY_DOMAIN_SHADER_ROOT_ACCESS |" \
-					"DENY_GEOMETRY_SHADER_ROOT_ACCESS |" \
-					"DENY_PIXEL_SHADER_ROOT_ACCESS)," \
+#define RS "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT)," \
 			"RootConstants(num32BitConstants=16, b0, space=0, visibility=SHADER_VISIBILITY_VERTEX)," \
-			"RootConstants(num32BitConstants=16, b1, space=0, visibility=SHADER_VISIBILITY_VERTEX)"
+			"RootConstants(num32BitConstants=20, b1, space=0, visibility=SHADER_VISIBILITY_ALL)"
 
 #endif

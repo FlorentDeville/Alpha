@@ -17,16 +17,18 @@ struct VS_Input
 struct VS_Ouput
 {
 	float4 vertex : SV_Position; //screen space
+    float4 worldPos : TEXCOORD0; //world space
 };
 
-cbuffer PerObject
+cbuffer PerObject : register(b0)
 {
 	matrix worldMatrix;
 };
 
-cbuffer PerFrame
+cbuffer PerFrame : register(b1)
 {
 	matrix lightSpace;
+    float4 lightWorldPos;
 };
 
 [RootSignature(RS)]
@@ -35,7 +37,8 @@ VS_Ouput main(VS_Input input)
 	VS_Ouput output;
     
 	float4 pos = float4(input.vertex, 1.f);
-	output.vertex = mul(pos, worldMatrix);
-	output.vertex = mul(output.vertex, lightSpace);
+	output.worldPos = mul(pos, worldMatrix);
+    output.vertex = mul(output.worldPos, lightSpace);
+
 	return output;
 }

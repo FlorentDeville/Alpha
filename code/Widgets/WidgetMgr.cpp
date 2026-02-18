@@ -196,7 +196,7 @@ namespace Widgets
 			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap.ps.cso");
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_shadowMapPsoId);
-			pPipelineState->Init_Generic(rsId, vsId, psId);
+			pPipelineState->Init_Generic_ShadowMap_SpotLight(rsId, vsId, psId);
 		}
 
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();

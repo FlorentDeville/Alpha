@@ -438,7 +438,8 @@ namespace Editors
 						XMVECTOR dxWorldDir = DirectX::XMVectorSet(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ(), worldDirection.GetW());
 						XMMATRIX dxView = DirectX::XMMatrixLookToLH(dxWorldPos, dxWorldDir, DirectX::XMVectorSet(0, 1, 0, 0));
 						Core::Mat44f lightView = Core::Mat44f::CreateView(worldPosition, worldDirection, Core::Vec4f(0, 1, 0, 0));
-						Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(pLight->GetOuterCutOff() * 2, 1.f, 0.1f, 1000);
+						Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(pLight->GetOuterCutOff() * 2, 1.f, 0.1f, 100);
+						//Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(1.57, 1.f, 0.1f, 1000);
 
 						Core::Mat44f lightSpace = lightView * lightProjection;
 						pGfxLight->m_lightSpaceTX = lightSpace;
@@ -625,8 +626,18 @@ namespace Editors
 				light.m_cbuffer.m_type == Rendering::LightType::Spot)
 			{
 
+				struct PerObject
+				{
+					Core::Mat44f m_lightSpace;
+					Core::Float3 m_lightPos;
+				};
+
+				PerObject cbuffer;
+				cbuffer.m_lightSpace = light.m_lightSpaceTX;
+				cbuffer.m_lightPos = light.m_cbuffer.m_position;
+
 				//bind the light space matrix
-				renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
+				renderModule.SetConstantBuffer(1, sizeof(PerObject), &cbuffer, 0);
 
 				m_pShadowRenderTarget[ii]->BeginScene();
 
@@ -676,14 +687,15 @@ namespace Editors
 			ThrowIfFailed(res);
 		}
 
+		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT; //DXGI_FORMAT_R8G8B8A8_UNORM
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 		{
-			m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, DXGI_FORMAT_R8G8B8A8_UNORM, Core::Vec4f(1, 1, 1, 1));
+			m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, format, Core::Vec4f(1, 1, 1, 1));
 
 			//Create the srv descriptor
 			{
 				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-				srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				srvDesc.Format = format;
 				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 				srvDesc.Texture2D.MipLevels = 1;
