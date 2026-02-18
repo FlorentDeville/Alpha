@@ -303,7 +303,7 @@ namespace Rendering
 
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 		rtvFormats.NumRenderTargets = 1;
-		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R32_FLOAT;
 
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
