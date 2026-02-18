@@ -313,11 +313,17 @@ namespace Editors
 
 					{
 						Core::Vec4f lightDir = worldDirection;
-						Core::Mat44f lightView = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), lightDir, Core::Vec4f(0, 1, 0, 0));
+						lightDir.Normalize();
+						Core::Vec4f up(0, 1, 0, 0);
+
+						if (abs(up.Dot(lightDir)) == 1)
+							up = Core::Vec4f(0, 0, 1, 0);
+
+						Core::Mat44f lightView = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), lightDir, up);
 
 						//compute the orthogonal projection. To do this I should find all the objects in the frustum and create the orthogonal plane with it.
 						//for now just hardcode it for a box with its centre at the orign and a side of 20.
-						float side = 40;
+						float side = 15;
 						Core::Mat44f lightProjection = Core::Mat44f::CreateOrthographic(-side, side, -side, side, -side, side);
 
 						Core::Mat44f lightSpace = lightView * lightProjection;
@@ -439,7 +445,6 @@ namespace Editors
 						XMMATRIX dxView = DirectX::XMMatrixLookToLH(dxWorldPos, dxWorldDir, DirectX::XMVectorSet(0, 1, 0, 0));
 						Core::Mat44f lightView = Core::Mat44f::CreateView(worldPosition, worldDirection, Core::Vec4f(0, 1, 0, 0));
 						Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(pLight->GetOuterCutOff() * 2, 1.f, 0.1f, 100);
-						//Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(1.57, 1.f, 0.1f, 1000);
 
 						Core::Mat44f lightSpace = lightView * lightProjection;
 						pGfxLight->m_lightSpaceTX = lightSpace;
@@ -612,19 +617,30 @@ namespace Editors
 	{
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::PipelineStateId shadowMapPsoId = widgetMgr.GetShadowMapPsoId();
-		Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapPsoId);
+		Rendering::PipelineState* pSpotLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapPsoId);
+
+		Rendering::PipelineStateId shadowMapDirLightPsoId = widgetMgr.GetShadowMapDirLightPsoId();
+		Rendering::PipelineState* pDirLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapDirLightPsoId);
 
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-		renderModule.BindMaterial(*pPso);
 
 		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for(int ii = 0; ii < lightCount; ++ii)
 		{
 			const Light& light = lights[ii];
-			
-			if (light.m_cbuffer.m_type == Rendering::LightType::Directional ||
-				light.m_cbuffer.m_type == Rendering::LightType::Spot)
+
+			if (light.m_cbuffer.m_type == Rendering::Point)
+				continue;
+
+			if (light.m_cbuffer.m_type == Rendering::Directional)
 			{
+				renderModule.BindMaterial(*pDirLightPso);
+
+				renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
+			}
+			else if (light.m_cbuffer.m_type == Rendering::Spot)
+			{
+				renderModule.BindMaterial(*pSpotLightPso);
 
 				struct PerObject
 				{
@@ -638,22 +654,21 @@ namespace Editors
 
 				//bind the light space matrix
 				renderModule.SetConstantBuffer(1, sizeof(PerObject), &cbuffer, 0);
+			}		
+			
+			m_pShadowRenderTarget[ii]->BeginScene();
 
-				m_pShadowRenderTarget[ii]->BeginScene();
+			//loop through renderable
+			for (const Renderable& renderable : renderables)
+			{
+				if (!(renderable.m_view & RenderView::ShadowMap))
+					continue;
 
-				//loop through renderable
-				for (const Renderable& renderable : renderables)
-				{
-					if (!(renderable.m_view & RenderView::ShadowMap))
-						continue;
-
-					renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
-					renderModule.RenderMesh(*renderable.m_pMesh);
-				}
-
-				m_pShadowRenderTarget[ii]->EndScene();
+				renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
+				renderModule.RenderMesh(*renderable.m_pMesh);
 			}
 
+			m_pShadowRenderTarget[ii]->EndScene();
 		}
 	}
 
