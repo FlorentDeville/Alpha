@@ -318,7 +318,7 @@ namespace Editors
 						//compute the orthogonal projection. To do this I should find all the objects in the frustum and create the orthogonal plane with it.
 						//for now just hardcode it for a box with its centre at the orign and a side of 20.
 						float side = 40;
-						Core::Mat44f lightProjection = Core::Mat44f::CreateOrtho(-side, side, -side, side, -side, side);
+						Core::Mat44f lightProjection = Core::Mat44f::CreateOrthographic(-side, side, -side, side, -side, side);
 
 						Core::Mat44f lightSpace = lightView * lightProjection;
 						pGfxLight->m_lightSpaceTX = lightSpace;
@@ -432,6 +432,17 @@ namespace Editors
 					pGfxLight->m_cbuffer.MakeSpotLight(position, direction, ambient, diffuse, specular,
 						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(),
 						pLight->GetCutOff(), pLight->GetOuterCutOff());
+
+					{
+						XMVECTOR dxWorldPos = DirectX::XMVectorSet(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ(), worldPosition.GetW());
+						XMVECTOR dxWorldDir = DirectX::XMVectorSet(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ(), worldDirection.GetW());
+						XMMATRIX dxView = DirectX::XMMatrixLookToLH(dxWorldPos, dxWorldDir, DirectX::XMVectorSet(0, 1, 0, 0));
+						Core::Mat44f lightView = Core::Mat44f::CreateView(worldPosition, worldDirection, Core::Vec4f(0, 1, 0, 0));
+						Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(pLight->GetOuterCutOff() * 2, 1.f, 0.1f, 1000);
+
+						Core::Mat44f lightSpace = lightView * lightProjection;
+						pGfxLight->m_lightSpaceTX = lightSpace;
+					}
 
 					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
@@ -609,25 +620,29 @@ namespace Editors
 		for(int ii = 0; ii < lightCount; ++ii)
 		{
 			const Light& light = lights[ii];
-			if (light.m_cbuffer.m_type != Rendering::LightType::Directional)
-				continue;
-
-			//bind the light space matrix
-			renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
-
-			m_pShadowRenderTarget[ii]->BeginScene();
-
-			//loop through renderable
-			for (const Renderable& renderable : renderables)
+			
+			if (light.m_cbuffer.m_type == Rendering::LightType::Directional ||
+				light.m_cbuffer.m_type == Rendering::LightType::Spot)
 			{
-				if (!(renderable.m_view & RenderView::ShadowMap))
-					continue;
 
-				renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
-				renderModule.RenderMesh(*renderable.m_pMesh);
+				//bind the light space matrix
+				renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
+
+				m_pShadowRenderTarget[ii]->BeginScene();
+
+				//loop through renderable
+				for (const Renderable& renderable : renderables)
+				{
+					if (!(renderable.m_view & RenderView::ShadowMap))
+						continue;
+
+					renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
+					renderModule.RenderMesh(*renderable.m_pMesh);
+				}
+
+				m_pShadowRenderTarget[ii]->EndScene();
 			}
 
-			m_pShadowRenderTarget[ii]->EndScene();
 		}
 	}
 
