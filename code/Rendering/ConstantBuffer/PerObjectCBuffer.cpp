@@ -6,7 +6,8 @@
 
 namespace Rendering
 {
-	PerObjectCBuffer::PerObjectCBuffer(const DirectX::XMMATRIX& world)
-		: m_world(world)
+	PerObjectCBuffer::PerObjectCBuffer()
+		: m_world()
+		, m_lightSpaceMatrix()
 	{ }
 }

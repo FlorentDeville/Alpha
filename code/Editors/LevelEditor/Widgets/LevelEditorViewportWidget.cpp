@@ -4,6 +4,7 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
+#include "Core/Helper.h"
 #include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
@@ -44,6 +45,7 @@ using namespace DirectX;
 
 namespace Editors
 {
+	
 	struct ConstBufferPerObject
 	{
 		Core::Mat44f m_world;
@@ -79,6 +81,8 @@ namespace Editors
 		Rendering::TextureId readbackTextureId;
 		Rendering::TextureMgr::Get().CreateTexture(&m_pReadbackBuffer, readbackTextureId);
 		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
+
+		CreateShadowMaps();
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -86,6 +90,11 @@ namespace Editors
 		delete m_pCamera;
 		delete m_pGizmoWidget;
 		delete m_pObjectIdRenderTarget;
+
+		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
+			delete m_pShadowRenderTarget[ii];
+
+		m_pShadowMapSrvDescriptorHeap->Release();
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
@@ -181,7 +190,7 @@ namespace Editors
 
 		//create the render scene
 		Core::Array<Renderable> allRenderables;
-		Core::Array<Rendering::Light> allLights;
+		Core::Array<Light> allLights;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -201,6 +210,9 @@ namespace Editors
 
 			CreateRenderScene(allRenderables, allLights);
 		}
+
+		//first do the shadow maps
+		RenderView_ShadowMap(allRenderables, allLights);
 
 		//now render the level editor view of the scene.
 		m_pRenderTarget->BeginScene();
@@ -268,7 +280,7 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		renderables.Reserve(10);
 		lights.Reserve(10);
@@ -286,7 +298,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &lights[index];
+					Light* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f localDirection = pLight->GetDirection();
@@ -297,7 +309,26 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->MakeDirectionalLight(direction, ambient, diffuse, specular);
+					pGfxLight->m_cbuffer.MakeDirectionalLight(direction, ambient, diffuse, specular);
+
+					{
+						Core::Vec4f lightDir = worldDirection;
+						lightDir.Normalize();
+						Core::Vec4f up(0, 1, 0, 0);
+
+						if (abs(up.Dot(lightDir)) == 1)
+							up = Core::Vec4f(0, 0, 1, 0);
+
+						Core::Mat44f lightView = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), lightDir, up);
+
+						//compute the orthogonal projection. To do this I should find all the objects in the frustum and create the orthogonal plane with it.
+						//for now just hardcode it for a box with its centre at the orign and a side of 20.
+						float side = 15;
+						Core::Mat44f lightProjection = Core::Mat44f::CreateOrthographic(-side, side, -side, side, -side, side);
+
+						Core::Mat44f lightSpace = lightView * lightProjection;
+						pGfxLight->m_lightSpaceTX = lightSpace;
+					}
 
 					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(Core::Vec4f(0, 0, 0, 1), localDirection, Core::Vec4f(0, 1, 0, 0));
@@ -325,6 +356,7 @@ namespace Editors
 							renderable.m_worldTx = proxyWorldTx;
 							renderable.m_primitiveMesh = true;
 							renderable.m_pOwner = pGo;
+							renderable.m_view = RenderView::Game | RenderView::ObjectId;
 						}
 
 						{
@@ -343,6 +375,7 @@ namespace Editors
 							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
 							renderable.m_primitiveMesh = true;
 							renderable.m_pOwner = pGo;
+							renderable.m_view = RenderView::Game | RenderView::ObjectId;
 						}
 					}
 				}
@@ -350,7 +383,7 @@ namespace Editors
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &lights[index];
+					Light* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -361,7 +394,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
+					pGfxLight->m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
 					{
 						uint32_t index = renderables.GetSize();
@@ -379,13 +412,14 @@ namespace Editors
 						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game | RenderView::ObjectId;
 					}
 				}
 				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
 				{
 					uint32_t index = lights.GetSize();
 					lights.Resize(index + 1);
-					Rendering::Light* pGfxLight = &lights[index];
+					Light* pGfxLight = &lights[index];
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -401,9 +435,20 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->MakeSpotLight(position, direction, ambient, diffuse, specular,
+					pGfxLight->m_cbuffer.MakeSpotLight(position, direction, ambient, diffuse, specular,
 						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(),
 						pLight->GetCutOff(), pLight->GetOuterCutOff());
+
+					{
+						XMVECTOR dxWorldPos = DirectX::XMVectorSet(worldPosition.GetX(), worldPosition.GetY(), worldPosition.GetZ(), worldPosition.GetW());
+						XMVECTOR dxWorldDir = DirectX::XMVectorSet(worldDirection.GetX(), worldDirection.GetY(), worldDirection.GetZ(), worldDirection.GetW());
+						XMMATRIX dxView = DirectX::XMMatrixLookToLH(dxWorldPos, dxWorldDir, DirectX::XMVectorSet(0, 1, 0, 0));
+						Core::Mat44f lightView = Core::Mat44f::CreateView(worldPosition, worldDirection, Core::Vec4f(0, 1, 0, 0));
+						Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(pLight->GetOuterCutOff() * 2, 1.f, 0.1f, 100);
+
+						Core::Mat44f lightSpace = lightView * lightProjection;
+						pGfxLight->m_lightSpaceTX = lightSpace;
+					}
 
 					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
@@ -433,6 +478,7 @@ namespace Editors
 						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game | RenderView::ObjectId;
 					}
 
 				}
@@ -456,13 +502,14 @@ namespace Editors
 						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
 						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game | RenderView::ShadowMap | RenderView::ObjectId;
 					}
 				}
 			}
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Rendering::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -474,21 +521,31 @@ namespace Editors
 		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
-		//for now add all lights
-		Rendering::LightsCBuffer lightsConstBuffer;
-		uint32_t lightCount = Rendering::LightsCBuffer::MAX_LIGHT_COUNT;
-		if (lightCount > lights.GetSize())
-			lightCount = lights.GetSize();
+		//bind the shadow map
+		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
+		{
+			Rendering::Texture* pShadowMapTexture = m_pShadowRenderTarget[ii]->GetColorTexture();
+			pShadowMapTexture->TransitionToShaderResource();
+		}
 
+		//for now add all lights
+		Rendering::LightsArrayCBuffer lightsConstBuffer;
+		Core::Mat44f lightSpace[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
+
+		uint32_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
-			Rendering::Light* pLight = lightsConstBuffer.AddLight();
-			*pLight = lights[ii];
+			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
+			*pLight = lights[ii].m_cbuffer;
+			lightSpace[ii] = lights[ii].m_lightSpaceTX;
 		}
 
 		//now render all renderables
 		for (const Renderable& renderable : renderables)
 		{
+			if (!(renderable.m_view & RenderView::Game))
+				continue;
+
 			if (renderable.m_primitiveMesh)
 			{
 				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx.m_matrix, Core::Float4(1, 1, 1, 1));
@@ -499,9 +556,15 @@ namespace Editors
 
 				if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
 				{
-					Rendering::PerObjectCBuffer perObjectData(renderable.m_worldTx.m_matrix);
+					Rendering::PerObjectCBuffer perObjectData;
+					perObjectData.m_world = renderable.m_worldTx.m_matrix;
+					memcpy(perObjectData.m_lightSpaceMatrix, lightSpace, sizeof(Core::Mat44f) * Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 
 					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
+
+					ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowMapSrvDescriptorHeap };
+					renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+					renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(4, m_pShadowMapSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 					renderModule.RenderMesh(*renderable.m_pMesh);
 				}
@@ -528,6 +591,9 @@ namespace Editors
 
 		for (const Renderable& renderable : renderables)
 		{
+			if (!(renderable.m_view & RenderView::ObjectId))
+				continue;
+
 			++objectIdCounter;
 
 			const Core::Mat44f& world = renderable.m_worldTx;
@@ -547,6 +613,65 @@ namespace Editors
 		}
 	}
 
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
+	{
+		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		Rendering::PipelineStateId shadowMapPsoId = widgetMgr.GetShadowMapPsoId();
+		Rendering::PipelineState* pSpotLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapPsoId);
+
+		Rendering::PipelineStateId shadowMapDirLightPsoId = widgetMgr.GetShadowMapDirLightPsoId();
+		Rendering::PipelineState* pDirLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapDirLightPsoId);
+
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+
+		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+		for(int ii = 0; ii < lightCount; ++ii)
+		{
+			const Light& light = lights[ii];
+
+			if (light.m_cbuffer.m_type == Rendering::Point)
+				continue;
+
+			if (light.m_cbuffer.m_type == Rendering::Directional)
+			{
+				renderModule.BindMaterial(*pDirLightPso);
+
+				renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
+			}
+			else if (light.m_cbuffer.m_type == Rendering::Spot)
+			{
+				renderModule.BindMaterial(*pSpotLightPso);
+
+				struct PerObject
+				{
+					Core::Mat44f m_lightSpace;
+					Core::Float3 m_lightPos;
+				};
+
+				PerObject cbuffer;
+				cbuffer.m_lightSpace = light.m_lightSpaceTX;
+				cbuffer.m_lightPos = light.m_cbuffer.m_position;
+
+				//bind the light space matrix
+				renderModule.SetConstantBuffer(1, sizeof(PerObject), &cbuffer, 0);
+			}		
+			
+			m_pShadowRenderTarget[ii]->BeginScene();
+
+			//loop through renderable
+			for (const Renderable& renderable : renderables)
+			{
+				if (!(renderable.m_view & RenderView::ShadowMap))
+					continue;
+
+				renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
+				renderModule.RenderMesh(*renderable.m_pMesh);
+			}
+
+			m_pShadowRenderTarget[ii]->EndScene();
+		}
+	}
+
 	float LevelEditorViewportWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
 	{
 		const LevelEditorModule& levelEditor = LevelEditorModule::Get();
@@ -559,5 +684,41 @@ namespace Editors
 		const float SCREEN_RATIO = 0.025f;
 		float size = SCREEN_RATIO * worldSize;
 		return size;
+	}
+
+	void LevelEditorViewportWidget::CreateShadowMaps()
+	{
+		ID3D12Device2* pDevice = Rendering::RenderModule::Get().GetDevice();
+
+		UINT srvSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pShadowMapSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT; //DXGI_FORMAT_R8G8B8A8_UNORM
+		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
+		{
+			m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, format, Core::Vec4f(1, 1, 1, 1));
+
+			//Create the srv descriptor
+			{
+				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+				srvDesc.Format = format;
+				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+				srvDesc.Texture2D.MipLevels = 1;
+
+				D3D12_CPU_DESCRIPTOR_HANDLE handle;
+				handle.ptr = SIZE_T(uint64_t(m_pShadowMapSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr) + INT64(ii) * srvSize);
+				pDevice->CreateShaderResourceView(m_pShadowRenderTarget[ii]->GetColorTexture()->GetResource(), &srvDesc, handle);
+			}
+		}
 	}
 }

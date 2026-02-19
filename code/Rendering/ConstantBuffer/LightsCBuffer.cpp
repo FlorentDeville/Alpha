@@ -6,13 +6,13 @@
 
 namespace Rendering
 {
-	Light::Light()
+	LightCBuffer::LightCBuffer()
 		: m_position()
 		, m_direction()
 		, m_type(LightType::Unknown)
 	{ }
 
-	void Light::MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular)
+	void LightCBuffer::MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular)
 	{
 		m_direction = direction;
 		m_ambient = ambient;
@@ -21,7 +21,7 @@ namespace Rendering
 		m_type = LightType::Directional;
 	}
 
-	void Light::MakePointLight(const Core::Float3& position, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
+	void LightCBuffer::MakePointLight(const Core::Float3& position, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
 		float constant, float linear, float quadratic)
 	{
 		m_position = position;
@@ -34,7 +34,7 @@ namespace Rendering
 		m_type = LightType::Point;
 	}
 
-	void Light::MakeSpotLight(const Core::Float3& position, const Core::Float3& direction,
+	void LightCBuffer::MakeSpotLight(const Core::Float3& position, const Core::Float3& direction,
 		const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
 		float constant, float linear, float quadratic, float cutOff, float outerCutOff)
 	{
@@ -51,16 +51,16 @@ namespace Rendering
 		m_type = LightType::Spot;
 	}
 
-	LightsCBuffer::LightsCBuffer()
+	LightsArrayCBuffer::LightsArrayCBuffer()
 		: m_numLight(0)
 	{ }
 
-	Light* LightsCBuffer::AddLight()
+	LightCBuffer* LightsArrayCBuffer::AddLight()
 	{
 		if (m_numLight >= MAX_LIGHT_COUNT)
 			return nullptr;
 
-		Light* pLight = &m_lightArray[m_numLight];
+		LightCBuffer* pLight = &m_lightArray[m_numLight];
 		++m_numLight;
 		return pLight;
 	}

@@ -21,5 +21,7 @@ namespace Editors
 		static void WriteCBufferLightsHeaderFile(const std::string& folder);
 
 		static void WriteBaseTypesHeaderFile(const std::string& folder);
+
+		static void WriteLightTypesHeaderFile(const std::string& folder);
 	};
 }

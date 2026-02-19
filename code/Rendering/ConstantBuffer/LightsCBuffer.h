@@ -20,10 +20,10 @@ namespace Rendering
 
 	// This class needs to be aligned to 16 bytes to match the shader structure.
 	// Could be optimized using the paddings to store floats.
-	class Light
+	class LightCBuffer
 	{
 	public:
-		Light();
+		LightCBuffer();
 
 		void MakeDirectionalLight(const Core::Float3& direction, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular);
 		void MakePointLight(const Core::Float3& position, const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
@@ -32,7 +32,7 @@ namespace Rendering
 			const Core::Float3& ambient, const Core::Float3& diffuse, const Core::Float3& specular,
 			float constant, float linear, float quadratic, float cutOff, float outerCutOff);
 
-	private:
+	//private:
 		Core::Float3 m_position;
 		float m_outerCutOff;
 
@@ -56,18 +56,18 @@ namespace Rendering
 
 	// This is the structure representing the lights const buffer. It needs to match the structure passed to shaders
 	// and defined in includes\CBufferLights.hlsl.
-	class LightsCBuffer
+	class LightsArrayCBuffer
 	{
 	public:
-		LightsCBuffer();
+		LightsArrayCBuffer();
 		
-		Light* AddLight();
+		LightCBuffer* AddLight();
 
 		static const int MAX_LIGHT_COUNT = 8;
 
 	private:
 		int m_numLight;
 		char m_padding[12];
-		Light m_lightArray[MAX_LIGHT_COUNT];
+		LightCBuffer m_lightArray[MAX_LIGHT_COUNT];
 	};
 }

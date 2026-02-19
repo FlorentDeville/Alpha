@@ -117,6 +117,8 @@ namespace Widgets
 		Rendering::MeshId GetQuadMeshId() const;
 
 		Rendering::PipelineStateId GetObjectIdsPsoId() const;
+		Rendering::PipelineStateId GetShadowMapPsoId() const;
+		Rendering::PipelineStateId GetShadowMapDirLightPsoId() const;
 
 	private:
 
@@ -144,6 +146,8 @@ namespace Widgets
 		Rendering::TextureId m_iconTextureIdArray[static_cast<int>(IconId::kCount)];
 
 		Rendering::PipelineStateId m_objectIdsPsoId; //pso used to render the object ids frame buffer. This should not be here, it's specific to the level editor
+		Rendering::PipelineStateId m_shadowMapPsoId; //pso used to render spotlight shadow map. Should not be here.
+		Rendering::PipelineStateId m_shadowMapDirLightPsoId; //pso used to render dirlight shadow map. Should not be here.
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;

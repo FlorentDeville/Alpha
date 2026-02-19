@@ -25,6 +25,7 @@ namespace Rendering
 		void InitAsReadbackBuffer(int width, int height, int depth);
 
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);
+		void TransitionToShaderResource();
 
 		const ID3D12DescriptorHeap* GetSRV() const;
 		ID3D12DescriptorHeap* GetSRV();
