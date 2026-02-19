@@ -199,5 +199,7 @@ namespace Widgets
 
 		//Update the selected index
 		m_selectedTab = index;
+
+		Widgets::WidgetMgr::Get().RequestResize();
 	}
 }
