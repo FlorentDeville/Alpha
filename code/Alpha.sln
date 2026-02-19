@@ -41,6 +41,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		debugger.natvis = debugger.natvis
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureImporter", "Importer\TextureImporter\TextureImporter.vcxproj", "{4E38226C-33B9-4D29-9766-E25FDF23A601}"
+	ProjectSection(ProjectDependencies) = postProject
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77} = {371B9FA9-4C90-4AC6-A123-ACED756D6C77}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rdParty", "3rdParty", "{53053F24-D50B-4BC9-9FDA-60929D7DCB4A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTex", "3rdparty\DirectXTex-oct2025\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj", "{371B9FA9-4C90-4AC6-A123-ACED756D6C77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -129,12 +138,30 @@ Global
 		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x64.Build.0 = Release|x64
 		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x86.ActiveCfg = Release|Win32
 		{775A5480-2451-4E4B-9D41-D8B2BCF922D0}.Release|x86.Build.0 = Release|Win32
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Debug|x64.ActiveCfg = Debug|x64
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Debug|x64.Build.0 = Debug|x64
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Debug|x86.ActiveCfg = Debug|Win32
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Debug|x86.Build.0 = Debug|Win32
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Release|x64.ActiveCfg = Release|x64
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Release|x64.Build.0 = Release|x64
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Release|x86.ActiveCfg = Release|Win32
+		{4E38226C-33B9-4D29-9766-E25FDF23A601}.Release|x86.Build.0 = Release|Win32
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Debug|x64.ActiveCfg = Debug|x64
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Debug|x64.Build.0 = Debug|x64
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Debug|x86.ActiveCfg = Debug|Win32
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Debug|x86.Build.0 = Debug|Win32
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x64.ActiveCfg = Release|x64
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x64.Build.0 = Release|x64
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x86.ActiveCfg = Release|Win32
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{775A5480-2451-4E4B-9D41-D8B2BCF922D0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{4E38226C-33B9-4D29-9766-E25FDF23A601} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{371B9FA9-4C90-4AC6-A123-ACED756D6C77} = {53053F24-D50B-4BC9-9FDA-60929D7DCB4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14F50D67-A38C-4F66-ADAF-221E3E04C6C2}
