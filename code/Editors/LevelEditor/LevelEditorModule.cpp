@@ -107,6 +107,19 @@ namespace Editors
 		return true;
 	}
 
+	bool LevelEditorModule::CloseLevel()
+	{
+		if (!m_loadedLevelAssetId.IsValid())
+			return false;
+
+		Systems::NewAssetId closedLevel = m_loadedLevelAssetId;
+		m_loadedLevelAssetId = Systems::NewAssetId::INVALID;
+		m_pLevel = nullptr;
+
+		m_onClosedLevel(closedLevel);
+		return true;
+	}
+
 	bool LevelEditorModule::RenameLevel(Systems::NewAssetId id, const std::string& newName)
 	{
 		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);

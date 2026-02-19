@@ -147,6 +147,7 @@ namespace Editors
 		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
+		levelEditorModule.OnClosedLevel([this](Systems::NewAssetId id) { OnLevelEditorModule_ClosedLevel(id); });
 		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoParent) { OnLevelEditorModule_AddGameObject(pGo, pGoParent); });
 		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
 		levelEditorModule.OnReparentGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent) { OnLevelEditorModule_ReparentGameObject(pGo, pGoOldParent, pGoNewParent); });
@@ -167,6 +168,10 @@ namespace Editors
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->SetShortcut("Ctrl+S");
 		pSaveItem->OnClick([this]() { OnClickFileMenu_SaveLevel(); });
+
+		Widgets::MenuItem* pClosedItem = pEditMenu->AddMenuItem("Close");
+		pClosedItem->SetShortcut("Ctrl+F4");
+		pClosedItem->OnClick([this]() { OnClickFileMenu_CloseLevel(); });
 
 		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
 		pRenameItem->SetShortcut("F2");
@@ -575,6 +580,14 @@ namespace Editors
 		}
 	}
 
+	void LevelEditor::OnClickFileMenu_CloseLevel()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+
+		levelEditorModule.ClearSelection();
+		levelEditorModule.CloseLevel();
+	}
+
 	void LevelEditor::OnClickFileMenu_DeleteLevel()
 	{
 		//The level browser and scene tree browser uses the same shortcuts. So to avoid triggering both commands
@@ -738,6 +751,9 @@ namespace Editors
 
 	void LevelEditor::OnLevelEditorModule_OpenLevel()
 	{
+		if (!m_pSceneTree)
+			return;
+
 		const Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel();
 
 		m_pSceneTreeModel = new SceneTreeModel(pLevel);
@@ -758,6 +774,14 @@ namespace Editors
 					LevelEditorModule::Get().AddToSelection(guid);
 				}
 			});
+	}
+
+	void LevelEditor::OnLevelEditorModule_ClosedLevel(Systems::NewAssetId levelId)
+	{
+		if (!m_pSceneTree)
+			return;
+
+		m_pSceneTree->Clear();
 	}
 
 	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)

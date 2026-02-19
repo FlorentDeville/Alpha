@@ -117,6 +117,7 @@ namespace Editors
 		void OnClickFileMenu_NewLevel();
 		void OnClickFileMenu_OpenLevel();
 		void OnClickFileMenu_SaveLevel();
+		void OnClickFileMenu_CloseLevel();
 		void OnClickFileMenu_DeleteLevel();
 		void OnClickFileMenu_RenameLevel();
 
@@ -131,6 +132,7 @@ namespace Editors
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
 		void OnLevelEditorModule_OpenLevel();
+		void OnLevelEditorModule_ClosedLevel(Systems::NewAssetId levelId);
 		void OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent);
 		void OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid);
 		void OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent);
