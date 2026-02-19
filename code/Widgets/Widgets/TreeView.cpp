@@ -119,6 +119,12 @@ namespace Widgets
 		if (m_pModel == pModel)
 			return;
 
+		if (!pModel)
+		{
+			Clear();
+			return;
+		}
+
 		if (m_pModel)
 		{
 			delete m_pModel;
@@ -176,6 +182,19 @@ namespace Widgets
 			size.x = width;
 			pCell->SetSize(size);
 		}
+	}
+
+	void TreeView::Clear()
+	{
+		if (!m_pModel)
+			return;
+
+		delete m_pModel;
+		m_pModel = nullptr;
+
+		m_pLayout->DeleteAllChildren();
+		m_rowInfoMap.clear();
+		m_rowLayoutTree.clear();
 	}
 
 	void TreeView::CreateHeader()
