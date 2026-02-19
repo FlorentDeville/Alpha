@@ -112,6 +112,8 @@ namespace Editors
 		if (!m_loadedLevelAssetId.IsValid())
 			return false;
 
+		ClearSelection();
+
 		Systems::NewAssetId closedLevel = m_loadedLevelAssetId;
 		m_loadedLevelAssetId = Systems::NewAssetId::INVALID;
 		m_pLevel = nullptr;

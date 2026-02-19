@@ -583,8 +583,6 @@ namespace Editors
 	void LevelEditor::OnClickFileMenu_CloseLevel()
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-
-		levelEditorModule.ClearSelection();
 		levelEditorModule.CloseLevel();
 	}
 
