@@ -63,6 +63,8 @@ namespace Editors
 		, m_pSceneTreeModel(nullptr)
 		, m_pPropertyGridWidget(nullptr)
 		, m_pPropertyGridPopulator(nullptr)
+		, m_sceneTreeTabId()
+		, m_levelBrowserTabId()
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -145,6 +147,7 @@ namespace Editors
 		levelEditorModule.OnBeforeDeleteLevel([this](const Systems::AssetMetadata& metadata) { OnLevelEditorModule_BeforeDeleteLevel(metadata); });
 		levelEditorModule.OnRenameLevel([this](Systems::NewAssetId id, const std::string& newName) { OnLevelEditorModule_RenameLevel(id, newName); });
 		levelEditorModule.OnOpenLevel([this]() { OnLevelEditorModule_OpenLevel(); });
+		levelEditorModule.OnClosedLevel([this](Systems::NewAssetId id) { OnLevelEditorModule_ClosedLevel(id); });
 		levelEditorModule.OnAddGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoParent) { OnLevelEditorModule_AddGameObject(pGo, pGoParent); });
 		levelEditorModule.OnBeforeDeleteGameObject([this](const Core::Guid& guid) { OnLevelEditorModule_DeleteGameObject(guid); });
 		levelEditorModule.OnReparentGameObject([this](const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent) { OnLevelEditorModule_ReparentGameObject(pGo, pGoOldParent, pGoNewParent); });
@@ -165,6 +168,10 @@ namespace Editors
 		Widgets::MenuItem* pSaveItem = pEditMenu->AddMenuItem("Save");
 		pSaveItem->SetShortcut("Ctrl+S");
 		pSaveItem->OnClick([this]() { OnClickFileMenu_SaveLevel(); });
+
+		Widgets::MenuItem* pClosedItem = pEditMenu->AddMenuItem("Close");
+		pClosedItem->SetShortcut("Ctrl+F4");
+		pClosedItem->OnClick([this]() { OnClickFileMenu_CloseLevel(); });
 
 		Widgets::MenuItem* pRenameItem = pEditMenu->AddMenuItem("Rename...");
 		pRenameItem->SetShortcut("F2");
@@ -272,10 +279,14 @@ namespace Editors
 			return;
 
 		const std::string title = "Scene Tree";
+		m_sceneTreeTabId = SID(title);
+
 		m_pSceneTreeFrame = new Widgets::Frame(title);
 		m_pSceneTreeFrame->OnClose([this, pParent]() 
 			{ 
-				pParent->CloseTab(m_pSceneTreeFrame); m_pSceneTreeFrame = nullptr; 
+				pParent->CloseTab(m_pSceneTreeFrame); 
+				m_pSceneTreeFrame = nullptr; 
+				m_sceneTreeTabId = Core::INVALID_SID;
 			});
 
 		pParent->AddTab(title, m_pSceneTreeFrame);
@@ -297,8 +308,11 @@ namespace Editors
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
 	{
-		Widgets::Frame* pLevelBrowser = new Widgets::Frame("Level Browser");
-		pParent->AddTab("Level Browser", pLevelBrowser);
+		const char* pTitle = "Level Browser";
+		m_levelBrowserTabId = SID(pTitle);
+
+		Widgets::Frame* pLevelBrowser = new Widgets::Frame(pTitle);
+		pParent->AddTab(pTitle, pLevelBrowser);
 
 		m_pLevelTableView = new Widgets::TableView();
 		pLevelBrowser->AddWidget(m_pLevelTableView);
@@ -549,7 +563,11 @@ namespace Editors
 			return;
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
+		bool res = levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
+		if (res)
+		{
+			m_pLeftTabContainer->SetSelectedTab(m_sceneTreeTabId);
+		}
 	}
 
 	void LevelEditor::OnClickFileMenu_SaveLevel()
@@ -560,6 +578,12 @@ namespace Editors
 		{
 			levelEditorModule.SaveLevel();
 		}
+	}
+
+	void LevelEditor::OnClickFileMenu_CloseLevel()
+	{
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		levelEditorModule.CloseLevel();
 	}
 
 	void LevelEditor::OnClickFileMenu_DeleteLevel()
@@ -725,6 +749,9 @@ namespace Editors
 
 	void LevelEditor::OnLevelEditorModule_OpenLevel()
 	{
+		if (!m_pSceneTree)
+			return;
+
 		const Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel();
 
 		m_pSceneTreeModel = new SceneTreeModel(pLevel);
@@ -745,6 +772,14 @@ namespace Editors
 					LevelEditorModule::Get().AddToSelection(guid);
 				}
 			});
+	}
+
+	void LevelEditor::OnLevelEditorModule_ClosedLevel(Systems::NewAssetId levelId)
+	{
+		if (!m_pSceneTree)
+			return;
+
+		m_pSceneTree->Clear();
 	}
 
 	void LevelEditor::OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent)

@@ -36,6 +36,9 @@ namespace Widgets
 
 		void SetColumnWidth(int column, int width);
 		
+		//Delete the model and empty the table
+		void Clear();
+
 		EVENT_DECL(ItemDoubleClick, void(const ModelIndex& idx))
 		EVENT_DECL(DropItem, void(const ModelIndex& index, const ModelIndex& newParent)) //called when a row is dragged and dropped on another row
 

@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Callbacks/CallbackId.h"
+#include "Core/Sid/Sid.h"
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/NewAssetId.h"
@@ -83,6 +84,9 @@ namespace Editors
 
 		Systems::NewAssetId m_selectedLevelInLevelList;
 
+		Core::Sid m_sceneTreeTabId;
+		Core::Sid m_levelBrowserTabId;
+
 		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
@@ -113,6 +117,7 @@ namespace Editors
 		void OnClickFileMenu_NewLevel();
 		void OnClickFileMenu_OpenLevel();
 		void OnClickFileMenu_SaveLevel();
+		void OnClickFileMenu_CloseLevel();
 		void OnClickFileMenu_DeleteLevel();
 		void OnClickFileMenu_RenameLevel();
 
@@ -127,6 +132,7 @@ namespace Editors
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
 		void OnLevelEditorModule_OpenLevel();
+		void OnLevelEditorModule_ClosedLevel(Systems::NewAssetId levelId);
 		void OnLevelEditorModule_AddGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoParent);
 		void OnLevelEditorModule_DeleteGameObject(const Core::Guid& guid);
 		void OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent);

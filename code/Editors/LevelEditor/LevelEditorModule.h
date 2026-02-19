@@ -61,6 +61,7 @@ namespace Editors
 		bool SaveLevel();
 
 		bool OpenLevel(Systems::NewAssetId id);
+		bool CloseLevel();
 
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
@@ -92,6 +93,7 @@ namespace Editors
 		EVENT_DECL(AfterDeleteLevel, void(Systems::AssetMetadata& metadata))
 
 		EVENT_DECL(OpenLevel, void())
+		EVENT_DECL(ClosedLevel, void(Systems::NewAssetId id))
 		EVENT_DECL(SaveLevel, void())
 		EVENT_DECL(RenameLevel, void(Systems::NewAssetId id, const std::string& newName))
 

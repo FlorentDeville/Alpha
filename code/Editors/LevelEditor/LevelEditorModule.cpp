@@ -95,15 +95,35 @@ namespace Editors
 
 	bool LevelEditorModule::OpenLevel(Systems::NewAssetId id)
 	{
+		if (m_loadedLevelAssetId == id)
+			return false;
+
 		Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id);
 		if (!pLevel)
 			return false;
+
+		CloseLevel();
 
 		m_loadedLevelAssetId = id;
 		m_pLevel = pLevel;
 
 		m_onOpenLevel();
 
+		return true;
+	}
+
+	bool LevelEditorModule::CloseLevel()
+	{
+		if (!m_loadedLevelAssetId.IsValid())
+			return false;
+
+		ClearSelection();
+
+		Systems::NewAssetId closedLevel = m_loadedLevelAssetId;
+		m_loadedLevelAssetId = Systems::NewAssetId::INVALID;
+		m_pLevel = nullptr;
+
+		m_onClosedLevel(closedLevel);
 		return true;
 	}
 
