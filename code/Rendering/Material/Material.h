@@ -4,14 +4,14 @@
 
 #pragma once
 #define NOMINMAX
-#include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
+#include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/Texture/TextureId.h"
 
 namespace Rendering
 {
+	class PipelineState;
 	class RootSignature;
-	struct RootSignatureId;
 
 	class Material
 	{
