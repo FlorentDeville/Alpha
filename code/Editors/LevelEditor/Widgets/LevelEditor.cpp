@@ -63,6 +63,8 @@ namespace Editors
 		, m_pSceneTreeModel(nullptr)
 		, m_pPropertyGridWidget(nullptr)
 		, m_pPropertyGridPopulator(nullptr)
+		, m_sceneTreeTabId()
+		, m_levelBrowserTabId()
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -272,10 +274,14 @@ namespace Editors
 			return;
 
 		const std::string title = "Scene Tree";
+		m_sceneTreeTabId = SID(title);
+
 		m_pSceneTreeFrame = new Widgets::Frame(title);
 		m_pSceneTreeFrame->OnClose([this, pParent]() 
 			{ 
-				pParent->CloseTab(m_pSceneTreeFrame); m_pSceneTreeFrame = nullptr; 
+				pParent->CloseTab(m_pSceneTreeFrame); 
+				m_pSceneTreeFrame = nullptr; 
+				m_sceneTreeTabId = Core::INVALID_SID;
 			});
 
 		pParent->AddTab(title, m_pSceneTreeFrame);
@@ -297,8 +303,11 @@ namespace Editors
 
 	void LevelEditor::CreateLevelBrowser(Widgets::TabContainer* pParent)
 	{
-		Widgets::Frame* pLevelBrowser = new Widgets::Frame("Level Browser");
-		pParent->AddTab("Level Browser", pLevelBrowser);
+		const char* pTitle = "Level Browser";
+		m_levelBrowserTabId = SID(pTitle);
+
+		Widgets::Frame* pLevelBrowser = new Widgets::Frame(pTitle);
+		pParent->AddTab(pTitle, pLevelBrowser);
 
 		m_pLevelTableView = new Widgets::TableView();
 		pLevelBrowser->AddWidget(m_pLevelTableView);
@@ -549,7 +558,11 @@ namespace Editors
 			return;
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-		levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
+		bool res = levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
+		if (res)
+		{
+			m_pLeftTabContainer->SetSelectedTab(m_sceneTreeTabId);
+		}
 	}
 
 	void LevelEditor::OnClickFileMenu_SaveLevel()

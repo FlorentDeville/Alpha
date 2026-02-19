@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Callbacks/CallbackId.h"
+#include "Core/Sid/Sid.h"
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/NewAssetId.h"
@@ -82,6 +83,9 @@ namespace Editors
 		PropertyGridPopulator* m_pPropertyGridPopulator;
 
 		Systems::NewAssetId m_selectedLevelInLevelList;
+
+		Core::Sid m_sceneTreeTabId;
+		Core::Sid m_levelBrowserTabId;
 
 		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
