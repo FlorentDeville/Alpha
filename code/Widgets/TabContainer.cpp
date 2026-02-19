@@ -64,7 +64,8 @@ namespace Widgets
 		const int DEFAULT_HEIGHT = 17;
 		DirectX::XMUINT2 textRect(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-		int tabIndex = static_cast<int>(m_tabHeaders.size());
+		uint64_t tabIndex = m_tabHeaders.size();
+		m_tabIdToIndex[SID(header.c_str())] = tabIndex;
 
 		Widgets::Container* pTitleContainer = new Widgets::Container(textRect.x, textRect.y);
 
@@ -105,10 +106,19 @@ namespace Widgets
 
 		if (m_selectedTab == index)
 		{
-			if(index >= tabCount)
-				SetSelectedTab(tabCount - 1);
+			int newIndex = m_selectedTab;
+			if (index >= tabCount)
+				newIndex = tabCount - 1;
+
+			Internal_SetSelectedTab(newIndex);
 		}
 		
+		for (std::pair<Core::Sid, uint64_t> it : m_tabIdToIndex)
+		{
+			if (it.second > index)
+				it.second = it.second - 1;
+		}
+
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
 
@@ -122,24 +132,16 @@ namespace Widgets
 		if (m_selectedTab == index)
 			return;
 
-		//reset all the other tab to the default state
-		for (int ii = 0; ii < m_tabContent.size(); ++ii)
-		{
-			if (ii == index)
-				continue;
+		Internal_SetSelectedTab(index);
+	}
 
-			m_tabHeaders[ii]->GetDefaultStyle().SetBackgroundColor(m_defaultHeaderColor);
-			m_tabContent[ii]->Disable();
-		}
+	void TabContainer::SetSelectedTab(Core::Sid tabId)
+	{
+		std::map<Core::Sid, uint64_t>::const_iterator it = m_tabIdToIndex.find(tabId);
+		if (it == m_tabIdToIndex.cend())
+			return;
 
-		//Change the header color
-		m_tabHeaders[index]->GetDefaultStyle().SetBackgroundColor(m_selectedHeaderColor);
-
-		//Show the new content
-		m_tabContent[index]->Enable();
-
-		//Update the selected index
-		m_selectedTab = index;
+		SetSelectedTab(static_cast<int>(it->second));
 	}
 
 	void TabContainer::Enable(bool recursive)
@@ -175,5 +177,27 @@ namespace Widgets
 		size_t index = std::distance(m_tabHeaders.cbegin(), it);
 		SetSelectedTab(static_cast<int>(index));
 		Widgets::WidgetMgr::Get().RequestResize();
+	}
+
+	void TabContainer::Internal_SetSelectedTab(int index)
+	{
+		//reset all the other tab to the default state
+		for (int ii = 0; ii < m_tabContent.size(); ++ii)
+		{
+			if (ii == index)
+				continue;
+
+			m_tabHeaders[ii]->GetDefaultStyle().SetBackgroundColor(m_defaultHeaderColor);
+			m_tabContent[ii]->Disable();
+		}
+
+		//Change the header color
+		m_tabHeaders[index]->GetDefaultStyle().SetBackgroundColor(m_selectedHeaderColor);
+
+		//Show the new content
+		m_tabContent[index]->Enable();
+
+		//Update the selected index
+		m_selectedTab = index;
 	}
 }
