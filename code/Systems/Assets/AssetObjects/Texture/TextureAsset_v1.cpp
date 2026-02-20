@@ -8,12 +8,19 @@ namespace Systems
 {
 	TextureAsset_v1::TextureAsset_v1()
 		: AssetObject()
-		, m_sourceFile()
+		, m_sourceFilename()
 		, m_blob()
 	{ }
 
 	TextureAsset_v1::~TextureAsset_v1()
 	{ }
+
+	void TextureAsset_v1::Init(const std::string& sourceFilename, const uint8_t* pBlob, uint64_t blobSize)
+	{
+		m_sourceFilename = sourceFilename;
+		m_blob.Resize(blobSize);
+		memcpy(m_blob.GetData(), pBlob, blobSize);
+	}
 
 	void TextureAsset_v1::PostLoad()
 	{ }
