@@ -7,12 +7,16 @@
 #include "Core/Log/LogModule.h"
 
 #include "Editors/TextureEditor/TextureEditorModule.h"
+#include "Editors/TextureEditor/TextureListModel.h"
 
 #include "OsWin/FileDialog.h"
 
+#include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
+#include "Widgets/SplitVertical.h"
+#include "Widgets/Widgets/TableView.h"
 
 namespace Editors
 {
@@ -34,6 +38,19 @@ namespace Editors
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
 			pNewItem->OnClick([this]() { OnClick_File_Import(); });
 		}
+
+		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
+		pVerticalSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pVerticalSplit->SetLeftPanelWidth(500);
+
+		m_pInternalLayout->AddWidget(pVerticalSplit);
+
+		Widgets::TableView* pTable = new Widgets::TableView();
+		pVerticalSplit->AddLeftPanel(pTable);
+
+		TextureListModel* pListModel = new TextureListModel();
+		pTable->SetModel(pListModel);
+		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
 	}
 
 	void TextureEditor::OnClick_File_Import()
