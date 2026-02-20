@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Core/Singleton.h"
+#include "Editors/BaseEditor.h"
 
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -47,27 +47,22 @@ namespace Editors
 		MaterialEntry();
 	};
 
-	class MeshEditorParameter
-	{
-	public:
-		Widgets::Widget* pParent;
-	};
-
-	class MeshEditor : public Core::Singleton<MeshEditor>
+	class MeshEditor : public BaseEditor
 	{
 	public:
 		MeshEditor();
 		~MeshEditor();
 
-		void CreateEditor(const MeshEditorParameter& parameter);
+		void CreateEditor(Widgets::Widget* pParent) override;
 
 	private:
 		//camera position
-		float m_cameraDistance;
-		float m_aspectRatio;
 		DirectX::XMVECTOR m_cameraTarget;
 		DirectX::XMVECTOR m_cameraEuler;
-		
+
+		float m_cameraDistance;
+		float m_aspectRatio;
+				
 		std::vector<MeshEntry> m_allMeshes;
 		std::vector<MaterialEntry> m_allMaterials;
 

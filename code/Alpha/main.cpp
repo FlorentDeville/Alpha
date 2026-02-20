@@ -24,7 +24,6 @@
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
-#include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
@@ -51,6 +50,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
@@ -444,10 +444,6 @@ void CreateMainWindow()
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 
-	Editors::MeshEditorParameter meshEditorParameter;
-	meshEditorParameter.pParent = pMiddleTabContainer;
-	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
-
 	Editors::EditorManager::Get().Init(pMiddleTabContainer);
 
 	Editors::LogEditorParameter logEditorParameter;
@@ -580,7 +576,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::InitSingleton();
 	levelEditorModule.Init();
 
-	Editors::MeshEditor::InitSingleton();
 	Editors::MaterialEditorModule& materialEditorModule = Editors::MaterialEditorModule::InitSingleton();
 	materialEditorModule.Init(configuration.m_dataRoot);
 
@@ -613,8 +608,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	materialEditorModule.Shutdown();
 	Editors::MaterialEditorModule::ReleaseSingleton();
-
-	Editors::MeshEditor::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();
 	

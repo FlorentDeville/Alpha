@@ -6,6 +6,7 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
+#include "Editors/MeshEditor/MeshEditor.h"
 
 namespace Editors
 {
@@ -25,6 +26,7 @@ namespace Editors
 	void EditorManager::Init(Widgets::Widget* pParent)
 	{
 		m_editors.PushBack(new LevelEditor());
+		m_editors.PushBack(new MeshEditor());
 		m_editors.PushBack(new MaterialEditor());
 
 		for (BaseEditor* pEditor : m_editors)
