@@ -6,11 +6,6 @@
 
 #include "Core/Singleton.h"
 
-#include <vector>
-
-class GameEntity;
-class CameraEntity;
-
 class GameMgr : public Core::Singleton<GameMgr>
 {
 public:
