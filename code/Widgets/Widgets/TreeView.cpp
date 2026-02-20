@@ -7,8 +7,8 @@
 #include "OsWin/Cursor/Cursor.h"
 #include "OsWin/Input.h"
 
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Models/AbstractViewModel.h"
@@ -79,13 +79,14 @@ namespace Widgets
 		{
 			WidgetMgr& widgetMgr = WidgetMgr::Get();
 			Rendering::RenderModule& render = Rendering::RenderModule::Get();
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+			Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 
 			render.SetScissorRectangle(scissor);
 
-			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.GetWidgetMaterialId());
-			render.BindMaterial(*pMaterial, wvp);
+			const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetBaseWidgetPsoId());
+			render.BindMaterial(*pPso);
 
+			render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
 			render.SetConstantBuffer(1, sizeof(m_backgroundColor), &m_backgroundColor, 0);
 			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
 			render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);

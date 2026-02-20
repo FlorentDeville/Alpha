@@ -281,23 +281,6 @@ namespace Rendering
 		}
 	}
 
-	void RenderModule::BindMaterial(const Rendering::Material& material, const DirectX::XMMATRIX& wvp)
-	{
-		m_pRenderCommandList->SetPipelineState(material.m_pPipelineState->GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(material.m_pRootSignature->GetRootSignature());
-
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
-
-		if (material.m_textureId != Rendering::TextureId::INVALID)
-		{
-			Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(material.m_textureId);
-			ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();
-			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-			m_pRenderCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-			m_pRenderCommandList->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
-		}
-	}
-
 	void RenderModule::BindMaterial(const PipelineState& pso)
 	{
 		Rendering::RootSignatureId rsId = pso.GetRootSignatureId();
