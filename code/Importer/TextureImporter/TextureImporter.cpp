@@ -69,7 +69,16 @@ namespace Importer
             return false;
         }
 
-        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), textureBlob.GetBufferSize());
+        image.Release();
+        timage.Release();
+
+        size_t blobSize = textureBlob.GetBufferSize();
+        if (blobSize > UINT32_MAX)
+        {
+            return false;
+        }
+
+        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize));
         return true;
 	}
 }
