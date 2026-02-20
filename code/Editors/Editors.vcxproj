@@ -39,6 +39,7 @@
     <ClInclude Include="MaterialEditor\MaterialListModel.h" />
     <ClInclude Include="TextureEditor\TextureEditor.h" />
     <ClInclude Include="TextureEditor\TextureEditorModule.h" />
+    <ClInclude Include="TextureEditor\TextureListModel.h" />
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Dialog\AssetDialog.h" />
     <ClInclude Include="Widgets\Dialog\ClassSelectionDialog.h" />
@@ -92,6 +93,7 @@
     <ClCompile Include="MaterialEditor\MaterialListModel.cpp" />
     <ClCompile Include="TextureEditor\TextureEditor.cpp" />
     <ClCompile Include="TextureEditor\TextureEditorModule.cpp" />
+    <ClCompile Include="TextureEditor\TextureListModel.cpp" />
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\ClassSelectionDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp" />
