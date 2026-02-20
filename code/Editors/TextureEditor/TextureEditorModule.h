@@ -4,24 +4,21 @@
 
 #pragma once
 
-#include "Editors/BaseEditor.h"
+#include "Core/Singleton.h"
 
-namespace Widgets
-{
-	class Widget;
-}
+#include <string>
 
 namespace Editors
 {
-	class TextureEditor : public BaseEditor
+	class TextureEditorModule : public Core::Singleton<TextureEditorModule>
 	{
 	public:
-		TextureEditor();
-		~TextureEditor();
+		TextureEditorModule();
+		~TextureEditorModule();
 
-		void CreateEditor(Widgets::Widget* pParent) override;
+		void Init() override;
+		void Shutdown() override;
 
-	private:
-		void OnClick_File_Import();
+		bool Import(const std::string& filename);
 	};
 }
