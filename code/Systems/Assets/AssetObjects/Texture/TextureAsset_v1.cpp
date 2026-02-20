@@ -15,7 +15,7 @@ namespace Systems
 	TextureAsset_v1::~TextureAsset_v1()
 	{ }
 
-	void TextureAsset_v1::Init(const std::string& sourceFilename, const uint8_t* pBlob, uint64_t blobSize)
+	void TextureAsset_v1::Init(const std::string& sourceFilename, const uint8_t* pBlob, uint32_t blobSize)
 	{
 		m_sourceFilename = sourceFilename;
 		m_blob.Resize(blobSize);

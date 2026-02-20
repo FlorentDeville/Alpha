@@ -15,7 +15,7 @@ namespace Systems
 		TextureAsset_v1();
 		~TextureAsset_v1();
 
-		void Init(const std::string& sourceFilename, const uint8_t* pBlob, uint64_t blobSize);
+		void Init(const std::string& sourceFilename, const uint8_t* pBlob, uint32_t blobSize);
 
 		void PostLoad() override;
 
