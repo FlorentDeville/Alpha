@@ -10,6 +10,7 @@ namespace Systems
 {
 	void RegisterStandardTypesToReflection()
 	{
+		REGISTER_TYPE(uint8_t);
 		REGISTER_TYPE(int8_t);
 		REGISTER_TYPE(int32_t);
 		REGISTER_TYPE(uint32_t);
