@@ -6,8 +6,8 @@
 
 #include "OsWin/Cursor/Cursor.h"
 
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
 #include "Widgets/Events/BaseEvent.h"
@@ -41,11 +41,12 @@ void Split::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 
 	WidgetMgr& widgetMgr = WidgetMgr::Get();
 	Rendering::RenderModule& render = Rendering::RenderModule::Get();
-	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+	Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 
-	const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
-	render.BindMaterial(*pMaterial, mvpMatrix);
+	const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetBaseWidgetPsoId());
+	render.BindMaterial(*pPso);
 
+	render.SetConstantBuffer(0, sizeof(mvpMatrix), &mvpMatrix, 0);
 	render.SetConstantBuffer(1, sizeof(color), &color, 0);
 
 	int value = 1;

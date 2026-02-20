@@ -7,8 +7,6 @@
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/Material/Material.h"
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
@@ -63,6 +61,8 @@ namespace Widgets
 		, m_shortcutsArray()
 		, m_internalEvent()
 		, m_iconTextureIdArray()
+		, m_baseWidgetPsoId()
+		, m_iconWidgetPsoId()
 		, m_shadowMapPsoId()
 	{}
 
@@ -107,14 +107,8 @@ namespace Widgets
 			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget.vs.cso");
 			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget.ps.cso");
 
-			Rendering::PipelineStateId psoId;
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(psoId);
+			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_baseWidgetPsoId);
 			pPipelineState->Init_PosUv(rsId, vsId, psId);
-
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-			Rendering::Material* pWidgetMaterial = nullptr;
-			materialMgr.CreateMaterial(&pWidgetMaterial, m_materialId);
-			pWidgetMaterial->Init(rsId, psoId);
 		}
 
 		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
@@ -159,17 +153,11 @@ namespace Widgets
 			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.vs.cso");
 			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.ps.cso");
 
-			Rendering::PipelineStateId texture_posuv_pipelineStateId;
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(texture_posuv_pipelineStateId);
+			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_iconWidgetPsoId);
 			pPipelineState->Init_Icon(rsId, vsId, psId);
-
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-			Rendering::Material* pMaterial = nullptr;
-			materialMgr.CreateMaterial(&pMaterial, m_iconMaterialId);
-			pMaterial->Init(rsId, texture_posuv_pipelineStateId);
 		}
 
-		//this should be a material
+		//viewport pso
 		{
 			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\widget_viewport.rs.cso");
 			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\widget_viewport.vs.cso");
@@ -572,9 +560,14 @@ namespace Widgets
 		return m_iconTextureIdArray[static_cast<int>(iconId)];
 	}
 
-	Rendering::MaterialId WidgetMgr::GetWidgetMaterialId() const
+	Rendering::PipelineStateId WidgetMgr::GetBaseWidgetPsoId() const
 	{
-		return m_materialId;
+		return m_baseWidgetPsoId;
+	}
+
+	Rendering::PipelineStateId WidgetMgr::GetIconWidgetPsoId() const
+	{
+		return m_iconWidgetPsoId;
 	}
 
 	Rendering::MeshId WidgetMgr::GetQuadMeshId() const

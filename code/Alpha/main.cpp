@@ -37,8 +37,6 @@
 
 #include "Rendering/CommandQueue.h"
 #include "Rendering/Font/Font.h"
-#include "Rendering/Material/MaterialMgr.h"
-#include "Rendering/Material/Material.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"

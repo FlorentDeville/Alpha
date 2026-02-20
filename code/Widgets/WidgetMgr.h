@@ -10,7 +10,6 @@
 
 
 #include "Rendering/Font/Font.h"
-#include "Rendering/Material/MaterialId.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
@@ -113,7 +112,8 @@ namespace Widgets
 
 		Rendering::TextureId GetIconTextureId(IconId iconId) const;
 
-		Rendering::MaterialId GetWidgetMaterialId() const;
+		Rendering::PipelineStateId GetBaseWidgetPsoId() const;
+		Rendering::PipelineStateId GetIconWidgetPsoId() const;
 		Rendering::MeshId GetQuadMeshId() const;
 
 		Rendering::PipelineStateId GetObjectIdsPsoId() const;
@@ -136,8 +136,8 @@ namespace Widgets
 		int32_t m_prevMouseY;
 
 		//Ids of resources used to render widgets
-		Rendering::MaterialId m_materialId;
-		Rendering::MaterialId m_iconMaterialId;
+		Rendering::PipelineStateId m_baseWidgetPsoId;
+		Rendering::PipelineStateId m_iconWidgetPsoId;
 		Rendering::MeshId m_quadMeshId;
 
 		Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material

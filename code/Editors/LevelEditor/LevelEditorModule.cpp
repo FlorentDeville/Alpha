@@ -9,7 +9,6 @@
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 
 #include "Systems/Assets/AssetMgr.h"

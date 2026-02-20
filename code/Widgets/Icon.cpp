@@ -4,8 +4,8 @@
 
 #include "Widgets/Icon.h"
 
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
@@ -71,11 +71,13 @@ namespace Widgets
 		ComputeWVPMatrix(windowSize, wvp);
 
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
-		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+		Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 
-		const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_iconMaterialId);
-		renderer.BindMaterial(*pMaterial, wvp);
+		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetIconWidgetPsoId());
+		renderer.BindMaterial(*pPso);
+
+		renderer.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
 
 		ID3D12DescriptorHeap* pSrv = Rendering::TextureMgr::Get().GetTexture(m_textureId)->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };

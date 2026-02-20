@@ -4,9 +4,8 @@
 
 #include "Widgets/Container.h"
 
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
 #include "Widgets/Tools/AlternateColorCBuffer.h"
@@ -36,8 +35,7 @@ namespace Widgets
 
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
 		Rendering::RenderModule& render = Rendering::RenderModule::Get();
-		Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-
+		Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 		
 		D3D12_RECT localScissorRect;
 		localScissorRect.left = m_absPos.x;
@@ -58,9 +56,10 @@ namespace Widgets
 		{
 			render.SetScissorRectangle(localScissorRect);
 
-			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
-			render.BindMaterial(*pMaterial, mvpMatrix);
+			const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetBaseWidgetPsoId());
+			render.BindMaterial(*pPso);
 
+			render.SetConstantBuffer(0, sizeof(mvpMatrix), &mvpMatrix, 0);
 			render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
 
 			int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;

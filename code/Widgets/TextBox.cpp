@@ -14,10 +14,9 @@
 #include "Widgets/WidgetMgr.h"
 
 #include "Rendering/Font/FontMgr.h"
-#include "Rendering/Material/MaterialId.h"
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 
 namespace Widgets
 {
@@ -99,11 +98,12 @@ namespace Widgets
 		{
 			WidgetMgr& widgetMgr = WidgetMgr::Get();
 			Rendering::RenderModule& render = Rendering::RenderModule::Get();
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+			Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 
-			const Rendering::Material* pMaterial = materialMgr.GetMaterial(widgetMgr.m_materialId);
-			render.BindMaterial(*pMaterial, wvp);
+			const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetBaseWidgetPsoId());
+			render.BindMaterial(*pPso);
 
+			render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
 			render.SetConstantBuffer(1, sizeof(pCurrentStyle->m_backgroundColor), &pCurrentStyle->m_backgroundColor, 0);
 			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
 			render.SetConstantBuffer(3, sizeof(pCurrentStyle->m_borderColor), &pCurrentStyle->m_borderColor, 0);
