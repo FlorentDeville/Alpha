@@ -43,7 +43,12 @@ namespace Editors
 		Systems::Container* pContainer = containerMgr.CreateContainer(cid);
 		pContainer->AddAsset(pTexture);
 
-		Systems::AssetMetadata metadata(pTexture->GetId(), filename, Systems::TextureAsset::GetAssetTypeNameSid());
+		size_t start = filename.find_last_of('\\');
+		std::string assetName = filename.substr(start + 1);
+		size_t end = assetName.find_last_of('.');
+		assetName = assetName.substr(0, end);
+
+		Systems::AssetMetadata metadata(pTexture->GetId(), assetName, Systems::TextureAsset::GetAssetTypeNameSid());
 		assetMgr.RegisterAssetMetadata(metadata);
 
 		containerMgr.SaveContainer(pContainer->GetId());
