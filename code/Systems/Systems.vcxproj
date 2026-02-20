@@ -25,6 +25,8 @@
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v1.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRef.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRefRaw.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
@@ -68,6 +70,7 @@
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Texture\TextureAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetRef\HardAssetRefRaw.cpp" />
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
     <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />
