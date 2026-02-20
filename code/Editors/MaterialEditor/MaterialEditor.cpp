@@ -81,41 +81,16 @@ namespace Editors
 
 	void MaterialEditor::CreateEditor(Widgets::Widget* pParent)
 	{
-		BaseEditor::CreateEditor(pParent);
+		CreateDefaultWidgets(pParent, "Material");
 
-		//create the widgets
-		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
-		if (pTabContainer)
-		{
-			pTabContainer->AddTab("Material", pViewportTab);
-		}
-		else
-		{
-			pParent->AddWidget(pViewportTab);
-		}
-
-		Widgets::Layout* pOutsideLayout = new Widgets::Layout();
-		pOutsideLayout->SetDirection(Widgets::Layout::Vertical_Reverse);
-		pOutsideLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pViewportTab->AddWidget(pOutsideLayout);
-
-		StatusBar* pStatusBar = new StatusBar();
-		pOutsideLayout->AddWidget(pStatusBar);
-
-		Widgets::Layout* pInternalLayout = new Widgets::Layout();
-		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		pOutsideLayout->AddWidget(pInternalLayout);
-
-		CreateMenu(pInternalLayout);
+		CreateMenu();
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(500);
 
-		pInternalLayout->AddWidget(pSplit);
+		m_pInternalLayout->AddWidget(pSplit);
 
 		//create a button and label per shader
 		m_pShaderListLayout = new Widgets::Layout(0, 0, 0, 0);
@@ -220,34 +195,29 @@ namespace Editors
 		m_pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(metadataCube.GetAssetId());
 	}
 
-	void MaterialEditor::CreateMenu(Widgets::Widget* pParent)
+	void MaterialEditor::CreateMenu()
 	{
-		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
-		pParent->AddWidget(pMenuBar);
-
 		//create the file menu
-		{
-			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
+		Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
-			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Material...");
-			pNewItem->SetShortcut("Ctrl+N");
-			pNewItem->OnClick([this]() { MenuFile_NewMaterial_OnClicked(); });
+		Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("New Material...");
+		pNewItem->SetShortcut("Ctrl+N");
+		pNewItem->OnClick([this]() { MenuFile_NewMaterial_OnClicked(); });
 
-			Widgets::MenuItem* pNewInstanceItem = pFileMenu->AddMenuItem("New Material Instance...");
-			pNewInstanceItem->OnClick([this]() { MenuFile_NewMaterialInstance_OnClicked(); });
+		Widgets::MenuItem* pNewInstanceItem = pFileMenu->AddMenuItem("New Material Instance...");
+		pNewInstanceItem->OnClick([this]() { MenuFile_NewMaterialInstance_OnClicked(); });
 
-			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Material");
-			pSaveItem->SetShortcut("Ctrl+S");
-			pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
+		Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save Material");
+		pSaveItem->SetShortcut("Ctrl+S");
+		pSaveItem->OnClick([this]() { MenuFile_Save_OnClicked(); });
 
-			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename Material");
-			pRenameItem->SetShortcut("F2");
-			pRenameItem->OnClick([this]() { MenuFile_Rename_OnClicked(); });
+		Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename Material");
+		pRenameItem->SetShortcut("F2");
+		pRenameItem->OnClick([this]() { MenuFile_Rename_OnClicked(); });
 
-			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
-			pDeleteItem->SetShortcut("Del");
-			pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
-		}
+		Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
+		pDeleteItem->SetShortcut("Del");
+		pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
 	}
 
 	void MaterialEditor::MenuFile_NewMaterial_OnClicked()

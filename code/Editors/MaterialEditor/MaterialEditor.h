@@ -67,7 +67,7 @@ namespace Editors
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 
-		void CreateMenu(Widgets::Widget* pParent);
+		void CreateMenu();
 
 		void MenuFile_NewMaterial_OnClicked();
 		void MenuFile_NewMaterialInstance_OnClicked();
