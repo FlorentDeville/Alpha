@@ -85,7 +85,7 @@ namespace Editors
 	{}
 
 	MeshEditor::MeshEditor()
-		: Core::Singleton<MeshEditor>()
+		: BaseEditor()
 		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
 		, m_materialId()
@@ -103,10 +103,9 @@ namespace Editors
 	MeshEditor::~MeshEditor()
 	{ }
 
-	void MeshEditor::CreateEditor(const MeshEditorParameter& parameter)
+	void MeshEditor::CreateEditor(Widgets::Widget* pParent)
 	{
-		m_blender = parameter.m_blender;
-		m_editorScriptsPath = parameter.m_editorScriptsPath;
+		CreateDefaultWidgets(pParent, "Mesh");
 
 		Rendering::Texture* pImportIconTexture;
 		Rendering::TextureMgr::Get().CreateTexture(&pImportIconTexture, m_importIconTextureId);
@@ -119,32 +118,9 @@ namespace Editors
 		Os::Resource::GetResource(sysId, type, &pData, dataSize);
 		pImportIconTexture->Init(pData, dataSize);
 
-		//create the widgets
-		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		{
-			Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(parameter.pParent);
-			if (pTabContainer)
-			{
-				pTabContainer->AddTab("Mesh", pViewportTab);
-			}
-			else
-			{
-				parameter.pParent->AddWidget(pViewportTab);
-			}
-		}
-
-		//create the menu bar
-		Widgets::Layout* pInternalLayout = new Widgets::Layout();
-		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		pViewportTab->AddWidget(pInternalLayout);
-
-		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
-		pInternalLayout->AddWidget(pMenuBar);
-
 		//create the file menu
 		{
-			Widgets::Menu* pFileMenu = pMenuBar->AddMenu("File");
+			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
 			pNewItem->OnClick([this]() { Imports(); });
@@ -157,7 +133,7 @@ namespace Editors
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
 		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(400);
-		pInternalLayout->AddWidget(pSplit);
+		m_pInternalLayout->AddWidget(pSplit);
 
 		//create left viewport
 		const int VIEWPORT_WIDTH = 1280;

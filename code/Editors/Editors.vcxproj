@@ -11,6 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseEditor.h" />
+    <ClInclude Include="EditorManager.h" />
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\LevelListModel.h" />
     <ClInclude Include="LevelEditor\SceneTreeModel.h" />
@@ -62,6 +64,8 @@
     <ClInclude Include="Widgets\StatusBar\StatusBar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseEditor.cpp" />
+    <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\LevelListModel.cpp" />
     <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />

@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "Core/Singleton.h"
-
+#include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
@@ -35,19 +34,13 @@ namespace Editors
 	class PropertyGridWidget;
 	class MaterialListModel;
 
-	class MaterialEditorParameter
-	{
-	public:
-		Widgets::Widget* m_pParent;
-	};
-
-	class MaterialEditor : public Core::Singleton<MaterialEditor>
+	class MaterialEditor : public BaseEditor
 	{
 	public:
 		MaterialEditor();
 		~MaterialEditor();
 
-		void CreateEditor(const MaterialEditorParameter& parameter);
+		void CreateEditor(Widgets::Widget* pParent) override;
 
 	private:
 		Widgets::Layout* m_pShaderListLayout;
@@ -74,7 +67,7 @@ namespace Editors
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 
-		void CreateMenu(Widgets::Widget* pParent);
+		void CreateMenu();
 
 		void MenuFile_NewMaterial_OnClicked();
 		void MenuFile_NewMaterialInstance_OnClicked();

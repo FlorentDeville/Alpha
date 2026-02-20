@@ -20,12 +20,10 @@
 #include "Core/Helper.h"
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorManager.h"
 #include "Editors/GamePlayer/GamePlayer.h"
-#include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
-#include "Editors/MeshEditor/MeshEditor.h"
-#include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
@@ -35,23 +33,14 @@
 #include "OsWin/UIMessage/UIMessage.h"
 #include "OsWin/UIMessage/UIMessageId.h"
 
-#include "Rendering/CommandQueue.h"
-#include "Rendering/Font/Font.h"
-#include "Rendering/Mesh/Mesh.h"
-#include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
-#include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/RootSignature/RootSignature.h"
-#include "Rendering/Shaders/ShaderMgr.h"
-#include "Rendering/Texture/Texture.h"
 
 #include "Resources/ResourcesMgr.h"
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
@@ -434,116 +423,7 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-bool LoadContent(const Configuration& /*config*/)
-{
-	//const Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-
-	//Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
-	//Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
-
-	////create the base material
-	//Rendering::MaterialId baseMaterialId;
-	//{
-	//	Rendering::Material* pMaterial = nullptr;
-	//	Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, baseMaterialId);
-	//	const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(6));//vertex_color
-	//	Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
-	//}
-
-	////create the texture material
-	//Rendering::MaterialId textureMaterialId;
-	//{
-	//	Rendering::Material* pMaterial = nullptr;
-	//	Rendering::MaterialMgr::Get().CreateMaterial(&pMaterial, textureMaterialId);
-	//	const Systems::Asset* pAssetMaterial = assetMgr.GetAsset(Systems::AssetId(4));//grid_blue
-	//	Systems::Loader::Get().LoadMaterial(pAssetMaterial->GetPath(), *pMaterial);
-	//}
-
-	////load torus mesh
-	//Rendering::MeshId torusMeshId;
-	//{
-	//	Rendering::Mesh* pCubeMesh = nullptr;
-	//	meshMgr.CreateMesh(&pCubeMesh, torusMeshId);
-	//	const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(3)); //basic_cube
-	//	Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pCubeMesh);
-	//}
-
-	////load plane
-	//Rendering::MeshId planeMeshId;
-	//{
-	//	Rendering::Mesh* pPlaneMesh = nullptr;
-	//	meshMgr.CreateMesh(&pPlaneMesh, planeMeshId);
-	//	const Systems::Asset* pAsset = assetMgr.GetAsset(Systems::AssetId(2)); //basic_plane
-	//	Systems::Loader::Get().LoadMesh(pAsset->GetPath(), *pPlaneMesh);
-	//}
-
-	////basic shape material
-	//{
-	//	Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
-	//	Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
-
-	//	const std::string shaderPath = config.m_binPath + "\\";
-
-	//	Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
-	//	Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
-	//	Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
-
-	//	Rendering::PipelineStateId pid;
-	//	Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-	//	pPipelineState->Init_Generic(rsId, vsId, psId);
-
-	//	Rendering::Material* pMaterial = nullptr;
-	//	Rendering::MaterialId materialId;
-	//	materialMgr.CreateMaterial(&pMaterial, materialId);
-	//	pMaterial->Init(rsId, pid);
-
-	//	renderingMgr.m_pBaseShapeMaterial = pMaterial;
-	//}
-
-	////basic shape quad
-	//{
-	//	Rendering::Mesh* pBasicQuadMesh = nullptr;
-	//	Rendering::MeshId basicQuadMeshId;
-	//	meshMgr.CreateMesh(&pBasicQuadMesh, basicQuadMeshId);
-
-	//	const int VERTEX_COUNT = 4;
-	//	Rendering::VertexPosColor vertices[VERTEX_COUNT];
-	//	vertices[0].Position = DirectX::XMFLOAT3(-0.5, 0.5, 0);
-	//	vertices[1].Position = DirectX::XMFLOAT3(0.5, 0.5, 0);
-	//	vertices[2].Position = DirectX::XMFLOAT3(0.5, -0.5, 0);
-	//	vertices[3].Position = DirectX::XMFLOAT3(-0.5, -0.5, 0);
-
-	//	vertices[0].Color = DirectX::XMFLOAT3(1, 0, 0);
-	//	vertices[1].Color = DirectX::XMFLOAT3(1, 0, 0);
-	//	vertices[2].Color = DirectX::XMFLOAT3(1, 0, 0);
-	//	vertices[3].Color = DirectX::XMFLOAT3(1, 0, 0);
-
-	//	const int INDEX_COUNT = 6;
-	//	uint16_t indices[INDEX_COUNT];
-	//	indices[0] = 0;
-	//	indices[1] = 1;
-	//	indices[2] = 2;
-	//	indices[3] = 2;
-	//	indices[4] = 3;
-	//	indices[5] = 0;
-	//	pBasicQuadMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
-	//	Rendering::RenderModule::Get().m_pBaseQuadMesh = pBasicQuadMesh;
-	//}
-
-	////Load the entities
-	//GameMgr& gameMgr = GameMgr::Get();
-	//gameMgr.CreatePlayerEntity(torusMeshId, baseMaterialId);
-
-	//const DirectX::XMUINT2 gameResolution = Rendering::RenderModule::Get().GetGameResolution();
-	//float aspectRatio = gameResolution.x / static_cast<float>(gameResolution.y);
-	//gameMgr.CreateCameraEntity(aspectRatio);
-
-	//gameMgr.CreateBackgroundEntity(planeMeshId, textureMaterialId);
-
-	return true;
-}
-
-void CreateMainWindow(const Configuration& configuration)
+void CreateMainWindow()
 {
 	Widgets::Container* pContainer = new Widgets::Container();
 	pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
@@ -553,18 +433,8 @@ void CreateMainWindow(const Configuration& configuration)
 	pContainer->AddWidget(pMiddleTabContainer);
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
-	Editors::LevelEditor::Get().CreateEditor(pMiddleTabContainer);
 
-	Editors::MeshEditorParameter meshEditorParameter;
-	meshEditorParameter.pParent = pMiddleTabContainer;
-	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
-	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
-	meshEditorParameter.m_blender = configuration.m_blender;
-	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
-
-	Editors::MaterialEditorParameter materialEditorParameter;
-	materialEditorParameter.m_pParent = pMiddleTabContainer;
-	Editors::MaterialEditor::Get().CreateEditor(materialEditorParameter);
+	Editors::EditorManager::Get().Init(pMiddleTabContainer);
 
 	Editors::LogEditorParameter logEditorParameter;
 	logEditorParameter.m_pParent = pMiddleTabContainer;
@@ -689,25 +559,20 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::ObjectWatcher& objectWatcher = Editors::ObjectWatcher::Get();
 	objectWatcher.Init();
 
+	Editors::EditorManager& editorManager = Editors::EditorManager::InitSingleton();
+
 	Editors::GamePlayer::InitSingleton();
 
-	Editors::LevelEditor::InitSingleton();
 	Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::InitSingleton();
 	levelEditorModule.Init();
 
-	Editors::MeshEditor::InitSingleton();
 	Editors::MaterialEditorModule& materialEditorModule = Editors::MaterialEditorModule::InitSingleton();
 	materialEditorModule.Init(configuration.m_dataRoot);
-
-	Editors::MaterialEditor& materialEditor = Editors::MaterialEditor::InitSingleton();
-	materialEditor.Init();
 
 	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
 	logEditor.Init();
 
-	LoadContent(configuration);
-
-	CreateMainWindow(configuration);
+	CreateMainWindow();
 
 	g_pWindow->ShowMaximized();
 
@@ -728,12 +593,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	logEditor.Shutdown();
 	Editors::LogEditor::ReleaseSingleton();
 
+	editorManager.Shutdown();
+	Editors::EditorManager::ReleaseSingleton();
+
 	materialEditorModule.Shutdown();
 	Editors::MaterialEditorModule::ReleaseSingleton();
-
-	materialEditor.Shutdown();
-	Editors::MaterialEditor::ReleaseSingleton();
-	Editors::MeshEditor::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();
 	
@@ -759,9 +623,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Rendering::RenderModule::ReleaseSingleton();
 	
-	Editors::LevelEditor::Get().Shutdown();
-	Editors::LevelEditor::ReleaseSingleton();
-
 	Editors::LevelEditorModule::ReleaseSingleton();
 
 	objectWatcher.Shutdown();

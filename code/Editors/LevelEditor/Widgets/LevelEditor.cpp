@@ -48,7 +48,7 @@
 namespace Editors
 {
 	LevelEditor::LevelEditor()
-		: Core::Singleton<LevelEditor>()
+		: BaseEditor()
 		, m_enableViewportControl(false)
 		, m_pSceneTreeFrame(nullptr)
 		, m_pLeftSplit(nullptr)
@@ -75,41 +75,23 @@ namespace Editors
 
 	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
 	{
-		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
-		if (pTabContainer)
-		{
-			pTabContainer->AddTab("Level", pViewportTab);
-		}
-		else
-		{
-			pParent->AddWidget(pViewportTab);
-		}
+		CreateDefaultWidgets(pParent, "Level");
 
 		//create the render target
 		int width = 1280;
 		int height = 720;
 
-		Widgets::Layout* pInternalLayout = new Widgets::Layout();
-		pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		pViewportTab->AddWidget(pInternalLayout);
-
-		Widgets::MenuBar* pMenuBar = new Widgets::MenuBar();
-
-		CreateMenuFile(pMenuBar);
-		CreateMenuEdit(pMenuBar);
-		CreateMenuTransformation(pMenuBar);
-		CreateMenuWindows(pMenuBar);
-
-		pInternalLayout->AddWidget(pMenuBar);
+		CreateMenuFile(m_pMenuBar);
+		CreateMenuEdit(m_pMenuBar);
+		CreateMenuTransformation(m_pMenuBar);
+		CreateMenuWindows(m_pMenuBar);
 
 		//create the split between viewport and right panel
 		m_pSplit = new Widgets::SplitVertical();
 		m_pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
 		m_pSplit->SetRightPanelWidth(400);
 		m_pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
-		pInternalLayout->AddWidget(m_pSplit);
+		m_pInternalLayout->AddWidget(m_pSplit);
 
 		m_pViewport = new LevelEditorViewportWidget(width, height);
 		m_pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
