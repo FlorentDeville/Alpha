@@ -6,7 +6,8 @@
 
 #include "Core/Callbacks/CallbackId.h"
 #include "Core/Sid/Sid.h"
-#include "Core/Singleton.h"
+
+#include "Editors/BaseEditor.h"
 
 #include "Systems/Assets/NewAssetId.h"
 
@@ -53,7 +54,7 @@ namespace Editors
 	class PropertyGridWidget;
 	class SceneTreeModel;
 
-	class LevelEditor : public Core::Singleton<LevelEditor>
+	class LevelEditor : public BaseEditor
 	{
 	public:
 		LevelEditor();

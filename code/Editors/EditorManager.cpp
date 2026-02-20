@@ -4,6 +4,7 @@
 
 #include "Editors/EditorManager.h"
 
+#include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 
 namespace Editors
@@ -23,9 +24,11 @@ namespace Editors
 
 	void EditorManager::Init(Widgets::Widget* pParent)
 	{
-		MaterialEditor* pMaterialEditor = new MaterialEditor();
-		pMaterialEditor->CreateEditor(pParent);
-		m_editors.PushBack(pMaterialEditor);
+		m_editors.PushBack(new LevelEditor());
+		m_editors.PushBack(new MaterialEditor());
+
+		for (BaseEditor* pEditor : m_editors)
+			pEditor->CreateEditor(pParent);
 	}
 
 	void EditorManager::Shutdown()
