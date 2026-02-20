@@ -12,6 +12,8 @@
 
 #include "Widgets/Models/ModelIndex.h"
 
+//#pragma optimize("", off)
+
 namespace Editors
 {
 	TextureListModel::TextureListModel()
@@ -120,8 +122,23 @@ namespace Editors
 		return "__ERROR__";
 	}
 
-	/*void TextureListModel::AddRow(const Systems::AssetMetadata* pMetadata);
-	void TextureListModel::RemoveRow(Systems::NewAssetId id);
+	void TextureListModel::AddRow(const Systems::AssetMetadata& metadata)
+	{
+		if (!metadata.IsA<Systems::TextureAsset>())
+			return;
+
+		CachedTextureData cachedData;
+		cachedData.m_id = metadata.GetAssetId();
+		cachedData.m_virtualName = metadata.GetVirtualName();
+		cachedData.m_modified = false;
+
+		int row = m_cache.GetSize();
+		m_cache.PushBack(cachedData);
+
+		CommitInsertRows(row, 1, Widgets::ModelIndex());
+	}
+
+	/*void TextureListModel::RemoveRow(Systems::NewAssetId id);
 
 	void TextureListModel::SetTextureModified(Systems::NewAssetId id);
 	void TextureListModel::ClearTextureModified(Systems::NewAssetId id);

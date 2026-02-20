@@ -18,6 +18,8 @@
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Widgets/TableView.h"
 
+//#pragma optimize("", off)
+
 namespace Editors
 {
 	TextureEditor::TextureEditor()
@@ -51,6 +53,8 @@ namespace Editors
 		TextureListModel* pListModel = new TextureListModel();
 		pTable->SetModel(pListModel);
 		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
+
+		TextureEditorModule::Get().OnTextureCreated([pListModel](const Systems::AssetMetadata& metadata) { pListModel->AddRow(metadata); });
 	}
 
 	void TextureEditor::OnClick_File_Import()
