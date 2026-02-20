@@ -56,7 +56,7 @@
 namespace Editors
 {
 	MaterialEditor::MaterialEditor()
-		: Core::Singleton<MaterialEditor>()
+		: BaseEditor()
 		, m_pShaderListLayout(nullptr)
 		, m_pLogText(nullptr)
 		, m_pPropertyGrid(nullptr)
@@ -79,18 +79,20 @@ namespace Editors
 		delete m_pPropertyGridPopulator;
 	}
 
-	void MaterialEditor::CreateEditor(const MaterialEditorParameter& parameter)
+	void MaterialEditor::CreateEditor(Widgets::Widget* pParent)
 	{
+		BaseEditor::CreateEditor(pParent);
+
 		//create the widgets
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(parameter.m_pParent);
+		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
 		if (pTabContainer)
 		{
 			pTabContainer->AddTab("Material", pViewportTab);
 		}
 		else
 		{
-			parameter.m_pParent->AddWidget(pViewportTab);
+			pParent->AddWidget(pViewportTab);
 		}
 
 		Widgets::Layout* pOutsideLayout = new Widgets::Layout();

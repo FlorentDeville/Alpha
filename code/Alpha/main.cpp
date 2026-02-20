@@ -20,12 +20,12 @@
 #include "Core/Helper.h"
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorManager.h"
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
-#include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
@@ -562,9 +562,7 @@ void CreateMainWindow(const Configuration& configuration)
 	meshEditorParameter.m_blender = configuration.m_blender;
 	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
 
-	Editors::MaterialEditorParameter materialEditorParameter;
-	materialEditorParameter.m_pParent = pMiddleTabContainer;
-	Editors::MaterialEditor::Get().CreateEditor(materialEditorParameter);
+	Editors::EditorManager::Get().Init(pMiddleTabContainer);
 
 	Editors::LogEditorParameter logEditorParameter;
 	logEditorParameter.m_pParent = pMiddleTabContainer;
@@ -689,6 +687,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::ObjectWatcher& objectWatcher = Editors::ObjectWatcher::Get();
 	objectWatcher.Init();
 
+	Editors::EditorManager& editorManager = Editors::EditorManager::InitSingleton();
+
 	Editors::GamePlayer::InitSingleton();
 
 	Editors::LevelEditor::InitSingleton();
@@ -698,9 +698,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MeshEditor::InitSingleton();
 	Editors::MaterialEditorModule& materialEditorModule = Editors::MaterialEditorModule::InitSingleton();
 	materialEditorModule.Init(configuration.m_dataRoot);
-
-	Editors::MaterialEditor& materialEditor = Editors::MaterialEditor::InitSingleton();
-	materialEditor.Init();
 
 	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
 	logEditor.Init();
@@ -728,11 +725,12 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	logEditor.Shutdown();
 	Editors::LogEditor::ReleaseSingleton();
 
+	editorManager.Shutdown();
+	Editors::EditorManager::ReleaseSingleton();
+
 	materialEditorModule.Shutdown();
 	Editors::MaterialEditorModule::ReleaseSingleton();
 
-	materialEditor.Shutdown();
-	Editors::MaterialEditor::ReleaseSingleton();
 	Editors::MeshEditor::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();
