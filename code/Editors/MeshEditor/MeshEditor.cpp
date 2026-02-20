@@ -105,9 +105,6 @@ namespace Editors
 
 	void MeshEditor::CreateEditor(const MeshEditorParameter& parameter)
 	{
-		m_blender = parameter.m_blender;
-		m_editorScriptsPath = parameter.m_editorScriptsPath;
-
 		Rendering::Texture* pImportIconTexture;
 		Rendering::TextureMgr::Get().CreateTexture(&pImportIconTexture, m_importIconTextureId);
 

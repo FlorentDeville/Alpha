@@ -433,7 +433,7 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-void CreateMainWindow(const Configuration& configuration)
+void CreateMainWindow()
 {
 	Widgets::Container* pContainer = new Widgets::Container();
 	pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
@@ -446,9 +446,6 @@ void CreateMainWindow(const Configuration& configuration)
 
 	Editors::MeshEditorParameter meshEditorParameter;
 	meshEditorParameter.pParent = pMiddleTabContainer;
-	meshEditorParameter.m_rawBlenderPath = configuration.m_rawBlenderPath;
-	meshEditorParameter.m_editorScriptsPath = configuration.m_editorsScriptsPath;
-	meshEditorParameter.m_blender = configuration.m_blender;
 	Editors::MeshEditor::Get().CreateEditor(meshEditorParameter);
 
 	Editors::EditorManager::Get().Init(pMiddleTabContainer);
@@ -590,7 +587,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
 	logEditor.Init();
 
-	CreateMainWindow(configuration);
+	CreateMainWindow();
 
 	g_pWindow->ShowMaximized();
 
