@@ -24,7 +24,7 @@ namespace Importer
         HRESULT m_res;
     };
 
-	bool TextureImporter::Import(const std::string& fbxFilename)
+	bool TextureImporter::Import(const std::string& sourceFilename, Systems::TextureAsset* pTexture)
 	{
         ScopeComInitialize comJanitor;
         if (FAILED(comJanitor.m_res))
@@ -52,7 +52,7 @@ namespace Importer
         image.Release();
 
         hr = DirectX::Compress(timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
-            DXGI_FORMAT_BC3_UNORM, DirectX::TEX_COMPRESS_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT,
+            DXGI_FORMAT_BC7_UNORM, DirectX::TEX_COMPRESS_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT,
             image);
         if (FAILED(hr))
         {
@@ -60,15 +60,15 @@ namespace Importer
             return false;
         }
 
-        
-        /*hr = SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-            DDS_FLAGS_NONE, L"texture.dds");
+        DirectX::Blob textureBlob;
+        hr = DirectX::SaveToDDSMemory(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, textureBlob);
         if (FAILED(hr))
         {
-            wprintf(L"Failed to write texture to DDS (%08X)\n", static_cast<unsigned int>(hr));
-            return 1;
-        }*/
+            //wprintf(L"Failed to write texture to DDS (%08X)\n", static_cast<unsigned int>(hr));
+            return false;
+        }
 
+        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), textureBlob.GetBufferSize());
         return true;
 	}
 }
