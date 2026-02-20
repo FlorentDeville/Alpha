@@ -33,18 +33,8 @@
 #include "OsWin/UIMessage/UIMessage.h"
 #include "OsWin/UIMessage/UIMessageId.h"
 
-#include "Rendering/CommandQueue.h"
-#include "Rendering/Font/Font.h"
-#include "Rendering/Mesh/Mesh.h"
-#include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
-#include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/RootSignature/RootSignature.h"
-#include "Rendering/Shaders/ShaderMgr.h"
-#include "Rendering/Texture/Texture.h"
 
 #include "Resources/ResourcesMgr.h"
 
