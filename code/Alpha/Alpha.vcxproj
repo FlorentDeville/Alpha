@@ -98,15 +98,8 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Components\MeshComponent.cpp" />
-    <ClCompile Include="Components\TransformComponent.cpp" />
-    <ClCompile Include="Components\GameComponent.cpp" />
     <ClCompile Include="Configuration.cpp" />
-    <ClCompile Include="Entities\CameraEntity.cpp" />
-    <ClCompile Include="Entities\GameEntity.cpp" />
-    <ClCompile Include="Entities\PlayerEntity.cpp" />
     <ClCompile Include="GameMgr.cpp" />
-    <ClCompile Include="Entities\LocatorEntity.cpp" />
     <ClCompile Include="main.cpp" />
     <FxCompile Include="Shaders\shadowmap.ps.hlsl">
       <FileType>Document</FileType>
@@ -311,14 +304,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Components\MeshComponent.h" />
-    <ClInclude Include="Components\TransformComponent.h" />
-    <ClInclude Include="Components\GameComponent.h" />
     <ClInclude Include="Configuration.h" />
-    <ClInclude Include="Entities\CameraEntity.h" />
-    <ClInclude Include="Entities\GameEntity.h" />
-    <ClInclude Include="Entities\LocatorEntity.h" />
-    <ClInclude Include="Entities\PlayerEntity.h" />
     <ClInclude Include="GameMgr.h" />
   </ItemGroup>
   <ItemGroup>

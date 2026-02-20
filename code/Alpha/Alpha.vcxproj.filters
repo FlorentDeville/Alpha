@@ -19,28 +19,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\GameComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entities\GameEntity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\TransformComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entities\LocatorEntity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Components\MeshComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entities\CameraEntity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entities\PlayerEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Configuration.cpp">
@@ -88,13 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMgr.h" />
-    <ClInclude Include="Entities\GameEntity.h" />
-    <ClInclude Include="Components\GameComponent.h" />
-    <ClInclude Include="Components\TransformComponent.h" />
-    <ClInclude Include="Entities\LocatorEntity.h" />
-    <ClInclude Include="Components\MeshComponent.h" />
-    <ClInclude Include="Entities\CameraEntity.h" />
-    <ClInclude Include="Entities\PlayerEntity.h" />
     <ClInclude Include="Configuration.h" />
   </ItemGroup>
   <ItemGroup>
