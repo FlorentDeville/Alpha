@@ -34,11 +34,19 @@ namespace Core
 		~LogModule();
 
 		void Log(LogLevel level, const std::string& text);
+		void Log(LogLevel level, const char* text, va_list args);
 
 		void LogDebug(const std::string& text);
+		void LogDebug(const char* text, ...);
+
 		void LogInfo(const std::string& text);
+		void LogInfo(const char* text, ...);
+		
 		void LogWarn(const std::string& text);
+		void LogWarn(const char* text, ...);
+		
 		void LogError(const std::string& text);
+		void LogError(const char* text, ...);
 
 		const Core::Array<LogEntry>& GetAllLogEntries() const;
 
