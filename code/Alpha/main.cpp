@@ -41,6 +41,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
@@ -519,6 +520,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.RegisterAssetType<Systems::MaterialAsset>();
 	assetMgr.RegisterAssetType<Systems::MaterialInstanceAsset>();
 	assetMgr.RegisterAssetType<Systems::LevelAsset>();
+	assetMgr.RegisterAssetType<Systems::TextureAsset>();
 	assetMgr.LoadMetadataTable();
 	
 
