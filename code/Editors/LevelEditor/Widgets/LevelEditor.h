@@ -60,7 +60,7 @@ namespace Editors
 		LevelEditor();
 		~LevelEditor();
 
-		void CreateEditor(Widgets::Widget* pParent);
+		void CreateEditor(Widgets::Widget* pParent) override;
 
 	private:
 		bool m_enableViewportControl;
