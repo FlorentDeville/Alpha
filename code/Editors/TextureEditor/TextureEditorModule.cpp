@@ -54,6 +54,8 @@ namespace Editors
 		containerMgr.SaveContainer(pContainer->GetId());
 		assetMgr.SaveMetadataTable();
 
+		m_onTextureCreated(metadata);
+
 		return true;
 	}
 }

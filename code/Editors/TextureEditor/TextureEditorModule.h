@@ -5,8 +5,14 @@
 #pragma once
 
 #include "Core/Singleton.h"
+#include "Core/Callbacks/CallbackMacro.h"
 
 #include <string>
+
+namespace Systems
+{
+	class AssetMetadata;
+}
 
 namespace Editors
 {
@@ -20,5 +26,7 @@ namespace Editors
 		void Shutdown() override;
 
 		bool Import(const std::string& filename);
+
+		EVENT_DECL(TextureCreated, void(const Systems::AssetMetadata& pMetadata));
 	};
 }
