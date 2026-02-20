@@ -49,6 +49,8 @@
     <ClInclude Include="GameComponent\Lights\DirectionalLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v1.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -87,6 +89,7 @@
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Texture\TextureAsset_v1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

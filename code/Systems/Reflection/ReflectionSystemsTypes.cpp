@@ -11,6 +11,7 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
+#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v1.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -45,5 +46,6 @@ namespace Systems
 		Systems::MaterialParameterDescription::RegisterReflection();
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
 		Systems::MaterialInstanceAsset::RegisterReflection();
+		Systems::TextureAsset_v1::RegisterReflection();
 	}
 }
