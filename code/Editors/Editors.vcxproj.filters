@@ -168,6 +168,9 @@
     <ClInclude Include="EditorManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextureEditor\TextureEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -312,6 +315,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EditorManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureEditor\TextureEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
