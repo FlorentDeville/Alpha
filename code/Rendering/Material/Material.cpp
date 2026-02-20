@@ -5,14 +5,7 @@
 #include "Rendering/Material/Material.h"
 
 #include "Rendering/PipelineState/PipelineStateMgr.h"
-#include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/Shaders/ShaderMgr.h"
-
-#include <assert.h>
-
-#include "rapidjson/document.h"
-#include "rapidjson/filereadstream.h"
 
 namespace Rendering
 {
