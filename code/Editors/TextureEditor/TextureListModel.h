@@ -41,8 +41,8 @@ namespace Editors
 		std::string GetHeaderData(int column) override;
 
 		// Specific functions
-		/*void AddRow(const Systems::AssetMetadata* pMetadata);
-		void RemoveRow(Systems::NewAssetId id);
+		void AddRow(const Systems::AssetMetadata& metadata);
+		/*void RemoveRow(Systems::NewAssetId id);
 
 		void SetTextureModified(Systems::NewAssetId id);
 		void ClearTextureModified(Systems::NewAssetId id);
