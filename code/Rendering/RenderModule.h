@@ -169,11 +169,13 @@ namespace Rendering
 		Mesh* m_pCubeMesh;
 		Mesh* m_pSphereMesh;
 
-		Material* m_pBaseShapeMaterial;
-
 		Rendering::Mesh* m_pBaseQuadMesh;
 
 	private:
+
+		PipelineState* m_pBaseShapePso;
+		RootSignature* m_pBaseShapeRootSig;
+
 		ID3D12Resource* m_pBackBuffers[m_numFrames];
 		ID3D12Resource* m_pMainDepthBuffer;
 		D3D12_CPU_DESCRIPTOR_HANDLE m_mainRTV[m_numFrames];

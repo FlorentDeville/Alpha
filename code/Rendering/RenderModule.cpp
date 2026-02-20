@@ -61,6 +61,8 @@ namespace Rendering
 		, m_pCubeMesh(nullptr)
 		, m_pSphereMesh(nullptr)
 		, m_pLinearCBufferPool(nullptr)
+		, m_pBaseShapePso(nullptr)
+		, m_pBaseShapeRootSig(nullptr)
 	{
 		m_clearColor[0] = 0.4f;
 		m_clearColor[1] = 0.6f;
@@ -146,24 +148,18 @@ namespace Rendering
 		//basic shape material (should be an app resources?)
 		{
 			Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
-			Rendering::MaterialMgr& materialMgr = Rendering::MaterialMgr::Get();
+			Rendering::RootSignatureMgr& rootSigMgr = Rendering::RootSignatureMgr::Get();
 
 			const std::string shaderPath = binPath + "\\";
 
-			Rendering::RootSignatureId rsId = Rendering::RootSignatureMgr::Get().CreateRootSignature(shaderPath + "base-shape.rs.cso");
+			Rendering::RootSignatureId rsId = rootSigMgr.CreateRootSignature(shaderPath + "base-shape.rs.cso");
+			m_pBaseShapeRootSig = rootSigMgr.GetRootSignature(rsId);
 			Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
 			Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
 
 			Rendering::PipelineStateId pid;
-			Rendering::PipelineState* pPipelineState = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-			pPipelineState->Init_Generic(rsId, vsId, psId);
-
-			Rendering::Material* pMaterial = nullptr;
-			Rendering::MaterialId materialId;
-			materialMgr.CreateMaterial(&pMaterial, materialId);
-			pMaterial->Init(rsId, pid);
-
-			m_pBaseShapeMaterial = pMaterial;
+			m_pBaseShapePso = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
+			m_pBaseShapePso->Init_Generic(rsId, vsId, psId);
 		}
 
 	}
@@ -878,8 +874,8 @@ namespace Rendering
 
 	void RenderModule::RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& txWs, const Core::Float4& color) const
 	{
-		m_pRenderCommandList->SetPipelineState(m_pBaseShapeMaterial->m_pPipelineState->GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeMaterial->m_pRootSignature->GetRootSignature());
+		m_pRenderCommandList->SetPipelineState(m_pBaseShapePso->GetPipelineState());
+		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeRootSig->GetRootSignature());
 
 		DirectX::XMMATRIX wvp = txWs * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
