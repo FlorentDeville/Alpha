@@ -33,8 +33,9 @@ namespace Importer
             return false;
         }
 
+        std::wstring wideSourceFilename = std::wstring(sourceFilename.begin(), sourceFilename.end());
         DirectX::ScratchImage image;
-        HRESULT hr = DirectX::LoadFromWICFile(L"texture.png", DirectX::WIC_FLAGS_NONE, nullptr, image);
+        HRESULT hr = DirectX::LoadFromWICFile(wideSourceFilename.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
         if (FAILED(hr))
         {
             //wprintf(L"Failed to load texture.png (%08X)\n", static_cast<unsigned int>(hr));

@@ -4,6 +4,8 @@
 
 #include "Editors/TextureEditor/TextureEditor.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/TextureEditor/TextureEditorModule.h"
 
 #include "OsWin/FileDialog.h"
@@ -41,6 +43,11 @@ namespace Editors
 		if (!res)
 			return;
 
-		TextureEditorModule::Get().Import(filename);
+		res = TextureEditorModule::Get().Import(filename);
+
+		if (!res)
+			Core::LogModule::Get().LogError("Failed to import texture %s", filename.c_str());
+		else
+			Core::LogModule::Get().LogInfo("Texture %s imported.", filename.c_str());
 	}
 }
