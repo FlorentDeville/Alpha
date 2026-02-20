@@ -7,8 +7,6 @@
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/Material/Material.h"
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/PipelineState/PipelineStateId.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"

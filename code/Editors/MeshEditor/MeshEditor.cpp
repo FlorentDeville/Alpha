@@ -14,8 +14,6 @@
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
-#include "Rendering/Material/Material.h"
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"

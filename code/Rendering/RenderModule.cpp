@@ -19,8 +19,6 @@
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
-#include "Rendering/Material/Material.h"
-#include "Rendering/Material/MaterialMgr.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -81,7 +79,6 @@ namespace Rendering
 		Rendering::ShaderMgr::InitSingleton();
 		Rendering::RootSignatureMgr::InitSingleton();
 		Rendering::MeshMgr::InitSingleton();
-		Rendering::MaterialMgr::InitSingleton();
 		Rendering::PipelineStateMgr::InitSingleton();
 		Rendering::FontMgr::InitSingleton();
 		Rendering::TextureMgr::InitSingleton();
@@ -179,7 +176,6 @@ namespace Rendering
 		delete m_gameRenderTarget;
 
 		Rendering::FontMgr::ReleaseSingleton();
-		Rendering::MaterialMgr::ReleaseSingleton();
 		Rendering::MeshMgr::ReleaseSingleton();
 		Rendering::RootSignatureMgr::ReleaseSingleton();
 		Rendering::PipelineStateMgr::ReleaseSingleton();

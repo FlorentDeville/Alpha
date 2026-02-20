@@ -8,7 +8,6 @@
 
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/Material/MaterialId.h"
 #include "Rendering/Texture/TextureId.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
