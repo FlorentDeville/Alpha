@@ -33,6 +33,7 @@ namespace Widgets
 		virtual std::string GetHeaderData(int columnIndex);
 
 		SelectionModel* GetSelectionModel();
+		const SelectionModel* GetSelectionModel() const;
 
 		//call this after inserting new rows in the model
 		void CommitInsertRows(int start, int count, const ModelIndex& parent);
