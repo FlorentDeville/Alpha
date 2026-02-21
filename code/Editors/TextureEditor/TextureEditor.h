@@ -13,6 +13,8 @@ namespace Widgets
 
 namespace Editors
 {
+	class TextureListModel;
+
 	class TextureEditor : public BaseEditor
 	{
 	public:
@@ -22,6 +24,9 @@ namespace Editors
 		void CreateEditor(Widgets::Widget* pParent) override;
 
 	private:
+		TextureListModel* m_pListModel;
+
 		void OnClick_File_Import();
+		void OnClick_File_Delete();
 	};
 }

@@ -138,10 +138,39 @@ namespace Editors
 		CommitInsertRows(row, 1, Widgets::ModelIndex());
 	}
 
-	/*void TextureListModel::RemoveRow(Systems::NewAssetId id);
+	void TextureListModel::RemoveRow(Systems::NewAssetId id)
+	{
+		Core::Array<CachedTextureData>::Iterator it = std::find_if(m_cache.begin(), m_cache.end(), [id](const CachedTextureData& data) { return data.m_id == id; });
+		if (it == m_cache.end())
+			return;
 
-	void TextureListModel::SetTextureModified(Systems::NewAssetId id);
+		size_t index = std::distance(m_cache.begin(), it);
+		int row = static_cast<int>(index);
+
+		BeforeRemoveRows(row, 1, Widgets::ModelIndex());
+
+		m_cache.Erase(it);
+
+		AfterRemoveRows(row, 1, Widgets::ModelIndex());
+	}
+
+	/*void TextureListModel::SetTextureModified(Systems::NewAssetId id);
 	void TextureListModel::ClearTextureModified(Systems::NewAssetId id);
 
 	void TextureListModel::OnTextureRenamed(const Systems::AssetMetadata& metadata);*/
+
+	Systems::NewAssetId TextureListModel::GetAssetId(const Widgets::ModelIndex& index) const
+	{
+		if (!index.IsValid())
+			return Systems::NewAssetId::INVALID;
+
+		if(index.GetParent().IsValid())
+			return Systems::NewAssetId::INVALID;
+
+		uint32_t row = static_cast<uint32_t>(index.GetRow());
+		if(row >= m_cache.GetSize())
+			return Systems::NewAssetId::INVALID;
+
+		return m_cache[row].m_id;
+	}
 }

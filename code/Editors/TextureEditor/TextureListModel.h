@@ -42,14 +42,14 @@ namespace Editors
 
 		// Specific functions
 		void AddRow(const Systems::AssetMetadata& metadata);
-		/*void RemoveRow(Systems::NewAssetId id);
+		void RemoveRow(Systems::NewAssetId id);
 
-		void SetTextureModified(Systems::NewAssetId id);
+		/*void SetTextureModified(Systems::NewAssetId id);
 		void ClearTextureModified(Systems::NewAssetId id);
 
 		void OnTextureRenamed(const Systems::AssetMetadata& metadata);*/
 
-		//Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
+		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
 		//Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 
