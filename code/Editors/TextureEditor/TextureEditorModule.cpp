@@ -79,4 +79,19 @@ namespace Editors
 
 		return res;
 	}
+
+	bool TextureEditorModule::RenameTexture(Systems::NewAssetId id, const std::string& newName)
+	{
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		assetMgr.RenameAsset(id, newName);
+		assetMgr.SaveMetadataTable();
+
+		m_onTextureRenamed(*pMetadata);
+
+		return true;
+	}
 }

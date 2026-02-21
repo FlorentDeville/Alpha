@@ -29,9 +29,11 @@ namespace Editors
 
 		bool ImportTexture(const std::string& filename);
 		bool DeleteTexture(Systems::NewAssetId id);
+		bool RenameTexture(Systems::NewAssetId id, const std::string& newName);
 
 		EVENT_DECL(TextureCreated, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(BeforeTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(AfterTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
+		EVENT_DECL(TextureRenamed, void(const Systems::AssetMetadata& pMetadata));
 	};
 }

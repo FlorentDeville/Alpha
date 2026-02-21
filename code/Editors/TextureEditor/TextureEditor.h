@@ -6,6 +6,11 @@
 
 #include "Editors/BaseEditor.h"
 
+namespace Systems
+{
+	class NewAssetId;
+}
+
 namespace Widgets
 {
 	class Widget;
@@ -28,5 +33,8 @@ namespace Editors
 
 		void OnClick_File_Import();
 		void OnClick_File_Delete();
+		void OnClick_File_Rename();
+
+		Systems::NewAssetId GetSelectedTextureId() const;
 	};
 }
