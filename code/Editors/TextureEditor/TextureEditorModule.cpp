@@ -7,6 +7,7 @@
 #include "Importer/TextureImporter/TextureImporter.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 
@@ -25,7 +26,7 @@ namespace Editors
 	void TextureEditorModule::Shutdown()
 	{ }
 
-	bool TextureEditorModule::Import(const std::string& filename)
+	bool TextureEditorModule::ImportTexture(const std::string& filename)
 	{
 		Systems::TextureAsset* pTexture = Systems::CreateNewAsset<Systems::TextureAsset>();
 		Importer::TextureImporter importer;
@@ -57,5 +58,25 @@ namespace Editors
 		m_onTextureCreated(metadata);
 
 		return true;
+	}
+
+	bool TextureEditorModule::DeleteTexture(Systems::NewAssetId id)
+	{
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+		Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		if (!pMetadata->IsA<Systems::TextureAsset>())
+			return false;
+
+		Systems::AssetMetadata copyMetadata(*pMetadata);
+		m_onBeforeTextureDeleted(copyMetadata);
+		
+		bool res = Systems::AssetUtil::DeleteAsset(id);
+		
+		m_onAfterTextureDeleted(copyMetadata);
+
+		return res;
 	}
 }

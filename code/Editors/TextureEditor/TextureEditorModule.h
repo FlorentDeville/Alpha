@@ -7,6 +7,8 @@
 #include "Core/Singleton.h"
 #include "Core/Callbacks/CallbackMacro.h"
 
+#include "Systems/Assets/NewAssetId.h"
+
 #include <string>
 
 namespace Systems
@@ -25,8 +27,11 @@ namespace Editors
 		void Init() override;
 		void Shutdown() override;
 
-		bool Import(const std::string& filename);
+		bool ImportTexture(const std::string& filename);
+		bool DeleteTexture(Systems::NewAssetId id);
 
 		EVENT_DECL(TextureCreated, void(const Systems::AssetMetadata& pMetadata));
+		EVENT_DECL(BeforeTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
+		EVENT_DECL(AfterTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
 	};
 }
