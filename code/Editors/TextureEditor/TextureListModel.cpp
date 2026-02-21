@@ -155,9 +155,19 @@ namespace Editors
 	}
 
 	/*void TextureListModel::SetTextureModified(Systems::NewAssetId id);
-	void TextureListModel::ClearTextureModified(Systems::NewAssetId id);
+	void TextureListModel::ClearTextureModified(Systems::NewAssetId id);*/
 
-	void TextureListModel::OnTextureRenamed(const Systems::AssetMetadata& metadata);*/
+	void TextureListModel::OnTextureRenamed(const Systems::AssetMetadata& metadata)
+	{
+		Widgets::ModelIndex index = GetIndex(metadata.GetAssetId());
+		if (!index.IsValid())
+			return;
+
+		CachedTextureData& data = m_cache[index.GetRow()];
+		data.m_virtualName = metadata.GetVirtualName();
+
+		m_onDataChanged(index.GetSiblingAtColumn(Columns::Name));
+	}
 
 	Systems::NewAssetId TextureListModel::GetAssetId(const Widgets::ModelIndex& index) const
 	{
@@ -172,5 +182,23 @@ namespace Editors
 			return Systems::NewAssetId::INVALID;
 
 		return m_cache[row].m_id;
+	}
+
+	Widgets::ModelIndex TextureListModel::GetIndex(Systems::NewAssetId id) const
+	{
+		int row = -1;
+		for (uint32_t ii = 0; ii < m_cache.GetSize(); ++ii)
+		{
+			if (m_cache[ii].m_id == id)
+			{
+				row = static_cast<int>(ii);
+				break;
+			}
+		}
+
+		if (row == -1)
+			return Widgets::ModelIndex();
+
+		return CreateIndex(row, 0, &m_cache[row]);
 	}
 }

@@ -46,12 +46,11 @@ namespace Editors
 
 		/*void SetTextureModified(Systems::NewAssetId id);
 		void ClearTextureModified(Systems::NewAssetId id);
+		*/
 
-		void OnTextureRenamed(const Systems::AssetMetadata& metadata);*/
+		void OnTextureRenamed(const Systems::AssetMetadata& metadata);
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
-
-		//Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 
 	private:
 		struct CachedTextureData
@@ -63,8 +62,6 @@ namespace Editors
 
 		Core::Array<CachedTextureData> m_cache;
 
-		void AddToCache(const Systems::AssetMetadata* pMetadata);
-
-		int FindCacheIndex(Systems::NewAssetId id) const;
+		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 	};
 }

@@ -9,6 +9,7 @@
 #include "Editors/TextureEditor/TextureEditorModule.h"
 #include "Editors/TextureEditor/TextureListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/Dialog/UserInputDialog.h"
 
 #include "OsWin/FileDialog.h"
 
@@ -50,6 +51,10 @@ namespace Editors
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete");
 			pDeleteItem->SetShortcut("Del");
 			pDeleteItem->OnClick([this]() { OnClick_File_Delete(); });
+
+			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
+			pRenameItem->SetShortcut("F2");
+			pRenameItem->OnClick([this]() { OnClick_File_Rename(); });
 		}
 
 		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
@@ -68,6 +73,7 @@ namespace Editors
 		TextureEditorModule& textureModule = TextureEditorModule::Get();
 		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
 		textureModule.OnBeforeTextureDeleted([this](const Systems::AssetMetadata& metadata) { m_pListModel->RemoveRow(metadata.GetAssetId()); });
+		textureModule.OnTextureRenamed([this](const Systems::AssetMetadata& metadata) { m_pListModel->OnTextureRenamed(metadata); });
 	}
 
 	void TextureEditor::OnClick_File_Import()
@@ -87,16 +93,7 @@ namespace Editors
 
 	void TextureEditor::OnClick_File_Delete()
 	{
-		Systems::NewAssetId selectedTextureId = Systems::NewAssetId::INVALID;
-
-		const std::list<Widgets::SelectionRow>& selectedRows = m_pListModel->GetSelectionModel()->GetSelectedRows();
-		for (const Widgets::SelectionRow& row : selectedRows)
-		{
-			Widgets::ModelIndex index = row.GetStartIndex();
-			selectedTextureId = m_pListModel->GetAssetId(index);
-			break;
-		}
-
+		Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
 		if (!selectedTextureId.IsValid())
 			return;
 
@@ -111,5 +108,39 @@ namespace Editors
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
 		pDialog->OnOk([selectedTextureId]() { TextureEditorModule::Get().DeleteTexture(selectedTextureId); });
 		pDialog->Open();
+	}
+
+	void TextureEditor::OnClick_File_Rename()
+	{
+		Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
+		if (!selectedTextureId.IsValid())
+			return;
+
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedTextureId);
+		if (!pMetadata)
+			return;
+
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Rename texture %s", pMetadata->GetVirtualName().c_str());
+
+		UserInputDialog* pDialog = new UserInputDialog(buffer);
+		pDialog->OnInputValidated([selectedTextureId](const std::string& input)
+			{
+				TextureEditorModule::Get().RenameTexture(selectedTextureId, input);
+			});
+		pDialog->Open();
+	}
+
+	Systems::NewAssetId TextureEditor::GetSelectedTextureId() const
+	{
+		const std::list<Widgets::SelectionRow>& selectedRows = m_pListModel->GetSelectionModel()->GetSelectedRows();
+		for (const Widgets::SelectionRow& row : selectedRows)
+		{
+			Widgets::ModelIndex index = row.GetStartIndex();
+			return m_pListModel->GetAssetId(index);
+		}
+
+		return Systems::NewAssetId::INVALID;
 	}
 }
