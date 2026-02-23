@@ -39,9 +39,6 @@
     <ClInclude Include="TabContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Viewport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Widget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -177,9 +174,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TabContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widget.cpp">
