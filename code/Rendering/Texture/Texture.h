@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Rendering/Texture/TextureFormat.h"
+
 #include <string>
 #include <d3d12.h>
 
@@ -19,6 +21,9 @@ namespace Rendering
 
 		void Init(const char* ptr, uint32_t size);
 		void Init(const std::string& path);
+		
+		void InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize, uint32_t width, uint32_t height, uint32_t mipCount);
+
 		void InitAsRenderTarget(int width, int height, float* clearColor);
 		void InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format);
 
