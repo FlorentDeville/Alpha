@@ -53,8 +53,9 @@ namespace Importer
         image.Release();
 
         hr = DirectX::Compress(timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
-            DXGI_FORMAT_BC7_UNORM, DirectX::TEX_COMPRESS_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT,
+            DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT,
             image);
+
         if (FAILED(hr))
         {
             //wprintf(L"Failed to compress texture (%08X)\n", static_cast<unsigned int>(hr));
@@ -69,6 +70,10 @@ namespace Importer
             return false;
         }
 
+        uint32_t width = static_cast<uint32_t>(image.GetMetadata().width);
+        uint32_t height = static_cast<uint32_t>(image.GetMetadata().height);
+        uint32_t mipCount = static_cast<uint32_t>(image.GetImageCount());
+
         image.Release();
         timage.Release();
 
@@ -78,7 +83,7 @@ namespace Importer
             return false;
         }
 
-        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize));
+        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount, Rendering::TextureFormat::BC7_SRGB);
         return true;
 	}
 }
