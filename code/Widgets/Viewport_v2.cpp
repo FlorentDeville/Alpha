@@ -23,7 +23,7 @@ using namespace DirectX;
 
 namespace Widgets
 {
-	Viewport_v2::Viewport_v2(int width, int height)
+	Viewport::Viewport(int width, int height)
 		: Widget()
 		, m_width(width)
 		, m_height(height)
@@ -37,23 +37,23 @@ namespace Widgets
 		OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { SetFocus(); return true; });
 	}
 
-	Viewport_v2::~Viewport_v2()
+	Viewport::~Viewport()
 	{
 		delete m_pRenderTarget;
 	}
 
-	void Viewport_v2::ClearDepthBuffer()
+	void Viewport::ClearDepthBuffer()
 	{
 		m_pRenderTarget->ClearDepthBuffer();
 	}
 
-	void Viewport_v2::Update(uint64_t dt)
+	void Viewport::Update(uint64_t dt)
 	{
 		if(m_updateEnabled)
 			m_onUpdate(dt);
 	}
 
-	void Viewport_v2::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
+	void Viewport::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		WidgetMgr& widgetMgr = WidgetMgr::Get();
@@ -98,7 +98,7 @@ namespace Widgets
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
 
-	DirectX::XMVECTOR Viewport_v2::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
+	DirectX::XMVECTOR Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
 	{
 		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
 		const XMMATRIX& view = pCamera->GetViewMatrix();
@@ -157,7 +157,7 @@ namespace Widgets
 		return mousePosition3d;
 	}
 
-	void Viewport_v2::Internal_Render()
+	void Viewport::Internal_Render()
 	{
 		m_pRenderTarget->BeginScene();
 		m_onRender();

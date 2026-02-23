@@ -13,11 +13,11 @@ namespace Rendering
 
 namespace Widgets
 {
-	class Viewport_v2 : public Widget
+	class Viewport : public Widget
 	{
 	public:
-		Viewport_v2(int width, int height);
-		~Viewport_v2();
+		Viewport(int width, int height);
+		~Viewport();
 
 		void ClearDepthBuffer();
 

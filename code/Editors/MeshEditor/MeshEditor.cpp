@@ -139,7 +139,7 @@ namespace Editors
 		const int VIEWPORT_WIDTH = 1280;
 		const int VIEWPORT_HEIGHT = 720;
 		m_aspectRatio = VIEWPORT_WIDTH / static_cast<float>(VIEWPORT_HEIGHT);
-		Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+		Widgets::Viewport* pViewport = new Widgets::Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
 		pViewport->OnRender([this]() { Viewport_OnRender(); });

@@ -27,7 +27,7 @@ namespace Editors
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
-		Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(WIDTH, HEIGHT);
+		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
 		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
 		pViewportTab->AddWidget(pViewport);
 
