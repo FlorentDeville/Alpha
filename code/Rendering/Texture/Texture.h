@@ -44,5 +44,6 @@ namespace Rendering
 		D3D12_RESOURCE_STATES m_currentState;
 
 		void Internal_Init(const unsigned char* pData, int width, int height, int channel);
+		void Internal_Init(const unsigned char* pData, int width, int height, DXGI_FORMAT format, uint32_t rowPitch, uint32_t slicePitch, uint32_t mipCount);
 	};
 }

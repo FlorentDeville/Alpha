@@ -167,6 +167,14 @@ namespace Rendering
 
 	void Texture::Internal_Init(const unsigned char* pData, int width, int height, int channel)
 	{
+		uint32_t rowPitch = width * channel * sizeof(char);
+		uint32_t slicePitch = rowPitch * height;
+
+		Internal_Init(pData, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, rowPitch, slicePitch, 1);
+	}
+
+	void Texture::Internal_Init(const unsigned char* pData, int width, int height, DXGI_FORMAT format, uint32_t rowPitch, uint32_t slicePitch, uint32_t mipCount)
+	{
 		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 
 		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
@@ -177,8 +185,8 @@ namespace Rendering
 		m_resourceDesc.Width = width;
 		m_resourceDesc.Height = height;
 		m_resourceDesc.DepthOrArraySize = 1;
-		m_resourceDesc.MipLevels = 1;
-		m_resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_resourceDesc.MipLevels = mipCount;
+		m_resourceDesc.Format = format;
 		m_resourceDesc.SampleDesc.Count = 1; //number of sample per pixel
 		m_resourceDesc.SampleDesc.Quality = 0;
 		m_resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
@@ -210,8 +218,8 @@ namespace Rendering
 
 			D3D12_SUBRESOURCE_DATA subresourceData = {};
 			subresourceData.pData = pData;
-			subresourceData.RowPitch = width * channel * sizeof(char);
-			subresourceData.SlicePitch = subresourceData.RowPitch * height;
+			subresourceData.RowPitch = rowPitch;
+			subresourceData.SlicePitch = slicePitch;
 
 			UpdateSubresources(pCommandList, m_pResource, pUploadResource, 0, 0, 1, &subresourceData);
 
@@ -224,8 +232,6 @@ namespace Rendering
 			uint64_t fence = pCopyCommandQueue->ExecuteCommandList(pCommandList);
 			pCopyCommandQueue->WaitForFenceValue(fence);
 		}
-
-		//stbi_image_free(pData);
 
 		//Create the SRV heap
 		{
@@ -243,7 +249,7 @@ namespace Rendering
 			srvDesc.Format = m_resourceDesc.Format;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Texture2D.MipLevels = 1;
+			srvDesc.Texture2D.MipLevels = mipCount;
 			pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 		}
 
