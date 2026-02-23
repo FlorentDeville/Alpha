@@ -59,7 +59,7 @@ namespace Editors
 	};
 
 	LevelEditorViewportWidget::LevelEditorViewportWidget(int width, int height)
-		: Widgets::Viewport_v2(width, height)
+		: Widgets::Viewport(width, height)
 		, m_enableViewportControl(false)
 		, m_isPanning(false)
 		, m_objectIdToGuid()
@@ -165,7 +165,7 @@ namespace Editors
 			}
 		}
 
-		return Viewport_v2::Handle(event);
+		return Viewport::Handle(event);
 	}
 
 	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)

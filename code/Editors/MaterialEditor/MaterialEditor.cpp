@@ -48,7 +48,7 @@
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
-#include "Widgets/Viewport_v2.h"
+#include "Widgets/Viewport.h"
 #include "Widgets/Widgets/TableView.h"
 
 #include <filesystem>
@@ -112,7 +112,7 @@ namespace Editors
 			const int HEIGHT = 789;
 			m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
 
-			Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(WIDTH, HEIGHT);
+			Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
 			pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 			pViewport->OnRender([this]() { Viewport_OnRender(); });
 			pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });

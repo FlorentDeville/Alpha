@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Widgets/Viewport_v2.h"
+#include "Widgets/Viewport.h"
 
 #include "Core/Collections/Array.h"
 #include "Core/Guid/Guid.h"
@@ -51,7 +51,7 @@ namespace Editors
 		return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;
 	}
 
-	class LevelEditorViewportWidget : public Widgets::Viewport_v2
+	class LevelEditorViewportWidget : public Widgets::Viewport
 	{
 	public:
 		LevelEditorViewportWidget(int width, int height);

@@ -39,9 +39,6 @@
     <ClInclude Include="TabContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Viewport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Widget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,7 +75,7 @@
     <ClInclude Include="ModalWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Viewport_v2.h">
+    <ClInclude Include="Viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuBar.h">
@@ -179,9 +176,6 @@
     <ClCompile Include="TabContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Viewport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Widget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -215,7 +209,7 @@
     <ClCompile Include="ModalWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Viewport_v2.cpp">
+    <ClCompile Include="Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuBar.cpp">
