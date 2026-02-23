@@ -2,7 +2,7 @@
 /* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************/
 
-#include "Widgets/Viewport_v2.h"
+#include "Widgets/Viewport.h"
 
 #include "Rendering/Camera.h"
 #include "Rendering/Mesh/Mesh.h"
