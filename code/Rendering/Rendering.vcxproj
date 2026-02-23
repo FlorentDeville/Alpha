@@ -38,7 +38,9 @@
     <ClInclude Include="Shaders\Shader.h" />
     <ClInclude Include="Shaders\ShaderId.h" />
     <ClInclude Include="Shaders\ShaderMgr.h" />
+    <ClInclude Include="Texture\DDSTextureLoader12.h" />
     <ClInclude Include="Texture\Texture.h" />
+    <ClInclude Include="Texture\TextureFormat.h" />
     <ClInclude Include="Texture\TextureId.h" />
     <ClInclude Include="Texture\TextureMgr.h" />
   </ItemGroup>
@@ -69,6 +71,7 @@
     <ClCompile Include="Shaders\Shader.cpp" />
     <ClCompile Include="Shaders\ShaderId.cpp" />
     <ClCompile Include="Shaders\ShaderMgr.cpp" />
+    <ClCompile Include="Texture\DDSTextureLoader12.cpp" />
     <ClCompile Include="Texture\Texture.cpp" />
     <ClCompile Include="Texture\TextureId.cpp" />
     <ClCompile Include="Texture\TextureMgr.cpp" />
