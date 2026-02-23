@@ -19,7 +19,7 @@
 namespace Rendering
 {
 	RenderTarget::RenderTarget(int width, int height)
-		: RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UNORM)
+		: RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB)
 	{ }
 
 	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format)

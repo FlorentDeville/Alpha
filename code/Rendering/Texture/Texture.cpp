@@ -5,8 +5,10 @@
 #include "Rendering/Texture/Texture.h"
 
 #include "Core/Helper.h"
+
 #include "Rendering/CommandQueue.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/Texture/DDSTextureLoader12.h"
 
 #include <d3dx12.h>
 #include <string>
@@ -55,6 +57,64 @@ namespace Rendering
 		Internal_Init(pData, textureWidth, textureHeight, channelCount);
 
 		stbi_image_free(pData);
+	}
+
+	void Texture::InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize, uint32_t width, uint32_t height, uint32_t mipCount)
+	{
+		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+
+		std::vector<D3D12_SUBRESOURCE_DATA> subResources;
+		HRESULT res = DirectX::LoadDDSTextureFromMemory(pDevice, pBuffer, bufferSize, &m_pResource, subResources);
+
+		//create the upload resource
+		ID3D12Resource* pUploadResource = nullptr;
+		{
+			uint64_t uploadBufferSize = GetRequiredIntermediateSize(m_pResource, 0, static_cast<uint32_t>(subResources.size()));
+
+			D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+			D3D12_RESOURCE_DESC uploadResourceDesc = CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize);
+			HRESULT res = pDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &uploadResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&pUploadResource));
+			ThrowIfFailed(res);
+		}
+
+		//Upload the texture
+		{
+			CommandQueue* pCopyCommandQueue = RenderModule::Get().GetRenderCommandQueue();
+			ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
+
+			UpdateSubresources(pCommandList, m_pResource, pUploadResource, 0, 0, (UINT)subResources.size(), subResources.data());
+
+			D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_pResource, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE);
+			pCommandList->ResourceBarrier(1, &barrier);
+
+			m_currentState = D3D12_RESOURCE_STATE_ALL_SHADER_RESOURCE;
+
+			//Execute the commands
+			uint64_t fence = pCopyCommandQueue->ExecuteCommandList(pCommandList);
+			pCopyCommandQueue->WaitForFenceValue(fence);
+		}
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = 1;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		//Create the srv descriptor
+		{
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;//m_resourceDesc.Format;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Texture2D.MipLevels = static_cast<uint32_t>(subResources.size());
+			pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		}
+
+		pUploadResource->Release();
 	}
 
 	void Texture::InitAsRenderTarget(int width, int height, float* clearColor)
@@ -167,6 +227,14 @@ namespace Rendering
 
 	void Texture::Internal_Init(const unsigned char* pData, int width, int height, int channel)
 	{
+		uint32_t rowPitch = width * channel * sizeof(char);
+		uint32_t slicePitch = rowPitch * height;
+
+		Internal_Init(pData, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, rowPitch, slicePitch, 1);
+	}
+
+	void Texture::Internal_Init(const unsigned char* pData, int width, int height, DXGI_FORMAT format, uint32_t rowPitch, uint32_t slicePitch, uint32_t mipCount)
+	{
 		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 
 		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
@@ -177,8 +245,8 @@ namespace Rendering
 		m_resourceDesc.Width = width;
 		m_resourceDesc.Height = height;
 		m_resourceDesc.DepthOrArraySize = 1;
-		m_resourceDesc.MipLevels = 1;
-		m_resourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		m_resourceDesc.MipLevels = mipCount;
+		m_resourceDesc.Format = format;
 		m_resourceDesc.SampleDesc.Count = 1; //number of sample per pixel
 		m_resourceDesc.SampleDesc.Quality = 0;
 		m_resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
@@ -210,8 +278,8 @@ namespace Rendering
 
 			D3D12_SUBRESOURCE_DATA subresourceData = {};
 			subresourceData.pData = pData;
-			subresourceData.RowPitch = width * channel * sizeof(char);
-			subresourceData.SlicePitch = subresourceData.RowPitch * height;
+			subresourceData.RowPitch = rowPitch;
+			subresourceData.SlicePitch = slicePitch;
 
 			UpdateSubresources(pCommandList, m_pResource, pUploadResource, 0, 0, 1, &subresourceData);
 
@@ -224,8 +292,6 @@ namespace Rendering
 			uint64_t fence = pCopyCommandQueue->ExecuteCommandList(pCommandList);
 			pCopyCommandQueue->WaitForFenceValue(fence);
 		}
-
-		//stbi_image_free(pData);
 
 		//Create the SRV heap
 		{
@@ -243,7 +309,7 @@ namespace Rendering
 			srvDesc.Format = m_resourceDesc.Format;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Texture2D.MipLevels = 1;
+			srvDesc.Texture2D.MipLevels = mipCount;
 			pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 		}
 

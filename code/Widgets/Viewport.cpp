@@ -35,6 +35,8 @@ namespace Widgets
 		OnFocusGained([this](const Widgets::FocusEvent&) { m_updateEnabled = true; });
 		OnFocusLost([this](const Widgets::FocusEvent&) { m_updateEnabled = false; });
 		OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { SetFocus(); return true; });
+
+		SetSizeStyle(Widgets::Widget::STRETCH);
 	}
 
 	Viewport::~Viewport()

@@ -7,6 +7,7 @@
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
+#include "Editors/TextureEditor/TextureEditor.h"
 
 namespace Editors
 {
@@ -28,6 +29,7 @@ namespace Editors
 		m_editors.PushBack(new LevelEditor());
 		m_editors.PushBack(new MeshEditor());
 		m_editors.PushBack(new MaterialEditor());
+		m_editors.PushBack(new TextureEditor());
 
 		for (BaseEditor* pEditor : m_editors)
 			pEditor->CreateEditor(pParent);

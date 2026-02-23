@@ -35,6 +35,7 @@ namespace Widgets
 		bool operator<(const ModelIndex& other) const;
 
 	private:
+		//Use function AbstractViewModel::CreateIndex instead.
 		ModelIndex(int row, int column, const void* pData, const AbstractViewModel* pModel);
 
 		int m_row;

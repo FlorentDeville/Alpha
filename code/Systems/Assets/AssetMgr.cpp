@@ -109,7 +109,6 @@ namespace Systems
 		if (!pMetadata)
 			return;
 
-		std::string oldName = pMetadata->GetVirtualName();
 		pMetadata->SetVirtualName(newName);
 	}
 
