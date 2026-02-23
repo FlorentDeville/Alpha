@@ -5,15 +5,26 @@
 #include "Editors/TextureEditor/TextureEditor.h"
 
 #include "Core/Log/LogModule.h"
+#include "Core/Math/Constants.h"
+#include "Core/Math/Mat44f.h"
+#include "Core/Math/Sqt.h"
 
 #include "Editors/TextureEditor/TextureEditorModule.h"
 #include "Editors/TextureEditor/TextureListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 
+#include "Inputs/InputMgr.h"
+
 #include "OsWin/FileDialog.h"
 
+#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
+#include "Rendering/Texture/Texture.h"
+
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
 #include "Widgets/Layout.h"
@@ -23,6 +34,8 @@
 #include "Widgets/Models/SelectionModel.h"
 #include "Widgets/Models/SelectionRow.h"
 #include "Widgets/SplitVertical.h"
+#include "Widgets/Viewport.h"
+#include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/TableView.h"
 
 //#pragma optimize("", off)
@@ -32,6 +45,9 @@ namespace Editors
 	TextureEditor::TextureEditor()
 		: BaseEditor()
 		, m_pListModel(nullptr)
+		, m_renderTargetHalfWidth(0)
+		, m_renderTargetHalfHeight(0)
+		, m_scale(512)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -69,6 +85,17 @@ namespace Editors
 		m_pListModel = new TextureListModel();
 		pTable->SetModel(m_pListModel);
 		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
+
+		const int WIDTH = 1920;
+		const int HEIGHT = 1080;
+
+		m_renderTargetHalfWidth = WIDTH * 0.5f;
+		m_renderTargetHalfHeight = HEIGHT * 0.5f;
+
+		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
+		pViewport->OnRender([this]() { Viewport_OnRender(); });
+		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
+		pVerticalSplit->AddRightPanel(pViewport);
 
 		TextureEditorModule& textureModule = TextureEditorModule::Get();
 		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
@@ -142,5 +169,64 @@ namespace Editors
 		}
 
 		return Systems::NewAssetId::INVALID;
+	}
+
+	void TextureEditor::Viewport_OnRender()
+	{
+		Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
+		if (!selectedTextureId.IsValid())
+			return;
+
+		Systems::TextureAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::TextureAsset>(selectedTextureId);
+		if (!pTexture)
+			return;
+
+		Core::Vec4f target(0, 0, 10, 1);
+
+		//world, view and proj matrix
+		Core::Sqt worldSqt;
+		worldSqt.SetTranslation(target);
+		worldSqt.SetScale(Core::Vec4f(m_scale, m_scale, 0, 0));
+		Core::Mat44f worldTx = Core::Mat44f::CreateTransformMatrix(worldSqt);
+
+		Core::Mat44f viewTx = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), target, Core::Vec4f(0, 1, 0, 0));
+
+		Core::Mat44f projTx = Core::Mat44f::CreateOrthographic(-m_renderTargetHalfWidth, m_renderTargetHalfWidth, -m_renderTargetHalfHeight, m_renderTargetHalfHeight, 0.1f, 100.f);
+
+		Core::Mat44f wvp = worldTx * viewTx * projTx;
+
+		//bind material
+		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+		Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
+
+		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetIconWidgetPsoId());
+		renderer.BindMaterial(*pPso);
+
+		//bind const buffer
+		renderer.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
+
+		//bind texture
+		ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+		renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+
+		//render mesh
+		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());
+		renderer.RenderMesh(*pMesh);
+	}
+
+	void TextureEditor::Viewport_OnUpdate(uint64_t dt)
+	{
+		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+		const float CAMERA_DISTANCE_SPEED = 0.5f;
+		const float MIN_SCALE = 20;
+		if (mouseWheelDistance != 0)
+			m_scale -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+
+		if (m_scale < MIN_SCALE)
+			m_scale = MIN_SCALE;
 	}
 }

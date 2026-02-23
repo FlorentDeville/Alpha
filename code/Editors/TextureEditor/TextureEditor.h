@@ -31,10 +31,18 @@ namespace Editors
 	private:
 		TextureListModel* m_pListModel;
 
+		float m_renderTargetHalfWidth;
+		float m_renderTargetHalfHeight;
+
+		float m_scale;
+
 		void OnClick_File_Import();
 		void OnClick_File_Delete();
 		void OnClick_File_Rename();
 
 		Systems::NewAssetId GetSelectedTextureId() const;
+
+		void Viewport_OnRender();
+		void Viewport_OnUpdate(uint64_t dt);
 	};
 }
