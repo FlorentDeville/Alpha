@@ -10,7 +10,7 @@
 
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
-#include "Widgets/Viewport.h"
+#include "Widgets/Viewport_v2.h"
 
 namespace Editors
 {
@@ -23,12 +23,12 @@ namespace Editors
 	void GamePlayer::CreateEditor(Widgets::Widget* pParent)
 	{
 		Widgets::Tab* pViewportTab = new Widgets::Tab();
+		
+		const int WIDTH = 1920;
+		const int HEIGHT = 1080;
 
-		Widgets::Viewport* pViewport = new Widgets::Viewport();
-		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pViewport->OnFocusGained([](const Widgets::FocusEvent&) { Inputs::InputMgr::Get().Enable(); });
-		pViewport->OnFocusLost([](const Widgets::FocusEvent&) { Inputs::InputMgr::Get().Disable(); });
-		pViewport->OnGetRenderTargetTexture([]() -> Rendering::TextureId { return Rendering::RenderModule::Get().GetGameRenderTargetTextureId(); });
+		Widgets::Viewport_v2* pViewport = new Widgets::Viewport_v2(WIDTH, HEIGHT);
+		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
 		pViewportTab->AddWidget(pViewport);
 
 		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
