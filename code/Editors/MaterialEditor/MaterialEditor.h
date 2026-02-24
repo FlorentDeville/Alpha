@@ -7,13 +7,17 @@
 #include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
-#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include <DirectXMath.h>
 
 #include <string>
 #include <vector>
+
+namespace Rendering
+{
+	class Mesh;
+}
 
 namespace Systems
 {
@@ -24,6 +28,7 @@ namespace Systems
 namespace Widgets
 {
 	class Layout;
+	class MenuItem;
 	class Text;
 	class Widget;
 }
@@ -43,6 +48,15 @@ namespace Editors
 		void CreateEditor(Widgets::Widget* pParent) override;
 
 	private:
+		enum DisplayMesh
+		{
+			Unknown = -1,
+			Sphere = 0,
+			Cube,
+
+			Count
+		};
+
 		Widgets::Layout* m_pShaderListLayout;
 		Widgets::Text* m_pLogText;
 
@@ -63,17 +77,22 @@ namespace Editors
 		bool m_firstFrameMouseDown;
 		DirectX::XMUINT2 m_mousePreviousPos;
 
-		Systems::MeshAsset* m_pMesh; //mesh to render in the viewport
+		Rendering::Mesh* m_pMeshes[DisplayMesh::Count]; //list of possible meshes to render in the viewport
+		Widgets::MenuItem* m_pMeshesMenuItem[DisplayMesh::Count];
+		DisplayMesh m_selectedMesh;
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 
-		void CreateMenu();
+		void CreateFileMenu();
+		void CreateMeshMenu();
 
 		void MenuFile_NewMaterial_OnClicked();
 		void MenuFile_NewMaterialInstance_OnClicked();
 		void MenuFile_Save_OnClicked();
 		void MenuFile_Delete_OnClicked();
 		void MenuFile_Rename_OnClicked();
+
+		void MenuMesh_OnClicked(DisplayMesh mesh);
 
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();

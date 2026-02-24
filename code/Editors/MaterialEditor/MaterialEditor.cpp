@@ -21,6 +21,7 @@
 #include "OsWin/Process.h"
 #include "OsWin/FileDialog.h"
 
+#include "Rendering/BaseShape.h"
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
@@ -65,7 +66,6 @@ namespace Editors
 		, m_pPropertyGridPopulator(new PropertyGridPopulator())
 		, m_cameraDistance(10)
 		, m_aspectRatio(0.f)
-		, m_pMesh(nullptr)
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
 		, m_objWatcherCid()
@@ -76,14 +76,22 @@ namespace Editors
 
 	MaterialEditor::~MaterialEditor()
 	{
+		for (Rendering::Mesh* pMesh : m_pMeshes)
+		{
+			delete pMesh;
+			pMesh = nullptr;
+		}
+			
 		delete m_pPropertyGridPopulator;
+		m_pPropertyGridPopulator = nullptr;
 	}
 
 	void MaterialEditor::CreateEditor(Widgets::Widget* pParent)
 	{
 		CreateDefaultWidgets(pParent, "Material");
 
-		CreateMenu();
+		CreateFileMenu();
+		CreateMeshMenu();
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
@@ -179,26 +187,17 @@ namespace Editors
 				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
 
+		m_pMeshes[DisplayMesh::Sphere] = new Rendering::Mesh();
+		const uint32_t SUBDIVISION = 20;
+		Rendering::BaseShape::CreateSphere(m_pMeshes[DisplayMesh::Sphere], SUBDIVISION, SUBDIVISION);
 
-		//find the cube to render in the viewport
-		Systems::AssetMetadata metadataCube;
-		Systems::AssetMgr::Get().ForEachMetadata([&metadataCube](const Systems::AssetMetadata& metadata)
-			{
-				if (metadata.GetAssetType() != CONSTSID("Mesh"))
-					return;
+		m_pMeshes[DisplayMesh::Cube] = new Rendering::Mesh();
+		Rendering::BaseShape::CreateCube(m_pMeshes[DisplayMesh::Cube]);
 
-				std::string meshName = "base_sphere.fbx";
-				if (metadata.GetVirtualName().length() < meshName.length())
-					return;
-
-				if (metadata.GetVirtualName().compare(metadata.GetVirtualName().size() - meshName.size(), meshName.size(), meshName) == 0)
-					metadataCube = metadata;
-			});
-
-		m_pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(metadataCube.GetAssetId());
+		m_selectedMesh = DisplayMesh::Sphere;
 	}
 
-	void MaterialEditor::CreateMenu()
+	void MaterialEditor::CreateFileMenu()
 	{
 		//create the file menu
 		Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
@@ -221,6 +220,21 @@ namespace Editors
 		Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
 		pDeleteItem->SetShortcut("Del");
 		pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
+	}
+
+	void MaterialEditor::CreateMeshMenu()
+	{
+		//create the file menu
+		Widgets::Menu* pMenu = m_pMenuBar->AddMenu("Mesh");
+
+		Widgets::MenuItem* pSphereItem = pMenu->AddMenuItem("Sphere");
+		pSphereItem->OnClick([this]() { MenuMesh_OnClicked(DisplayMesh::Sphere); });
+		pSphereItem->SetChecked(true);
+		m_pMeshesMenuItem[DisplayMesh::Sphere] = pSphereItem;
+
+		Widgets::MenuItem* pCubeItem = pMenu->AddMenuItem("Cube");
+		pCubeItem->OnClick([this]() { MenuMesh_OnClicked(DisplayMesh::Cube); });
+		m_pMeshesMenuItem[DisplayMesh::Cube] = pCubeItem;
 	}
 
 	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
@@ -313,6 +327,17 @@ namespace Editors
 				MaterialEditorModule::Get().RenameMaterial(m_selectedMaterialId, input);
 			});
 		pDialog->Open();
+	}
+
+	void MaterialEditor::MenuMesh_OnClicked(DisplayMesh mesh)
+	{
+		if (m_selectedMesh == mesh)
+			return;
+
+		m_pMeshesMenuItem[m_selectedMesh]->SetChecked(false);
+		m_pMeshesMenuItem[mesh]->SetChecked(true);
+
+		m_selectedMesh = mesh;
 	}
 
 	bool MaterialEditor::OnShaderEntryClicked(Systems::NewAssetId id)
@@ -444,10 +469,10 @@ namespace Editors
 
 	void MaterialEditor::Viewport_OnRender()
 	{
-		if (!m_pMesh)
+		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
 
-		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
+		if (m_selectedMesh == DisplayMesh::Unknown)
 			return;
 
 		//world
@@ -498,9 +523,6 @@ namespace Editors
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
-
-				const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
-				renderer.RenderMesh(*pMesh);
 			}
 		}
 		else if (Systems::AssetUtil::IsA<Systems::MaterialInstanceAsset>(m_selectedMaterialId))
@@ -520,11 +542,10 @@ namespace Editors
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
-
-				const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
-				renderer.RenderMesh(*pMesh);
 			}
 		}
+
+		renderer.RenderMesh(*m_pMeshes[m_selectedMesh]);
 	}
 
 	void MaterialEditor::Viewport_OnUpdate(uint64_t dt)

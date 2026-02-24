@@ -6,6 +6,7 @@
 
 #include "Core/Collections/Array.h"
 #include "Core/Math/Constants.h"
+#include "Core/Math/Vec4f.h"
 
 #include "Rendering/Mesh/Mesh.h"
 
@@ -40,7 +41,7 @@ namespace Rendering
     }
 
     // Helper creates a triangle fan to close the end of a cylinder / cone
-    void CreateCylinderCap(std::vector<Rendering::VertexPosColor>& vertices, std::vector<uint16_t>& indices, size_t tessellation, float height, float radius, bool isTop)
+    void CreateCylinderCap(std::vector<Rendering::VertexGeneric>& vertices, std::vector<uint16_t>& indices, size_t tessellation, float height, float radius, bool isTop)
     {
         // Create cap indices.
         for (uint16_t i = 0; i < tessellation - 2; i++)
@@ -78,8 +79,8 @@ namespace Rendering
 
             const DirectX::XMVECTOR textureCoordinate = DirectX::XMVectorMultiplyAdd(DirectX::XMVectorSwizzle<0, 2, 3, 3>(circleVector), textureScale, DirectX::g_XMOneHalf);
 
-            vertices.push_back(Rendering::VertexPosColor());
-            Rendering::VertexPosColor& vertex = vertices.back();
+            vertices.push_back(Rendering::VertexGeneric());
+            Rendering::VertexGeneric& vertex = vertices.back();
             vertex.Position = DirectX::XMFLOAT3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
             vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
         }
@@ -89,7 +90,7 @@ namespace Rendering
 	{
 		const int VERTEX_COUNT = resolution + 1;
 		const float THETA = 2 * 3.14f / resolution;
-		Rendering::VertexPosColor* pVertices = new Rendering::VertexPosColor[VERTEX_COUNT];
+		VertexGeneric* pVertices = new VertexGeneric[VERTEX_COUNT];
 		for (int ii = 0; ii < VERTEX_COUNT; ++ii)
 		{
 			float currentTheta = ii * THETA;
@@ -110,7 +111,7 @@ namespace Rendering
         if (tessellation < 3)
             return;
 
-        std::vector<Rendering::VertexPosColor> vertices;
+        std::vector<VertexGeneric> vertices;
         std::vector<uint16_t> indices;
 
         height /= 2;
@@ -132,8 +133,8 @@ namespace Rendering
             const DirectX::XMVECTOR textureCoordinate = DirectX::XMLoadFloat(&u);
 
             {
-                vertices.push_back(Rendering::VertexPosColor());
-                Rendering::VertexPosColor& vertex = vertices.back();
+                vertices.push_back(Rendering::VertexGeneric());
+                Rendering::VertexGeneric& vertex = vertices.back();
 
                 DirectX::XMVECTOR pos = DirectX::XMVectorAdd(sideOffset, topOffset);
                 vertex.Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
@@ -141,8 +142,8 @@ namespace Rendering
             }
 
             {
-                vertices.push_back(Rendering::VertexPosColor());
-                Rendering::VertexPosColor& vertex = vertices.back();
+                vertices.push_back(Rendering::VertexGeneric());
+                Rendering::VertexGeneric& vertex = vertices.back();
 
                 DirectX::XMVECTOR pos = DirectX::XMVectorSubtract(sideOffset, topOffset);
                 vertex.Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
@@ -167,7 +168,7 @@ namespace Rendering
 
     void BaseShape::CreateCone(Mesh* pMesh, float diameter, float height, size_t tessellation)
     {
-        std::vector<Rendering::VertexPosColor> vertices;
+        std::vector<VertexGeneric> vertices;
         std::vector<uint16_t> indices;
 
         height /= 2;
@@ -196,11 +197,11 @@ namespace Rendering
             normal = DirectX::XMVector3Normalize(normal);*/
 
             // Duplicate the top vertex for distinct normals
-            Rendering::VertexPosColor v1;
+            Rendering::VertexGeneric v1;
             v1.Position = DirectX::XMFLOAT3(topOffset.m128_f32[0], topOffset.m128_f32[1], topOffset.m128_f32[2]);
             vertices.push_back(v1);
 
-            Rendering::VertexPosColor v2;
+            Rendering::VertexGeneric v2;
             v2.Position = DirectX::XMFLOAT3(pt.m128_f32[0], pt.m128_f32[1], pt.m128_f32[2]);
             vertices.push_back(v2);
 
@@ -217,7 +218,7 @@ namespace Rendering
 
     void BaseShape::CreateTorus(Mesh* pMesh, float diameter, float thickness, int tessellation)
     {
-        std::vector<VertexPosColor> vertices;
+        std::vector<VertexGeneric> vertices;
         std::vector<uint16_t> indices;
 
         const int stride = tessellation + 1;
@@ -251,7 +252,7 @@ namespace Rendering
                 position = XMVector3Transform(position, transform);
                 normal = XMVector3TransformNormal(normal, transform);
 
-                VertexPosColor vertex;
+                VertexGeneric vertex;
                 vertex.Position = DirectX::XMFLOAT3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
                 vertex.Color = DirectX::XMFLOAT3(0, 0, 0);
                 vertices.push_back(vertex);
@@ -276,20 +277,88 @@ namespace Rendering
     void BaseShape::CreateCube(Mesh* pMesh)
     {
         const float HALF_SIZE = 0.5f;
-        const int VERTEX_COUNT = 8;
-        Rendering::VertexPosColor vertices[VERTEX_COUNT];
-        vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
-        vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
-        vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
-        vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+        const int VERTEX_COUNT = 24;
+        Rendering::VertexGeneric vertices[VERTEX_COUNT];
 
-        vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
-        vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
-        vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
-        vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+        //top face
+        {
+            DirectX::XMFLOAT3 normal(0, 1, 0);
+            vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[0].Normal = normal;
+            vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[1].Normal = normal;
+            vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[2].Normal = normal;
+            vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[3].Normal = normal;
+        }
+
+        //bottom face
+        {
+            DirectX::XMFLOAT3 normal(0, -1, 0);
+            vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[4].Normal = normal;
+            vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[5].Normal = normal;
+            vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[6].Normal = normal;
+            vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[7].Normal = normal;
+        }
+
+        //front face
+        {
+            DirectX::XMFLOAT3 normal(0, 0, -1);
+            vertices[8].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[8].Normal = normal;
+            vertices[9].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[9].Normal = normal;
+            vertices[10].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[10].Normal = normal;
+            vertices[11].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[11].Normal = normal;
+        }
+
+        //back face
+        {
+            DirectX::XMFLOAT3 normal(0, 0, 1);
+            vertices[12].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[12].Normal = normal;
+            vertices[13].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[13].Normal = normal;
+            vertices[14].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[14].Normal = normal;
+            vertices[15].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[15].Normal = normal;
+        }
+
+        //left face
+        {
+            DirectX::XMFLOAT3 normal(-1, 0, 0);
+            vertices[16].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[16].Normal = normal;
+            vertices[17].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[17].Normal = normal;
+            vertices[18].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[18].Normal = normal;
+            vertices[19].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[19].Normal = normal;
+        }
+
+        //right face
+        {
+            DirectX::XMFLOAT3 normal(-1, 0, 0);
+            vertices[20].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[20].Normal = normal;
+            vertices[21].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[21].Normal = normal;
+            vertices[22].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[22].Normal = normal;
+            vertices[23].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[23].Normal = normal;
+        }
 
         const int INDEX_COUNT = 36;
-        //const int INDEX_COUNT = 6;
         uint16_t indices[INDEX_COUNT];
 
         //top face
@@ -311,47 +380,47 @@ namespace Rendering
         indices[11] = 7;
 
         //front
-        indices[12] = 2;
-        indices[13] = 1;
-        indices[14] = 5;
+        indices[12] = 8;
+        indices[13] = 9;
+        indices[14] = 10;
 
-        indices[15] = 2;
-        indices[16] = 5;
-        indices[17] = 6;
+        indices[15] = 10;
+        indices[16] = 11;
+        indices[17] = 8;
 
         //back
-        indices[18] = 0;
-        indices[19] = 3;
-        indices[20] = 7;
+        indices[18] = 12;
+        indices[19] = 14;
+        indices[20] = 13;
 
-        indices[21] = 0;
-        indices[22] = 7;
-        indices[23] = 4;
+        indices[21] = 12;
+        indices[22] = 15;
+        indices[23] = 14;
 
         //left
-        indices[24] = 2;
-        indices[25] = 6;
-        indices[26] = 7;
+        indices[24] = 17;
+        indices[25] = 19;
+        indices[26] = 18;
 
-        indices[27] = 2;
-        indices[28] = 7;
-        indices[29] = 3;
+        indices[27] = 17;
+        indices[28] = 16;
+        indices[29] = 19;
 
         //right
-        indices[30] = 1;
-        indices[31] = 0;
-        indices[32] = 4;
+        indices[30] = 20;
+        indices[31] = 21;
+        indices[32] = 22;
 
-        indices[33] = 1;
-        indices[34] = 4;
-        indices[35] = 5;
+        indices[33] = 20;
+        indices[34] = 22;
+        indices[35] = 23;
 
         pMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
     }
 
     void BaseShape::CreateSphere(Mesh* pMesh, uint32_t stacks, uint32_t slices)
     {
-        Core::Array<VertexPosColor> vertices;
+        Core::Array<VertexGeneric> vertices;
         Core::Array<uint16_t> indices;
 
         float fStacks = static_cast<float>(stacks);
@@ -389,29 +458,53 @@ namespace Rendering
                 //
 
                 //convert polar coordinates to cartesian coordinates
-                VertexPosColor vertex1;
+                VertexGeneric vertex1;
                 vertex1.Position.x = sinTheta1 * cosPhi1;
                 vertex1.Position.y = sinTheta1 * sinPhi1;
                 vertex1.Position.z = cosTheta1;
                 vertex1.Color = DirectX::XMFLOAT3(0, 0, 0);
+                
+                {
+                    Core::Vec4f normal(vertex1.Position.x, vertex1.Position.y, vertex1.Position.z, 0);
+                    normal.Normalize();
+                    vertex1.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                }
 
-                VertexPosColor vertex2;
+                VertexGeneric vertex2;
                 vertex2.Position.x = sinTheta1 * cosPhi2;
                 vertex2.Position.y = sinTheta1 * sinPhi2;
                 vertex2.Position.z = cosTheta1;
                 vertex2.Color = DirectX::XMFLOAT3(0, 0, 0);
 
-                VertexPosColor vertex3;
+                {
+                    Core::Vec4f normal(vertex2.Position.x, vertex2.Position.y, vertex2.Position.z, 0);
+                    normal.Normalize();
+                    vertex2.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                }
+
+                VertexGeneric vertex3;
                 vertex3.Position.x = sinTheta2 * cosPhi2;
                 vertex3.Position.y = sinTheta2 * sinPhi2;
                 vertex3.Position.z = cosTheta2;
                 vertex3.Color = DirectX::XMFLOAT3(0, 0, 0);
 
-                VertexPosColor vertex4;
+                {
+                    Core::Vec4f normal(vertex3.Position.x, vertex3.Position.y, vertex3.Position.z, 0);
+                    normal.Normalize();
+                    vertex3.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                }
+
+                VertexGeneric vertex4;
                 vertex4.Position.x = sinTheta2 * cosPhi1;
                 vertex4.Position.y = sinTheta2 * sinPhi1;
                 vertex4.Position.z = cosTheta2;
                 vertex4.Color = DirectX::XMFLOAT3(0, 0, 0);
+
+                {
+                    Core::Vec4f normal(vertex4.Position.x, vertex4.Position.y, vertex4.Position.z, 0);
+                    normal.Normalize();
+                    vertex4.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                }
 
                 int indexVertex1 = vertices.GetSize();
                 int indexVertex2 = indexVertex1 + 1;
