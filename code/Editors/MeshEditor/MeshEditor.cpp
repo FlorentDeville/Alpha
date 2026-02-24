@@ -4,40 +4,30 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
-#include "Importer/FbxImporter/FbxImporter.h"
+#include "Editors/MeshEditor/MeshEditorModule.h"
+#include "Editors/MeshEditor/MeshListModel.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/Dialog/UserInputDialog.h"
+
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/FileDialog.h"
-#include "OsWin/Resource.h"
 
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
-#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
-#include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/Mesh/Mesh.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/Shaders/ShaderMgr.h"
-#include "Rendering/Texture/TextureMgr.h"
-#include "Rendering/Texture/Texture.h"
 
-#include "Resources/ResourcesMgr.h"
-
-#include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
-#include "Systems/Container/Container.h"
-#include "Systems/Container/ContainerMgr.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
-#include "Widgets/Button.h"
-#include "Widgets/Icon.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/SplitHorizontal.h"
@@ -46,47 +36,16 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
 #include "Widgets/Viewport.h"
+#include "Widgets/Widgets/TableView.h"
 
 namespace Editors
 {
-	static void Imports()
-	{
-		std::string filename;
-		bool res = Os::OpenFileDialog(filename);
-		if (!res)
-			return;
-
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-
-		Systems::MeshAsset* pMesh = Systems::CreateNewAsset<Systems::MeshAsset>();
-		FbxImporter::FbxImporter importer;
-		importer.Import(filename, *pMesh);
-	
-		Systems::ContainerId cid = assetMgr.GenerateNewContainerId();
-		Systems::Container* pContainer = containerMgr.CreateContainer(cid);
-		pContainer->AddAsset(pMesh);
-
-		Systems::AssetMetadata metadata(pMesh->GetId(), filename, MAKESID("Mesh"));
-		assetMgr.RegisterAssetMetadata(metadata);
-
-		containerMgr.SaveContainer(pContainer->GetId());
-
-		assetMgr.SaveMetadataTable();
-	}
-
-	MeshEntry::MeshEntry()
-		: m_displayName()
-		, m_mesh()
-	{}
-
 	MaterialEntry::MaterialEntry()
 		: m_Id()
 	{}
 
 	MeshEditor::MeshEditor()
 		: BaseEditor()
-		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
 		, m_materialId()
 		, m_aspectRatio(0.f)
@@ -95,6 +54,8 @@ namespace Editors
 		, m_allEntryButton()
 		, m_pLogWidget(nullptr)
 		, m_allMaterials()
+		, m_pSelectedMesh(nullptr)
+		, m_pMeshListModel(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -107,26 +68,24 @@ namespace Editors
 	{
 		CreateDefaultWidgets(pParent, "Mesh");
 
-		Rendering::Texture* pImportIconTexture;
-		Rendering::TextureMgr::Get().CreateTexture(&pImportIconTexture, m_importIconTextureId);
-
-		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
-		int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconImport);
-		const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconImport);
-		char* pData;
-		uint32_t dataSize;
-		Os::Resource::GetResource(sysId, type, &pData, dataSize);
-		pImportIconTexture->Init(pData, dataSize);
-
 		//create the file menu
 		{
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
-			pNewItem->OnClick([this]() { Imports(); });
+			pNewItem->OnClick([this]() { OnClicked_File_Import(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
-			pSaveItem->OnClick([this]() { OnSaveSelectedMeshClicked(); });
+			pSaveItem->SetShortcut("Ctrl+S");
+			pSaveItem->OnClick([this]() { OnClicked_File_Save(); });
+
+			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
+			pRenameItem->SetShortcut("F2");
+			pRenameItem->OnClick([this]() { OnClicked_File_Rename(); });
+
+			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete...");
+			pDeleteItem->SetShortcut("Del");
+			pDeleteItem->OnClick([this]() { OnClicked_File_Delete(); });
 		}
 
 		//create the split
@@ -150,57 +109,18 @@ namespace Editors
 		pLeftPanelSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
-		//create the list of meshes
-		Core::Array<const Systems::AssetMetadata*> allMeshes;
-		Systems::AssetMgr::Get().GetAssets(MAKESID("Mesh"), allMeshes);
-
-		for(uint32_t ii = 0; ii < allMeshes.GetSize(); ++ii)
 		{
-			const Systems::AssetMetadata* pMetadata = allMeshes[ii];
-			m_allMeshes.push_back(MeshEntry());
+			Widgets::TableView* pMeshTableView = new Widgets::TableView();
+			pLeftPanelSplit->AddTopPanel(pMeshTableView);
 
-			MeshEntry& newEntry = m_allMeshes.back();
-			newEntry.m_displayName = pMetadata->GetVirtualName();
-			newEntry.m_id = pMetadata->GetAssetId();
-			newEntry.m_mesh = nullptr;
-		}
+			m_pMeshListModel = new MeshListModel();
+			m_pMeshListModel->GetSelectionModel()->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+				{
+					MeshTableView_OnSelectionChanged(selected, deselected);
+				});
 
-		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
-		pMeshListLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pLeftPanelSplit->AddTopPanel(pMeshListLayout);
-
-		const int LINE_HEIGHT = 20;
-		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
-		{
-			const MeshEntry& entry = m_allMeshes[ii];
-
-			//entry layout
-			Widgets::Layout* pEntryLayout = new Widgets::Layout(0, LINE_HEIGHT, 0, 0);
-			pEntryLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pEntryLayout->SetDirection(Widgets::Layout::Horizontal_Reverse);
-			pMeshListLayout->AddWidget(pEntryLayout);
-
-			//import button
-			Widgets::Button* pButtonImport = new Widgets::Button(LINE_HEIGHT, LINE_HEIGHT, 0, 0);
-			pButtonImport->OnClick([this, ii]() -> bool { return OnMeshImportClicked(ii); });
-			pEntryLayout->AddWidget(pButtonImport);
-
-			Widgets::Icon* pImportIcon = new Widgets::Icon(m_importIconTextureId);
-			pImportIcon->SetSize(Core::UInt2(20, 20));
-			pButtonImport->AddWidget(pImportIcon);
-
-			//mesh name
-			const std::string& meshName = entry.m_displayName;
-			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, ii]() -> bool { OnMeshEntryClicked(ii); return true; });
-			pEntryLayout->AddWidget(pButton);
-			m_allEntryButton.push_back(pButton);
-
-			const int LABEL_OFFSET_X = 10;
-			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, meshName);
-			pButton->AddWidget(pLabel);
+			pMeshTableView->SetModel(m_pMeshListModel);
+			pMeshTableView->SetColumnWidth(MeshListModel::Columns::Name, 250);
 		}
 
 		//bottom split : tab container for materials and logs
@@ -241,6 +161,7 @@ namespace Editors
 				Systems::AssetUtil::LoadAsset(materialEntry.m_Id);
 
 				//material widget
+				const int LINE_HEIGHT = 20;
 				Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
 				pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 				pButton->OnClick([this, materialIndex]() -> bool { return OnMaterialClicked(materialIndex); });
@@ -254,58 +175,16 @@ namespace Editors
 		//by default use the first material
 		if(!m_allMaterials.empty())
 			m_materialId = m_allMaterials.front().m_Id;
-	}
 
-	void MeshEditor::ShowMesh(int entryIndex)
-	{
-		m_selectedMesh = entryIndex;
-	}
-
-	void MeshEditor::LoadMesh(MeshEntry& entry)
-	{
-		Systems::ContainerId cid = entry.m_id.GetContainerId();
-
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-
-
-		Systems::Container* pContainer = containerMgr.GetContainer(cid);
-		if(!pContainer)
-			pContainer = containerMgr.LoadContainer(cid);
-
-		if (!pContainer)
-			return;
-
-		Systems::AssetObject* pAsset = pContainer->GetAsset(entry.m_id.GetObjectId());
-
-		entry.m_mesh = static_cast<Systems::MeshAsset*>(pAsset);
-	}
-
-	void MeshEditor::OnMeshEntryClicked(int entryIndex)
-	{
-		//deselect all buttons
-		for (Widgets::Button* pButton : m_allEntryButton)
-		{
-			pButton->Unselect();
-		}
-
-		//select new button
-		Widgets::Button* pButton = m_allEntryButton[entryIndex];
-		pButton->Select();
-
-		MeshEntry& entry = m_allMeshes[entryIndex];
-		
-		//load the mesh if necessary
-		if (!entry.m_mesh)
-		{
-			LoadMesh(entry);
-		}
-
-		ShowMesh(entryIndex);
+		MeshEditorModule& meshModule = MeshEditorModule::Get();
+		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
+		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
+		meshModule.OnBeforeMeshDeleted([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->RemoveRow(metadata.GetAssetId()); });
 	}
 
 	bool MeshEditor::OnMeshImportClicked(int entryIndex)
 	{
-		MeshEntry& entry = m_allMeshes[entryIndex];
+		/*MeshEntry& entry = m_allMeshes[entryIndex];
 		if (!entry.m_mesh)
 			LoadMesh(entry);
 
@@ -323,6 +202,7 @@ namespace Editors
 			return true;
 		}
 
+		return true;*/
 		return true;
 	}
 
@@ -334,15 +214,64 @@ namespace Editors
 		return true;
 	}
 
-	bool MeshEditor::OnSaveSelectedMeshClicked()
+	void MeshEditor::OnClicked_File_Save()
 	{
-		if (m_selectedMesh == -1)
-			return true;
+		if (!m_pSelectedMesh)
+			return;
 
-		const MeshEntry& entry = m_allMeshes[m_selectedMesh];
-		Systems::ContainerMgr::Get().SaveContainer(entry.m_id.GetContainerId());
+		MeshEditorModule::Get().SaveMesh(m_pSelectedMesh->GetId());
+	}
 
-		return true;
+	void MeshEditor::OnClicked_File_Import()
+	{
+		std::string filename;
+		bool res = Os::OpenFileDialog(filename);
+		if (!res)
+			return;
+
+		MeshEditorModule::Get().ImportMesh(filename);
+	}
+
+	void MeshEditor::OnClicked_File_Rename()
+	{
+		if (!m_pSelectedMesh)
+			return;
+
+		Systems::NewAssetId selectedMeshId = m_pSelectedMesh->GetId();
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedMeshId);
+		if (!pMetadata)
+			return;
+
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Rename texture %s", pMetadata->GetVirtualName().c_str());
+
+		UserInputDialog* pDialog = new UserInputDialog(buffer);
+		pDialog->OnInputValidated([selectedMeshId](const std::string& input)
+			{
+				MeshEditorModule::Get().RenameMesh(selectedMeshId, input);
+			});
+		pDialog->Open();
+	}
+
+	void MeshEditor::OnClicked_File_Delete()
+	{
+		if (!m_pSelectedMesh)
+			return;
+
+		Systems::NewAssetId selectedAssetId = m_pSelectedMesh->GetId();
+
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedAssetId);
+		if (!pMetadata)
+			return;
+
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Are you sure you want to delete the mesh %s?", pMetadata->GetVirtualName().c_str());
+
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
+		pDialog->OnOk([selectedAssetId]() { MeshEditorModule::Get().DeleteMesh(selectedAssetId); });
+		pDialog->Open();
 	}
 
 	void MeshEditor::Viewport_OnUpdate()
@@ -412,10 +341,8 @@ namespace Editors
 		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
 
 		//RENDER
-		if (m_selectedMesh != -1)
+		if (m_pSelectedMesh)
 		{
-			const MeshEntry& entry = m_allMeshes[m_selectedMesh];
-
 			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
 			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
 
@@ -436,9 +363,23 @@ namespace Editors
 
 				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
-				const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
+				const Rendering::Mesh* pMesh = m_pSelectedMesh->GetRenderingMesh();
 				renderer.RenderMesh(*pMesh);
 			}
 		}
+	}
+
+	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+	{
+		if (selected.empty())
+		{
+			m_pSelectedMesh = nullptr;
+			return;
+		}
+
+		const Widgets::SelectionRow& selectedRow = selected[0];
+		Systems::NewAssetId meshId = m_pMeshListModel->GetAssetId(selectedRow.GetStartIndex());
+
+		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
 	}
 }

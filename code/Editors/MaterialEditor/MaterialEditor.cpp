@@ -188,6 +188,9 @@ namespace Editors
 					return;
 
 				std::string meshName = "base_sphere.fbx";
+				if (metadata.GetVirtualName().length() < meshName.length())
+					return;
+
 				if (metadata.GetVirtualName().compare(metadata.GetVirtualName().size() - meshName.size(), meshName.size(), meshName) == 0)
 					metadataCube = metadata;
 			});
