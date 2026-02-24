@@ -107,17 +107,6 @@ namespace Editors
 	{
 		CreateDefaultWidgets(pParent, "Mesh");
 
-		Rendering::Texture* pImportIconTexture;
-		Rendering::TextureMgr::Get().CreateTexture(&pImportIconTexture, m_importIconTextureId);
-
-		const AppResources::ResourcesMgr& resourceMgr = AppResources::ResourcesMgr::Get();
-		int16_t sysId = resourceMgr.GetSystemResourceId(AppResources::kUiIconImport);
-		const char* type = resourceMgr.GetSystemResourceType(AppResources::kUiIconImport);
-		char* pData;
-		uint32_t dataSize;
-		Os::Resource::GetResource(sysId, type, &pData, dataSize);
-		pImportIconTexture->Init(pData, dataSize);
-
 		//create the file menu
 		{
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
