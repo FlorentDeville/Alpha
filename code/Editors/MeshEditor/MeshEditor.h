@@ -23,21 +23,14 @@ namespace Widgets
 {
 	class Button;
 	class Layout;
+	class SelectionRow;
 	class Text;
 	class Widget;
 }
 
 namespace Editors
 {
-	class MeshEntry
-	{
-	public:
-		std::string m_displayName;		//name of the mesh in the editor
-		Systems::NewAssetId m_id;
-		Systems::MeshAsset* m_mesh;
-		
-		MeshEntry();
-	};
+	class MeshListModel;
 
 	class MaterialEntry
 	{
@@ -63,10 +56,7 @@ namespace Editors
 		float m_cameraDistance;
 		float m_aspectRatio;
 				
-		std::vector<MeshEntry> m_allMeshes;
 		std::vector<MaterialEntry> m_allMaterials;
-
-		int m_selectedMesh; //id in m_allMeshes, -1 if nothing selected
 
 		Systems::NewAssetId m_materialId; //material to use to render the mesh
 
@@ -79,10 +69,10 @@ namespace Editors
 		
 		Widgets::Text* m_pLogWidget;
 
-		void ShowMesh(int entryIndex);
-		void LoadMesh(MeshEntry& entry);
+		MeshListModel* m_pMeshListModel;
 
-		void OnMeshEntryClicked(int entryIndex);
+		Systems::MeshAsset* m_pSelectedMesh;
+
 		bool OnMeshImportClicked(int entryIndex);
 		bool OnMaterialClicked(int entryIndex);
 
@@ -90,5 +80,7 @@ namespace Editors
 
 		void Viewport_OnUpdate();
 		void Viewport_OnRender();
+
+		void MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 	};
 }

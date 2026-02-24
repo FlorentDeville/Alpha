@@ -4,6 +4,8 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
+#include "Editors/MeshEditor/MeshListModel.h"
+
 #include "Importer/FbxImporter/FbxImporter.h"
 #include "Inputs/InputMgr.h"
 
@@ -38,6 +40,8 @@
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/SplitHorizontal.h"
@@ -46,6 +50,7 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
 #include "Widgets/Viewport.h"
+#include "Widgets/Widgets/TableView.h"
 
 namespace Editors
 {
@@ -75,18 +80,12 @@ namespace Editors
 		assetMgr.SaveMetadataTable();
 	}
 
-	MeshEntry::MeshEntry()
-		: m_displayName()
-		, m_mesh()
-	{}
-
 	MaterialEntry::MaterialEntry()
 		: m_Id()
 	{}
 
 	MeshEditor::MeshEditor()
 		: BaseEditor()
-		, m_selectedMesh(-1)
 		, m_cameraDistance(10.f)
 		, m_materialId()
 		, m_aspectRatio(0.f)
@@ -95,6 +94,7 @@ namespace Editors
 		, m_allEntryButton()
 		, m_pLogWidget(nullptr)
 		, m_allMaterials()
+		, m_pSelectedMesh(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -150,57 +150,18 @@ namespace Editors
 		pLeftPanelSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
-		//create the list of meshes
-		Core::Array<const Systems::AssetMetadata*> allMeshes;
-		Systems::AssetMgr::Get().GetAssets(MAKESID("Mesh"), allMeshes);
-
-		for(uint32_t ii = 0; ii < allMeshes.GetSize(); ++ii)
 		{
-			const Systems::AssetMetadata* pMetadata = allMeshes[ii];
-			m_allMeshes.push_back(MeshEntry());
+			Widgets::TableView* pMeshTableView = new Widgets::TableView();
+			pLeftPanelSplit->AddTopPanel(pMeshTableView);
 
-			MeshEntry& newEntry = m_allMeshes.back();
-			newEntry.m_displayName = pMetadata->GetVirtualName();
-			newEntry.m_id = pMetadata->GetAssetId();
-			newEntry.m_mesh = nullptr;
-		}
+			m_pMeshListModel = new MeshListModel();
+			m_pMeshListModel->GetSelectionModel()->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+				{
+					MeshTableView_OnSelectionChanged(selected, deselected);
+				});
 
-		Widgets::Layout* pMeshListLayout = new Widgets::Layout(0, 0, 0, 0);
-		pMeshListLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pMeshListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pLeftPanelSplit->AddTopPanel(pMeshListLayout);
-
-		const int LINE_HEIGHT = 20;
-		for(int ii = 0; ii < m_allMeshes.size(); ++ii)
-		{
-			const MeshEntry& entry = m_allMeshes[ii];
-
-			//entry layout
-			Widgets::Layout* pEntryLayout = new Widgets::Layout(0, LINE_HEIGHT, 0, 0);
-			pEntryLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pEntryLayout->SetDirection(Widgets::Layout::Horizontal_Reverse);
-			pMeshListLayout->AddWidget(pEntryLayout);
-
-			//import button
-			Widgets::Button* pButtonImport = new Widgets::Button(LINE_HEIGHT, LINE_HEIGHT, 0, 0);
-			pButtonImport->OnClick([this, ii]() -> bool { return OnMeshImportClicked(ii); });
-			pEntryLayout->AddWidget(pButtonImport);
-
-			Widgets::Icon* pImportIcon = new Widgets::Icon(m_importIconTextureId);
-			pImportIcon->SetSize(Core::UInt2(20, 20));
-			pButtonImport->AddWidget(pImportIcon);
-
-			//mesh name
-			const std::string& meshName = entry.m_displayName;
-			Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-			pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			pButton->OnClick([this, ii]() -> bool { OnMeshEntryClicked(ii); return true; });
-			pEntryLayout->AddWidget(pButton);
-			m_allEntryButton.push_back(pButton);
-
-			const int LABEL_OFFSET_X = 10;
-			Widgets::Label* pLabel = new Widgets::Label(LABEL_OFFSET_X, 0, 1, meshName);
-			pButton->AddWidget(pLabel);
+			pMeshTableView->SetModel(m_pMeshListModel);
+			pMeshTableView->SetColumnWidth(MeshListModel::Columns::Name, 250);
 		}
 
 		//bottom split : tab container for materials and logs
@@ -241,6 +202,7 @@ namespace Editors
 				Systems::AssetUtil::LoadAsset(materialEntry.m_Id);
 
 				//material widget
+				const int LINE_HEIGHT = 20;
 				Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
 				pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 				pButton->OnClick([this, materialIndex]() -> bool { return OnMaterialClicked(materialIndex); });
@@ -256,56 +218,9 @@ namespace Editors
 			m_materialId = m_allMaterials.front().m_Id;
 	}
 
-	void MeshEditor::ShowMesh(int entryIndex)
-	{
-		m_selectedMesh = entryIndex;
-	}
-
-	void MeshEditor::LoadMesh(MeshEntry& entry)
-	{
-		Systems::ContainerId cid = entry.m_id.GetContainerId();
-
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-
-
-		Systems::Container* pContainer = containerMgr.GetContainer(cid);
-		if(!pContainer)
-			pContainer = containerMgr.LoadContainer(cid);
-
-		if (!pContainer)
-			return;
-
-		Systems::AssetObject* pAsset = pContainer->GetAsset(entry.m_id.GetObjectId());
-
-		entry.m_mesh = static_cast<Systems::MeshAsset*>(pAsset);
-	}
-
-	void MeshEditor::OnMeshEntryClicked(int entryIndex)
-	{
-		//deselect all buttons
-		for (Widgets::Button* pButton : m_allEntryButton)
-		{
-			pButton->Unselect();
-		}
-
-		//select new button
-		Widgets::Button* pButton = m_allEntryButton[entryIndex];
-		pButton->Select();
-
-		MeshEntry& entry = m_allMeshes[entryIndex];
-		
-		//load the mesh if necessary
-		if (!entry.m_mesh)
-		{
-			LoadMesh(entry);
-		}
-
-		ShowMesh(entryIndex);
-	}
-
 	bool MeshEditor::OnMeshImportClicked(int entryIndex)
 	{
-		MeshEntry& entry = m_allMeshes[entryIndex];
+		/*MeshEntry& entry = m_allMeshes[entryIndex];
 		if (!entry.m_mesh)
 			LoadMesh(entry);
 
@@ -323,6 +238,7 @@ namespace Editors
 			return true;
 		}
 
+		return true;*/
 		return true;
 	}
 
@@ -336,13 +252,11 @@ namespace Editors
 
 	bool MeshEditor::OnSaveSelectedMeshClicked()
 	{
-		if (m_selectedMesh == -1)
+		if (!m_pSelectedMesh)
 			return true;
 
-		const MeshEntry& entry = m_allMeshes[m_selectedMesh];
-		Systems::ContainerMgr::Get().SaveContainer(entry.m_id.GetContainerId());
-
-		return true;
+		bool res = Systems::ContainerMgr::Get().SaveContainer(m_pSelectedMesh->GetId().GetContainerId());
+		return res;
 	}
 
 	void MeshEditor::Viewport_OnUpdate()
@@ -412,10 +326,8 @@ namespace Editors
 		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
 
 		//RENDER
-		if (m_selectedMesh != -1)
+		if (m_pSelectedMesh)
 		{
-			const MeshEntry& entry = m_allMeshes[m_selectedMesh];
-
 			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
 			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
 
@@ -436,9 +348,23 @@ namespace Editors
 
 				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 
-				const Rendering::Mesh* pMesh = entry.m_mesh->GetRenderingMesh();
+				const Rendering::Mesh* pMesh = m_pSelectedMesh->GetRenderingMesh();
 				renderer.RenderMesh(*pMesh);
 			}
 		}
+	}
+
+	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+	{
+		if (selected.empty())
+		{
+			m_pSelectedMesh = nullptr;
+			return;
+		}
+
+		const Widgets::SelectionRow& selectedRow = selected[0];
+		Systems::NewAssetId meshId = m_pMeshListModel->GetAssetId(selectedRow.GetStartIndex());
+
+		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
 	}
 }

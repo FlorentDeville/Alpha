@@ -28,6 +28,7 @@
     <ClInclude Include="Log\LogModule.h" />
     <ClInclude Include="MaterialEditor\ShaderAutoGen.h" />
     <ClInclude Include="MaterialEditor\ShaderTemplate.h" />
+    <ClInclude Include="MeshEditor\MeshListModel.h" />
     <ClInclude Include="ObjectWatcher\ObjectWatcher.h" />
     <ClInclude Include="ObjectWatcher\ObjectWatcherCallbackId.h" />
     <ClInclude Include="MeshEditor\MeshEditor.h" />
@@ -83,6 +84,7 @@
     <ClCompile Include="LogEditor\LogEditor.cpp" />
     <ClCompile Include="MaterialEditor\ShaderAutoGen.cpp" />
     <ClCompile Include="MaterialEditor\ShaderTemplate.cpp" />
+    <ClCompile Include="MeshEditor\MeshListModel.cpp" />
     <ClCompile Include="ObjectWatcher\ObjectWatcher.cpp" />
     <ClCompile Include="ObjectWatcher\ObjectWatcherCallbackId.cpp" />
     <ClCompile Include="MeshEditor\MeshEditor.cpp" />

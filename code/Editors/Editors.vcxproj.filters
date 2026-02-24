@@ -177,6 +177,9 @@
     <ClInclude Include="TextureEditor\TextureListModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MeshEditor\MeshListModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -330,6 +333,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextureEditor\TextureListModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshEditor\MeshListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
