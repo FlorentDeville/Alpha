@@ -4,39 +4,24 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
+#include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/MeshEditor/MeshListModel.h"
+#include "Editors/Widgets/Dialog/UserInputDialog.h"
 
-#include "Importer/FbxImporter/FbxImporter.h"
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/FileDialog.h"
-#include "OsWin/Resource.h"
 
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
-#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
-#include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/Mesh/Mesh.h"
-#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
-#include "Rendering/RootSignature/RootSignatureMgr.h"
-#include "Rendering/Shaders/ShaderMgr.h"
-#include "Rendering/Texture/TextureMgr.h"
-#include "Rendering/Texture/Texture.h"
 
-#include "Resources/ResourcesMgr.h"
-
-#include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
-#include "Systems/Container/Container.h"
-#include "Systems/Container/ContainerMgr.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
-#include "Widgets/Button.h"
-#include "Widgets/Icon.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
@@ -54,32 +39,6 @@
 
 namespace Editors
 {
-	static void Imports()
-	{
-		std::string filename;
-		bool res = Os::OpenFileDialog(filename);
-		if (!res)
-			return;
-
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-
-		Systems::MeshAsset* pMesh = Systems::CreateNewAsset<Systems::MeshAsset>();
-		FbxImporter::FbxImporter importer;
-		importer.Import(filename, *pMesh);
-	
-		Systems::ContainerId cid = assetMgr.GenerateNewContainerId();
-		Systems::Container* pContainer = containerMgr.CreateContainer(cid);
-		pContainer->AddAsset(pMesh);
-
-		Systems::AssetMetadata metadata(pMesh->GetId(), filename, MAKESID("Mesh"));
-		assetMgr.RegisterAssetMetadata(metadata);
-
-		containerMgr.SaveContainer(pContainer->GetId());
-
-		assetMgr.SaveMetadataTable();
-	}
-
 	MaterialEntry::MaterialEntry()
 		: m_Id()
 	{}
@@ -95,6 +54,7 @@ namespace Editors
 		, m_pLogWidget(nullptr)
 		, m_allMaterials()
 		, m_pSelectedMesh(nullptr)
+		, m_pMeshListModel(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -112,10 +72,15 @@ namespace Editors
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
-			pNewItem->OnClick([this]() { Imports(); });
+			pNewItem->OnClick([this]() { OnClicked_File_Import(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
-			pSaveItem->OnClick([this]() { OnSaveSelectedMeshClicked(); });
+			pSaveItem->SetShortcut("Ctrl+S");
+			pSaveItem->OnClick([this]() { OnClicked_File_Save(); });
+
+			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
+			pRenameItem->SetShortcut("F2");
+			pRenameItem->OnClick([this]() { OnClicked_File_Rename(); });
 		}
 
 		//create the split
@@ -205,6 +170,10 @@ namespace Editors
 		//by default use the first material
 		if(!m_allMaterials.empty())
 			m_materialId = m_allMaterials.front().m_Id;
+
+		MeshEditorModule& meshModule = MeshEditorModule::Get();
+		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
+		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
 	}
 
 	bool MeshEditor::OnMeshImportClicked(int entryIndex)
@@ -239,13 +208,44 @@ namespace Editors
 		return true;
 	}
 
-	bool MeshEditor::OnSaveSelectedMeshClicked()
+	void MeshEditor::OnClicked_File_Save()
 	{
 		if (!m_pSelectedMesh)
-			return true;
+			return;
 
-		bool res = Systems::ContainerMgr::Get().SaveContainer(m_pSelectedMesh->GetId().GetContainerId());
-		return res;
+		MeshEditorModule::Get().SaveMesh(m_pSelectedMesh->GetId());
+	}
+
+	void MeshEditor::OnClicked_File_Import()
+	{
+		std::string filename;
+		bool res = Os::OpenFileDialog(filename);
+		if (!res)
+			return;
+
+		MeshEditorModule::Get().ImportMesh(filename);
+	}
+
+	void MeshEditor::OnClicked_File_Rename()
+	{
+		if (!m_pSelectedMesh)
+			return;
+
+		Systems::NewAssetId selectedMeshId = m_pSelectedMesh->GetId();
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedMeshId);
+		if (!pMetadata)
+			return;
+
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Rename texture %s", pMetadata->GetVirtualName().c_str());
+
+		UserInputDialog* pDialog = new UserInputDialog(buffer);
+		pDialog->OnInputValidated([selectedMeshId](const std::string& input)
+			{
+				MeshEditorModule::Get().RenameMesh(selectedMeshId, input);
+			});
+		pDialog->Open();
 	}
 
 	void MeshEditor::Viewport_OnUpdate()

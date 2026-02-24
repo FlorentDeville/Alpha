@@ -25,6 +25,7 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
+#include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/TextureEditor/TextureEditorModule.h"
 
@@ -564,6 +565,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::TextureEditorModule& textureEditorModule = Editors::TextureEditorModule::InitSingleton();
 	textureEditorModule.Init();
 
+	Editors::MeshEditorModule& meshEditorModule = Editors::MeshEditorModule::InitSingleton();
+	meshEditorModule.Init();
+
 	Editors::EditorManager& editorManager = Editors::EditorManager::InitSingleton();
 
 	Editors::GamePlayer::InitSingleton();
@@ -600,6 +604,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	editorManager.Shutdown();
 	Editors::EditorManager::ReleaseSingleton();
+
+	meshEditorModule.Shutdown();
+	Editors::MeshEditorModule::ReleaseSingleton();
 
 	textureEditorModule.Shutdown();
 	Editors::TextureEditorModule::ReleaseSingleton();
