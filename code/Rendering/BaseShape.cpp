@@ -277,20 +277,88 @@ namespace Rendering
     void BaseShape::CreateCube(Mesh* pMesh)
     {
         const float HALF_SIZE = 0.5f;
-        const int VERTEX_COUNT = 8;
+        const int VERTEX_COUNT = 24;
         Rendering::VertexGeneric vertices[VERTEX_COUNT];
-        vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
-        vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
-        vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
-        vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
 
-        vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
-        vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
-        vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
-        vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+        //top face
+        {
+            DirectX::XMFLOAT3 normal(0, 1, 0);
+            vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[0].Normal = normal;
+            vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[1].Normal = normal;
+            vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[2].Normal = normal;
+            vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[3].Normal = normal;
+        }
+
+        //bottom face
+        {
+            DirectX::XMFLOAT3 normal(0, -1, 0);
+            vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[4].Normal = normal;
+            vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[5].Normal = normal;
+            vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[6].Normal = normal;
+            vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[7].Normal = normal;
+        }
+
+        //front face
+        {
+            DirectX::XMFLOAT3 normal(0, 0, -1);
+            vertices[8].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[8].Normal = normal;
+            vertices[9].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[9].Normal = normal;
+            vertices[10].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[10].Normal = normal;
+            vertices[11].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[11].Normal = normal;
+        }
+
+        //back face
+        {
+            DirectX::XMFLOAT3 normal(0, 0, 1);
+            vertices[12].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[12].Normal = normal;
+            vertices[13].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[13].Normal = normal;
+            vertices[14].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[14].Normal = normal;
+            vertices[15].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[15].Normal = normal;
+        }
+
+        //left face
+        {
+            DirectX::XMFLOAT3 normal(-1, 0, 0);
+            vertices[16].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[16].Normal = normal;
+            vertices[17].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[17].Normal = normal;
+            vertices[18].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[18].Normal = normal;
+            vertices[19].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[19].Normal = normal;
+        }
+
+        //right face
+        {
+            DirectX::XMFLOAT3 normal(-1, 0, 0);
+            vertices[20].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[20].Normal = normal;
+            vertices[21].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[21].Normal = normal;
+            vertices[22].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[22].Normal = normal;
+            vertices[23].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[23].Normal = normal;
+        }
 
         const int INDEX_COUNT = 36;
-        //const int INDEX_COUNT = 6;
         uint16_t indices[INDEX_COUNT];
 
         //top face
@@ -312,40 +380,40 @@ namespace Rendering
         indices[11] = 7;
 
         //front
-        indices[12] = 2;
-        indices[13] = 1;
-        indices[14] = 5;
+        indices[12] = 8;
+        indices[13] = 9;
+        indices[14] = 10;
 
-        indices[15] = 2;
-        indices[16] = 5;
-        indices[17] = 6;
+        indices[15] = 10;
+        indices[16] = 11;
+        indices[17] = 8;
 
         //back
-        indices[18] = 0;
-        indices[19] = 3;
-        indices[20] = 7;
+        indices[18] = 12;
+        indices[19] = 14;
+        indices[20] = 13;
 
-        indices[21] = 0;
-        indices[22] = 7;
-        indices[23] = 4;
+        indices[21] = 12;
+        indices[22] = 15;
+        indices[23] = 14;
 
         //left
-        indices[24] = 2;
-        indices[25] = 6;
-        indices[26] = 7;
+        indices[24] = 17;
+        indices[25] = 19;
+        indices[26] = 18;
 
-        indices[27] = 2;
-        indices[28] = 7;
-        indices[29] = 3;
+        indices[27] = 17;
+        indices[28] = 16;
+        indices[29] = 19;
 
         //right
-        indices[30] = 1;
-        indices[31] = 0;
-        indices[32] = 4;
+        indices[30] = 20;
+        indices[31] = 21;
+        indices[32] = 22;
 
-        indices[33] = 1;
-        indices[34] = 4;
-        indices[35] = 5;
+        indices[33] = 20;
+        indices[34] = 22;
+        indices[35] = 23;
 
         pMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
     }
