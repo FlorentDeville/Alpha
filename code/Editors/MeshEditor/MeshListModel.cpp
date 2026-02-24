@@ -93,10 +93,6 @@ namespace Editors
 		case Columns::Name:
 			return pCachedData->m_virtualName;
 			break;
-
-		case Columns::ReImport:
-			return "reimport";
-			break;
 		}
 
 		return "__ERROR__";
@@ -112,10 +108,6 @@ namespace Editors
 
 		case Columns::Name:
 			return "Name";
-			break;
-
-		case Columns::ReImport:
-			return "ReImport";
 			break;
 		}
 

@@ -24,7 +24,6 @@ namespace Editors
 		{
 			Id = 0,
 			Name,
-			ReImport,
 
 			Count
 		};
