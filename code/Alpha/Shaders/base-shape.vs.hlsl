@@ -4,10 +4,12 @@
 
 #include "base-shape.rs.hlsl"
 
-struct VertexPosColor
+struct VertexInput
 {
 	float3 Position : POSITION;
 	float3 Color : COLOR;
+    float2 Uv : UV;
+    float3 Normal : NORMAL;
 };
 
 struct ModelViewProjection
@@ -25,7 +27,7 @@ struct VertexShaderOutput
 };
 
 [RootSignature(RS)]
-VertexShaderOutput main(VertexPosColor IN)
+VertexShaderOutput main(VertexInput IN)
 {
 	VertexShaderOutput OUT;
 	OUT.Position = mul(ModelViewProjectionCB.MVP, float4(IN.Position, 1.f));
