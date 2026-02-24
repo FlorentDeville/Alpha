@@ -18,3 +18,4 @@ editor/*
 publish/*
 .vs/slnx.sqlite
 .vs/VSWorkspaceState.json
+/code/3rdparty/DirectXTex-oct2025/DirectXTex/Shaders/Compiled
