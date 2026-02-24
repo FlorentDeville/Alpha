@@ -6,6 +6,7 @@
 
 #include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/MeshEditor/MeshListModel.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 
 #include "Inputs/InputMgr.h"
@@ -81,6 +82,10 @@ namespace Editors
 			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
 			pRenameItem->SetShortcut("F2");
 			pRenameItem->OnClick([this]() { OnClicked_File_Rename(); });
+
+			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete...");
+			pDeleteItem->SetShortcut("Del");
+			pDeleteItem->OnClick([this]() { OnClicked_File_Delete(); });
 		}
 
 		//create the split
@@ -174,6 +179,7 @@ namespace Editors
 		MeshEditorModule& meshModule = MeshEditorModule::Get();
 		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
 		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
+		meshModule.OnBeforeMeshDeleted([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->RemoveRow(metadata.GetAssetId()); });
 	}
 
 	bool MeshEditor::OnMeshImportClicked(int entryIndex)
@@ -245,6 +251,26 @@ namespace Editors
 			{
 				MeshEditorModule::Get().RenameMesh(selectedMeshId, input);
 			});
+		pDialog->Open();
+	}
+
+	void MeshEditor::OnClicked_File_Delete()
+	{
+		if (!m_pSelectedMesh)
+			return;
+
+		Systems::NewAssetId selectedAssetId = m_pSelectedMesh->GetId();
+
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedAssetId);
+		if (!pMetadata)
+			return;
+
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Are you sure you want to delete the mesh %s?", pMetadata->GetVirtualName().c_str());
+
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
+		pDialog->OnOk([selectedAssetId]() { MeshEditorModule::Get().DeleteMesh(selectedAssetId); });
 		pDialog->Open();
 	}
 

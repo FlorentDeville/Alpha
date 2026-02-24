@@ -79,6 +79,7 @@ namespace Editors
 		void OnClicked_File_Save();
 		void OnClicked_File_Import();
 		void OnClicked_File_Rename();
+		void OnClicked_File_Delete();
 
 		void Viewport_OnUpdate();
 		void Viewport_OnRender();
