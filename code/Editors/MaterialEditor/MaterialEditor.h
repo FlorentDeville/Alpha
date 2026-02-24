@@ -7,13 +7,17 @@
 #include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
-#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
 #include <DirectXMath.h>
 
 #include <string>
 #include <vector>
+
+namespace Rendering
+{
+	class Mesh;
+}
 
 namespace Systems
 {
@@ -63,7 +67,7 @@ namespace Editors
 		bool m_firstFrameMouseDown;
 		DirectX::XMUINT2 m_mousePreviousPos;
 
-		Systems::MeshAsset* m_pMesh; //mesh to render in the viewport
+		Rendering::Mesh* m_pMesh; //mesh to render in the viewport
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 

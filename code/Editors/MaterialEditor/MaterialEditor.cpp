@@ -21,6 +21,7 @@
 #include "OsWin/Process.h"
 #include "OsWin/FileDialog.h"
 
+#include "Rendering/BaseShape.h"
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
@@ -76,6 +77,7 @@ namespace Editors
 
 	MaterialEditor::~MaterialEditor()
 	{
+		delete m_pMesh;
 		delete m_pPropertyGridPopulator;
 	}
 
@@ -179,23 +181,9 @@ namespace Editors
 				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
 
-
-		//find the cube to render in the viewport
-		Systems::AssetMetadata metadataCube;
-		Systems::AssetMgr::Get().ForEachMetadata([&metadataCube](const Systems::AssetMetadata& metadata)
-			{
-				if (metadata.GetAssetType() != CONSTSID("Mesh"))
-					return;
-
-				std::string meshName = "base_sphere.fbx";
-				if (metadata.GetVirtualName().length() < meshName.length())
-					return;
-
-				if (metadata.GetVirtualName().compare(metadata.GetVirtualName().size() - meshName.size(), meshName.size(), meshName) == 0)
-					metadataCube = metadata;
-			});
-
-		m_pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(metadataCube.GetAssetId());
+		m_pMesh = new Rendering::Mesh();
+		const uint32_t SUBDIVISION = 20;
+		Rendering::BaseShape::CreateSphere(m_pMesh, SUBDIVISION, SUBDIVISION);
 	}
 
 	void MaterialEditor::CreateMenu()
@@ -444,9 +432,6 @@ namespace Editors
 
 	void MaterialEditor::Viewport_OnRender()
 	{
-		if (!m_pMesh)
-			return;
-
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
 
@@ -498,9 +483,6 @@ namespace Editors
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
-
-				const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
-				renderer.RenderMesh(*pMesh);
 			}
 		}
 		else if (Systems::AssetUtil::IsA<Systems::MaterialInstanceAsset>(m_selectedMaterialId))
@@ -520,11 +502,10 @@ namespace Editors
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
 				Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
-
-				const Rendering::Mesh* pMesh = m_pMesh->GetRenderingMesh();
-				renderer.RenderMesh(*pMesh);
 			}
 		}
+
+		renderer.RenderMesh(*m_pMesh);
 	}
 
 	void MaterialEditor::Viewport_OnUpdate(uint64_t dt)
