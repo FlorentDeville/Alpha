@@ -22,11 +22,10 @@ namespace Rendering
 		PipelineState();
 		~PipelineState();
 
-		void Init_Pos(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_PosUv(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
-		void Init_PosColor(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+		void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT rtvFormat);
 
 		//this is the generic pipeline state for meshes containing every vertex attributes
 		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
