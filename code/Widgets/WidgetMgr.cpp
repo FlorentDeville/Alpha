@@ -284,7 +284,10 @@ namespace Widgets
 	void WidgetMgr::Render()
 	{
 		for (Widget* pWidget : m_widgets)
-			pWidget->Internal_Render();
+		{
+			if(pWidget->IsEnabled())
+				pWidget->Internal_Render();
+		}
 	}
 
 	void WidgetMgr::Draw()
