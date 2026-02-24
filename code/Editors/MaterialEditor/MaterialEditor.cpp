@@ -66,7 +66,6 @@ namespace Editors
 		, m_pPropertyGridPopulator(new PropertyGridPopulator())
 		, m_cameraDistance(10)
 		, m_aspectRatio(0.f)
-		, m_pMesh(nullptr)
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
 		, m_objWatcherCid()
@@ -77,15 +76,22 @@ namespace Editors
 
 	MaterialEditor::~MaterialEditor()
 	{
-		delete m_pMesh;
+		for (Rendering::Mesh* pMesh : m_pMeshes)
+		{
+			delete pMesh;
+			pMesh = nullptr;
+		}
+			
 		delete m_pPropertyGridPopulator;
+		m_pPropertyGridPopulator = nullptr;
 	}
 
 	void MaterialEditor::CreateEditor(Widgets::Widget* pParent)
 	{
 		CreateDefaultWidgets(pParent, "Material");
 
-		CreateMenu();
+		CreateFileMenu();
+		CreateMeshMenu();
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
@@ -181,12 +187,17 @@ namespace Editors
 				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
 
-		m_pMesh = new Rendering::Mesh();
+		m_pMeshes[DisplayMesh::Sphere] = new Rendering::Mesh();
 		const uint32_t SUBDIVISION = 20;
-		Rendering::BaseShape::CreateSphere(m_pMesh, SUBDIVISION, SUBDIVISION);
+		Rendering::BaseShape::CreateSphere(m_pMeshes[DisplayMesh::Sphere], SUBDIVISION, SUBDIVISION);
+
+		m_pMeshes[DisplayMesh::Cube] = new Rendering::Mesh();
+		Rendering::BaseShape::CreateCube(m_pMeshes[DisplayMesh::Cube]);
+
+		m_selectedMesh = DisplayMesh::Sphere;
 	}
 
-	void MaterialEditor::CreateMenu()
+	void MaterialEditor::CreateFileMenu()
 	{
 		//create the file menu
 		Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
@@ -209,6 +220,21 @@ namespace Editors
 		Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete Material");
 		pDeleteItem->SetShortcut("Del");
 		pDeleteItem->OnClick([this]() { MenuFile_Delete_OnClicked(); });
+	}
+
+	void MaterialEditor::CreateMeshMenu()
+	{
+		//create the file menu
+		Widgets::Menu* pMenu = m_pMenuBar->AddMenu("Mesh");
+
+		Widgets::MenuItem* pSphereItem = pMenu->AddMenuItem("Sphere");
+		pSphereItem->OnClick([this]() { MenuMesh_OnClicked(DisplayMesh::Sphere); });
+		pSphereItem->SetChecked(true);
+		m_pMeshesMenuItem[DisplayMesh::Sphere] = pSphereItem;
+
+		Widgets::MenuItem* pCubeItem = pMenu->AddMenuItem("Cube");
+		pCubeItem->OnClick([this]() { MenuMesh_OnClicked(DisplayMesh::Cube); });
+		m_pMeshesMenuItem[DisplayMesh::Cube] = pCubeItem;
 	}
 
 	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
@@ -301,6 +327,17 @@ namespace Editors
 				MaterialEditorModule::Get().RenameMaterial(m_selectedMaterialId, input);
 			});
 		pDialog->Open();
+	}
+
+	void MaterialEditor::MenuMesh_OnClicked(DisplayMesh mesh)
+	{
+		if (m_selectedMesh == mesh)
+			return;
+
+		m_pMeshesMenuItem[m_selectedMesh]->SetChecked(false);
+		m_pMeshesMenuItem[mesh]->SetChecked(true);
+
+		m_selectedMesh = mesh;
 	}
 
 	bool MaterialEditor::OnShaderEntryClicked(Systems::NewAssetId id)
@@ -435,6 +472,9 @@ namespace Editors
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
 
+		if (m_selectedMesh == DisplayMesh::Unknown)
+			return;
+
 		//world
 		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
@@ -505,7 +545,7 @@ namespace Editors
 			}
 		}
 
-		renderer.RenderMesh(*m_pMesh);
+		renderer.RenderMesh(*m_pMeshes[m_selectedMesh]);
 	}
 
 	void MaterialEditor::Viewport_OnUpdate(uint64_t dt)
