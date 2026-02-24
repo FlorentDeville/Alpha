@@ -69,6 +69,9 @@ namespace Editors
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos()
 		, m_objWatcherCid()
+		, m_pMeshes{}
+		, m_pMeshesMenuItem{}
+		, m_selectedMesh(DisplayMesh::Unknown)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
