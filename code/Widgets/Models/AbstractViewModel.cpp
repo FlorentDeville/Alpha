@@ -4,6 +4,7 @@
 
 #include "Widgets/Models/AbstractViewModel.h"
 
+#include "Widgets/Label.h"
 #include "Widgets/Models/ModelIndex.h"
 #include "Widgets/Models/SelectionModel.h"
 
@@ -27,6 +28,13 @@ namespace Widgets
 	std::string AbstractViewModel::GetHeaderData(int columnIndex)
 	{
 		return "";
+	}
+
+	Widget* AbstractViewModel::GetCellWidget(const ModelIndex& index)
+	{
+		std::string data = GetData(index);
+		Label* pLabel = new Label(data);
+		return pLabel;
 	}
 
 	SelectionModel* AbstractViewModel::GetSelectionModel()

@@ -377,26 +377,24 @@ namespace Widgets
 
 		for (int jj = 0; jj < columnCount; ++jj)
 		{
-			ModelIndex rowIndex = m_pModel->GetIndex(row, jj, parent);
-			if (!rowIndex.IsValid())
+			ModelIndex cellIndex = m_pModel->GetIndex(row, jj, parent);
+			if (!cellIndex.IsValid())
 				continue;
 
-			std::string data = m_pModel->GetData(rowIndex);
-
-			Label* pLabel = new Label(data);
+			Widget* pCellWidget = m_pModel->GetCellWidget(cellIndex);
 			if (jj != columnCount - 1)
 			{
-				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+				pCellWidget->SetSizeStyle(Widgets::Widget::DEFAULT);
 				Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
-				pLabel->SetSize(cellSize);
+				pCellWidget->SetSize(cellSize);
 			}
 			else
 			{
-				pLabel->SetHeight(m_cellDefaultSize.y);
-				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+				pCellWidget->SetHeight(m_cellDefaultSize.y);
+				pCellWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 			}
 
-			pRowLayout->AddWidget(pLabel);
+			pRowLayout->AddWidget(pCellWidget);
 		}
 
 		return pRowLayout;

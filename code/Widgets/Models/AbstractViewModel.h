@@ -12,6 +12,7 @@ namespace Widgets
 {
 	class ModelIndex;
 	class SelectionModel;
+	class Widget;
 
 	class AbstractViewModel
 	{
@@ -31,6 +32,9 @@ namespace Widgets
 
 		virtual std::string GetData(const ModelIndex& idx) = 0;
 		virtual std::string GetHeaderData(int columnIndex);
+
+		//override this function to display a custom widget.
+		virtual Widget* GetCellWidget(const ModelIndex& index);
 
 		SelectionModel* GetSelectionModel();
 		const SelectionModel* GetSelectionModel() const;
