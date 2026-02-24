@@ -157,6 +157,16 @@ namespace Widgets
 			pPipelineState->Init_Icon(rsId, vsId, psId);
 		}
 
+		//texture editor pso
+		{
+			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\texture.rs.cso");
+			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.vs.cso");
+			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.ps.cso");
+
+			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_textureEditorPsoId);
+			pPipelineState->Init_Icon(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+		}
+
 		//viewport pso
 		{
 			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\widget_viewport.rs.cso");
@@ -571,6 +581,11 @@ namespace Widgets
 	Rendering::PipelineStateId WidgetMgr::GetIconWidgetPsoId() const
 	{
 		return m_iconWidgetPsoId;
+	}
+
+	Rendering::PipelineStateId WidgetMgr::GetTextureEditorPsoId() const
+	{
+		return m_textureEditorPsoId;
 	}
 
 	Rendering::MeshId WidgetMgr::GetQuadMeshId() const

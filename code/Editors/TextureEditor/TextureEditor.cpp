@@ -200,7 +200,7 @@ namespace Editors
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 		Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 
-		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetIconWidgetPsoId());
+		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetTextureEditorPsoId());
 		renderer.BindMaterial(*pPso);
 
 		//bind const buffer

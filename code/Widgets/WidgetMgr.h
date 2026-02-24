@@ -114,6 +114,7 @@ namespace Widgets
 
 		Rendering::PipelineStateId GetBaseWidgetPsoId() const;
 		Rendering::PipelineStateId GetIconWidgetPsoId() const;
+		Rendering::PipelineStateId GetTextureEditorPsoId() const;
 		Rendering::MeshId GetQuadMeshId() const;
 
 		Rendering::PipelineStateId GetObjectIdsPsoId() const;
@@ -138,6 +139,7 @@ namespace Widgets
 		//Ids of resources used to render widgets
 		Rendering::PipelineStateId m_baseWidgetPsoId;
 		Rendering::PipelineStateId m_iconWidgetPsoId;
+		Rendering::PipelineStateId m_textureEditorPsoId;
 		Rendering::MeshId m_quadMeshId;
 
 		Rendering::PipelineStateId m_widgetViewportPsoId;	//this could be turned into a material
