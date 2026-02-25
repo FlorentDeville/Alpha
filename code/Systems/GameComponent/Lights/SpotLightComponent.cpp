@@ -20,6 +20,7 @@ namespace Systems
 		, m_linear(0.22f)
 		, m_quadratic(0.2f)
 		, m_cutOff(0.34f)
+		, m_outerCutOff(0.6f)
 	{ }
 
 	SpotLightComponent::~SpotLightComponent()
