@@ -126,6 +126,9 @@ namespace Editors
 			"\tLight lightArray[MAX_LIGHT_COUNT];\n"
 			"};\n" + NEW_LINE;
 
+		fileContent += "Texture2D shadowMap[MAX_LIGHT_COUNT];" + NEW_LINE;
+		fileContent += "SamplerState shadowMapSampler;" + NEW_LINE + NEW_LINE;
+
 		fileContent += "#endif // ifndef CBUFFER_LIGHTS_HLSL " + NEW_LINE;
 
 		std::string filename = folder + "CBufferLights.hlsl";
