@@ -277,6 +277,11 @@ namespace Widgets
 			m_currentState = DEFAULT;
 	}
 
+	void TextBox::Enable(bool recursive)
+	{
+		m_enabled = true;
+	}
+
 	const std::string& TextBox::GetText() const
 	{
 		return m_text;

@@ -36,6 +36,8 @@ namespace Widgets
 
 		void SetReadOnly(bool readOnly);
 
+		void Enable(bool recursive = true) override;
+
 		const std::string& GetText() const;
 
 		EVENT_DECL(Validate, void(const std::string& value))
