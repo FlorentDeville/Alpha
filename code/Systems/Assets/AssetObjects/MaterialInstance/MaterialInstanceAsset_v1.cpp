@@ -11,6 +11,8 @@ namespace Systems
 	MaterialInstanceAsset_v1::MaterialInstanceAsset_v1()
 		: AssetObject()
 		, m_pBaseMaterial(nullptr)
+		, m_perMaterialParameters()
+		, m_textureBindingInfo()
 	{ }
 
 	MaterialInstanceAsset_v1::~MaterialInstanceAsset_v1()
@@ -25,12 +27,16 @@ namespace Systems
 
 			const Core::Array<MaterialParameterDescription>& parameters = pBaseMaterial->GetMaterialParameterDescription();
 			m_perMaterialParameters = parameters;
+
+			const Core::Array<TextureBindingInfo>& textures = pBaseMaterial->GetTexturesBindingInfo();
+			m_textureBindingInfo = textures;
 		}
 		else
 		{
 			m_pBaseMaterial = nullptr;
 			m_material = Systems::NewAssetId::INVALID;
 			m_perMaterialParameters.Clear();
+			m_textureBindingInfo.Clear();
 		}
 		return true;
 	}

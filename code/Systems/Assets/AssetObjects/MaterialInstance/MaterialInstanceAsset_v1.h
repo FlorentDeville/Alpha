@@ -34,6 +34,7 @@ namespace Systems
 	private:
 		NewAssetId m_material;
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
+		Core::Array<TextureBindingInfo> m_textureBindingInfo;
 
 		//Non-reflected data
 
@@ -44,6 +45,7 @@ namespace Systems
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_material)
 			ADD_FIELD(m_perMaterialParameters)
+			ADD_FIELD(m_textureBindingInfo)
 		END_REFLECTION()
 	};
 }
