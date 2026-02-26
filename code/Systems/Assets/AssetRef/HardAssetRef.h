@@ -79,6 +79,7 @@ namespace Systems
 			TypeDescriptor* pTemplateParamType = TypeResolver<NonPointerTemplateParamType>::GetType();
 
 			bool isTemplateParamPointer = IsPointer<T>::value;
+			(void)isTemplateParamPointer; //prevent an a warning in release on github.
 			assert(!isTemplateParamPointer); // HardAssetRef never use a pointer as template param type.
 
 			std::string templateTypename = "Systems::HardAssetRef<" + pTemplateParamType->GetName() + ">";
