@@ -50,6 +50,26 @@ namespace Editors
 		Count
 	};
 
+	D3D12_SHADER_VISIBILITY ToDx12ShaderVisibility(SHADER_TYPE shaderType)
+	{
+		switch (shaderType)
+		{
+		case Pixel:
+			return D3D12_SHADER_VISIBILITY_PIXEL;
+			break;
+
+		case Vertex:
+			return D3D12_SHADER_VISIBILITY_VERTEX;
+			break;
+
+		default:
+			assert(false && "Unknown shader type");
+			break;
+		}
+
+		return D3D12_SHADER_VISIBILITY_ALL;
+	}
+
 	bool GetRootSignatureParameters(ID3D12ShaderReflection* pReflector, RootSigBoundResources& boundResources, SHADER_TYPE shaderType)
 	{
 		D3D12_SHADER_DESC shaderDesc;
@@ -75,11 +95,7 @@ namespace Editors
 				rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParameter.Descriptor.ShaderRegister = bind.BindPoint;
 				rootParameter.Descriptor.RegisterSpace = bind.Space;
-
-				if (shaderType == SHADER_TYPE::Pixel)
-					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-				else if (shaderType == SHADER_TYPE::Vertex)
-					rootParameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+				rootParameter.ShaderVisibility = ToDx12ShaderVisibility(shaderType);
 
 				boundResources.m_constBuffer.PushBack(constBuffer);
 			}
@@ -89,10 +105,11 @@ namespace Editors
 			{
 				BoundResourceTexture boundResource;
 				boundResource.m_name = bind.Name;
+				boundResource.m_dx12Parameter.ShaderVisibility = ToDx12ShaderVisibility(shaderType);
 
 				D3D12_DESCRIPTOR_RANGE* pDx12Range = new D3D12_DESCRIPTOR_RANGE();
 				pDx12Range->RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-				pDx12Range->NumDescriptors = bind.BindCount; // Only one texture
+				pDx12Range->NumDescriptors = bind.BindCount; 
 				pDx12Range->BaseShaderRegister = bind.BindPoint; // The register in the shader (e.g., t0)
 				pDx12Range->RegisterSpace = 0;
 				pDx12Range->OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -100,12 +117,7 @@ namespace Editors
 				boundResource.m_dx12Parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 				boundResource.m_dx12Parameter.DescriptorTable.NumDescriptorRanges = 1;
 				boundResource.m_dx12Parameter.DescriptorTable.pDescriptorRanges = pDx12Range;
-
-				if (shaderType == SHADER_TYPE::Pixel)
-					boundResource.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-				else if (shaderType == SHADER_TYPE::Vertex)
-					boundResource.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
+				
 				boundResources.m_texture.PushBack(boundResource);
 			}
 				break;
@@ -121,11 +133,7 @@ namespace Editors
 				boundResourceSample.m_dx12Parameter.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 				boundResourceSample.m_dx12Parameter.RegisterSpace = bind.Space;
 				boundResourceSample.m_dx12Parameter.ShaderRegister = bind.BindPoint;
-
-				if (shaderType == SHADER_TYPE::Pixel)
-					boundResourceSample.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-				else if(shaderType == SHADER_TYPE::Vertex)
-					boundResourceSample.m_dx12Parameter.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+				boundResourceSample.m_dx12Parameter.ShaderVisibility = ToDx12ShaderVisibility(shaderType);
 
 				boundResources.m_sampleParameters.PushBack(boundResourceSample);
 			}
@@ -384,7 +392,8 @@ namespace Editors
 	
 		for (BoundResourceTexture& boundResource : rootSigBoundResources.m_texture)
 		{
-			delete boundResource.m_dx12Parameter.DescriptorTable.pDescriptorRanges;
+			if(boundResource.m_dx12Parameter.ParameterType == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE)
+				delete boundResource.m_dx12Parameter.DescriptorTable.pDescriptorRanges;
 		}
 
 		return true;
