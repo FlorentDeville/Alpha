@@ -41,11 +41,11 @@ namespace Editors
 		};
 
 		// Event triggered when a field is modified.
-		// Systems::Object* : the object that was modified
+		// void* : the object that was modified
 		// const Systems::FieldDescriptor* : the modified field
 		// OPERATION : how the field was modified
 		// uint32_t : the index of the modified variable in the field. Only usefull for arrays.
-		using WatcherCallbackList = Core::CallbackList<void(Systems::Object*, const Systems::FieldDescriptor*, OPERATION, uint32_t)>;
+		using WatcherCallbackList = Core::CallbackList<void(void*, const Systems::FieldDescriptor*, OPERATION, uint32_t)>;
 		using WatcherCallback = WatcherCallbackList::Callback;
 
 		ObjectWatcher();
@@ -56,25 +56,25 @@ namespace Editors
 		void Shutdown() override;
 
 		//Operations
-		void SetFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue);
-		void SetArrayFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue);
-		void AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue);
-		void RemoveArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		void SetFieldValue(void* pObj, const Systems::FieldDescriptor* pField, const void* pValue);
+		void SetArrayFieldValue(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue);
+		void AddArrayElement(void* pObj, const Systems::FieldDescriptor* pField, const void* pValue);
+		void RemoveArrayElement(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
 
 		// Generic function, can do any operation
-		void ModifyField(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue);
+		void ModifyField(void* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue);
 
 		//Manually send modified event. That's used when a field was modified without the object watcher but watchers should be aware of the change.
-		void SendFieldModifiedEvent(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index);
+		void SendFieldModifiedEvent(void* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index);
 
-		ObjectWatcherCallbackId AddWatcher(Systems::Object* pObj, const WatcherCallback& callback);
-		ObjectWatcherCallbackId AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback);
+		ObjectWatcherCallbackId AddWatcher(void* pObj, const WatcherCallback& callback);
+		ObjectWatcherCallbackId AddWatcher(const void* pObj, const WatcherCallback& callback);
 		void RemoveWatcher(ObjectWatcherCallbackId callbackId);
 
 	private:
-		std::map<Systems::Object*, WatcherCallbackList> m_watchers;
+		std::map<void*, WatcherCallbackList> m_watchers;
 
-		const WatcherCallbackList* FindWatcherCallback(Systems::Object* pObj) const;
+		const WatcherCallbackList* FindWatcherCallback(void* pObj) const;
 
 		void Internal_SetArrayFieldValue(Core::BaseArray* pArray, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue);
 	};

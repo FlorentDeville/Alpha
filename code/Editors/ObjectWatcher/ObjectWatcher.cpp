@@ -24,12 +24,12 @@ namespace Editors
 		m_watchers.clear();
 	}
 
-	void ObjectWatcher::SetFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
+	void ObjectWatcher::SetFieldValue(void* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
 	{
 		void* pFieldPtr = pField->GetDataPtr(pObj);
 		pField->GetType()->Copy(pValue, pFieldPtr);
 
-		std::map<Systems::Object*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
+		std::map<void*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
 		if (it == m_watchers.cend())
 			return;
 
@@ -37,14 +37,14 @@ namespace Editors
 		callbacks(pObj, pField, OPERATION::SET_FIELD, 0);
 	}
 
-	void ObjectWatcher::SetArrayFieldValue(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
+	void ObjectWatcher::SetArrayFieldValue(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
 	{
 		assert(pField->GetType()->IsContainer());
 
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		Internal_SetArrayFieldValue(pArray, pField, index, pValue);
 
-		std::map<Systems::Object*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
+		std::map<void*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
 		if (it == m_watchers.cend())
 			return;
 
@@ -55,7 +55,7 @@ namespace Editors
 		(*callbacks)(pObj, pField, OPERATION::SET_ELEMENT, index);
 	}
 
-	void ObjectWatcher::AddArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
+	void ObjectWatcher::AddArrayElement(void* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
 	{
 		assert(pField->GetType()->IsContainer());
 
@@ -74,7 +74,7 @@ namespace Editors
 		(*callbacks)(pObj, pField, OPERATION::ADD_ELEMENT, pArray->GetSize() -1);
 	}
 
-	void ObjectWatcher::RemoveArrayElement(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	void ObjectWatcher::RemoveArrayElement(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 	{
 		const Systems::TypeDescriptor* pArrayType = pField->GetType();
 
@@ -99,7 +99,7 @@ namespace Editors
 		(*callbacks)(pObj, pField, OPERATION::REMOVE_ELEMENT, index);
 	}
 
-	void ObjectWatcher::ModifyField(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue)
+	void ObjectWatcher::ModifyField(void* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue)
 	{
 		switch (op)
 		{
@@ -125,7 +125,7 @@ namespace Editors
 		}
 	}
 
-	void ObjectWatcher::SendFieldModifiedEvent(Systems::Object* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index)
+	void ObjectWatcher::SendFieldModifiedEvent(void* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index)
 	{
 		const WatcherCallbackList* pCallbacks = FindWatcherCallback(pObj);
 		if (!pCallbacks)
@@ -134,16 +134,16 @@ namespace Editors
 		(*pCallbacks)(pObj, pField, op, index);
 	}
 
-	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(Systems::Object* pObj, const WatcherCallback& callback)
+	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(void* pObj, const WatcherCallback& callback)
 	{
 		Core::CallbackId id = m_watchers[pObj].Connect(callback);
 		return ObjectWatcherCallbackId(pObj, id);
 	}
 
-	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(const Systems::Object* pObj, const WatcherCallback& callback)
+	ObjectWatcherCallbackId ObjectWatcher::AddWatcher(const void* pObj, const WatcherCallback& callback)
 	{
 		//ugly const cast here but I can't think of another solution
-		Systems::Object* nonConstObj = const_cast<Systems::Object*>(pObj);
+		void* nonConstObj = const_cast<void*>(pObj);
 
 		Core::CallbackId id = m_watchers[nonConstObj].Connect(callback);
 		return ObjectWatcherCallbackId(nonConstObj, id);
@@ -151,7 +151,7 @@ namespace Editors
 
 	void ObjectWatcher::RemoveWatcher(ObjectWatcherCallbackId callbackId)
 	{
-		std::map<Systems::Object*, WatcherCallbackList>::iterator it = m_watchers.find(reinterpret_cast<Systems::Object*>(callbackId.m_pObj));
+		std::map<void*, WatcherCallbackList>::iterator it = m_watchers.find(reinterpret_cast<Systems::Object*>(callbackId.m_pObj));
 		if (it == m_watchers.end())
 			return;
 
@@ -159,9 +159,9 @@ namespace Editors
 		callbacks.Disconnect(callbackId.m_cid);
 	}
 
-	const ObjectWatcher::WatcherCallbackList* ObjectWatcher::FindWatcherCallback(Systems::Object* pObj) const
+	const ObjectWatcher::WatcherCallbackList* ObjectWatcher::FindWatcherCallback(void* pObj) const
 	{
-		std::map<Systems::Object*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
+		std::map<void*, WatcherCallbackList>::const_iterator it = m_watchers.find(pObj);
 		if (it == m_watchers.cend())
 			return nullptr;
 
