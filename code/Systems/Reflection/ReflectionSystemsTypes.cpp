@@ -9,6 +9,7 @@
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
+#include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
@@ -49,5 +50,6 @@ namespace Systems
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
 		Systems::MaterialInstanceAsset::RegisterReflection();
 		Systems::TextureAsset_v1::RegisterReflection();
+		Systems::TextureBindingInfo::RegisterReflection();
 	}
 }

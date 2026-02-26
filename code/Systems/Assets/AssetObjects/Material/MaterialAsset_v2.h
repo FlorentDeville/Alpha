@@ -8,6 +8,7 @@
 
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
+#include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
 #include "Systems/Objects/AssetObject.h"
 
 namespace Rendering
@@ -47,6 +48,8 @@ namespace Systems
 		Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray();
 		const Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray() const;
 
+		Core::Array<TextureBindingInfo>& GetTexturesBindingInfo();
+
 		void PostLoad() override;
 
 		void UpdateRenderingObjects();
@@ -74,6 +77,8 @@ namespace Systems
 
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
 
+		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
+
 		START_REFLECTION(Systems::MaterialAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
@@ -83,6 +88,7 @@ namespace Systems
 			ADD_FIELD_ATTR(m_rsBlob, Hidden)
 			ADD_FIELD_ATTR(m_bindingInfoArray, Hidden)
 			ADD_FIELD(m_perMaterialParameters)
+			ADD_FIELD(m_texturesBindingInfo)
 		END_REFLECTION()
 
 		//No reflected variables

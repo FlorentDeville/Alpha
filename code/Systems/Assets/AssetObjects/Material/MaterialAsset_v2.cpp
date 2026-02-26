@@ -96,6 +96,11 @@ namespace Systems
 		return m_bindingInfoArray;
 	}
 
+	Core::Array<TextureBindingInfo>& MaterialAsset_v2::GetTexturesBindingInfo()
+	{
+		return m_texturesBindingInfo;
+	}
+
 	void MaterialAsset_v2::PostLoad()
 	{
 		UpdateRenderingObjects();
