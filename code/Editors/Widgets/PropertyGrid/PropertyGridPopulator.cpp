@@ -120,7 +120,7 @@ namespace Editors
 	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject)
 	{
 		ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
-			[this](void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(static_cast<Systems::Object*>(pObj), pField, op, index); });
+			[this](void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
 
 		m_watcherCallbackIds.PushBack(callbackId);
 
@@ -182,6 +182,12 @@ namespace Editors
 		}
 		else if (pElementType->IsClass())
 		{
+			ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pElement,
+				[this](void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
+				{ 
+					ObjectWatcherCallback(pObj, pField, op, index); 
+				});
+
 			//assert(false); // only support Object for now
 			PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 			Internal_AddPropertyGridItem(pItem);
@@ -411,7 +417,7 @@ namespace Editors
 		return nullptr;
 	}
 
-	void PropertyGridPopulator::ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
+	void PropertyGridPopulator::ObjectWatcherCallback(void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
 	{
 		Core::Array<PropertyGridItem*> items = m_pPropertyGridWidget->GetPropertyGridItems();
 		Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField, index](PropertyGridItem* item) 

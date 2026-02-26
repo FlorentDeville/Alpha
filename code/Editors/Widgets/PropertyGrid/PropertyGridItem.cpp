@@ -47,7 +47,7 @@ namespace Editors
 		, m_pFieldName(nullptr)
 	{ }
 
-	PropertyGridItem::PropertyGridItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	PropertyGridItem::PropertyGridItem(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
 		: m_pNameWidget(nullptr)
 		, m_pEditingWidget(nullptr)
 		, m_pObj(pObj)
@@ -72,7 +72,7 @@ namespace Editors
 	void PropertyGridItem::UpdateValue()
 	{ }
 
-	bool PropertyGridItem::IsField(const Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index) const
+	bool PropertyGridItem::IsField(const void* pObj, const Systems::FieldDescriptor* pField, uint32_t index) const
 	{
 		return m_pObj == pObj && m_pField == pField && m_index == index;
 	}
