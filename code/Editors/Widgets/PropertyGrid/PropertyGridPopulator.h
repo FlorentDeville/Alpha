@@ -77,7 +77,7 @@ namespace Editors
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
-		void ObjectWatcherCallback(Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
+		void ObjectWatcherCallback(void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 

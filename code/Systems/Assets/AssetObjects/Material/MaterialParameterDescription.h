@@ -28,6 +28,6 @@ namespace Systems
 			ADD_FIELD(m_type)
 			ADD_FIELD(m_strType)
 			ADD_FIELD(m_value)
-			END_REFLECTION()
+		END_REFLECTION()
 	};
 }

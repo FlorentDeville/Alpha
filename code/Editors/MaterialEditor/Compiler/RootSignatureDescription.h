@@ -1,12 +1,11 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Core/Collections/Array.h"
 
-#include <map>
 #include <string>
 
 namespace Editors
@@ -17,12 +16,19 @@ namespace Editors
 		int m_rootSigParamIndex;
 	};
 
+	struct RootSigTexture
+	{
+		std::string m_name;
+		uint32_t m_rootSigIndex;
+	};
+
 	class RootSignatureDescription
 	{
 	public:
 		Core::Array<char>* m_pRootSignatureBlob;
 
 		//List of cbuffer name and its index in the root signature.
-		std::vector<RootSigParameterIndex> m_parameters;
+		Core::Array<RootSigParameterIndex> m_parameters;
+		Core::Array<RootSigTexture> m_textures;
 	};
 }

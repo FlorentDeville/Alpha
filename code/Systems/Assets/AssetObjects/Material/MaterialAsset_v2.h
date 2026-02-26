@@ -1,14 +1,14 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Core/Collections/Array.h"
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAssetUpgrade.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
+#include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
 #include "Systems/Objects/AssetObject.h"
 
 namespace Rendering
@@ -20,14 +20,14 @@ namespace Rendering
 
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialAsset_v1)
-	class MaterialAsset_v1 : public AssetObject
-	{
-		friend class MaterialAsset_v2;
+	class MaterialAsset_v1;
 
+	ENABLE_REFLECTION_WITH_NS(Systems, MaterialAsset_v2)
+	class MaterialAsset_v2 : public AssetObject
+	{
 	public:
-		MaterialAsset_v1();
-		~MaterialAsset_v1();
+		MaterialAsset_v2();
+		~MaterialAsset_v2();
 
 		const std::string& GetSourceFilePs() const;
 		const std::string& GetSourceFileVs() const;
@@ -48,6 +48,9 @@ namespace Systems
 		Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray();
 		const Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray() const;
 
+		Core::Array<TextureBindingInfo>& GetTexturesBindingInfo();
+		const Core::Array<TextureBindingInfo>& GetTexturesBindingInfo() const;
+
 		void PostLoad() override;
 
 		void UpdateRenderingObjects();
@@ -59,6 +62,8 @@ namespace Systems
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
+
+		void Upgrade(const MaterialAsset_v1* pV1);
 
 	private:
 		std::string m_sourceFilePS;
@@ -73,7 +78,9 @@ namespace Systems
 
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
 
-		START_REFLECTION(Systems::MaterialAsset_v1)
+		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
+
+		START_REFLECTION(Systems::MaterialAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
 			ADD_FIELD(m_sourceFileVS)
@@ -82,7 +89,7 @@ namespace Systems
 			ADD_FIELD_ATTR(m_rsBlob, Hidden)
 			ADD_FIELD_ATTR(m_bindingInfoArray, Hidden)
 			ADD_FIELD(m_perMaterialParameters)
-			ADD_UPGRADE_TYPE(Systems::MaterialAsset_v2, UpgradeMaterialAssetV1ToV2)
+			ADD_FIELD(m_texturesBindingInfo)
 		END_REFLECTION()
 
 		//No reflected variables

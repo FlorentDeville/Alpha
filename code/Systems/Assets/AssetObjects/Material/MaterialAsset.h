@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v1.h"
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
 
 namespace Systems
 {
-	using MaterialAsset = MaterialAsset_v1;
+	using MaterialAsset = MaterialAsset_v2;
 }

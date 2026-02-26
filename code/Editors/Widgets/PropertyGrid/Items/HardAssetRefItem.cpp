@@ -71,11 +71,14 @@ namespace Editors
 
 	void HardAssetRefItem::UpdateValue()
 	{
-		Systems::NewAssetId* pId = m_pField->GetDataPtr<Systems::NewAssetId>(m_pObj);
-		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(*pId);
+		Systems::HardAssetRefRaw* pRaw = m_pField->GetDataPtr<Systems::HardAssetRefRaw>(m_pObj);
+		Systems::NewAssetId id = pRaw->GetAssetId();
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
 		if (pMetadata)
 			m_pTextbox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
 		else
 			m_pTextbox->SetText("Unknown");
+
+		pRaw->Load();
 	}
 }
