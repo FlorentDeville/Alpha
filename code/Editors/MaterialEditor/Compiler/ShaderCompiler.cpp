@@ -354,14 +354,19 @@ namespace Editors
 			RootSigParameterIndex cBuffer;
 			cBuffer.m_cbufferName = boundResource.m_name;
 			cBuffer.m_rootSigParamIndex = rootParameters.GetSize(); //root param index is different from the bind point (t0, b0). It is the param index in the root signature
-			rs.m_parameters.push_back(cBuffer);
+			rs.m_parameters.PushBack(cBuffer);
 
 			rootParameters.PushBack(boundResource.m_dx12Parameter);
 		}
 			
 		for (const BoundResourceTexture& boundResource : rootSigBoundResources.m_texture)
 		{
+			RootSigTexture rootSigTexture;
+			rootSigTexture.m_name = boundResource.m_name;
+			rootSigTexture.m_rootSigIndex = rootParameters.GetSize();
+
 			rootParameters.PushBack(boundResource.m_dx12Parameter);
+			rs.m_textures.PushBack(rootSigTexture);
 		}
 		
 		rootSignatureDesc.pParameters = rootParameters.GetData();

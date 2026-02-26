@@ -13,6 +13,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 
@@ -232,7 +233,7 @@ namespace Editors
 
 		Core::Array<Systems::MaterialCBufferBindingInfo>& bindingInfoArray = pMaterial->GetBindingInfoArray();
 		bindingInfoArray.Clear();
-		bindingInfoArray.Reserve(static_cast<uint32_t>(rootSignatureDesc.m_parameters.size()));
+		bindingInfoArray.Reserve(static_cast<uint32_t>(rootSignatureDesc.m_parameters.GetSize()));
 		for (const RootSigParameterIndex& paramIndex : rootSignatureDesc.m_parameters)
 		{
 			Systems::MaterialCBufferBindingInfo bindingInfo;
@@ -303,6 +304,33 @@ namespace Editors
 		}
 
 		existingMatParamArray = std::move(newMatParamDescArray);
+
+		//now store the textures
+		Core::Array<Systems::TextureBindingInfo>& existingTextureBindings = pMaterial->GetTexturesBindingInfo();
+		Core::Array<Systems::TextureBindingInfo> newTextureBindings;
+		newTextureBindings.Reserve(rootSignatureDesc.m_textures.GetSize());
+		for (const Editors::RootSigTexture& texture : rootSignatureDesc.m_textures)
+		{
+			//skip the shadow map, it's handle automatically
+			if (texture.m_name == "shadowMap")
+				continue;
+
+			Systems::TextureBindingInfo textureBinding;
+			textureBinding.m_name = texture.m_name;
+			textureBinding.m_sigRootIndex = texture.m_rootSigIndex;
+			
+			//reset the old value if any
+			const Core::Array<Systems::TextureBindingInfo>::Iterator it = std::find_if(existingTextureBindings.cbegin(), existingTextureBindings.cend(), 
+				[&textureBinding](Systems::TextureBindingInfo& oldParam) { return textureBinding.m_name == oldParam.m_name; });
+			if (it != existingTextureBindings.cend())
+			{
+				textureBinding.m_texture = it->m_texture;
+			}
+
+			newTextureBindings.PushBack(textureBinding);
+		}
+
+		existingTextureBindings = std::move(newTextureBindings);
 
 		pMaterial->UpdateRenderingObjects();
 		
