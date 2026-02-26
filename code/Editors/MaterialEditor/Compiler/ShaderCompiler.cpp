@@ -358,7 +358,7 @@ namespace Editors
 		
 		rootSignatureDesc.pParameters = rootParameters.GetData();
 
-		rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(rootSigBoundResources.m_texture.GetSize());
+		rootSignatureDesc.NumStaticSamplers = static_cast<UINT>(rootSigBoundResources.m_sampleParameters.GetSize());
 
 		Core::Array<D3D12_STATIC_SAMPLER_DESC> dx12StaticSamplerArray;
 		dx12StaticSamplerArray.Reserve(rootSignatureDesc.NumStaticSamplers);
