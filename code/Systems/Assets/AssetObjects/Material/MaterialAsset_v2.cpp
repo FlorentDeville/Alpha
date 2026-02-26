@@ -101,6 +101,11 @@ namespace Systems
 		return m_texturesBindingInfo;
 	}
 
+	const Core::Array<TextureBindingInfo>& MaterialAsset_v2::GetTexturesBindingInfo() const
+	{
+		return m_texturesBindingInfo;
+	}
+
 	void MaterialAsset_v2::PostLoad()
 	{
 		UpdateRenderingObjects();

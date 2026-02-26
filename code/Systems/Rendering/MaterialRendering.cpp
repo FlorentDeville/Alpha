@@ -9,6 +9,7 @@
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/Texture/Texture.h"
 
 namespace Systems
 {
@@ -98,6 +99,22 @@ namespace Systems
 				assert(false); //unknown type of cbuffer
 				break;
 			}
+		}
+
+		const Core::Array<TextureBindingInfo>& textureBindingInfo = material.GetTexturesBindingInfo();
+		for (TextureBindingInfo& bindingInfo : textureBindingInfo)
+		{
+			Systems::TextureAsset* pTexture = bindingInfo.m_texture.GetPtr();
+			if (!pTexture)
+				continue;
+
+			Rendering::Texture* pGfxTexture = pTexture->GetTexture();
+			ID3D12DescriptorHeap* pSrv = pGfxTexture->GetSRV();
+			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+			//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+			renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+			renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(bindingInfo.m_sigRootIndex, pSrv->GetGPUDescriptorHandleForHeapStart());
 		}
 	}
 

@@ -49,6 +49,7 @@ namespace Systems
 		const Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray() const;
 
 		Core::Array<TextureBindingInfo>& GetTexturesBindingInfo();
+		const Core::Array<TextureBindingInfo>& GetTexturesBindingInfo() const;
 
 		void PostLoad() override;
 
