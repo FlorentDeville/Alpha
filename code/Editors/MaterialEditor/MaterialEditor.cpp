@@ -369,7 +369,7 @@ namespace Editors
 
 		m_pPropertyGridPopulator->Populate(pObject);
 
-		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](Systems::Object*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
+		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
 
 		return true;
 	}

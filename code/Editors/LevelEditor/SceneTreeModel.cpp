@@ -319,7 +319,7 @@ namespace Editors
 		pItem->m_parent = pGo->GetTransform().GetParentGuid();
 		pItem->m_children = pGo->GetTransform().GetChildrenGuid();
 
-		pItem->m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pGo, [this](Systems::Object* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
+		pItem->m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pGo, [this](void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
 			{
 				if (pField->GetName() == "m_name") // it's ugly to hardcode the name of the field here.
 				{
