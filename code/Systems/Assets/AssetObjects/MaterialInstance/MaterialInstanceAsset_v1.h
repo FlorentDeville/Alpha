@@ -27,6 +27,7 @@ namespace Systems
 		const Systems::MaterialAsset* GetBaseMaterial() const;
 
 		const Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription() const;
+		const Core::Array<TextureBindingInfo>& GetTexturesBindingInfo() const;
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
@@ -34,6 +35,7 @@ namespace Systems
 	private:
 		NewAssetId m_material;
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
+		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
 
 		//Non-reflected data
 
@@ -44,6 +46,7 @@ namespace Systems
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_material)
 			ADD_FIELD(m_perMaterialParameters)
+			ADD_FIELD(m_texturesBindingInfo)
 		END_REFLECTION()
 	};
 }

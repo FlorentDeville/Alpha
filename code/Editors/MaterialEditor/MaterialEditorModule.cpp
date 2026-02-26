@@ -210,6 +210,10 @@ namespace Editors
 		if (!pContainer)
 			return false;
 
+		Systems::AssetObject* pObj = pContainer->GetAsset(id.GetObjectId());
+		if (!pObj->IsA<Systems::MaterialAsset>())
+			return false;
+
 		Systems::MaterialAsset* pMaterial = static_cast<Systems::MaterialAsset*>(pContainer->GetAsset(id.GetObjectId()));
 		if (!pMaterial)
 			return false;
