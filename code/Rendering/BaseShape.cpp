@@ -487,7 +487,8 @@ namespace Rendering
                 vertex1.Position.y = sinTheta1 * sinPhi1;
                 vertex1.Position.z = cosTheta1;
                 vertex1.Color = DirectX::XMFLOAT3(0, 0, 0);
-                
+                vertex1.Uv = DirectX::XMFLOAT2(phi1 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
+
                 {
                     Core::Vec4f normal(vertex1.Position.x, vertex1.Position.y, vertex1.Position.z, 0);
                     normal.Normalize();
@@ -499,6 +500,7 @@ namespace Rendering
                 vertex2.Position.y = sinTheta1 * sinPhi2;
                 vertex2.Position.z = cosTheta1;
                 vertex2.Color = DirectX::XMFLOAT3(0, 0, 0);
+                vertex2.Uv = DirectX::XMFLOAT2(phi2 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex2.Position.x, vertex2.Position.y, vertex2.Position.z, 0);
@@ -511,6 +513,7 @@ namespace Rendering
                 vertex3.Position.y = sinTheta2 * sinPhi2;
                 vertex3.Position.z = cosTheta2;
                 vertex3.Color = DirectX::XMFLOAT3(0, 0, 0);
+                vertex3.Uv = DirectX::XMFLOAT2(phi2 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex3.Position.x, vertex3.Position.y, vertex3.Position.z, 0);
@@ -523,6 +526,7 @@ namespace Rendering
                 vertex4.Position.y = sinTheta2 * sinPhi1;
                 vertex4.Position.z = cosTheta2;
                 vertex4.Color = DirectX::XMFLOAT3(0, 0, 0);
+                vertex4.Uv = DirectX::XMFLOAT2(phi1 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex4.Position.x, vertex4.Position.y, vertex4.Position.z, 0);
