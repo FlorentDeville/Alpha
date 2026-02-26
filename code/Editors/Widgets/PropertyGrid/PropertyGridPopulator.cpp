@@ -182,7 +182,13 @@ namespace Editors
 		}
 		else if (pElementType->IsClass())
 		{
-			assert(false); // only support Object for now
+			//assert(false); // only support Object for now
+			PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
+			Internal_AddPropertyGridItem(pItem);
+
+			ParentItemContextScope janitor(pItem, this);
+
+			CreatePropertiesForTypeMembers(pElementType, pElement);
 		}
 		else //pod
 		{
