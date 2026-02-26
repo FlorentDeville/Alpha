@@ -285,12 +285,16 @@ namespace Rendering
             DirectX::XMFLOAT3 normal(0, 1, 0);
             vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[0].Normal = normal;
+            vertices[0].Uv = DirectX::XMFLOAT2(1, 0);
             vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[1].Normal = normal;
+            vertices[1].Uv = DirectX::XMFLOAT2(1, 1);
             vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[2].Normal = normal;
+            vertices[2].Uv = DirectX::XMFLOAT2(0, 1);
             vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[3].Normal = normal;
+            vertices[3].Uv = DirectX::XMFLOAT2(0, 0);
         }
 
         //bottom face
@@ -298,12 +302,16 @@ namespace Rendering
             DirectX::XMFLOAT3 normal(0, -1, 0);
             vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[4].Normal = normal;
+            vertices[4].Uv = DirectX::XMFLOAT2(1, 1);
             vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[5].Normal = normal;
+            vertices[5].Uv = DirectX::XMFLOAT2(1, 0);
             vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[6].Normal = normal;
+            vertices[6].Uv = DirectX::XMFLOAT2(0, 0);
             vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[7].Normal = normal;
+            vertices[7].Uv = DirectX::XMFLOAT2(0, 1);
         }
 
         //front face
@@ -311,12 +319,16 @@ namespace Rendering
             DirectX::XMFLOAT3 normal(0, 0, -1);
             vertices[8].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[8].Normal = normal;
+            vertices[8].Uv = DirectX::XMFLOAT2(1, 0);
             vertices[9].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[9].Normal = normal;
+            vertices[9].Uv = DirectX::XMFLOAT2(1, 1);
             vertices[10].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[10].Normal = normal;
+            vertices[10].Uv = DirectX::XMFLOAT2(0, 1);
             vertices[11].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[11].Normal = normal;
+            vertices[11].Uv = DirectX::XMFLOAT2(0, 0);
         }
 
         //back face
@@ -324,12 +336,16 @@ namespace Rendering
             DirectX::XMFLOAT3 normal(0, 0, 1);
             vertices[12].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[12].Normal = normal;
+            vertices[12].Uv = DirectX::XMFLOAT2(1, 0);
             vertices[13].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[13].Normal = normal;
+            vertices[13].Uv = DirectX::XMFLOAT2(1, 1);
             vertices[14].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[14].Normal = normal;
+            vertices[14].Uv = DirectX::XMFLOAT2(0, 1);
             vertices[15].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[15].Normal = normal;
+            vertices[15].Uv = DirectX::XMFLOAT2(0, 0);
         }
 
         //left face
@@ -337,12 +353,16 @@ namespace Rendering
             DirectX::XMFLOAT3 normal(-1, 0, 0);
             vertices[16].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[16].Normal = normal;
+            vertices[16].Uv = DirectX::XMFLOAT2(0, 0);
             vertices[17].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[17].Normal = normal;
+            vertices[17].Uv = DirectX::XMFLOAT2(0, 1);
             vertices[18].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[18].Normal = normal;
+            vertices[18].Uv = DirectX::XMFLOAT2(1, 1);
             vertices[19].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[19].Normal = normal;
+            vertices[19].Uv = DirectX::XMFLOAT2(1, 0);
         }
 
         //right face
@@ -350,12 +370,16 @@ namespace Rendering
             DirectX::XMFLOAT3 normal(-1, 0, 0);
             vertices[20].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[20].Normal = normal;
+            vertices[20].Uv = DirectX::XMFLOAT2(1, 0);
             vertices[21].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[21].Normal = normal;
+            vertices[21].Uv = DirectX::XMFLOAT2(1, 1);
             vertices[22].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[22].Normal = normal;
+            vertices[22].Uv = DirectX::XMFLOAT2(0, 1);
             vertices[23].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[23].Normal = normal;
+            vertices[23].Uv = DirectX::XMFLOAT2(0, 0);
         }
 
         const int INDEX_COUNT = 36;
