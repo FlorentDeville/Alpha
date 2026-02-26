@@ -34,4 +34,15 @@ namespace Systems
 	{
 		return m_pPtr != nullptr;
 	}
+
+	NewAssetId HardAssetRefRaw::GetAssetId() const
+	{
+		return m_id;
+	}
+
+	bool HardAssetRefRaw::Load()
+	{
+		m_pPtr = AssetUtil::LoadAsset(m_id);
+		return IsResolved();
+	}
 }

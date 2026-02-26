@@ -21,6 +21,10 @@ namespace Systems
 
 		bool IsResolved() const;
 
+		NewAssetId GetAssetId() const;
+
+		bool Load();
+
 	private:
 		NewAssetId m_id;
 		void* m_pPtr;
