@@ -156,6 +156,13 @@ namespace Widgets
 		Widget::Resize(parentAbsPos, parentSize);
 	}
 
+	void SliderFloat::Enable(bool recursive)
+	{
+		m_enabled = true;
+		m_pSlider->Enable();
+		//do not enable the textbox. Only the slider or the textbox can be enabled at once.
+	}
+
 	void SliderFloat::SetValue(float value)
 	{
 		if (m_currentValue != value)
