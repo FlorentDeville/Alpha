@@ -41,4 +41,16 @@ namespace Systems
 	{
 
 	}
+
+	const std::string& CubemapAsset_v1::GetAssetTypeName()
+	{
+		static std::string name = "Cubemap";
+		return name;
+	}
+
+	Core::Sid CubemapAsset_v1::GetAssetTypeNameSid()
+	{
+		static const Core::Sid sid = SID(GetAssetTypeName());
+		return sid;
+	}
 }

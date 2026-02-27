@@ -26,6 +26,9 @@ namespace Systems
 
 		void PostLoad() override;
 
+		static const std::string& GetAssetTypeName();
+		static Core::Sid GetAssetTypeNameSid();
+
 	private:
 		std::string m_leftSourceFilename; //-x
 		std::string m_rightSourceFilename; //+x
