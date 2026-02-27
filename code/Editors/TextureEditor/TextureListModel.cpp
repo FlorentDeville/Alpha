@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/TextureEditor/TextureListModel.h"
 
@@ -31,6 +31,7 @@ namespace Editors
 			cachedData.m_id = pMetadata->GetAssetId();
 			cachedData.m_virtualName = pMetadata->GetVirtualName();
 			cachedData.m_modified = false;
+			cachedData.m_type = CachedTextureData::Texture;
 
 			m_cache.PushBack(cachedData);
 		}
@@ -94,6 +95,25 @@ namespace Editors
 			return pCachedData->m_virtualName;
 			break;
 
+		case Columns::Type:
+		{
+			switch (pCachedData->m_type)
+			{
+			case CachedTextureData::Texture:
+				return "Texture";
+				break;
+
+			case CachedTextureData::Cubemap:
+				return "Cubemap";
+				break;
+
+			default:
+				return "Unknown";
+				break;
+			}
+		}
+		break;
+
 		case Columns::Modified:
 			return pCachedData->m_modified ? "*" : "";
 			break;
@@ -114,6 +134,10 @@ namespace Editors
 			return "Name";
 			break;
 
+		case Columns::Type:
+			return "Type";
+			break;
+
 		case Columns::Modified:
 			return "Modified";
 			break;
@@ -131,6 +155,7 @@ namespace Editors
 		cachedData.m_id = metadata.GetAssetId();
 		cachedData.m_virtualName = metadata.GetVirtualName();
 		cachedData.m_modified = false;
+		cachedData.m_type = CachedTextureData::Texture;
 
 		int row = m_cache.GetSize();
 		m_cache.PushBack(cachedData);

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -24,6 +24,7 @@ namespace Editors
 		{
 			Id = 0,
 			Name,
+			Type,
 			Modified,
 
 			Count
@@ -55,8 +56,15 @@ namespace Editors
 	private:
 		struct CachedTextureData
 		{
+			enum Type
+			{
+				Texture,
+				Cubemap
+			};
+
 			Systems::NewAssetId m_id;
 			std::string m_virtualName;
+			Type m_type;
 			bool m_modified;
 		};
 
