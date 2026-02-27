@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -47,6 +47,7 @@ namespace Systems
 		const NewAssetType* GetAssetTypeFromClassName(Core::Sid className) const;
 
 		void GetAssets(Core::Sid assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const;
+		void GetAssets(const Core::Array<Core::Sid>& assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const;
 
 		void RenameAsset(NewAssetId id, const std::string& newName);
 

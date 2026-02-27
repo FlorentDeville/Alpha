@@ -59,7 +59,8 @@ namespace Editors
 			enum Type
 			{
 				Texture,
-				Cubemap
+				Cubemap,
+				Unknown
 			};
 
 			Systems::NewAssetId m_id;
@@ -71,5 +72,7 @@ namespace Editors
 		Core::Array<CachedTextureData> m_cache;
 
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
+
+		void CreateCachedData(const Systems::AssetMetadata& metadata, CachedTextureData& cache) const;
 	};
 }
