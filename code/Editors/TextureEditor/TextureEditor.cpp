@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/TextureEditor/TextureEditor.h"
 
@@ -13,6 +13,8 @@
 #include "Editors/TextureEditor/TextureListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -33,6 +35,7 @@
 #include "Widgets/MenuItem.h"
 #include "Widgets/Models/SelectionModel.h"
 #include "Widgets/Models/SelectionRow.h"
+#include "Widgets/SplitHorizontal.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Viewport.h"
 #include "Widgets/WidgetMgr.h"
@@ -86,6 +89,12 @@ namespace Editors
 		pTable->SetModel(m_pListModel);
 		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
 
+
+		Widgets::SplitHorizontal* pHorizontalSplit = new Widgets::SplitHorizontal();
+		pHorizontalSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		pHorizontalSplit->SetTopPanelHeight(800);
+		pVerticalSplit->AddRightPanel(pHorizontalSplit);
+
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
@@ -95,12 +104,18 @@ namespace Editors
 		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
 		pViewport->OnRender([this]() { Viewport_OnRender(); });
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
-		pVerticalSplit->AddRightPanel(pViewport);
+		pHorizontalSplit->AddTopPanel(pViewport);
 
 		TextureEditorModule& textureModule = TextureEditorModule::Get();
 		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
 		textureModule.OnBeforeTextureDeleted([this](const Systems::AssetMetadata& metadata) { m_pListModel->RemoveRow(metadata.GetAssetId()); });
 		textureModule.OnTextureRenamed([this](const Systems::AssetMetadata& metadata) { m_pListModel->OnTextureRenamed(metadata); });
+
+		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
+		pHorizontalSplit->AddBottomPanel(pPropertyGrid);
+
+		PropertyGridPopulator* pPopulator = new PropertyGridPopulator();
+		pPopulator->Init(pPropertyGrid);
 	}
 
 	void TextureEditor::OnClick_File_Import()
