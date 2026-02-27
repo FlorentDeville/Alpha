@@ -94,4 +94,18 @@ namespace Editors
 
 		return true;
 	}
+
+	bool TextureEditorModule::CreateNewCubemap(const std::string& assetName)
+	{
+		Systems::CubemapAsset* pCubemap = Systems::AssetUtil::CreateAsset<Systems::CubemapAsset>(assetName);
+		if (!pCubemap)
+			return false;
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pCubemap->GetId());
+		if (!pMetadata)
+			return false;
+
+		m_onTextureCreated(*pMetadata);
+		return true;
+	}
 }

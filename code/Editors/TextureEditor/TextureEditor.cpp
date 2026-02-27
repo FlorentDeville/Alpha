@@ -68,8 +68,11 @@ namespace Editors
 		{
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
-			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
+			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import Texture...");
 			pNewItem->OnClick([this]() { OnClick_File_Import(); });
+
+			Widgets::MenuItem* pNewCubemapItem = pFileMenu->AddMenuItem("New Cubemap...");
+			pNewCubemapItem->OnClick([this]() { OnClick_File_NewCubemap(); });
 
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete");
 			pDeleteItem->SetShortcut("Del");
@@ -140,6 +143,18 @@ namespace Editors
 			Core::LogModule::Get().LogInfo("Texture %s imported.", filename.c_str());
 	}
 
+	void TextureEditor::OnClick_File_NewCubemap()
+	{
+		const char* pTitle = "New cubemap name";
+
+		UserInputDialog* pDialog = new UserInputDialog(pTitle);
+		pDialog->OnInputValidated([](const std::string& input)
+			{
+				TextureEditorModule::Get().CreateNewCubemap(input);
+			});
+		pDialog->Open();
+	}
+
 	void TextureEditor::OnClick_File_Delete()
 	{
 		Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
@@ -197,6 +212,10 @@ namespace Editors
 	{
 		Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
 		if (!selectedTextureId.IsValid())
+			return;
+
+		bool isATexture = Systems::AssetUtil::IsA<Systems::TextureAsset>(selectedTextureId);
+		if (!isATexture)
 			return;
 
 		Systems::TextureAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::TextureAsset>(selectedTextureId);

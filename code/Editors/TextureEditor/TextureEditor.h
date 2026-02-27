@@ -43,6 +43,7 @@ namespace Editors
 		float m_scale;
 
 		void OnClick_File_Import();
+		void OnClick_File_NewCubemap();
 		void OnClick_File_Delete();
 		void OnClick_File_Rename();
 
