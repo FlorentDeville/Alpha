@@ -26,6 +26,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Cubemap/Cubemap.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
@@ -81,8 +82,12 @@ namespace Editors
 		{
 			Widgets::Menu* pTextureMenu = m_pMenuBar->AddMenu("Texture");
 
-			Widgets::MenuItem* pNewItem = pTextureMenu->AddMenuItem("Import...");
-			pNewItem->OnClick([this]() { OnClick_Texture_Import(); });
+			Widgets::MenuItem* pNewItem = pTextureMenu->AddMenuItem("Create And Import...");
+			pNewItem->OnClick([this]() { OnClick_Texture_CreateAndImport(); });
+
+			Widgets::MenuItem* pImportItem = pTextureMenu->AddMenuItem("Import");
+			pImportItem->OnClick([this]() { OnClick_Texture_Import(); });
+			pImportItem->SetShortcut("Ctrl+F5");
 		}
 
 		//create the cubemap menu
@@ -90,7 +95,11 @@ namespace Editors
 			Widgets::Menu* pCubemapMenu = m_pMenuBar->AddMenu("Cubemap");
 
 			Widgets::MenuItem* pNewCubemapItem = pCubemapMenu->AddMenuItem("Create...");
-			pNewCubemapItem->OnClick([this]() { OnClick_Cubemap_NewCubemap(); });
+			pNewCubemapItem->OnClick([this]() { OnClick_Cubemap_CreateCubemap(); });
+
+			Widgets::MenuItem* pImportItem = pCubemapMenu->AddMenuItem("Import");
+			pImportItem->OnClick([this]() { OnClick_Cubemap_Import(); });
+			pImportItem->SetShortcut("Ctrl+F5");
 		}
 
 		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
@@ -138,14 +147,14 @@ namespace Editors
 		m_pPopulator->Init(pPropertyGrid);
 	}
 
-	void TextureEditor::OnClick_Texture_Import()
+	void TextureEditor::OnClick_Texture_CreateAndImport()
 	{
 		std::string filename;
 		bool res = Os::OpenFileDialog(filename);
 		if (!res)
 			return;
 
-		res = TextureEditorModule::Get().ImportTexture(filename);
+		res = TextureEditorModule::Get().CreateAndImportTexture(filename);
 
 		if (!res)
 			Core::LogModule::Get().LogError("Failed to import texture %s", filename.c_str());
@@ -153,16 +162,40 @@ namespace Editors
 			Core::LogModule::Get().LogInfo("Texture %s imported.", filename.c_str());
 	}
 
-	void TextureEditor::OnClick_Cubemap_NewCubemap()
+	void TextureEditor::OnClick_Texture_Import()
+	{
+		Systems::NewAssetId id = GetSelectedTextureId();
+		if (!id.IsValid())
+			return;
+
+		if (!Systems::AssetUtil::IsA<Systems::TextureAsset>(id))
+			return;
+
+		TextureEditorModule::Get().ImportTexture(id);
+	}
+
+	void TextureEditor::OnClick_Cubemap_CreateCubemap()
 	{
 		const char* pTitle = "New cubemap name";
 
 		UserInputDialog* pDialog = new UserInputDialog(pTitle);
 		pDialog->OnInputValidated([](const std::string& input)
 			{
-				TextureEditorModule::Get().CreateNewCubemap(input);
+				TextureEditorModule::Get().CreateCubemap(input);
 			});
 		pDialog->Open();
+	}
+
+	void TextureEditor::OnClick_Cubemap_Import()
+	{
+		Systems::NewAssetId id = GetSelectedTextureId();
+		if (!id.IsValid())
+			return;
+
+		if (!Systems::AssetUtil::IsA<Systems::CubemapAsset>(id))
+			return;
+
+		TextureEditorModule::Get().ImportTexture(id);
 	}
 
 	void TextureEditor::OnClick_File_Delete()

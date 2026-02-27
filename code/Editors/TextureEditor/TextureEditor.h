@@ -42,8 +42,12 @@ namespace Editors
 
 		float m_scale;
 
+		void OnClick_Texture_CreateAndImport();
 		void OnClick_Texture_Import();
-		void OnClick_Cubemap_NewCubemap();
+		
+		void OnClick_Cubemap_CreateCubemap();
+		void OnClick_Cubemap_Import();
+
 		void OnClick_File_Delete();
 		void OnClick_File_Rename();
 

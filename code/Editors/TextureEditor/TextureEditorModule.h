@@ -27,11 +27,13 @@ namespace Editors
 		void Init() override;
 		void Shutdown() override;
 
-		bool ImportTexture(const std::string& filename);
+		bool CreateAndImportTexture(const std::string& filename);
 		bool DeleteTexture(Systems::NewAssetId id);
 		bool RenameTexture(Systems::NewAssetId id, const std::string& newName);
 
-		bool CreateNewCubemap(const std::string& assetName);
+		bool CreateCubemap(const std::string& assetName);
+
+		bool ImportTexture(const Systems::NewAssetId& id);
 
 		EVENT_DECL(TextureCreated, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(BeforeTextureDeleted, void(const Systems::AssetMetadata& pMetadata));

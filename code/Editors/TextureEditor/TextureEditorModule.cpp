@@ -26,7 +26,7 @@ namespace Editors
 	void TextureEditorModule::Shutdown()
 	{ }
 
-	bool TextureEditorModule::ImportTexture(const std::string& filename)
+	bool TextureEditorModule::CreateAndImportTexture(const std::string& filename)
 	{
 		Systems::TextureAsset* pTexture = Systems::CreateNewAsset<Systems::TextureAsset>();
 		Importer::TextureImporter importer;
@@ -95,7 +95,7 @@ namespace Editors
 		return true;
 	}
 
-	bool TextureEditorModule::CreateNewCubemap(const std::string& assetName)
+	bool TextureEditorModule::CreateCubemap(const std::string& assetName)
 	{
 		Systems::CubemapAsset* pCubemap = Systems::AssetUtil::CreateAsset<Systems::CubemapAsset>(assetName);
 		if (!pCubemap)
@@ -107,5 +107,47 @@ namespace Editors
 
 		m_onTextureCreated(*pMetadata);
 		return true;
+	}
+
+	bool TextureEditorModule::ImportTexture(const Systems::NewAssetId& id)
+	{
+		if (Systems::AssetUtil::IsA<Systems::TextureAsset>(id))
+		{
+			if (Systems::TextureAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::TextureAsset>(id))
+			{
+				Importer::TextureImporter importer;
+				bool res = importer.Import(pTexture->GetSourceFilename(), pTexture);
+				return res;
+			}
+
+			return false;
+		}
+		else if (Systems::AssetUtil::IsA<Systems::CubemapAsset>(id))
+		{
+			if (Systems::CubemapAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::CubemapAsset>(id))
+			{
+				std::string filenames[6];
+				filenames[0] = pTexture->GetLeftSourceFilename();
+				filenames[1] = pTexture->GetRightSourceFilename();
+				filenames[2] = pTexture->GetTopSourceFilename();
+				filenames[3] = pTexture->GetBottomSourceFilename();
+				filenames[4] = pTexture->GetFrontSourceFilename();
+				filenames[5] = pTexture->GetBackSourceFilename();
+
+				for (const std::string& filename : filenames)
+				{
+					if (filename.empty())
+						return false;
+				}
+
+				Importer::TextureImporter importer;
+				Importer::TextureImporter::Result res = importer.ImportCubemap(filenames, pTexture);
+				return res.IsSuccess();
+			}
+
+			return false;
+		}
+
+		return false;
 	}
 }
