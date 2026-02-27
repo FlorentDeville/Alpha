@@ -68,12 +68,6 @@ namespace Editors
 		{
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
-			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import Texture...");
-			pNewItem->OnClick([this]() { OnClick_File_Import(); });
-
-			Widgets::MenuItem* pNewCubemapItem = pFileMenu->AddMenuItem("New Cubemap...");
-			pNewCubemapItem->OnClick([this]() { OnClick_File_NewCubemap(); });
-
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete");
 			pDeleteItem->SetShortcut("Del");
 			pDeleteItem->OnClick([this]() { OnClick_File_Delete(); });
@@ -81,6 +75,22 @@ namespace Editors
 			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
 			pRenameItem->SetShortcut("F2");
 			pRenameItem->OnClick([this]() { OnClick_File_Rename(); });
+		}
+
+		//create the Texture menu
+		{
+			Widgets::Menu* pTextureMenu = m_pMenuBar->AddMenu("Texture");
+
+			Widgets::MenuItem* pNewItem = pTextureMenu->AddMenuItem("Import...");
+			pNewItem->OnClick([this]() { OnClick_Texture_Import(); });
+		}
+
+		//create the cubemap menu
+		{
+			Widgets::Menu* pCubemapMenu = m_pMenuBar->AddMenu("Cubemap");
+
+			Widgets::MenuItem* pNewCubemapItem = pCubemapMenu->AddMenuItem("Create...");
+			pNewCubemapItem->OnClick([this]() { OnClick_Cubemap_NewCubemap(); });
 		}
 
 		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
@@ -128,7 +138,7 @@ namespace Editors
 		m_pPopulator->Init(pPropertyGrid);
 	}
 
-	void TextureEditor::OnClick_File_Import()
+	void TextureEditor::OnClick_Texture_Import()
 	{
 		std::string filename;
 		bool res = Os::OpenFileDialog(filename);
@@ -143,7 +153,7 @@ namespace Editors
 			Core::LogModule::Get().LogInfo("Texture %s imported.", filename.c_str());
 	}
 
-	void TextureEditor::OnClick_File_NewCubemap()
+	void TextureEditor::OnClick_Cubemap_NewCubemap()
 	{
 		const char* pTitle = "New cubemap name";
 
