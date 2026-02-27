@@ -6,6 +6,8 @@
 
 #include "Editors/BaseEditor.h"
 
+#include <vector>
+
 namespace Systems
 {
 	class NewAssetId;
@@ -13,11 +15,13 @@ namespace Systems
 
 namespace Widgets
 {
+	class SelectionRow;
 	class Widget;
 }
 
 namespace Editors
 {
+	class PropertyGridPopulator;
 	class TextureListModel;
 
 	class TextureEditor : public BaseEditor
@@ -30,6 +34,8 @@ namespace Editors
 
 	private:
 		TextureListModel* m_pListModel;
+
+		PropertyGridPopulator* m_pPopulator;
 
 		float m_renderTargetHalfWidth;
 		float m_renderTargetHalfHeight;
@@ -44,5 +50,7 @@ namespace Editors
 
 		void Viewport_OnRender();
 		void Viewport_OnUpdate(uint64_t dt);
+
+		void OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 	};
 }

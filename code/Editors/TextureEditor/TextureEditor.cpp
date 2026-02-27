@@ -51,10 +51,14 @@ namespace Editors
 		, m_renderTargetHalfWidth(0)
 		, m_renderTargetHalfHeight(0)
 		, m_scale(512)
+		, m_pPopulator(nullptr)
 	{ }
 
 	TextureEditor::~TextureEditor()
-	{ }
+	{
+		delete m_pPopulator;
+		m_pPopulator = nullptr;
+	}
 
 	void TextureEditor::CreateEditor(Widgets::Widget* pParent)
 	{
@@ -88,7 +92,10 @@ namespace Editors
 		m_pListModel = new TextureListModel();
 		pTable->SetModel(m_pListModel);
 		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
-
+		m_pListModel->GetSelectionModel()->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
+			{ 
+				OnSelectionChanged(selected, deselected); 
+			});
 
 		Widgets::SplitHorizontal* pHorizontalSplit = new Widgets::SplitHorizontal();
 		pHorizontalSplit->SetSizeStyle(Widgets::Widget::STRETCH);
@@ -114,8 +121,8 @@ namespace Editors
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
 		pHorizontalSplit->AddBottomPanel(pPropertyGrid);
 
-		PropertyGridPopulator* pPopulator = new PropertyGridPopulator();
-		pPopulator->Init(pPropertyGrid);
+		m_pPopulator = new PropertyGridPopulator();
+		m_pPopulator->Init(pPropertyGrid);
 	}
 
 	void TextureEditor::OnClick_File_Import()
@@ -243,5 +250,26 @@ namespace Editors
 
 		if (m_scale < MIN_SCALE)
 			m_scale = MIN_SCALE;
+	}
+
+	void TextureEditor::OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+	{
+		if (selected.empty())
+		{
+			m_pPopulator->Populate(nullptr);
+			return;
+		}
+
+		const Widgets::SelectionRow& row = selected[0];
+		Widgets::ModelIndex index = row.GetStartIndex();
+		Systems::NewAssetId assetId = m_pListModel->GetAssetId(index);
+		if (!assetId.IsValid())
+		{
+			m_pPopulator->Populate(nullptr);
+			return;
+		}
+
+		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(assetId);
+		m_pPopulator->Populate(pObject);
 	}
 }
