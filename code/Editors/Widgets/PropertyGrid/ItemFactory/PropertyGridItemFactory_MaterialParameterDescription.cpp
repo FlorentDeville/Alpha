@@ -179,7 +179,7 @@ namespace Editors
 
 		const int BUFFER_SIZE = 32;
 		char buffer[BUFFER_SIZE] = { '\0' };
-		sprintf_s(buffer, BUFFER_SIZE, "%f", *pData);
+		sprintf_s(buffer, BUFFER_SIZE, "%g", *pData);
 		pWidget->SetText(buffer);
 
 		pWidget->OnValidate([this, pObj, pField, index, pData](const std::string& value)
