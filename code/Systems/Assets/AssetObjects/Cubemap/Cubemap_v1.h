@@ -22,6 +22,10 @@ namespace Systems
 		CubemapAsset_v1();
 		~CubemapAsset_v1();
 
+		bool Init(const std::string sourceFilename[6], const uint8_t* pBlob, uint32_t blobSize);
+
+		void PostLoad() override;
+
 	private:
 		std::string m_leftSourceFilename; //-x
 		std::string m_rightSourceFilename; //+x
