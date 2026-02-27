@@ -66,4 +66,9 @@ namespace Systems
 	{
 		return m_pTexture;
 	}
+
+	const std::string& TextureAsset_v1::GetSourceFilename() const
+	{
+		return m_sourceFilename;
+	}
 }

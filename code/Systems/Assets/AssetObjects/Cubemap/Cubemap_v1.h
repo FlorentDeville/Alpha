@@ -29,6 +29,13 @@ namespace Systems
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
+		const std::string& GetLeftSourceFilename() const;
+		const std::string& GetRightSourceFilename() const;
+		const std::string& GetTopSourceFilename() const;
+		const std::string& GetBottomSourceFilename() const;
+		const std::string& GetFrontSourceFilename() const;
+		const std::string& GetBackSourceFilename() const;
+
 	private:
 		std::string m_leftSourceFilename; //-x
 		std::string m_rightSourceFilename; //+x

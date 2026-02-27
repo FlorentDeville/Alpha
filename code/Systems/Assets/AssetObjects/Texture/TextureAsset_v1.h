@@ -32,6 +32,8 @@ namespace Systems
 
 		Rendering::Texture* GetTexture();
 
+		const std::string& GetSourceFilename() const;
+
 	private:
 
 		std::string m_sourceFilename;

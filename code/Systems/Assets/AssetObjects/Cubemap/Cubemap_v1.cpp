@@ -53,4 +53,34 @@ namespace Systems
 		static const Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
 	}
+
+	const std::string& CubemapAsset_v1::GetLeftSourceFilename() const
+	{
+		return m_leftSourceFilename;
+	}
+
+	const std::string& CubemapAsset_v1::GetRightSourceFilename() const
+	{
+		return m_rightSourceFilename;
+	}
+
+	const std::string& CubemapAsset_v1::GetTopSourceFilename() const
+	{
+		return m_topSourceFilename;
+	}
+
+	const std::string& CubemapAsset_v1::GetBottomSourceFilename() const
+	{
+		return m_bottomSourceFilename;
+	}
+
+	const std::string& CubemapAsset_v1::GetFrontSourceFilename() const
+	{
+		return m_frontSourceFilename;
+	}
+
+	const std::string& CubemapAsset_v1::GetBackSourceFilename() const
+	{
+		return m_backSourceFilename;
+	}
 }
