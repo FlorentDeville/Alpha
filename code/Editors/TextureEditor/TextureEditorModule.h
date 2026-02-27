@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -35,9 +35,12 @@ namespace Editors
 
 		bool ImportTexture(const Systems::NewAssetId& id);
 
+		bool SaveTexture(const Systems::NewAssetId& id);
+
 		EVENT_DECL(TextureCreated, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(BeforeTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(AfterTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(TextureRenamed, void(const Systems::AssetMetadata& pMetadata));
+		EVENT_DECL(TextureSaved, void(const Systems::NewAssetId& id));
 	};
 }

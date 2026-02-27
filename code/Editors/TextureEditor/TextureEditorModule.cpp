@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/TextureEditor/TextureEditorModule.h"
 
@@ -149,5 +149,18 @@ namespace Editors
 		}
 
 		return false;
+	}
+
+	bool TextureEditorModule::SaveTexture(const Systems::NewAssetId& id)
+	{
+		if (!id.IsValid())
+			return false;
+
+		bool res = Systems::ContainerMgr::Get().SaveContainer(id.GetContainerId());
+
+		if (res)
+			m_onTextureSaved(id);
+
+		return res;
 	}
 }

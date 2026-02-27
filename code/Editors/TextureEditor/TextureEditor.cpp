@@ -53,12 +53,19 @@ namespace Editors
 		, m_renderTargetHalfHeight(0)
 		, m_scale(512)
 		, m_pPopulator(nullptr)
+		, m_objWatcherCid()
 	{ }
 
 	TextureEditor::~TextureEditor()
 	{
 		delete m_pPopulator;
 		m_pPopulator = nullptr;
+
+		if (m_objWatcherCid.IsValid())
+		{
+			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
+			m_objWatcherCid.Reset();
+		}
 	}
 
 	void TextureEditor::CreateEditor(Widgets::Widget* pParent)
@@ -68,6 +75,10 @@ namespace Editors
 		//create the file menu
 		{
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
+
+			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
+			pSaveItem->SetShortcut("Ctrl+S");
+			pSaveItem->OnClick([this]() { OnClick_File_Save(); });
 
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete");
 			pDeleteItem->SetShortcut("Del");
@@ -139,6 +150,7 @@ namespace Editors
 		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
 		textureModule.OnBeforeTextureDeleted([this](const Systems::AssetMetadata& metadata) { m_pListModel->RemoveRow(metadata.GetAssetId()); });
 		textureModule.OnTextureRenamed([this](const Systems::AssetMetadata& metadata) { m_pListModel->OnTextureRenamed(metadata); });
+		textureModule.OnTextureSaved([this](const Systems::NewAssetId& id) { m_pListModel->ClearTextureModified(id); });
 
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
 		pHorizontalSplit->AddBottomPanel(pPropertyGrid);
@@ -196,6 +208,20 @@ namespace Editors
 			return;
 
 		TextureEditorModule::Get().ImportTexture(id);
+	}
+
+	void TextureEditor::OnClick_File_Save()
+	{
+		Systems::NewAssetId id = GetSelectedTextureId();
+		if (!id.IsValid())
+			return;
+
+		bool res = TextureEditorModule::Get().SaveTexture(id);
+
+		if (res)
+			Core::LogModule::Get().LogInfo("Texture saved");
+		else
+			Core::LogModule::Get().LogError("Failed to save texture");
 	}
 
 	void TextureEditor::OnClick_File_Delete()
@@ -316,6 +342,12 @@ namespace Editors
 
 	void TextureEditor::OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 	{
+		if (m_objWatcherCid.IsValid())
+		{
+			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
+			m_objWatcherCid.Reset();
+		}
+
 		if (selected.empty())
 		{
 			m_pPopulator->Populate(nullptr);
@@ -333,5 +365,12 @@ namespace Editors
 
 		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(assetId);
 		m_pPopulator->Populate(pObject);
+
+		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnDataChanged(); });
+	}
+
+	void TextureEditor::OnDataChanged()
+	{
+		m_pListModel->SetTextureModified(GetSelectedTextureId());
 	}
 }

@@ -174,8 +174,37 @@ namespace Editors
 		AfterRemoveRows(row, 1, Widgets::ModelIndex());
 	}
 
-	/*void TextureListModel::SetTextureModified(Systems::NewAssetId id);
-	void TextureListModel::ClearTextureModified(Systems::NewAssetId id);*/
+	void TextureListModel::SetTextureModified(Systems::NewAssetId id)
+	{
+		Widgets::ModelIndex index = GetIndex(id);
+		if (!index.IsValid())
+			return;
+
+		int row = index.GetRow();
+		if (row < 0 || static_cast<uint32_t>(row) >= m_cache.GetSize())
+			return;
+
+		m_cache[row].m_modified = true;
+
+		Widgets::ModelIndex modifiedIndex = index.GetSiblingAtColumn(Columns::Modified);
+		m_onDataChanged(modifiedIndex);
+	}
+
+	void TextureListModel::ClearTextureModified(Systems::NewAssetId id)
+	{
+		Widgets::ModelIndex index = GetIndex(id);
+		if (!index.IsValid())
+			return;
+
+		int row = index.GetRow();
+		if (row < 0 || static_cast<uint32_t>(row) >= m_cache.GetSize())
+			return;
+
+		m_cache[row].m_modified = false;
+
+		Widgets::ModelIndex modifiedIndex = index.GetSiblingAtColumn(Columns::Modified);
+		m_onDataChanged(modifiedIndex);
+	}
 
 	void TextureListModel::OnTextureRenamed(const Systems::AssetMetadata& metadata)
 	{

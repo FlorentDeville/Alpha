@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Editors/BaseEditor.h"
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
 #include <vector>
 
@@ -42,12 +43,15 @@ namespace Editors
 
 		float m_scale;
 
+		ObjectWatcherCallbackId m_objWatcherCid;
+
 		void OnClick_Texture_CreateAndImport();
 		void OnClick_Texture_Import();
 		
 		void OnClick_Cubemap_CreateCubemap();
 		void OnClick_Cubemap_Import();
 
+		void OnClick_File_Save();
 		void OnClick_File_Delete();
 		void OnClick_File_Rename();
 
@@ -57,5 +61,6 @@ namespace Editors
 		void Viewport_OnUpdate(uint64_t dt);
 
 		void OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
+		void OnDataChanged();
 	};
 }
