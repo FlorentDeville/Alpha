@@ -82,7 +82,7 @@ namespace Importer
         image.Release();
 
         hr = DirectX::Compress(timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
-            DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_DEFAULT, DirectX::TEX_THRESHOLD_DEFAULT,
+            DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
             image);
 
         if (FAILED(hr))
@@ -146,8 +146,13 @@ namespace Importer
         if (FAILED(hr))
             return Result(Result::MipMapFailed, "Failed to create mipmaps : (%08X)", static_cast<unsigned int>(hr));
 
+        DirectX::ScratchImage compressedImage;
+        hr = DirectX::Compress(mipMappedImage.GetImages(), mipMappedImage.GetImageCount(), mipMappedImage.GetMetadata(),
+            DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
+            compressedImage);
+
         DirectX::Blob textureBlob;
-        hr = DirectX::SaveToDDSMemory(mipMappedImage.GetImages(), mipMappedImage.GetImageCount(), mipMappedImage.GetMetadata(), DirectX::DDS_FLAGS_NONE, textureBlob);
+        hr = DirectX::SaveToDDSMemory(compressedImage.GetImages(), compressedImage.GetImageCount(), compressedImage.GetMetadata(), DirectX::DDS_FLAGS_NONE, textureBlob);
         if (FAILED(hr))
             return Result(Result::WriteDDSFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(hr));
 
@@ -158,6 +163,18 @@ namespace Importer
         bool res = pCubemap->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize));
         if (!res)
             return Result(Result::InitFailed, "Failed to initialize cubemap asset");
+
+#ifdef _DEBUG
+        const wchar_t* outputFilename = L"C:\\tmp\\cubemap.dds";
+        DirectX::SaveToDDSFile(compressedImage.GetImages(), compressedImage.GetImageCount(), compressedImage.GetMetadata(), DirectX::DDS_FLAGS_NONE, outputFilename);
+#endif // #ifdef _DEBUG
+
+        for (DirectX::ScratchImage& image : baseImage)
+            image.Release();
+
+        cubemapImage.Release();
+        mipMappedImage.Release();
+        compressedImage.Release();
 
         return Result::Ok;
     }
