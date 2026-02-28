@@ -45,6 +45,7 @@ namespace Rendering
 	class Material;
 	class Mesh;
 	class RenderTarget;
+	class Texture;
 
 	class RenderModule : public Core::Singleton<RenderModule>
 	{
@@ -114,6 +115,8 @@ namespace Rendering
 
 		static void ReportLiveObject();
 
+		void BindNullCubemap(uint32_t rootSigIndex);
+
 	private:
 		DirectX::XMUINT2 m_gameResolution;
 		DirectX::XMUINT2 m_mainResolution;
@@ -182,6 +185,8 @@ namespace Rendering
 		D3D12_CPU_DESCRIPTOR_HANDLE m_mainDSV;
 		D3D12_VIEWPORT m_mainViewport;
 		D3D12_RECT m_mainScissorRect;
+
+		Texture* m_pNullCubemap; //used to bind to a null cubemap
 
 		void CreateDevice(IDXGIAdapter4* pAdapter);
 

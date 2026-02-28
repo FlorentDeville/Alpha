@@ -175,6 +175,31 @@ namespace Rendering
 			nullptr, IID_PPV_ARGS(&m_pResource));
 	}
 
+	void Texture::InitAsNullCubemap()
+	{
+		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = 1;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		//Create the srv descriptor
+		{
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Texture2D.MipLevels = 0;//static_cast<uint32_t>(subResources.size());
+			pDevice->CreateShaderResourceView(nullptr, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		}
+	}
+
 	void Texture::TransitionTo(D3D12_RESOURCE_STATES nextState)
 	{
 		if (nextState == m_currentState)

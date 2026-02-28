@@ -29,6 +29,8 @@ namespace Rendering
 
 		void InitAsReadbackBuffer(int width, int height, int depth);
 
+		void InitAsNullCubemap();
+
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);
 		void TransitionToShaderResource();
 
