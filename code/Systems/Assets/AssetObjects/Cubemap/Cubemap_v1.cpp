@@ -4,6 +4,8 @@
 
 #include "Systems/Assets/AssetObjects/Cubemap/Cubemap_v1.h"
 
+#include "Rendering/Texture/Texture.h"
+
 namespace Systems
 {
 	CubemapAsset_v1::CubemapAsset_v1()
@@ -39,7 +41,11 @@ namespace Systems
 
 	void CubemapAsset_v1::PostLoad()
 	{
+		if (m_pTexture)
+			delete m_pTexture;
 
+		m_pTexture = new Rendering::Texture();
+		m_pTexture->InitAsDDS(m_blob.GetData(), m_blob.GetSize());
 	}
 
 	const std::string& CubemapAsset_v1::GetAssetTypeName()
@@ -82,5 +88,10 @@ namespace Systems
 	const std::string& CubemapAsset_v1::GetBackSourceFilename() const
 	{
 		return m_backSourceFilename;
+	}
+
+	Rendering::Texture* CubemapAsset_v1::GetTexture()
+	{
+		return m_pTexture;
 	}
 }

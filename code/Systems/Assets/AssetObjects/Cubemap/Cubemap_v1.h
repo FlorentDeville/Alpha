@@ -36,6 +36,8 @@ namespace Systems
 		const std::string& GetFrontSourceFilename() const;
 		const std::string& GetBackSourceFilename() const;
 
+		Rendering::Texture* GetTexture();
+
 	private:
 		std::string m_leftSourceFilename; //-x
 		std::string m_rightSourceFilename; //+x
