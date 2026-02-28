@@ -328,21 +328,42 @@ namespace Editors
 		const int ROOT_SIG_INDEX_TEXTURECUBE = 3;
 		const int ROOT_SIG_INDEX_STATICSAMPLER = 4;
 
-		//bind const buffer
-		renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
-		uint32_t type = 0;
-		renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(type), &type, 0);
+		if (isATexture)
+		{
+			//bind const buffer
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
+			uint32_t type = 0;
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(type), &type, 0);
 
-		//bind texture
-		ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
-		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-		renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(ROOT_SIG_INDEX_TEXTURE2D, pSrv->GetGPUDescriptorHandleForHeapStart());
+			//bind texture
+			ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
+			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+			renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+			renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(ROOT_SIG_INDEX_TEXTURE2D, pSrv->GetGPUDescriptorHandleForHeapStart());
 
-		renderer.BindNullCubemap(ROOT_SIG_INDEX_TEXTURECUBE);
+			renderer.BindNullCubemap(ROOT_SIG_INDEX_TEXTURECUBE);
 
-		//render mesh
-		renderer.RenderMesh(*m_pQuad);
+			//render mesh
+			renderer.RenderMesh(*m_pQuad);
+		}
+		else
+		{
+			//bind const buffer
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
+			uint32_t type = 1;
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(type), &type, 0);
+
+			//bind texture
+			ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
+			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+			renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+			renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(ROOT_SIG_INDEX_TEXTURECUBE, pSrv->GetGPUDescriptorHandleForHeapStart());
+
+			renderer.BindNullTexture2D(ROOT_SIG_INDEX_TEXTURE2D);
+
+			//render mesh
+			renderer.RenderMesh(*m_pQuad);
+		}
 	}
 
 	void TextureEditor::Viewport_OnUpdate(uint64_t dt)
