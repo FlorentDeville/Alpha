@@ -159,9 +159,9 @@ namespace Widgets
 
 		//texture editor pso
 		{
-			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\texture.rs.cso");
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture.ps.cso");
+			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\texture_editor_viewport.rs.cso");
+			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture_editor_viewport.vs.cso");
+			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture_editor_viewport.ps.cso");
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_textureEditorPsoId);
 			pPipelineState->Init_Icon(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
