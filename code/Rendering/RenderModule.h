@@ -116,6 +116,7 @@ namespace Rendering
 		static void ReportLiveObject();
 
 		void BindNullCubemap(uint32_t rootSigIndex);
+		void BindNullTexture2D(uint32_t rootSigIndex);
 
 	private:
 		DirectX::XMUINT2 m_gameResolution;
@@ -187,6 +188,7 @@ namespace Rendering
 		D3D12_RECT m_mainScissorRect;
 
 		Texture* m_pNullCubemap; //used to bind to a null cubemap
+		Texture* m_pNullTexture2D; //used to bind to a null texture
 
 		void CreateDevice(IDXGIAdapter4* pAdapter);
 

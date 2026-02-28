@@ -62,6 +62,7 @@ namespace Rendering
 		, m_pBaseShapePso(nullptr)
 		, m_pBaseShapeRootSig(nullptr)
 		, m_pNullCubemap(nullptr)
+		, m_pNullTexture2D(nullptr)
 	{
 		m_clearColor[0] = 0.4f;
 		m_clearColor[1] = 0.6f;
@@ -162,6 +163,9 @@ namespace Rendering
 
 		m_pNullCubemap = new Texture();
 		m_pNullCubemap->InitAsNullCubemap();
+
+		m_pNullTexture2D = new Texture();
+		m_pNullTexture2D->InitAsNullTexture2D();
 	}
 
 	void RenderModule::Release()
@@ -194,6 +198,9 @@ namespace Rendering
 
 		delete m_pNullCubemap;
 		m_pNullCubemap = nullptr;
+
+		delete m_pNullTexture2D;
+		m_pNullTexture2D = nullptr;
 
 #if defined(_DEBUG)
 		m_pDebugInterface->Release();
@@ -697,6 +704,17 @@ namespace Rendering
 	void RenderModule::BindNullCubemap(uint32_t rootSigIndex)
 	{
 		ID3D12DescriptorHeap* pSrv = m_pNullCubemap->GetSRV();
+		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
+
+		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+		pCommandList->SetGraphicsRootDescriptorTable(rootSigIndex, pSrv->GetGPUDescriptorHandleForHeapStart());
+	}
+
+	void RenderModule::BindNullTexture2D(uint32_t rootSigIndex)
+	{
+		ID3D12DescriptorHeap* pSrv = m_pNullTexture2D->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 
 		ID3D12GraphicsCommandList2* pCommandList = GetRenderCommandList();
