@@ -313,14 +313,25 @@ namespace Editors
 		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetTextureEditorPsoId());
 		renderer.BindMaterial(*pPso);
 
+
+		const int ROOT_SIG_INDEX_CBV_VERTEX_SHADER = 0;
+		const int ROOT_SIG_INDEX_CBV_PIXEL_SHADER = 1;
+		const int ROOT_SIG_INDEX_TEXTURE2D = 2;
+		const int ROOT_SIG_INDEX_TEXTURECUBE = 3;
+		const int ROOT_SIG_INDEX_STATICSAMPLER = 4;
+
 		//bind const buffer
-		renderer.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
+		renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
+		uint32_t type = 0;
+		renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(type), &type, 0);
 
 		//bind texture
 		ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(ROOT_SIG_INDEX_TEXTURE2D, pSrv->GetGPUDescriptorHandleForHeapStart());
+
+		renderer.BindNullCubemap(ROOT_SIG_INDEX_TEXTURECUBE);
 
 		//render mesh
 		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());

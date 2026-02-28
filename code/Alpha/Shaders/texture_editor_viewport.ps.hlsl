@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "texture.rs.hlsl"
+#include "texture_editor_viewport.rs.hlsl"
 
 struct VS_Output
 {
@@ -10,13 +10,28 @@ struct VS_Output
 	float2 uv : UV;
 };
 
+cbuffer PixelShaderParameter : register(b0)
+{
+    int type;
+};
+
 Texture2D t1 : register(t0);
 SamplerState s1 : register(s0);
+
+TextureCube cubemap : register(t1);
 
 [RootSignature(RS)]
 float4 main(VS_Output input) : SV_TARGET
 {
-	float4 color = t1.Sample(s1, input.uv);
-	return color;
-	//return float4(1.f, 1.f, 1.f, 1.f) * float4(input.uv.x, input.uv.y, 1.f, 1.f);
+	if(type == 0)
+    {
+        float4 color = t1.Sample(s1, input.uv);
+        return color;
+    }
+    else
+    {
+        float3 uvw = normalize(float3(input.uv, 0));
+        float4 color = cubemap.Sample(s1, uvw);
+        return color;
+    }
 }
