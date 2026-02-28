@@ -164,7 +164,7 @@ namespace Widgets
 			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture_editor_viewport.ps.cso");
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_textureEditorPsoId);
-			pPipelineState->Init_Icon(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 		}
 
 		//viewport pso

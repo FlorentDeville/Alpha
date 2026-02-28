@@ -9,6 +9,11 @@
 
 #include <vector>
 
+namespace Rendering
+{
+	class Mesh;
+}
+
 namespace Systems
 {
 	class NewAssetId;
@@ -44,6 +49,8 @@ namespace Editors
 		float m_scale;
 
 		ObjectWatcherCallbackId m_objWatcherCid;
+		
+		Rendering::Mesh* m_pQuad;
 
 		void OnClick_Texture_CreateAndImport();
 		void OnClick_Texture_Import();

@@ -442,6 +442,25 @@ namespace Rendering
         pMesh->LoadVertexAndIndexBuffer(vertices, VERTEX_COUNT, indices, INDEX_COUNT);
     }
 
+    void BaseShape::CreateQuad(Mesh* pMesh)
+    {
+        Rendering::VertexGeneric vertices[4] =
+        {
+            { DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f), DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(0.f, 0.f), DirectX::XMFLOAT3(0.f, 0.f, -1) },	// top left
+            { DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(1.f, 0.f), DirectX::XMFLOAT3(0.f, 0.f, -1) },	// top right
+            { DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(1.f, 1.f), DirectX::XMFLOAT3(0.f, 0.f, -1) },	// bottom right
+            { DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f),	DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(0.f, 1.f), DirectX::XMFLOAT3(0.f, 0.f, -1) }	// bottom left
+        };
+
+        uint16_t indices[6]
+        {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        pMesh->LoadVertexAndIndexBuffer(vertices, _countof(vertices), indices, _countof(indices));
+    }
+
     void BaseShape::CreateSphere(Mesh* pMesh, uint32_t stacks, uint32_t slices)
     {
         Core::Array<VertexGeneric> vertices;

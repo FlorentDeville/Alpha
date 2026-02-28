@@ -20,7 +20,8 @@
 
 #include "OsWin/FileDialog.h"
 
-#include "Rendering/Mesh/MeshMgr.h"
+#include "Rendering/BaseShape.h"
+#include "Rendering/Mesh/Mesh.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/Texture/Texture.h"
 
@@ -54,6 +55,7 @@ namespace Editors
 		, m_scale(512)
 		, m_pPopulator(nullptr)
 		, m_objWatcherCid()
+		, m_pQuad(nullptr)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -66,6 +68,9 @@ namespace Editors
 			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
 			m_objWatcherCid.Reset();
 		}
+
+		delete m_pQuad;
+		m_pQuad = nullptr;
 	}
 
 	void TextureEditor::CreateEditor(Widgets::Widget* pParent)
@@ -157,6 +162,9 @@ namespace Editors
 
 		m_pPopulator = new PropertyGridPopulator();
 		m_pPopulator->Init(pPropertyGrid);
+
+		m_pQuad = new Rendering::Mesh();
+		Rendering::BaseShape::CreateQuad(m_pQuad);
 	}
 
 	void TextureEditor::OnClick_Texture_CreateAndImport()
@@ -334,8 +342,7 @@ namespace Editors
 		renderer.BindNullCubemap(ROOT_SIG_INDEX_TEXTURECUBE);
 
 		//render mesh
-		const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());
-		renderer.RenderMesh(*pMesh);
+		renderer.RenderMesh(*m_pQuad);
 	}
 
 	void TextureEditor::Viewport_OnUpdate(uint64_t dt)
