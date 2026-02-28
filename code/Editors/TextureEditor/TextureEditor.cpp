@@ -292,11 +292,8 @@ namespace Editors
 			return;
 
 		bool isATexture = Systems::AssetUtil::IsA<Systems::TextureAsset>(selectedTextureId);
-		if (!isATexture)
-			return;
-
-		Systems::TextureAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::TextureAsset>(selectedTextureId);
-		if (!pTexture)
+		bool isACubemap = Systems::AssetUtil::IsA<Systems::CubemapAsset>(selectedTextureId);
+		if (!isATexture && !isACubemap)
 			return;
 
 		Core::Vec4f target(0, 0, 10, 1);
@@ -321,7 +318,6 @@ namespace Editors
 		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetTextureEditorPsoId());
 		renderer.BindMaterial(*pPso);
 
-
 		const int ROOT_SIG_INDEX_CBV_VERTEX_SHADER = 0;
 		const int ROOT_SIG_INDEX_CBV_PIXEL_SHADER = 1;
 		const int ROOT_SIG_INDEX_TEXTURE2D = 2;
@@ -330,6 +326,10 @@ namespace Editors
 
 		if (isATexture)
 		{
+			Systems::TextureAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::TextureAsset>(selectedTextureId);
+			if (!pTexture)
+				return;
+
 			//bind const buffer
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
 			uint32_t type = 0;
@@ -348,6 +348,10 @@ namespace Editors
 		}
 		else
 		{
+			Systems::CubemapAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::CubemapAsset>(selectedTextureId);
+			if (!pTexture)
+				return;
+
 			//bind const buffer
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
 			uint32_t type = 1;
