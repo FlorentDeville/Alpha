@@ -36,7 +36,7 @@ namespace Editors
 		TextureEditor();
 		~TextureEditor();
 
-		void CreateEditor(Widgets::Widget* pParent) override;
+		void CreateEditor(const EditorParameter& param) override;
 
 	private:
 		TextureListModel* m_pListModel;

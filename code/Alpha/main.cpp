@@ -21,6 +21,7 @@
 #include "Core/Log/LogModule.h"
 
 #include "Editors/EditorManager.h"
+#include "Editors/EditorParameter.h"
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
@@ -437,7 +438,9 @@ void CreateMainWindow()
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 
-	Editors::EditorManager::Get().Init(pMiddleTabContainer);
+	Editors::EditorParameter parameter;
+	parameter.m_pParent = pMiddleTabContainer;
+	Editors::EditorManager::Get().Init(parameter);
 
 	Editors::LogEditorParameter logEditorParameter;
 	logEditorParameter.m_pParent = pMiddleTabContainer;

@@ -24,7 +24,7 @@ namespace Editors
 		assert(false);
 	}
 
-	void EditorManager::Init(Widgets::Widget* pParent)
+	void EditorManager::Init(const EditorParameter& param)
 	{
 		m_editors.PushBack(new LevelEditor());
 		m_editors.PushBack(new MeshEditor());
@@ -32,7 +32,7 @@ namespace Editors
 		m_editors.PushBack(new TextureEditor());
 
 		for (BaseEditor* pEditor : m_editors)
-			pEditor->CreateEditor(pParent);
+			pEditor->CreateEditor(param);
 	}
 
 	void EditorManager::Shutdown()

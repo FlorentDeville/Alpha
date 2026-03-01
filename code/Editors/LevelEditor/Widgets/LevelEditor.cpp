@@ -72,9 +72,9 @@ namespace Editors
 		m_pPropertyGridPopulator = nullptr;
 	}
 
-	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
+	void LevelEditor::CreateEditor(const EditorParameter& param)
 	{
-		CreateDefaultWidgets(pParent, "Level");
+		CreateDefaultWidgets(param.m_pParent, "Level");
 
 		//create the render target
 		int width = 1280;

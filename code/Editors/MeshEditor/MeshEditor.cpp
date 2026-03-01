@@ -64,9 +64,9 @@ namespace Editors
 	MeshEditor::~MeshEditor()
 	{ }
 
-	void MeshEditor::CreateEditor(Widgets::Widget* pParent)
+	void MeshEditor::CreateEditor(const EditorParameter& param)
 	{
-		CreateDefaultWidgets(pParent, "Mesh");
+		CreateDefaultWidgets(param.m_pParent, "Mesh");
 
 		//create the file menu
 		{

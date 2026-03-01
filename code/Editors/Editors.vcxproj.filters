@@ -183,6 +183,9 @@
     <ClInclude Include="MeshEditor\MeshEditorModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EditorParameter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">

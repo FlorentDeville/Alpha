@@ -73,9 +73,9 @@ namespace Editors
 		m_pQuad = nullptr;
 	}
 
-	void TextureEditor::CreateEditor(Widgets::Widget* pParent)
+	void TextureEditor::CreateEditor(const EditorParameter& param)
 	{
-		CreateDefaultWidgets(pParent, "Texture");
+		CreateDefaultWidgets(param.m_pParent, "Texture");
 
 		//create the file menu
 		{
