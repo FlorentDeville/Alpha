@@ -127,8 +127,8 @@ namespace Editors
 			if (Systems::CubemapAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::CubemapAsset>(id))
 			{
 				std::string filenames[6];
-				filenames[0] = pTexture->GetLeftSourceFilename();
-				filenames[1] = pTexture->GetRightSourceFilename();
+				filenames[0] = pTexture->GetRightSourceFilename();
+				filenames[1] = pTexture->GetLeftSourceFilename();
 				filenames[2] = pTexture->GetTopSourceFilename();
 				filenames[3] = pTexture->GetBottomSourceFilename();
 				filenames[4] = pTexture->GetFrontSourceFilename();
