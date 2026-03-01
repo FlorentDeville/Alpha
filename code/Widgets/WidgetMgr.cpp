@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/WidgetMgr.h"
 
@@ -155,16 +155,6 @@ namespace Widgets
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_iconWidgetPsoId);
 			pPipelineState->Init_Icon(rsId, vsId, psId);
-		}
-
-		//texture editor pso
-		{
-			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\texture_editor_viewport.rs.cso");
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture_editor_viewport.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\texture_editor_viewport.ps.cso");
-
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_textureEditorPsoId);
-			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 		}
 
 		//viewport pso
@@ -581,11 +571,6 @@ namespace Widgets
 	Rendering::PipelineStateId WidgetMgr::GetIconWidgetPsoId() const
 	{
 		return m_iconWidgetPsoId;
-	}
-
-	Rendering::PipelineStateId WidgetMgr::GetTextureEditorPsoId() const
-	{
-		return m_textureEditorPsoId;
 	}
 
 	Rendering::MeshId WidgetMgr::GetQuadMeshId() const
