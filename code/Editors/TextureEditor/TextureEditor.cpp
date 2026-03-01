@@ -477,6 +477,8 @@ namespace Editors
 
 	void TextureEditor::Viewport_OnUpdate(uint64_t dt)
 	{
+		const float MIN_DISTANCE = 0.4;
+
 		switch (m_viewportState)
 		{
 		case TEXTURE:
@@ -484,12 +486,12 @@ namespace Editors
 			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 			int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
 			const float CAMERA_DISTANCE_SPEED = 0.002f;
-			const float MIN_SCALE = 1;
+			
 			if (mouseWheelDistance != 0)
 				m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
 
-			if (m_cameraDistance < MIN_SCALE)
-				m_cameraDistance = MIN_SCALE;
+			if (m_cameraDistance < MIN_DISTANCE)
+				m_cameraDistance = MIN_DISTANCE;
 		}
 		break;
 
@@ -498,12 +500,11 @@ namespace Editors
 			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 			int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
 			const float CAMERA_DISTANCE_SPEED = 0.002f;
-			const float MIN_SCALE = 1;
 			if (mouseWheelDistance != 0)
 				m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
 
-			if (m_cameraDistance < MIN_SCALE)
-				m_cameraDistance = MIN_SCALE;
+			if (m_cameraDistance < MIN_DISTANCE)
+				m_cameraDistance = MIN_DISTANCE;
 
 			if (inputs.IsMouseLeftButtonDown())
 			{
@@ -520,10 +521,7 @@ namespace Editors
 				delta.y = m_mousePreviousPos.y - mousePosition.y;
 
 				const float ROTATION_SPEED = 0.01f;
-				m_cameraDirectionRotationY += static_cast<float>(delta.x) * ROTATION_SPEED;
-				//DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
-
-				//m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+				m_cameraDirectionRotationY -= static_cast<float>(delta.x) * ROTATION_SPEED;
 
 				m_mousePreviousPos = mousePosition;
 			}
