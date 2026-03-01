@@ -24,6 +24,8 @@
 #include "Rendering/BaseShape.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
+#include "Rendering/RootSignature/RootSignature.h"
+#include "Rendering/Shaders/Shader.h"
 #include "Rendering/Texture/Texture.h"
 
 #include "Systems/Assets/AssetMgr.h"
@@ -57,6 +59,10 @@ namespace Editors
 		, m_pPopulator(nullptr)
 		, m_objWatcherCid()
 		, m_pQuad(nullptr)
+		, m_pTextureViewportVertexShader(nullptr)
+		, m_pTextureViewportPixelShader(nullptr)
+		, m_pRootSig(nullptr)
+		, m_pPsoQuad(nullptr)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -72,6 +78,15 @@ namespace Editors
 
 		delete m_pQuad;
 		m_pQuad = nullptr;
+
+		delete m_pTextureViewportVertexShader;
+		m_pTextureViewportVertexShader = nullptr;
+		delete m_pTextureViewportPixelShader;
+		m_pTextureViewportPixelShader = nullptr;
+		delete m_pRootSig;
+		m_pRootSig = nullptr;
+		delete m_pPsoQuad;
+		m_pPsoQuad = nullptr;
 	}
 
 	void TextureEditor::CreateEditor(const EditorParameter& param)
@@ -166,6 +181,13 @@ namespace Editors
 
 		m_pQuad = new Rendering::Mesh();
 		Rendering::BaseShape::CreateQuad(m_pQuad);
+
+		m_pTextureViewportVertexShader = new Rendering::Shader(param.m_shaderPath + "\\texture_editor_viewport.vs.cso");
+		m_pTextureViewportPixelShader = new Rendering::Shader(param.m_shaderPath + "\\texture_editor_viewport.ps.cso");
+		m_pRootSig = new Rendering::RootSignature(param.m_shaderPath + "\\texture_editor_viewport.rs.cso");
+
+		m_pPsoQuad = new Rendering::PipelineState();
+		m_pPsoQuad->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::PipelineState::BACK);
 	}
 
 	void TextureEditor::OnClick_Texture_CreateAndImport()
@@ -312,12 +334,9 @@ namespace Editors
 		Core::Mat44f wvp = worldTx * viewTx * projTx;
 
 		//bind material
-		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
-		Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
 
-		const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetTextureEditorPsoId());
-		renderer.BindMaterial(*pPso);
+		renderer.BindMaterial(*m_pPsoQuad, *m_pRootSig);
 
 		const int ROOT_SIG_INDEX_CBV_VERTEX_SHADER = 0;
 		const int ROOT_SIG_INDEX_CBV_PIXEL_SHADER = 1;

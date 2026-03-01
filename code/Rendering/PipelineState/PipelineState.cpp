@@ -40,6 +40,26 @@ namespace Rendering
 		CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendState;
 	};
 
+	static D3D12_CULL_MODE GetDx12CullMode(PipelineState::CULL_MODE cullMode)
+	{
+		switch (cullMode)
+		{
+		case PipelineState::NONE:
+			return D3D12_CULL_MODE_NONE;
+			break;
+
+		case PipelineState::FRONT:
+			return D3D12_CULL_MODE_FRONT;
+			break;
+
+		case PipelineState::BACK:
+			return D3D12_CULL_MODE_BACK;
+			break;
+		}
+
+		return D3D12_CULL_MODE_NONE;
+	}
+
 	PipelineState::PipelineState()
 		: m_pPipelineState(nullptr)
 		, m_psId()
@@ -214,6 +234,44 @@ namespace Rendering
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
 		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.pRootSignature = rs.GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vs.GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(ps.GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
+
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(PipelineStateStream), &pipelineStateStream
+		};
+		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		ThrowIfFailed(res);
+	}
+
+	void PipelineState::Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CULL_MODE cullMode)
+	{
+		struct PipelineStateStream
+		{
+			CD3DX12_PIPELINE_STATE_STREAM_RASTERIZER Rasterizer;
+			CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+			CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
+			CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
+			CD3DX12_PIPELINE_STATE_STREAM_VS VS;
+			CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
+			CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
+		};
+
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
+		rasterizerDesc.CullMode = GetDx12CullMode(cullMode);
+
+		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.Rasterizer = rasterizerDesc;
 		pipelineStateStream.pRootSignature = rs.GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;

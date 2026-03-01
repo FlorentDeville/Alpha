@@ -12,6 +12,9 @@
 namespace Rendering
 {
 	class Mesh;
+	class PipelineState;
+	class RootSignature;
+	class Shader;
 }
 
 namespace Systems
@@ -51,6 +54,12 @@ namespace Editors
 		ObjectWatcherCallbackId m_objWatcherCid;
 		
 		Rendering::Mesh* m_pQuad;
+
+		Rendering::Shader* m_pTextureViewportVertexShader;
+		Rendering::Shader* m_pTextureViewportPixelShader;
+		Rendering::RootSignature* m_pRootSig;
+
+		Rendering::PipelineState* m_pPsoQuad;
 
 		void OnClick_Texture_CreateAndImport();
 		void OnClick_Texture_Import();
