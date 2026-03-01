@@ -27,7 +27,8 @@ namespace Importer
 				CubemapCreationFailed,
 				WriteDDSFailed,
 				BadSize,
-				InitFailed
+				InitFailed,
+				SaveToFileFailed
 			};
 
 			Code m_code;
@@ -44,5 +45,8 @@ namespace Importer
 
 		//The source filename must be in the following order : +x -x +y -y +z -z
 		TextureImporter::Result ImportCubemap(const std::string sourceFilename[6], Systems::CubemapAsset* pCubemap);
+
+		TextureImporter::Result Export(const std::string& outputFilename, const Systems::TextureAsset* pTexture);
+		TextureImporter::Result Export(const std::string& outputFilename, const Systems::CubemapAsset* pCubemap);
 	};
 }

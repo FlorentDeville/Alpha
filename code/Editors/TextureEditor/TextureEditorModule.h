@@ -37,6 +37,8 @@ namespace Editors
 
 		bool SaveTexture(const Systems::NewAssetId& id);
 
+		bool Export(const std::string& outputFilename, const Systems::NewAssetId& id);
+
 		EVENT_DECL(TextureCreated, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(BeforeTextureDeleted, void(const Systems::AssetMetadata& pMetadata));
 		EVENT_DECL(AfterTextureDeleted, void(const Systems::AssetMetadata& pMetadata));

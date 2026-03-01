@@ -118,6 +118,9 @@ namespace Editors
 			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
 			pRenameItem->SetShortcut("F2");
 			pRenameItem->OnClick([this]() { OnClick_File_Rename(); });
+
+			Widgets::MenuItem* pExportItem = pFileMenu->AddMenuItem("Export...");
+			pExportItem->OnClick([this]() { OnClick_File_Export(); });
 		}
 
 		//create the Texture menu
@@ -312,6 +315,38 @@ namespace Editors
 				TextureEditorModule::Get().RenameTexture(selectedTextureId, input);
 			});
 		pDialog->Open();
+	}
+
+	void TextureEditor::OnClick_File_Export()
+	{
+		Systems::NewAssetId id = GetSelectedTextureId();
+		if (!id.IsValid())
+		{
+			Core::LogModule::Get().LogWarn("No texture selected.");
+			return;
+		}
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+		{
+			Core::LogModule::Get().LogWarn("Failed to find metadata.");
+			return;
+		}
+
+		std::vector<std::string> extensions;
+		extensions.push_back("DDS File (*.dds)");
+		extensions.push_back("*.dds");
+		std::string filename;
+		bool res = Os::SaveFileDialog(filename, extensions, pMetadata->GetVirtualName() + ".dds");
+		if (!res)
+			return;
+
+		res = TextureEditorModule::Get().Export(filename, id);
+
+		if (!res)
+			Core::LogModule::Get().LogError("Failed to export.");
+		else
+			Core::LogModule::Get().LogInfo("Texture exported to %s.", filename.c_str());
 	}
 
 	Systems::NewAssetId TextureEditor::GetSelectedTextureId() const

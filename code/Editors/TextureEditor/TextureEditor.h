@@ -89,6 +89,7 @@ namespace Editors
 		void OnClick_File_Save();
 		void OnClick_File_Delete();
 		void OnClick_File_Rename();
+		void OnClick_File_Export();
 
 		Systems::NewAssetId GetSelectedTextureId() const;
 

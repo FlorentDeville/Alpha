@@ -178,4 +178,40 @@ namespace Importer
 
         return Result::Ok;
     }
+
+    TextureImporter::Result TextureImporter::Export(const std::string& outputFilename, const Systems::TextureAsset* pTexture)
+    {
+        DirectX::TexMetadata metadata;
+        DirectX::ScratchImage image;
+        const Core::Array<uint8_t>& blob = pTexture->GetBlob();
+        HRESULT res = DirectX::LoadFromDDSMemory(blob.GetData(), blob.GetSize(), DirectX::DDS_FLAGS_NONE, &metadata, image);
+        if (FAILED(res))
+            return Result(Result::LoadingFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(res));
+        
+        std::wstring wideOutputFilename = std::wstring(outputFilename.begin(), outputFilename.end());
+        res = DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, wideOutputFilename.c_str());
+
+        if (FAILED(res))
+            return Result(Result::SaveToFileFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(res));
+
+        return Result::Ok;
+    }
+
+    TextureImporter::Result TextureImporter::Export(const std::string& outputFilename, const Systems::CubemapAsset* pCubemap)
+    {
+        DirectX::TexMetadata metadata;
+        DirectX::ScratchImage image;
+        const Core::Array<uint8_t>& blob = pCubemap->GetBlob();
+        HRESULT res = DirectX::LoadFromDDSMemory(blob.GetData(), blob.GetSize(), DirectX::DDS_FLAGS_NONE, &metadata, image);
+        if (FAILED(res))
+            return Result(Result::LoadingFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(res));
+
+        std::wstring wideOutputFilename = std::wstring(outputFilename.begin(), outputFilename.end());
+        res = DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, wideOutputFilename.c_str());
+
+        if (FAILED(res))
+            return Result(Result::SaveToFileFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(res));
+
+        return Result::Ok;
+    }
 }

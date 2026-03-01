@@ -163,4 +163,29 @@ namespace Editors
 
 		return res;
 	}
+
+	bool TextureEditorModule::Export(const std::string& outputFilename, const Systems::NewAssetId& id)
+	{
+		if (!id.IsValid())
+			return false;
+
+		const Systems::AssetObject* pObj = Systems::AssetUtil::LoadAsset(id);
+		if (!pObj)
+			return false;
+
+		if (pObj->IsA<Systems::TextureAsset>())
+		{
+			Importer::TextureImporter importer;
+			Importer::TextureImporter::Result res = importer.Export(outputFilename, static_cast<const Systems::TextureAsset*>(pObj));
+			return res.IsSuccess();
+		}
+		else if (pObj->IsA<Systems::CubemapAsset>())
+		{
+			Importer::TextureImporter importer;
+			Importer::TextureImporter::Result res = importer.Export(outputFilename, static_cast<const Systems::CubemapAsset*>(pObj));
+			return res.IsSuccess();
+		}
+
+		return false;
+	}
 }
