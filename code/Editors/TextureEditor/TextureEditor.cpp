@@ -356,6 +356,12 @@ namespace Editors
 		const int ROOT_SIG_INDEX_TEXTURECUBE = 3;
 		const int ROOT_SIG_INDEX_STATICSAMPLER = 4;
 
+		struct PixelShaderCBuffer
+		{
+			Core::Mat44f matrix;
+			uint32_t type;
+		};
+
 		if (isATexture)
 		{
 			Systems::TextureAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::TextureAsset>(selectedTextureId);
@@ -364,10 +370,13 @@ namespace Editors
 
 			renderer.BindMaterial(*m_pPsoQuad, *m_pRootSig);
 
+			PixelShaderCBuffer psCBuffer;
+			psCBuffer.matrix = worldTx;
+			psCBuffer.type = 0;
+
 			//bind const buffer
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
-			uint32_t type = 0;
-			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(type), &type, 0);
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(psCBuffer), &psCBuffer, 0);
 
 			//bind texture
 			ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
@@ -388,10 +397,13 @@ namespace Editors
 
 			renderer.BindMaterial(*m_pPsoCubemap, *m_pRootSig);
 
+			PixelShaderCBuffer psCBuffer;
+			psCBuffer.matrix = worldTx;
+			psCBuffer.type = 1;
+
 			//bind const buffer
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
-			uint32_t type = 1;
-			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(type), &type, 0);
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(psCBuffer), &psCBuffer, 0);
 
 			//bind texture
 			ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();

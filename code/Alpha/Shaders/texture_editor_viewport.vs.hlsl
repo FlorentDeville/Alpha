@@ -13,6 +13,7 @@ struct VS_Input
 struct VS_Output
 {
 	float4 vertex : SV_Position;
+	float4 worldPosition : TEXCOORD0; //world space
 	float2 uv : UV;
 };
 
@@ -26,6 +27,7 @@ VS_Output main( VS_Input input )
 {
 	VS_Output output;
 	output.vertex = mul(wvp, float4(input.vertex, 1.f));
+	output.worldPosition = output.vertex;
 	output.uv = input.uv;
 	return output;
 }

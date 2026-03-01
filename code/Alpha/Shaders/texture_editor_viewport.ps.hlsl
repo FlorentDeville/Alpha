@@ -6,12 +6,14 @@
 
 struct VS_Output
 {
-	float4 vertex : SV_Position;
-	float2 uv : UV;
+    float4 vertex : SV_Position;
+    float4 worldPosition : TEXCOORD0; //world space
+    float2 uv : UV;
 };
 
 cbuffer PixelShaderParameter : register(b0)
 {
+    matrix world;
     int type;
 };
 
@@ -30,7 +32,8 @@ float4 main(VS_Output input) : SV_TARGET
     }
     else
     {
-        float3 uvw = normalize(float3(input.uv, 0));
+        float3 dir = input.worldPosition.xyz - world._41_42_43;
+        float3 uvw = normalize(dir);
         float4 color = cubemap.Sample(s1, uvw);
         return color;
     }
