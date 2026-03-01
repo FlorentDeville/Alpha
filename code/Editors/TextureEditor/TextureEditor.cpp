@@ -9,6 +9,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Sqt.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/TextureEditor/TextureEditorModule.h"
 #include "Editors/TextureEditor/TextureListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"

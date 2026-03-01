@@ -6,6 +6,7 @@
 
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/SceneTreeModel.h"

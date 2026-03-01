@@ -6,6 +6,7 @@
 
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/MaterialEditor/MaterialListModel.h"
 #include "Editors/MaterialEditor/ShaderTemplate.h"

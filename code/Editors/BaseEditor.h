@@ -15,14 +15,8 @@ namespace Widgets
 
 namespace Editors
 {
+	class EditorParameter;
 	class StatusBar;
-
-	class EditorParameter
-	{
-	public:
-		Widgets::Widget* m_pParent;
-		std::string m_shaderPath;
-	};
 
 	class BaseEditor
 	{

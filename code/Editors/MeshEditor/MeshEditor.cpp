@@ -4,6 +4,7 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
