@@ -4,7 +4,7 @@
 
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
-#include "Systems/Assets/AssetObjects/Cubemap/Cubemap_v1.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"

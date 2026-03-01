@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Assets/AssetObjects/Cubemap/Cubemap_v1.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
 
 #include "Rendering/Texture/Texture.h"
 
