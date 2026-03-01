@@ -55,7 +55,7 @@
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetObjects\Material\TextureBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\Cubemap.h" />
+    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />

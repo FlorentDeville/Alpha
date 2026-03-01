@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\Cubemap.h" />
+    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset_v1.h" />

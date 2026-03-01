@@ -30,7 +30,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
-#include "Systems/Assets/AssetObjects/Cubemap/Cubemap.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
