@@ -71,4 +71,9 @@ namespace Systems
 	{
 		return m_sourceFilename;
 	}
+
+	const Core::Array<uint8_t>& TextureAsset_v1::GetBlob() const
+	{
+		return m_blob;
+	}
 }

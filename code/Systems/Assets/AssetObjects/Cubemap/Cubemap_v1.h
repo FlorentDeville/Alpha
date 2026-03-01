@@ -38,6 +38,8 @@ namespace Systems
 
 		Rendering::Texture* GetTexture();
 
+		const Core::Array<uint8_t>& GetBlob() const;
+
 	private:
 		std::string m_leftSourceFilename; //-x
 		std::string m_rightSourceFilename; //+x

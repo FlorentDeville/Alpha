@@ -97,4 +97,9 @@ namespace Systems
 	{
 		return m_pTexture;
 	}
+
+	const Core::Array<uint8_t>& CubemapAsset_v1::GetBlob() const
+	{
+		return m_blob;
+	}
 }

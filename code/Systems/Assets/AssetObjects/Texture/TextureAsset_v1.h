@@ -34,6 +34,8 @@ namespace Systems
 
 		const std::string& GetSourceFilename() const;
 
+		const Core::Array<uint8_t>& GetBlob() const;
+
 	private:
 
 		std::string m_sourceFilename;
