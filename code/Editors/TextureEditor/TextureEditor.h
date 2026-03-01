@@ -42,6 +42,15 @@ namespace Editors
 		void CreateEditor(const EditorParameter& param) override;
 
 	private:
+		enum VIEWPORT_STATE
+		{
+			NONE,
+			TEXTURE,
+			CUBEMAP
+		};
+
+		VIEWPORT_STATE m_viewportState;
+
 		TextureListModel* m_pListModel;
 
 		PropertyGridPopulator* m_pPopulator;

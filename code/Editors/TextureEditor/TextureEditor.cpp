@@ -66,6 +66,7 @@ namespace Editors
 		, m_pPsoCubemap(nullptr)
 		, m_pCube(nullptr)
 		, m_aspectRatio()
+		, m_viewportState(NONE)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -420,15 +421,27 @@ namespace Editors
 
 	void TextureEditor::Viewport_OnUpdate(uint64_t dt)
 	{
-		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
-		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
-		const float CAMERA_DISTANCE_SPEED = 0.002f;
-		const float MIN_SCALE = 1;
-		if (mouseWheelDistance != 0)
-			m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+		switch (m_viewportState)
+		{
+		case TEXTURE:
+		case CUBEMAP:
+		{
+			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+			int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+			const float CAMERA_DISTANCE_SPEED = 0.002f;
+			const float MIN_SCALE = 1;
+			if (mouseWheelDistance != 0)
+				m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
 
-		if (m_cameraDistance < MIN_SCALE)
-			m_cameraDistance = MIN_SCALE;
+			if (m_cameraDistance < MIN_SCALE)
+				m_cameraDistance = MIN_SCALE;
+		}
+		break;
+
+		case NONE:
+		default:
+			break;
+		}
 	}
 
 	void TextureEditor::OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
@@ -442,6 +455,7 @@ namespace Editors
 		if (selected.empty())
 		{
 			m_pPopulator->Populate(nullptr);
+			m_viewportState = NONE;
 			return;
 		}
 
@@ -451,11 +465,19 @@ namespace Editors
 		if (!assetId.IsValid())
 		{
 			m_pPopulator->Populate(nullptr);
+			m_viewportState = NONE;
 			return;
 		}
 
 		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(assetId);
 		m_pPopulator->Populate(pObject);
+
+		if(pObject->IsA<Systems::TextureAsset>())
+			m_viewportState = TEXTURE;
+		else if (pObject->IsA<Systems::CubemapAsset>())
+			m_viewportState = CUBEMAP;
+		else
+			m_viewportState = NONE;
 
 		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnDataChanged(); });
 	}
