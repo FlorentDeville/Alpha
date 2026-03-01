@@ -49,17 +49,21 @@ namespace Editors
 		float m_renderTargetHalfWidth;
 		float m_renderTargetHalfHeight;
 
-		float m_scale;
+		float m_cameraDistance;
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 		
 		Rendering::Mesh* m_pQuad;
+		Rendering::Mesh* m_pCube;
 
 		Rendering::Shader* m_pTextureViewportVertexShader;
 		Rendering::Shader* m_pTextureViewportPixelShader;
 		Rendering::RootSignature* m_pRootSig;
 
 		Rendering::PipelineState* m_pPsoQuad;
+		Rendering::PipelineState* m_pPsoCubemap;
+
+		float m_aspectRatio;
 
 		void OnClick_Texture_CreateAndImport();
 		void OnClick_Texture_Import();

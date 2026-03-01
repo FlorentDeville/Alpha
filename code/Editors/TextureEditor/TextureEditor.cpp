@@ -55,7 +55,7 @@ namespace Editors
 		, m_pListModel(nullptr)
 		, m_renderTargetHalfWidth(0)
 		, m_renderTargetHalfHeight(0)
-		, m_scale(512)
+		, m_cameraDistance(2)
 		, m_pPopulator(nullptr)
 		, m_objWatcherCid()
 		, m_pQuad(nullptr)
@@ -63,6 +63,9 @@ namespace Editors
 		, m_pTextureViewportPixelShader(nullptr)
 		, m_pRootSig(nullptr)
 		, m_pPsoQuad(nullptr)
+		, m_pPsoCubemap(nullptr)
+		, m_pCube(nullptr)
+		, m_aspectRatio()
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -87,6 +90,10 @@ namespace Editors
 		m_pRootSig = nullptr;
 		delete m_pPsoQuad;
 		m_pPsoQuad = nullptr;
+		delete m_pPsoCubemap;
+		m_pPsoCubemap = nullptr;
+		delete m_pCube;
+		m_pCube = nullptr;
 	}
 
 	void TextureEditor::CreateEditor(const EditorParameter& param)
@@ -159,6 +166,8 @@ namespace Editors
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
+		m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
+
 		m_renderTargetHalfWidth = WIDTH * 0.5f;
 		m_renderTargetHalfHeight = HEIGHT * 0.5f;
 
@@ -182,12 +191,18 @@ namespace Editors
 		m_pQuad = new Rendering::Mesh();
 		Rendering::BaseShape::CreateQuad(m_pQuad);
 
+		m_pCube = new Rendering::Mesh();
+		Rendering::BaseShape::CreateCube(m_pCube);
+
 		m_pTextureViewportVertexShader = new Rendering::Shader(param.m_shaderPath + "\\texture_editor_viewport.vs.cso");
 		m_pTextureViewportPixelShader = new Rendering::Shader(param.m_shaderPath + "\\texture_editor_viewport.ps.cso");
 		m_pRootSig = new Rendering::RootSignature(param.m_shaderPath + "\\texture_editor_viewport.rs.cso");
 
 		m_pPsoQuad = new Rendering::PipelineState();
 		m_pPsoQuad->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::PipelineState::BACK);
+
+		m_pPsoCubemap = new Rendering::PipelineState();
+		m_pPsoCubemap->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::PipelineState::FRONT);
 	}
 
 	void TextureEditor::OnClick_Texture_CreateAndImport()
@@ -319,24 +334,21 @@ namespace Editors
 		if (!isATexture && !isACubemap)
 			return;
 
-		Core::Vec4f target(0, 0, 10, 1);
+		Core::Vec4f target(0, 0, 0, 1);
+		Core::Vec4f eye = target + Core::Vec4f(0, 0, -1, 0) * m_cameraDistance;
 
 		//world, view and proj matrix
 		Core::Sqt worldSqt;
 		worldSqt.SetTranslation(target);
-		worldSqt.SetScale(Core::Vec4f(m_scale, m_scale, 0, 0));
 		Core::Mat44f worldTx = Core::Mat44f::CreateTransformMatrix(worldSqt);
 
-		Core::Mat44f viewTx = Core::Mat44f::CreateView(Core::Vec4f(0, 0, 0, 1), target, Core::Vec4f(0, 1, 0, 0));
+		Core::Mat44f viewTx = Core::Mat44f::CreateView(eye, target - eye, Core::Vec4f(0, 1, 0, 0));
 
-		Core::Mat44f projTx = Core::Mat44f::CreateOrthographic(-m_renderTargetHalfWidth, m_renderTargetHalfWidth, -m_renderTargetHalfHeight, m_renderTargetHalfHeight, 0.1f, 100.f);
+		Core::Mat44f projTx = Core::Mat44f::CreatePerspective(45 * 3.14f / 180.f, m_aspectRatio, 0.1f, 100);
 
 		Core::Mat44f wvp = worldTx * viewTx * projTx;
 
-		//bind material
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
-
-		renderer.BindMaterial(*m_pPsoQuad, *m_pRootSig);
 
 		const int ROOT_SIG_INDEX_CBV_VERTEX_SHADER = 0;
 		const int ROOT_SIG_INDEX_CBV_PIXEL_SHADER = 1;
@@ -349,6 +361,8 @@ namespace Editors
 			Systems::TextureAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::TextureAsset>(selectedTextureId);
 			if (!pTexture)
 				return;
+
+			renderer.BindMaterial(*m_pPsoQuad, *m_pRootSig);
 
 			//bind const buffer
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
@@ -372,6 +386,8 @@ namespace Editors
 			if (!pTexture)
 				return;
 
+			renderer.BindMaterial(*m_pPsoCubemap, *m_pRootSig);
+
 			//bind const buffer
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
 			uint32_t type = 1;
@@ -386,7 +402,7 @@ namespace Editors
 			renderer.BindNullTexture2D(ROOT_SIG_INDEX_TEXTURE2D);
 
 			//render mesh
-			renderer.RenderMesh(*m_pQuad);
+			renderer.RenderMesh(*m_pCube);
 		}
 	}
 
@@ -394,13 +410,13 @@ namespace Editors
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 		int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
-		const float CAMERA_DISTANCE_SPEED = 0.5f;
-		const float MIN_SCALE = 20;
+		const float CAMERA_DISTANCE_SPEED = 0.002f;
+		const float MIN_SCALE = 1;
 		if (mouseWheelDistance != 0)
-			m_scale -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+			m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
 
-		if (m_scale < MIN_SCALE)
-			m_scale = MIN_SCALE;
+		if (m_cameraDistance < MIN_SCALE)
+			m_cameraDistance = MIN_SCALE;
 	}
 
 	void TextureEditor::OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
