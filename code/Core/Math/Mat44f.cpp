@@ -101,6 +101,7 @@ namespace Core
 		Mat44f matrix;
 		matrix.SetIdentity();
 		matrix.SetRow(3, translation);
+		matrix.Set(3, 3, 1);
 		return matrix;
 	}
 
