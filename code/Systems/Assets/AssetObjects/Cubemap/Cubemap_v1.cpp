@@ -20,7 +20,10 @@ namespace Systems
 	{ }
 
 	CubemapAsset_v1::~CubemapAsset_v1()
-	{ }
+	{
+		delete m_pTexture;
+		m_pTexture = nullptr;
+	}
 
 	bool CubemapAsset_v1::Init(const std::string sourceFilename[6], const uint8_t* pBlob, uint32_t blobSize)
 	{
