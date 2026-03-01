@@ -67,6 +67,8 @@ namespace Editors
 		, m_pCube(nullptr)
 		, m_aspectRatio()
 		, m_viewportState(NONE)
+		, m_cameraDirectionRotationY(0)
+		, m_firstFrameMouseDown(false)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -343,7 +345,16 @@ namespace Editors
 		worldSqt.SetTranslation(target);
 		Core::Mat44f worldTx = Core::Mat44f::CreateTransformMatrix(worldSqt);
 
-		Core::Mat44f viewTx = Core::Mat44f::CreateView(eye, target - eye, Core::Vec4f(0, 1, 0, 0));
+		if (m_viewportState == CUBEMAP)
+		{
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationMatrixFromEulerAngles(Core::Vec4f(0, m_cameraDirectionRotationY, 0, 0));
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, -1, 0) * m_cameraDistance);
+
+			Core::Mat44f transform = translation * rotation;
+			eye = target * transform;
+		}
+		Core::Vec4f cameraDirection = target - eye;
+		Core::Mat44f viewTx = Core::Mat44f::CreateView(eye, cameraDirection, Core::Vec4f(0, 1, 0, 0));
 
 		Core::Mat44f projTx = Core::Mat44f::CreatePerspective(45 * 3.14f / 180.f, m_aspectRatio, 0.1f, 100);
 
@@ -359,9 +370,19 @@ namespace Editors
 
 		struct PixelShaderCBuffer
 		{
-			Core::Mat44f matrix;
+			Core::Mat44f world;
 			uint32_t type;
 		};
+
+		struct VertexShaderCBuffer
+		{
+			Core::Mat44f world;
+			Core::Mat44f wvp;
+		};
+
+		VertexShaderCBuffer vsCBuffer;
+		vsCBuffer.world = worldTx;
+		vsCBuffer.wvp = wvp;
 
 		if (isATexture)
 		{
@@ -372,11 +393,11 @@ namespace Editors
 			renderer.BindMaterial(*m_pPsoQuad, *m_pRootSig);
 
 			PixelShaderCBuffer psCBuffer;
-			psCBuffer.matrix = worldTx;
+			psCBuffer.world = worldTx;
 			psCBuffer.type = 0;
 
 			//bind const buffer
-			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(vsCBuffer), &vsCBuffer, 0);
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(psCBuffer), &psCBuffer, 0);
 
 			//bind texture
@@ -399,11 +420,11 @@ namespace Editors
 			renderer.BindMaterial(*m_pPsoCubemap, *m_pRootSig);
 
 			PixelShaderCBuffer psCBuffer;
-			psCBuffer.matrix = worldTx;
+			psCBuffer.world = worldTx;
 			psCBuffer.type = 1;
 
 			//bind const buffer
-			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(wvp), &wvp, 0);
+			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_VERTEX_SHADER, sizeof(vsCBuffer), &vsCBuffer, 0);
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(psCBuffer), &psCBuffer, 0);
 
 			//bind texture
@@ -424,6 +445,19 @@ namespace Editors
 		switch (m_viewportState)
 		{
 		case TEXTURE:
+		{
+			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
+			int16_t mouseWheelDistance = inputs.GetMouseWheelDistance();
+			const float CAMERA_DISTANCE_SPEED = 0.002f;
+			const float MIN_SCALE = 1;
+			if (mouseWheelDistance != 0)
+				m_cameraDistance -= mouseWheelDistance * CAMERA_DISTANCE_SPEED;
+
+			if (m_cameraDistance < MIN_SCALE)
+				m_cameraDistance = MIN_SCALE;
+		}
+		break;
+
 		case CUBEMAP:
 		{
 			Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
@@ -435,6 +469,33 @@ namespace Editors
 
 			if (m_cameraDistance < MIN_SCALE)
 				m_cameraDistance = MIN_SCALE;
+
+			if (inputs.IsMouseLeftButtonDown())
+			{
+				Core::UInt2 mousePosition;
+				inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+				if (m_firstFrameMouseDown)
+				{
+					m_mousePreviousPos = mousePosition;
+					m_firstFrameMouseDown = false;
+				}
+
+				DirectX::XMINT2 delta;
+				delta.x = m_mousePreviousPos.x - mousePosition.x;
+				delta.y = m_mousePreviousPos.y - mousePosition.y;
+
+				const float ROTATION_SPEED = 0.01f;
+				m_cameraDirectionRotationY += static_cast<float>(delta.x) * ROTATION_SPEED;
+				//DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+
+				//m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+
+				m_mousePreviousPos = mousePosition;
+			}
+			else if (!m_firstFrameMouseDown)
+			{
+				m_firstFrameMouseDown = true;
+			}
 		}
 		break;
 

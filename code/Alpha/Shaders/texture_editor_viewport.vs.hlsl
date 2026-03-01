@@ -19,6 +19,7 @@ struct VS_Output
 
 cbuffer VertexShaderParameter : register(b0)
 {
+    matrix world;
 	matrix wvp;
 };
 
@@ -27,7 +28,7 @@ VS_Output main( VS_Input input )
 {
 	VS_Output output;
 	output.vertex = mul(wvp, float4(input.vertex, 1.f));
-	output.worldPosition = output.vertex;
+    output.worldPosition = mul(world, float4(input.vertex, 1.f));
 	output.uv = input.uv;
 	return output;
 }

@@ -9,7 +9,7 @@
 					"DENY_HULL_SHADER_ROOT_ACCESS |" \
 					"DENY_DOMAIN_SHADER_ROOT_ACCESS |" \
 					"DENY_GEOMETRY_SHADER_ROOT_ACCESS)," \
-			"RootConstants(num32BitConstants=16, b0, space=0, visibility=SHADER_VISIBILITY_VERTEX)," \
+			"RootConstants(num32BitConstants=32, b0, space=0, visibility=SHADER_VISIBILITY_VERTEX)," \
 			"RootConstants(num32BitConstants=20, b0, space=0, visibility=SHADER_VISIBILITY_PIXEL)," \
 			"DescriptorTable(SRV(t0, space=0))," \
 			"DescriptorTable(SRV(t1, space=0))," \

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Math/Vectors.h"
+
 #include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
@@ -59,6 +61,10 @@ namespace Editors
 		float m_renderTargetHalfHeight;
 
 		float m_cameraDistance;
+
+		float m_cameraDirectionRotationY;
+		bool m_firstFrameMouseDown;
+		Core::UInt2 m_mousePreviousPos;
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 		
