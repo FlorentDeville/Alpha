@@ -78,6 +78,9 @@
     <ClCompile Include="Blob\Blob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Base64\Base64.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -171,6 +174,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Blob\Blob.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Base64\Base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
