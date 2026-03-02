@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Blob/Blob.h"
+
 #include "Systems/Objects/AssetObject.h"
 
 #include "Rendering/Texture/TextureFormat.h"
@@ -35,7 +37,7 @@ namespace Systems
 
 		const std::string& GetSourceFilename() const;
 
-		const Core::Array<uint8_t>& GetBlob() const;
+		const Core::Blob& GetBlob() const;
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
@@ -46,7 +48,7 @@ namespace Systems
 	private:
 
 		std::string m_sourceFilename;
-		Core::Array<uint8_t> m_blob;
+		Core::Blob m_blob;
 		uint32_t m_width;
 		uint32_t m_height;
 		uint32_t m_mipCount;
