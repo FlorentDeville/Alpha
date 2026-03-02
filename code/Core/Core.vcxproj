@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Blob\Blob.cpp" />
     <ClCompile Include="Callbacks\CallbackId.cpp" />
     <None Include="Collections\HashSet.inl">
       <FileType>Document</FileType>
@@ -119,6 +120,7 @@
     <ClCompile Include="String\BytesToHexa.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Blob\Blob.h" />
     <ClInclude Include="Callbacks\CallbackId.h" />
     <ClInclude Include="Callbacks\CallbackList.h" />
     <ClInclude Include="Callbacks\CallbackMacro.h" />
