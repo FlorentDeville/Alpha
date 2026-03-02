@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "Systems/Objects/AssetObject.h"
+#include "Core/Blob/Blob.h"
 
+#include "Systems/Objects/AssetObject.h"
 #include "Systems/Reflection/ReflectionMacro.h"
 
 namespace Rendering
@@ -40,7 +41,7 @@ namespace Systems
 
 		Rendering::Texture* GetTexture();
 
-		const Core::Array<uint8_t>& GetBlob() const;
+		const Core::Blob& GetBlob() const;
 
 		void Upgrade(const CubemapAsset_v1* pV1);
 
@@ -52,7 +53,7 @@ namespace Systems
 		std::string m_frontSourceFilename; //+z
 		std::string m_backSourceFilename; //-z
 		
-		Core::Array<uint8_t> m_blob;
+		Core::Blob m_blob;
 
 		START_REFLECTION(Systems::CubemapAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
