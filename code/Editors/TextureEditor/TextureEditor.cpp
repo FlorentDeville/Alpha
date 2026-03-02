@@ -477,7 +477,7 @@ namespace Editors
 
 	void TextureEditor::Viewport_OnUpdate(uint64_t dt)
 	{
-		const float MIN_DISTANCE = 0.4;
+		const float MIN_DISTANCE = 0.4f;
 
 		switch (m_viewportState)
 		{
