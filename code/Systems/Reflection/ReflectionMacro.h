@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -119,4 +119,7 @@ public: \
 #define ADD_UPGRADE_TYPE(TYPE, FUNC) \
 	pType->SetUpgradeType(MAKESID(#TYPE)); \
 	pType->Upgrade = [](const void* pSrc, void* pDst) { FUNC(static_cast<const ClassType*>(pSrc), static_cast<TYPE*>(pDst)); };
-	
+
+#define ADD_AUTO_UPGRADE(TYPE) \
+	pType->SetUpgradeType(MAKESID(#TYPE)); \
+	pType->Upgrade = [](const void* pSrc, void* pDst) { static_cast<TYPE*>(pDst)->Upgrade(static_cast<const ClassType*>(pSrc)); };

@@ -1,9 +1,11 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Serialization/ObjectJsonDeserializer.h"
 
+#include "Core/Base64/Base64.h"
+#include "Core/Blob/Blob.h"
 #include "Core/Color/Color.h"
 #include "Core/Guid/Guid.h"
 #include "Core/Json/JsonArray.h"
@@ -228,6 +230,19 @@ namespace Systems
 			pValue->SetRed(static_cast<float>(pJsonArray->GetElement(0)->GetValueAsDouble()));
 			pValue->SetGreen(static_cast<float>(pJsonArray->GetElement(1)->GetValueAsDouble()));
 			pValue->SetBlue(static_cast<float>(pJsonArray->GetElement(2)->GetValueAsDouble()));
+		}
+		break;
+
+		case SID("Core::Blob"):
+		{
+			Core::Blob* pValue = reinterpret_cast<Core::Blob*>(ptr);
+			const std::string& str = jsonFieldValue.GetValueAsString();
+
+			uint32_t stringSize = static_cast<uint32_t>(str.size());
+			uint32_t blobSize = Core::Base64::DecodedSize(str.c_str(), stringSize);
+
+			pValue->Resize(blobSize);
+			Core::Base64::Decode(str.c_str(), stringSize, pValue->GetData(), pValue->GetSize());
 		}
 		break;
 

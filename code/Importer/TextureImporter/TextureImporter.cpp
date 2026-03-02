@@ -154,7 +154,7 @@ namespace Importer
             return false;
         }
 
-        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount, Rendering::TextureFormat::BC7_SRGB);
+        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount/*, Rendering::TextureFormat::BC7_SRGB*/);
         return true;
 	}
 
@@ -228,7 +228,7 @@ namespace Importer
     {
         DirectX::TexMetadata metadata;
         DirectX::ScratchImage image;
-        const Core::Array<uint8_t>& blob = pTexture->GetBlob();
+        const Core::Blob& blob = pTexture->GetBlob();
         HRESULT res = DirectX::LoadFromDDSMemory(blob.GetData(), blob.GetSize(), DirectX::DDS_FLAGS_NONE, &metadata, image);
         if (FAILED(res))
             return Result(Result::LoadingFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(res));
@@ -246,7 +246,7 @@ namespace Importer
     {
         DirectX::TexMetadata metadata;
         DirectX::ScratchImage image;
-        const Core::Array<uint8_t>& blob = pCubemap->GetBlob();
+        const Core::Blob& blob = pCubemap->GetBlob();
         HRESULT res = DirectX::LoadFromDDSMemory(blob.GetData(), blob.GetSize(), DirectX::DDS_FLAGS_NONE, &metadata, image);
         if (FAILED(res))
             return Result(Result::LoadingFailed, "Failed to write texture to DDS : (%08X)", static_cast<unsigned int>(res));

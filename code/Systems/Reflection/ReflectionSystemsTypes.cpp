@@ -5,6 +5,7 @@
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
@@ -15,6 +16,7 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset_v1.h"
+#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -43,6 +45,7 @@ namespace Systems
 
 		Systems::AssetObject::RegisterReflection();
 		Systems::CubemapAsset_v1::RegisterReflection();
+		Systems::CubemapAsset_v2::RegisterReflection();
 		Systems::LevelAsset_v1::RegisterReflection();
 		Systems::MaterialAsset_v1::RegisterReflection();
 		Systems::MaterialAsset_v2::RegisterReflection();
@@ -52,6 +55,7 @@ namespace Systems
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
 		Systems::MaterialInstanceAsset::RegisterReflection();
 		Systems::TextureAsset_v1::RegisterReflection();
+		Systems::TextureAsset_v2::RegisterReflection();
 		Systems::TextureBindingInfo::RegisterReflection();
 	}
 }

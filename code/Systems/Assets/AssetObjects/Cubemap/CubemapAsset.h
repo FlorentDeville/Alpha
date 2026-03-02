@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
 
 namespace Systems
 {
-	using CubemapAsset = CubemapAsset_v1;
+	using CubemapAsset = CubemapAsset_v2;
 }

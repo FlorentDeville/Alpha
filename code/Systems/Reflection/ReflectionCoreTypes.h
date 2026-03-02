@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Blob/Blob.h"
 #include "Core/Collections/Array.h"
 #include "Core/Color/Color.h"
 #include "Core/Guid/Guid.h"
@@ -15,6 +16,7 @@
 
 namespace Systems
 {
+	DEFINE_TYPE_RESOLVER(Core::Blob)
 	DEFINE_TYPE_RESOLVER(Core::Color)
 	DEFINE_TYPE_RESOLVER(Core::Guid)
 	DEFINE_TYPE_RESOLVER(Core::Vec4f)

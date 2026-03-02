@@ -4,9 +4,24 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
+#include "Core/Collections/Array.h"
 
-namespace Systems
+namespace Core
 {
-	using TextureAsset = TextureAsset_v2;
+	class Blob
+	{
+	public:
+		Blob();
+		~Blob();
+
+		const uint8_t* GetData() const;
+		uint8_t* GetData();
+
+		uint32_t GetSize() const;
+
+		void Resize(uint32_t size);
+
+	private:
+		Core::Array<uint8_t> m_blob;
+	};
 }

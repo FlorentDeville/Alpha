@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Serialization/ObjectJsonSerializer.h"
 
@@ -8,6 +8,8 @@
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonValue.h"
 
+#include "Core/Base64/Base64.h"
+#include "Core/Blob/Blob.h"
 #include "Core/Color/Color.h"
 #include "Core/Collections/BaseArray.h"
 #include "Core/Guid/Guid.h"
@@ -74,6 +76,19 @@ namespace Systems
 
 		value.Set(pArray);
 
+		return true;
+	}
+
+	template<> bool SerializeData<Core::Blob>(const Core::Blob& data, Core::JsonValue& value)
+	{
+		uint32_t encodedSize = Core::Base64::EncodedSize(data.GetSize());
+
+		std::string buffer;
+		buffer.resize(encodedSize, '\0');
+
+		Core::Base64::Encode(data.GetData(), data.GetSize(), buffer.data());
+		
+		value.Set(buffer);
 		return true;
 	}
 
@@ -227,6 +242,13 @@ namespace Systems
 		{
 			const Core::Color* pColor = reinterpret_cast<const Core::Color*>(pFieldPtr);
 			SerializeData(*pColor, value);
+		}
+		break;
+
+		case SID("Core::Blob"):
+		{
+			const Core::Blob* pBlob = reinterpret_cast<const Core::Blob*>(pFieldPtr);
+			SerializeData(*pBlob, value);
 		}
 		break;
 

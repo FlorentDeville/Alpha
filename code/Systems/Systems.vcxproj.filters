@@ -56,6 +56,9 @@
     <ClInclude Include="Assets\AssetObjects\Material\TextureBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.h" />
+    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -98,6 +101,9 @@
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Texture\TextureAsset_v2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

@@ -76,4 +76,19 @@ namespace Systems
 	{
 		return m_blob;
 	}
+
+	uint32_t TextureAsset_v1::GetWidth() const
+	{
+		return m_width;
+	}
+
+	uint32_t TextureAsset_v1::GetHeight() const
+	{
+		return m_height;
+	}
+
+	uint32_t TextureAsset_v1::GetMipCount() const
+	{
+		return m_mipCount;
+	}
 }
