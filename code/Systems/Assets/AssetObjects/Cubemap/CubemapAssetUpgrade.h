@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
-
 namespace Systems
 {
-	using CubemapAsset = CubemapAsset_v2;
+	class CubemapAsset_v1;
+	class CubemapAsset_v2;
+
+	void UpgradeCubemapAssetV1ToV2(const CubemapAsset_v1* pV1, CubemapAsset_v2* pV2);
 }
