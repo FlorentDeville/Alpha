@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Assets/AssetMgr.h"
 
@@ -100,6 +100,21 @@ namespace Systems
 		{
 			if (pair.second.GetAssetType() == assetTypeSid)
 				metadata.PushBack(&pair.second);
+		}
+	}
+
+	void AssetMgr::GetAssets(const Core::Array<Core::Sid>& assetTypeSid, Core::Array<const AssetMetadata*>& metadata) const
+	{
+		for (const std::pair<const NewAssetId, AssetMetadata>& pair : m_metadata)
+		{
+			for (const Core::Sid& assetType : assetTypeSid)
+			{
+				if (pair.second.GetAssetType() == assetType)
+				{
+					metadata.PushBack(&pair.second);
+					break;
+				}
+			}
 		}
 	}
 

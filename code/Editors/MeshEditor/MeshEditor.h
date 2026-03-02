@@ -46,7 +46,7 @@ namespace Editors
 		MeshEditor();
 		~MeshEditor();
 
-		void CreateEditor(Widgets::Widget* pParent) override;
+		void CreateEditor(const EditorParameter& param) override;
 
 	private:
 		//camera position

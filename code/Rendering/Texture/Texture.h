@@ -22,12 +22,15 @@ namespace Rendering
 		void Init(const char* ptr, uint32_t size);
 		void Init(const std::string& path);
 		
-		void InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize, uint32_t width, uint32_t height, uint32_t mipCount);
+		void InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize);
 
 		void InitAsRenderTarget(int width, int height, float* clearColor);
 		void InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format);
 
 		void InitAsReadbackBuffer(int width, int height, int depth);
+
+		void InitAsNullCubemap();
+		void InitAsNullTexture2D();
 
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);
 		void TransitionToShaderResource();

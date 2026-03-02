@@ -6,6 +6,7 @@
 
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 #include "Editors/MaterialEditor/MaterialListModel.h"
 #include "Editors/MaterialEditor/ShaderTemplate.h"
@@ -89,9 +90,9 @@ namespace Editors
 		m_pPropertyGridPopulator = nullptr;
 	}
 
-	void MaterialEditor::CreateEditor(Widgets::Widget* pParent)
+	void MaterialEditor::CreateEditor(const EditorParameter& param)
 	{
-		CreateDefaultWidgets(pParent, "Material");
+		CreateDefaultWidgets(param.m_pParent, "Material");
 
 		CreateFileMenu();
 		CreateMeshMenu();

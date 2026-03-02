@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -15,6 +15,7 @@ namespace Widgets
 
 namespace Editors
 {
+	class EditorParameter;
 	class StatusBar;
 
 	class BaseEditor
@@ -23,7 +24,7 @@ namespace Editors
 		BaseEditor();
 		virtual ~BaseEditor();
 
-		virtual void CreateEditor(Widgets::Widget* pParent) = 0;
+		virtual void CreateEditor(const EditorParameter& param) = 0;
 
 	protected:
 		void CreateDefaultWidgets(Widgets::Widget* pParent, const std::string& title);

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -15,6 +15,7 @@ namespace Widgets
 namespace Editors
 {
 	class BaseEditor;
+	class EditorParameter;
 
 	class EditorManager : public Core::Singleton<EditorManager>
 	{
@@ -23,7 +24,7 @@ namespace Editors
 		~EditorManager();
 
 		void Init() override;
-		void Init(Widgets::Widget* pParent);
+		void Init(const EditorParameter& param);
 		void Shutdown() override;
 
 	private:

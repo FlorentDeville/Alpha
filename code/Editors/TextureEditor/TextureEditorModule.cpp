@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/TextureEditor/TextureEditorModule.h"
 
@@ -26,7 +26,7 @@ namespace Editors
 	void TextureEditorModule::Shutdown()
 	{ }
 
-	bool TextureEditorModule::ImportTexture(const std::string& filename)
+	bool TextureEditorModule::CreateAndImportTexture(const std::string& filename)
 	{
 		Systems::TextureAsset* pTexture = Systems::CreateNewAsset<Systems::TextureAsset>();
 		Importer::TextureImporter importer;
@@ -93,5 +93,99 @@ namespace Editors
 		m_onTextureRenamed(*pMetadata);
 
 		return true;
+	}
+
+	bool TextureEditorModule::CreateCubemap(const std::string& assetName)
+	{
+		Systems::CubemapAsset* pCubemap = Systems::AssetUtil::CreateAsset<Systems::CubemapAsset>(assetName);
+		if (!pCubemap)
+			return false;
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pCubemap->GetId());
+		if (!pMetadata)
+			return false;
+
+		m_onTextureCreated(*pMetadata);
+		return true;
+	}
+
+	bool TextureEditorModule::ImportTexture(const Systems::NewAssetId& id)
+	{
+		if (Systems::AssetUtil::IsA<Systems::TextureAsset>(id))
+		{
+			if (Systems::TextureAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::TextureAsset>(id))
+			{
+				Importer::TextureImporter importer;
+				bool res = importer.Import(pTexture->GetSourceFilename(), pTexture);
+				return res;
+			}
+
+			return false;
+		}
+		else if (Systems::AssetUtil::IsA<Systems::CubemapAsset>(id))
+		{
+			if (Systems::CubemapAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::CubemapAsset>(id))
+			{
+				std::string filenames[6];
+				filenames[0] = pTexture->GetRightSourceFilename();
+				filenames[1] = pTexture->GetLeftSourceFilename();
+				filenames[2] = pTexture->GetTopSourceFilename();
+				filenames[3] = pTexture->GetBottomSourceFilename();
+				filenames[4] = pTexture->GetFrontSourceFilename();
+				filenames[5] = pTexture->GetBackSourceFilename();
+
+				for (const std::string& filename : filenames)
+				{
+					if (filename.empty())
+						return false;
+				}
+
+				Importer::TextureImporter importer;
+				Importer::TextureImporter::Result res = importer.ImportCubemap(filenames, pTexture);
+				return res.IsSuccess();
+			}
+
+			return false;
+		}
+
+		return false;
+	}
+
+	bool TextureEditorModule::SaveTexture(const Systems::NewAssetId& id)
+	{
+		if (!id.IsValid())
+			return false;
+
+		bool res = Systems::ContainerMgr::Get().SaveContainer(id.GetContainerId());
+
+		if (res)
+			m_onTextureSaved(id);
+
+		return res;
+	}
+
+	bool TextureEditorModule::Export(const std::string& outputFilename, const Systems::NewAssetId& id)
+	{
+		if (!id.IsValid())
+			return false;
+
+		const Systems::AssetObject* pObj = Systems::AssetUtil::LoadAsset(id);
+		if (!pObj)
+			return false;
+
+		if (pObj->IsA<Systems::TextureAsset>())
+		{
+			Importer::TextureImporter importer;
+			Importer::TextureImporter::Result res = importer.Export(outputFilename, static_cast<const Systems::TextureAsset*>(pObj));
+			return res.IsSuccess();
+		}
+		else if (pObj->IsA<Systems::CubemapAsset>())
+		{
+			Importer::TextureImporter importer;
+			Importer::TextureImporter::Result res = importer.Export(outputFilename, static_cast<const Systems::CubemapAsset*>(pObj));
+			return res.IsSuccess();
+		}
+
+		return false;
 	}
 }

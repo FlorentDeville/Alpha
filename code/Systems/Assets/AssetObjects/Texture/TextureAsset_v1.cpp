@@ -47,7 +47,7 @@ namespace Systems
 			delete m_pTexture;
 
 		m_pTexture = new Rendering::Texture();
-		m_pTexture->InitAsDDS(m_blob.GetData(), m_blob.GetSize(), m_width, m_height, m_mipCount);
+		m_pTexture->InitAsDDS(m_blob.GetData(), m_blob.GetSize());
 	}
 
 	const std::string& TextureAsset_v1::GetAssetTypeName()
@@ -65,5 +65,15 @@ namespace Systems
 	Rendering::Texture* TextureAsset_v1::GetTexture()
 	{
 		return m_pTexture;
+	}
+
+	const std::string& TextureAsset_v1::GetSourceFilename() const
+	{
+		return m_sourceFilename;
+	}
+
+	const Core::Array<uint8_t>& TextureAsset_v1::GetBlob() const
+	{
+		return m_blob;
 	}
 }

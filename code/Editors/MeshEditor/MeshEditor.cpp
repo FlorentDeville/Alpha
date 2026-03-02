@@ -4,6 +4,7 @@
 
 #include "Editors/MeshEditor/MeshEditor.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
@@ -64,9 +65,9 @@ namespace Editors
 	MeshEditor::~MeshEditor()
 	{ }
 
-	void MeshEditor::CreateEditor(Widgets::Widget* pParent)
+	void MeshEditor::CreateEditor(const EditorParameter& param)
 	{
-		CreateDefaultWidgets(pParent, "Mesh");
+		CreateDefaultWidgets(param.m_pParent, "Mesh");
 
 		//create the file menu
 		{

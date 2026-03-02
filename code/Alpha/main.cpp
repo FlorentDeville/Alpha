@@ -21,6 +21,7 @@
 #include "Core/Log/LogModule.h"
 
 #include "Editors/EditorManager.h"
+#include "Editors/EditorParameter.h"
 #include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
@@ -41,6 +42,7 @@
 #include "Resources/ResourcesMgr.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
@@ -425,7 +427,7 @@ void Render()
 	renderModule.ExecuteRenderCommand();
 }
 
-void CreateMainWindow()
+void CreateMainWindow(const std::string& shaderPath)
 {
 	Widgets::Container* pContainer = new Widgets::Container();
 	pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
@@ -436,7 +438,10 @@ void CreateMainWindow()
 
 	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 
-	Editors::EditorManager::Get().Init(pMiddleTabContainer);
+	Editors::EditorParameter parameter;
+	parameter.m_pParent = pMiddleTabContainer;
+	parameter.m_shaderPath = shaderPath;
+	Editors::EditorManager::Get().Init(parameter);
 
 	Editors::LogEditorParameter logEditorParameter;
 	logEditorParameter.m_pParent = pMiddleTabContainer;
@@ -523,6 +528,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.RegisterAssetType<Systems::MaterialInstanceAsset>();
 	assetMgr.RegisterAssetType<Systems::LevelAsset>();
 	assetMgr.RegisterAssetType<Systems::TextureAsset>();
+	assetMgr.RegisterAssetType<Systems::CubemapAsset>();
 	assetMgr.LoadMetadataTable();
 	
 
@@ -581,7 +587,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
 	logEditor.Init();
 
-	CreateMainWindow();
+	CreateMainWindow(binPath);
 
 	g_pWindow->ShowMaximized();
 

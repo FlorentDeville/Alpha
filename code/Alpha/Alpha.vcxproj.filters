@@ -64,6 +64,9 @@
     <FxCompile Include="Shaders\shadowmap_dirlight.ps.hlsl" />
     <FxCompile Include="Shaders\shadowmap_dirlight.rs.hlsl" />
     <FxCompile Include="Shaders\shadowmap_dirlight.vs.hlsl" />
+    <FxCompile Include="Shaders\texture_editor_viewport.ps.hlsl" />
+    <FxCompile Include="Shaders\texture_editor_viewport.rs.hlsl" />
+    <FxCompile Include="Shaders\texture_editor_viewport.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameMgr.h" />

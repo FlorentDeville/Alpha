@@ -59,12 +59,13 @@ namespace Rendering
 		stbi_image_free(pData);
 	}
 
-	void Texture::InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize, uint32_t width, uint32_t height, uint32_t mipCount)
+	void Texture::InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize)
 	{
 		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
 
+		bool isCubemap = false;
 		std::vector<D3D12_SUBRESOURCE_DATA> subResources;
-		HRESULT res = DirectX::LoadDDSTextureFromMemory(pDevice, pBuffer, bufferSize, &m_pResource, subResources);
+		HRESULT res = DirectX::LoadDDSTextureFromMemory(pDevice, pBuffer, bufferSize, &m_pResource, subResources, 0, nullptr, &isCubemap);
 
 		//create the upload resource
 		ID3D12Resource* pUploadResource = nullptr;
@@ -107,10 +108,19 @@ namespace Rendering
 		//Create the srv descriptor
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;//m_resourceDesc.Format;
-			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;
+
+			if (isCubemap)
+			{
+				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+				srvDesc.TextureCube.MipLevels = static_cast<uint32_t>(subResources.size()) / 6;
+			}
+			else
+			{
+				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+				srvDesc.Texture2D.MipLevels = static_cast<uint32_t>(subResources.size());
+			}
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Texture2D.MipLevels = static_cast<uint32_t>(subResources.size());
 			pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 		}
 
@@ -173,6 +183,56 @@ namespace Rendering
 		D3D12_RESOURCE_DESC m_resourceDesc{ CD3DX12_RESOURCE_DESC::Buffer(bufferSize) };
 		HRESULT res = pDevice->CreateCommittedResource(&readbackHeapProperties, D3D12_HEAP_FLAG_NONE, &m_resourceDesc, m_currentState,
 			nullptr, IID_PPV_ARGS(&m_pResource));
+	}
+
+	void Texture::InitAsNullCubemap()
+	{
+		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = 1;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		//Create the srv descriptor
+		{
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Texture2D.MipLevels = 0;//static_cast<uint32_t>(subResources.size());
+			pDevice->CreateShaderResourceView(nullptr, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		}
+	}
+
+	void Texture::InitAsNullTexture2D()
+	{
+		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = 1;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		//Create the srv descriptor
+		{
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Texture2D.MipLevels = 0;//static_cast<uint32_t>(subResources.size());
+			pDevice->CreateShaderResourceView(nullptr, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		}
 	}
 
 	void Texture::TransitionTo(D3D12_RESOURCE_STATES nextState)

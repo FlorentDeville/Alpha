@@ -1,12 +1,13 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/TextureEditor/TextureListModel.h"
 
 #include "Core/Collections/Array.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
@@ -22,16 +23,17 @@ namespace Editors
 	{
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
+		Core::Array<Core::Sid> assetTypes;
+		assetTypes.PushBack(Systems::TextureAsset::GetAssetTypeNameSid());
+		assetTypes.PushBack(Systems::CubemapAsset::GetAssetTypeNameSid());
+
 		Core::Array<const Systems::AssetMetadata*> metadataArray;
-		assetMgr.GetAssets(Systems::TextureAsset::GetAssetTypeNameSid(), metadataArray);
+		assetMgr.GetAssets(assetTypes, metadataArray);
 
 		for (const Systems::AssetMetadata* pMetadata : metadataArray)
 		{
 			CachedTextureData cachedData;
-			cachedData.m_id = pMetadata->GetAssetId();
-			cachedData.m_virtualName = pMetadata->GetVirtualName();
-			cachedData.m_modified = false;
-
+			CreateCachedData(*pMetadata, cachedData);
 			m_cache.PushBack(cachedData);
 		}
 	}
@@ -94,6 +96,25 @@ namespace Editors
 			return pCachedData->m_virtualName;
 			break;
 
+		case Columns::Type:
+		{
+			switch (pCachedData->m_type)
+			{
+			case CachedTextureData::Texture:
+				return "Texture";
+				break;
+
+			case CachedTextureData::Cubemap:
+				return "Cubemap";
+				break;
+
+			default:
+				return "Unknown";
+				break;
+			}
+		}
+		break;
+
 		case Columns::Modified:
 			return pCachedData->m_modified ? "*" : "";
 			break;
@@ -114,6 +135,10 @@ namespace Editors
 			return "Name";
 			break;
 
+		case Columns::Type:
+			return "Type";
+			break;
+
 		case Columns::Modified:
 			return "Modified";
 			break;
@@ -124,14 +149,9 @@ namespace Editors
 
 	void TextureListModel::AddRow(const Systems::AssetMetadata& metadata)
 	{
-		if (!metadata.IsA<Systems::TextureAsset>())
-			return;
-
 		CachedTextureData cachedData;
-		cachedData.m_id = metadata.GetAssetId();
-		cachedData.m_virtualName = metadata.GetVirtualName();
-		cachedData.m_modified = false;
-
+		CreateCachedData(metadata, cachedData);
+		
 		int row = m_cache.GetSize();
 		m_cache.PushBack(cachedData);
 
@@ -154,8 +174,37 @@ namespace Editors
 		AfterRemoveRows(row, 1, Widgets::ModelIndex());
 	}
 
-	/*void TextureListModel::SetTextureModified(Systems::NewAssetId id);
-	void TextureListModel::ClearTextureModified(Systems::NewAssetId id);*/
+	void TextureListModel::SetTextureModified(Systems::NewAssetId id)
+	{
+		Widgets::ModelIndex index = GetIndex(id);
+		if (!index.IsValid())
+			return;
+
+		int row = index.GetRow();
+		if (row < 0 || static_cast<uint32_t>(row) >= m_cache.GetSize())
+			return;
+
+		m_cache[row].m_modified = true;
+
+		Widgets::ModelIndex modifiedIndex = index.GetSiblingAtColumn(Columns::Modified);
+		m_onDataChanged(modifiedIndex);
+	}
+
+	void TextureListModel::ClearTextureModified(Systems::NewAssetId id)
+	{
+		Widgets::ModelIndex index = GetIndex(id);
+		if (!index.IsValid())
+			return;
+
+		int row = index.GetRow();
+		if (row < 0 || static_cast<uint32_t>(row) >= m_cache.GetSize())
+			return;
+
+		m_cache[row].m_modified = false;
+
+		Widgets::ModelIndex modifiedIndex = index.GetSiblingAtColumn(Columns::Modified);
+		m_onDataChanged(modifiedIndex);
+	}
 
 	void TextureListModel::OnTextureRenamed(const Systems::AssetMetadata& metadata)
 	{
@@ -200,5 +249,19 @@ namespace Editors
 			return Widgets::ModelIndex();
 
 		return CreateIndex(row, 0, &m_cache[row]);
+	}
+
+	void TextureListModel::CreateCachedData(const Systems::AssetMetadata& metadata, CachedTextureData& cache) const
+	{
+		cache.m_id = metadata.GetAssetId();
+		cache.m_virtualName = metadata.GetVirtualName();
+		cache.m_modified = false;
+
+		if (metadata.IsA<Systems::TextureAsset>())
+			cache.m_type = CachedTextureData::Texture;
+		else if (metadata.IsA<Systems::CubemapAsset>())
+			cache.m_type = CachedTextureData::Cubemap;
+		else
+			cache.m_type = CachedTextureData::Unknown;
 	}
 }

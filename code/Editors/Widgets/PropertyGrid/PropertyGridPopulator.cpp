@@ -73,6 +73,8 @@ namespace Editors
 
 	void PropertyGridPopulator::Populate(Systems::Object* pObject)
 	{
+		m_pPropertyGridWidget->ClearAllItems();
+
 		for (const ObjectWatcherCallbackId id : m_watcherCallbackIds)
 			ObjectWatcher::Get().RemoveWatcher(id);
 
@@ -86,7 +88,8 @@ namespace Editors
 		
 		m_propertyItemDepth[nullptr] = 0;
 
-		CreatePropertiesForObject(pObject);
+		if (pObject)
+			CreatePropertiesForObject(pObject);
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}

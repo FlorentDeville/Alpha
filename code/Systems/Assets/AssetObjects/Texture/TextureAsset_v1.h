@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -32,6 +32,10 @@ namespace Systems
 
 		Rendering::Texture* GetTexture();
 
+		const std::string& GetSourceFilename() const;
+
+		const Core::Array<uint8_t>& GetBlob() const;
+
 	private:
 
 		std::string m_sourceFilename;
@@ -45,7 +49,7 @@ namespace Systems
 		START_REFLECTION(Systems::TextureAsset_v1)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilename)
-			ADD_FIELD(m_blob)
+			ADD_FIELD_ATTR(m_blob, Hidden)
 			ADD_FIELD(m_width)
 			ADD_FIELD(m_height)
 			ADD_FIELD(m_mipCount)

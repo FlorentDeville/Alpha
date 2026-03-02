@@ -6,6 +6,7 @@
 
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorParameter.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/LevelListModel.h"
 #include "Editors/LevelEditor/SceneTreeModel.h"
@@ -72,9 +73,9 @@ namespace Editors
 		m_pPropertyGridPopulator = nullptr;
 	}
 
-	void LevelEditor::CreateEditor(Widgets::Widget* pParent)
+	void LevelEditor::CreateEditor(const EditorParameter& param)
 	{
-		CreateDefaultWidgets(pParent, "Level");
+		CreateDefaultWidgets(param.m_pParent, "Level");
 
 		//create the render target
 		int width = 1280;

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -24,6 +24,7 @@ namespace Editors
 		{
 			Id = 0,
 			Name,
+			Type,
 			Modified,
 
 			Count
@@ -44,9 +45,9 @@ namespace Editors
 		void AddRow(const Systems::AssetMetadata& metadata);
 		void RemoveRow(Systems::NewAssetId id);
 
-		/*void SetTextureModified(Systems::NewAssetId id);
+		void SetTextureModified(Systems::NewAssetId id);
 		void ClearTextureModified(Systems::NewAssetId id);
-		*/
+		
 
 		void OnTextureRenamed(const Systems::AssetMetadata& metadata);
 
@@ -55,13 +56,23 @@ namespace Editors
 	private:
 		struct CachedTextureData
 		{
+			enum Type
+			{
+				Texture,
+				Cubemap,
+				Unknown
+			};
+
 			Systems::NewAssetId m_id;
 			std::string m_virtualName;
+			Type m_type;
 			bool m_modified;
 		};
 
 		Core::Array<CachedTextureData> m_cache;
 
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
+
+		void CreateCachedData(const Systems::AssetMetadata& metadata, CachedTextureData& cache) const;
 	};
 }

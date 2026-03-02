@@ -45,7 +45,7 @@ namespace Editors
 		MaterialEditor();
 		~MaterialEditor();
 
-		void CreateEditor(Widgets::Widget* pParent) override;
+		void CreateEditor(const EditorParameter& param) override;
 
 	private:
 		enum DisplayMesh

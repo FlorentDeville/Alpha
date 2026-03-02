@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "OsWin/FileDialog.h"
 
@@ -36,6 +36,44 @@ namespace Os
         
         return false;
 	}
+
+    bool SaveFileDialog(std::string& outFilename, const std::vector<std::string>& extension, const std::string& filename)
+    {
+        const int FILENAME_LENGTH = 260;
+        char rawFilename[FILENAME_LENGTH] = { '\0' };
+
+        memcpy(rawFilename, filename.c_str(), filename.size());
+
+        char filterBuffer[FILENAME_LENGTH] = { '\0' };
+        int offset = 0;
+        for (int ii = 0; ii < extension.size(); ++ii)
+        {
+            offset += snprintf(filterBuffer + offset, FILENAME_LENGTH - offset, "%s\0", extension[ii].c_str());
+            offset += snprintf(filterBuffer + offset, FILENAME_LENGTH - offset, "%s\0", extension[++ii].c_str());
+        }
+
+        OPENFILENAME ofn;       // common dialog box structure
+        HWND hwnd = NULL;       // owner window is null
+
+        // Initialize OPENFILENAME
+        ZeroMemory(&ofn, sizeof(OPENFILENAME));
+        ofn.lStructSize = sizeof(OPENFILENAME);
+        ofn.hwndOwner = hwnd;
+        ofn.lpstrFile = rawFilename;
+        ofn.nMaxFile = FILENAME_LENGTH;
+        ofn.lpstrFilter = filterBuffer;
+        ofn.nFilterIndex = 1;
+        ofn.Flags = OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
+
+        // Display the Open dialog box
+        if (GetSaveFileName(&ofn) == TRUE)
+        {
+            outFilename = rawFilename;
+            return true;
+        }
+
+        return false;
+    }
 
     struct ScopeComInitialize
     {
