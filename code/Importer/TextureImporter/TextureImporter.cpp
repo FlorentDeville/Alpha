@@ -5,10 +5,46 @@
 #include "Importer/TextureImporter/TextureImporter.h"
 
 #include "DirectXTex/DirectXTex.h"
+
+#include <wincodec.h>
 #include <Windows.h>
 
 namespace Importer
 {
+    //DirectXTex only initialize WIC factory once. But since I init/uninit the com factory every import, the second import has a broken
+    //wic factory. So I use my own wic factory instead and pass it to DirectXTex.
+    bool InitializeWICFactory()
+    {
+        void* pFactory = nullptr;
+
+        HRESULT hr = CoCreateInstance(
+            CLSID_WICImagingFactory2,
+            nullptr,
+            CLSCTX_INPROC_SERVER,
+            __uuidof(IWICImagingFactory2),
+            &pFactory
+        );
+
+        if (SUCCEEDED(hr))
+        {
+            // WIC2 is available on Windows 10, Windows 8.x, and Windows 7 SP1 with KB 2670838 installed
+            return true;
+        }
+        else
+        {
+            hr = CoCreateInstance(
+                CLSID_WICImagingFactory1,
+                nullptr,
+                CLSCTX_INPROC_SERVER,
+                __uuidof(IWICImagingFactory),
+                &pFactory
+            );
+            return SUCCEEDED(hr) ? true : false;
+        }
+
+        DirectX::SetWICFactory(static_cast<IWICImagingFactory*>(pFactory));
+    }
+
     struct ScopeComInitialize
     {
         ScopeComInitialize()
@@ -18,7 +54,8 @@ namespace Importer
 
         ~ScopeComInitialize()
         {
-            CoUninitialize();
+            if(SUCCEEDED(m_res))
+                CoUninitialize();
         }
 
         HRESULT m_res;
@@ -59,6 +96,11 @@ namespace Importer
         if (FAILED(comJanitor.m_res))
         {
             //wprintf(L"Failed to initialize COM (%08X)\n", static_cast<unsigned int>(comJanitor.m_res));
+            return false;
+        }
+
+        if (!InitializeWICFactory())
+        {
             return false;
         }
 
@@ -121,6 +163,9 @@ namespace Importer
         ScopeComInitialize comJanitor;
         if (FAILED(comJanitor.m_res))
             return Result(Result::ComError, "Failed to initialize COM(%08X)", static_cast<unsigned int>(comJanitor.m_res));
+
+        if (!InitializeWICFactory())
+            return Result(Result::WicFactoryError, "Failed to create the wic factory.");
 
         const int IMAGE_COUNT = 6;
 

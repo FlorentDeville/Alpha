@@ -20,6 +20,7 @@ namespace Importer
 			{
 				Ok = 0,
 				ComError,
+				WicFactoryError,
 				LoadingFailed,
 				MipMapFailed,
 				CompressionFailed,
