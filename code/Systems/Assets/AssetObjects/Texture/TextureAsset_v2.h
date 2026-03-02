@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
 #include "Systems/Objects/AssetObject.h"
 
 #include "Rendering/Texture/TextureFormat.h"
@@ -16,15 +15,16 @@ namespace Rendering
 
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, TextureAsset_v1)
-	class TextureAsset_v1 : public AssetObject
+	class TextureAsset_v1;
+
+	ENABLE_REFLECTION_WITH_NS(Systems, TextureAsset_v2)
+	class TextureAsset_v2 : public AssetObject
 	{
 	public:
-		TextureAsset_v1();
-		~TextureAsset_v1();
+		TextureAsset_v2();
+		~TextureAsset_v2();
 
-		void Init(const std::string& sourceFilename, const uint8_t* pBlob, uint32_t blobSize, uint32_t width, uint32_t height,
-			uint32_t mipCount, Rendering::TextureFormat format);
+		void Init(const std::string& sourceFilename, const uint8_t* pBlob, uint32_t blobSize, uint32_t width, uint32_t height, uint32_t mipCount);
 
 		void PostLoad() override;
 
@@ -41,6 +41,8 @@ namespace Systems
 		uint32_t GetHeight() const;
 		uint32_t GetMipCount() const;
 
+		void Upgrade(const TextureAsset_v1* pV1);
+
 	private:
 
 		std::string m_sourceFilename;
@@ -49,16 +51,13 @@ namespace Systems
 		uint32_t m_height;
 		uint32_t m_mipCount;
 
-		//Rendering::TextureFormat m_format;
-
-		START_REFLECTION(Systems::TextureAsset_v1)
+		START_REFLECTION(Systems::TextureAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilename)
 			ADD_FIELD_ATTR(m_blob, Hidden)
 			ADD_FIELD(m_width)
 			ADD_FIELD(m_height)
 			ADD_FIELD(m_mipCount)
-			ADD_AUTO_UPGRADE(Systems::TextureAsset_v2)
 		END_REFLECTION()
 
 		Rendering::Texture* m_pTexture;

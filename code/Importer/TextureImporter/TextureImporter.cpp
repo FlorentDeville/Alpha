@@ -154,7 +154,7 @@ namespace Importer
             return false;
         }
 
-        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount, Rendering::TextureFormat::BC7_SRGB);
+        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount/*, Rendering::TextureFormat::BC7_SRGB*/);
         return true;
 	}
 
