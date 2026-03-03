@@ -62,7 +62,7 @@ namespace Systems
 			pType->m_sidWithoutTemplateParam = CONSTSID("Systems::HardAssetRef");
 
 			using NonPointerElementType = typename RemovePointer<T>::type;
-			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
+			pType->m_pTemplateParamType = Core::TypeResolver<NonPointerElementType>::GetType();
 
 			pType->m_isTemplateParamTypePointer = false;
 
@@ -76,7 +76,7 @@ namespace Systems
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
 		{
 			typedef RemovePointer<T>::type NonPointerTemplateParamType;
-			TypeDescriptor* pTemplateParamType = TypeResolver<NonPointerTemplateParamType>::GetType();
+			TypeDescriptor* pTemplateParamType = Core::TypeResolver<NonPointerTemplateParamType>::GetType();
 
 			bool isTemplateParamPointer = IsPointer<T>::value;
 			(void)isTemplateParamPointer; //prevent an a warning in release on github.

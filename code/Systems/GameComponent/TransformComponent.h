@@ -8,11 +8,12 @@
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Reflection/ReflectionCoreTypes.h"
 
+ENABLE_REFLECTION(Systems, TransformComponent)
+
 namespace Systems
 {
 	class GameObject;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, TransformComponent)
 	class TransformComponent : public GameComponent
 	{
 	public:

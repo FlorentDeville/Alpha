@@ -18,11 +18,12 @@ namespace Rendering
 	class Shader;
 }
 
+ENABLE_REFLECTION(Systems, MaterialAsset_v2)
+
 namespace Systems
 {
 	class MaterialAsset_v1;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialAsset_v2)
 	class MaterialAsset_v2 : public AssetObject
 	{
 	public:

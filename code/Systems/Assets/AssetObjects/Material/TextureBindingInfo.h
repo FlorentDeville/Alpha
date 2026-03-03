@@ -9,10 +9,10 @@
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 
+ENABLE_REFLECTION(Systems, TextureBindingInfo)
+
 namespace Systems
 {
-
-	ENABLE_REFLECTION_WITH_NS(Systems, TextureBindingInfo)
 	class TextureBindingInfo
 	{
 	public:

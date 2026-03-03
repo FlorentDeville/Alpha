@@ -15,11 +15,12 @@ namespace Rendering
 	class Texture;
 }
 
+ENABLE_REFLECTION(Systems, TextureAsset_v2)
+
 namespace Systems
 {
 	class TextureAsset_v1;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, TextureAsset_v2)
 	class TextureAsset_v2 : public AssetObject
 	{
 	public:

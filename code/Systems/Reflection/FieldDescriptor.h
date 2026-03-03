@@ -1,16 +1,16 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/TypeResolver.h"
 
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionUtils.h"
 #include "Systems/Reflection/TypeDescriptor.h"
-#include "Systems/Reflection/TypeResolver.h"
 
 #include <string>
 
@@ -67,7 +67,7 @@ namespace Systems
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
 		{
 			typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
-			TypeDescriptor* pType = TypeResolver<NonPointerType>::GetType();
+			TypeDescriptor* pType = Core::TypeResolver<NonPointerType>::GetType();
 
 			bool isPointer = IsPointer<FIELD_TYPE>::value;
 
@@ -85,7 +85,7 @@ namespace Systems
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
 		{
 			typedef RemovePointer<T>::type NonPointerElementType;
-			TypeDescriptor* pElementType = TypeResolver<NonPointerElementType>::GetType();
+			TypeDescriptor* pElementType = Core::TypeResolver<NonPointerElementType>::GetType();
 
 			bool isElementPointer = IsPointer<T>::value;
 
@@ -98,7 +98,7 @@ namespace Systems
 			TypeDescriptor* pArrayType = Systems::ReflectionMgr::Get().GetOrAddType(arrayTypename);
 			if (!pArrayType->IsInitialized())
 			{
-				Systems::TypeInitializer<Core::Array<T>>::Run(pArrayType);
+				TypeInitializer<Core::Array<T>>::Run(pArrayType);
 			}
 
 			pField->m_name = name;

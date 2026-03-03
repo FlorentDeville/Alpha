@@ -9,9 +9,10 @@
 #include "Systems/Objects/AssetObject.h"
 #include "Systems/Reflection/ReflectionMacro.h"
 
+ENABLE_REFLECTION(Systems, MeshAsset_v2)
+
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, MeshAsset_v2)
 	class MeshAsset_v2 : public AssetObject
 	{
 	public:

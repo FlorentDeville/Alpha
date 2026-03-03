@@ -8,6 +8,8 @@
 
 #include <cstdint>
 
+ENABLE_REFLECTION(Systems, MaterialCBufferBindingInfo)
+
 namespace Systems
 {
 	enum CBufferType : int8_t
@@ -20,7 +22,6 @@ namespace Systems
 	};
 
 	//Information about how to bind a cbuffer
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialCBufferBindingInfo)
 	class MaterialCBufferBindingInfo
 	{
 	public:

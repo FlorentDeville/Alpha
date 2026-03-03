@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include "Core/Reflection/TypeResolver.h"
+#include "Core/Sid/Sid.h"
+
 #include "Systems/Reflection/FieldDescriptor.h"
 #include "Systems/Reflection/ReflectionMgr.h"
-
-#include "Core/Sid/Sid.h"
 
 // Define macros to enable reflection of a class
 // To have reflection working :
@@ -49,25 +50,18 @@
 // }
 // 
 
-#define OPEN_SYSTEMS_NAMESPACE namespace Systems {
-#define CLOSE_SYSTEMS_NAMESPACE }
-
 // Macro to specialize the template class TypeResolver
 #define DEFINE_TYPE_RESOLVER(TYPE) \
+	namespace Core { \
 	template<> class TypeResolver<TYPE> \
 	{ \
 	public: \
 		static const std::string& GetTypename() { static const std::string typeName = #TYPE; return typeName; } \
 		static Core::Sid GetTypenameSid() { return CONSTSID(#TYPE); } \
-		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
-		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
-	};
-
-// Macro to specialize the template class TypeResolver inside the Systems namespace
-#define DEFINE_SYSTEMS_TYPE_RESOLVER(TYPE) \
-	OPEN_SYSTEMS_NAMESPACE \
-		DEFINE_TYPE_RESOLVER(TYPE) \
-	CLOSE_SYSTEMS_NAMESPACE
+		static const Systems::TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+		static Systems::TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+	}; \
+	} // namespace Core
 
 // Macro to register a type
 #define REGISTER_TYPE(TYPE) \
@@ -82,20 +76,12 @@
 		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute(ATTRIBUTE)); \
 	}
 
-// Macro to put first before the class
-#define ENABLE_REFLECTION_WITH_NS(NAMESPACE, TYPE) \
-	class TYPE; \
+// Macro to put first before the class and outside any namespace
+#define ENABLE_REFLECTION(NAMESPACE, TYPE) \
+	namespace NAMESPACE { \
+		class TYPE; \
+	} \
 	DEFINE_TYPE_RESOLVER(NAMESPACE::TYPE)
-
-// Macro to put first before the class
-#define ENABLE_REFLECTION(TYPE) \
-	class TYPE; \
-	DEFINE_TYPE_RESOLVER(TYPE)
-
-// Macro to put first before the class
-#define ENABLE_SYSTEMS_REFLECTION(TYPE) \
-	class TYPE; \
-	DEFINE_SYSTEMS_TYPE_RESOLVER(TYPE)
 
 // Macro to start the description of the reflection
 #define START_REFLECTION(TYPE) \

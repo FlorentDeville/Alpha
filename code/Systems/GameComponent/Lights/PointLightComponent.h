@@ -8,9 +8,10 @@
 #include "Core/Math/Vec4f.h"
 #include "Systems/Objects/GameComponent.h"
 
+ENABLE_REFLECTION(Systems, PointLightComponent)
+
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, PointLightComponent)
 	class PointLightComponent : public GameComponent
 	{
 	public:

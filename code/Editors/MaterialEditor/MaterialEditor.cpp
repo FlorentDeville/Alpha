@@ -170,7 +170,7 @@ namespace Editors
 
 			m_pPropertyGridPopulator->Init(m_pPropertyGrid);
 
-			Core::Sid typenameSid = Systems::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
+			Core::Sid typenameSid = Core::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
 			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());
 			m_pPropertyGridPopulator->SetCanAddElementToArray(false);
 		}

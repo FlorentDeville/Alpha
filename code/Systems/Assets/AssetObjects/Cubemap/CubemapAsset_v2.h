@@ -14,11 +14,12 @@ namespace Rendering
 	class Texture;
 }
 
+ENABLE_REFLECTION(Systems, CubemapAsset_v2)
+
 namespace Systems
 {
 	class CubemapAsset_v1;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, CubemapAsset_v2)
 	class CubemapAsset_v2 : public AssetObject
 	{
 	public:

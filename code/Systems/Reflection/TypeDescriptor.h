@@ -1,15 +1,15 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionUtils.h"
-#include "Systems/Reflection/TypeResolver.h"
 
 #include <string>
 #include <vector>
@@ -127,7 +127,7 @@ namespace Systems
 			pType->m_sidWithoutTemplateParam = CONSTSID("Core::Array");
 
 			using NonPointerElementType = typename RemovePointer<T>::type;
-			pType->m_pTemplateParamType = TypeResolver<NonPointerElementType>::GetType();
+			pType->m_pTemplateParamType = Core::TypeResolver<NonPointerElementType>::GetType();
 
 			pType->m_isTemplateParamTypePointer = IsPointer<T>::value;
 		}

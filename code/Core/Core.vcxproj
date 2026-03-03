@@ -149,6 +149,7 @@
     <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
+    <ClInclude Include="Reflection\TypeResolver.h" />
     <ClInclude Include="Sid\Sid.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="String\BytesToHexa.h" />

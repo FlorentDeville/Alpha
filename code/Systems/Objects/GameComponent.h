@@ -9,11 +9,12 @@
 #include "Systems/Objects/Object.h"
 #include "Systems/Reflection/ReflectionMacro.h"
 
+ENABLE_REFLECTION(Systems, GameComponent)
+
 namespace Systems
 {
 	class GameObject;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, GameComponent)
 	class GameComponent : public Object
 	{
 	public:

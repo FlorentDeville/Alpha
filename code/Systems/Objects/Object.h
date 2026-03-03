@@ -5,14 +5,14 @@
 #pragma once
 
 #include "Systems/Reflection/ReflectionMacro.h"
-#include "Systems/Reflection/ReflectionMgr.h"
+
+ENABLE_REFLECTION(Systems, Object)
 
 namespace Systems
 {
 	class TypeDescriptor;
 
 	// Base class for any object editable and serializable.
-	ENABLE_REFLECTION_WITH_NS(Systems, Object)
 	class Object
 	{
 	public:
@@ -39,7 +39,7 @@ namespace Systems
 
 	template<class T> bool Object::IsA() const
 	{
-		return m_pTypeDescriptor->GetSid() == TypeResolver<T>::GetTypenameSid();
+		return m_pTypeDescriptor->GetSid() == Core::TypeResolver<T>::GetTypenameSid();
 	}
 
 	template<class T> T* Object::Cast()
@@ -64,7 +64,7 @@ namespace Systems
 	{
 		T* pNewObject = new T(std::forward<Args>(args)...);
 
-		const TypeDescriptor* pType = TypeResolver<T>::GetConstType();
+		const TypeDescriptor* pType = Core::TypeResolver<T>::GetConstType();
 		pNewObject->SetTypeDescriptor(pType);
 
 		return pNewObject;
@@ -74,7 +74,7 @@ namespace Systems
 	{
 		new(pPtr) T(std::forward<Args>(args)...);
 
-		const TypeDescriptor* pType = TypeResolver<T>::GetConstType();
+		const TypeDescriptor* pType = Core::TypeResolver<T>::GetConstType();
 		pPtr->SetTypeDescriptor(pType);
 
 		return pPtr;

@@ -12,11 +12,12 @@
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 
+ENABLE_REFLECTION(Systems, GameObject)
+
 namespace Systems
 {
 	class GameComponent;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, GameObject)
 	class GameObject : public Object
 	{
 	public:

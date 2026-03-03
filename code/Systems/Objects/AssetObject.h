@@ -9,10 +9,11 @@
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Reflection/ReflectionMacro.h"
 
+ENABLE_REFLECTION(Systems, AssetObject)
+
 namespace Systems
 {
 	//Base class for any asset
-	ENABLE_REFLECTION_WITH_NS(Systems, AssetObject)
 	class AssetObject : public Object
 	{
 	public:

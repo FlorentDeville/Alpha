@@ -5,12 +5,12 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/TypeResolver.h"
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/AssetType/NewAssetType.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 #include "Systems/Assets/NewAssetId.h"
-#include "Systems/Reflection/TypeResolver.h"
 
 #include <functional>
 #include <map>
@@ -81,7 +81,7 @@ namespace Systems
 		const std::string& name = T::GetAssetTypeName();
 		Core::Sid sid = T::GetAssetTypeNameSid();
 
-		const std::string className = TypeResolver<T>::GetTypename();
+		const std::string className = Core::TypeResolver<T>::GetTypename();
 
 		m_assetTypes[sid] = NewAssetType(name, sid, SID(className.c_str()));
 	}

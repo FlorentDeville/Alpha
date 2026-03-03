@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -14,14 +14,15 @@
 
 #include "Systems/Reflection/ReflectionMacro.h"
 
+
+DEFINE_TYPE_RESOLVER(Core::Blob)
+DEFINE_TYPE_RESOLVER(Core::Color)
+DEFINE_TYPE_RESOLVER(Core::Guid)
+DEFINE_TYPE_RESOLVER(Core::Vec4f)
+DEFINE_TYPE_RESOLVER(Core::Mat44f)
+DEFINE_TYPE_RESOLVER(Core::Sid)
+
 namespace Systems
 {
-	DEFINE_TYPE_RESOLVER(Core::Blob)
-	DEFINE_TYPE_RESOLVER(Core::Color)
-	DEFINE_TYPE_RESOLVER(Core::Guid)
-	DEFINE_TYPE_RESOLVER(Core::Vec4f)
-	DEFINE_TYPE_RESOLVER(Core::Mat44f)
-	DEFINE_TYPE_RESOLVER(Core::Sid)
-
 	void RegisterCoreTypesToReflection();
 }
