@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Rendering/BaseShape.h"
 
@@ -503,8 +503,8 @@ namespace Rendering
                 //convert polar coordinates to cartesian coordinates
                 VertexGeneric vertex1;
                 vertex1.Position.x = sinTheta1 * cosPhi1;
-                vertex1.Position.y = sinTheta1 * sinPhi1;
-                vertex1.Position.z = cosTheta1;
+                vertex1.Position.z = sinTheta1 * sinPhi1;
+                vertex1.Position.y = cosTheta1;
                 vertex1.Color = DirectX::XMFLOAT3(0, 0, 0);
                 vertex1.Uv = DirectX::XMFLOAT2(phi1 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
 
@@ -516,8 +516,8 @@ namespace Rendering
 
                 VertexGeneric vertex2;
                 vertex2.Position.x = sinTheta1 * cosPhi2;
-                vertex2.Position.y = sinTheta1 * sinPhi2;
-                vertex2.Position.z = cosTheta1;
+                vertex2.Position.z = sinTheta1 * sinPhi2;
+                vertex2.Position.y = cosTheta1;
                 vertex2.Color = DirectX::XMFLOAT3(0, 0, 0);
                 vertex2.Uv = DirectX::XMFLOAT2(phi2 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
 
@@ -529,8 +529,8 @@ namespace Rendering
 
                 VertexGeneric vertex3;
                 vertex3.Position.x = sinTheta2 * cosPhi2;
-                vertex3.Position.y = sinTheta2 * sinPhi2;
-                vertex3.Position.z = cosTheta2;
+                vertex3.Position.z = sinTheta2 * sinPhi2;
+                vertex3.Position.y = cosTheta2;
                 vertex3.Color = DirectX::XMFLOAT3(0, 0, 0);
                 vertex3.Uv = DirectX::XMFLOAT2(phi2 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
 
@@ -542,8 +542,8 @@ namespace Rendering
 
                 VertexGeneric vertex4;
                 vertex4.Position.x = sinTheta2 * cosPhi1;
-                vertex4.Position.y = sinTheta2 * sinPhi1;
-                vertex4.Position.z = cosTheta2;
+                vertex4.Position.z = sinTheta2 * sinPhi1;
+                vertex4.Position.y = cosTheta2;
                 vertex4.Color = DirectX::XMFLOAT3(0, 0, 0);
                 vertex4.Uv = DirectX::XMFLOAT2(phi1 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
 
