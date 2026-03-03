@@ -56,7 +56,7 @@ namespace Systems
 
 		START_REFLECTION(Systems::GameObject)
 			ADD_BASETYPE(Systems::Object)
-			ADD_FIELD_ATTR(m_guid, ReadOnly | Hidden)
+			ADD_FIELD_ATTR(m_guid, Core::ReadOnly | Core::Hidden)
 			ADD_FIELD(m_name)
 			ADD_FIELD(m_transform)
 			ADD_FIELD(m_components)

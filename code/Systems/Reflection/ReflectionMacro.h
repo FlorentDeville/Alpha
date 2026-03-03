@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Reflection/FieldAttribute.h"
 #include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
 
@@ -73,7 +74,7 @@
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
 	{ \
 		Systems::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
-		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute(ATTRIBUTE)); \
+		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Core::FieldAttribute(ATTRIBUTE)); \
 	}
 
 // Macro to put first before the class and outside any namespace
@@ -95,7 +96,7 @@ public: \
 #define END_REFLECTION() }
 
 // Macro to add a field to the reflection
-#define ADD_FIELD(FIELD_NAME) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, None)
+#define ADD_FIELD(FIELD_NAME) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, Core::None)
 #define ADD_FIELD_ATTR(FIELD_NAME, ATTRIBUTE) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, ATTRIBUTE)
 
 // Macro to add a base type to the current type

@@ -38,7 +38,7 @@ namespace Systems
 		static void RegisterFields(TypeDescriptor* pType)
 		{
 			Systems::FieldDescriptor* pIdField = pType->AddField();
-			Systems::FieldInitializer<decltype(HardAssetRef<T>::m_internalRef.m_id)>::Run(pIdField, "m_id", offsetof(HardAssetRef<T>, m_internalRef.m_id), Systems::FieldAttribute());
+			Systems::FieldInitializer<decltype(HardAssetRef<T>::m_internalRef.m_id)>::Run(pIdField, "m_id", offsetof(HardAssetRef<T>, m_internalRef.m_id), Core::None);
 		}
 
 	private:
@@ -73,7 +73,7 @@ namespace Systems
 	template<typename T> class FieldInitializer<Systems::HardAssetRef<T>>
 	{
 	public:
-		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, Core::FieldAttribute attribute)
 		{
 			typedef RemovePointer<T>::type NonPointerTemplateParamType;
 			TypeDescriptor* pTemplateParamType = Core::TypeResolver<NonPointerTemplateParamType>::GetType();

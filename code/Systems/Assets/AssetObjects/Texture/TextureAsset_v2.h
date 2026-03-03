@@ -57,7 +57,7 @@ namespace Systems
 		START_REFLECTION(Systems::TextureAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilename)
-			ADD_FIELD_ATTR(m_blob, Hidden)
+			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 			ADD_FIELD(m_width)
 			ADD_FIELD(m_height)
 			ADD_FIELD(m_mipCount)

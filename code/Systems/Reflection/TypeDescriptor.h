@@ -8,7 +8,6 @@
 #include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
 
-#include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionUtils.h"
 
 #include <string>

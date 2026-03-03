@@ -5,9 +5,9 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/FieldAttribute.h"
 #include "Core/Reflection/TypeResolver.h"
 
-#include "Systems/Reflection/FieldAttribute.h"
 #include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionUtils.h"
 #include "Systems/Reflection/TypeDescriptor.h"
@@ -48,7 +48,7 @@ namespace Systems
 		TypeDescriptor* m_pType;
 		bool m_isPointer : 1;
 
-		FieldAttribute m_attribute;
+		Core::FieldAttribute m_attribute;
 	};
 
 	template<typename T> const T* FieldDescriptor::GetDataPtr(const void* pObj) const
@@ -64,7 +64,7 @@ namespace Systems
 	template<typename FIELD_TYPE> class FieldInitializer
 	{
 	public:
-		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, Core::FieldAttribute attribute)
 		{
 			typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
 			TypeDescriptor* pType = Core::TypeResolver<NonPointerType>::GetType();
@@ -82,7 +82,7 @@ namespace Systems
 	template<typename T> class FieldInitializer<Core::Array<T>>
 	{
 	public:
-		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, FieldAttribute attribute)
+		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, Core::FieldAttribute attribute)
 		{
 			typedef RemovePointer<T>::type NonPointerElementType;
 			TypeDescriptor* pElementType = Core::TypeResolver<NonPointerElementType>::GetType();

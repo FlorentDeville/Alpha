@@ -22,8 +22,8 @@ namespace Systems
 		
 		START_REFLECTION(Systems::TextureBindingInfo)
 			ADD_FIELD(m_texture)
-			ADD_FIELD_ATTR(m_name, ReadOnly)
-			ADD_FIELD_ATTR(m_sigRootIndex, ReadOnly)
+			ADD_FIELD_ATTR(m_name, Core::ReadOnly)
+			ADD_FIELD_ATTR(m_sigRootIndex, Core::ReadOnly)
 		END_REFLECTION()
 	};
 }

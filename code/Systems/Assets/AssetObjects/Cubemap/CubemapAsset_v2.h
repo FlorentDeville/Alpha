@@ -64,7 +64,7 @@ namespace Systems
 			ADD_FIELD(m_bottomSourceFilename)
 			ADD_FIELD(m_frontSourceFilename)
 			ADD_FIELD(m_backSourceFilename)
-			ADD_FIELD_ATTR(m_blob, Hidden)
+			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 		END_REFLECTION()
 
 		Rendering::Texture* m_pTexture;

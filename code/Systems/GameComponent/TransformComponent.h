@@ -52,8 +52,8 @@ namespace Systems
 		START_REFLECTION(Systems::TransformComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_localTx)
-			ADD_FIELD_ATTR(m_parent, Hidden)
-			ADD_FIELD_ATTR(m_children, Hidden)
+			ADD_FIELD_ATTR(m_parent, Core::Hidden)
+			ADD_FIELD_ATTR(m_children, Core::Hidden)
 		END_REFLECTION()
 
 		// Cached pointer to the parent game object.

@@ -5,7 +5,6 @@
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="Reflection\FieldDescriptor.h" />
     <ClInclude Include="Reflection\TypeDescriptor.h" />
-    <ClInclude Include="Reflection\FieldAttribute.h" />
     <ClInclude Include="Reflection\ReflectionMgr.h" />
     <ClInclude Include="Reflection\ReflectionMacro.h" />
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />

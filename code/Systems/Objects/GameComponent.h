@@ -35,7 +35,7 @@ namespace Systems
 
 		START_REFLECTION(Systems::GameComponent)
 			ADD_BASETYPE(Systems::Object)
-			ADD_FIELD_ATTR(m_guid, Hidden)
+			ADD_FIELD_ATTR(m_guid, Core::Hidden)
 		END_REFLECTION()
 
 		GameObject* m_pOwnerGo;
