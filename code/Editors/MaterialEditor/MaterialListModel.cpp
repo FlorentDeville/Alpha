@@ -1,6 +1,7 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
+
 
 #include "Editors/MaterialEditor/MaterialListModel.h"
 
@@ -46,7 +47,7 @@ namespace Editors
 		if (column < 0 || column >= Columns::Count)
 			return Widgets::ModelIndex();
 
-		const CachedShaderData& data = m_cache[row];
+		const CachedMaterialData& data = m_cache[row];
 		return CreateIndex(row, column, &data);
 	}
 
@@ -68,7 +69,7 @@ namespace Editors
 
 	std::string MaterialListModel::GetData(const Widgets::ModelIndex& index)
 	{
-		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
+		const CachedMaterialData* pData = reinterpret_cast<const CachedMaterialData*>(index.GetConstDataPointer());
 		switch (index.GetColumn())
 		{
 		case Columns::Id:
@@ -83,15 +84,15 @@ namespace Editors
 		{
 			switch (pData->m_type)
 			{
-			case CachedShaderData::Unknown:
+			case CachedMaterialData::Unknown:
 				return "Unknown";
 				break;
 
-			case CachedShaderData::Material:
+			case CachedMaterialData::Material:
 				return "Material";
 				break;
 
-			case CachedShaderData::MaterialInstance:
+			case CachedMaterialData::MaterialInstance:
 				return "Material Instance";
 				break;
 			}
@@ -157,7 +158,7 @@ namespace Editors
 
 		BeforeRemoveRows(cacheIndex, 1, Widgets::ModelIndex());
 
-		std::vector<CachedShaderData>::const_iterator it = m_cache.cbegin() + cacheIndex;
+		std::vector<CachedMaterialData>::const_iterator it = m_cache.cbegin() + cacheIndex;
 		m_cache.erase(it);
 
 		AfterRemoveRows(cacheIndex, 1, Widgets::ModelIndex());
@@ -205,7 +206,7 @@ namespace Editors
 
 	Systems::NewAssetId MaterialListModel::GetAssetId(const Widgets::ModelIndex& index) const
 	{
-		const CachedShaderData* pData = reinterpret_cast<const CachedShaderData*>(index.GetConstDataPointer());
+		const CachedMaterialData* pData = reinterpret_cast<const CachedMaterialData*>(index.GetConstDataPointer());
 		return pData->m_id;
 	}
 
@@ -220,24 +221,24 @@ namespace Editors
 
 	void MaterialListModel::AddToCache(const Systems::AssetMetadata* pMetadata)
 	{
-		m_cache.push_back(CachedShaderData());
-		CachedShaderData& data = m_cache.back();
+		m_cache.push_back(CachedMaterialData());
+		CachedMaterialData& data = m_cache.back();
 		data.m_id = pMetadata->GetAssetId();
 		data.m_virtualName = pMetadata->GetVirtualName();
 		data.m_modified = false;
 		if (pMetadata->IsA<Systems::MaterialAsset>())
-			data.m_type = CachedShaderData::Material;
+			data.m_type = CachedMaterialData::Material;
 		else if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
-			data.m_type = CachedShaderData::MaterialInstance;
+			data.m_type = CachedMaterialData::MaterialInstance;
 		else
-			data.m_type = CachedShaderData::Unknown;
+			data.m_type = CachedMaterialData::Unknown;
 	}
 
 	int MaterialListModel::FindCacheIndex(Systems::NewAssetId id) const
 	{
 		for (size_t ii = 0; ii < m_cache.size(); ++ii)
 		{
-			const CachedShaderData& data = m_cache[ii];
+			const CachedMaterialData& data = m_cache[ii];
 			if (data.m_id == id)
 				return static_cast<int>(ii);
 		}

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -54,7 +54,7 @@ namespace Editors
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 
 	private:
-		struct CachedShaderData
+		struct CachedMaterialData
 		{
 			enum MaterialType
 			{
@@ -69,7 +69,7 @@ namespace Editors
 			bool m_modified;
 		};
 
-		std::vector<CachedShaderData> m_cache;
+		std::vector<CachedMaterialData> m_cache;
 
 		void AddToCache(const Systems::AssetMetadata* pMetadata);
 
