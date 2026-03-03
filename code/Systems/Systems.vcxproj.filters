@@ -14,7 +14,6 @@
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
-    <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />

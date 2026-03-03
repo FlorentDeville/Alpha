@@ -6,10 +6,10 @@
 
 #include "Core/Collections/Array.h"
 #include "Core/Reflection/FieldAttribute.h"
+#include "Core/Reflection/ReflectionUtils.h"
 #include "Core/Reflection/TypeResolver.h"
 
 #include "Systems/Reflection/ReflectionMgr.h"
-#include "Systems/Reflection/ReflectionUtils.h"
 #include "Systems/Reflection/TypeDescriptor.h"
 
 #include <string>
@@ -66,10 +66,10 @@ namespace Systems
 	public:
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, Core::FieldAttribute attribute)
 		{
-			typedef RemovePointer<FIELD_TYPE>::type NonPointerType;
+			typedef Core::RemovePointer<FIELD_TYPE>::type NonPointerType;
 			TypeDescriptor* pType = Core::TypeResolver<NonPointerType>::GetType();
 
-			bool isPointer = IsPointer<FIELD_TYPE>::value;
+			bool isPointer = Core::IsPointer<FIELD_TYPE>::value;
 
 			pField->m_name = name;
 			pField->m_offset = offset;
@@ -84,10 +84,10 @@ namespace Systems
 	public:
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, Core::FieldAttribute attribute)
 		{
-			typedef RemovePointer<T>::type NonPointerElementType;
+			typedef Core::RemovePointer<T>::type NonPointerElementType;
 			TypeDescriptor* pElementType = Core::TypeResolver<NonPointerElementType>::GetType();
 
-			bool isElementPointer = IsPointer<T>::value;
+			bool isElementPointer = Core::IsPointer<T>::value;
 
 			std::string arrayTypename = "Core::Array<" + pElementType->GetName();
 			if (isElementPointer)

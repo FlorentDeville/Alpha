@@ -150,6 +150,7 @@
     <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
     <ClInclude Include="Reflection\FieldAttribute.h" />
+    <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Reflection\TypeResolver.h" />
     <ClInclude Include="Sid\Sid.h" />
     <ClInclude Include="Singleton.h" />

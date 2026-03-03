@@ -5,10 +5,9 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/ReflectionUtils.h"
 #include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
-
-#include "Systems/Reflection/ReflectionUtils.h"
 
 #include <string>
 #include <vector>
@@ -125,10 +124,10 @@ namespace Systems
 
 			pType->m_sidWithoutTemplateParam = CONSTSID("Core::Array");
 
-			using NonPointerElementType = typename RemovePointer<T>::type;
+			using NonPointerElementType = typename Core::RemovePointer<T>::type;
 			pType->m_pTemplateParamType = Core::TypeResolver<NonPointerElementType>::GetType();
 
-			pType->m_isTemplateParamTypePointer = IsPointer<T>::value;
+			pType->m_isTemplateParamTypePointer = Core::IsPointer<T>::value;
 		}
 	};
 }

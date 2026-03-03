@@ -185,6 +185,9 @@
     <ClInclude Include="Reflection\FieldAttribute.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Reflection\ReflectionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Collections\Array.inl">

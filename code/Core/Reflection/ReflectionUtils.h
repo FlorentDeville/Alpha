@@ -1,10 +1,10 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-namespace Systems
+namespace Core
 {
 	template<typename T> struct IsPointer { static const bool value = false; };
 	template<typename T> struct IsPointer<T*> { static const bool value = true; };
