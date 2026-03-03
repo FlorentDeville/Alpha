@@ -14,8 +14,6 @@
 
 namespace Editors
 {
-	static const char* MISSING_BASE_MATERIAL_LABEL = "__MISSING__";
-
 	MaterialListModel::MaterialListModel()
 		: AbstractViewModel()
 	{
@@ -81,8 +79,23 @@ namespace Editors
 			return pData->m_virtualName;
 			break;
 
-		case Columns::Base:
-			return pData->m_baseMaterial;
+		case Columns::Type:
+		{
+			switch (pData->m_type)
+			{
+			case CachedShaderData::Unknown:
+				return "Unknown";
+				break;
+
+			case CachedShaderData::Material:
+				return "Material";
+				break;
+
+			case CachedShaderData::MaterialInstance:
+				return "Material Instance";
+				break;
+			}
+		}
 			break;
 
 		case Columns::Modified:
@@ -98,6 +111,7 @@ namespace Editors
 			return "";
 			break;
 		}
+		return "__ERROR__";
 	}
 
 	std::string MaterialListModel::GetHeaderData(int column)
@@ -112,8 +126,8 @@ namespace Editors
 			return "Name";
 			break;
 
-		case Columns::Base:
-			return "Base";
+		case Columns::Type:
+			return "Type";
 			break;
 
 		case Columns::Modified:
@@ -146,45 +160,7 @@ namespace Editors
 		std::vector<CachedShaderData>::const_iterator it = m_cache.cbegin() + cacheIndex;
 		m_cache.erase(it);
 
-		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
-		if(pMetadata)
-		{
-			if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
-			{
-				Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
-				if (pMaterialInstance)
-				{
-					std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(pMaterialInstance->GetBaseMaterialId());
-					if (it != m_baseToInstance.end())
-					{
-						it->second.Erase(id);
-					}
-				}
-			}
-		}
-
 		AfterRemoveRows(cacheIndex, 1, Widgets::ModelIndex());
-
-		//update the other rows after deletion so the indices are correct
-		if (pMetadata->IsA<Systems::MaterialAsset>())
-		{
-			std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(pMetadata->GetAssetId());
-			if (it != m_baseToInstance.end())
-			{
-				for (Systems::NewAssetId instanceId : it->second)
-				{
-					int cacheIndex = FindCacheIndex(instanceId);
-					if (cacheIndex == -1)
-						continue;
-
-					m_cache[cacheIndex].m_baseMaterial = MISSING_BASE_MATERIAL_LABEL;
-
-					Widgets::ModelIndex instanceModelIndex = GetIndex(instanceId);
-					instanceModelIndex = instanceModelIndex.GetSiblingAtColumn(Columns::Base);
-					m_onDataChanged(instanceModelIndex);
-				}
-			}
-		}
 	}
 
 	void MaterialListModel::SetShaderModified(Systems::NewAssetId id)
@@ -225,24 +201,6 @@ namespace Editors
 		Widgets::ModelIndex index = GetIndex(metadata.GetAssetId());
 		index = index.GetSiblingAtColumn(Columns::Name);
 		m_onDataChanged(index);
-
-		//now update the base name for the material instance
-		std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>>::iterator it = m_baseToInstance.find(metadata.GetAssetId());
-		if (it != m_baseToInstance.end())
-		{
-			Core::Array<Systems::NewAssetId>& materialInstanceArray = it->second;
-			for (const Systems::NewAssetId materialInstanceId : materialInstanceArray)
-			{
-				int materialInstanceCacheIndex = FindCacheIndex(materialInstanceId);
-				if (materialInstanceCacheIndex == -1)
-					continue;
-
-				m_cache[materialInstanceCacheIndex].m_baseMaterial = metadata.GetVirtualName();
-				Widgets::ModelIndex materialInstanceModelIndex = GetIndex(materialInstanceId);
-				materialInstanceModelIndex = materialInstanceModelIndex.GetSiblingAtColumn(Columns::Base);
-				m_onDataChanged(materialInstanceModelIndex);
-			}
-		}
 	}
 
 	Systems::NewAssetId MaterialListModel::GetAssetId(const Widgets::ModelIndex& index) const
@@ -267,25 +225,12 @@ namespace Editors
 		data.m_id = pMetadata->GetAssetId();
 		data.m_virtualName = pMetadata->GetVirtualName();
 		data.m_modified = false;
-		data.m_baseMaterial = "";
-
-		if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
-		{
-			Systems::MaterialInstanceAsset* pAsset = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(pMetadata->GetAssetId());
-			if (pAsset)
-			{
-				Systems::NewAssetId baseId = pAsset->GetBaseMaterialId();
-				if (const Systems::AssetMetadata* pBaseMetadata = Systems::AssetMgr::Get().GetMetadata(baseId))
-				{
-					data.m_baseMaterial = pBaseMetadata->GetVirtualName();
-					m_baseToInstance[baseId].PushBack(pMetadata->GetAssetId());
-				}
-				else
-				{
-					data.m_baseMaterial = MISSING_BASE_MATERIAL_LABEL;
-				}
-			}
-		}
+		if (pMetadata->IsA<Systems::MaterialAsset>())
+			data.m_type = CachedShaderData::Material;
+		else if (pMetadata->IsA<Systems::MaterialInstanceAsset>())
+			data.m_type = CachedShaderData::MaterialInstance;
+		else
+			data.m_type = CachedShaderData::Unknown;
 	}
 
 	int MaterialListModel::FindCacheIndex(Systems::NewAssetId id) const

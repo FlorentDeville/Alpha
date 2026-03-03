@@ -23,7 +23,7 @@ namespace Editors
 		{
 			Id = 0,
 			Name,
-			Base,
+			Type,
 			Modified,
 
 			Count
@@ -56,16 +56,20 @@ namespace Editors
 	private:
 		struct CachedShaderData
 		{
+			enum MaterialType
+			{
+				Unknown,
+				Material,
+				MaterialInstance
+			};
+
 			Systems::NewAssetId m_id;
 			std::string m_virtualName;
-			std::string m_baseMaterial; //only for material instance
+			MaterialType m_type;
 			bool m_modified;
 		};
 
 		std::vector<CachedShaderData> m_cache;
-
-		//Map between base material and all the instance material using it as a base
-		std::map<Systems::NewAssetId, Core::Array<Systems::NewAssetId>> m_baseToInstance;
 
 		void AddToCache(const Systems::AssetMetadata* pMetadata);
 
