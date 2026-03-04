@@ -43,6 +43,7 @@ namespace Widgets
 
 		Core::Array<Option> m_options;
 		uint32_t m_selectedOptionIndex;
+		bool m_selectedOptionSet;
 
 		Label* m_pLabel;
 
@@ -52,5 +53,8 @@ namespace Widgets
 		bool m_displayOptions;
 
 		void InternalSetSelection(uint32_t optionIndex);
+
+		void ShowOptions();
+		void HideOptions();
 	};
 }

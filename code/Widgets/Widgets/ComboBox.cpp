@@ -19,6 +19,7 @@ namespace Widgets
 		, m_options()
 		, m_selectedOptionIndex(0)
 		, m_displayOptions(false)
+		, m_selectedOptionSet(false)
 	{
 		SetSize(Core::UInt2(100, 22));
 		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
@@ -42,17 +43,20 @@ namespace Widgets
 		pLayout->AddWidget(m_pLabel);
 
 		m_pOptionsContainer = new Container();
+		m_pOptionsContainer->Disable();
 		m_pOptionsContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_FIT);
 		m_pOptionsContainer->GetDefaultStyle().SetBorderSize(1);
 		m_pOptionsContainer->GetDefaultStyle().ShowBorder(true);
 		m_pOptionsContainer->GetDefaultStyle().SetBackgroundColor(Widgets::Color(46, 46, 46));
 		m_pOptionsContainer->GetDefaultStyle().SetBorderColor(Widgets::Color(66, 66, 66));
-		m_pOptionsContainer->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
+		AddWidget(m_pOptionsContainer);
 
 		m_pOptionsLayout = new Layout(Layout::Vertical, Widget::SIZE_STYLE(Widget::HSIZE_STRETCH | Widget::VSIZE_FIT));
 		m_pOptionsLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		m_pOptionsLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		m_pOptionsContainer->AddWidget(m_pOptionsLayout);
+
+		m_pOptionsContainer->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS, true);
 
 		GetDefaultStyle().SetBorderSize(1);
 		GetDefaultStyle().ShowBorder(true);
@@ -64,15 +68,11 @@ namespace Widgets
 		GetHoverStyle().SetBackgroundColor(Widgets::Color(61, 61, 61));
 		GetHoverStyle().SetBorderColor(Widgets::Color(66, 66, 66));
 
-		OnFocusLost([this](const Widgets::FocusEvent& ev) { m_displayOptions = false; });
+		OnFocusLost([this](const Widgets::FocusEvent& ev) { HideOptions(); });
 	}
 
 	ComboBox::~ComboBox()
-	{
-		delete m_pOptionsContainer;
-		m_pOptionsContainer = nullptr;
-		m_pOptionsLayout = nullptr;
-	}
+	{ }
 
 	void ComboBox::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
@@ -95,18 +95,11 @@ namespace Widgets
 		switch (ev.m_id)
 		{
 		case Widgets::EventType::kMouseDown:
-			m_displayOptions = !m_displayOptions;
-
 			if (m_displayOptions)
-			{
-				SetFocus();
-				Core::Int3 pos = m_absPos;
-				pos.y += m_size.y;
-				pos.z = 10; // put it in front of everything
-				m_pOptionsContainer->SetWidth(m_size.x);
-				m_pOptionsContainer->Resize(pos, Core::UInt2(1000, 1000));
-				m_pOptionsContainer->SetHeight(m_pOptionsContainer->GetHeight() + 2);
-			}
+				HideOptions();
+			else
+				ShowOptions();
+			
 			return true;
 			break;
 		}
@@ -140,7 +133,13 @@ namespace Widgets
 
 		Button* pButton = new Button(label);
 		pButton->SetSizeStyle(Widget::HSIZE_STRETCH);
-		pButton->OnClick([this, optionIndex]() { InternalSetSelection(optionIndex); });
+		pButton->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS, true);
+		pButton->OnMouseDown([this, optionIndex](const Widgets::MouseEvent& ev)
+			{
+				InternalSetSelection(optionIndex);
+				HideOptions();
+			});
+
 		m_pOptionsLayout->AddWidget(pButton);
 	}
 
@@ -161,7 +160,7 @@ namespace Widgets
 
 	void ComboBox::InternalSetSelection(uint32_t optionIndex)
 	{
-		if (optionIndex == m_selectedOptionIndex)
+		if (optionIndex == m_selectedOptionIndex && m_selectedOptionSet)
 			return;
 
 		if (m_options.IsValidIndex(optionIndex))
@@ -173,7 +172,29 @@ namespace Widgets
 			m_selectedOptionIndex = optionIndex;
 			m_pLabel->SetText(" " + m_options[optionIndex].m_label); //add a space character cause it's an easy way to put a padding
 
+			m_selectedOptionSet = true;
+
 			m_onSelectionChanged(oldValue, m_options[optionIndex].m_value);
 		}
+	}
+
+	void ComboBox::ShowOptions()
+	{
+		m_displayOptions = true;
+
+		SetFocus();
+		Core::Int3 pos = m_absPos;
+		pos.y += m_size.y;
+		pos.z = 10; // put it in front of everything
+		m_pOptionsContainer->Enable();
+		m_pOptionsContainer->SetWidth(m_size.x);
+		m_pOptionsContainer->Resize(pos, Core::UInt2(1000, 1000));
+		m_pOptionsContainer->SetHeight(m_pOptionsContainer->GetHeight() + 2);
+	}
+
+	void ComboBox::HideOptions()
+	{
+		m_displayOptions = false;
+		m_pOptionsContainer->Disable();
 	}
 }
