@@ -11,6 +11,7 @@
 namespace Widgets
 {
 	class Label;
+	class Layout;
 
 	class ComboBox : public Container
 	{
@@ -18,8 +19,7 @@ namespace Widgets
 		ComboBox();
 		~ComboBox();
 
-		//void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
-		//void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		bool Handle(const BaseEvent& ev) override;
 
@@ -38,5 +38,12 @@ namespace Widgets
 		uint32_t m_selectedOptionIndex;
 
 		Label* m_pLabel;
+
+		Container* m_pOptionsContainer;
+		Layout* m_pOptionsLayout;
+
+		bool m_displayOptions;
+
+		void InternalSetSelection(uint32_t optionIndex);
 	};
 }
