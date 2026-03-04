@@ -20,8 +20,8 @@ namespace Systems
 		, m_pRs(nullptr)
 		, m_pPipelineState(nullptr)
 		, m_isDebug(false)
-	{
-	}
+		, m_cullMode(Rendering::CullMode::Back)
+	{ }
 
 	MaterialAsset_v2::~MaterialAsset_v2()
 	{
@@ -156,7 +156,7 @@ namespace Systems
 				delete m_pPipelineState;
 
 			m_pPipelineState = new Rendering::PipelineState();
-			m_pPipelineState->Init_Generic(*m_pRs, *m_pVs, *m_pPs);
+			m_pPipelineState->Init_Generic(*m_pRs, *m_pVs, *m_pPs, m_cullMode);
 		}
 	}
 
