@@ -30,6 +30,7 @@ namespace Widgets
 		Rendering::TextureId expandedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconDown);
 		Widgets::Icon* pIcon = new Widgets::Icon(expandedIcon);
 		pIcon->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
+		pIcon->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::MIDDLE);
 
 		pLayout->AddWidget(pIcon);
 		pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
