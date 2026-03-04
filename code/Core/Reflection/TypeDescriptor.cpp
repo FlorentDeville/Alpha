@@ -16,6 +16,7 @@ namespace Core
 		, m_isContainer(false)
 		, m_isTemplate(false)
 		, m_isTemplateParamTypePointer(false)
+		, m_isEnum(false)
 		, m_pTemplateParamType(nullptr)
 		, Construct()
 		, InPlaceConstruct()
@@ -45,6 +46,17 @@ namespace Core
 		m_fields.push_back(new FieldDescriptor());
 		FieldDescriptor* field = m_fields.back();
 		return field;
+	}
+
+	void TypeDescriptor::AddEntry(int32_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::SetIsEnum()
+	{
+		m_isEnum = true;
 	}
 
 	void TypeDescriptor::SetBaseType(const std::string& baseTypeName)

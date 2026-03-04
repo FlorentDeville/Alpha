@@ -209,6 +209,9 @@
     <ClInclude Include="Reflection\ReflectionMacro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Reflection\EnumEntry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Collections\Array.inl">

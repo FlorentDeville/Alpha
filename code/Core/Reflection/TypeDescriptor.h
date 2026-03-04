@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/EnumEntry.h"
 #include "Core/Reflection/ReflectionUtils.h"
 #include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
@@ -14,6 +15,7 @@
 
 namespace Core
 {
+	class EnumEntry;
 	class FieldDescriptor;
 
 	class TypeDescriptor
@@ -30,6 +32,9 @@ namespace Core
 
 		FieldDescriptor* AddField();
 
+		void AddEntry(int32_t value, const std::string& name);
+
+		void SetIsEnum();
 		void SetBaseType(const std::string& baseTypeName);
 		void SetUpgradeType(Core::Sid upgradeType);
 
@@ -79,6 +84,7 @@ namespace Core
 	private:
 		std::string m_name;						// Full name of the type with namespace and template parameters.
 		std::vector<FieldDescriptor*> m_fields;
+		Core::Array<EnumEntry> m_enumEntries;	// List of possible values for an enum type
 		Core::Sid m_sid;						// Sid of m_name. It is deterministic, can be serialized and used to compare types.
 		Core::Sid m_sidWithoutTemplateParam;	// Sid of m_name without the template param. For example SID("Core::Array") or SID("Systems::HardAssetRef")
 		uint64_t m_size;
@@ -88,6 +94,7 @@ namespace Core
 		bool m_isContainer : 1;					// True if this is an array, m_pTemplateType is the type of the elements in the array. Can be iterated with begin/end.
 		bool m_isTemplate : 1;					// True if this is a templated type. Arrays are templated types.
 		bool m_isTemplateParamTypePointer : 1;	// True if the current type uses a pointer to a templated type. For example Core::Array<T*>.
+		bool m_isEnum : 1;						// True if the current type is an enum
 
 		// This is the type of the template parameter. For example it is T in Core::Array<T> or A in HardAssetRed<A>.
 		// TypeDescriptor always represents the type itself, never a pointer to the type. So if the template type is T*, thwn
