@@ -1,11 +1,13 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Rendering/RootSignature/RootSignatureId.h"
 #include "Rendering/Shaders/ShaderId.h"
+
+#include "Rendering/PipelineState/CullMode.h"
 
 #include <dxgiformat.h>
 
@@ -19,13 +21,6 @@ namespace Rendering
 	class PipelineState
 	{
 	public:
-		enum CULL_MODE
-		{
-			NONE,
-			FRONT,
-			BACK
-		};
-
 		PipelineState();
 		~PipelineState();
 
@@ -38,7 +33,7 @@ namespace Rendering
 		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format);
 		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps);
-		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CULL_MODE cullMode);
+		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CullMode cullMode);
 		void Init_Generic_ShadowMap_SpotLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_Generic_ShadowMap_DirLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 

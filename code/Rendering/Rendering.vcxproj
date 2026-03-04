@@ -27,6 +27,7 @@
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
+    <ClInclude Include="PipelineState\CullMode.h" />
     <ClInclude Include="PipelineState\PipelineState.h" />
     <ClInclude Include="PipelineState\PipelineStateId.h" />
     <ClInclude Include="PipelineState\PipelineStateMgr.h" />

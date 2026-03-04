@@ -40,19 +40,19 @@ namespace Rendering
 		CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendState;
 	};
 
-	static D3D12_CULL_MODE GetDx12CullMode(PipelineState::CULL_MODE cullMode)
+	static D3D12_CULL_MODE GetDx12CullMode(CullMode cullMode)
 	{
 		switch (cullMode)
 		{
-		case PipelineState::NONE:
+		case None:
 			return D3D12_CULL_MODE_NONE;
 			break;
 
-		case PipelineState::FRONT:
+		case Front:
 			return D3D12_CULL_MODE_FRONT;
 			break;
 
-		case PipelineState::BACK:
+		case Back:
 			return D3D12_CULL_MODE_BACK;
 			break;
 		}
@@ -249,7 +249,7 @@ namespace Rendering
 		ThrowIfFailed(res);
 	}
 
-	void PipelineState::Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CULL_MODE cullMode)
+	void PipelineState::Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CullMode cullMode)
 	{
 		struct PipelineStateStream
 		{

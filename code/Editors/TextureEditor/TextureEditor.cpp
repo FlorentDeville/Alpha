@@ -205,10 +205,10 @@ namespace Editors
 		m_pRootSig = new Rendering::RootSignature(param.m_shaderPath + "\\texture_editor_viewport.rs.cso");
 
 		m_pPsoQuad = new Rendering::PipelineState();
-		m_pPsoQuad->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::PipelineState::BACK);
+		m_pPsoQuad->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::Back);
 
 		m_pPsoCubemap = new Rendering::PipelineState();
-		m_pPsoCubemap->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::PipelineState::FRONT);
+		m_pPsoCubemap->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::Front);
 	}
 
 	void TextureEditor::OnClick_Texture_CreateAndImport()
