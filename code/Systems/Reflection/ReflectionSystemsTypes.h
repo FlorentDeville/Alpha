@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Systems/Assets/NewAssetId.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 DEFINE_TYPE_RESOLVER(Systems::NewAssetId)
 

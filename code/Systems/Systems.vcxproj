@@ -53,7 +53,6 @@
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
-    <ClInclude Include="Reflection\ReflectionMacro.h" />
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
     <ClInclude Include="Rendering\MaterialRendering.h" />

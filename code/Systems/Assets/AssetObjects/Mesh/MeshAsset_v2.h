@@ -7,7 +7,7 @@
 #include "Rendering/Mesh/Mesh.h"
 
 #include "Systems/Objects/AssetObject.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 ENABLE_REFLECTION(Systems, MeshAsset_v2)
 

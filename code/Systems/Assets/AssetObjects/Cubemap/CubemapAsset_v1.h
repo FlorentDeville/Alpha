@@ -7,7 +7,7 @@
 #include "Systems/Objects/AssetObject.h"
 
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAssetUpgrade.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 namespace Rendering
 {

@@ -7,7 +7,7 @@
 #include "Systems/Objects/Object.h"
 
 #include "Systems/Assets/NewAssetId.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 ENABLE_REFLECTION(Systems, AssetObject)
 

@@ -4,7 +4,7 @@
 
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 namespace Systems
 {

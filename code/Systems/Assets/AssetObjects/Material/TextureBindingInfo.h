@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/AssetRef/HardAssetRef.h"

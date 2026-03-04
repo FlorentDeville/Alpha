@@ -12,7 +12,7 @@
 #include "Core/Math/Vec4f.h"
 #include "Core/Sid/Sid.h"
 
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 
 DEFINE_TYPE_RESOLVER(Core::Blob)

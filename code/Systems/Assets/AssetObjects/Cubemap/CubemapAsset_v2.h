@@ -7,7 +7,7 @@
 #include "Core/Blob/Blob.h"
 
 #include "Systems/Objects/AssetObject.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 namespace Rendering
 {

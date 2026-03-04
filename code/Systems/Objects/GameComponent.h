@@ -7,7 +7,7 @@
 #include "Core/Guid/Guid.h"
 
 #include "Systems/Objects/Object.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 ENABLE_REFLECTION(Systems, GameComponent)
 

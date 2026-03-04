@@ -154,6 +154,7 @@
     <ClInclude Include="Math\Vec4f.h" />
     <ClInclude Include="Reflection\FieldAttribute.h" />
     <ClInclude Include="Reflection\FieldDescriptor.h" />
+    <ClInclude Include="Reflection\ReflectionMacro.h" />
     <ClInclude Include="Reflection\ReflectionMgr.h" />
     <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Reflection\TypeDescriptor.h" />
