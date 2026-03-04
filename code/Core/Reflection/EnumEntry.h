@@ -9,7 +9,7 @@
 
 namespace Core
 {
-	//An enum entry represent a single enumeration value.
+	//An enum entry represents a single enumeration value.
 	//Internally the enum is stored as an int64_t. The real enum is stored as a bit copy inside m_value.
 	//ToStoredValue converts a real enum to the internally stored value.
 	//ToXByte converts from the internally stored value to a integer with the same size as the enum.
