@@ -150,6 +150,9 @@
     <ClInclude Include="Tools\AlternateColorCBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\ComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">
@@ -264,6 +267,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\TreeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\ComboBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

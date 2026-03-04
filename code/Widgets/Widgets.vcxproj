@@ -51,6 +51,7 @@
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetMgr.h" />
     <ClInclude Include="Widgets\AbstractClickable.h" />
+    <ClInclude Include="Widgets\ComboBox.h" />
     <ClInclude Include="Widgets\Frame.h" />
     <ClInclude Include="Widgets\SliderFloat.h" />
     <ClInclude Include="Widgets\TableView.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WidgetMgr.cpp" />
     <ClCompile Include="Widgets\AbstractClickable.cpp" />
+    <ClCompile Include="Widgets\ComboBox.cpp" />
     <ClCompile Include="Widgets\Frame.cpp" />
     <ClCompile Include="Widgets\SliderFloat.cpp" />
     <ClCompile Include="Widgets\TableView.cpp" />
