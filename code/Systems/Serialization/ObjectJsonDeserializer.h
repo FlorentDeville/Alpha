@@ -37,5 +37,6 @@ namespace Systems
 		bool DeserializeField(const Core::JsonValue& jsonFieldValue, const Core::TypeDescriptor* pFieldType, const Core::FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer);
 		bool DeserializeObject(const Core::JsonObject* jsonObject, Object** ppObject, bool constructInPlace);
 		bool DeserializeClass(const Core::JsonObject* jsonObject, const Core::TypeDescriptor* pType, void* pObject);
+		bool DeserializeEnum(const Core::JsonValue& jsonValue, const Core::TypeDescriptor* pType, void* pFieldPtr);
 	};
 }
