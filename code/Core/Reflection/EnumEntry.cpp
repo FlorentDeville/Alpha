@@ -169,4 +169,42 @@ namespace Core
 		return c.o;
 	}
 
+	int8_t EnumEntry::To1Byte(int64_t storedValue)
+	{
+		union Conv
+		{
+			int64_t i;
+			int8_t o;
+		};
+
+		Conv c;
+		c.i = storedValue;
+		return c.o;
+	}
+
+	int16_t EnumEntry::To2Bytes(int64_t storedValue)
+	{
+		union Conv
+		{
+			int64_t i;
+			int16_t o;
+		};
+
+		Conv c;
+		c.i = storedValue;
+		return c.o;
+	}
+
+	int32_t EnumEntry::To4Bytes(int64_t storedValue)
+	{
+		union Conv
+		{
+			int64_t i;
+			int32_t o;
+		};
+
+		Conv c;
+		c.i = storedValue;
+		return c.o;
+	}
 }

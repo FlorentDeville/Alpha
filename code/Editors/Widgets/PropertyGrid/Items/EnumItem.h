@@ -22,7 +22,11 @@ namespace Editors
 		void CreateWidgets() override;
 		void UpdateValue() override;
 
+		void OnSelectionChanged(int64_t oldValue, int64_t newValue);
+
 	private:
 		Widgets::ComboBox* m_pComboBox;
+
+		int64_t m_selectedEnum;
 	};
 }
