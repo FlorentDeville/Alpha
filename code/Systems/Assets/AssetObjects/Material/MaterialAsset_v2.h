@@ -6,6 +6,8 @@
 
 #include "Core/Collections/Array.h"
 
+#include "Rendering/PipelineState/CullMode.h"
+
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
@@ -81,6 +83,8 @@ namespace Systems
 
 		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
 
+		Rendering::CullMode m_cullMode;
+
 		START_REFLECTION(Systems::MaterialAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
@@ -91,6 +95,7 @@ namespace Systems
 			ADD_FIELD_ATTR(m_bindingInfoArray, Core::Hidden)
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
+			ADD_FIELD(m_cullMode)
 		END_REFLECTION()
 
 		//No reflected variables
