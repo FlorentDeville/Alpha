@@ -514,39 +514,39 @@ namespace Editors
 		if (isBaseMaterial)
 		{
 			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
-			if (pMaterial && pMaterial->IsValidForRendering())
-			{
-				Rendering::PerObjectCBuffer perObjectData;
-				perObjectData.m_world = world;
+			if (!pMaterial || !pMaterial->IsValidForRendering())
+				return;
+			
+			Rendering::PerObjectCBuffer perObjectData;
+			perObjectData.m_world = world;
 
-				DirectX::XMFLOAT3 cameraPosFloat3;
-				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
-				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+			DirectX::XMFLOAT3 cameraPosFloat3;
+			DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+			Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-				Rendering::LightsArrayCBuffer lights;
-				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
+			Rendering::LightsArrayCBuffer lights;
+			lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
-				Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
-			}
+			Systems::MaterialRendering::Bind(*pMaterial, perObjectData, perFrameData, lights);
 		}
 		else if (Systems::AssetUtil::IsA<Systems::MaterialInstanceAsset>(m_selectedMaterialId))
 		{
 			const Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(m_selectedMaterialId);
 			const Systems::MaterialAsset* pMaterial = pMaterialInstance->GetBaseMaterial();
-			if (pMaterial && pMaterial->IsValidForRendering())
-			{
-				Rendering::PerObjectCBuffer perObjectData;
-				perObjectData.m_world = world;
+			if (!pMaterial || !pMaterial->IsValidForRendering())
+				return;
+			
+			Rendering::PerObjectCBuffer perObjectData;
+			perObjectData.m_world = world;
 
-				DirectX::XMFLOAT3 cameraPosFloat3;
-				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
-				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+			DirectX::XMFLOAT3 cameraPosFloat3;
+			DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
+			Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
 
-				Rendering::LightsArrayCBuffer lights;
-				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
+			Rendering::LightsArrayCBuffer lights;
+			lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
 
-				Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
-			}
+			Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
 		}
 
 		renderer.RenderMesh(*m_pMeshes[m_selectedMesh]);
