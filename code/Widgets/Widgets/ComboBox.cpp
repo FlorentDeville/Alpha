@@ -143,7 +143,7 @@ namespace Widgets
 		if (m_options.IsValidIndex(optionIndex))
 		{
 			m_selectedOptionIndex = optionIndex;
-			m_pLabel->SetText(m_options[optionIndex].m_label);
+			m_pLabel->SetText(" " + m_options[optionIndex].m_label); //add a space character cause it's an easy way to put a padding
 		}
 	}
 }
