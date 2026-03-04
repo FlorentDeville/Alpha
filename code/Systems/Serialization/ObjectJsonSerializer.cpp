@@ -136,6 +136,10 @@ namespace Systems
 			value.Set(pJsonObject);
 			return SerializeClass(pFieldPtr, pDescription, *pJsonObject);
 		}
+		else if (pDescription->IsEnum())
+		{
+			return SerializeEnum(pFieldPtr, pDescription, value);
+		}
 
 		switch (pDescription->GetSid())
 		{
@@ -331,6 +335,58 @@ namespace Systems
 			return res;
 
 		}
+	}
+
+	bool ObjectJsonSerializer::SerializeEnum(const void* pFieldPtr, const Core::TypeDescriptor* pDescription, Core::JsonValue& value)
+	{
+		switch (pDescription->GetSize())
+		{
+		case 1:
+		{
+			const int8_t* ptr = reinterpret_cast<const int8_t*>(pFieldPtr);
+			int64_t storedValue = Core::EnumEntry::ToStoredValue(*ptr);
+			uint64_t jsonValue = *reinterpret_cast<uint64_t*>(&storedValue);
+			value.Set(jsonValue);
+			return true;
+		}
+		break;
+
+		case 2:
+		{
+			const int16_t* ptr = reinterpret_cast<const int16_t*>(pFieldPtr);
+			int64_t storedValue = Core::EnumEntry::ToStoredValue(*ptr);
+			uint64_t jsonValue = *reinterpret_cast<uint64_t*>(&storedValue);
+			value.Set(jsonValue);
+			return true;
+		}
+		break;
+
+		case 4:
+		{
+			const int32_t* ptr = reinterpret_cast<const int32_t*>(pFieldPtr);
+			int64_t storedValue = Core::EnumEntry::ToStoredValue(*ptr);
+			uint64_t jsonValue = *reinterpret_cast<uint64_t*>(&storedValue);
+			value.Set(jsonValue);
+			return true;
+		}
+		break;
+
+		case 8:
+		{
+			const int64_t* ptr = reinterpret_cast<const int64_t*>(pFieldPtr);
+			uint64_t jsonValue = *reinterpret_cast<const uint64_t*>(ptr);
+			value.Set(jsonValue);
+			return true;
+		}
+		break;
+
+		default:
+			assert(false && "Unknown enum size");
+			return false;
+			break;
+		}
+
+		return false;
 	}
 
 	bool ObjectJsonSerializer::Serialize(const Object* pObject, Core::JsonObject& jsonObj)
