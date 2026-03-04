@@ -22,7 +22,7 @@
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 #include "Systems/Objects/AssetObject.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"

@@ -77,6 +77,5 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="library_stack.txt" />
-    <Text Include="known_bugs.txt" />
   </ItemGroup>
 </Project>

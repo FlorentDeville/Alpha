@@ -18,11 +18,12 @@ namespace Rendering
 	class Shader;
 }
 
+ENABLE_REFLECTION(Systems, MaterialAsset_v2)
+
 namespace Systems
 {
 	class MaterialAsset_v1;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialAsset_v2)
 	class MaterialAsset_v2 : public AssetObject
 	{
 	public:
@@ -84,10 +85,10 @@ namespace Systems
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
 			ADD_FIELD(m_sourceFileVS)
-			ADD_FIELD_ATTR(m_psBlob, Hidden)
-			ADD_FIELD_ATTR(m_vsBlob, Hidden)
-			ADD_FIELD_ATTR(m_rsBlob, Hidden)
-			ADD_FIELD_ATTR(m_bindingInfoArray, Hidden)
+			ADD_FIELD_ATTR(m_psBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_vsBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_rsBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_bindingInfoArray, Core::Hidden)
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
 		END_REFLECTION()

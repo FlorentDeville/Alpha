@@ -8,17 +8,17 @@
 
 namespace Core
 {
+	class FieldDescriptor;
 	class JsonArray;
 	class JsonObject;
 	class JsonValue;
+	class TypeDescriptor;
 }
 
 namespace Systems
 {
-	class FieldDescriptor;
 	class NewAssetId;
 	class Object;
-	class TypeDescriptor;
 	
 	// Class to serialize an object in json using the reflection
 	class ObjectJsonSerializer
@@ -34,9 +34,9 @@ namespace Systems
 	private:
 		Core::Array<Systems::NewAssetId> m_hardAssetRefArray;
 
-		bool SerializeField(const void* pFieldPtr, const FieldDescriptor* pField, const TypeDescriptor* pDescription, Core::JsonValue& value);
-		bool SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray);
-		bool SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj);
+		bool SerializeField(const void* pFieldPtr, const Core::FieldDescriptor* pField, const Core::TypeDescriptor* pDescription, Core::JsonValue& value);
+		bool SerializeArray(const void* pArrayPtr, const Core::FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray);
+		bool SerializeClass(const void* pObject, const Core::TypeDescriptor* pType, Core::JsonObject& jsonObj);
 		bool SerializeObject(const Object* pObject, Core::JsonObject& jsonObj);
 	};
 }

@@ -10,12 +10,12 @@ namespace Systems
 		: m_pTypeDescriptor(nullptr)
 	{ }
 
-	void Object::SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor)
+	void Object::SetTypeDescriptor(const Core::TypeDescriptor* pTypeDescriptor)
 	{
 		m_pTypeDescriptor = pTypeDescriptor;
 	}
 
-	const TypeDescriptor* Object::GetTypeDescriptor() const
+	const Core::TypeDescriptor* Object::GetTypeDescriptor() const
 	{
 		return m_pTypeDescriptor;
 	}
@@ -23,7 +23,7 @@ namespace Systems
 	void Object::PostLoad()
 	{ }
 
-	Object* CreateObject(const TypeDescriptor* pType)
+	Object* CreateObject(const Core::TypeDescriptor* pType)
 	{
 		Object* pObject = static_cast<Object*>(pType->Construct());
 		pObject->SetTypeDescriptor(pType);

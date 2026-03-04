@@ -28,7 +28,7 @@ namespace Editors
 	PropertyGridItemFactory_MaterialParameterDescription::~PropertyGridItemFactory_MaterialParameterDescription()
 	{ }
 
-	void PropertyGridItemFactory_MaterialParameterDescription::CreateItems(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	void PropertyGridItemFactory_MaterialParameterDescription::CreateItems(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 	{
 		Systems::MaterialParameterDescription* pMatParamDesc = nullptr;
 		if (pField->GetType()->IsContainer())
@@ -171,7 +171,7 @@ namespace Editors
 		m_pPopulator->AddPropertyGridItem(pItem);
 	}
 
-	Widgets::TextBox* PropertyGridItemFactory_MaterialParameterDescription::CreateSingleFloatWidget(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, float* pData)
+	Widgets::TextBox* PropertyGridItemFactory_MaterialParameterDescription::CreateSingleFloatWidget(void* pObj, const Core::FieldDescriptor* pField, uint32_t index, float* pData)
 	{
 		Widgets::TextBox* pWidget = new Widgets::TextBox();
 		pWidget->SetSize(Core::UInt2(TEXT_BOX_WIDTH, 20));

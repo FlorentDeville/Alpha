@@ -3,11 +3,6 @@
   <ItemGroup>
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Objects\Object.h" />
-    <ClInclude Include="Reflection\FieldDescriptor.h" />
-    <ClInclude Include="Reflection\TypeDescriptor.h" />
-    <ClInclude Include="Reflection\FieldAttribute.h" />
-    <ClInclude Include="Reflection\ReflectionMgr.h" />
-    <ClInclude Include="Reflection\ReflectionMacro.h" />
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
@@ -15,7 +10,6 @@
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
-    <ClInclude Include="Reflection\ReflectionUtils.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
@@ -30,7 +24,6 @@
     <ClInclude Include="Assets\NewAssetId.h" />
     <ClInclude Include="Container\ObjectId.h" />
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
-    <ClInclude Include="Reflection\TypeResolver.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
@@ -62,9 +55,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
-    <ClCompile Include="Reflection\FieldDescriptor.cpp" />
-    <ClCompile Include="Reflection\TypeDescriptor.cpp" />
-    <ClCompile Include="Reflection\ReflectionMgr.cpp" />
     <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionCoreTypes.cpp" />
     <ClCompile Include="Objects\Object.cpp" />

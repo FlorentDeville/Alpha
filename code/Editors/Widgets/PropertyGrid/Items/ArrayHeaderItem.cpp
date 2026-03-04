@@ -15,7 +15,7 @@
 
 namespace Editors
 {
-	ArrayHeaderItem::ArrayHeaderItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index, bool enableAddElementButton)
+	ArrayHeaderItem::ArrayHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index, bool enableAddElementButton)
 		: PropertyGridItem(pObj, pField, index)
 		, m_enableAddElementButton(enableAddElementButton)
 	{
@@ -53,9 +53,9 @@ namespace Editors
 		}
 
 		//here I know it's an array of pointers, so I need to add an element to the array and also to create the object
-		const Systems::TypeDescriptor* pElementType = m_pField->GetType()->GetTemplateParamType();
+		const Core::TypeDescriptor* pElementType = m_pField->GetType()->GetTemplateParamType();
 
-		const Systems::TypeDescriptor* pElementBaseType = pElementType;
+		const Core::TypeDescriptor* pElementBaseType = pElementType;
 		while (pElementBaseType->GetBaseType())
 			pElementBaseType = pElementBaseType->GetBaseType();
 
@@ -67,7 +67,7 @@ namespace Editors
 		pDialog->Open();
 		pDialog->OnOk([this](const Core::Sid& classNameSid)
 			{
-				const Systems::TypeDescriptor* pTypeToCreate = Systems::ReflectionMgr::Get().GetType(classNameSid);
+				const Core::TypeDescriptor* pTypeToCreate = Core::ReflectionMgr::Get().GetType(classNameSid);
 				if (!pTypeToCreate)
 					return;
 

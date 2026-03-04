@@ -117,6 +117,9 @@
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
+    <ClCompile Include="Reflection\FieldDescriptor.cpp" />
+    <ClCompile Include="Reflection\ReflectionMgr.cpp" />
+    <ClCompile Include="Reflection\TypeDescriptor.cpp" />
     <ClCompile Include="Sid\Sid.cpp" />
     <ClCompile Include="String\BytesToHexa.cpp" />
   </ItemGroup>
@@ -149,6 +152,13 @@
     <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
+    <ClInclude Include="Reflection\FieldAttribute.h" />
+    <ClInclude Include="Reflection\FieldDescriptor.h" />
+    <ClInclude Include="Reflection\ReflectionMacro.h" />
+    <ClInclude Include="Reflection\ReflectionMgr.h" />
+    <ClInclude Include="Reflection\ReflectionUtils.h" />
+    <ClInclude Include="Reflection\TypeDescriptor.h" />
+    <ClInclude Include="Reflection\TypeResolver.h" />
     <ClInclude Include="Sid\Sid.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="String\BytesToHexa.h" />

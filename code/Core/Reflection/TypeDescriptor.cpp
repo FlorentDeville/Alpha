@@ -1,12 +1,12 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
-#include "Systems/Reflection/TypeDescriptor.h"
+#include "Core/Reflection/TypeDescriptor.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
-namespace Systems
+namespace Core
 {
 	TypeDescriptor::TypeDescriptor(const std::string& name)
 		: m_name(name)

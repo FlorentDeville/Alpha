@@ -4,9 +4,11 @@
 
 #pragma once
 
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 #include <cstdint>
+
+ENABLE_REFLECTION(Systems, MaterialCBufferBindingInfo)
 
 namespace Systems
 {
@@ -20,7 +22,6 @@ namespace Systems
 	};
 
 	//Information about how to bind a cbuffer
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialCBufferBindingInfo)
 	class MaterialCBufferBindingInfo
 	{
 	public:

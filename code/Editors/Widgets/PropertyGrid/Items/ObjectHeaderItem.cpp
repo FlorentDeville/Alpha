@@ -9,7 +9,7 @@
 
 namespace Editors
 {
-	ObjectHeaderItem::ObjectHeaderItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	ObjectHeaderItem::ObjectHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 	{
 	}

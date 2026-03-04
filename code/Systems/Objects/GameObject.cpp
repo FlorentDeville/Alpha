@@ -84,7 +84,7 @@ namespace Systems
 			pComponent->SetOwner(this);
 	}
 
-	GameObject* CreateNewGameObject(const TypeDescriptor* pType)
+	GameObject* CreateNewGameObject(const Core::TypeDescriptor* pType)
 	{
 		GameObject* pObject = static_cast<GameObject*>(CreateObject(pType));
 		pObject->SetGuid(Core::Guid::GenerateNewGuid());

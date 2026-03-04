@@ -16,7 +16,7 @@ namespace Editors
 	class Mat44fItem : public PropertyGridItem
 	{
 	public:
-		Mat44fItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		Mat44fItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~Mat44fItem();
 
 		void CreateWidgets() override;

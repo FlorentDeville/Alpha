@@ -4,7 +4,7 @@
 
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 
-#include "Systems/Reflection/ReflectionMgr.h"
+#include "Core/Reflection/ReflectionMgr.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
@@ -23,10 +23,10 @@ namespace Editors
 		ClassModel(const Core::Sid& baseClassSid)
 			: Widgets::AbstractViewModel()
 		{
-			Systems::ReflectionMgr::Get().ForEachType([this, baseClassSid](const Systems::TypeDescriptor* pType)
+			Core::ReflectionMgr::Get().ForEachType([this, baseClassSid](const Core::TypeDescriptor* pType)
 				{
 					bool validType = false;
-					const Systems::TypeDescriptor* pParentType = pType;
+					const Core::TypeDescriptor* pParentType = pType;
 					while (pParentType)
 					{
 						if (pParentType->GetSid() == baseClassSid)
@@ -92,7 +92,7 @@ namespace Editors
 			return "";
 		}
 
-		const Systems::TypeDescriptor* GetType(const Widgets::ModelIndex& index)
+		const Core::TypeDescriptor* GetType(const Widgets::ModelIndex& index)
 		{
 			if (!index.IsValid())
 				return nullptr;
@@ -101,7 +101,7 @@ namespace Editors
 		}
 
 	private:
-		Core::Array<const Systems::TypeDescriptor*> m_cache;
+		Core::Array<const Core::TypeDescriptor*> m_cache;
 	};
 
 	ClassSelectionDialog::ClassSelectionDialog(const Core::Sid& baseClassSid)
@@ -171,7 +171,7 @@ namespace Editors
 		}
 
 		const Widgets::SelectionRow& row = selection.back();
-		const Systems::TypeDescriptor* pType = m_pClassModel->GetType(row.GetStartIndex());
+		const Core::TypeDescriptor* pType = m_pClassModel->GetType(row.GetStartIndex());
 		if (!pType)
 		{
 			Close();

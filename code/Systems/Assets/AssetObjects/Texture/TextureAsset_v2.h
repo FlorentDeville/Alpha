@@ -15,11 +15,12 @@ namespace Rendering
 	class Texture;
 }
 
+ENABLE_REFLECTION(Systems, TextureAsset_v2)
+
 namespace Systems
 {
 	class TextureAsset_v1;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, TextureAsset_v2)
 	class TextureAsset_v2 : public AssetObject
 	{
 	public:
@@ -56,7 +57,7 @@ namespace Systems
 		START_REFLECTION(Systems::TextureAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilename)
-			ADD_FIELD_ATTR(m_blob, Hidden)
+			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 			ADD_FIELD(m_width)
 			ADD_FIELD(m_height)
 			ADD_FIELD(m_mipCount)

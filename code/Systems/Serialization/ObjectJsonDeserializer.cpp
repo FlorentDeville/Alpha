@@ -13,12 +13,12 @@
 #include "Core/Json/JsonObject.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Reflection/ReflectionMgr.h"
 #include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/Object.h"
-#include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Serialization/ObjectHeader.h"
 
 #include <assert.h>
@@ -26,7 +26,7 @@
 
 namespace Systems
 {
-	bool ObjectJsonDeserializer::DeserializeArray(const Core::JsonArray& jsonArray, const TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array)
+	bool ObjectJsonDeserializer::DeserializeArray(const Core::JsonArray& jsonArray, const Core::TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array)
 	{
 		size_t size = jsonArray.GetSize();
 		array.Resize(static_cast<int32_t>(size));
@@ -54,7 +54,7 @@ namespace Systems
 		return true;
 	}
 
-	bool ObjectJsonDeserializer::DeserializeField(const Core::JsonValue& jsonFieldValue, const TypeDescriptor* pFieldType, const FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer)
+	bool ObjectJsonDeserializer::DeserializeField(const Core::JsonValue& jsonFieldValue, const Core::TypeDescriptor* pFieldType, const Core::FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer)
 	{
 		//Watch out : pFieldDescriptor can be null if this is a field from an array
 		void* ptr = pFieldPtr;
@@ -275,7 +275,7 @@ namespace Systems
 		}
 
 		//now create the object
-		const TypeDescriptor* pType = ReflectionMgr::Get().GetType(objectTypename);
+		const Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().GetType(objectTypename);
 
 		if (constructInPlace)
 		{
@@ -298,7 +298,7 @@ namespace Systems
 		Core::Sid upgradeType = pType->GetUpgradeType();
 		if (upgradeType != Core::INVALID_SID)
 		{
-			const TypeDescriptor* pUpgradeType = ReflectionMgr::Get().GetType(upgradeType);
+			const Core::TypeDescriptor* pUpgradeType = Core::ReflectionMgr::Get().GetType(upgradeType);
 			Object* pUpgradeObject = reinterpret_cast<Object*>(pUpgradeType->Construct());
 			pUpgradeObject->SetTypeDescriptor(pUpgradeType);
 
@@ -311,9 +311,9 @@ namespace Systems
 		return true;
 	}
 
-	bool ObjectJsonDeserializer::DeserializeClass(const Core::JsonObject* jsonObject, const TypeDescriptor* pType, void* pObject)
+	bool ObjectJsonDeserializer::DeserializeClass(const Core::JsonObject* jsonObject, const Core::TypeDescriptor* pType, void* pObject)
 	{
-		const TypeDescriptor* pBaseType = pType->GetBaseType();
+		const Core::TypeDescriptor* pBaseType = pType->GetBaseType();
 		if (pBaseType)
 		{
 			bool res = DeserializeClass(jsonObject, pBaseType, pObject);
@@ -321,8 +321,8 @@ namespace Systems
 				return false;
 		}
 
-		const std::vector<FieldDescriptor*>& fields = pType->GetFields();
-		for (const FieldDescriptor* pField : fields)
+		const std::vector<Core::FieldDescriptor*>& fields = pType->GetFields();
+		for (const Core::FieldDescriptor* pField : fields)
 		{
 			const Core::JsonValue& jsonValue = jsonObject->GetMember(pField->GetName());
 			if (jsonValue.IsNull())

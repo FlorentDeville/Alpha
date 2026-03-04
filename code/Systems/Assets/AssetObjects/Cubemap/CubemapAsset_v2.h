@@ -7,18 +7,19 @@
 #include "Core/Blob/Blob.h"
 
 #include "Systems/Objects/AssetObject.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 namespace Rendering
 {
 	class Texture;
 }
 
+ENABLE_REFLECTION(Systems, CubemapAsset_v2)
+
 namespace Systems
 {
 	class CubemapAsset_v1;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, CubemapAsset_v2)
 	class CubemapAsset_v2 : public AssetObject
 	{
 	public:
@@ -63,7 +64,7 @@ namespace Systems
 			ADD_FIELD(m_bottomSourceFilename)
 			ADD_FIELD(m_frontSourceFilename)
 			ADD_FIELD(m_backSourceFilename)
-			ADD_FIELD_ATTR(m_blob, Hidden)
+			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 		END_REFLECTION()
 
 		Rendering::Texture* m_pTexture;

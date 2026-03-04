@@ -14,11 +14,12 @@ namespace Core
 	class Guid;
 }
 
+ENABLE_REFLECTION(Systems, LevelAsset_v1)
+
 namespace Systems
 {
 	class GameObject;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, LevelAsset_v1)
 	class LevelAsset_v1 : public AssetObject
 	{
 	public:

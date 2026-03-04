@@ -4,15 +4,15 @@
 
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 
-#include "Editors/ObjectWatcher/ObjectWatcher.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Widgets/TextBox.h"
 
 namespace Editors
 {
-	StringItem::StringItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	StringItem::StringItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 	{ }
 

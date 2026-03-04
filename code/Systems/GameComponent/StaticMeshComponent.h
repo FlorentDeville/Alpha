@@ -10,9 +10,10 @@
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Objects/GameComponent.h"
 
+ENABLE_REFLECTION(Systems, StaticMeshComponent)
+
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, StaticMeshComponent)
 	class StaticMeshComponent : public GameComponent
 	{
 	public:

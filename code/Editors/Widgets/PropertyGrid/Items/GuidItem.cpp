@@ -5,16 +5,15 @@
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 
 #include "Core/Guid/Guid.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
-
-#include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/TextBox.h"
 
 namespace Editors
 {
-	GuidItem::GuidItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	GuidItem::GuidItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox(nullptr)
 	{ }

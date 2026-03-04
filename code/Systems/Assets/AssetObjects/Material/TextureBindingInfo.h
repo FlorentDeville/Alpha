@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 
+ENABLE_REFLECTION(Systems, TextureBindingInfo)
+
 namespace Systems
 {
-
-	ENABLE_REFLECTION_WITH_NS(Systems, TextureBindingInfo)
 	class TextureBindingInfo
 	{
 	public:
@@ -22,8 +22,8 @@ namespace Systems
 		
 		START_REFLECTION(Systems::TextureBindingInfo)
 			ADD_FIELD(m_texture)
-			ADD_FIELD_ATTR(m_name, ReadOnly)
-			ADD_FIELD_ATTR(m_sigRootIndex, ReadOnly)
+			ADD_FIELD_ATTR(m_name, Core::ReadOnly)
+			ADD_FIELD_ATTR(m_sigRootIndex, Core::ReadOnly)
 		END_REFLECTION()
 	};
 }

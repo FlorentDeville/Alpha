@@ -17,7 +17,7 @@ namespace Editors
 	class ColorItem : public PropertyGridItem
 	{
 	public:
-		ColorItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		ColorItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~ColorItem();
 
 		void CreateWidgets() override;

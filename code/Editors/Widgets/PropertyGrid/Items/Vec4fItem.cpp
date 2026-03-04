@@ -5,10 +5,9 @@
 #include "Editors/Widgets/PropertyGrid/Items/Vec4fItem.h"
 
 #include "Core/Math/Vec4f.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
-
-#include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/Layout.h"
 #include "Widgets/TextBox.h"
@@ -17,7 +16,7 @@
 
 namespace Editors
 {
-	Vec4fItem::Vec4fItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	Vec4fItem::Vec4fItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox()
 	{ }

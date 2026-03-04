@@ -16,7 +16,7 @@ namespace Editors
 	class HardAssetRefItem : public PropertyGridItem
 	{
 	public:
-		HardAssetRefItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		HardAssetRefItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~HardAssetRefItem();
 
 		void CreateWidgets() override;

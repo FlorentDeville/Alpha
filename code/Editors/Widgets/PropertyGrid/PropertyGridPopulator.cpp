@@ -123,24 +123,24 @@ namespace Editors
 	void PropertyGridPopulator::CreatePropertiesForObject(Systems::Object* pObject)
 	{
 		ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pObject,
-			[this](void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
+			[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
 
 		m_watcherCallbackIds.PushBack(callbackId);
 
-		const Systems::TypeDescriptor* pRealType = pObject->GetTypeDescriptor();
+		const Core::TypeDescriptor* pRealType = pObject->GetTypeDescriptor();
 		CreatePropertiesForObjectParentClass(pObject, pRealType);
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType)
+	void PropertyGridPopulator::CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Core::TypeDescriptor* pType)
 	{
-		const Systems::TypeDescriptor* pParentType = pType->GetBaseType();
+		const Core::TypeDescriptor* pParentType = pType->GetBaseType();
 		if (pParentType)
 			CreatePropertiesForObjectParentClass(pObject, pParentType);
 		
 		CreatePropertiesForTypeMembers(pType, pObject);
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj)
+	void PropertyGridPopulator::CreatePropertiesForArrayElements(const Core::FieldDescriptor* pField, void* pObj)
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
 		int32_t size = pArray->GetSize();
@@ -151,11 +151,11 @@ namespace Editors
 		}
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, uint32_t index)
+	void PropertyGridPopulator::CreatePropertiesForSingleArrayElement(const Core::FieldDescriptor* pField, void* pObj, uint32_t index)
 	{
 		Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
-		const Systems::TypeDescriptor* pArrayType = pField->GetType();
-		const Systems::TypeDescriptor* pElementType = pArrayType->GetTemplateParamType();
+		const Core::TypeDescriptor* pArrayType = pField->GetType();
+		const Core::TypeDescriptor* pElementType = pArrayType->GetTemplateParamType();
 		bool isObject = pElementType->IsObject();
 
 		void* pElement = pArray->GetElement(index);
@@ -186,7 +186,7 @@ namespace Editors
 		else if (pElementType->IsClass())
 		{
 			ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pElement,
-				[this](void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
+				[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
 				{ 
 					ObjectWatcherCallback(pObj, pField, op, index); 
 				});
@@ -206,15 +206,15 @@ namespace Editors
 		}
 	}
 
-	void PropertyGridPopulator::CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData)
+	void PropertyGridPopulator::CreatePropertiesForTypeMembers(const Core::TypeDescriptor* pFieldType, void* pData)
 	{
-		const std::vector<Systems::FieldDescriptor*>& members = pFieldType->GetFields();
-		for (const Systems::FieldDescriptor* pField : members)
+		const std::vector<Core::FieldDescriptor*>& members = pFieldType->GetFields();
+		for (const Core::FieldDescriptor* pField : members)
 		{
 			if (pField->IsHidden())
 				continue;
 
-			const Systems::TypeDescriptor* memberType = pField->GetType();
+			const Core::TypeDescriptor* memberType = pField->GetType();
 
 			void* pMemberPtr = pField->GetDataPtr(pData);
 			if (pField->IsPointer())
@@ -268,9 +268,9 @@ namespace Editors
 
 	}
 
-	PropertyGridItem* PropertyGridPopulator::CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement)
+	PropertyGridItem* PropertyGridPopulator::CreatePropertyItemForPODField(const Core::FieldDescriptor* pField, void* pObj, uint32_t indexElement)
 	{
-		const Systems::TypeDescriptor* pFieldType = pField->GetType();	
+		const Core::TypeDescriptor* pFieldType = pField->GetType();	
 		
 		if (pFieldType->IsContainer()) 
 			pFieldType = pFieldType->GetTemplateParamType();
@@ -420,7 +420,7 @@ namespace Editors
 		return nullptr;
 	}
 
-	void PropertyGridPopulator::ObjectWatcherCallback(void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
+	void PropertyGridPopulator::ObjectWatcherCallback(void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
 	{
 		Core::Array<PropertyGridItem*> items = m_pPropertyGridWidget->GetPropertyGridItems();
 		Core::Array<PropertyGridItem*>::Iterator it = std::find_if(items.begin(), items.end(), [pObj, pField, index](PropertyGridItem* item) 

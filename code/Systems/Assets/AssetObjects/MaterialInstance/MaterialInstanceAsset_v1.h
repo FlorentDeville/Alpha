@@ -11,9 +11,10 @@
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Objects/AssetObject.h"
 
+ENABLE_REFLECTION(Systems, MaterialInstanceAsset_v1)
+
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialInstanceAsset_v1)
 	class MaterialInstanceAsset_v1 : public AssetObject
 	{
 	public:

@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include "Systems/Reflection/FieldDescriptor.h"
-#include "Systems/Reflection/ReflectionMgr.h"
-
+#include "Core/Reflection/FieldAttribute.h"
+#include "Core/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/ReflectionMgr.h"
+#include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
 
 // Define macros to enable reflection of a class
@@ -49,67 +50,52 @@
 // }
 // 
 
-#define OPEN_SYSTEMS_NAMESPACE namespace Systems {
-#define CLOSE_SYSTEMS_NAMESPACE }
-
 // Macro to specialize the template class TypeResolver
 #define DEFINE_TYPE_RESOLVER(TYPE) \
+	namespace Core { \
 	template<> class TypeResolver<TYPE> \
 	{ \
 	public: \
 		static const std::string& GetTypename() { static const std::string typeName = #TYPE; return typeName; } \
 		static Core::Sid GetTypenameSid() { return CONSTSID(#TYPE); } \
-		static const TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
-		static TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
-	};
-
-// Macro to specialize the template class TypeResolver inside the Systems namespace
-#define DEFINE_SYSTEMS_TYPE_RESOLVER(TYPE) \
-	OPEN_SYSTEMS_NAMESPACE \
-		DEFINE_TYPE_RESOLVER(TYPE) \
-	CLOSE_SYSTEMS_NAMESPACE
+		static const Core::TypeDescriptor* GetConstType() { return Core::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+		static Core::TypeDescriptor* GetType() { return Core::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+	}; \
+	} // namespace Core
 
 // Macro to register a type
 #define REGISTER_TYPE(TYPE) \
 	{ \
-		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		Systems::TypeInitializer<TYPE>::Run(pType); \
+		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		Core::TypeInitializer<TYPE>::Run(pType); \
 	}
 
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
 	{ \
-		Systems::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
-		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Systems::FieldAttribute(ATTRIBUTE)); \
+		Core::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
+		Core::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Core::FieldAttribute(ATTRIBUTE)); \
 	}
 
-// Macro to put first before the class
-#define ENABLE_REFLECTION_WITH_NS(NAMESPACE, TYPE) \
-	class TYPE; \
+// Macro to put first before the class and outside any namespace
+#define ENABLE_REFLECTION(NAMESPACE, TYPE) \
+	namespace NAMESPACE { \
+		class TYPE; \
+	} \
 	DEFINE_TYPE_RESOLVER(NAMESPACE::TYPE)
-
-// Macro to put first before the class
-#define ENABLE_REFLECTION(TYPE) \
-	class TYPE; \
-	DEFINE_TYPE_RESOLVER(TYPE)
-
-// Macro to put first before the class
-#define ENABLE_SYSTEMS_REFLECTION(TYPE) \
-	class TYPE; \
-	DEFINE_SYSTEMS_TYPE_RESOLVER(TYPE)
 
 // Macro to start the description of the reflection
 #define START_REFLECTION(TYPE) \
 public: \
 	static void RegisterReflection() {\
 		using ClassType = TYPE; \
-		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		Systems::TypeInitializer<TYPE>::Run(pType);
+		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		Core::TypeInitializer<TYPE>::Run(pType);
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }
 
 // Macro to add a field to the reflection
-#define ADD_FIELD(FIELD_NAME) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, None)
+#define ADD_FIELD(FIELD_NAME) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, Core::None)
 #define ADD_FIELD_ATTR(FIELD_NAME, ATTRIBUTE) REGISTER_FIELD(pType, ClassType, decltype(FIELD_NAME), FIELD_NAME, ATTRIBUTE)
 
 // Macro to add a base type to the current type

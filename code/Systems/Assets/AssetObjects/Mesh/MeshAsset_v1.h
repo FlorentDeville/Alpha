@@ -11,11 +11,12 @@
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAssetUpgrade.h"
 #include "Systems/Objects/AssetObject.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
+
+ENABLE_REFLECTION(Systems, MeshAsset_v1)
 
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, MeshAsset_v1)
 	class MeshAsset_v1 : public AssetObject
 	{
 	public:

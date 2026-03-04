@@ -8,9 +8,10 @@
 #include "Core/Math/Vec4f.h"
 #include "Systems/Objects/GameComponent.h"
 
+ENABLE_REFLECTION(Systems, DirectionalLightComponent)
+
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, DirectionalLightComponent)
 	class DirectionalLightComponent : public GameComponent
 	{
 	public:

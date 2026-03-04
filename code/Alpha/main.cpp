@@ -19,6 +19,7 @@
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
 #include "Core/Log/LogModule.h"
+#include "Core/Reflection/ReflectionMgr.h"
 
 #include "Editors/EditorManager.h"
 #include "Editors/EditorParameter.h"
@@ -49,7 +50,6 @@
 #include "Systems/Container/ContainerMgr.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
-#include "Systems/Reflection/ReflectionMgr.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
@@ -509,7 +509,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	std::string configurationFilename = binPath + "\\config.ini";
 	configuration.Load(binPath, configurationFilename);
 
-	Systems::ReflectionMgr::InitSingleton();
+	Core::ReflectionMgr::InitSingleton();
 	Systems::RegisterStandardTypesToReflection();
 	Systems::RegisterCoreTypesToReflection();
 	Systems::RegisterSystemsTypesToReflection();
@@ -654,7 +654,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	logModule.Shutdown();
 	Core::LogModule::ReleaseSingleton();
 
-	Systems::ReflectionMgr::ReleaseSingleton();
+	Core::ReflectionMgr::ReleaseSingleton();
 
 	return 0;
 }

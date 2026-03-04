@@ -170,7 +170,7 @@ namespace Editors
 
 			m_pPropertyGridPopulator->Init(m_pPropertyGrid);
 
-			Core::Sid typenameSid = Systems::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
+			Core::Sid typenameSid = Core::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
 			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());
 			m_pPropertyGridPopulator->SetCanAddElementToArray(false);
 		}
@@ -370,7 +370,7 @@ namespace Editors
 
 		m_pPropertyGridPopulator->Populate(pObject);
 
-		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
+		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
 
 		return true;
 	}

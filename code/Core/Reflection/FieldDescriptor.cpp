@@ -1,16 +1,16 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
-namespace Systems
+namespace Core
 {
 	FieldDescriptor::FieldDescriptor()
 		: m_name()
 		, m_offset(0)
 		, m_pType(nullptr)
-		, m_attribute(FieldAttribute::None)
+		, m_attribute(Core::FieldAttribute::None)
 		, m_isPointer(false)
 	{ }
 
@@ -44,13 +44,13 @@ namespace Systems
 
 	bool FieldDescriptor::IsHidden() const
 	{
-		bool hidden = m_attribute & FieldAttribute::Hidden;
+		bool hidden = m_attribute & Core::FieldAttribute::Hidden;
 		return hidden;
 	}
 
 	bool FieldDescriptor::IsReadOnly() const
 	{
-		bool readOnly = m_attribute & FieldAttribute::ReadOnly;
+		bool readOnly = m_attribute & Core::FieldAttribute::ReadOnly;
 		return readOnly;
 	}
 }

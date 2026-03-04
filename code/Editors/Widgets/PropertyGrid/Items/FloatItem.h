@@ -16,7 +16,7 @@ namespace Editors
 	class FloatItem : public PropertyGridItem
 	{
 	public:
-		FloatItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		FloatItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~FloatItem();
 
 		void CreateWidgets() override;

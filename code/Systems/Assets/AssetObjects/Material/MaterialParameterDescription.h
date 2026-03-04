@@ -4,11 +4,12 @@
 
 #pragma once
 
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
+
+ENABLE_REFLECTION(Systems, MaterialParameterDescription)
 
 namespace Systems
 {
-	ENABLE_REFLECTION_WITH_NS(Systems, MaterialParameterDescription)
 	class MaterialParameterDescription
 	{
 	public:

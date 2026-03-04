@@ -16,7 +16,7 @@ namespace Editors
 	class Vec4fItem : public PropertyGridItem
 	{
 	public:
-		Vec4fItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		Vec4fItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~Vec4fItem();
 
 		void CreateWidgets() override;

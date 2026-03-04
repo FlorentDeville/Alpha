@@ -573,7 +573,7 @@ namespace Editors
 		else
 			m_viewportState = NONE;
 
-		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnDataChanged(); });
+		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnDataChanged(); });
 	}
 
 	void TextureEditor::OnDataChanged()

@@ -7,13 +7,14 @@
 #include "Core/Guid/Guid.h"
 
 #include "Systems/Objects/Object.h"
-#include "Systems/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/ReflectionMacro.h"
+
+ENABLE_REFLECTION(Systems, GameComponent)
 
 namespace Systems
 {
 	class GameObject;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, GameComponent)
 	class GameComponent : public Object
 	{
 	public:
@@ -34,13 +35,13 @@ namespace Systems
 
 		START_REFLECTION(Systems::GameComponent)
 			ADD_BASETYPE(Systems::Object)
-			ADD_FIELD_ATTR(m_guid, Hidden)
+			ADD_FIELD_ATTR(m_guid, Core::Hidden)
 		END_REFLECTION()
 
 		GameObject* m_pOwnerGo;
 	};
 
-	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType);
+	GameComponent* CreateNewGameComponent(const Core::TypeDescriptor* pType);
 
 	template<typename T, typename... Args> T* CreateNewGameComponent(Args... args)
 	{

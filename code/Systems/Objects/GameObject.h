@@ -12,11 +12,12 @@
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 
+ENABLE_REFLECTION(Systems, GameObject)
+
 namespace Systems
 {
 	class GameComponent;
 
-	ENABLE_REFLECTION_WITH_NS(Systems, GameObject)
 	class GameObject : public Object
 	{
 	public:
@@ -55,14 +56,14 @@ namespace Systems
 
 		START_REFLECTION(Systems::GameObject)
 			ADD_BASETYPE(Systems::Object)
-			ADD_FIELD_ATTR(m_guid, ReadOnly | Hidden)
+			ADD_FIELD_ATTR(m_guid, Core::ReadOnly | Core::Hidden)
 			ADD_FIELD(m_name)
 			ADD_FIELD(m_transform)
 			ADD_FIELD(m_components)
 		END_REFLECTION()
 	};
 
-	GameObject* CreateNewGameObject(const TypeDescriptor* pType);
+	GameObject* CreateNewGameObject(const Core::TypeDescriptor* pType);
 
 	template<typename T, typename... Args> T* CreateNewGameObject(Args... args)
 	{

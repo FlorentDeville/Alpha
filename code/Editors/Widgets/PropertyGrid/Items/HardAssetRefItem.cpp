@@ -4,12 +4,13 @@
 
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 
+#include "Core/Reflection/FieldDescriptor.h"
+
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetRef/HardAssetRefRaw.h"
-#include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -18,7 +19,7 @@
 
 namespace Editors
 {
-	HardAssetRefItem::HardAssetRefItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	HardAssetRefItem::HardAssetRefItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox()
 	{ }
@@ -39,7 +40,7 @@ namespace Editors
 		pButton->AddWidget(pLabel);
 		pButton->OnClick([this]()
 			{
-				const Systems::TypeDescriptor* pTemplateParamType = m_pField->GetType()->GetTemplateParamType();
+				const Core::TypeDescriptor* pTemplateParamType = m_pField->GetType()->GetTemplateParamType();
 				const Systems::NewAssetType* pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(pTemplateParamType->GetSid());
 				if (!pAssetType)
 					return;
