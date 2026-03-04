@@ -27,7 +27,7 @@ namespace Widgets
 		AddWidget(pLayout);
 
 		const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
-		Rendering::TextureId expandedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconExpanded);
+		Rendering::TextureId expandedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconDown);
 		Widgets::Icon* pIcon = new Widgets::Icon(expandedIcon);
 		pIcon->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 
