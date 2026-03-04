@@ -6,6 +6,7 @@
 
 #include "Widgets/Container.h"
 
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Collections/Array.h"
 
 namespace Widgets
@@ -31,6 +32,8 @@ namespace Widgets
 		void AddOption(const std::string& label, int64_t value);
 		void SetSelection(int64_t value);
 
+		EVENT_DECL(SelectionChanged, void(int64_t oldValue, int64_t newValue))
+
 	private:
 		struct Option
 		{
@@ -40,6 +43,7 @@ namespace Widgets
 
 		Core::Array<Option> m_options;
 		uint32_t m_selectedOptionIndex;
+		bool m_selectedOptionSet;
 
 		Label* m_pLabel;
 
@@ -49,5 +53,8 @@ namespace Widgets
 		bool m_displayOptions;
 
 		void InternalSetSelection(uint32_t optionIndex);
+
+		void ShowOptions();
+		void HideOptions();
 	};
 }

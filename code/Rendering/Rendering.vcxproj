@@ -27,9 +27,11 @@
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
+    <ClInclude Include="PipelineState\CullMode.h" />
     <ClInclude Include="PipelineState\PipelineState.h" />
     <ClInclude Include="PipelineState\PipelineStateId.h" />
     <ClInclude Include="PipelineState\PipelineStateMgr.h" />
+    <ClInclude Include="Reflection\ReflectionRenderingTypes.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="RenderTargets\RenderTarget.h" />
     <ClInclude Include="RootSignature\RootSignature.h" />
@@ -64,6 +66,7 @@
     <ClCompile Include="PipelineState\PipelineState.cpp" />
     <ClCompile Include="PipelineState\PipelineStateId.cpp" />
     <ClCompile Include="PipelineState\PipelineStateMgr.cpp" />
+    <ClCompile Include="Reflection\ReflectionRenderingTypes.cpp" />
     <ClCompile Include="RenderModule.cpp" />
     <ClCompile Include="RenderTargets\RenderTarget.cpp" />
     <ClCompile Include="RootSignature\RootSignature.cpp" />

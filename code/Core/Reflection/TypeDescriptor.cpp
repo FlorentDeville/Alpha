@@ -16,6 +16,7 @@ namespace Core
 		, m_isContainer(false)
 		, m_isTemplate(false)
 		, m_isTemplateParamTypePointer(false)
+		, m_isEnum(false)
 		, m_pTemplateParamType(nullptr)
 		, Construct()
 		, InPlaceConstruct()
@@ -45,6 +46,59 @@ namespace Core
 		m_fields.push_back(new FieldDescriptor());
 		FieldDescriptor* field = m_fields.back();
 		return field;
+	}
+
+	void TypeDescriptor::AddEnumEntry(int64_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint64_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(int32_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint32_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(int16_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint16_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(int8_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint8_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::SetIsEnum()
+	{
+		m_isEnum = true;
 	}
 
 	void TypeDescriptor::SetBaseType(const std::string& baseTypeName)
@@ -77,6 +131,11 @@ namespace Core
 	const std::vector<FieldDescriptor*>& TypeDescriptor::GetFields() const
 	{
 		return m_fields;
+	}
+
+	const Core::Array<EnumEntry>& TypeDescriptor::GetEnumEntries() const
+	{
+		return m_enumEntries;
 	}
 
 	const TypeDescriptor* TypeDescriptor::GetBaseType() const
@@ -156,5 +215,10 @@ namespace Core
 	bool TypeDescriptor::IsClass() const
 	{
 		return m_fields.size() > 0;
+	}
+
+	bool TypeDescriptor::IsEnum() const
+	{
+		return m_isEnum;
 	}
 }

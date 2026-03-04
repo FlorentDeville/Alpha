@@ -399,9 +399,15 @@ namespace Widgets
 		m_name = name;
 	}
 
-	void Widget::SetFocusPolicy(FOCUS_POLICY policy)
+	void Widget::SetFocusPolicy(FOCUS_POLICY policy, bool recursive)
 	{
 		m_focusPolicy = policy;
+
+		if (recursive)
+		{
+			for (Widget* pChild : m_children)
+				pChild->SetFocusPolicy(policy, recursive);
+		}
 	}
 
 	int32_t Widget::GetX() const

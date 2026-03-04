@@ -38,5 +38,6 @@ namespace Systems
 		bool SerializeArray(const void* pArrayPtr, const Core::FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray);
 		bool SerializeClass(const void* pObject, const Core::TypeDescriptor* pType, Core::JsonObject& jsonObj);
 		bool SerializeObject(const Object* pObject, Core::JsonObject& jsonObj);
+		bool SerializeEnum(const void* pFieldPtr, const Core::TypeDescriptor* pDescription, Core::JsonValue& value);
 	};
 }

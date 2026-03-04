@@ -104,6 +104,10 @@ namespace Systems
 		{
 			return DeserializeClass(jsonFieldValue.GetValueAsObject(), pFieldType, ptr);
 		}
+		else if (pFieldType->IsEnum())
+		{
+			return DeserializeEnum(jsonFieldValue, pFieldType, ptr);
+		}
 
 		switch (pFieldType->GetSid())
 		{
@@ -340,6 +344,51 @@ namespace Systems
 		}
 
 		return true;
+	}
+
+	bool ObjectJsonDeserializer::DeserializeEnum(const Core::JsonValue& jsonValue, const Core::TypeDescriptor* pType, void* pFieldPtr)
+	{
+		int64_t storedValue = static_cast<int64_t>(jsonValue.GetValueAsDouble());
+
+		switch (pType->GetSize())
+		{
+		case 1:
+		{
+			int8_t enumValue = Core::EnumEntry::To1Byte(storedValue);
+			int8_t* pValue = reinterpret_cast<int8_t*>(pFieldPtr);
+			*pValue = enumValue;
+			return true;
+		}
+		break;
+
+		case 2:
+		{
+			int16_t enumValue = Core::EnumEntry::To2Bytes(storedValue);
+			int16_t* pValue = reinterpret_cast<int16_t*>(pFieldPtr);
+			*pValue = enumValue;
+			return true;
+		}
+		break;
+
+		case 4:
+		{
+			int32_t enumValue = Core::EnumEntry::To4Bytes(storedValue);
+			int32_t* pValue = reinterpret_cast<int32_t*>(pFieldPtr);
+			*pValue = enumValue;
+			return true;
+		}
+		break;
+
+		case 8:
+		{
+			int64_t* pValue = reinterpret_cast<int64_t*>(pFieldPtr);
+			*pValue = storedValue;
+			return true;
+		}
+		break;
+		}
+
+		return false;
 	}
 
 	bool ObjectJsonDeserializer::Deserialize(const Core::JsonObject& jsonObject, Object** ppObject)

@@ -186,6 +186,9 @@
     <ClInclude Include="EditorParameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\EnumItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -345,6 +348,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshEditor\MeshEditorModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\EnumItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
