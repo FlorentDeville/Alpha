@@ -100,7 +100,6 @@ namespace Widgets
 		{
 		case EventType::kMouseEnter:
 		{
-			OutputDebugString("Enter\n");
 			if (m_currentState == Default)
 				m_currentState = Hover;
 			return true;
@@ -109,7 +108,6 @@ namespace Widgets
 
 		case EventType::kMouseExit:
 		{
-			OutputDebugString("Exit\n");
 			if (m_currentState == Hover)
 				m_currentState = Default;
 			return true;
