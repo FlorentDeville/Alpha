@@ -66,6 +66,9 @@ namespace Core
 		// True if this is a class (it has fields). False if it's a pod (there is no field).
 		bool IsClass() const;
 
+		// True if this type is an enum.
+		bool IsEnum() const;
+
 		// Create an object of the type. (Allocate memory and call the no parameter constructor)
 		void* (*Construct)();
 

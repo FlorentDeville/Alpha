@@ -169,4 +169,9 @@ namespace Core
 	{
 		return m_fields.size() > 0;
 	}
+
+	bool TypeDescriptor::IsEnum() const
+	{
+		return m_isEnum;
+	}
 }
