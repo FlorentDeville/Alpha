@@ -42,6 +42,7 @@ namespace Core
 		Core::Sid GetSid() const;
 		Core::Sid GetSidWithoutTemplateParam() const;
 		const std::vector<FieldDescriptor*>& GetFields() const;
+		const Core::Array<EnumEntry>& GetEnumEntries() const;
 		const TypeDescriptor* GetBaseType() const;
 		const TypeDescriptor* GetTemplateParamType() const;
 		Core::Sid GetUpgradeType() const;

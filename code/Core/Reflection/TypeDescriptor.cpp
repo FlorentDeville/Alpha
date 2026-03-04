@@ -91,6 +91,11 @@ namespace Core
 		return m_fields;
 	}
 
+	const Core::Array<EnumEntry>& TypeDescriptor::GetEnumEntries() const
+	{
+		return m_enumEntries;
+	}
+
 	const TypeDescriptor* TypeDescriptor::GetBaseType() const
 	{
 		return m_pBaseType;
