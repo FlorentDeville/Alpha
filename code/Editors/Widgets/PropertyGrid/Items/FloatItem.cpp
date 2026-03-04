@@ -4,15 +4,15 @@
 
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
 
-#include "Editors/ObjectWatcher/ObjectWatcher.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Widgets/TextBox.h"
 
 namespace Editors
 {
-	FloatItem::FloatItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	FloatItem::FloatItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox(nullptr)
 	{ }

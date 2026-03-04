@@ -40,7 +40,7 @@ namespace Editors
 		if (pGo)
 		{
 			guid = pGo->GetGuid();
-			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](void*, const Systems::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
+			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
 				{
 					//I need to compute manually the world transform here cause the Update didn't run yet.
 					m_pGo->GetTransform().ComputeWorldTx();
@@ -144,7 +144,7 @@ namespace Editors
 	void GizmoModel::SendSignalToObjectWatcher()
 	{
 		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
-		Systems::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
+		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
 		ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
 	}
 }

@@ -2,9 +2,9 @@
 /* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
-namespace Systems
+namespace Core
 {
 	FieldDescriptor::FieldDescriptor()
 		: m_name()

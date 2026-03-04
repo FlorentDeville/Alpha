@@ -188,14 +188,14 @@ namespace Editors
 		if (!pGo)
 			return;
 
-		const std::vector<Systems::FieldDescriptor*>& fields = pGo->GetTypeDescriptor()->GetFields();
-		std::vector<Systems::FieldDescriptor*>::const_iterator it = std::find_if(fields.begin(), fields.end(), 
-			[](const Systems::FieldDescriptor* pField) { return pField->GetName() == "m_name"; });
+		const std::vector<Core::FieldDescriptor*>& fields = pGo->GetTypeDescriptor()->GetFields();
+		std::vector<Core::FieldDescriptor*>::const_iterator it = std::find_if(fields.begin(), fields.end(), 
+			[](const Core::FieldDescriptor* pField) { return pField->GetName() == "m_name"; });
 
 		if (it == fields.cend())
 			return;
 
-		const Systems::FieldDescriptor* pField = *it;
+		const Core::FieldDescriptor* pField = *it;
 		const void* pValue = reinterpret_cast<const void*>(&name);
 		ObjectWatcher::Get().ModifyField(pGo, pField, ObjectWatcher::SET_FIELD, 0, pValue);
 	}

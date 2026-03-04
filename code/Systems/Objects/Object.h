@@ -10,8 +10,6 @@ ENABLE_REFLECTION(Systems, Object)
 
 namespace Systems
 {
-	class TypeDescriptor;
-
 	// Base class for any object editable and serializable.
 	class Object
 	{
@@ -19,9 +17,9 @@ namespace Systems
 		Object();
 		virtual ~Object() = default;
 
-		void SetTypeDescriptor(const TypeDescriptor* pTypeDescriptor);
+		void SetTypeDescriptor(const Core::TypeDescriptor* pTypeDescriptor);
 
-		const TypeDescriptor* GetTypeDescriptor() const;
+		const Core::TypeDescriptor* GetTypeDescriptor() const;
 
 		virtual void PostLoad();
 
@@ -31,7 +29,7 @@ namespace Systems
 		template<class T> const T* Cast() const;
 
 	private:
-		const TypeDescriptor* m_pTypeDescriptor;
+		const Core::TypeDescriptor* m_pTypeDescriptor;
 
 		START_REFLECTION(Systems::Object)
 		END_REFLECTION()
@@ -58,13 +56,13 @@ namespace Systems
 		return static_cast<const T*>(this);
 	}
 
-	Object* CreateObject(const TypeDescriptor* pType);
+	Object* CreateObject(const Core::TypeDescriptor* pType);
 
 	template<typename T, typename... Args> T* CreateObject(Args... args)
 	{
 		T* pNewObject = new T(std::forward<Args>(args)...);
 
-		const TypeDescriptor* pType = Core::TypeResolver<T>::GetConstType();
+		const Core::TypeDescriptor* pType = Core::TypeResolver<T>::GetConstType();
 		pNewObject->SetTypeDescriptor(pType);
 
 		return pNewObject;
@@ -74,7 +72,7 @@ namespace Systems
 	{
 		new(pPtr) T(std::forward<Args>(args)...);
 
-		const TypeDescriptor* pType = Core::TypeResolver<T>::GetConstType();
+		const Core::TypeDescriptor* pType = Core::TypeResolver<T>::GetConstType();
 		pPtr->SetTypeDescriptor(pType);
 
 		return pPtr;

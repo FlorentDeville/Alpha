@@ -98,7 +98,7 @@ namespace Systems
 		return true;
 	}
 
-	bool ObjectJsonSerializer::SerializeField(const void* pFieldPtr, const FieldDescriptor* pField, const TypeDescriptor* pDescription, Core::JsonValue& value)
+	bool ObjectJsonSerializer::SerializeField(const void* pFieldPtr, const Core::FieldDescriptor* pField, const Core::TypeDescriptor* pDescription, Core::JsonValue& value)
 	{
 		if (pField && pField->IsPointer())
 		{
@@ -126,8 +126,8 @@ namespace Systems
 			//save the list of HardAssetRef
 			if (pDescription->GetSidWithoutTemplateParam() == CONSTSID("Systems::HardAssetRef"))
 			{
-				const std::vector<FieldDescriptor*>& fields = pDescription->GetFields();
-				const FieldDescriptor* pFieldId = fields[0];
+				const std::vector<Core::FieldDescriptor*>& fields = pDescription->GetFields();
+				const Core::FieldDescriptor* pFieldId = fields[0];
 				const Systems::NewAssetId* pAssetId = pFieldId->GetDataPtr<Systems::NewAssetId>(pFieldPtr);
 				m_hardAssetRefArray.PushBack(*pAssetId);
 			}
@@ -260,10 +260,10 @@ namespace Systems
 		return true;
 	}
 
-	bool ObjectJsonSerializer::SerializeArray(const void* pArrayPtr, const FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray)
+	bool ObjectJsonSerializer::SerializeArray(const void* pArrayPtr, const Core::FieldDescriptor* pFieldArray, Core::JsonArray& jsonArray)
 	{
 		const Core::BaseArray* pArray = reinterpret_cast<const Core::BaseArray*>(pArrayPtr);
-		const TypeDescriptor* pArrayType = pFieldArray->GetType();
+		const Core::TypeDescriptor* pArrayType = pFieldArray->GetType();
 
 		int32_t size = pArray->GetSize();
 
@@ -287,9 +287,9 @@ namespace Systems
 		return true;
 	}
 
-	bool ObjectJsonSerializer::SerializeClass(const void* pObject, const TypeDescriptor* pType, Core::JsonObject& jsonObj)
+	bool ObjectJsonSerializer::SerializeClass(const void* pObject, const Core::TypeDescriptor* pType, Core::JsonObject& jsonObj)
 	{
-		const TypeDescriptor* pBaseType = pType->GetBaseType();
+		const Core::TypeDescriptor* pBaseType = pType->GetBaseType();
 		if (pBaseType)
 		{
 			bool res = SerializeClass(pObject, pBaseType, jsonObj);
@@ -297,8 +297,8 @@ namespace Systems
 				return false;
 		}
 
-		const std::vector<Systems::FieldDescriptor*>& fieldsArray = pType->GetFields();
-		for (const Systems::FieldDescriptor* pField : fieldsArray)
+		const std::vector<Core::FieldDescriptor*>& fieldsArray = pType->GetFields();
+		for (const Core::FieldDescriptor* pField : fieldsArray)
 		{
 			assert(!pField->IsPointer()); //don't support pointer for now
 
@@ -312,7 +312,7 @@ namespace Systems
 
 	bool ObjectJsonSerializer::SerializeObject(const Object* pObject, Core::JsonObject& jsonObj)
 	{
-		const Systems::TypeDescriptor* pTypeDescriptor = pObject->GetTypeDescriptor();
+		const Core::TypeDescriptor* pTypeDescriptor = pObject->GetTypeDescriptor();
 		if (!pTypeDescriptor)
 			return false;
 

@@ -4,13 +4,12 @@
 
 #pragma once
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
 #include <string>
 
 namespace Systems
 {
-	class FieldDescriptor;
 	class Object;
 }
 
@@ -30,7 +29,7 @@ namespace Editors
 		PropertyGridItem();
 		PropertyGridItem(const std::string& name, Widgets::Widget* pEditingWidget);
 		PropertyGridItem(Widgets::Widget* pNameWidget, Widgets::Widget* pEditingWidget);
-		PropertyGridItem(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		PropertyGridItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 
 		Widgets::Widget* GetNameWidget() const;
 		Widgets::Widget* GetEditingWidget() const;
@@ -42,7 +41,7 @@ namespace Editors
 		virtual void UpdateValue();
 
 		// Check if this item corresponds to a certain field for an given object
-		bool IsField(const void* pObj, const Systems::FieldDescriptor* pField, uint32_t index) const;
+		bool IsField(const void* pObj, const Core::FieldDescriptor* pField, uint32_t index) const;
 
 		//Change the index of the element this item represents. Use this when deleting/inserting an element in an array
 		virtual void ChangeIndex(uint32_t newIndex);
@@ -64,7 +63,7 @@ namespace Editors
 
 		//object, field and optional index this item represents.
 		void* m_pObj;
-		const Systems::FieldDescriptor* m_pField;
+		const Core::FieldDescriptor* m_pField;
 		uint32_t m_index;
 
 		Widgets::Widget* CreateDefaultItemLabel();

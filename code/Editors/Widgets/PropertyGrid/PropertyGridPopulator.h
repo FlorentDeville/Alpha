@@ -14,13 +14,13 @@
 namespace Core
 {
 	class BaseArray;
+	class FieldDescriptor;
+	class TypeDescriptor;
 }
 
 namespace Systems
 {
-	class FieldDescriptor;
 	class Object;
-	class TypeDescriptor;
 }
 
 namespace Widgets
@@ -56,16 +56,16 @@ namespace Editors
 		void CreatePropertiesForObject(Systems::Object* pObject);
 
 		// Recursively goes up the inheritance hierarchy of an Object to display all its properties.
-		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Systems::TypeDescriptor* pType);
+		void CreatePropertiesForObjectParentClass(Systems::Object* pObject, const Core::TypeDescriptor* pType);
 
-		void CreatePropertiesForArrayElements(const Systems::FieldDescriptor* pField, void* pObj);
+		void CreatePropertiesForArrayElements(const Core::FieldDescriptor* pField, void* pObj);
 
-		void CreatePropertiesForSingleArrayElement(const Systems::FieldDescriptor* pField, void* pObj, uint32_t index);
+		void CreatePropertiesForSingleArrayElement(const Core::FieldDescriptor* pField, void* pObj, uint32_t index);
 		
-		PropertyGridItem* CreatePropertyItemForPODField(const Systems::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
+		PropertyGridItem* CreatePropertyItemForPODField(const Core::FieldDescriptor* pField, void* pObj, uint32_t indexElement);
 
 		// Create properties for all members in the TypeDescriptor. It doesn't handle base classes.
-		void CreatePropertiesForTypeMembers(const Systems::TypeDescriptor* pFieldType, void* pData);
+		void CreatePropertiesForTypeMembers(const Core::TypeDescriptor* pFieldType, void* pData);
 
 		void Internal_AddPropertyGridItem(PropertyGridItem* pItem);
 
@@ -77,7 +77,7 @@ namespace Editors
 
 		PropertyGridItemFactory* GetFactory(Core::Sid typeSid) const;
 
-		void ObjectWatcherCallback(void* pObj, const Systems::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
+		void ObjectWatcherCallback(void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index);
 
 		PropertyGridWidget* m_pPropertyGridWidget;
 

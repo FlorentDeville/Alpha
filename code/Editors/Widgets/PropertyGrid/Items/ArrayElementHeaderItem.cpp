@@ -17,7 +17,7 @@
 
 namespace Editors
 {
-	ArrayElementHeaderItem::ArrayElementHeaderItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	ArrayElementHeaderItem::ArrayElementHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 	{
 	}

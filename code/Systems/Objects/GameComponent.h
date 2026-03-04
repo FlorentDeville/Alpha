@@ -41,7 +41,7 @@ namespace Systems
 		GameObject* m_pOwnerGo;
 	};
 
-	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType);
+	GameComponent* CreateNewGameComponent(const Core::TypeDescriptor* pType);
 
 	template<typename T, typename... Args> T* CreateNewGameComponent(Args... args)
 	{

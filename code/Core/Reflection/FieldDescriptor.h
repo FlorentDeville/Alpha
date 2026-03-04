@@ -7,14 +7,14 @@
 #include "Core/Collections/Array.h"
 #include "Core/Reflection/FieldAttribute.h"
 #include "Core/Reflection/ReflectionUtils.h"
+#include "Core/Reflection/TypeDescriptor.h"
 #include "Core/Reflection/TypeResolver.h"
 
-#include "Systems/Reflection/ReflectionMgr.h"
-#include "Systems/Reflection/TypeDescriptor.h"
+#include "Core/Reflection/ReflectionMgr.h"
 
 #include <string>
 
-namespace Systems
+namespace Core
 {
 	class TypeDescriptor;
 
@@ -67,7 +67,7 @@ namespace Systems
 		static void Run(FieldDescriptor* pField, const std::string& name, size_t offset, Core::FieldAttribute attribute)
 		{
 			typedef Core::RemovePointer<FIELD_TYPE>::type NonPointerType;
-			TypeDescriptor* pType = Core::TypeResolver<NonPointerType>::GetType();
+			Core::TypeDescriptor* pType = Core::TypeResolver<NonPointerType>::GetType();
 
 			bool isPointer = Core::IsPointer<FIELD_TYPE>::value;
 
@@ -95,7 +95,7 @@ namespace Systems
 
 			arrayTypename += ">";
 
-			TypeDescriptor* pArrayType = Systems::ReflectionMgr::Get().GetOrAddType(arrayTypename);
+			TypeDescriptor* pArrayType = Core::ReflectionMgr::Get().GetOrAddType(arrayTypename);
 			if (!pArrayType->IsInitialized())
 			{
 				TypeInitializer<Core::Array<T>>::Run(pArrayType);

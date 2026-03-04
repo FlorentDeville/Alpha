@@ -5,11 +5,10 @@
 #pragma once
 
 #include "Core/Reflection/FieldAttribute.h"
+#include "Core/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/ReflectionMgr.h"
 #include "Core/Reflection/TypeResolver.h"
 #include "Core/Sid/Sid.h"
-
-#include "Systems/Reflection/FieldDescriptor.h"
-#include "Systems/Reflection/ReflectionMgr.h"
 
 // Define macros to enable reflection of a class
 // To have reflection working :
@@ -59,22 +58,22 @@
 	public: \
 		static const std::string& GetTypename() { static const std::string typeName = #TYPE; return typeName; } \
 		static Core::Sid GetTypenameSid() { return CONSTSID(#TYPE); } \
-		static const Systems::TypeDescriptor* GetConstType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
-		static Systems::TypeDescriptor* GetType() { return Systems::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+		static const Core::TypeDescriptor* GetConstType() { return Core::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
+		static Core::TypeDescriptor* GetType() { return Core::ReflectionMgr::Get().GetOrAddType(GetTypename()); } \
 	}; \
 	} // namespace Core
 
 // Macro to register a type
 #define REGISTER_TYPE(TYPE) \
 	{ \
-		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		Systems::TypeInitializer<TYPE>::Run(pType); \
+		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		Core::TypeInitializer<TYPE>::Run(pType); \
 	}
 
 #define REGISTER_FIELD(DESCRIPTOR, TYPE, FIELD_TYPE, FIELD_NAME, ATTRIBUTE) \
 	{ \
-		Systems::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
-		Systems::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Core::FieldAttribute(ATTRIBUTE)); \
+		Core::FieldDescriptor* pNewField = DESCRIPTOR->AddField(); \
+		Core::FieldInitializer<FIELD_TYPE>::Run(pNewField, #FIELD_NAME, offsetof(TYPE, FIELD_NAME), Core::FieldAttribute(ATTRIBUTE)); \
 	}
 
 // Macro to put first before the class and outside any namespace
@@ -89,8 +88,8 @@
 public: \
 	static void RegisterReflection() {\
 		using ClassType = TYPE; \
-		Systems::TypeDescriptor* pType = Systems::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
-		Systems::TypeInitializer<TYPE>::Run(pType);
+		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		Core::TypeInitializer<TYPE>::Run(pType);
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }

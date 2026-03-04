@@ -21,9 +21,9 @@ namespace Editors
 		PropertyGridItemFactory_MaterialParameterDescription();
 		~PropertyGridItemFactory_MaterialParameterDescription();
 
-		void CreateItems(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index) override;
+		void CreateItems(void* pObj, const Core::FieldDescriptor* pField, uint32_t index) override;
 
 	private:
-		Widgets::TextBox* CreateSingleFloatWidget(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, float* pData);
+		Widgets::TextBox* CreateSingleFloatWidget(void* pObj, const Core::FieldDescriptor* pField, uint32_t index, float* pData);
 	};
 }

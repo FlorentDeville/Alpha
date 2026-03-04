@@ -4,15 +4,15 @@
 
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
 
-#include "Editors/ObjectWatcher/ObjectWatcher.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Widgets/TextBox.h"
 
 namespace Editors
 {
-	UInt32Item::UInt32Item(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	UInt32Item::UInt32Item(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox(nullptr)
 	{ }

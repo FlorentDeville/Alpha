@@ -4,7 +4,7 @@
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
-#include "Systems/Reflection/FieldDescriptor.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
 namespace Editors
 {
@@ -24,7 +24,7 @@ namespace Editors
 		m_watchers.clear();
 	}
 
-	void ObjectWatcher::SetFieldValue(void* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
+	void ObjectWatcher::SetFieldValue(void* pObj, const Core::FieldDescriptor* pField, const void* pValue)
 	{
 		void* pFieldPtr = pField->GetDataPtr(pObj);
 		pField->GetType()->Copy(pValue, pFieldPtr);
@@ -37,7 +37,7 @@ namespace Editors
 		callbacks(pObj, pField, OPERATION::SET_FIELD, 0);
 	}
 
-	void ObjectWatcher::SetArrayFieldValue(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
+	void ObjectWatcher::SetArrayFieldValue(void* pObj, const Core::FieldDescriptor* pField, uint32_t index, const void* pValue)
 	{
 		assert(pField->GetType()->IsContainer());
 
@@ -55,7 +55,7 @@ namespace Editors
 		(*callbacks)(pObj, pField, OPERATION::SET_ELEMENT, index);
 	}
 
-	void ObjectWatcher::AddArrayElement(void* pObj, const Systems::FieldDescriptor* pField, const void* pValue)
+	void ObjectWatcher::AddArrayElement(void* pObj, const Core::FieldDescriptor* pField, const void* pValue)
 	{
 		assert(pField->GetType()->IsContainer());
 
@@ -74,9 +74,9 @@ namespace Editors
 		(*callbacks)(pObj, pField, OPERATION::ADD_ELEMENT, pArray->GetSize() -1);
 	}
 
-	void ObjectWatcher::RemoveArrayElement(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	void ObjectWatcher::RemoveArrayElement(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 	{
-		const Systems::TypeDescriptor* pArrayType = pField->GetType();
+		const Core::TypeDescriptor* pArrayType = pField->GetType();
 
 		assert(pArrayType->IsContainer());
 
@@ -99,7 +99,7 @@ namespace Editors
 		(*callbacks)(pObj, pField, OPERATION::REMOVE_ELEMENT, index);
 	}
 
-	void ObjectWatcher::ModifyField(void* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue)
+	void ObjectWatcher::ModifyField(void* pObj, const Core::FieldDescriptor* pField, OPERATION op, uint32_t index, const void* pValue)
 	{
 		switch (op)
 		{
@@ -125,7 +125,7 @@ namespace Editors
 		}
 	}
 
-	void ObjectWatcher::SendFieldModifiedEvent(void* pObj, const Systems::FieldDescriptor* pField, OPERATION op, uint32_t index)
+	void ObjectWatcher::SendFieldModifiedEvent(void* pObj, const Core::FieldDescriptor* pField, OPERATION op, uint32_t index)
 	{
 		const WatcherCallbackList* pCallbacks = FindWatcherCallback(pObj);
 		if (!pCallbacks)
@@ -168,11 +168,11 @@ namespace Editors
 		return &(it->second);
 	}
 
-	void ObjectWatcher::Internal_SetArrayFieldValue(Core::BaseArray* pArray, const Systems::FieldDescriptor* pField, uint32_t index, const void* pValue)
+	void ObjectWatcher::Internal_SetArrayFieldValue(Core::BaseArray* pArray, const Core::FieldDescriptor* pField, uint32_t index, const void* pValue)
 	{
 		void* pArrayElement = pArray->GetElement(index);
 
-		const Systems::TypeDescriptor* pArrayType = pField->GetType();
+		const Core::TypeDescriptor* pArrayType = pField->GetType();
 		if (pArrayType->IsTemplateParamTypePointer())
 		{
 			//if it's an array of pointer, just copy the pointer

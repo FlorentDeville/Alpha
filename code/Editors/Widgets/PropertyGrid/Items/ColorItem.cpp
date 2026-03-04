@@ -5,10 +5,9 @@
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 
 #include "Core/Color/Color.h"
+#include "Core/Reflection/FieldDescriptor.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
-
-#include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/Container.h"
 #include "Widgets/Layout.h"
@@ -17,7 +16,7 @@
 
 namespace Editors
 {
-	ColorItem::ColorItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	ColorItem::ColorItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pSliderRedChannel(nullptr)
 		, m_pSliderGreenChannel(nullptr)

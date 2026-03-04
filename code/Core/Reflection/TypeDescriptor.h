@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace Systems
+namespace Core
 {
 	class FieldDescriptor;
 

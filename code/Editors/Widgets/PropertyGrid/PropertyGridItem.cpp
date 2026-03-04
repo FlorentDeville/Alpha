@@ -47,7 +47,7 @@ namespace Editors
 		, m_pFieldName(nullptr)
 	{ }
 
-	PropertyGridItem::PropertyGridItem(void* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	PropertyGridItem::PropertyGridItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: m_pNameWidget(nullptr)
 		, m_pEditingWidget(nullptr)
 		, m_pObj(pObj)
@@ -72,7 +72,7 @@ namespace Editors
 	void PropertyGridItem::UpdateValue()
 	{ }
 
-	bool PropertyGridItem::IsField(const void* pObj, const Systems::FieldDescriptor* pField, uint32_t index) const
+	bool PropertyGridItem::IsField(const void* pObj, const Core::FieldDescriptor* pField, uint32_t index) const
 	{
 		return m_pObj == pObj && m_pField == pField && m_index == index;
 	}
@@ -157,7 +157,7 @@ namespace Editors
 
 			const uint64_t* pPtr = reinterpret_cast<const uint64_t*>(pArray->GetConstElement(m_index));
 			const Systems::Object* pElement = reinterpret_cast<const Systems::Object*>(*pPtr);
-			const Systems::TypeDescriptor* pObjectType = pElement->GetTypeDescriptor();
+			const Core::TypeDescriptor* pObjectType = pElement->GetTypeDescriptor();
 			sprintf_s(buffer, "[%d] %s", m_index, pObjectType->GetName().c_str());
 		}
 		else

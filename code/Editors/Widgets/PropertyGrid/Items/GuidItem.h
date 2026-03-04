@@ -16,7 +16,7 @@ namespace Editors
 	class GuidItem : public PropertyGridItem
 	{
 	public:
-		GuidItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		GuidItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~GuidItem();
 
 		void CreateWidgets() override;

@@ -6,11 +6,6 @@
 
 #include <string>
 
-namespace Systems
-{
-	class TypeDescriptor;
-}
-
 namespace Core
 {
 	class TypeDescriptor;
@@ -19,7 +14,7 @@ namespace Core
 	{
 	public:
 		static const std::string& GetTypename();
-		static const Systems::TypeDescriptor* GetConstType();
-		static Systems::TypeDescriptor* GetType();
+		static const Core::TypeDescriptor* GetConstType();
+		static Core::TypeDescriptor* GetType();
 	};
 }

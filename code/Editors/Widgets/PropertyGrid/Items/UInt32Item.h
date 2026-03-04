@@ -16,7 +16,7 @@ namespace Editors
 	class UInt32Item : public PropertyGridItem
 	{
 	public:
-		UInt32Item(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		UInt32Item(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~UInt32Item();
 
 		void CreateWidgets() override;

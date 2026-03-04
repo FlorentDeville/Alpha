@@ -63,7 +63,7 @@ namespace Systems
 		END_REFLECTION()
 	};
 
-	GameObject* CreateNewGameObject(const TypeDescriptor* pType);
+	GameObject* CreateNewGameObject(const Core::TypeDescriptor* pType);
 
 	template<typename T, typename... Args> T* CreateNewGameObject(Args... args)
 	{

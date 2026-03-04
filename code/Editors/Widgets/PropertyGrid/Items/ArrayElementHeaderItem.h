@@ -11,7 +11,7 @@ namespace Editors
 	class ArrayElementHeaderItem : public PropertyGridItem
 	{
 	public:
-		ArrayElementHeaderItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index);
+		ArrayElementHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~ArrayElementHeaderItem();
 
 		void CreateWidgets() override;

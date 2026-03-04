@@ -36,7 +36,7 @@ namespace Systems
 		return m_pOwnerGo;
 	}
 
-	GameComponent* CreateNewGameComponent(const TypeDescriptor* pType)
+	GameComponent* CreateNewGameComponent(const Core::TypeDescriptor* pType)
 	{
 		GameComponent* ptr = static_cast<GameComponent*>(CreateObject(pType));
 		ptr->SetGuid(Core::Guid::GenerateNewGuid());

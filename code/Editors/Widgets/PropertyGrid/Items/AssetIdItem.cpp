@@ -4,12 +4,13 @@
 
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
 
+#include "Core/Reflection/FieldDescriptor.h"
+
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/Widgets/Dialog/AssetDialog.h"
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/NewAssetId.h"
-#include "Systems/Reflection/FieldDescriptor.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -20,7 +21,7 @@
 
 namespace Editors
 {
-	AssetIdItem::AssetIdItem(Systems::Object* pObj, const Systems::FieldDescriptor* pField, uint32_t index)
+	AssetIdItem::AssetIdItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox()
 	{ }
