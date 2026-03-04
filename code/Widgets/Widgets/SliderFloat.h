@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -17,8 +17,6 @@ namespace Widgets
 	public:
 		SliderFloat(float minValue, float maxValue, float currentValue);
 		~SliderFloat();
-
-		//bool Handle(const BaseEvent& ev) override;
 
 		void Update(uint64_t dt) override;
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
@@ -67,8 +65,6 @@ namespace Widgets
 		void TransitionTextToSlider(bool valueChanged);
 		void TransitionSliderToText();
 
-		void Slider_OnMouseEnter();
-		void Slider_OnMouseExit();
 		void Slider_OnMouseDown(const MouseEvent& ev);
 		void Slider_OnMouseUp();
 

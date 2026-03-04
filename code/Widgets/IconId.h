@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -16,6 +16,7 @@ namespace Widgets
 		kIconCloseHover,
 		kIconCursor,
 		kIconCheckmark,
+		kIconDown,
 
 		kCount
 	};

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -19,6 +19,7 @@ namespace AppResources
 		kUiIconCursor,
 		kUiIconCheckmark,
 		kUiIconImport,
+		kUiIconDown,
 
 		kFontDefSegoeUI,
 		kFontTexSegoeUI,

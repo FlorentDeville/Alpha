@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2024 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Resources/ResourcesMgr.h"
 
@@ -35,6 +35,7 @@ namespace AppResources
 		s_appResMap[kUiIconCursor] =	{ RES_ICON_CURSOR,		kUiIconCursor,		"PNG" };
 		s_appResMap[kUiIconCheckmark] = { RES_ICON_CHECKMARK,	kUiIconCheckmark,	"PNG" };
 		s_appResMap[kUiIconImport] =	{ RES_ICON_IMPORT,		kUiIconImport,		"PNG" };
+		s_appResMap[kUiIconDown] =		{ RES_ICON_DOWN,		kUiIconDown,		"PNG" };
 		
 		s_appResMap[kFontDefSegoeUI] =	{ RES_FONT_DEF_SEGOEUI,	kFontDefSegoeUI,	"TEXT" };
 		s_appResMap[kFontTexSegoeUI] =	{ RES_FONT_TEX_SEGOEUI,	kFontTexSegoeUI,	"PNG" };

@@ -16,6 +16,8 @@ namespace Widgets
 	Container::Container()
 		: Widget()
 		, m_defaultStyle()
+		, m_hoverStyle()
+		, m_currentState(State::Default)
 	{
 		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
 	}
@@ -23,6 +25,8 @@ namespace Widgets
 	Container::Container(int width, int height)
 		: Widget(width, height, 0, 0)
 		, m_defaultStyle()
+		, m_hoverStyle()
+		, m_currentState(State::Default)
 	{}
 
 	Container::~Container()
@@ -30,6 +34,10 @@ namespace Widgets
 
 	void Container::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
+		ContainerStyle* pStyle = &m_defaultStyle;
+		if (m_currentState == Hover)
+			pStyle = &m_hoverStyle;
+
 		DirectX::XMMATRIX mvpMatrix;
 		ComputeWVPMatrix(windowSize, mvpMatrix);
 
@@ -52,7 +60,7 @@ namespace Widgets
 		if (localScissorRect.left >= localScissorRect.right || localScissorRect.top >= localScissorRect.bottom)
 			return;
 
-		if (m_defaultStyle.m_backgroundColor.m_channels[3] != 0)
+		if (pStyle->m_backgroundColor.m_channels[3] != 0)
 		{
 			render.SetScissorRectangle(localScissorRect);
 
@@ -60,16 +68,16 @@ namespace Widgets
 			render.BindMaterial(*pPso);
 
 			render.SetConstantBuffer(0, sizeof(mvpMatrix), &mvpMatrix, 0);
-			render.SetConstantBuffer(1, sizeof(m_defaultStyle.m_backgroundColor), &m_defaultStyle.m_backgroundColor, 0);
+			render.SetConstantBuffer(1, sizeof(pStyle->m_backgroundColor), &pStyle->m_backgroundColor, 0);
 
-			int valueShowBorder = m_defaultStyle.m_showBorder ? 1 : 0;
+			int valueShowBorder = pStyle->m_showBorder ? 1 : 0;
 			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-			render.SetConstantBuffer(3, sizeof(m_defaultStyle.m_borderColor), &m_defaultStyle.m_borderColor, 0);
+			render.SetConstantBuffer(3, sizeof(pStyle->m_borderColor), &pStyle->m_borderColor, 0);
 
 			float rect[2] = { (float)m_size.x, (float)m_size.y };
 			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
 
-			render.SetConstantBuffer(5, sizeof(m_defaultStyle.m_borderSize), &m_defaultStyle.m_borderSize, 0);
+			render.SetConstantBuffer(5, sizeof(pStyle->m_borderSize), &pStyle->m_borderSize, 0);
 
 			//containers don't use alternate color but if the constant buffer is not set, it messes up the shader execution.
 			AlternateColorCBuffer altColor;
@@ -84,6 +92,34 @@ namespace Widgets
 
 		//reset the scissor
 		render.SetScissorRectangle(scissor);
+	}
+
+	bool Container::Handle(const BaseEvent& ev)
+	{
+		switch (ev.m_id)
+		{
+		case EventType::kMouseEnter:
+		{
+			if (m_currentState == Default)
+				m_currentState = Hover;
+			return true;
+		}
+		break;
+
+		case EventType::kMouseExit:
+		{
+			if (m_currentState == Hover)
+				m_currentState = Default;
+			return true;
+		}
+		break;
+
+		default:
+			return Widget::Handle(ev);
+			break;
+		}
+
+		return false;
 	}
 
 	void Container::ResizeChildren()
@@ -109,5 +145,10 @@ namespace Widgets
 	ContainerStyle& Container::GetDefaultStyle()
 	{
 		return m_defaultStyle;
+	}
+
+	ContainerStyle& Container::GetHoverStyle()
+	{
+		return m_hoverStyle;
 	}
 }

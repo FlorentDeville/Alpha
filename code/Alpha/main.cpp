@@ -65,6 +65,7 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/TextBox.h"
 #include "Widgets/WidgetMgr.h"
+#include "Widgets/Widgets/ComboBox.h"
 #include "Widgets/Widgets/TableView.h"
 
 #ifdef _DEBUG
@@ -452,37 +453,51 @@ void CreateMainWindow(const std::string& shaderPath)
 		Widgets::Tab* pTab = new Widgets::Tab();
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
-		pLayout->GetDefaultStyle().ShowBorder(true);
+		/*pLayout->GetDefaultStyle().ShowBorder(true);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
 		pLayout->GetHoverStyle().ShowBorder(true);
-		pLayout->GetHoverStyle().SetBorderSize(1);
+		pLayout->GetHoverStyle().SetBorderSize(3);*/
 
 		pTab->AddWidget(pLayout);
 		pMiddleTabContainer->AddTab("Widgets", pTab);
 
-		Widgets::Container* pOffsetContainer = new Widgets::Container(10, 20);
+		Widgets::Container* pOffsetContainer = new Widgets::Container(200, 40);
+		pOffsetContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
+		//pOffsetContainer->GetDefaultStyle().ShowBorder(true);
+		//pOffsetContainer->GetDefaultStyle().SetBorderSize(2);
 		pLayout->AddWidget(pOffsetContainer);
 
-		Widgets::Layout* pVLayout = new Widgets::Layout();
-		pVLayout->SetDirection(Widgets::Layout::Vertical);
-		pVLayout->SetSizeStyle(Widgets::Layout::HSIZE_STRETCH | Widgets::Layout::VSIZE_FIT);
-		pLayout->AddWidget(pVLayout);
+		//Widgets::Layout* pVLayout = new Widgets::Layout(200, 40, 50, 50);
+		////pVLayout->SetSize(Core::UInt2(200, 40));
+		////pVLayout->Setle
+		//pVLayout->SetDirection(Widgets::Layout::Vertical);
+		//pVLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
+		//pLayout->AddWidget(pVLayout);
 
-		Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
+		Widgets::ComboBox* pComboBox = new Widgets::ComboBox();
+		pComboBox->AddOption("Goku", 0);
+		pComboBox->AddOption("Vegeta", 1);
+		pComboBox->AddOption("Gohan", 2);
+		pComboBox->AddOption("Krilin", 3);
+		pComboBox->SetSelection(1);
+		pComboBox->SetX(10);
+		pComboBox->SetY(10);
+		/*Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
 		pVLayout->AddWidget(pTopOffsetContainer);
 
 		Widgets::TableView* pTableView = new Widgets::TableView();
-		pTableView->SetSize(Core::UInt2(300, 700));
+		pTableView->SetSize(Core::UInt2(300, 700));*/
 
 		//Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
 		//pTableView->SetModel(pModel);
 		//pTableView->SetMultiSelection(true);
 		
-		pVLayout->AddWidget(pTableView);
+		pOffsetContainer->AddWidget(pComboBox);
 	}
 #endif
 
-	pMiddleTabContainer->SetSelectedTab(0);
+	//pMiddleTabContainer->SetSelectedTab(0);
+	pMiddleTabContainer->SetSelectedTab(SID("Widgets"));
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
