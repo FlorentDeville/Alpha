@@ -32,7 +32,7 @@ namespace Editors
 		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
 		pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		pNameLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
-		pNameLayout->SetSpace(DirectX::XMINT2(5, 0));
+		pNameLayout->SetSpace(Core::Int2(5, 0));
 		pNameLayout->AddWidget(pNameLabel);
 
 		m_pNameWidget = pNameLayout;

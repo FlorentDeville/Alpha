@@ -367,7 +367,7 @@ namespace Widgets
 	Widgets::Layout* TableView::CreateItem(int row, int columnCount, const ModelIndex& parent)
 	{
 		Layout* pRowLayout = new Layout();
-		pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
+		pRowLayout->SetSpace(Core::Int2(5, 0));
 		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
 		pRowLayout->SetDirection(Layout::Horizontal);
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);

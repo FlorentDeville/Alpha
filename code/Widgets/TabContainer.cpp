@@ -36,7 +36,7 @@ namespace Widgets
 		m_pHeaderLayout = new Layout(0, 20, 0, 0);
 		m_pHeaderLayout->SetSizeStyle(HSIZE_STRETCH | VSIZE_DEFAULT);
 		m_pHeaderLayout->SetDirection(Layout::Direction::Horizontal);
-		m_pHeaderLayout->SetSpace(DirectX::XMINT2(2, 0));
+		m_pHeaderLayout->SetSpace(Core::Int2(2, 0));
 
 		m_pContentContainer = new Widgets::Container(100, 100);
 		m_pContentContainer->SetSizeStyle(HSIZE_STRETCH | VSIZE_STRETCH);

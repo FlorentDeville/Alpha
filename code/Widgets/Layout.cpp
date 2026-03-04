@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Layout.h"
 
@@ -16,7 +16,6 @@ namespace Widgets
 	Layout::Layout()
 		: Widget()
 		, m_space(0, 0)
-		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
 		, m_hoverStyle()
@@ -25,7 +24,6 @@ namespace Widgets
 	Layout::Layout(uint32_t w, uint32_t h, int32_t x, int32_t y)
 		: Widget(w, h, x, y)
 		, m_space(0, 0)
-		, m_previousMousePosition(0, 0)
 		, m_dir(Layout::Direction::Horizontal)
 		, m_defaultStyle()
 	{}
@@ -239,7 +237,7 @@ namespace Widgets
 		m_dir = dir;
 	}
 
-	void Layout::SetSpace(const DirectX::XMINT2& space)
+	void Layout::SetSpace(const Core::Int2& space)
 	{
 		m_space = space;
 	}

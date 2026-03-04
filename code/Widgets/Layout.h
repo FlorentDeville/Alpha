@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -35,7 +35,7 @@ namespace Widgets
 		bool Handle(const BaseEvent& ev) override;
 
 		void SetDirection(Direction dir);
-		void SetSpace(const DirectX::XMINT2& space);
+		void SetSpace(const Core::Int2& space);
 
 		LayoutStyle& GetDefaultStyle();
 		LayoutStyle& GetHoverStyle();
@@ -43,9 +43,7 @@ namespace Widgets
 	private:
 		Direction m_dir;
 
-		DirectX::XMUINT2 m_previousMousePosition;
-
-		DirectX::XMINT2 m_space; //space to add between widgets
+		Core::Int2 m_space; //space to add between widgets
 
 		LayoutStyle m_defaultStyle;
 		LayoutStyle m_hoverStyle;

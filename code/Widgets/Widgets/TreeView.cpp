@@ -578,7 +578,7 @@ namespace Widgets
 	Widgets::Layout* TreeView::CreateItem(const ModelIndex& index, int columnCount, int depth)
 	{
 		Layout* pRowLayout = new Layout();
-		pRowLayout->SetSpace(DirectX::XMINT2(5, 0));
+		pRowLayout->SetSpace(Core::Int2(5, 0));
 		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
 		pRowLayout->SetDirection(Layout::Horizontal);
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
