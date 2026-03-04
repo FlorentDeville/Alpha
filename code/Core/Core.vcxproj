@@ -117,6 +117,7 @@
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
+    <ClCompile Include="Reflection\EnumEntry.cpp" />
     <ClCompile Include="Reflection\FieldDescriptor.cpp" />
     <ClCompile Include="Reflection\ReflectionMgr.cpp" />
     <ClCompile Include="Reflection\TypeDescriptor.cpp" />

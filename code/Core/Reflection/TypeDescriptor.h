@@ -32,7 +32,14 @@ namespace Core
 
 		FieldDescriptor* AddField();
 
-		void AddEntry(int32_t value, const std::string& name);
+		void AddEnumEntry(int64_t value, const std::string& name);
+		void AddEnumEntry(uint64_t value, const std::string& name);
+		void AddEnumEntry(int32_t value, const std::string& name);
+		void AddEnumEntry(uint32_t value, const std::string& name);
+		void AddEnumEntry(int16_t value, const std::string& name);
+		void AddEnumEntry(uint16_t value, const std::string& name);
+		void AddEnumEntry(int8_t value, const std::string& name);
+		void AddEnumEntry(uint8_t value, const std::string& name);
 
 		void SetIsEnum();
 		void SetBaseType(const std::string& baseTypeName);

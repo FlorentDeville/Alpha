@@ -127,7 +127,7 @@ public: \
 		Core::TypeInitializer<NAMESPACE::TYPE>::Run(pType); \
 		pType->SetIsEnum();
 
-#define ADD_ENUM_ENTRY(ENTRY) pType->AddEntry(static_cast<int64_t>(EnumType::ENTRY), #ENTRY);
+#define ADD_ENUM_ENTRY(ENTRY) pType->AddEnumEntry(EnumType::ENTRY, #ENTRY);
 
 #define END_ENUM_REFLECTION() } }
 

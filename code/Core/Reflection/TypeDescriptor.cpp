@@ -48,7 +48,49 @@ namespace Core
 		return field;
 	}
 
-	void TypeDescriptor::AddEntry(int32_t value, const std::string& name)
+	void TypeDescriptor::AddEnumEntry(int64_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint64_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(int32_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint32_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(int16_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint16_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(int8_t value, const std::string& name)
+	{
+		EnumEntry newEntry(value, name);
+		m_enumEntries.PushBack(newEntry);
+	}
+
+	void TypeDescriptor::AddEnumEntry(uint8_t value, const std::string& name)
 	{
 		EnumEntry newEntry(value, name);
 		m_enumEntries.PushBack(newEntry);
