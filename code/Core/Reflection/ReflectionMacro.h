@@ -51,6 +51,10 @@
 // 
 
 // Macro to specialize the template class TypeResolver
+
+#define STRINGIFY(X) #X
+#define TO_STR(X) STRINGIFY(X)
+
 #define DEFINE_TYPE_RESOLVER(TYPE) \
 	namespace Core { \
 	template<> class TypeResolver<TYPE> \
@@ -83,6 +87,9 @@
 	} \
 	DEFINE_TYPE_RESOLVER(NAMESPACE::TYPE)
 
+#define ENABLE_ENUM_REFLECTION(NAMESPACE, TYPE) \
+	DEFINE_TYPE_RESOLVER(NAMESPACE::TYPE)
+
 // Macro to start the description of the reflection
 #define START_REFLECTION(TYPE) \
 public: \
@@ -109,3 +116,18 @@ public: \
 #define ADD_AUTO_UPGRADE(TYPE) \
 	pType->SetUpgradeType(MAKESID(#TYPE)); \
 	pType->Upgrade = [](const void* pSrc, void* pDst) { static_cast<TYPE*>(pDst)->Upgrade(static_cast<const ClassType*>(pSrc)); };
+
+////////////////////////////////////////////////////////////////////////////////////////////
+#define START_ENUM_REFLECTION(NAMESPACE, TYPE) \
+	namespace { \
+	void TYPE##_RegisterReflection() \
+	{ \
+		using EnumType = NAMESPACE::TYPE; \
+		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<NAMESPACE::TYPE>(TO_STR(NAMESPACE::TYPE)); \
+		Core::TypeInitializer<NAMESPACE::TYPE>::Run(pType); \
+		pType->SetIsEnum();
+
+#define ADD_ENUM_ENTRY(ENTRY) pType->AddEntry(static_cast<int64_t>(EnumType::ENTRY), #ENTRY);
+
+#define END_ENUM_REFLECTION() } }
+

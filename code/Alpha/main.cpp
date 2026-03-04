@@ -37,6 +37,7 @@
 #include "OsWin/UIMessage/UIMessage.h"
 #include "OsWin/UIMessage/UIMessageId.h"
 
+#include "Rendering/Reflection/ReflectionRenderingTypes.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 
@@ -73,7 +74,6 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 #endif // DEBUG
-
 
 //#pragma optimize("", off)
 
@@ -526,6 +526,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Core::ReflectionMgr::InitSingleton();
 	Systems::RegisterStandardTypesToReflection();
+	Rendering::RegisterRenderingTypesToReflection();
 	Systems::RegisterCoreTypesToReflection();
 	Systems::RegisterSystemsTypesToReflection();
 

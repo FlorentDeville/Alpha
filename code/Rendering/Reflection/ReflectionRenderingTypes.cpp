@@ -2,24 +2,14 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#pragma once
+#include "Rendering/Reflection/ReflectionRenderingTypes.h"
 
-#include "Core/Reflection/ReflectionMacro.h"
+#include "Rendering/PipelineState/CullMode.h"
 
 namespace Rendering
 {
-	enum CullMode
+	void RegisterRenderingTypesToReflection()
 	{
-		None,
-		Front,
-		Back
-	};
+		CullMode_RegisterReflection();
+	}
 }
-
-ENABLE_ENUM_REFLECTION(Rendering, CullMode)
-
-START_ENUM_REFLECTION(Rendering, CullMode)
-	ADD_ENUM_ENTRY(None)
-	ADD_ENUM_ENTRY(Front)
-	ADD_ENUM_ENTRY(Back)
-END_ENUM_REFLECTION()
