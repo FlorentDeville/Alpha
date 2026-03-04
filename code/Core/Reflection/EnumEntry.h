@@ -28,6 +28,14 @@ namespace Core
 		const std::string& GetName() const;
 		int64_t GetValue() const;
 
+		static int64_t ToStoredValue(uint64_t raw);
+		static int64_t ToStoredValue(uint32_t raw);
+		static int64_t ToStoredValue(int32_t raw);
+		static int64_t ToStoredValue(uint16_t raw);
+		static int64_t ToStoredValue(int16_t raw);
+		static int64_t ToStoredValue(uint8_t raw);
+		static int64_t ToStoredValue(int8_t raw);
+
 	private:
 		int64_t m_value;
 		std::string m_name;
