@@ -161,10 +161,19 @@ namespace Widgets
 
 	void ComboBox::InternalSetSelection(uint32_t optionIndex)
 	{
+		if (optionIndex == m_selectedOptionIndex)
+			return;
+
 		if (m_options.IsValidIndex(optionIndex))
 		{
+			int64_t oldValue = -1;
+			if (m_options.IsValidIndex(m_selectedOptionIndex))
+				oldValue = m_options[m_selectedOptionIndex].m_value;
+
 			m_selectedOptionIndex = optionIndex;
 			m_pLabel->SetText(" " + m_options[optionIndex].m_label); //add a space character cause it's an easy way to put a padding
+
+			m_onSelectionChanged(oldValue, m_options[optionIndex].m_value);
 		}
 	}
 }

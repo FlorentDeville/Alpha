@@ -6,6 +6,7 @@
 
 #include "Widgets/Container.h"
 
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Collections/Array.h"
 
 namespace Widgets
@@ -30,6 +31,8 @@ namespace Widgets
 
 		void AddOption(const std::string& label, int64_t value);
 		void SetSelection(int64_t value);
+
+		EVENT_DECL(SelectionChanged, void(int64_t oldValue, int64_t newValue))
 
 	private:
 		struct Option
