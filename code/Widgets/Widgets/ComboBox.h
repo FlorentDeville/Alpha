@@ -15,6 +15,8 @@ namespace Widgets
 
 	class ComboBox : public Container
 	{
+		using Parent = Container;
+
 	public:
 		ComboBox();
 		~ComboBox();
@@ -22,9 +24,11 @@ namespace Widgets
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		bool Handle(const BaseEvent& ev) override;
+		void Enable(bool recursive = true) override;
+		void Disable(bool recursive = true) override;
+
 
 		void AddOption(const std::string& label, int64_t value);
-
 		void SetSelection(int64_t value);
 
 	private:

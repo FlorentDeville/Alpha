@@ -29,6 +29,8 @@ namespace Widgets
 		const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::TextureId expandedIcon = widgetMgr.GetIconTextureId(Widgets::IconId::kIconExpanded);
 		Widgets::Icon* pIcon = new Widgets::Icon(expandedIcon);
+		pIcon->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
+
 		pLayout->AddWidget(pIcon);
 		pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		pLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
@@ -65,7 +67,11 @@ namespace Widgets
 	}
 
 	ComboBox::~ComboBox()
-	{ }
+	{
+		delete m_pOptionsContainer;
+		m_pOptionsContainer = nullptr;
+		m_pOptionsLayout = nullptr;
+	}
 
 	void ComboBox::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
@@ -105,6 +111,20 @@ namespace Widgets
 		}
 
 		return Container::Handle(ev);
+	}
+
+	void ComboBox::Enable(bool recursive)
+	{
+		Parent::Enable(recursive);
+		m_pOptionsContainer->Enable(true);
+		m_displayOptions = false;
+	}
+
+	void ComboBox::Disable(bool recursive)
+	{
+		Parent::Disable(recursive);
+		m_pOptionsContainer->Disable(true);
+		m_displayOptions = false;
 	}
 
 	void ComboBox::AddOption(const std::string& label, int64_t value)
