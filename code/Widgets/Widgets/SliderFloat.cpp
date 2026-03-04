@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Widgets/SliderFloat.h"
 
@@ -45,10 +45,9 @@ namespace Widgets
 		m_pSlider = new Container(10, 18);
 		m_pSlider->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::MIDDLE);
 		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor);
+		m_pSlider->GetHoverStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor);
 		m_pSlider->SetX(CalculateSliderLocalX());
 
-		m_pSlider->OnMouseEnter([this](const Widgets::MouseEvent& ev) { Slider_OnMouseEnter(); });
-		m_pSlider->OnMouseExit([this](const Widgets::MouseEvent& ev) { Slider_OnMouseExit(); });
 		m_pSlider->OnMouseDown([this](const Widgets::MouseEvent& ev) { Slider_OnMouseDown(ev); });
 		m_pSlider->OnMouseUp([this](const Widgets::MouseEvent& ev) { Slider_OnMouseUp(); });
 
@@ -257,16 +256,6 @@ namespace Widgets
 		m_pTextbox->SetText(m_strCurrentValue);
 		m_pSlider->Disable();
 		m_mode = Text;
-	}
-
-	void SliderFloat::Slider_OnMouseEnter()
-	{
-		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_hoverSliderStyle.m_sliderColor);
-	}
-
-	void SliderFloat::Slider_OnMouseExit()
-	{
-		m_pSlider->GetDefaultStyle().SetBackgroundColor(m_defaultStyle.m_sliderColor);
 	}
 
 	void SliderFloat::Slider_OnMouseDown(const MouseEvent& ev)
