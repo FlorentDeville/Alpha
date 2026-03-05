@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <string>
 
+//#pragma optimize("", off)
+
 namespace Core
 {
 	static const int BLOCK_SIZE = 3;
@@ -73,7 +75,7 @@ namespace Core
 			pBuffer[outputIndex++] = ENCODE_LOOKUP_TABLE[part4];
 		}
 
-		if (result.rem == 1)
+		if (result.rem == 2)
 		{
 			//I have 2 bytes left and 1 missing bytes
 			int byteStart = fullBlockCount * BLOCK_SIZE;
@@ -88,7 +90,7 @@ namespace Core
 			pBuffer[outputIndex++] = ENCODE_LOOKUP_TABLE[part3];
 			pBuffer[outputIndex++] = '=';
 		}
-		else if (result.rem == 2)
+		else if (result.rem == 1)
 		{
 			//I have 1 byte left and 2 missing bytes
 			int byteStart = fullBlockCount * BLOCK_SIZE;
@@ -148,6 +150,20 @@ namespace Core
 
 			pBuffer[outputIndex++] = (b1 << 2 | ((b2 & 0xF0) >> 4));
 			pBuffer[outputIndex++] = (((b2 & 0x0F) << 4) | ((b3 & 0x3C) >> 2));
+		}
+		else
+		{
+			int byteStart = (fullBlockCount - 1) * CHAR_PER_BLOCK;
+			const char* pBlockStart = pData + byteStart;
+
+			uint8_t b1 = DECODE_LOOKUP_TABLE[pBlockStart[0]];
+			uint8_t b2 = DECODE_LOOKUP_TABLE[pBlockStart[1]];
+			uint8_t b3 = DECODE_LOOKUP_TABLE[pBlockStart[2]];
+			uint8_t b4 = DECODE_LOOKUP_TABLE[pBlockStart[3]];
+
+			pBuffer[outputIndex++] = (b1 << 2 | ((b2 & 0xF0) >> 4));
+			pBuffer[outputIndex++] = (((b2 & 0x0F) << 4) | ((b3 & 0x3C) >> 2));
+			pBuffer[outputIndex++] = (((b3 & 0x03) << 6) | (b4 & 0x3F));
 		}
 
 		assert(outputIndex <= bufferSize);
