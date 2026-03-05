@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Reflection/ReflectionMacro.h"
+#include "Core/Reflection/TypeDescriptor.h"
 #include "Systems/Objects/AssetObject.h"
 
 namespace Core
@@ -15,6 +17,8 @@ namespace Rendering
 {
 	class Texture;
 }
+
+ENABLE_REFLECTION(Systems, ITextureAsset)
 
 namespace Systems
 {
@@ -29,5 +33,9 @@ namespace Systems
 
 		virtual Rendering::Texture* GetTexture() = 0;
 		virtual const Core::Blob& GetBlob() const = 0;
+
+		START_REFLECTION_ABSTRACT(Systems::ITextureAsset)
+			ADD_BASETYPE(Systems::AssetObject)
+		END_REFLECTION()
 	};
 }
