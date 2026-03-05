@@ -104,7 +104,7 @@ namespace Systems
 
 		for (TextureBindingInfo& bindingInfo : textureBindingInfo)
 		{
-			Systems::TextureAsset* pTexture = bindingInfo.m_texture.GetPtr();
+			Systems::ITextureAsset* pTexture = bindingInfo.m_texture.GetPtr();
 			if (!pTexture)
 				continue;
 

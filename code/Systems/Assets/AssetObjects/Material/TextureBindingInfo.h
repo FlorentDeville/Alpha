@@ -6,7 +6,7 @@
 
 #include "Core/Reflection/ReflectionMacro.h"
 
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureType.h"
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 
@@ -17,7 +17,7 @@ namespace Systems
 	class TextureBindingInfo
 	{
 	public:
-		HardAssetRef<TextureAsset> m_texture;
+		HardAssetRef<ITextureAsset> m_texture;
 		std::string m_name;
 		uint32_t m_sigRootIndex;
 		TextureType m_type;
