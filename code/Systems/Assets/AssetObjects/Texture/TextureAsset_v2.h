@@ -53,7 +53,7 @@ namespace Systems
 		uint32_t m_mipCount;
 
 		START_REFLECTION(Systems::TextureAsset_v2)
-			ADD_BASETYPE(Systems::AssetObject)
+			ADD_BASETYPE(Systems::ITextureAsset)
 			ADD_FIELD(m_sourceFilename)
 			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 			ADD_FIELD(m_width)

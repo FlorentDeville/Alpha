@@ -58,7 +58,7 @@ namespace Systems
 		Core::Blob m_blob;
 
 		START_REFLECTION(Systems::CubemapAsset_v2)
-			ADD_BASETYPE(Systems::AssetObject)
+			ADD_BASETYPE(Systems::ITextureAsset)
 			ADD_FIELD(m_leftSourceFilename)
 			ADD_FIELD(m_rightSourceFilename)
 			ADD_FIELD(m_topSourceFilename)
