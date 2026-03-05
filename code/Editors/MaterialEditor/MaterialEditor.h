@@ -103,6 +103,7 @@ namespace Editors
 		bool OnCompileClicked();
 		bool OnCompileDebugClicked();
 		bool OnNewHlslClicked();
+		bool OnRefreshClicked();
 
 		void PropertyGridPopulator_OnDataChanged();
 

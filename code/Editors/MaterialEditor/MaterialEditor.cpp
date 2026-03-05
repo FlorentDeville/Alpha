@@ -166,9 +166,10 @@ namespace Editors
 			pButtonLayout->AddWidget(m_pCompileDebugButton);
 		}
 
+		//add refresh button
 		{
 			m_pRefreshMaterialInstanceButton = new Widgets::Button("Refresh");
-			m_pRefreshMaterialInstanceButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
+			m_pRefreshMaterialInstanceButton->OnClick([this]() -> bool { return OnRefreshClicked(); });
 			pButtonLayout->AddWidget(m_pRefreshMaterialInstanceButton);
 		}
 
@@ -438,6 +439,18 @@ namespace Editors
 		m_pMaterialListModel->SetShaderModified(m_selectedMaterialId);
 
 		return true;
+	}
+
+	bool MaterialEditor::OnRefreshClicked()
+	{
+		bool res = MaterialEditorModule::Get().RefreshMaterialInstance(m_selectedMaterialId);
+
+		if (res)
+			Core::LogModule::Get().LogInfo("Material instance refreshed.");
+		else
+			Core::LogModule::Get().LogInfo("Failed to refresh material instance.");
+
+		return res;
 	}
 
 	void MaterialEditor::PropertyGridPopulator_OnDataChanged()

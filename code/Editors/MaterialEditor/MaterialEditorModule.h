@@ -40,6 +40,8 @@ namespace Editors
 
 		bool CompileMaterial(Systems::NewAssetId id, bool debug);
 
+		bool RefreshMaterialInstance(Systems::NewAssetId id);
+
 		EVENT_DECL(MaterialCreated, void(const Systems::AssetMetadata* pMetadata));
 		EVENT_DECL(MaterialInstanceCreated, void(const Systems::AssetMetadata* pMetadata));
 

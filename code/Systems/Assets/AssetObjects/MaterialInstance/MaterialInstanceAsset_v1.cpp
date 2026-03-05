@@ -41,6 +41,56 @@ namespace Systems
 		return true;
 	}
 
+	bool MaterialInstanceAsset_v1::Refresh()
+	{
+		if (!m_pBaseMaterial)
+			return false;
+
+		//coppy parameters
+		const Core::Array<MaterialParameterDescription>& parameters = m_pBaseMaterial->GetMaterialParameterDescription();
+		Core::Array<MaterialParameterDescription> newParameters;
+		newParameters.Reserve(parameters.GetSize());
+		for (const MaterialParameterDescription& param : parameters)
+		{
+			uint32_t index = newParameters.GetSize();
+			newParameters.PushBack(param);
+
+			//try to keep any existing value
+			Core::Array<MaterialParameterDescription>::Iterator it = std::find_if(m_perMaterialParameters.cbegin(), m_perMaterialParameters.cend(), [&param](const MaterialParameterDescription& item)
+				{
+					return item.m_name == param.m_name && item.m_size == param.m_size && item.m_type == param.m_type;
+				});
+
+			if (it != m_perMaterialParameters.cend())
+				newParameters[index].m_value = it->m_value;
+		}
+
+		m_perMaterialParameters = std::move(newParameters);
+
+		//copy textures
+		const Core::Array<TextureBindingInfo>& textures = m_pBaseMaterial->GetTexturesBindingInfo();
+		Core::Array<TextureBindingInfo> newTextures;
+		newTextures.Reserve(textures.GetSize());
+		for (const TextureBindingInfo& texture : textures)
+		{
+			uint32_t index = newTextures.GetSize();
+			newTextures.PushBack(texture);
+
+			//try to keep any existing value
+			Core::Array<TextureBindingInfo>::Iterator it = std::find_if(m_texturesBindingInfo.cbegin(), m_texturesBindingInfo.cend(), [&texture](const TextureBindingInfo& item)
+				{
+					return texture.m_name == item.m_name;
+				});
+
+			if (it != m_texturesBindingInfo.cend())
+				newTextures[index].m_texture = it->m_texture;
+		}
+
+		m_texturesBindingInfo = std::move(newTextures);
+
+		return true;
+	}
+
 	NewAssetId MaterialInstanceAsset_v1::GetBaseMaterialId() const
 	{
 		return m_material;

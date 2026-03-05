@@ -23,6 +23,8 @@ namespace Systems
 
 		bool InitialiseFromBaseMaterial(MaterialAsset* pBaseMaterial);
 
+		bool Refresh();
+
 		NewAssetId GetBaseMaterialId() const;
 
 		const Systems::MaterialAsset* GetBaseMaterial() const;
