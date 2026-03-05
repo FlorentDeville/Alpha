@@ -73,6 +73,8 @@ namespace Editors
 		, m_pMeshes{}
 		, m_pMeshesMenuItem{}
 		, m_selectedMesh(DisplayMesh::Unknown)
+		, m_pCompileButton(nullptr)
+		, m_pCompileDebugButton(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -151,16 +153,16 @@ namespace Editors
 
 		//add compile button
 		{
-			Widgets::Button* pButton = new Widgets::Button("Compile");
-			pButton->OnClick([this]() -> bool { return OnCompileClicked(); });
-			pButtonLayout->AddWidget(pButton);
+			m_pCompileButton = new Widgets::Button("Compile");
+			m_pCompileButton->OnClick([this]() -> bool { return OnCompileClicked(); });
+			pButtonLayout->AddWidget(m_pCompileButton);
 		}
 
 		//add debug compile button
 		{
-			Widgets::Button* pButton = new Widgets::Button("Compile Debug");
-			pButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
-			pButtonLayout->AddWidget(pButton);
+			m_pCompileDebugButton = new Widgets::Button("Compile Debug");
+			m_pCompileDebugButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
+			pButtonLayout->AddWidget(m_pCompileDebugButton);
 		}
 
 		//add property grid
@@ -372,6 +374,14 @@ namespace Editors
 
 		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
 
+		if (pObject->IsA<Systems::MaterialAsset>())
+		{
+			SetMaterialOptionsVisibility(true);
+		}
+		else
+		{
+			SetMaterialOptionsVisibility(false);
+		}
 		return true;
 	}
 
@@ -458,6 +468,7 @@ namespace Editors
 				{
 					m_selectedMaterialId = Systems::NewAssetId::INVALID;
 					m_pPropertyGrid->ClearAllItems();
+					SetMaterialOptionsVisibility(false);
 					return;
 				}
 
@@ -635,5 +646,19 @@ namespace Editors
 		m_pMaterialListModel->SetShaderModified(id);
 
 		return true;
+	}
+
+	void MaterialEditor::SetMaterialOptionsVisibility(bool enable)
+	{
+		if (enable)
+		{
+			m_pCompileButton->Enable();
+			m_pCompileDebugButton->Enable();
+		}
+		else
+		{
+			m_pCompileButton->Disable();
+			m_pCompileDebugButton->Disable();
+		}
 	}
 }

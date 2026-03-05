@@ -27,6 +27,7 @@ namespace Systems
 
 namespace Widgets
 {
+	class Button;
 	class Layout;
 	class MenuItem;
 	class Text;
@@ -83,6 +84,9 @@ namespace Editors
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 
+		Widgets::Button* m_pCompileButton;
+		Widgets::Button* m_pCompileDebugButton;
+
 		void CreateFileMenu();
 		void CreateMeshMenu();
 
@@ -111,5 +115,7 @@ namespace Editors
 		void RefreshPropertyGrid();
 
 		bool InternalOnCompileClicked(bool debug);
+
+		void SetMaterialOptionsVisibility(bool enable);
 	};
 }
