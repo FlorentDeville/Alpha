@@ -20,6 +20,7 @@ namespace Core
 
 	class TypeDescriptor
 	{
+		template<typename T> friend class AbstractTypeInitializer;
 		template<typename T> friend class TypeInitializer;
 
 	public:
@@ -121,6 +122,19 @@ namespace Core
 			pType->m_size = sizeof(T);
 			pType->Construct = []() -> void* { return new T(); };
 			pType->InPlaceConstruct = [](void* ptr) -> void* { return new(ptr) T(); };
+			pType->Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
+			pType->Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<T*>(pDst) = *reinterpret_cast<const T*>(pSrc); };
+		}
+	};
+
+	template<typename T> class AbstractTypeInitializer
+	{
+	public:
+		static void Run(TypeDescriptor* pType)
+		{
+			pType->m_size = sizeof(T);
+			pType->Construct = nullptr;
+			pType->InPlaceConstruct = nullptr;
 			pType->Destruct = [](void* pObject) { delete reinterpret_cast<T*>(pObject); };
 			pType->Copy = [](const void* pSrc, void* pDst) { *reinterpret_cast<T*>(pDst) = *reinterpret_cast<const T*>(pSrc); };
 		}
