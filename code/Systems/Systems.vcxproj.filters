@@ -52,6 +52,7 @@
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v2.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\TextureType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
