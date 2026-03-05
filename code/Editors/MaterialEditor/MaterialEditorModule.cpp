@@ -322,7 +322,12 @@ namespace Editors
 			Systems::TextureBindingInfo textureBinding;
 			textureBinding.m_name = texture.m_name;
 			textureBinding.m_sigRootIndex = texture.m_rootSigIndex;
-			
+
+			if (texture.m_isCubemap)
+				textureBinding.m_type = Systems::TextureType::Cubemap;
+			else
+				textureBinding.m_type = Systems::TextureType::Texture2D;
+
 			//reset the old value if any
 			const Core::Array<Systems::TextureBindingInfo>::Iterator it = std::find_if(existingTextureBindings.cbegin(), existingTextureBindings.cend(), 
 				[&textureBinding](Systems::TextureBindingInfo& oldParam) { return textureBinding.m_name == oldParam.m_name; });

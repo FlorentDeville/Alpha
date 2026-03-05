@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/MaterialEditor/Compiler/ShaderCompiler.h"
 
@@ -27,6 +27,7 @@ namespace Editors
 	{
 		D3D12_ROOT_PARAMETER m_dx12Parameter; //parameter used to create the root signature
 		std::string m_name;
+		bool m_isCubemap;
 	};
 
 	struct BoundResourceSample
@@ -117,7 +118,8 @@ namespace Editors
 				boundResource.m_dx12Parameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 				boundResource.m_dx12Parameter.DescriptorTable.NumDescriptorRanges = 1;
 				boundResource.m_dx12Parameter.DescriptorTable.pDescriptorRanges = pDx12Range;
-				
+				boundResource.m_isCubemap = bind.Dimension == D3D12_SRV_DIMENSION_TEXTURECUBE ? true : false;
+
 				boundResources.m_texture.PushBack(boundResource);
 			}
 				break;
@@ -364,6 +366,7 @@ namespace Editors
 			RootSigTexture rootSigTexture;
 			rootSigTexture.m_name = boundResource.m_name;
 			rootSigTexture.m_rootSigIndex = rootParameters.GetSize();
+			rootSigTexture.m_isCubemap = boundResource.m_isCubemap;
 
 			rootParameters.PushBack(boundResource.m_dx12Parameter);
 			rs.m_textures.PushBack(rootSigTexture);
