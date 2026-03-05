@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -22,6 +22,8 @@ namespace Systems
 		~MaterialInstanceAsset_v1();
 
 		bool InitialiseFromBaseMaterial(MaterialAsset* pBaseMaterial);
+
+		bool Refresh();
 
 		NewAssetId GetBaseMaterialId() const;
 

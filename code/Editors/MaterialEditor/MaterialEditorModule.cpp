@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 
@@ -342,6 +342,22 @@ namespace Editors
 			Core::LogModule::Get().LogInfo("Material compiled successfully.");
 
 		return res;
+	}
+
+	bool MaterialEditorModule::RefreshMaterialInstance(Systems::NewAssetId id)
+	{
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+			return false;
+
+		if (!pMetadata->IsA<Systems::MaterialInstanceAsset>())
+			return false;
+
+		Systems::MaterialInstanceAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(id);
+		if (!pMaterial)
+			return false;
+
+		return pMaterial->Refresh();
 	}
 
 	void MaterialEditorModule::BaseToInstanceCache::AddMaterialInstance(Systems::NewAssetId id)

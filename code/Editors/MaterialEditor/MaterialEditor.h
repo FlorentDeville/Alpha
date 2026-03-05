@@ -27,6 +27,7 @@ namespace Systems
 
 namespace Widgets
 {
+	class Button;
 	class Layout;
 	class MenuItem;
 	class Text;
@@ -83,6 +84,10 @@ namespace Editors
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 
+		Widgets::Button* m_pCompileButton;
+		Widgets::Button* m_pCompileDebugButton;
+		Widgets::Button* m_pRefreshMaterialInstanceButton;
+
 		void CreateFileMenu();
 		void CreateMeshMenu();
 
@@ -98,6 +103,7 @@ namespace Editors
 		bool OnCompileClicked();
 		bool OnCompileDebugClicked();
 		bool OnNewHlslClicked();
+		bool OnRefreshClicked();
 
 		void PropertyGridPopulator_OnDataChanged();
 
@@ -111,5 +117,8 @@ namespace Editors
 		void RefreshPropertyGrid();
 
 		bool InternalOnCompileClicked(bool debug);
+
+		void SetMaterialOptionsVisibility(bool enable);
+		void SetMaterialInstanceOptionsVisibility(bool enable);
 	};
 }

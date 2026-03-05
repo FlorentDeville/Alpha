@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -39,6 +39,8 @@ namespace Editors
 		const std::vector<Systems::NewAssetId>& GetAllMaterials() const;
 
 		bool CompileMaterial(Systems::NewAssetId id, bool debug);
+
+		bool RefreshMaterialInstance(Systems::NewAssetId id);
 
 		EVENT_DECL(MaterialCreated, void(const Systems::AssetMetadata* pMetadata));
 		EVENT_DECL(MaterialInstanceCreated, void(const Systems::AssetMetadata* pMetadata));

@@ -73,6 +73,9 @@ namespace Editors
 		, m_pMeshes{}
 		, m_pMeshesMenuItem{}
 		, m_selectedMesh(DisplayMesh::Unknown)
+		, m_pCompileButton(nullptr)
+		, m_pCompileDebugButton(nullptr)
+		, m_pRefreshMaterialInstanceButton(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -151,16 +154,23 @@ namespace Editors
 
 		//add compile button
 		{
-			Widgets::Button* pButton = new Widgets::Button("Compile");
-			pButton->OnClick([this]() -> bool { return OnCompileClicked(); });
-			pButtonLayout->AddWidget(pButton);
+			m_pCompileButton = new Widgets::Button("Compile");
+			m_pCompileButton->OnClick([this]() -> bool { return OnCompileClicked(); });
+			pButtonLayout->AddWidget(m_pCompileButton);
 		}
 
 		//add debug compile button
 		{
-			Widgets::Button* pButton = new Widgets::Button("Compile Debug");
-			pButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
-			pButtonLayout->AddWidget(pButton);
+			m_pCompileDebugButton = new Widgets::Button("Compile Debug");
+			m_pCompileDebugButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
+			pButtonLayout->AddWidget(m_pCompileDebugButton);
+		}
+
+		//add refresh button
+		{
+			m_pRefreshMaterialInstanceButton = new Widgets::Button("Refresh");
+			m_pRefreshMaterialInstanceButton->OnClick([this]() -> bool { return OnRefreshClicked(); });
+			pButtonLayout->AddWidget(m_pRefreshMaterialInstanceButton);
 		}
 
 		//add property grid
@@ -199,6 +209,9 @@ namespace Editors
 		Rendering::BaseShape::CreateCube(m_pMeshes[DisplayMesh::Cube]);
 
 		m_selectedMesh = DisplayMesh::Sphere;
+
+		SetMaterialOptionsVisibility(false);
+		SetMaterialInstanceOptionsVisibility(false);
 	}
 
 	void MaterialEditor::CreateFileMenu()
@@ -372,6 +385,16 @@ namespace Editors
 
 		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pObject, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { PropertyGridPopulator_OnDataChanged(); });
 
+		if (pObject->IsA<Systems::MaterialAsset>())
+		{
+			SetMaterialOptionsVisibility(true);
+			SetMaterialInstanceOptionsVisibility(false);
+		}
+		else
+		{
+			SetMaterialOptionsVisibility(false);
+			SetMaterialInstanceOptionsVisibility(true);
+		}
 		return true;
 	}
 
@@ -418,6 +441,18 @@ namespace Editors
 		return true;
 	}
 
+	bool MaterialEditor::OnRefreshClicked()
+	{
+		bool res = MaterialEditorModule::Get().RefreshMaterialInstance(m_selectedMaterialId);
+
+		if (res)
+			Core::LogModule::Get().LogInfo("Material instance refreshed.");
+		else
+			Core::LogModule::Get().LogInfo("Failed to refresh material instance.");
+
+		return res;
+	}
+
 	void MaterialEditor::PropertyGridPopulator_OnDataChanged()
 	{
 		m_pMaterialListModel->SetShaderModified(m_selectedMaterialId);
@@ -458,6 +493,8 @@ namespace Editors
 				{
 					m_selectedMaterialId = Systems::NewAssetId::INVALID;
 					m_pPropertyGrid->ClearAllItems();
+					SetMaterialOptionsVisibility(false);
+					SetMaterialInstanceOptionsVisibility(false);
 					return;
 				}
 
@@ -635,5 +672,31 @@ namespace Editors
 		m_pMaterialListModel->SetShaderModified(id);
 
 		return true;
+	}
+
+	void MaterialEditor::SetMaterialOptionsVisibility(bool enable)
+	{
+		if (enable)
+		{
+			m_pCompileButton->Enable();
+			m_pCompileDebugButton->Enable();
+		}
+		else
+		{
+			m_pCompileButton->Disable();
+			m_pCompileDebugButton->Disable();
+		}
+	}
+
+	void MaterialEditor::SetMaterialInstanceOptionsVisibility(bool enable)
+	{
+		if (enable)
+		{
+			m_pRefreshMaterialInstanceButton->Enable();
+		}
+		else
+		{
+			m_pRefreshMaterialInstanceButton->Disable();
+		}
 	}
 }
