@@ -8,8 +8,6 @@
 
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 
-#include "Rendering/Texture/TextureFormat.h"
-
 namespace Rendering
 {
 	class Texture;
