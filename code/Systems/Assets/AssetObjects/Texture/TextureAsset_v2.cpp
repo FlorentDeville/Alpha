@@ -11,7 +11,7 @@
 namespace Systems
 {
 	TextureAsset_v2::TextureAsset_v2()
-		: AssetObject()
+		: ITextureAsset()
 		, m_sourceFilename()
 		, m_blob()
 		, m_width(0)
