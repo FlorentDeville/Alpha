@@ -75,7 +75,7 @@ namespace Core
 			pBuffer[outputIndex++] = ENCODE_LOOKUP_TABLE[part4];
 		}
 
-		if (result.rem == 1)
+		if (result.rem == 2)
 		{
 			//I have 2 bytes left and 1 missing bytes
 			int byteStart = fullBlockCount * BLOCK_SIZE;
@@ -90,7 +90,7 @@ namespace Core
 			pBuffer[outputIndex++] = ENCODE_LOOKUP_TABLE[part3];
 			pBuffer[outputIndex++] = '=';
 		}
-		else if (result.rem == 2)
+		else if (result.rem == 1)
 		{
 			//I have 1 byte left and 2 missing bytes
 			int byteStart = fullBlockCount * BLOCK_SIZE;
