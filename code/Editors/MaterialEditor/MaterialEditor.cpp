@@ -75,6 +75,7 @@ namespace Editors
 		, m_selectedMesh(DisplayMesh::Unknown)
 		, m_pCompileButton(nullptr)
 		, m_pCompileDebugButton(nullptr)
+		, m_pRefreshMaterialInstanceButton(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -165,6 +166,12 @@ namespace Editors
 			pButtonLayout->AddWidget(m_pCompileDebugButton);
 		}
 
+		{
+			m_pRefreshMaterialInstanceButton = new Widgets::Button("Refresh");
+			m_pRefreshMaterialInstanceButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
+			pButtonLayout->AddWidget(m_pRefreshMaterialInstanceButton);
+		}
+
 		//add property grid
 		{
 			m_pPropertyGrid = new PropertyGridWidget();
@@ -201,6 +208,9 @@ namespace Editors
 		Rendering::BaseShape::CreateCube(m_pMeshes[DisplayMesh::Cube]);
 
 		m_selectedMesh = DisplayMesh::Sphere;
+
+		SetMaterialOptionsVisibility(false);
+		SetMaterialInstanceOptionsVisibility(false);
 	}
 
 	void MaterialEditor::CreateFileMenu()
@@ -377,10 +387,12 @@ namespace Editors
 		if (pObject->IsA<Systems::MaterialAsset>())
 		{
 			SetMaterialOptionsVisibility(true);
+			SetMaterialInstanceOptionsVisibility(false);
 		}
 		else
 		{
 			SetMaterialOptionsVisibility(false);
+			SetMaterialInstanceOptionsVisibility(true);
 		}
 		return true;
 	}
@@ -469,6 +481,7 @@ namespace Editors
 					m_selectedMaterialId = Systems::NewAssetId::INVALID;
 					m_pPropertyGrid->ClearAllItems();
 					SetMaterialOptionsVisibility(false);
+					SetMaterialInstanceOptionsVisibility(false);
 					return;
 				}
 
@@ -659,6 +672,18 @@ namespace Editors
 		{
 			m_pCompileButton->Disable();
 			m_pCompileDebugButton->Disable();
+		}
+	}
+
+	void MaterialEditor::SetMaterialInstanceOptionsVisibility(bool enable)
+	{
+		if (enable)
+		{
+			m_pRefreshMaterialInstanceButton->Enable();
+		}
+		else
+		{
+			m_pRefreshMaterialInstanceButton->Disable();
 		}
 	}
 }

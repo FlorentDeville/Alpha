@@ -86,6 +86,7 @@ namespace Editors
 
 		Widgets::Button* m_pCompileButton;
 		Widgets::Button* m_pCompileDebugButton;
+		Widgets::Button* m_pRefreshMaterialInstanceButton;
 
 		void CreateFileMenu();
 		void CreateMeshMenu();
@@ -117,5 +118,6 @@ namespace Editors
 		bool InternalOnCompileClicked(bool debug);
 
 		void SetMaterialOptionsVisibility(bool enable);
+		void SetMaterialInstanceOptionsVisibility(bool enable);
 	};
 }
