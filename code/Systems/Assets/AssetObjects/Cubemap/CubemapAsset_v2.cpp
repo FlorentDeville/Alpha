@@ -10,7 +10,7 @@
 namespace Systems
 {
 	CubemapAsset_v2::CubemapAsset_v2()
-		: AssetObject()
+		: ITextureAsset()
 		, m_leftSourceFilename()
 		, m_rightSourceFilename()
 		, m_topSourceFilename()
