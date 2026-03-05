@@ -31,6 +31,7 @@ namespace Widgets
 
 		void AddOption(const std::string& label, int64_t value);
 		void SetSelection(int64_t value);
+		void SetReadOnly(bool readOnly);
 
 		EVENT_DECL(SelectionChanged, void(int64_t oldValue, int64_t newValue))
 
@@ -50,7 +51,10 @@ namespace Widgets
 		Container* m_pOptionsContainer;
 		Layout* m_pOptionsLayout;
 
-		bool m_displayOptions;
+		bool m_displayOptions : 1;
+		bool m_readOnly : 1;
+
+		ContainerStyle m_savedHoverStyle;
 
 		void InternalSetSelection(uint32_t optionIndex);
 

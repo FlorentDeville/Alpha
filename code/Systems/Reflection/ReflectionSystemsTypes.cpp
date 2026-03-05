@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
@@ -17,6 +17,7 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
+#include "Systems/Assets/AssetObjects/Texture/TextureType.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -33,6 +34,8 @@ namespace Systems
 	void RegisterSystemsTypesToReflection()
 	{
 		REGISTER_TYPE(Systems::NewAssetId);
+
+		TextureType_RegisterReflection();
 
 		Systems::Object::RegisterReflection();
 		Systems::GameObject::RegisterReflection();

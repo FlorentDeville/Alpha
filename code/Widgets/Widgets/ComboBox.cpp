@@ -20,6 +20,7 @@ namespace Widgets
 		, m_selectedOptionIndex(0)
 		, m_displayOptions(false)
 		, m_selectedOptionSet(false)
+		, m_readOnly(false)
 	{
 		SetSize(Core::UInt2(100, 22));
 		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
@@ -63,10 +64,12 @@ namespace Widgets
 		GetDefaultStyle().SetBackgroundColor(Widgets::Color(56, 56, 56));
 		GetDefaultStyle().SetBorderColor(Widgets::Color(66, 66, 66));
 
-		GetHoverStyle().SetBorderSize(1);
-		GetHoverStyle().ShowBorder(true);
-		GetHoverStyle().SetBackgroundColor(Widgets::Color(61, 61, 61));
-		GetHoverStyle().SetBorderColor(Widgets::Color(66, 66, 66));
+		m_savedHoverStyle.SetBorderSize(1);
+		m_savedHoverStyle.ShowBorder(true);
+		m_savedHoverStyle.SetBackgroundColor(Widgets::Color(61, 61, 61));
+		m_savedHoverStyle.SetBorderColor(Widgets::Color(66, 66, 66));
+
+		GetHoverStyle() = m_savedHoverStyle;
 
 		OnFocusLost([this](const Widgets::FocusEvent& ev) { HideOptions(); });
 	}
@@ -95,11 +98,13 @@ namespace Widgets
 		switch (ev.m_id)
 		{
 		case Widgets::EventType::kMouseDown:
-			if (m_displayOptions)
-				HideOptions();
-			else
-				ShowOptions();
-			
+			if (!m_readOnly)
+			{
+				if (m_displayOptions)
+					HideOptions();
+				else
+					ShowOptions();
+			}
 			return true;
 			break;
 		}
@@ -110,14 +115,14 @@ namespace Widgets
 	void ComboBox::Enable(bool recursive)
 	{
 		Parent::Enable(recursive);
-		m_pOptionsContainer->Enable(true);
+		m_pOptionsContainer->Disable();
 		m_displayOptions = false;
 	}
 
 	void ComboBox::Disable(bool recursive)
 	{
 		Parent::Disable(recursive);
-		m_pOptionsContainer->Disable(true);
+		m_pOptionsContainer->Disable();
 		m_displayOptions = false;
 	}
 
@@ -156,6 +161,15 @@ namespace Widgets
 		}
 
 		InternalSetSelection(newOption);
+	}
+
+	void ComboBox::SetReadOnly(bool readOnly)
+	{
+		m_readOnly = readOnly;
+		if (readOnly)
+			GetHoverStyle() = GetDefaultStyle();
+		else
+			GetHoverStyle() = m_savedHoverStyle;
 	}
 
 	void ComboBox::InternalSetSelection(uint32_t optionIndex)

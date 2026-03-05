@@ -20,6 +20,7 @@ namespace Editors
 	{
 		std::string m_name;
 		uint32_t m_rootSigIndex;
+		bool m_isCubemap;
 	};
 
 	class RootSignatureDescription

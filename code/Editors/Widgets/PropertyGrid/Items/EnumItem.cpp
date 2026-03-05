@@ -23,6 +23,7 @@ namespace Editors
 	{
 		m_pComboBox = new Widgets::ComboBox();
 		m_pComboBox->OnSelectionChanged([this](int64_t oldValue, int64_t newValue) { OnSelectionChanged(oldValue, newValue); });
+		m_pComboBox->SetReadOnly(m_pField->IsReadOnly());
 
 		const Core::TypeDescriptor* pType = m_pField->GetType();
 		const Core::Array<Core::EnumEntry>& enumEntries = pType->GetEnumEntries();
