@@ -48,6 +48,12 @@ namespace Core
 		return hidden;
 	}
 
+	bool FieldDescriptor::IsSerialized() const
+	{
+		bool doNotSerialized = m_attribute & Core::FieldAttribute::DoNotSerialize;
+		return !doNotSerialized;
+	}
+
 	bool FieldDescriptor::IsReadOnly() const
 	{
 		bool readOnly = m_attribute & Core::FieldAttribute::ReadOnly;

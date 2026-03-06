@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -8,6 +8,11 @@
 #include <d3d12.h>
 
 #include "Core/Collections/Array.h"
+
+namespace Core
+{
+	class Blob;
+}
 
 namespace Rendering
 {
@@ -19,6 +24,7 @@ namespace Rendering
 		~Shader();
 
 		bool LoadFromMemory(const Core::Array<char>& blob);
+		bool LoadFromMemory(const Core::Blob& blob);
 
 		ID3DBlob* GetBlob() const;
 

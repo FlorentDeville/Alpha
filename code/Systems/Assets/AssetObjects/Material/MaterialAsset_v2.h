@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Blob/Blob.h"
 #include "Core/Collections/Array.h"
 
 #include "Rendering/PipelineState/CullMode.h"
@@ -24,8 +25,6 @@ ENABLE_REFLECTION(Systems, MaterialAsset_v2)
 
 namespace Systems
 {
-	class MaterialAsset_v1;
-
 	class MaterialAsset_v2 : public AssetObject
 	{
 	public:
@@ -41,9 +40,9 @@ namespace Systems
 		const Rendering::RootSignature* GetRootSignature() const;
 		const Rendering::PipelineState* GetPipelineState() const;
 
-		Core::Array<char>& GetPsBlob();
-		Core::Array<char>& GetVsBlob();
-		Core::Array<char>& GetRsBlob();
+		Core::Blob& GetPsBlob();
+		Core::Blob& GetVsBlob();
+		Core::Blob& GetRsBlob();
 
 		Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription();
 		const Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription() const;
@@ -66,16 +65,14 @@ namespace Systems
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
-		void Upgrade(const MaterialAsset_v1* pV1);
-
 	private:
 		std::string m_sourceFilePS;
 		std::string m_sourceFileVS;
 
 		//Not editable variables
-		Core::Array<char> m_psBlob;
-		Core::Array<char> m_vsBlob;
-		Core::Array<char> m_rsBlob;
+		Core::Blob m_psBlob;
+		Core::Blob m_vsBlob;
+		Core::Blob m_rsBlob;
 
 		Core::Array<MaterialCBufferBindingInfo> m_bindingInfoArray;
 

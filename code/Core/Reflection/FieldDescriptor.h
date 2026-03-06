@@ -39,7 +39,7 @@ namespace Core
 
 		//Check if the attribute Hidden is present.
 		bool IsHidden() const;
-
+		bool IsSerialized() const;
 		bool IsReadOnly() const;
 
 	private:

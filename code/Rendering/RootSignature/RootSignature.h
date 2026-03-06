@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -9,6 +9,11 @@
 #include "Core/Collections/Array.h"
 
 struct ID3D12RootSignature;
+
+namespace Core
+{
+	class Blob;
+}
 
 namespace Rendering
 {
@@ -22,6 +27,7 @@ namespace Rendering
 		ID3D12RootSignature* GetRootSignature() const;
 
 		bool LoadFromMemory(const Core::Array<char>& bytecode);
+		bool LoadFromMemory(const Core::Blob& bytecode);
 
 	private:
 		std::string m_path;

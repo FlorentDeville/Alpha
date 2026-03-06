@@ -314,7 +314,7 @@ namespace Editors
 		return !error;
 	}
 
-	bool ShaderCompiler::GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, RootSignatureDescription& rs)
+	bool ShaderCompiler::GenerateRootSignature(const Core::Blob& ps, const Core::Blob& vs, RootSignatureDescription& rs)
 	{
 		RootSigBoundResources rootSigBoundResources;
 
@@ -407,7 +407,7 @@ namespace Editors
 		return true;
 	}
 
-	bool ShaderCompiler::GenerateMaterialParameters(const Core::Array<char>& ps, const Core::Array<char>& vs, MaterialParameters& parameters)
+	bool ShaderCompiler::GenerateMaterialParameters(const Core::Blob& ps, const Core::Blob& vs, MaterialParameters& parameters)
 	{
 		//vertex shader
 		{

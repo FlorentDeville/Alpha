@@ -7,7 +7,6 @@
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
@@ -52,7 +51,6 @@ namespace Systems
 		Systems::CubemapAsset_v2::RegisterReflection();
 		Systems::ITextureAsset::RegisterReflection();
 		Systems::LevelAsset_v1::RegisterReflection();
-		Systems::MaterialAsset_v1::RegisterReflection();
 		Systems::MaterialAsset_v2::RegisterReflection();
 		Systems::MeshAsset_v1::RegisterReflection();
 		Systems::MeshAsset_v2::RegisterReflection();

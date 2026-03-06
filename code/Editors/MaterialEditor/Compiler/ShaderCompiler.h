@@ -1,12 +1,15 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include <string>
 
-#include "Core/Collections/Array.h"
+namespace Core
+{
+	class Blob;
+}
 
 namespace Editors
 {
@@ -21,9 +24,9 @@ namespace Editors
 
 		bool CompileShader(const std::string& shaderSourceFilePath, const std::string& includePath, const std::string& outputFile, bool debug = false);
 
-		bool GenerateRootSignature(const Core::Array<char>& ps, const Core::Array<char>& vs, RootSignatureDescription& rs);
+		bool GenerateRootSignature(const Core::Blob& ps, const Core::Blob& vs, RootSignatureDescription& rs);
 
-		bool GenerateMaterialParameters(const Core::Array<char>& ps, const Core::Array<char>& vs, MaterialParameters& parameters);
+		bool GenerateMaterialParameters(const Core::Blob& ps, const Core::Blob& vs, MaterialParameters& parameters);
 
 	private:
 		std::string m_shaderCompilerPath;
