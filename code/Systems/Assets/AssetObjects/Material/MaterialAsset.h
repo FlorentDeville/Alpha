@@ -1,12 +1,119 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
+#include "Core/Blob/Blob.h"
+#include "Core/Collections/Array.h"
+
+#include "Rendering/PipelineState/CullMode.h"
+#include "Rendering/PipelineState/DepthComparisonMode.h"
+
+#include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
+#include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
+#include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
+#include "Systems/Objects/AssetObject.h"
+
+namespace Rendering
+{
+	class PipelineState;
+	class RootSignature;
+	class Shader;
+}
+
+ENABLE_REFLECTION(Systems, MaterialAsset)
 
 namespace Systems
 {
-	using MaterialAsset = MaterialAsset_v2;
+	class MaterialAsset_v2;
+
+	class MaterialAsset : public AssetObject
+	{
+	public:
+		MaterialAsset();
+		~MaterialAsset();
+
+		const std::string& GetSourceFilePs() const;
+		const std::string& GetSourceFileVs() const;
+
+		void SetSourceFilePs(const std::string& psFilename);
+		void SetSourceFileVs(const std::string& vsFilename);
+
+		const Rendering::RootSignature* GetRootSignature() const;
+		const Rendering::PipelineState* GetPipelineState() const;
+
+		Core::Blob& GetPsBlob();
+		Core::Blob& GetVsBlob();
+		Core::Blob& GetRsBlob();
+
+		Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription();
+		const Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription() const;
+
+		Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray();
+		const Core::Array<MaterialCBufferBindingInfo>& GetBindingInfoArray() const;
+
+		Core::Array<TextureBindingInfo>& GetTexturesBindingInfo();
+		const Core::Array<TextureBindingInfo>& GetTexturesBindingInfo() const;
+
+		void PostLoad() override;
+
+		void UpdateRenderingObjects();
+
+		bool IsValidForRendering() const;
+
+		void SetIsDebug(bool debug);
+		bool IsDebug() const;
+
+		void SetShadowMapsRootSigIndex(int32_t index);
+		int32_t GetShadowMapsRootSigIndex() const;
+
+		static const std::string& GetAssetTypeName();
+		static Core::Sid GetAssetTypeNameSid();
+
+		void Upgrade(const MaterialAsset_v2* pV2);
+
+	private:
+		std::string m_sourceFilePS;
+		std::string m_sourceFileVS;
+
+		//Not editable variables
+		Core::Blob m_psBlob;
+		Core::Blob m_vsBlob;
+		Core::Blob m_rsBlob;
+
+		Core::Array<MaterialCBufferBindingInfo> m_bindingInfoArray;
+
+		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
+
+		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
+
+		Rendering::CullMode m_cullMode;
+		Rendering::DepthComparisonMode m_depthFunction;
+
+		int32_t m_shadowMapsRootSigIndex; // if different than -1, then shadow maps should be binded.
+
+		START_REFLECTION(Systems::MaterialAsset)
+			ADD_BASETYPE(Systems::AssetObject)
+			ADD_FIELD(m_sourceFilePS)
+			ADD_FIELD(m_sourceFileVS)
+			ADD_FIELD_ATTR(m_psBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_vsBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_rsBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_bindingInfoArray, Core::Hidden)
+			ADD_FIELD(m_perMaterialParameters)
+			ADD_FIELD(m_texturesBindingInfo)
+			ADD_FIELD(m_cullMode)
+			ADD_FIELD(m_depthFunction)
+			ADD_FIELD_ATTR(m_shadowMapsRootSigIndex, Core::Hidden)
+		END_REFLECTION()
+
+		//No reflected variables
+		Rendering::Shader* m_pVs;
+		Rendering::Shader* m_pPs;
+		Rendering::RootSignature* m_pRs;
+		Rendering::PipelineState* m_pPipelineState;
+
+		bool m_isDebug; //true if the shader is compiled in debug
+	};
 }

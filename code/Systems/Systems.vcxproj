@@ -70,6 +70,7 @@
     <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />

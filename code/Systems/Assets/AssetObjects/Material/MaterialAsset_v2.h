@@ -10,6 +10,7 @@
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
 
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
@@ -28,6 +29,8 @@ namespace Systems
 {
 	class MaterialAsset_v2 : public AssetObject
 	{
+		friend class MaterialAsset;
+
 	public:
 		MaterialAsset_v2();
 		~MaterialAsset_v2();
@@ -102,6 +105,7 @@ namespace Systems
 			ADD_FIELD(m_cullMode)
 			ADD_FIELD(m_depthFunction)
 			ADD_FIELD_ATTR(m_shadowMapsRootSigIndex, Core::Hidden)
+			ADD_AUTO_UPGRADE(Systems::MaterialAsset)
 		END_REFLECTION()
 
 		//No reflected variables
