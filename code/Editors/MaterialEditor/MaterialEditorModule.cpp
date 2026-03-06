@@ -4,6 +4,7 @@
 
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
 
+#include "Core/Blob/Blob.h"
 #include "Core/Log/LogModule.h"
 
 #include "Editors/MaterialEditor/Compiler/MaterialParameters.h"
@@ -19,7 +20,7 @@
 
 namespace Editors
 {
-	static bool CompileSingleShader(const std::string& filename, const std::string& includePath, Core::Array<char>& bytecode, bool debug)
+	static bool CompileSingleShader(const std::string& filename, const std::string& includePath, Core::Blob& bytecode, bool debug)
 	{
 		std::string tempCsoFile = "c:\\tmp\\shaderblob.cso";
 		if (debug)

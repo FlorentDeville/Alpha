@@ -61,19 +61,19 @@ namespace Systems
 		return m_pPipelineState;
 	}
 
-	Core::Array<char>& MaterialAsset_v2::GetPsBlob()
+	Core::Blob& MaterialAsset_v2::GetPsBlob()
 	{
-		return m_psBlob;
+		return m_psBlob_;
 	}
 
-	Core::Array<char>& MaterialAsset_v2::GetVsBlob()
+	Core::Blob& MaterialAsset_v2::GetVsBlob()
 	{
-		return m_vsBlob;
+		return m_vsBlob_;
 	}
 
-	Core::Array<char>& MaterialAsset_v2::GetRsBlob()
+	Core::Blob& MaterialAsset_v2::GetRsBlob()
 	{
-		return m_rsBlob;
+		return m_rsBlob_;
 	}
 
 	Core::Array<MaterialParameterDescription>& MaterialAsset_v2::GetMaterialParameterDescription()
@@ -108,17 +108,35 @@ namespace Systems
 
 	void MaterialAsset_v2::PostLoad()
 	{
+		if (m_psBlob.GetSize())
+		{
+			m_psBlob_.Resize(m_psBlob.GetSize());
+			memcpy(m_psBlob_.GetData(), m_psBlob.GetData(), m_psBlob_.GetSize());
+		}
+
+		if (m_vsBlob.GetSize())
+		{
+			m_vsBlob_.Resize(m_vsBlob.GetSize());
+			memcpy(m_vsBlob_.GetData(), m_vsBlob.GetData(), m_vsBlob_.GetSize());
+		}
+
+		if (m_rsBlob.GetSize())
+		{
+			m_rsBlob_.Resize(m_rsBlob.GetSize());
+			memcpy(m_rsBlob_.GetData(), m_rsBlob.GetData(), m_rsBlob_.GetSize());
+		}
+
 		UpdateRenderingObjects();
 	}
 
 	void MaterialAsset_v2::UpdateRenderingObjects()
 	{
 		bool validVertexShader = false;
-		if (m_vsBlob.GetSize() != 0)
+		if (m_vsBlob_.GetSize() != 0)
 		{
 			delete m_pVs;
 			m_pVs = new Rendering::Shader();
-			bool res = m_pVs->LoadFromMemory(m_vsBlob);
+			bool res = m_pVs->LoadFromMemory(m_vsBlob_);
 			if (!res)
 				return;
 
@@ -126,11 +144,11 @@ namespace Systems
 		}
 
 		bool validPixelShader = false;
-		if (m_psBlob.GetSize() != 0)
+		if (m_psBlob_.GetSize() != 0)
 		{
 			delete m_pPs;
 			m_pPs = new Rendering::Shader();
-			bool res = m_pPs->LoadFromMemory(m_psBlob);
+			bool res = m_pPs->LoadFromMemory(m_psBlob_);
 			if (!res)
 				return;
 
@@ -138,11 +156,11 @@ namespace Systems
 		}
 
 		bool validRootSignature = false;
-		if (m_rsBlob.GetSize() != 0)
+		if (m_rsBlob_.GetSize() != 0)
 		{
 			delete m_pRs;
 			m_pRs = new Rendering::RootSignature();
-			bool res = m_pRs->LoadFromMemory(m_rsBlob);
+			bool res = m_pRs->LoadFromMemory(m_rsBlob_);
 			if (!res)
 				return;
 

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Core/Collections/Array.h"
+#include "Core/Blob/Blob.h"
 
 #include <string>
 
@@ -26,7 +26,7 @@ namespace Editors
 	class RootSignatureDescription
 	{
 	public:
-		Core::Array<char>* m_pRootSignatureBlob;
+		Core::Blob* m_pRootSignatureBlob;
 
 		//List of cbuffer name and its index in the root signature.
 		Core::Array<RootSigParameterIndex> m_parameters;

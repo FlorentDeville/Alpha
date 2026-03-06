@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Blob/Blob.h"
 #include "Core/Collections/Array.h"
 
 #include "Rendering/PipelineState/CullMode.h"
@@ -41,9 +42,9 @@ namespace Systems
 		const Rendering::RootSignature* GetRootSignature() const;
 		const Rendering::PipelineState* GetPipelineState() const;
 
-		Core::Array<char>& GetPsBlob();
-		Core::Array<char>& GetVsBlob();
-		Core::Array<char>& GetRsBlob();
+		Core::Blob& GetPsBlob();
+		Core::Blob& GetVsBlob();
+		Core::Blob& GetRsBlob();
 
 		Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription();
 		const Core::Array<MaterialParameterDescription>& GetMaterialParameterDescription() const;
@@ -77,6 +78,10 @@ namespace Systems
 		Core::Array<char> m_vsBlob;
 		Core::Array<char> m_rsBlob;
 
+		Core::Blob m_psBlob_;
+		Core::Blob m_vsBlob_;
+		Core::Blob m_rsBlob_;
+
 		Core::Array<MaterialCBufferBindingInfo> m_bindingInfoArray;
 
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
@@ -89,9 +94,12 @@ namespace Systems
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
 			ADD_FIELD(m_sourceFileVS)
-			ADD_FIELD_ATTR(m_psBlob, Core::Hidden)
-			ADD_FIELD_ATTR(m_vsBlob, Core::Hidden)
-			ADD_FIELD_ATTR(m_rsBlob, Core::Hidden)
+			ADD_FIELD_ATTR(m_psBlob, Core::Hidden | Core::DoNotSerialize)
+			ADD_FIELD_ATTR(m_vsBlob, Core::Hidden | Core::DoNotSerialize)
+			ADD_FIELD_ATTR(m_rsBlob, Core::Hidden | Core::DoNotSerialize)
+			ADD_FIELD_ATTR(m_psBlob_, Core::Hidden)
+			ADD_FIELD_ATTR(m_vsBlob_, Core::Hidden)
+			ADD_FIELD_ATTR(m_rsBlob_, Core::Hidden)
 			ADD_FIELD_ATTR(m_bindingInfoArray, Core::Hidden)
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
