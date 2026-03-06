@@ -106,24 +106,6 @@ namespace Systems
 
 	void MaterialAsset_v2::PostLoad()
 	{
-		if (m_psBlob.GetSize())
-		{
-			m_psBlob_.Resize(m_psBlob.GetSize());
-			memcpy(m_psBlob_.GetData(), m_psBlob.GetData(), m_psBlob_.GetSize());
-		}
-
-		if (m_vsBlob.GetSize())
-		{
-			m_vsBlob_.Resize(m_vsBlob.GetSize());
-			memcpy(m_vsBlob_.GetData(), m_vsBlob.GetData(), m_vsBlob_.GetSize());
-		}
-
-		if (m_rsBlob.GetSize())
-		{
-			m_rsBlob_.Resize(m_rsBlob.GetSize());
-			memcpy(m_rsBlob_.GetData(), m_rsBlob.GetData(), m_rsBlob_.GetSize());
-		}
-
 		UpdateRenderingObjects();
 	}
 
