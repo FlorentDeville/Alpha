@@ -33,6 +33,7 @@
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
+    <ClInclude Include="Assets\AssetObjects\Texture\ITextureAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v2.h" />

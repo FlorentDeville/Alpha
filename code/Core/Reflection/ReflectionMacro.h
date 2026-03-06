@@ -97,6 +97,14 @@ public: \
 		using ClassType = TYPE; \
 		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
 		Core::TypeInitializer<TYPE>::Run(pType);
+
+// Macro to start the description of an abstract class
+#define START_REFLECTION_ABSTRACT(TYPE) \
+public: \
+	static void RegisterReflection() {\
+		using ClassType = TYPE; \
+		Core::TypeDescriptor* pType = Core::ReflectionMgr::Get().RegisterType<TYPE>(#TYPE); \
+		Core::AbstractTypeInitializer<TYPE>::Run(pType);
 	
 // Macro to end the description of the reflection
 #define END_REFLECTION() }

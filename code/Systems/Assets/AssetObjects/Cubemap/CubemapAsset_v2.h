@@ -5,9 +5,9 @@
 #pragma once
 
 #include "Core/Blob/Blob.h"
-
-#include "Systems/Objects/AssetObject.h"
 #include "Core/Reflection/ReflectionMacro.h"
+
+#include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 
 namespace Rendering
 {
@@ -20,7 +20,7 @@ namespace Systems
 {
 	class CubemapAsset_v1;
 
-	class CubemapAsset_v2 : public AssetObject
+	class CubemapAsset_v2 : public ITextureAsset
 	{
 	public:
 		CubemapAsset_v2();
@@ -40,9 +40,10 @@ namespace Systems
 		const std::string& GetFrontSourceFilename() const;
 		const std::string& GetBackSourceFilename() const;
 
-		Rendering::Texture* GetTexture();
+		//ITextureAsset interface
+		Rendering::Texture* GetTexture() override;
 
-		const Core::Blob& GetBlob() const;
+		const Core::Blob& GetBlob() const override;
 
 		void Upgrade(const CubemapAsset_v1* pV1);
 
@@ -57,7 +58,7 @@ namespace Systems
 		Core::Blob m_blob;
 
 		START_REFLECTION(Systems::CubemapAsset_v2)
-			ADD_BASETYPE(Systems::AssetObject)
+			ADD_BASETYPE(Systems::ITextureAsset)
 			ADD_FIELD(m_leftSourceFilename)
 			ADD_FIELD(m_rightSourceFilename)
 			ADD_FIELD(m_topSourceFilename)

@@ -6,9 +6,7 @@
 
 #include "Core/Blob/Blob.h"
 
-#include "Systems/Objects/AssetObject.h"
-
-#include "Rendering/Texture/TextureFormat.h"
+#include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 
 namespace Rendering
 {
@@ -21,7 +19,7 @@ namespace Systems
 {
 	class TextureAsset_v1;
 
-	class TextureAsset_v2 : public AssetObject
+	class TextureAsset_v2 : public ITextureAsset
 	{
 	public:
 		TextureAsset_v2();
@@ -34,11 +32,11 @@ namespace Systems
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
-		Rendering::Texture* GetTexture();
+		//ITextureAsset interface
+		Rendering::Texture* GetTexture() override;
+		const Core::Blob& GetBlob() const override;
 
 		const std::string& GetSourceFilename() const;
-
-		const Core::Blob& GetBlob() const;
 
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
@@ -55,7 +53,7 @@ namespace Systems
 		uint32_t m_mipCount;
 
 		START_REFLECTION(Systems::TextureAsset_v2)
-			ADD_BASETYPE(Systems::AssetObject)
+			ADD_BASETYPE(Systems::ITextureAsset)
 			ADD_FIELD(m_sourceFilename)
 			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 			ADD_FIELD(m_width)
