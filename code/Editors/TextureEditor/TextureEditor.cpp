@@ -463,10 +463,17 @@ namespace Editors
 			renderer.SetConstantBuffer(ROOT_SIG_INDEX_CBV_PIXEL_SHADER, sizeof(psCBuffer), &psCBuffer, 0);
 
 			//bind texture
-			ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
-			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
-			renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-			renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(ROOT_SIG_INDEX_TEXTURECUBE, pSrv->GetGPUDescriptorHandleForHeapStart());
+			if (!pTexture->GetTexture())
+			{
+				renderer.BindNullCubemap(ROOT_SIG_INDEX_TEXTURECUBE);
+			}
+			else
+			{
+				ID3D12DescriptorHeap* pSrv = pTexture->GetTexture()->GetSRV();
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+				renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(ROOT_SIG_INDEX_TEXTURECUBE, pSrv->GetGPUDescriptorHandleForHeapStart());
+			}
 
 			renderer.BindNullTexture2D(ROOT_SIG_INDEX_TEXTURE2D);
 
