@@ -82,7 +82,15 @@ namespace Editors
 
 	void PropertyGridItemFactory_TextureBindingInfo::UpdateTextbox()
 	{
-		Systems::NewAssetId id = m_pBindingInfo->m_texture->GetId();
+		Systems::ITextureAsset* pTexture = m_pBindingInfo->m_texture.GetPtr();
+
+		if (!pTexture)
+		{
+			m_pTextbox->SetText("Unknown");
+			return;
+		}
+
+		Systems::NewAssetId id = pTexture->GetId();
 		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
 		if (pMetadata)
 			m_pTextbox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
