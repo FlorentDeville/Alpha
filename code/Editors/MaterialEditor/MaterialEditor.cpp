@@ -13,6 +13,7 @@
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_MaterialParameterDescription.h"
+#include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_TextureBindingInfo.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 #include "Editors/Widgets/StatusBar/StatusBar.h"
@@ -182,6 +183,10 @@ namespace Editors
 
 			Core::Sid typenameSid = Core::TypeResolver<Systems::MaterialParameterDescription>::GetType()->GetSid();
 			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_MaterialParameterDescription());
+
+			typenameSid = Core::TypeResolver<Systems::TextureBindingInfo>::GetTypenameSid();
+			m_pPropertyGridPopulator->RegisterItemFactory(typenameSid, new PropertyGridItemFactory_TextureBindingInfo());
+
 			m_pPropertyGridPopulator->SetCanAddElementToArray(false);
 		}
 
