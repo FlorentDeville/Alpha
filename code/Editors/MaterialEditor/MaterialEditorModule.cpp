@@ -311,6 +311,7 @@ namespace Editors
 		existingMatParamArray = std::move(newMatParamDescArray);
 
 		//now store the textures
+		pMaterial->SetShadowMapsRootSigIndex(-1);
 		Core::Array<Systems::TextureBindingInfo>& existingTextureBindings = pMaterial->GetTexturesBindingInfo();
 		Core::Array<Systems::TextureBindingInfo> newTextureBindings;
 		newTextureBindings.Reserve(rootSignatureDesc.m_textures.GetSize());
@@ -318,7 +319,10 @@ namespace Editors
 		{
 			//skip the shadow map, it's handle automatically
 			if (texture.m_name == "shadowMap")
+			{
+				pMaterial->SetShadowMapsRootSigIndex(texture.m_rootSigIndex);
 				continue;
+			}
 
 			Systems::TextureBindingInfo textureBinding;
 			textureBinding.m_name = texture.m_name;

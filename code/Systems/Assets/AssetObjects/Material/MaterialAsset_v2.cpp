@@ -19,6 +19,7 @@ namespace Systems
 		, m_pPipelineState(nullptr)
 		, m_isDebug(false)
 		, m_cullMode(Rendering::CullMode::Back)
+		, m_shadowMapsRootSigIndex(-1)
 	{ }
 
 	MaterialAsset_v2::~MaterialAsset_v2()
@@ -171,6 +172,16 @@ namespace Systems
 	bool MaterialAsset_v2::IsDebug() const
 	{
 		return m_isDebug;
+	}
+
+	void MaterialAsset_v2::SetShadowMapsRootSigIndex(int32_t index)
+	{
+		m_shadowMapsRootSigIndex = index;
+	}
+
+	int32_t MaterialAsset_v2::GetShadowMapsRootSigIndex() const
+	{
+		return m_shadowMapsRootSigIndex;
 	}
 
 	const std::string& MaterialAsset_v2::GetAssetTypeName()

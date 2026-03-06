@@ -62,6 +62,9 @@ namespace Systems
 		void SetIsDebug(bool debug);
 		bool IsDebug() const;
 
+		void SetShadowMapsRootSigIndex(int32_t index);
+		int32_t GetShadowMapsRootSigIndex() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
@@ -82,6 +85,8 @@ namespace Systems
 
 		Rendering::CullMode m_cullMode;
 
+		int32_t m_shadowMapsRootSigIndex; // if different than -1, then shadow maps should be binded.
+
 		START_REFLECTION(Systems::MaterialAsset_v2)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
@@ -93,6 +98,7 @@ namespace Systems
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
 			ADD_FIELD(m_cullMode)
+			ADD_FIELD_ATTR(m_shadowMapsRootSigIndex, Core::Hidden)
 		END_REFLECTION()
 
 		//No reflected variables
