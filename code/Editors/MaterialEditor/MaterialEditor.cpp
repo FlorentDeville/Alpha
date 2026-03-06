@@ -544,7 +544,7 @@ namespace Editors
 		const float fov = 45.f;
 		float nearDistance = 0.1f;
 		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 10000.0f);
 
 		//RENDER
 		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
