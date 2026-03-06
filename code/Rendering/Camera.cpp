@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Rendering/Camera.h"
 
@@ -13,6 +13,7 @@ namespace Rendering
 		, m_aspectRatio(16.f/9.f)
 		, m_nearDistance(0.1f)
 		, m_farDistance(1000.f)
+		, m_position(0, 0, 0, 1)
 	{}
 
 	Camera::~Camera()
@@ -20,6 +21,8 @@ namespace Rendering
 
 	void Camera::SetLookAt(const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& target, const DirectX::XMVECTOR& up)
 	{
+		m_position = Core::Vec4f(DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position), 1);
+
 		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(target, position);
 		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
 
@@ -64,5 +67,10 @@ namespace Rendering
 	const DirectX::XMMATRIX& Camera::GetProjectionMatrix() const
 	{
 		return m_projection;
+	}
+
+	const Core::Vec4f& Camera::GetPosition() const
+	{
+		return m_position;
 	}
 }

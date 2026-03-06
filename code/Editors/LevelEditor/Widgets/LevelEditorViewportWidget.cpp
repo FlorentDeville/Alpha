@@ -517,8 +517,8 @@ namespace Editors
 		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
 		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
 
-		DirectX::XMFLOAT3 cameraPosFloat3;
-		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
+		const Core::Vec4f& pos = pCamera->GetPosition();
+		DirectX::XMFLOAT3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 		//bind the shadow map
