@@ -12,7 +12,6 @@
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
-#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
@@ -58,7 +57,6 @@ namespace Systems
 		Systems::MaterialParameterDescription::RegisterReflection();
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
 		Systems::MaterialInstanceAsset::RegisterReflection();
-		Systems::MaterialInstanceAsset_v1::RegisterReflection();
 		Systems::TextureAsset_v1::RegisterReflection();
 		Systems::TextureAsset_v2::RegisterReflection();
 		Systems::TextureBindingInfo::RegisterReflection();

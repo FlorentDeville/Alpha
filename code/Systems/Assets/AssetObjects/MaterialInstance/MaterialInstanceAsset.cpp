@@ -4,7 +4,6 @@
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
-#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset_v1.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 
 namespace Systems
@@ -125,17 +124,5 @@ namespace Systems
 	{
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
-	}
-
-	void MaterialInstanceAsset::Upgrade(const MaterialInstanceAsset_v1* pV2)
-	{
-		m_material = pV2->m_material;
-		m_perMaterialParameters = pV2->m_perMaterialParameters;
-		m_texturesBindingInfo = pV2->m_texturesBindingInfo;
-
-		for (TextureBindingInfo& info : m_texturesBindingInfo)
-		{
-			info.m_texture.Resolve();
-		}
 	}
 }

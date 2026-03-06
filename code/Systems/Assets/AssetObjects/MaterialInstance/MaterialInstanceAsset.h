@@ -15,8 +15,6 @@ ENABLE_REFLECTION(Systems, MaterialInstanceAsset)
 
 namespace Systems
 {
-	class MaterialInstanceAsset_v1;
-
 	class MaterialInstanceAsset : public AssetObject
 	{
 	public:
@@ -36,8 +34,6 @@ namespace Systems
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
-
-		void Upgrade(const MaterialInstanceAsset_v1* pV2);
 
 	private:
 		NewAssetId m_material;
