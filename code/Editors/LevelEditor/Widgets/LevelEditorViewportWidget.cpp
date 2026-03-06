@@ -517,8 +517,8 @@ namespace Editors
 		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
 		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
 
-		DirectX::XMFLOAT3 cameraPosFloat3;
-		DirectX::XMStoreFloat3(&cameraPosFloat3, DirectX::XMVectorNegate(view.r[3]));
+		const Core::Vec4f& pos = pCamera->GetPosition();
+		DirectX::XMFLOAT3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 		//bind the shadow map
@@ -554,7 +554,8 @@ namespace Editors
 			{
 				DirectX::XMMATRIX wvp = proj * (view * renderable.m_worldTx.m_matrix);
 
-				if (renderable.m_pMaterial->GetBaseMaterial() && renderable.m_pMaterial->GetBaseMaterial()->IsValidForRendering())
+				const Systems::MaterialAsset* pMaterial = renderable.m_pMaterial->GetBaseMaterial();
+				if (pMaterial && pMaterial->IsValidForRendering())
 				{
 					Rendering::PerObjectCBuffer perObjectData;
 					perObjectData.m_world = renderable.m_worldTx.m_matrix;
@@ -562,9 +563,13 @@ namespace Editors
 
 					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
 
-					ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowMapSrvDescriptorHeap };
-					renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-					renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(4, m_pShadowMapSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+					int32_t shadowMapsRootSigIndex = pMaterial->GetShadowMapsRootSigIndex();
+					if (shadowMapsRootSigIndex != -1)
+					{
+						ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowMapSrvDescriptorHeap };
+						renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+						renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(shadowMapsRootSigIndex, m_pShadowMapSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+					}
 
 					renderModule.RenderMesh(*renderable.m_pMesh);
 				}

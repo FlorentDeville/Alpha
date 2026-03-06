@@ -1,9 +1,10 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
+#include "Core/Math/Vec4f.h"
 #include <DirectXMath.h>
 
 namespace Rendering
@@ -25,9 +26,13 @@ namespace Rendering
 		const DirectX::XMMATRIX& GetViewMatrix() const;
 		const DirectX::XMMATRIX& GetProjectionMatrix() const;
 
+		const Core::Vec4f& GetPosition() const;
+
 	private:
 		DirectX::XMMATRIX m_view;
 		DirectX::XMMATRIX m_projection;
+
+		Core::Vec4f m_position;
 
 		//projection 
 		float m_fov;

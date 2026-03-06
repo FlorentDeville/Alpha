@@ -10,7 +10,7 @@ namespace Core
 {
 	class Mat44f;
 
-	class Vec4f
+	class alignas(16) Vec4f
 	{
 		friend Mat44f;
 
