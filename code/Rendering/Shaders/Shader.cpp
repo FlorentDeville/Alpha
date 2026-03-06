@@ -1,10 +1,12 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Shader.h"
 
 #include <d3dcompiler.h>
+
+#include "Core/Blob/Blob.h"
 #include "Core/Helper.h"
 
 namespace Rendering
@@ -38,6 +40,20 @@ namespace Rendering
 			return false;
 
 		memcpy(m_pBlob->GetBufferPointer(), bytecode.GetData(), bytecode.GetSize());
+
+		return true;
+	}
+
+	bool Shader::LoadFromMemory(const Core::Blob& blob)
+	{
+		if (m_pBlob)
+			m_pBlob->Release();
+
+		HRESULT res = D3DCreateBlob(blob.GetSize(), &m_pBlob);
+		if (res != S_OK)
+			return false;
+
+		memcpy(m_pBlob->GetBufferPointer(), blob.GetData(), blob.GetSize());
 
 		return true;
 	}

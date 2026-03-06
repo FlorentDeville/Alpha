@@ -1,11 +1,12 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Rendering/RootSignature/RootSignature.h"
 
 #include <d3dcompiler.h>
 
+#include "Core/Blob/Blob.h"
 #include "Core/Helper.h"
 #include "Rendering/RenderModule.h"
 
@@ -51,6 +52,18 @@ namespace Rendering
 	}
 
 	bool RootSignature::LoadFromMemory(const Core::Array<char>& bytecode)
+	{
+		if (m_pRootSignature)
+			m_pRootSignature->Release();
+
+		HRESULT res = RenderModule::Get().GetDevice()->CreateRootSignature(0, bytecode.GetData(), bytecode.GetSize(), IID_PPV_ARGS(&m_pRootSignature));
+		if (res != S_OK)
+			return false;
+
+		return true;
+	}
+
+	bool RootSignature::LoadFromMemory(const Core::Blob& bytecode)
 	{
 		if (m_pRootSignature)
 			m_pRootSignature->Release();
