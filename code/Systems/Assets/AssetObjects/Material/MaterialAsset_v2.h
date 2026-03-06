@@ -25,8 +25,6 @@ ENABLE_REFLECTION(Systems, MaterialAsset_v2)
 
 namespace Systems
 {
-	class MaterialAsset_v1;
-
 	class MaterialAsset_v2 : public AssetObject
 	{
 	public:
@@ -66,8 +64,6 @@ namespace Systems
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
-
-		void Upgrade(const MaterialAsset_v1* pV1);
 
 	private:
 		std::string m_sourceFilePS;
