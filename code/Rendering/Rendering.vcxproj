@@ -28,7 +28,9 @@
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
     <ClInclude Include="PipelineState\CullMode.h" />
+    <ClInclude Include="PipelineState\DepthComparisonMode.h" />
     <ClInclude Include="PipelineState\PipelineState.h" />
+    <ClInclude Include="PipelineState\PipelineStateDesc.h" />
     <ClInclude Include="PipelineState\PipelineStateId.h" />
     <ClInclude Include="PipelineState\PipelineStateMgr.h" />
     <ClInclude Include="Reflection\ReflectionRenderingTypes.h" />
@@ -64,6 +66,7 @@
     <ClCompile Include="Mesh\MeshId.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />
     <ClCompile Include="PipelineState\PipelineState.cpp" />
+    <ClCompile Include="PipelineState\PipelineStateDesc.cpp" />
     <ClCompile Include="PipelineState\PipelineStateId.cpp" />
     <ClCompile Include="PipelineState\PipelineStateMgr.cpp" />
     <ClCompile Include="Reflection\ReflectionRenderingTypes.cpp" />

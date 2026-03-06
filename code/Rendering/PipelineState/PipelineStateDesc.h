@@ -2,16 +2,26 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Rendering/Reflection/ReflectionRenderingTypes.h"
+#pragma once
 
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
 
 namespace Rendering
 {
-	void RegisterRenderingTypesToReflection()
+	class RootSignature;
+	class Shader;
+
+	class PipelineStateDesc
 	{
-		CullMode_RegisterReflection();
-		DepthComparisonMode_RegisterReflection();
-	}
+	public:
+		PipelineStateDesc();
+		~PipelineStateDesc() = default;
+
+		RootSignature* m_pRs;
+		Shader* m_pVs;
+		Shader* m_pPs;
+		CullMode m_cullMode;
+		DepthComparisonMode m_depthFunction;
+	};
 }

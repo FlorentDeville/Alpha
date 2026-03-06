@@ -15,6 +15,7 @@ struct ID3D12PipelineState;
 
 namespace Rendering
 {
+	class PipelineStateDesc;
 	class RootSignature;
 	class Shader;
 
@@ -34,6 +35,8 @@ namespace Rendering
 		void Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format);
 		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps);
 		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CullMode cullMode);
+		void Init_Generic(const PipelineStateDesc& desc);
+
 		void Init_Generic_ShadowMap_SpotLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_Generic_ShadowMap_DirLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 

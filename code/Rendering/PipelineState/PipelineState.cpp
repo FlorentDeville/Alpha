@@ -1,14 +1,16 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
-#include "PipelineState.h"
+#include "Rendering/PipelineState/PipelineState.h"
 
 #include <d3d12.h>
 #include <d3dx12.h>
 
 #include "Core/Helper.h"
+
 #include "Rendering/InputLayout/InputLayout.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -58,6 +60,50 @@ namespace Rendering
 		}
 
 		return D3D12_CULL_MODE_NONE;
+	}
+
+	static D3D12_COMPARISON_FUNC GetDx12DepthComparisonMode(DepthComparisonMode mode)
+	{
+		switch (mode)
+		{
+		case Never:
+			return D3D12_COMPARISON_FUNC_NEVER;
+			break;
+
+		case Less:
+			return D3D12_COMPARISON_FUNC_LESS;
+			break;
+
+		case LessOrEqual:
+			return D3D12_COMPARISON_FUNC_LESS_EQUAL;
+			break;
+
+		case Greater:
+			return D3D12_COMPARISON_FUNC_GREATER;
+			break;
+
+		case GreaterOrEqual:
+			return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+			break;
+
+		case Equal:
+			return D3D12_COMPARISON_FUNC_EQUAL;
+			break;
+
+		case NotEqual:
+			return D3D12_COMPARISON_FUNC_NOT_EQUAL;
+			break;
+				
+		case Always:
+			return D3D12_COMPARISON_FUNC_ALWAYS;
+			break;
+
+		default:
+			return D3D12_COMPARISON_FUNC_LESS;
+			break;
+		}
+
+		return D3D12_COMPARISON_FUNC_LESS;
 	}
 
 	PipelineState::PipelineState()
@@ -277,6 +323,49 @@ namespace Rendering
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vs.GetBlob());
 		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(ps.GetBlob());
+		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		pipelineStateStream.RTVFormats = rtvFormats;
+
+		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
+			sizeof(PipelineStateStream), &pipelineStateStream
+		};
+		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		ThrowIfFailed(res);
+	}
+
+	void PipelineState::Init_Generic(const PipelineStateDesc& desc)
+	{
+		struct PipelineStateStream
+		{
+			CD3DX12_PIPELINE_STATE_STREAM_RASTERIZER Rasterizer;
+			CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
+			CD3DX12_PIPELINE_STATE_STREAM_INPUT_LAYOUT InputLayout;
+			CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
+			CD3DX12_PIPELINE_STATE_STREAM_VS VS;
+			CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL DepthStencilState;
+			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
+			CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
+		};
+
+		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
+		rtvFormats.NumRenderTargets = 1;
+		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
+		rasterizerDesc.CullMode = GetDx12CullMode(desc.m_cullMode);
+
+		CD3DX12_DEPTH_STENCIL_DESC depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(CD3DX12_DEFAULT());
+		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthFunction);
+
+		PipelineStateStream pipelineStateStream;
+		pipelineStateStream.Rasterizer = rasterizerDesc;
+		pipelineStateStream.pRootSignature = desc.m_pRs->GetRootSignature();
+		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
+		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(desc.m_pVs->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(desc.m_pPs->GetBlob());
+		pipelineStateStream.DepthStencilState = depthStencilState;
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
