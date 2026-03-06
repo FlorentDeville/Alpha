@@ -106,15 +106,6 @@ namespace Systems
 
 	void MaterialAsset_v2::PostLoad()
 	{
-		if(m_psBlob_.GetSize())
-			m_psBlob = m_psBlob_;
-
-		if (m_vsBlob_.GetSize())
-			m_vsBlob = m_vsBlob_;
-
-		if (m_rsBlob_.GetSize())
-			m_rsBlob = m_rsBlob_;
-
 		UpdateRenderingObjects();
 	}
 

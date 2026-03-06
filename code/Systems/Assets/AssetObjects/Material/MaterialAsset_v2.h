@@ -70,10 +70,6 @@ namespace Systems
 		std::string m_sourceFileVS;
 
 		//Not editable variables
-		Core::Blob m_psBlob_;
-		Core::Blob m_vsBlob_;
-		Core::Blob m_rsBlob_;
-
 		Core::Blob m_psBlob;
 		Core::Blob m_vsBlob;
 		Core::Blob m_rsBlob;
@@ -90,9 +86,6 @@ namespace Systems
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
 			ADD_FIELD(m_sourceFileVS)
-			ADD_FIELD_ATTR(m_psBlob_, Core::Hidden | Core::DoNotSerialize)
-			ADD_FIELD_ATTR(m_vsBlob_, Core::Hidden | Core::DoNotSerialize)
-			ADD_FIELD_ATTR(m_rsBlob_, Core::Hidden | Core::DoNotSerialize)
 			ADD_FIELD_ATTR(m_psBlob, Core::Hidden)
 			ADD_FIELD_ATTR(m_vsBlob, Core::Hidden)
 			ADD_FIELD_ATTR(m_rsBlob, Core::Hidden)
