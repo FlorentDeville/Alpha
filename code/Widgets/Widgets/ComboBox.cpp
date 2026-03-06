@@ -50,6 +50,7 @@ namespace Widgets
 		m_pOptionsContainer->GetDefaultStyle().ShowBorder(true);
 		m_pOptionsContainer->GetDefaultStyle().SetBackgroundColor(Widgets::Color(46, 46, 46));
 		m_pOptionsContainer->GetDefaultStyle().SetBorderColor(Widgets::Color(66, 66, 66));
+		m_pOptionsContainer->GetHoverStyle() = m_pOptionsContainer->GetDefaultStyle();
 		AddWidget(m_pOptionsContainer);
 
 		m_pOptionsLayout = new Layout(Layout::Vertical, Widget::SIZE_STYLE(Widget::HSIZE_STRETCH | Widget::VSIZE_FIT));
