@@ -6,6 +6,7 @@
 
 #include "Core/Collections/Array.h"
 
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/NewAssetId.h"
@@ -17,6 +18,8 @@ namespace Systems
 {
 	class MaterialInstanceAsset_v1 : public AssetObject
 	{
+		friend class MaterialInstanceAsset;
+
 	public:
 		MaterialInstanceAsset_v1();
 		~MaterialInstanceAsset_v1();
@@ -50,6 +53,7 @@ namespace Systems
 			ADD_FIELD(m_material)
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
+			ADD_AUTO_UPGRADE(Systems::MaterialInstanceAsset)
 		END_REFLECTION()
 	};
 }

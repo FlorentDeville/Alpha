@@ -29,7 +29,6 @@
     <ClInclude Include="Rendering\MaterialRendering.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
@@ -51,6 +50,7 @@
     <ClInclude Include="Assets\AssetObjects\Texture\ITextureAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureType.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -91,6 +91,7 @@
     <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\TextureAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
