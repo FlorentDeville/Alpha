@@ -304,6 +304,9 @@ namespace Systems
 		const std::vector<Core::FieldDescriptor*>& fieldsArray = pType->GetFields();
 		for (const Core::FieldDescriptor* pField : fieldsArray)
 		{
+			if (!pField->IsSerialized())
+				continue;
+
 			assert(!pField->IsPointer()); //don't support pointer for now
 
 			Core::JsonValue* pValue = jsonObj.AddMember(pField->GetName());
