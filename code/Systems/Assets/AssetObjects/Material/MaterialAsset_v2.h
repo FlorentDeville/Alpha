@@ -8,6 +8,7 @@
 #include "Core/Collections/Array.h"
 
 #include "Rendering/PipelineState/CullMode.h"
+#include "Rendering/PipelineState/DepthComparisonMode.h"
 
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
@@ -84,6 +85,7 @@ namespace Systems
 		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
 
 		Rendering::CullMode m_cullMode;
+		Rendering::DepthComparisonMode m_depthFunction;
 
 		int32_t m_shadowMapsRootSigIndex; // if different than -1, then shadow maps should be binded.
 
@@ -98,6 +100,7 @@ namespace Systems
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
 			ADD_FIELD(m_cullMode)
+			ADD_FIELD(m_depthFunction)
 			ADD_FIELD_ATTR(m_shadowMapsRootSigIndex, Core::Hidden)
 		END_REFLECTION()
 

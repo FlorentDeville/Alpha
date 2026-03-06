@@ -20,6 +20,7 @@ namespace Systems
 		, m_pPipelineState(nullptr)
 		, m_isDebug(false)
 		, m_cullMode(Rendering::CullMode::Back)
+		, m_depthFunction(Rendering::DepthComparisonMode::Less)
 		, m_shadowMapsRootSigIndex(-1)
 	{ }
 
@@ -160,6 +161,7 @@ namespace Systems
 			desc.m_pVs = m_pVs;
 			desc.m_pPs = m_pPs;
 			desc.m_cullMode = m_cullMode;
+			desc.m_depthFunction = m_depthFunction;
 
 			m_pPipelineState = new Rendering::PipelineState();
 			m_pPipelineState->Init_Generic(desc);
