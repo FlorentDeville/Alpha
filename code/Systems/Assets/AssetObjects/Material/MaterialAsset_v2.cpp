@@ -5,6 +5,7 @@
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/Shaders/Shader.h"
 
@@ -154,8 +155,14 @@ namespace Systems
 			if (m_pPipelineState)
 				delete m_pPipelineState;
 
+			Rendering::PipelineStateDesc desc;
+			desc.m_pRs = m_pRs;
+			desc.m_pVs = m_pVs;
+			desc.m_pPs = m_pPs;
+			desc.m_cullMode = m_cullMode;
+
 			m_pPipelineState = new Rendering::PipelineState();
-			m_pPipelineState->Init_Generic(*m_pRs, *m_pVs, *m_pPs, m_cullMode);
+			m_pPipelineState->Init_Generic(desc);
 		}
 	}
 
