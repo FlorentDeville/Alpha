@@ -4,8 +4,6 @@
 
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
-
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RootSignature/RootSignature.h"
@@ -206,26 +204,5 @@ namespace Systems
 	{
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
-	}
-
-	void MaterialAsset::Upgrade(const MaterialAsset_v2* pV2)
-	{
-		m_sourceFilePS = pV2->m_sourceFilePS;
-		m_sourceFileVS = pV2->m_sourceFileVS;
-		m_psBlob = pV2->m_psBlob;
-		m_vsBlob = pV2->m_vsBlob;
-		m_rsBlob = pV2->m_rsBlob;
-		m_bindingInfoArray = pV2->m_bindingInfoArray;
-		m_perMaterialParameters = pV2->m_perMaterialParameters;
-		m_texturesBindingInfo = pV2->m_texturesBindingInfo;
-		for (TextureBindingInfo& info : m_texturesBindingInfo)
-		{
-			info.m_texture.Resolve();
-		}
-		m_cullMode = pV2->m_cullMode;
-		m_depthFunction = pV2->m_depthFunction;
-		m_shadowMapsRootSigIndex = pV2->m_shadowMapsRootSigIndex;
-
-		PostLoad();
 	}
 }
