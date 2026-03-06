@@ -120,6 +120,9 @@
     <ClInclude Include="PipelineState\PipelineStateDesc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PipelineState\DepthComparisonMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">

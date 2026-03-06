@@ -62,6 +62,50 @@ namespace Rendering
 		return D3D12_CULL_MODE_NONE;
 	}
 
+	static D3D12_COMPARISON_FUNC GetDx12DepthComparisonMode(DepthComparisonMode mode)
+	{
+		switch (mode)
+		{
+		case Never:
+			return D3D12_COMPARISON_FUNC_NEVER;
+			break;
+
+		case Less:
+			return D3D12_COMPARISON_FUNC_LESS;
+			break;
+
+		case LessOrEqual:
+			return D3D12_COMPARISON_FUNC_LESS_EQUAL;
+			break;
+
+		case Greater:
+			return D3D12_COMPARISON_FUNC_GREATER;
+			break;
+
+		case GreaterOrEqual:
+			return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+			break;
+
+		case Equal:
+			return D3D12_COMPARISON_FUNC_EQUAL;
+			break;
+
+		case NotEqual:
+			return D3D12_COMPARISON_FUNC_NOT_EQUAL;
+			break;
+				
+		case Always:
+			return D3D12_COMPARISON_FUNC_ALWAYS;
+			break;
+
+		default:
+			return D3D12_COMPARISON_FUNC_LESS;
+			break;
+		}
+
+		return D3D12_COMPARISON_FUNC_LESS;
+	}
+
 	PipelineState::PipelineState()
 		: m_pPipelineState(nullptr)
 		, m_psId()
@@ -299,6 +343,7 @@ namespace Rendering
 			CD3DX12_PIPELINE_STATE_STREAM_PRIMITIVE_TOPOLOGY PrimitiveTopologyType;
 			CD3DX12_PIPELINE_STATE_STREAM_VS VS;
 			CD3DX12_PIPELINE_STATE_STREAM_PS PS;
+			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL DepthStencilState;
 			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
 			CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
 		};
@@ -310,6 +355,9 @@ namespace Rendering
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = GetDx12CullMode(desc.m_cullMode);
 
+		CD3DX12_DEPTH_STENCIL_DESC depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(CD3DX12_DEFAULT());
+		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthFunction);
+
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.Rasterizer = rasterizerDesc;
 		pipelineStateStream.pRootSignature = desc.m_pRs->GetRootSignature();
@@ -317,6 +365,7 @@ namespace Rendering
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(desc.m_pVs->GetBlob());
 		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(desc.m_pPs->GetBlob());
+		pipelineStateStream.DepthStencilState = depthStencilState;
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 

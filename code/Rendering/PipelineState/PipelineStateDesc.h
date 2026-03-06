@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Rendering/PipelineState/CullMode.h"
+#include "Rendering/PipelineState/DepthComparisonMode.h"
 
 namespace Rendering
 {
@@ -21,5 +22,6 @@ namespace Rendering
 		Shader* m_pVs;
 		Shader* m_pPs;
 		CullMode m_cullMode;
+		DepthComparisonMode m_depthFunction;
 	};
 }

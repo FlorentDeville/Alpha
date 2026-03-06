@@ -11,5 +11,6 @@ namespace Rendering
 		, m_pVs(nullptr)
 		, m_pPs(nullptr)
 		, m_cullMode(CullMode::Back)
+		, m_depthFunction(DepthComparisonMode::Less)
 	{ }
 }
