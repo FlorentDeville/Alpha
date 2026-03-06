@@ -61,17 +61,17 @@ namespace Systems
 
 	Core::Blob& MaterialAsset_v2::GetPsBlob()
 	{
-		return m_psBlob_;
+		return m_psBlob;
 	}
 
 	Core::Blob& MaterialAsset_v2::GetVsBlob()
 	{
-		return m_vsBlob_;
+		return m_vsBlob;
 	}
 
 	Core::Blob& MaterialAsset_v2::GetRsBlob()
 	{
-		return m_rsBlob_;
+		return m_rsBlob;
 	}
 
 	Core::Array<MaterialParameterDescription>& MaterialAsset_v2::GetMaterialParameterDescription()
@@ -106,17 +106,26 @@ namespace Systems
 
 	void MaterialAsset_v2::PostLoad()
 	{
+		if(m_psBlob_.GetSize())
+			m_psBlob = m_psBlob_;
+
+		if (m_vsBlob_.GetSize())
+			m_vsBlob = m_vsBlob_;
+
+		if (m_rsBlob_.GetSize())
+			m_rsBlob = m_rsBlob_;
+
 		UpdateRenderingObjects();
 	}
 
 	void MaterialAsset_v2::UpdateRenderingObjects()
 	{
 		bool validVertexShader = false;
-		if (m_vsBlob_.GetSize() != 0)
+		if (m_vsBlob.GetSize() != 0)
 		{
 			delete m_pVs;
 			m_pVs = new Rendering::Shader();
-			bool res = m_pVs->LoadFromMemory(m_vsBlob_);
+			bool res = m_pVs->LoadFromMemory(m_vsBlob);
 			if (!res)
 				return;
 
@@ -124,11 +133,11 @@ namespace Systems
 		}
 
 		bool validPixelShader = false;
-		if (m_psBlob_.GetSize() != 0)
+		if (m_psBlob.GetSize() != 0)
 		{
 			delete m_pPs;
 			m_pPs = new Rendering::Shader();
-			bool res = m_pPs->LoadFromMemory(m_psBlob_);
+			bool res = m_pPs->LoadFromMemory(m_psBlob);
 			if (!res)
 				return;
 
@@ -136,11 +145,11 @@ namespace Systems
 		}
 
 		bool validRootSignature = false;
-		if (m_rsBlob_.GetSize() != 0)
+		if (m_rsBlob.GetSize() != 0)
 		{
 			delete m_pRs;
 			m_pRs = new Rendering::RootSignature();
-			bool res = m_pRs->LoadFromMemory(m_rsBlob_);
+			bool res = m_pRs->LoadFromMemory(m_rsBlob);
 			if (!res)
 				return;
 
