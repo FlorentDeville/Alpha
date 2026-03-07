@@ -2,14 +2,14 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 
 #include "Rendering/Texture/Texture.h"
 
 namespace Systems
 {
-	CubemapAsset_v1::CubemapAsset_v1()
-		: AssetObject()
+	CubemapAsset::CubemapAsset()
+		: ITextureAsset()
 		, m_leftSourceFilename()
 		, m_rightSourceFilename()
 		, m_topSourceFilename()
@@ -19,13 +19,13 @@ namespace Systems
 		, m_pTexture(nullptr)
 	{ }
 
-	CubemapAsset_v1::~CubemapAsset_v1()
+	CubemapAsset::~CubemapAsset()
 	{
 		delete m_pTexture;
 		m_pTexture = nullptr;
 	}
 
-	bool CubemapAsset_v1::Init(const std::string sourceFilename[6], const uint8_t* pBlob, uint32_t blobSize)
+	bool CubemapAsset::Init(const std::string sourceFilename[6], const uint8_t* pBlob, uint32_t blobSize)
 	{
 		m_rightSourceFilename = sourceFilename[0];
 		m_leftSourceFilename = sourceFilename[1];
@@ -42,7 +42,7 @@ namespace Systems
 		return true;
 	}
 
-	void CubemapAsset_v1::PostLoad()
+	void CubemapAsset::PostLoad()
 	{
 		if (m_pTexture)
 			delete m_pTexture;
@@ -51,54 +51,54 @@ namespace Systems
 		m_pTexture->InitAsDDS(m_blob.GetData(), m_blob.GetSize());
 	}
 
-	const std::string& CubemapAsset_v1::GetAssetTypeName()
+	const std::string& CubemapAsset::GetAssetTypeName()
 	{
 		static std::string name = "Cubemap";
 		return name;
 	}
 
-	Core::Sid CubemapAsset_v1::GetAssetTypeNameSid()
+	Core::Sid CubemapAsset::GetAssetTypeNameSid()
 	{
 		static const Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
 	}
 
-	const std::string& CubemapAsset_v1::GetLeftSourceFilename() const
+	const std::string& CubemapAsset::GetLeftSourceFilename() const
 	{
 		return m_leftSourceFilename;
 	}
 
-	const std::string& CubemapAsset_v1::GetRightSourceFilename() const
+	const std::string& CubemapAsset::GetRightSourceFilename() const
 	{
 		return m_rightSourceFilename;
 	}
 
-	const std::string& CubemapAsset_v1::GetTopSourceFilename() const
+	const std::string& CubemapAsset::GetTopSourceFilename() const
 	{
 		return m_topSourceFilename;
 	}
 
-	const std::string& CubemapAsset_v1::GetBottomSourceFilename() const
+	const std::string& CubemapAsset::GetBottomSourceFilename() const
 	{
 		return m_bottomSourceFilename;
 	}
 
-	const std::string& CubemapAsset_v1::GetFrontSourceFilename() const
+	const std::string& CubemapAsset::GetFrontSourceFilename() const
 	{
 		return m_frontSourceFilename;
 	}
 
-	const std::string& CubemapAsset_v1::GetBackSourceFilename() const
+	const std::string& CubemapAsset::GetBackSourceFilename() const
 	{
 		return m_backSourceFilename;
 	}
 
-	Rendering::Texture* CubemapAsset_v1::GetTexture()
+	Rendering::Texture* CubemapAsset::GetTexture()
 	{
 		return m_pTexture;
 	}
 
-	const Core::Array<uint8_t>& CubemapAsset_v1::GetBlob() const
+	const Core::Blob& CubemapAsset::GetBlob() const
 	{
 		return m_blob;
 	}

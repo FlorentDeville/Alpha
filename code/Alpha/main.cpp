@@ -44,10 +44,10 @@
 #include "Resources/ResourcesMgr.h"
 
 #include "Systems/Assets/AssetMgr.h"
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 
 #include "Systems/Reflection/ReflectionCoreTypes.h"
@@ -543,7 +543,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.RegisterAssetType<Systems::MaterialAsset>();
 	assetMgr.RegisterAssetType<Systems::MaterialInstanceAsset>();
 	assetMgr.RegisterAssetType<Systems::LevelAsset>();
-	assetMgr.RegisterAssetType<Systems::TextureAsset>();
+	assetMgr.RegisterAssetType<Systems::Texture2DAsset>();
 	assetMgr.RegisterAssetType<Systems::CubemapAsset>();
 	assetMgr.LoadMetadataTable();
 	

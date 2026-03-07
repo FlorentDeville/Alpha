@@ -7,8 +7,8 @@
 #include "Core/Collections/Array.h"
 
 #include "Systems/Assets/AssetMgr.h"
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
 #include "Widgets/Models/ModelIndex.h"
@@ -24,7 +24,7 @@ namespace Editors
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
 
 		Core::Array<Core::Sid> assetTypes;
-		assetTypes.PushBack(Systems::TextureAsset::GetAssetTypeNameSid());
+		assetTypes.PushBack(Systems::Texture2DAsset::GetAssetTypeNameSid());
 		assetTypes.PushBack(Systems::CubemapAsset::GetAssetTypeNameSid());
 
 		Core::Array<const Systems::AssetMetadata*> metadataArray;
@@ -257,7 +257,7 @@ namespace Editors
 		cache.m_virtualName = metadata.GetVirtualName();
 		cache.m_modified = false;
 
-		if (metadata.IsA<Systems::TextureAsset>())
+		if (metadata.IsA<Systems::Texture2DAsset>())
 			cache.m_type = CachedTextureData::Texture;
 		else if (metadata.IsA<Systems::CubemapAsset>())
 			cache.m_type = CachedTextureData::Cubemap;

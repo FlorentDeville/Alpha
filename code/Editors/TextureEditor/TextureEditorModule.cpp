@@ -8,6 +8,8 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 
@@ -28,7 +30,7 @@ namespace Editors
 
 	bool TextureEditorModule::CreateAndImportTexture(const std::string& filename)
 	{
-		Systems::TextureAsset* pTexture = Systems::CreateNewAsset<Systems::TextureAsset>();
+		Systems::Texture2DAsset* pTexture = Systems::CreateNewAsset<Systems::Texture2DAsset>();
 		Importer::TextureImporter importer;
 		bool res = importer.Import(filename, pTexture);
 		if (!res)
@@ -49,7 +51,7 @@ namespace Editors
 		size_t end = assetName.find_last_of('.');
 		assetName = assetName.substr(0, end);
 
-		Systems::AssetMetadata metadata(pTexture->GetId(), assetName, Systems::TextureAsset::GetAssetTypeNameSid());
+		Systems::AssetMetadata metadata(pTexture->GetId(), assetName, Systems::Texture2DAsset::GetAssetTypeNameSid());
 		assetMgr.RegisterAssetMetadata(metadata);
 
 		containerMgr.SaveContainer(pContainer->GetId());
@@ -67,7 +69,7 @@ namespace Editors
 		if (!pMetadata)
 			return false;
 
-		if (!pMetadata->IsA<Systems::TextureAsset>())
+		if (!pMetadata->IsA<Systems::Texture2DAsset>())
 			return false;
 
 		Systems::AssetMetadata copyMetadata(*pMetadata);
@@ -111,9 +113,9 @@ namespace Editors
 
 	bool TextureEditorModule::ImportTexture(const Systems::NewAssetId& id)
 	{
-		if (Systems::AssetUtil::IsA<Systems::TextureAsset>(id))
+		if (Systems::AssetUtil::IsA<Systems::Texture2DAsset>(id))
 		{
-			if (Systems::TextureAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::TextureAsset>(id))
+			if (Systems::Texture2DAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::Texture2DAsset>(id))
 			{
 				Importer::TextureImporter importer;
 				bool res = importer.Import(pTexture->GetSourceFilename(), pTexture);
@@ -173,10 +175,10 @@ namespace Editors
 		if (!pObj)
 			return false;
 
-		if (pObj->IsA<Systems::TextureAsset>())
+		if (pObj->IsA<Systems::Texture2DAsset>())
 		{
 			Importer::TextureImporter importer;
-			Importer::TextureImporter::Result res = importer.Export(outputFilename, static_cast<const Systems::TextureAsset*>(pObj));
+			Importer::TextureImporter::Result res = importer.Export(outputFilename, static_cast<const Systems::Texture2DAsset*>(pObj));
 			return res.IsSuccess();
 		}
 		else if (pObj->IsA<Systems::CubemapAsset>())

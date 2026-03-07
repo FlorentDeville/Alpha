@@ -4,6 +4,9 @@
 
 #include "Importer/TextureImporter/TextureImporter.h"
 
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
+
 #include "DirectXTex/DirectXTex.h"
 
 #include <wincodec.h>
@@ -90,7 +93,7 @@ namespace Importer
         return !IsSuccess();
     }
 
-	bool TextureImporter::Import(const std::string& sourceFilename, Systems::TextureAsset* pTexture)
+	bool TextureImporter::Import(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture)
 	{
         ScopeComInitialize comJanitor;
         if (FAILED(comJanitor.m_res))
@@ -224,7 +227,7 @@ namespace Importer
         return Result::Ok;
     }
 
-    TextureImporter::Result TextureImporter::Export(const std::string& outputFilename, const Systems::TextureAsset* pTexture)
+    TextureImporter::Result TextureImporter::Export(const std::string& outputFilename, const Systems::Texture2DAsset* pTexture)
     {
         DirectX::TexMetadata metadata;
         DirectX::ScratchImage image;

@@ -4,8 +4,6 @@
 
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
@@ -14,9 +12,9 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v1.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureType.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
@@ -47,9 +45,9 @@ namespace Systems
 		Systems::SpotLightComponent::RegisterReflection();
 
 		Systems::AssetObject::RegisterReflection();
-		Systems::CubemapAsset_v1::RegisterReflection();
-		Systems::CubemapAsset_v2::RegisterReflection();
+		Systems::CubemapAsset::RegisterReflection();
 		Systems::ITextureAsset::RegisterReflection();
+		Systems::Texture2DAsset::RegisterReflection();
 		Systems::LevelAsset_v1::RegisterReflection();
 		Systems::MaterialAsset::RegisterReflection();
 		Systems::MeshAsset_v1::RegisterReflection();
@@ -57,8 +55,6 @@ namespace Systems
 		Systems::MaterialParameterDescription::RegisterReflection();
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
 		Systems::MaterialInstanceAsset::RegisterReflection();
-		Systems::TextureAsset_v1::RegisterReflection();
-		Systems::TextureAsset_v2::RegisterReflection();
 		Systems::TextureBindingInfo::RegisterReflection();
 	}
 }
