@@ -81,7 +81,6 @@ namespace Editors
 				else if (metadata.IsA<Systems::MaterialInstanceAsset>())
 				{
 					m_allMaterials.push_back(metadata.GetAssetId());
-					m_instancesMaterialCache.AddMaterialInstance(metadata.GetAssetId());
 				}
 			});
 	}
