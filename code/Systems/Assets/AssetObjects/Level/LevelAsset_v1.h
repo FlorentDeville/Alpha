@@ -8,6 +8,7 @@
 #include "Core/Sid/Sid.h"
 
 #include "Systems/Objects/AssetObject.h"
+#include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
 namespace Core
 {
@@ -22,6 +23,7 @@ namespace Systems
 
 	class LevelAsset_v1 : public AssetObject
 	{
+		friend class LevelAsset;
 	public:
 		LevelAsset_v1();
 		~LevelAsset_v1();
@@ -56,6 +58,7 @@ namespace Systems
 			ADD_BASETYPE(Systems::Object)
 			ADD_FIELD(m_gameObjectsArray)
 			ADD_FIELD(m_roots)
+			ADD_AUTO_UPGRADE(Systems::LevelAsset)
 		END_REFLECTION()
 
 		//Cached pointers to the root game objects

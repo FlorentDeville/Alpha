@@ -28,7 +28,6 @@
     <ClInclude Include="Rendering\MaterialRendering.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRef.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRefRaw.h" />
     <ClInclude Include="GameComponent\Lights\DirectionalLightComponent.h" />
@@ -42,6 +41,7 @@
     <ClInclude Include="Assets\AssetObjects\Texture\Texture2DAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\CubemapAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -77,6 +77,7 @@
     <ClCompile Include="Assets\AssetObjects\Texture\Texture2DAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\CubemapAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Level\LevelAsset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
