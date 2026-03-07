@@ -7,7 +7,6 @@
 #include "Core/Blob/Blob.h"
 #include "Core/Reflection/ReflectionMacro.h"
 
-#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 
 namespace Rendering
@@ -15,17 +14,17 @@ namespace Rendering
 	class Texture;
 }
 
-ENABLE_REFLECTION(Systems, CubemapAsset_v2)
+ENABLE_REFLECTION(Systems, CubemapAsset)
 
 namespace Systems
 {
-	class CubemapAsset_v1;
+	class CubemapAsset_v2;
 
-	class CubemapAsset_v2 : public ITextureAsset
+	class CubemapAsset : public ITextureAsset
 	{
 	public:
-		CubemapAsset_v2();
-		~CubemapAsset_v2();
+		CubemapAsset();
+		~CubemapAsset();
 
 		bool Init(const std::string sourceFilename[6], const uint8_t* pBlob, uint32_t blobSize);
 
@@ -46,7 +45,7 @@ namespace Systems
 
 		const Core::Blob& GetBlob() const override;
 
-		void Upgrade(const CubemapAsset_v1* pV1);
+		void Upgrade(const CubemapAsset_v2* pV1);
 
 	private:
 		std::string m_leftSourceFilename; //-x
@@ -58,7 +57,7 @@ namespace Systems
 		
 		Core::Blob m_blob;
 
-		START_REFLECTION(Systems::CubemapAsset_v2)
+		START_REFLECTION(Systems::CubemapAsset)
 			ADD_BASETYPE(Systems::ITextureAsset)
 			ADD_FIELD(m_leftSourceFilename)
 			ADD_FIELD(m_rightSourceFilename)
@@ -67,7 +66,6 @@ namespace Systems
 			ADD_FIELD(m_frontSourceFilename)
 			ADD_FIELD(m_backSourceFilename)
 			ADD_FIELD_ATTR(m_blob, Core::Hidden)
-			ADD_AUTO_UPGRADE(Systems::CubemapAsset)
 		END_REFLECTION()
 
 		Rendering::Texture* m_pTexture;

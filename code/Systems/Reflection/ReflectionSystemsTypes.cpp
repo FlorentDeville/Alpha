@@ -14,6 +14,7 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureType.h"
@@ -46,6 +47,7 @@ namespace Systems
 		Systems::SpotLightComponent::RegisterReflection();
 
 		Systems::AssetObject::RegisterReflection();
+		Systems::CubemapAsset::RegisterReflection();
 		Systems::CubemapAsset_v1::RegisterReflection();
 		Systems::CubemapAsset_v2::RegisterReflection();
 		Systems::ITextureAsset::RegisterReflection();

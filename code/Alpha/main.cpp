@@ -44,9 +44,9 @@
 #include "Resources/ResourcesMgr.h"
 
 #include "Systems/Assets/AssetMgr.h"
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 

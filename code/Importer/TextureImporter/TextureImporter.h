@@ -6,11 +6,9 @@
 
 #include <string>
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
-//#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
-
 namespace Systems
 {
+	class CubemapAsset;
 	class Texture2DAsset;
 }
 

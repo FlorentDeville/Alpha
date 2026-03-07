@@ -4,6 +4,7 @@
 
 #include "Importer/TextureImporter/TextureImporter.h"
 
+#include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 
 #include "DirectXTex/DirectXTex.h"
