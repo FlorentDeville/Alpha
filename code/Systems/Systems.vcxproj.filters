@@ -28,9 +28,6 @@
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
     <ClInclude Include="Rendering\MaterialRendering.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
-    <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
-    <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
@@ -43,7 +40,6 @@
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset.h" />
-    <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Material\TextureBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset.h" />
@@ -52,6 +48,8 @@
     <ClInclude Include="Assets\AssetObjects\Texture\TextureAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\ITextureAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureType.h" />
+    <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -78,7 +76,6 @@
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Rendering\MaterialRendering.cpp" />
-    <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
@@ -87,11 +84,12 @@
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\TextureAsset_v1.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\TextureAsset_v2.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

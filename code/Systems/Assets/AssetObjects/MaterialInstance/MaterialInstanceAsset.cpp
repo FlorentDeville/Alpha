@@ -1,24 +1,24 @@
 /********************************************************************************/
-/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset_v1.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 
 namespace Systems
 {
-	MaterialInstanceAsset_v1::MaterialInstanceAsset_v1()
+	MaterialInstanceAsset::MaterialInstanceAsset()
 		: AssetObject()
 		, m_pBaseMaterial(nullptr)
 		, m_perMaterialParameters()
 		, m_texturesBindingInfo()
 	{ }
 
-	MaterialInstanceAsset_v1::~MaterialInstanceAsset_v1()
+	MaterialInstanceAsset::~MaterialInstanceAsset()
 	{ }
 
-	bool MaterialInstanceAsset_v1::InitialiseFromBaseMaterial(Systems::MaterialAsset* pBaseMaterial)
+	bool MaterialInstanceAsset::InitialiseFromBaseMaterial(Systems::MaterialAsset* pBaseMaterial)
 	{
 		if (pBaseMaterial)
 		{
@@ -41,7 +41,7 @@ namespace Systems
 		return true;
 	}
 
-	bool MaterialInstanceAsset_v1::Refresh()
+	bool MaterialInstanceAsset::Refresh()
 	{
 		if (!m_pBaseMaterial)
 			return false;
@@ -91,12 +91,12 @@ namespace Systems
 		return true;
 	}
 
-	NewAssetId MaterialInstanceAsset_v1::GetBaseMaterialId() const
+	NewAssetId MaterialInstanceAsset::GetBaseMaterialId() const
 	{
 		return m_material;
 	}
 
-	const Systems::MaterialAsset* MaterialInstanceAsset_v1::GetBaseMaterial() const
+	const Systems::MaterialAsset* MaterialInstanceAsset::GetBaseMaterial() const
 	{
 		if (!m_pBaseMaterial && m_material.IsValid())
 			m_pBaseMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_material);
@@ -104,26 +104,25 @@ namespace Systems
 		return m_pBaseMaterial;
 	}
 
-	const Core::Array<MaterialParameterDescription>& MaterialInstanceAsset_v1::GetMaterialParameterDescription() const
+	const Core::Array<MaterialParameterDescription>& MaterialInstanceAsset::GetMaterialParameterDescription() const
 	{
 		return m_perMaterialParameters;
 	}
 
-	const Core::Array<TextureBindingInfo>& MaterialInstanceAsset_v1::GetTexturesBindingInfo() const
+	const Core::Array<TextureBindingInfo>& MaterialInstanceAsset::GetTexturesBindingInfo() const
 	{
 		return m_texturesBindingInfo;
 	}
 
-	const std::string& MaterialInstanceAsset_v1::GetAssetTypeName()
+	const std::string& MaterialInstanceAsset::GetAssetTypeName()
 	{
 		static std::string name = "MaterialInstance";
 		return name;
 	}
 
-	Core::Sid MaterialInstanceAsset_v1::GetAssetTypeNameSid()
+	Core::Sid MaterialInstanceAsset::GetAssetTypeNameSid()
 	{
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
 	}
-
 }

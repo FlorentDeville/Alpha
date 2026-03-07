@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Assets/AssetObjects/Material/MaterialAsset_v2.h"
+#include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/PipelineState/PipelineStateDesc.h"
@@ -11,8 +11,9 @@
 
 namespace Systems
 {
-	MaterialAsset_v2::MaterialAsset_v2()
-		: m_sourceFilePS()
+	MaterialAsset::MaterialAsset()
+		: AssetObject()
+		, m_sourceFilePS()
 		, m_sourceFileVS()
 		, m_pVs(nullptr)
 		, m_pPs(nullptr)
@@ -24,7 +25,7 @@ namespace Systems
 		, m_shadowMapsRootSigIndex(-1)
 	{ }
 
-	MaterialAsset_v2::~MaterialAsset_v2()
+	MaterialAsset::~MaterialAsset()
 	{
 		delete m_pVs;
 		delete m_pPs;
@@ -32,87 +33,87 @@ namespace Systems
 		delete m_pPipelineState;
 	}
 
-	const std::string& MaterialAsset_v2::GetSourceFilePs() const
+	const std::string& MaterialAsset::GetSourceFilePs() const
 	{
 		return m_sourceFilePS;
 	}
 
-	const std::string& MaterialAsset_v2::GetSourceFileVs() const
+	const std::string& MaterialAsset::GetSourceFileVs() const
 	{
 		return m_sourceFileVS;
 	}
 
-	void MaterialAsset_v2::SetSourceFilePs(const std::string& psFilename)
+	void MaterialAsset::SetSourceFilePs(const std::string& psFilename)
 	{
 		m_sourceFilePS = psFilename;
 	}
 
-	void MaterialAsset_v2::SetSourceFileVs(const std::string& vsFilename)
+	void MaterialAsset::SetSourceFileVs(const std::string& vsFilename)
 	{
 		m_sourceFileVS = vsFilename;
 	}
 
-	const Rendering::RootSignature* MaterialAsset_v2::GetRootSignature() const
+	const Rendering::RootSignature* MaterialAsset::GetRootSignature() const
 	{
 		return m_pRs;
 	}
 
-	const Rendering::PipelineState* MaterialAsset_v2::GetPipelineState() const
+	const Rendering::PipelineState* MaterialAsset::GetPipelineState() const
 	{
 		return m_pPipelineState;
 	}
 
-	Core::Blob& MaterialAsset_v2::GetPsBlob()
+	Core::Blob& MaterialAsset::GetPsBlob()
 	{
 		return m_psBlob;
 	}
 
-	Core::Blob& MaterialAsset_v2::GetVsBlob()
+	Core::Blob& MaterialAsset::GetVsBlob()
 	{
 		return m_vsBlob;
 	}
 
-	Core::Blob& MaterialAsset_v2::GetRsBlob()
+	Core::Blob& MaterialAsset::GetRsBlob()
 	{
 		return m_rsBlob;
 	}
 
-	Core::Array<MaterialParameterDescription>& MaterialAsset_v2::GetMaterialParameterDescription()
+	Core::Array<MaterialParameterDescription>& MaterialAsset::GetMaterialParameterDescription()
 	{
 		return m_perMaterialParameters;
 	}
 
-	const Core::Array<MaterialParameterDescription>& MaterialAsset_v2::GetMaterialParameterDescription() const
+	const Core::Array<MaterialParameterDescription>& MaterialAsset::GetMaterialParameterDescription() const
 	{
 		return m_perMaterialParameters;
 	}
 
-	Core::Array<MaterialCBufferBindingInfo>& MaterialAsset_v2::GetBindingInfoArray()
+	Core::Array<MaterialCBufferBindingInfo>& MaterialAsset::GetBindingInfoArray()
 	{
 		return m_bindingInfoArray;
 	}
 
-	const Core::Array<MaterialCBufferBindingInfo>& MaterialAsset_v2::GetBindingInfoArray() const
+	const Core::Array<MaterialCBufferBindingInfo>& MaterialAsset::GetBindingInfoArray() const
 	{
 		return m_bindingInfoArray;
 	}
 
-	Core::Array<TextureBindingInfo>& MaterialAsset_v2::GetTexturesBindingInfo()
+	Core::Array<TextureBindingInfo>& MaterialAsset::GetTexturesBindingInfo()
 	{
 		return m_texturesBindingInfo;
 	}
 
-	const Core::Array<TextureBindingInfo>& MaterialAsset_v2::GetTexturesBindingInfo() const
+	const Core::Array<TextureBindingInfo>& MaterialAsset::GetTexturesBindingInfo() const
 	{
 		return m_texturesBindingInfo;
 	}
 
-	void MaterialAsset_v2::PostLoad()
+	void MaterialAsset::PostLoad()
 	{
 		UpdateRenderingObjects();
 	}
 
-	void MaterialAsset_v2::UpdateRenderingObjects()
+	void MaterialAsset::UpdateRenderingObjects()
 	{
 		bool validVertexShader = false;
 		if (m_vsBlob.GetSize() != 0)
@@ -168,38 +169,38 @@ namespace Systems
 		}
 	}
 
-	bool MaterialAsset_v2::IsValidForRendering() const
+	bool MaterialAsset::IsValidForRendering() const
 	{
 		return m_pPipelineState && m_pRs;
 	}
 
-	void MaterialAsset_v2::SetIsDebug(bool debug)
+	void MaterialAsset::SetIsDebug(bool debug)
 	{
 		m_isDebug = debug;
 	}
 
-	bool MaterialAsset_v2::IsDebug() const
+	bool MaterialAsset::IsDebug() const
 	{
 		return m_isDebug;
 	}
 
-	void MaterialAsset_v2::SetShadowMapsRootSigIndex(int32_t index)
+	void MaterialAsset::SetShadowMapsRootSigIndex(int32_t index)
 	{
 		m_shadowMapsRootSigIndex = index;
 	}
 
-	int32_t MaterialAsset_v2::GetShadowMapsRootSigIndex() const
+	int32_t MaterialAsset::GetShadowMapsRootSigIndex() const
 	{
 		return m_shadowMapsRootSigIndex;
 	}
 
-	const std::string& MaterialAsset_v2::GetAssetTypeName()
+	const std::string& MaterialAsset::GetAssetTypeName()
 	{
 		static std::string name = "Material";
 		return name;
 	}
 
-	Core::Sid MaterialAsset_v2::GetAssetTypeNameSid()
+	Core::Sid MaterialAsset::GetAssetTypeNameSid()
 	{
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
