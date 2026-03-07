@@ -5,7 +5,7 @@
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
+
 namespace Systems
 {
 	LevelAsset::LevelAsset()
@@ -144,13 +144,5 @@ namespace Systems
 				pGo->GetTransform().AddChildCachedPointer(pChildGo);
 			}
 		}
-	}
-
-	void LevelAsset::Upgrade(LevelAsset_v1* pV1)
-	{
-		m_gameObjectsArray = std::move(pV1->m_gameObjectsArray);
-		m_roots = std::move(pV1->m_roots);
-
-		PostLoad();
 	}
 }

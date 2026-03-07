@@ -5,7 +5,6 @@
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
-#include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
@@ -49,7 +48,6 @@ namespace Systems
 		Systems::ITextureAsset::RegisterReflection();
 		Systems::Texture2DAsset::RegisterReflection();
 		Systems::LevelAsset::RegisterReflection();
-		Systems::LevelAsset_v1::RegisterReflection();
 		Systems::MaterialAsset::RegisterReflection();
 		Systems::MeshAsset::RegisterReflection();
 		Systems::MaterialParameterDescription::RegisterReflection();

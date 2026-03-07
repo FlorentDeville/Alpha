@@ -19,7 +19,7 @@ ENABLE_REFLECTION(Systems, LevelAsset)
 namespace Systems
 {
 	class GameObject;
-	class LevelAsset_v1;
+
 	class LevelAsset : public AssetObject
 	{
 	public:
@@ -46,8 +46,6 @@ namespace Systems
 		Core::Array<GameObject*>& GetRootGameObjects();
 
 		void PostLoad() override;
-
-		void Upgrade(LevelAsset_v1* pV1);
 
 	private:
 
