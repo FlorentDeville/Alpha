@@ -4,7 +4,6 @@
 
 #include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
 #include "Rendering/Texture/Texture.h"
 
 namespace Systems
@@ -102,18 +101,5 @@ namespace Systems
 	const Core::Blob& CubemapAsset::GetBlob() const
 	{
 		return m_blob;
-	}
-
-	void CubemapAsset::Upgrade(const CubemapAsset_v2* pV1)
-	{
-		std::string sourceFilenames[6];
-		sourceFilenames[0] = pV1->GetRightSourceFilename();
-		sourceFilenames[1] = pV1->GetLeftSourceFilename();
-		sourceFilenames[2] = pV1->GetTopSourceFilename();
-		sourceFilenames[3] = pV1->GetBottomSourceFilename();
-		sourceFilenames[4] = pV1->GetFrontSourceFilename();
-		sourceFilenames[5] = pV1->GetBackSourceFilename();
-
-		Init(sourceFilenames, pV1->GetBlob().GetData(), pV1->GetBlob().GetSize());
 	}
 }

@@ -39,9 +39,6 @@
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
     <ClInclude Include="Assets\AssetObjects\Material\TextureBindingInfo.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\ITextureAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureType.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
@@ -81,9 +78,6 @@
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\Texture2DAsset.cpp" />

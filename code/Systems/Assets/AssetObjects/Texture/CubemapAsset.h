@@ -18,8 +18,6 @@ ENABLE_REFLECTION(Systems, CubemapAsset)
 
 namespace Systems
 {
-	class CubemapAsset_v2;
-
 	class CubemapAsset : public ITextureAsset
 	{
 	public:
@@ -44,8 +42,6 @@ namespace Systems
 		Rendering::Texture* GetTexture() override;
 
 		const Core::Blob& GetBlob() const override;
-
-		void Upgrade(const CubemapAsset_v2* pV1);
 
 	private:
 		std::string m_leftSourceFilename; //-x

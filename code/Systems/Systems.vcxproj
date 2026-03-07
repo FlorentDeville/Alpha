@@ -13,9 +13,6 @@
   <ItemGroup>
     <ClInclude Include="Assets\AssetMgr.h" />
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
@@ -61,9 +58,6 @@
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAssetUpgrade.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v1.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Cubemap\CubemapAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />

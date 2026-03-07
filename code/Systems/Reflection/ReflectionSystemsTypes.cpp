@@ -4,8 +4,6 @@
 
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v1.h"
-#include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset_v1.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
@@ -48,8 +46,6 @@ namespace Systems
 
 		Systems::AssetObject::RegisterReflection();
 		Systems::CubemapAsset::RegisterReflection();
-		Systems::CubemapAsset_v1::RegisterReflection();
-		Systems::CubemapAsset_v2::RegisterReflection();
 		Systems::ITextureAsset::RegisterReflection();
 		Systems::Texture2DAsset::RegisterReflection();
 		Systems::LevelAsset_v1::RegisterReflection();
