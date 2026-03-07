@@ -16,8 +16,6 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v1.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureType.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
@@ -59,8 +57,6 @@ namespace Systems
 		Systems::MaterialParameterDescription::RegisterReflection();
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
 		Systems::MaterialInstanceAsset::RegisterReflection();
-		Systems::TextureAsset_v1::RegisterReflection();
-		Systems::TextureAsset_v2::RegisterReflection();
 		Systems::TextureBindingInfo::RegisterReflection();
 	}
 }

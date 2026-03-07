@@ -4,8 +4,6 @@
 
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset_v2.h"
-
 #include "Rendering/Texture/Texture.h"
 
 namespace Systems
@@ -89,11 +87,5 @@ namespace Systems
 	uint32_t Texture2DAsset::GetMipCount() const
 	{
 		return m_mipCount;
-	}
-
-	void Texture2DAsset::Upgrade(const TextureAsset_v2* pV1)
-	{
-		Init(pV1->GetSourceFilename(), pV1->GetBlob().GetData(), pV1->GetBlob().GetSize(),
-			pV1->GetWidth(), pV1->GetHeight(), pV1->GetMipCount());
 	}
 }

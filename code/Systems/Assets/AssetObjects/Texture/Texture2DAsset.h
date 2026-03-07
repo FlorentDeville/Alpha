@@ -17,8 +17,6 @@ ENABLE_REFLECTION(Systems, Texture2DAsset)
 
 namespace Systems
 {
-	class TextureAsset_v2;
-
 	class Texture2DAsset : public ITextureAsset
 	{
 	public:
@@ -41,8 +39,6 @@ namespace Systems
 		uint32_t GetWidth() const;
 		uint32_t GetHeight() const;
 		uint32_t GetMipCount() const;
-
-		void Upgrade(const TextureAsset_v2* pV1);
 
 	private:
 
