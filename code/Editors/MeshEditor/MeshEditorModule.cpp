@@ -1,12 +1,13 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/MeshEditor/MeshEditorModule.h"
 
 #include "Importer/FbxImporter/FbxImporter.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Container/ContainerMgr.h"
 
 namespace Editors

@@ -1,10 +1,12 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Importer/FbxImporter/FbxImporter.h"
 
 #include "Core/Math/Mat44f.h"
+
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 
 #include "ofbx.h"
 
@@ -26,7 +28,7 @@ namespace FbxImporter
 	}
 
 
-	bool FbxImporter::Import(const std::string& fbxFilename, Systems::MeshAsset_v2& mesh)
+	bool FbxImporter::Import(const std::string& fbxFilename, Systems::MeshAsset& mesh)
 	{
 		FILE* pFileHandle = nullptr;
 		fopen_s(&pFileHandle, fbxFilename.c_str(), "rb");

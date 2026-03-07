@@ -7,14 +7,17 @@
 #include "Rendering/Mesh/Mesh.h"
 
 #include "Systems/Objects/AssetObject.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Core/Reflection/ReflectionMacro.h"
 
 ENABLE_REFLECTION(Systems, MeshAsset_v2)
 
 namespace Systems
 {
+	class MeshAsset;
 	class MeshAsset_v2 : public AssetObject
 	{
+		friend class MeshAsset;
 	public:
 		MeshAsset_v2();
 		~MeshAsset_v2();
@@ -54,6 +57,7 @@ namespace Systems
 			ADD_FIELD(m_color)
 			ADD_FIELD(m_normal)
 			ADD_FIELD(m_indices)
+			ADD_AUTO_UPGRADE(Systems::MeshAsset)
 		END_REFLECTION()
 	};
 }

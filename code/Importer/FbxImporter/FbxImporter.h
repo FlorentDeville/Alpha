@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -8,7 +8,6 @@
 
 #include "Core/Collections/Array.h"
 #include "Core/Math/Vec4f.h"
-#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 
 namespace ofbx
 {
@@ -16,12 +15,17 @@ namespace ofbx
 	struct Object;
 }
 
+namespace Systems
+{
+	class MeshAsset;
+}
+
 namespace FbxImporter
 {
 	class FbxImporter
 	{
 	public:
-		bool Import(const std::string& fbxFilename, Systems::MeshAsset_v2& mesh);
+		bool Import(const std::string& fbxFilename, Systems::MeshAsset& mesh);
 
 	private:
 		bool Visit(const ofbx::Object*);
