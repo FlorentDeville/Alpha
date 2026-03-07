@@ -119,11 +119,11 @@ public: \
 // Macro the set the upgrade type
 #define ADD_UPGRADE_TYPE(TYPE, FUNC) \
 	pType->SetUpgradeType(MAKESID(#TYPE)); \
-	pType->Upgrade = [](const void* pSrc, void* pDst) { FUNC(static_cast<const ClassType*>(pSrc), static_cast<TYPE*>(pDst)); };
+	pType->Upgrade = [](void* pSrc, void* pDst) { FUNC(static_cast<ClassType*>(pSrc), static_cast<TYPE*>(pDst)); };
 
 #define ADD_AUTO_UPGRADE(TYPE) \
 	pType->SetUpgradeType(MAKESID(#TYPE)); \
-	pType->Upgrade = [](const void* pSrc, void* pDst) { static_cast<TYPE*>(pDst)->Upgrade(static_cast<const ClassType*>(pSrc)); };
+	pType->Upgrade = [](void* pSrc, void* pDst) { static_cast<TYPE*>(pDst)->Upgrade(static_cast<ClassType*>(pSrc)); };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 #define START_ENUM_REFLECTION(NAMESPACE, TYPE) \

@@ -88,7 +88,7 @@ namespace Core
 		void (*Destruct)(void*);
 
 		//Function to call to upgrade this type to the type m_upgradeType
-		void (*Upgrade)(const void* src, void* dst);
+		void (*Upgrade)(void* src, void* dst);
 
 		// Copy using copy operator the object src to dst.
 		void (*Copy)(const void* pSrc, void* pDst);
