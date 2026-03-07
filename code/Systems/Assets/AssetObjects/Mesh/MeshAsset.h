@@ -13,8 +13,6 @@ ENABLE_REFLECTION(Systems, MeshAsset)
 
 namespace Systems
 {
-	class MeshAsset_v2;
-
 	class MeshAsset : public AssetObject
 	{
 	public:
@@ -31,8 +29,6 @@ namespace Systems
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
-
-		void Upgrade(const MeshAsset_v2* pV2);
 
 	private:
 

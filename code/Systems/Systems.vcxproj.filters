@@ -11,7 +11,6 @@
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
     <ClInclude Include="Objects\AssetObject.h" />
-    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
     <ClInclude Include="Serialization\ObjectJsonDeserializer.h" />
     <ClInclude Include="Serialization\ObjectHeader.h" />
@@ -28,8 +27,6 @@
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
     <ClInclude Include="Rendering\MaterialRendering.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
-    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
-    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset_v1.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRef.h" />
@@ -56,7 +53,6 @@
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />
     <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />
@@ -71,8 +67,6 @@
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
     <ClCompile Include="Assets\AssetObjects\AssetUtil.cpp" />
     <ClCompile Include="Rendering\MaterialRendering.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset_v1.cpp" />
     <ClCompile Include="Assets\AssetRef\HardAssetRefRaw.cpp" />
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />

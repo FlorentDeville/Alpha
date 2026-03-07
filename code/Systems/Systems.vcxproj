@@ -24,9 +24,6 @@
     <ClInclude Include="Assets\AssetObjects\Texture\CubemapAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\Texture2DAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\TextureType.h" />
-    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v1.h" />
-    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset_v2.h" />
-    <ClInclude Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.h" />
     <ClInclude Include="Assets\AssetObjects\Texture\ITextureAsset.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRef.h" />
     <ClInclude Include="Assets\AssetRef\HardAssetRefRaw.h" />
@@ -62,9 +59,6 @@
     <ClCompile Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Material\MaterialAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAssetUpgrade.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v1.cpp" />
-    <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset_v2.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\CubemapAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Texture\Texture2DAsset.cpp" />
     <ClCompile Include="Assets\AssetRef\HardAssetRefRaw.cpp" />

@@ -4,8 +4,6 @@
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 
-#include "Systems/Assets/AssetObjects/Mesh/MeshAsset_v2.h"
-
 namespace Systems
 {
 	MeshAsset::MeshAsset()
@@ -88,17 +86,5 @@ namespace Systems
 	{
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
-	}
-
-	void MeshAsset::Upgrade(const MeshAsset_v2* pV2)
-	{
-		m_sourceFile = pV2->m_sourceFile;
-		m_position = std::move(pV2->m_position);
-		m_uv = std::move(pV2->m_uv);
-		m_color = std::move(pV2->m_color);
-		m_normal = std::move(pV2->m_normal);
-		m_indices = std::move(pV2->m_indices);
-
-		PostLoad();
 	}
 }
