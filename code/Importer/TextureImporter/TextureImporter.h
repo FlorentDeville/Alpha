@@ -7,7 +7,12 @@
 #include <string>
 
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
+//#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
+
+namespace Systems
+{
+	class Texture2DAsset;
+}
 
 namespace Importer
 {
@@ -42,12 +47,12 @@ namespace Importer
 			bool IsFailure() const;
 		};
 
-		bool Import(const std::string& sourceFilename, Systems::TextureAsset* pTexture);
+		bool Import(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture);
 
 		//The source filename must be in the following order : +x -x +y -y +z -z
 		TextureImporter::Result ImportCubemap(const std::string sourceFilename[6], Systems::CubemapAsset* pCubemap);
 
-		TextureImporter::Result Export(const std::string& outputFilename, const Systems::TextureAsset* pTexture);
+		TextureImporter::Result Export(const std::string& outputFilename, const Systems::Texture2DAsset* pTexture);
 		TextureImporter::Result Export(const std::string& outputFilename, const Systems::CubemapAsset* pCubemap);
 	};
 }

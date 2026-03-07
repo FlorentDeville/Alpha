@@ -31,7 +31,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
 #include "Widgets/Layout.h"
@@ -232,7 +232,7 @@ namespace Editors
 		if (!id.IsValid())
 			return;
 
-		if (!Systems::AssetUtil::IsA<Systems::TextureAsset>(id))
+		if (!Systems::AssetUtil::IsA<Systems::Texture2DAsset>(id))
 			return;
 
 		TextureEditorModule::Get().ImportTexture(id);
@@ -367,7 +367,7 @@ namespace Editors
 		if (!selectedTextureId.IsValid())
 			return;
 
-		bool isATexture = Systems::AssetUtil::IsA<Systems::TextureAsset>(selectedTextureId);
+		bool isATexture = Systems::AssetUtil::IsA<Systems::Texture2DAsset>(selectedTextureId);
 		bool isACubemap = Systems::AssetUtil::IsA<Systems::CubemapAsset>(selectedTextureId);
 		if (!isATexture && !isACubemap)
 			return;
@@ -421,7 +421,7 @@ namespace Editors
 
 		if (isATexture)
 		{
-			Systems::TextureAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::TextureAsset>(selectedTextureId);
+			Systems::Texture2DAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::Texture2DAsset>(selectedTextureId);
 			if (!pTexture)
 				return;
 
@@ -573,7 +573,7 @@ namespace Editors
 		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(assetId);
 		m_pPopulator->Populate(pObject);
 
-		if(pObject->IsA<Systems::TextureAsset>())
+		if(pObject->IsA<Systems::Texture2DAsset>())
 			m_viewportState = TEXTURE;
 		else if (pObject->IsA<Systems::CubemapAsset>())
 			m_viewportState = CUBEMAP;

@@ -11,7 +11,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/Cubemap/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
-#include "Systems/Assets/AssetObjects/Texture/TextureAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -103,7 +103,7 @@ namespace Editors
 		const Systems::NewAssetType* pAssetType = nullptr;
 		if (m_pBindingInfo->m_type == Systems::Texture2D)
 		{
-			Core::Sid sid = Core::TypeResolver<Systems::TextureAsset>::GetTypenameSid();
+			Core::Sid sid = Core::TypeResolver<Systems::Texture2DAsset>::GetTypenameSid();
 			pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(sid);
 		}
 		else if (m_pBindingInfo->m_type == Systems::Cubemap)

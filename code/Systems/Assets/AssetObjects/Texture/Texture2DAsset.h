@@ -7,24 +7,23 @@
 #include "Core/Blob/Blob.h"
 
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
-#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 
 namespace Rendering
 {
 	class Texture;
 }
 
-ENABLE_REFLECTION(Systems, TextureAsset_v2)
+ENABLE_REFLECTION(Systems, Texture2DAsset)
 
 namespace Systems
 {
-	class TextureAsset_v1;
+	class TextureAsset_v2;
 
-	class TextureAsset_v2 : public ITextureAsset
+	class Texture2DAsset : public ITextureAsset
 	{
 	public:
-		TextureAsset_v2();
-		~TextureAsset_v2();
+		Texture2DAsset();
+		~Texture2DAsset();
 
 		void Init(const std::string& sourceFilename, const uint8_t* pBlob, uint32_t blobSize, uint32_t width, uint32_t height, uint32_t mipCount);
 
@@ -43,7 +42,7 @@ namespace Systems
 		uint32_t GetHeight() const;
 		uint32_t GetMipCount() const;
 
-		void Upgrade(const TextureAsset_v1* pV1);
+		void Upgrade(const TextureAsset_v2* pV1);
 
 	private:
 
@@ -53,14 +52,13 @@ namespace Systems
 		uint32_t m_height;
 		uint32_t m_mipCount;
 
-		START_REFLECTION(Systems::TextureAsset_v2)
+		START_REFLECTION(Systems::Texture2DAsset)
 			ADD_BASETYPE(Systems::ITextureAsset)
 			ADD_FIELD(m_sourceFilename)
 			ADD_FIELD_ATTR(m_blob, Core::Hidden)
 			ADD_FIELD(m_width)
 			ADD_FIELD(m_height)
 			ADD_FIELD(m_mipCount)
-			ADD_AUTO_UPGRADE(Systems::Texture2DAsset)
 		END_REFLECTION()
 
 		Rendering::Texture* m_pTexture;
