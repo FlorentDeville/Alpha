@@ -514,11 +514,14 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
-		const DirectX::XMMATRIX view = pCamera->GetViewMatrix();
-		const DirectX::XMMATRIX proj = pCamera->GetProjectionMatrix();
+		const DirectX::XMMATRIX dxView = pCamera->GetViewMatrix();
+		const DirectX::XMMATRIX dxProj = pCamera->GetProjectionMatrix();
+
+		const Core::Mat44f view(dxView);
+		const Core::Mat44f proj(dxProj);
 
 		const Core::Vec4f& pos = pCamera->GetPosition();
-		DirectX::XMFLOAT3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
+		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
 		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 		//bind the shadow map
@@ -552,8 +555,6 @@ namespace Editors
 			}
 			else
 			{
-				DirectX::XMMATRIX wvp = proj * (view * renderable.m_worldTx.m_matrix);
-
 				const Systems::MaterialAsset* pMaterial = renderable.m_pMaterial->GetBaseMaterial();
 				if (pMaterial && pMaterial->IsValidForRendering())
 				{
