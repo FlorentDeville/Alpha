@@ -333,19 +333,19 @@ namespace Editors
 		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
 		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
 
-		DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
+		DirectX::XMMATRIX dxView = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
 		const float fov = 45.f;
 		float nearDistance = 0.1f;
 		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
+		DirectX::XMMATRIX dxProjection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
 
 		//RENDER
 		if (m_pSelectedMesh)
 		{
-			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, view);
-			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, projection);
+			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, dxView);
+			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, dxProjection);
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -353,11 +353,12 @@ namespace Editors
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
 				Rendering::PerObjectCBuffer perObjectData;
-				perObjectData.m_world = world;
+				perObjectData.m_world = Core::Mat44f(world);
 
-				DirectX::XMFLOAT3 cameraPosFloat3;
-				DirectX::XMStoreFloat3(&cameraPosFloat3, cameraPosition);
-				Rendering::PerFrameCBuffer perFrameData(view, projection, cameraPosFloat3);
+				Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
+				Core::Mat44f view(dxView);
+				Core::Mat44f proj(dxProjection);
+				Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 				Rendering::LightsArrayCBuffer lights;
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));

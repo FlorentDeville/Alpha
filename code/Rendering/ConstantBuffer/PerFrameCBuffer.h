@@ -1,21 +1,22 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include <DirectXMath.h>
+#include "Core/Math/Mat44f.h"
+#include "Core/Math/Vectors.h"
 
 namespace Rendering
 {
 	class PerFrameCBuffer
 	{
 	public:
-		PerFrameCBuffer(const DirectX::XMMATRIX& view, const DirectX::XMMATRIX& proj, const DirectX::XMFLOAT3& cameraPos);
+		PerFrameCBuffer(const Core::Mat44f& view, const Core::Mat44f& proj, const Core::Float3& cameraPos);
 
 	private:
-		DirectX::XMMATRIX m_viewMatrix;
-		DirectX::XMMATRIX m_projMatrix;
-		DirectX::XMFLOAT3 m_cameraPosition;
+		Core::Mat44f m_viewMatrix;
+		Core::Mat44f m_projMatrix;
+		Core::Float3 m_cameraPosition;
 	};
 }
