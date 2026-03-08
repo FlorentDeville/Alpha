@@ -100,11 +100,9 @@ namespace Widgets
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
 
-	DirectX::XMVECTOR Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
+	Core::Vec4f Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
 	{
 		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
-		const XMMATRIX& view = pCamera->GetViewMatrix();
-		const XMMATRIX& proj = pCamera->GetProjectionMatrix();
 
 		//get position in viewport widget
 		Core::UInt2 absPos(GetScreenX(), GetScreenY());
@@ -146,16 +144,27 @@ namespace Widgets
 			mouseViewportPos.y = mouseViewportWidgetPos.y;
 		}
 
+		const Core::Mat44f& proj = pCamera->GetProjectionMatrix();
+
 		DirectX::XMFLOAT2 mouseScreenSpace;
-		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.r[0].m128_f32[0];
-		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.r[1].m128_f32[1];
+		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.GetX().GetX();
+		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
 
 		//get mouse 3d position
-		XMMATRIX invView = XMMatrixInverse(nullptr, view);
-		XMVECTOR mousePosition = XMVectorSet(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
+		const Core::Mat44f& view = pCamera->GetViewMatrix();
+		
+		//calculate the inverse of the view
+		Core::Mat44f invR = view;
+		invR.SetRow(3, Core::Vec4f(0, 0, 0, 1));
+		invR.Transpose();
+		Core::Vec4f viewPos = view.GetT();
+		Core::Vec4f invViewPos = (viewPos * invR) * -1;
+		invViewPos.Set(3, 1);
+		Core::Mat44f invView = invR;
+		invView.SetRow(3, invViewPos);
 
-		XMVECTOR mousePosition3d = XMVector3Transform(mousePosition, invView);
-
+		Core::Vec4f mousePosition(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
+		Core::Vec4f mousePosition3d = mousePosition * invView;
 		return mousePosition3d;
 	}
 

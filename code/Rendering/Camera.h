@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
-#include <DirectXMath.h>
 
 namespace Rendering
 {
@@ -15,7 +15,7 @@ namespace Rendering
 		Camera();
 		~Camera();
 
-		void SetLookAt(const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& target, const DirectX::XMVECTOR& up);
+		void SetLookAt(const Core::Vec4f& position, const Core::Vec4f& target, const Core::Vec4f& up);
 		void SetProjection(float fovInRadian, float aspectRatio, float nearDistance, float farDistance);
 
 		float GetFOV() const;
@@ -23,14 +23,14 @@ namespace Rendering
 		float GetNearDistance() const;
 		float GetFarDistance() const;
 
-		const DirectX::XMMATRIX& GetViewMatrix() const;
-		const DirectX::XMMATRIX& GetProjectionMatrix() const;
+		const Core::Mat44f& GetViewMatrix() const;
+		const Core::Mat44f& GetProjectionMatrix() const;
 
 		const Core::Vec4f& GetPosition() const;
 
 	private:
-		DirectX::XMMATRIX m_view;
-		DirectX::XMMATRIX m_projection;
+		Core::Mat44f m_view;
+		Core::Mat44f m_projection;
 
 		Core::Vec4f m_position;
 

@@ -106,8 +106,7 @@ namespace Editors
 
 		DirectX::XMUINT2 mouseAbsPos;
 		Inputs::InputMgr::Get().GetMousePosition(mouseAbsPos.x, mouseAbsPos.y);
-		DirectX::XMVECTOR mouse3dPosition = Compute3dPosition(mouseAbsPos);
-		Core::Vec4f mouseWs(mouse3dPosition.m128_f32[0], mouse3dPosition.m128_f32[1], mouse3dPosition.m128_f32[2], mouse3dPosition.m128_f32[3]);
+		Core::Vec4f mouseWs = Compute3dPosition(mouseAbsPos);
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
@@ -514,11 +513,8 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
-		const DirectX::XMMATRIX dxView = pCamera->GetViewMatrix();
-		const DirectX::XMMATRIX dxProj = pCamera->GetProjectionMatrix();
-
-		const Core::Mat44f view(dxView);
-		const Core::Mat44f proj(dxProj);
+		const Core::Mat44f view = pCamera->GetViewMatrix();
+		const Core::Mat44f proj = pCamera->GetProjectionMatrix();
 
 		const Core::Vec4f& pos = pCamera->GetPosition();
 		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
@@ -583,8 +579,8 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 		ConstBufferPerFrame perFrame;
-		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix();
-		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix();
+		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix().m_matrix;
+		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix().m_matrix;
 
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::PipelineStateId objectIdsPsoId = widgetMgr.GetObjectIdsPsoId();

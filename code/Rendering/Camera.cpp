@@ -19,14 +19,15 @@ namespace Rendering
 	Camera::~Camera()
 	{}
 
-	void Camera::SetLookAt(const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& target, const DirectX::XMVECTOR& up)
+	void Camera::SetLookAt(const Core::Vec4f& position, const Core::Vec4f& target, const Core::Vec4f& up)
 	{
-		m_position = Core::Vec4f(DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position), 1);
+		m_position = position;
+		m_position.Set(3, 1);
 
-		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(target, position);
-		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
-
-		m_view = DirectX::XMMatrixLookToLH(position, cameraDirection, up);
+		Core::Vec4f cameraDirection = target - position;
+		cameraDirection.Normalize();
+		
+		m_view = Core::Mat44f::CreateView(position, cameraDirection, up);
 	}
 
 	void Camera::SetProjection(float fovInRadian, float aspectRatio, float nearDistance, float farDistance)
@@ -36,7 +37,7 @@ namespace Rendering
 		m_nearDistance = nearDistance;
 		m_farDistance = farDistance;
 
-		m_projection = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
+		m_projection = Core::Mat44f::CreatePerspective(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
 	}
 
 	float Camera::GetFOV() const
@@ -59,12 +60,12 @@ namespace Rendering
 		return m_farDistance;
 	}
 
-	const DirectX::XMMATRIX& Camera::GetViewMatrix() const
+	const Core::Mat44f& Camera::GetViewMatrix() const
 	{
 		return m_view;
 	}
 
-	const DirectX::XMMATRIX& Camera::GetProjectionMatrix() const
+	const Core::Mat44f& Camera::GetProjectionMatrix() const
 	{
 		return m_projection;
 	}
