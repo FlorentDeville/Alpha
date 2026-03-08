@@ -58,6 +58,117 @@
 
 namespace Editors
 {
+	class WidgetController : public Widgets::Widget 
+	{
+	public:
+		WidgetController()
+			: m_mode(Generic)
+		{ }
+
+		~WidgetController() = default;
+
+		void Enable(bool recursive) override
+		{
+			UpdateWidgetsVisibility();
+		}
+
+		void AddMaterialWidget(Widgets::Widget* pWidget)
+		{
+			m_materialWidgets.PushBack(pWidget);
+		}
+
+		void AddMaterialInstanceWidget(Widgets::Widget* pWidget)
+		{
+			m_materialInstanceWidgets.PushBack(pWidget);
+		}
+
+		void AddGenericWidget(Widgets::Widget* pWidget)
+		{
+			m_genericWidgets.PushBack(pWidget);
+		}
+
+		void ShowMaterialWidgets()
+		{
+			if (m_mode != Material)
+			{
+				m_mode = Material;
+				UpdateWidgetsVisibility();
+			}
+		}
+
+		void ShowMaterialInstanceWidgets()
+		{
+			if (m_mode != MaterialInstance)
+			{
+				m_mode = MaterialInstance;
+				UpdateWidgetsVisibility();
+			}
+		}
+
+		void ShowGenericWidgets()
+		{
+			if (m_mode != Generic)
+			{
+				m_mode = Generic;
+				UpdateWidgetsVisibility();
+			}
+		}
+
+	private:
+
+		enum DisplayMode
+		{
+			Material,
+			MaterialInstance,
+			Generic
+		};
+
+		Core::Array<Widgets::Widget*> m_materialWidgets;			//buttons only for materials
+		Core::Array<Widgets::Widget*> m_materialInstanceWidgets;	//buttons only for material instances
+		Core::Array<Widgets::Widget*> m_genericWidgets;				//buttons for both materials and material instances
+
+		DisplayMode m_mode;
+
+		void UpdateWidgetsVisibility()
+		{
+			switch (m_mode)
+			{
+			case Material:
+				for (Widgets::Widget* pWidget : m_materialWidgets)
+					pWidget->Enable();
+
+				for (Widgets::Widget* pWidget : m_materialInstanceWidgets)
+					pWidget->Disable();
+
+				for (Widgets::Widget* pWidget : m_genericWidgets)
+					pWidget->Enable();
+				break;
+
+			case MaterialInstance:
+				for (Widgets::Widget* pWidget : m_materialWidgets)
+					pWidget->Disable();
+
+				for (Widgets::Widget* pWidget : m_materialInstanceWidgets)
+					pWidget->Enable();
+
+				for (Widgets::Widget* pWidget : m_genericWidgets)
+					pWidget->Enable();
+				break;
+
+			case Generic:
+				for (Widgets::Widget* pWidget : m_materialWidgets)
+					pWidget->Disable();
+
+				for (Widgets::Widget* pWidget : m_materialInstanceWidgets)
+					pWidget->Disable();
+
+				for (Widgets::Widget* pWidget : m_genericWidgets)
+					pWidget->Enable();
+				break;
+			}
+		}
+	};
+
 	MaterialEditor::MaterialEditor()
 		: BaseEditor()
 		, m_pShaderListLayout(nullptr)
@@ -74,9 +185,7 @@ namespace Editors
 		, m_pMeshes{}
 		, m_pMeshesMenuItem{}
 		, m_selectedMesh(DisplayMesh::Unknown)
-		, m_pCompileButton(nullptr)
-		, m_pCompileDebugButton(nullptr)
-		, m_pRefreshMaterialInstanceButton(nullptr)
+		, m_pController(nullptr)
 	{
 		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
@@ -147,31 +256,37 @@ namespace Editors
 		pButtonLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
 		pRightPanelLayout->AddWidget(pButtonLayout);
 
+		m_pController = new WidgetController();
+
 		{
 			Widgets::Button* pButton = new Widgets::Button("New HLSL");
 			pButton->OnClick([this]() -> bool { return OnNewHlslClicked(); });
 			pButtonLayout->AddWidget(pButton);
+			m_pController->AddGenericWidget(pButton);
 		}
 
 		//add compile button
 		{
-			m_pCompileButton = new Widgets::Button("Compile");
-			m_pCompileButton->OnClick([this]() -> bool { return OnCompileClicked(); });
-			pButtonLayout->AddWidget(m_pCompileButton);
+			Widgets::Button* pCompileButton = new Widgets::Button("Compile");
+			pCompileButton->OnClick([this]() -> bool { return OnCompileClicked(); });
+			pButtonLayout->AddWidget(pCompileButton);
+			m_pController->AddMaterialWidget(pCompileButton);
 		}
 
 		//add debug compile button
 		{
-			m_pCompileDebugButton = new Widgets::Button("Compile Debug");
-			m_pCompileDebugButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
-			pButtonLayout->AddWidget(m_pCompileDebugButton);
+			Widgets::Button* pCompileDebugButton = new Widgets::Button("Compile Debug");
+			pCompileDebugButton->OnClick([this]() -> bool { return OnCompileDebugClicked(); });
+			pButtonLayout->AddWidget(pCompileDebugButton);
+			m_pController->AddMaterialWidget(pCompileDebugButton);
 		}
 
 		//add refresh button
 		{
-			m_pRefreshMaterialInstanceButton = new Widgets::Button("Refresh");
-			m_pRefreshMaterialInstanceButton->OnClick([this]() -> bool { return OnRefreshClicked(); });
-			pButtonLayout->AddWidget(m_pRefreshMaterialInstanceButton);
+			Widgets::Button* pRefreshMaterialInstanceButton = new Widgets::Button("Refresh");
+			pRefreshMaterialInstanceButton->OnClick([this]() -> bool { return OnRefreshClicked(); });
+			pButtonLayout->AddWidget(pRefreshMaterialInstanceButton);
+			m_pController->AddMaterialInstanceWidget(pRefreshMaterialInstanceButton);
 		}
 
 		//add property grid
@@ -215,8 +330,9 @@ namespace Editors
 
 		m_selectedMesh = DisplayMesh::Sphere;
 
-		SetMaterialOptionsVisibility(false);
-		SetMaterialInstanceOptionsVisibility(false);
+		//keep the controller last so when the tab is enabled/disable, the controller is the last to update all the widgets.
+		m_pInternalLayout->AddWidget(m_pController);
+		m_pController->ShowGenericWidgets();
 	}
 
 	void MaterialEditor::CreateFileMenu()
@@ -392,13 +508,11 @@ namespace Editors
 
 		if (pObject->IsA<Systems::MaterialAsset>())
 		{
-			SetMaterialOptionsVisibility(true);
-			SetMaterialInstanceOptionsVisibility(false);
+			m_pController->ShowMaterialWidgets();
 		}
 		else
 		{
-			SetMaterialOptionsVisibility(false);
-			SetMaterialInstanceOptionsVisibility(true);
+			m_pController->ShowMaterialInstanceWidgets();
 		}
 		return true;
 	}
@@ -498,8 +612,7 @@ namespace Editors
 				{
 					m_selectedMaterialId = Systems::NewAssetId::INVALID;
 					m_pPropertyGrid->ClearAllItems();
-					SetMaterialOptionsVisibility(false);
-					SetMaterialInstanceOptionsVisibility(false);
+					m_pController->ShowGenericWidgets();
 					return;
 				}
 
@@ -677,31 +790,5 @@ namespace Editors
 		m_pMaterialListModel->SetShaderModified(id);
 
 		return true;
-	}
-
-	void MaterialEditor::SetMaterialOptionsVisibility(bool enable)
-	{
-		if (enable)
-		{
-			m_pCompileButton->Enable();
-			m_pCompileDebugButton->Enable();
-		}
-		else
-		{
-			m_pCompileButton->Disable();
-			m_pCompileDebugButton->Disable();
-		}
-	}
-
-	void MaterialEditor::SetMaterialInstanceOptionsVisibility(bool enable)
-	{
-		if (enable)
-		{
-			m_pRefreshMaterialInstanceButton->Enable();
-		}
-		else
-		{
-			m_pRefreshMaterialInstanceButton->Disable();
-		}
 	}
 }
