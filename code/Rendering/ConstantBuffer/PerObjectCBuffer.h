@@ -1,11 +1,10 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include <DirectXMath.h>
-
+#include "Core/Math/Mat44f.h"
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 
 namespace Rendering
@@ -17,7 +16,7 @@ namespace Rendering
 	public:
 		PerObjectCBuffer();
 
-		DirectX::XMMATRIX m_world;
-		DirectX::XMMATRIX m_lightSpaceMatrix[LightsArrayCBuffer::MAX_LIGHT_COUNT];
+		Core::Mat44f m_world;
+		Core::Mat44f m_lightSpaceMatrix[LightsArrayCBuffer::MAX_LIGHT_COUNT];
 	};
 }

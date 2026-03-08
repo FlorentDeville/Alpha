@@ -559,7 +559,7 @@ namespace Editors
 				if (pMaterial && pMaterial->IsValidForRendering())
 				{
 					Rendering::PerObjectCBuffer perObjectData;
-					perObjectData.m_world = renderable.m_worldTx.m_matrix;
+					perObjectData.m_world = Core::Mat44f(renderable.m_worldTx.m_matrix);
 					memcpy(perObjectData.m_lightSpaceMatrix, lightSpace, sizeof(Core::Mat44f) * Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 
 					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);

@@ -353,7 +353,7 @@ namespace Editors
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
 				Rendering::PerObjectCBuffer perObjectData;
-				perObjectData.m_world = world;
+				perObjectData.m_world = Core::Mat44f(world);
 
 				Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
 				Core::Mat44f view(dxView);
