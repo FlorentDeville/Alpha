@@ -712,7 +712,7 @@ namespace Editors
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 		if (inputs.IsMouseLeftButtonDown())
 		{
-			DirectX::XMUINT2 mousePosition;
+			Core::UInt2 mousePosition;
 			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
 			if (m_firstFrameMouseDown)
 			{
@@ -720,7 +720,7 @@ namespace Editors
 				m_firstFrameMouseDown = false;
 			}
 
-			DirectX::XMINT2 delta;
+			Core::Int2 delta;
 			delta.x = m_mousePreviousPos.x - mousePosition.x;
 			delta.y = m_mousePreviousPos.y - mousePosition.y;
 
