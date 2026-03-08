@@ -104,7 +104,6 @@ namespace Widgets
 	{
 		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
 		const XMMATRIX& view = pCamera->GetViewMatrix();
-		const XMMATRIX& proj = pCamera->GetProjectionMatrix();
 
 		//get position in viewport widget
 		Core::UInt2 absPos(GetScreenX(), GetScreenY());
@@ -146,9 +145,11 @@ namespace Widgets
 			mouseViewportPos.y = mouseViewportWidgetPos.y;
 		}
 
+		const Core::Mat44f& proj = pCamera->GetProjectionMatrix();
+
 		DirectX::XMFLOAT2 mouseScreenSpace;
-		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.r[0].m128_f32[0];
-		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.r[1].m128_f32[1];
+		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.GetX().GetX();
+		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
 
 		//get mouse 3d position
 		XMMATRIX invView = XMMatrixInverse(nullptr, view);

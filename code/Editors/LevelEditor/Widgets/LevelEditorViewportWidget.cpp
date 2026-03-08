@@ -515,10 +515,9 @@ namespace Editors
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
 		const DirectX::XMMATRIX dxView = pCamera->GetViewMatrix();
-		const DirectX::XMMATRIX dxProj = pCamera->GetProjectionMatrix();
+		const Core::Mat44f proj = pCamera->GetProjectionMatrix();
 
 		const Core::Mat44f view(dxView);
-		const Core::Mat44f proj(dxProj);
 
 		const Core::Vec4f& pos = pCamera->GetPosition();
 		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
@@ -584,7 +583,7 @@ namespace Editors
 
 		ConstBufferPerFrame perFrame;
 		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix();
-		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix();
+		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix().m_matrix;
 
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
 		Rendering::PipelineStateId objectIdsPsoId = widgetMgr.GetObjectIdsPsoId();

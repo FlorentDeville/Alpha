@@ -913,7 +913,7 @@ namespace Rendering
 		m_pRenderCommandList->SetPipelineState(m_pBaseShapePso->GetPipelineState());
 		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeRootSig->GetRootSignature());
 
-		DirectX::XMMATRIX wvp = txWs * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix();
+		DirectX::XMMATRIX wvp = txWs * m_pCamera->GetViewMatrix() * m_pCamera->GetProjectionMatrix().m_matrix;
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
 

@@ -36,7 +36,8 @@ namespace Rendering
 		m_nearDistance = nearDistance;
 		m_farDistance = farDistance;
 
-		m_projection = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
+		DirectX::XMMATRIX m = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
+		m_projection = Core::Mat44f::CreatePerspective(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
 	}
 
 	float Camera::GetFOV() const
@@ -64,7 +65,7 @@ namespace Rendering
 		return m_view;
 	}
 
-	const DirectX::XMMATRIX& Camera::GetProjectionMatrix() const
+	const Core::Mat44f& Camera::GetProjectionMatrix() const
 	{
 		return m_projection;
 	}

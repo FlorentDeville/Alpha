@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include <DirectXMath.h>
 
@@ -24,13 +25,13 @@ namespace Rendering
 		float GetFarDistance() const;
 
 		const DirectX::XMMATRIX& GetViewMatrix() const;
-		const DirectX::XMMATRIX& GetProjectionMatrix() const;
+		const Core::Mat44f& GetProjectionMatrix() const;
 
 		const Core::Vec4f& GetPosition() const;
 
 	private:
 		DirectX::XMMATRIX m_view;
-		DirectX::XMMATRIX m_projection;
+		Core::Mat44f m_projection;
 
 		Core::Vec4f m_position;
 
