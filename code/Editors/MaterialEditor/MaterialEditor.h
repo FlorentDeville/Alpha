@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Math/Vectors.h"
+
 #include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
@@ -27,7 +29,6 @@ namespace Systems
 
 namespace Widgets
 {
-	class Button;
 	class Layout;
 	class MenuItem;
 	class Text;
@@ -39,6 +40,7 @@ namespace Editors
 	class PropertyGridPopulator;
 	class PropertyGridWidget;
 	class MaterialListModel;
+	class WidgetController;
 
 	class MaterialEditor : public BaseEditor
 	{
@@ -76,7 +78,7 @@ namespace Editors
 
 		//viewport inputs (mouse and keyboard)
 		bool m_firstFrameMouseDown;
-		DirectX::XMUINT2 m_mousePreviousPos;
+		Core::UInt2 m_mousePreviousPos;
 
 		Rendering::Mesh* m_pMeshes[DisplayMesh::Count]; //list of possible meshes to render in the viewport
 		Widgets::MenuItem* m_pMeshesMenuItem[DisplayMesh::Count];
@@ -84,9 +86,7 @@ namespace Editors
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 
-		Widgets::Button* m_pCompileButton;
-		Widgets::Button* m_pCompileDebugButton;
-		Widgets::Button* m_pRefreshMaterialInstanceButton;
+		WidgetController* m_pController;
 
 		void CreateFileMenu();
 		void CreateMeshMenu();
@@ -117,8 +117,5 @@ namespace Editors
 		void RefreshPropertyGrid();
 
 		bool InternalOnCompileClicked(bool debug);
-
-		void SetMaterialOptionsVisibility(bool enable);
-		void SetMaterialInstanceOptionsVisibility(bool enable);
 	};
 }
