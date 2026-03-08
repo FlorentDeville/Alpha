@@ -21,6 +21,11 @@ namespace Core
 		m_vector = DirectX::XMVectorSet(x, y, z, w);
 	}
 
+	Vec4f::Vec4f(__m128 v)
+	{
+		m_vector = v;
+	}
+
 	float Vec4f::GetX() const { return m_vector.m128_f32[0]; }
 	float Vec4f::GetY() const { return m_vector.m128_f32[1]; }
 	float Vec4f::GetZ() const { return m_vector.m128_f32[2]; }
@@ -116,8 +121,4 @@ namespace Core
 
 		return Vec4f(roll, pitch, yaw, 0);
 	}
-
-	Vec4f::Vec4f(const DirectX::XMVECTOR& vector)
-		: m_vector(vector)
-	{}
 }

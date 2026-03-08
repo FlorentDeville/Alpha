@@ -17,6 +17,7 @@ namespace Core
 	public:
 		Vec4f();
 		Vec4f(float x, float y, float z, float w);
+		Vec4f(__m128 v);
 
 		float GetX() const;
 		float GetY() const;
@@ -45,8 +46,6 @@ namespace Core
 		static Vec4f QuaternionToEulerAngles(const Vec4f& quaternion);
 
 	private:
-		explicit Vec4f(const DirectX::XMVECTOR& vector);
-
 		DirectX::XMVECTOR m_vector;
 	};
 }

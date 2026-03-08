@@ -100,7 +100,7 @@ namespace Widgets
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
 
-	DirectX::XMVECTOR Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
+	Core::Vec4f Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
 	{
 		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
 		const XMMATRIX& view = pCamera->GetViewMatrix();
@@ -157,7 +157,7 @@ namespace Widgets
 
 		XMVECTOR mousePosition3d = XMVector3Transform(mousePosition, invView);
 
-		return mousePosition3d;
+		return Core::Vec4f(mousePosition3d);
 	}
 
 	void Viewport::Internal_Render()

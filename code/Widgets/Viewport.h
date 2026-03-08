@@ -6,6 +6,11 @@
 
 #include "Widgets/Widget.h"
 
+namespace Core
+{
+	class Vec4f;
+}
+
 namespace Rendering
 {
 	class RenderTarget;
@@ -25,7 +30,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		DirectX::XMVECTOR Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
+		Core::Vec4f Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
 
 		EVENT_DECL(Update, void(uint64_t)) //Real time update called every frame
 		EVENT_DECL(Render, void()) //Do all your rendering inside this event
