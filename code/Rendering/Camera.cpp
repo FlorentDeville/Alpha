@@ -19,14 +19,16 @@ namespace Rendering
 	Camera::~Camera()
 	{}
 
-	void Camera::SetLookAt(const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& target, const DirectX::XMVECTOR& up)
+	void Camera::SetLookAt(const Core::Vec4f& position, const Core::Vec4f& target, const Core::Vec4f& up)
 	{
-		m_position = Core::Vec4f(DirectX::XMVectorGetX(position), DirectX::XMVectorGetY(position), DirectX::XMVectorGetZ(position), 1);
+		m_position = position;
+		m_position.Set(3, 1);
 
-		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(target, position);
-		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
-
-		m_view = DirectX::XMMatrixLookToLH(position, cameraDirection, up);
+		Core::Vec4f cameraDirection = target - position;
+		cameraDirection.Normalize();
+		
+		Core::Mat44f view = Core::Mat44f::CreateView(position, cameraDirection, up);
+		m_view = view.m_matrix;
 	}
 
 	void Camera::SetProjection(float fovInRadian, float aspectRatio, float nearDistance, float farDistance)

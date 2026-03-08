@@ -16,7 +16,7 @@ namespace Rendering
 		Camera();
 		~Camera();
 
-		void SetLookAt(const DirectX::XMVECTOR& position, const DirectX::XMVECTOR& target, const DirectX::XMVECTOR& up);
+		void SetLookAt(const Core::Vec4f& position, const Core::Vec4f& target, const Core::Vec4f& up);
 		void SetProjection(float fovInRadian, float aspectRatio, float nearDistance, float farDistance);
 
 		float GetFOV() const;
