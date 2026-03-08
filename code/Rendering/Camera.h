@@ -6,7 +6,6 @@
 
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
-#include <DirectXMath.h>
 
 namespace Rendering
 {
@@ -24,13 +23,13 @@ namespace Rendering
 		float GetNearDistance() const;
 		float GetFarDistance() const;
 
-		const DirectX::XMMATRIX& GetViewMatrix() const;
+		const Core::Mat44f& GetViewMatrix() const;
 		const Core::Mat44f& GetProjectionMatrix() const;
 
 		const Core::Vec4f& GetPosition() const;
 
 	private:
-		DirectX::XMMATRIX m_view;
+		Core::Mat44f m_view;
 		Core::Mat44f m_projection;
 
 		Core::Vec4f m_position;

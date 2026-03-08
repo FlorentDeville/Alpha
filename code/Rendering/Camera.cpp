@@ -27,8 +27,7 @@ namespace Rendering
 		Core::Vec4f cameraDirection = target - position;
 		cameraDirection.Normalize();
 		
-		Core::Mat44f view = Core::Mat44f::CreateView(position, cameraDirection, up);
-		m_view = view.m_matrix;
+		m_view = Core::Mat44f::CreateView(position, cameraDirection, up);
 	}
 
 	void Camera::SetProjection(float fovInRadian, float aspectRatio, float nearDistance, float farDistance)
@@ -38,7 +37,6 @@ namespace Rendering
 		m_nearDistance = nearDistance;
 		m_farDistance = farDistance;
 
-		DirectX::XMMATRIX m = DirectX::XMMatrixPerspectiveFovLH(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
 		m_projection = Core::Mat44f::CreatePerspective(m_fov, m_aspectRatio, m_nearDistance, m_farDistance);
 	}
 
@@ -62,7 +60,7 @@ namespace Rendering
 		return m_farDistance;
 	}
 
-	const DirectX::XMMATRIX& Camera::GetViewMatrix() const
+	const Core::Mat44f& Camera::GetViewMatrix() const
 	{
 		return m_view;
 	}

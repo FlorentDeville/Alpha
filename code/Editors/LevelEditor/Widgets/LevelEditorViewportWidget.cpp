@@ -513,10 +513,8 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
-		const DirectX::XMMATRIX dxView = pCamera->GetViewMatrix();
+		const Core::Mat44f view = pCamera->GetViewMatrix();
 		const Core::Mat44f proj = pCamera->GetProjectionMatrix();
-
-		const Core::Mat44f view(dxView);
 
 		const Core::Vec4f& pos = pCamera->GetPosition();
 		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
@@ -581,7 +579,7 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 		ConstBufferPerFrame perFrame;
-		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix();
+		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix().m_matrix;
 		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix().m_matrix;
 
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();

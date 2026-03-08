@@ -103,7 +103,6 @@ namespace Widgets
 	Core::Vec4f Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
 	{
 		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
-		const XMMATRIX& view = pCamera->GetViewMatrix();
 
 		//get position in viewport widget
 		Core::UInt2 absPos(GetScreenX(), GetScreenY());
@@ -152,12 +151,11 @@ namespace Widgets
 		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
 
 		//get mouse 3d position
-		XMMATRIX invView = XMMatrixInverse(nullptr, view);
-		XMVECTOR mousePosition = XMVectorSet(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
-
-		XMVECTOR mousePosition3d = XMVector3Transform(mousePosition, invView);
-
-		return Core::Vec4f(mousePosition3d);
+		const Core::Mat44f& view = pCamera->GetViewMatrix();
+		Core::Mat44f invView = view.Inverse();
+		Core::Vec4f mousePosition(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
+		Core::Vec4f mousePosition3d = mousePosition * invView;
+		return mousePosition3d;
 	}
 
 	void Viewport::Internal_Render()
