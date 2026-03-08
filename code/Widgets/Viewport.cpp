@@ -152,7 +152,17 @@ namespace Widgets
 
 		//get mouse 3d position
 		const Core::Mat44f& view = pCamera->GetViewMatrix();
-		Core::Mat44f invView = view.Inverse();
+		
+		//calculate the inverse of the view
+		Core::Mat44f invR = view;
+		invR.SetRow(3, Core::Vec4f(0, 0, 0, 1));
+		invR.Transpose();
+		Core::Vec4f viewPos = view.GetT();
+		Core::Vec4f invViewPos = (viewPos * invR) * -1;
+		invViewPos.Set(3, 1);
+		Core::Mat44f invView = invR;
+		invView.SetRow(3, invViewPos);
+
 		Core::Vec4f mousePosition(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
 		Core::Vec4f mousePosition3d = mousePosition * invView;
 		return mousePosition3d;
