@@ -1,14 +1,19 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/MeshEditor/MeshEditor.h"
+
+#include "Core/Log/LogModule.h"
+#include "Core/Math/Constants.h"
 
 #include "Editors/EditorParameter.h"
 #include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -53,17 +58,20 @@ namespace Editors
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos(0, 0)
 		, m_allEntryButton()
-		, m_pLogWidget(nullptr)
 		, m_allMaterials()
 		, m_pSelectedMesh(nullptr)
 		, m_pMeshListModel(nullptr)
+		, m_pPopulator(nullptr)
 	{
-		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
-		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
+		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
+		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
 	}
 
 	MeshEditor::~MeshEditor()
-	{ }
+	{
+		delete m_pPopulator;
+		m_pPopulator = nullptr;
+	}
 
 	void MeshEditor::CreateEditor(const EditorParameter& param)
 	{
@@ -75,6 +83,10 @@ namespace Editors
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
 			pNewItem->OnClick([this]() { OnClicked_File_Import(); });
+
+			Widgets::MenuItem* pReimportItem = pFileMenu->AddMenuItem("Reimport");
+			pReimportItem->SetShortcut("Ctrl+F5");
+			pReimportItem->OnClick([this]() { OnClicked_File_Reimport(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
 			pSaveItem->SetShortcut("Ctrl+S");
@@ -95,6 +107,12 @@ namespace Editors
 		pSplit->SetLeftPanelWidth(400);
 		m_pInternalLayout->AddWidget(pSplit);
 
+		//create right side vertical split
+		Widgets::SplitHorizontal* pRightSideSplit = new Widgets::SplitHorizontal();
+		pRightSideSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pRightSideSplit->SetTopPanelHeight(700);
+		pSplit->AddRightPanel(pRightSideSplit);
+		
 		//create left viewport
 		const int VIEWPORT_WIDTH = 1280;
 		const int VIEWPORT_HEIGHT = 720;
@@ -103,7 +121,14 @@ namespace Editors
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
 		pViewport->OnRender([this]() { Viewport_OnRender(); });
-		pSplit->AddRightPanel(pViewport);
+		pRightSideSplit->AddTopPanel(pViewport);
+
+		//create property grid
+		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
+		pRightSideSplit->AddBottomPanel(pPropertyGrid);
+
+		m_pPopulator = new PropertyGridPopulator();
+		m_pPopulator->Init(pPropertyGrid);
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials
 		Widgets::SplitHorizontal* pLeftPanelSplit = new Widgets::SplitHorizontal();
@@ -136,13 +161,6 @@ namespace Editors
 		pMaterialLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pMaterialLayout->SetDirection(Widgets::Layout::Vertical);
 		pMaterialTab->AddWidget(pMaterialLayout);
-
-		Widgets::Tab* pLogTab = new Widgets::Tab();
-		pTabContainer->AddTab("Log", pLogTab);
-
-		m_pLogWidget = new Widgets::Text(1, "");
-		m_pLogWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pLogTab->AddWidget(m_pLogWidget);
 
 		pTabContainer->SetSelectedTab(0);
 
@@ -183,30 +201,6 @@ namespace Editors
 		meshModule.OnBeforeMeshDeleted([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->RemoveRow(metadata.GetAssetId()); });
 	}
 
-	bool MeshEditor::OnMeshImportClicked(int entryIndex)
-	{
-		/*MeshEntry& entry = m_allMeshes[entryIndex];
-		if (!entry.m_mesh)
-			LoadMesh(entry);
-
-		if (!entry.m_mesh)
-		{
-			m_pLogWidget->AppendText("Failed to load asset.");
-			return true;
-		}
-
-		FbxImporter::FbxImporter importer;
-		bool res = importer.Import(entry.m_mesh->GetSourceFile(), *entry.m_mesh);
-		if (!res)
-		{
-			m_pLogWidget->AppendText("Failed to import asset.");
-			return true;
-		}
-
-		return true;*/
-		return true;
-	}
-
 	bool MeshEditor::OnMaterialClicked(int entryIndex)
 	{
 		const MaterialEntry& materialEntry = m_allMaterials[entryIndex];
@@ -220,7 +214,19 @@ namespace Editors
 		if (!m_pSelectedMesh)
 			return;
 
-		MeshEditorModule::Get().SaveMesh(m_pSelectedMesh->GetId());
+		bool res = MeshEditorModule::Get().SaveMesh(m_pSelectedMesh->GetId());
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_pSelectedMesh->GetId());
+		if (!pMetadata)
+		{
+			Core::LogModule::Get().LogError("Failed to find metadata for asset %s", m_pSelectedMesh->GetId().ToString().c_str());
+			return;
+		}
+
+		if(res)
+			Core::LogModule::Get().LogInfo("Mesh %s saved.", pMetadata->GetVirtualName().c_str());
+		else
+			Core::LogModule::Get().LogError("Failed to save mesh %s.", pMetadata->GetVirtualName().c_str());
 	}
 
 	void MeshEditor::OnClicked_File_Import()
@@ -231,6 +237,43 @@ namespace Editors
 			return;
 
 		MeshEditorModule::Get().ImportMesh(filename);
+	}
+
+	void MeshEditor::OnClicked_File_Reimport()
+	{
+		const Widgets::SelectionModel* pSelectionModel = m_pMeshListModel->GetSelectionModel();
+		if (!pSelectionModel)
+			return;
+
+		const std::list<Widgets::SelectionRow>& rows = pSelectionModel->GetSelectedRows();
+		if (rows.empty())
+		{
+			Core::LogModule::Get().LogError("Can't reimport mesh because there is no selection.");
+			return;
+		}
+		
+		MeshEditorModule& module = MeshEditorModule::Get();
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+
+		for (const Widgets::SelectionRow& row : rows)
+		{
+			Systems::NewAssetId id = m_pMeshListModel->GetAssetId(row.GetStartIndex());
+			if (!id.IsValid())
+				continue;
+
+			const Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
+			if (!pMetadata)
+			{
+				Core::LogModule::Get().LogError("Failed to find metadata for asset %s", m_pSelectedMesh->GetId().ToString().c_str());
+				continue;
+			}
+
+			bool importResult = module.ReimportMesh(id);
+			if (!importResult)
+				Core::LogModule::Get().LogError("Failed to reimport %s", pMetadata->GetVirtualName().c_str());
+			else
+				Core::LogModule::Get().LogInfo("Mesh %s reimported.", pMetadata->GetVirtualName().c_str());
+		}
 	}
 
 	void MeshEditor::OnClicked_File_Rename()
@@ -280,7 +323,7 @@ namespace Editors
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 		if (inputs.IsMouseLeftButtonDown())
 		{
-			DirectX::XMUINT2 mousePosition;
+			Core::UInt2 mousePosition;
 			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
 			if (m_firstFrameMouseDown)
 			{
@@ -288,14 +331,14 @@ namespace Editors
 				m_firstFrameMouseDown = false;
 			}
 
-			DirectX::XMINT2 delta;
+			Core::Int2 delta;
 			delta.x = m_mousePreviousPos.x - mousePosition.x;
 			delta.y = m_mousePreviousPos.y - mousePosition.y;
 
 			const float ROTATION_SPEED = 0.01f;
-			DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+			Core::Vec4f offset(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
 
-			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+			m_cameraEuler = m_cameraEuler + offset;
 
 			m_mousePreviousPos = mousePosition;
 		}
@@ -317,35 +360,36 @@ namespace Editors
 	void MeshEditor::Viewport_OnRender()
 	{
 		//world
-		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+		Core::Mat44f world = Core::Mat44f::CreateIdentity();
 
 		//view
-		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
+		Core::Vec4f cameraUp(0, 1, 0, 1);
+		Core::Vec4f cameraLookAt(0, 0, 0, 1);
 
 		//calculate the camera position
-		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
-		DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 0, m_cameraDistance, 1));
-		DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVector3Transform(m_cameraTarget, txPos);
+		Core::Mat44f rotY = Core::Mat44f::CreateRotationY(m_cameraEuler.GetY());
+		Core::Mat44f rotX = Core::Mat44f::CreateRotationX(m_cameraEuler.GetX());
+		Core::Mat44f orientation = rotX * rotY;
 
+		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
 
-		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
-		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
+		Core::Mat44f txPos = tx * orientation;
+		Core::Vec4f cameraPosition = m_cameraTarget * txPos;
 
-		DirectX::XMMATRIX dxView = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
+		Core::Vec4f cameraDirection = cameraLookAt - cameraPosition;
+
+		Core::Mat44f view = Core::Mat44f::CreateView(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
-		const float fov = 45.f;
+		constexpr float fov = 45.f;
+		constexpr float fovRad = fov * Core::PI_OVER_180;
 		float nearDistance = 0.1f;
-		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX dxProjection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 100.0f);
 
-		//RENDER
+		Core::Mat44f proj = Core::Mat44f::CreatePerspective(fovRad, m_aspectRatio, nearDistance, 1000.f);
+
 		if (m_pSelectedMesh)
 		{
-			DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, dxView);
-			mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, dxProjection);
+			Core::Mat44f mvpMatrix = world * view * proj;
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -355,9 +399,7 @@ namespace Editors
 				Rendering::PerObjectCBuffer perObjectData;
 				perObjectData.m_world = Core::Mat44f(world);
 
-				Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
-				Core::Mat44f view(dxView);
-				Core::Mat44f proj(dxProjection);
+				Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
 				Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 				Rendering::LightsArrayCBuffer lights;
@@ -375,6 +417,7 @@ namespace Editors
 	{
 		if (selected.empty())
 		{
+			m_pPopulator->Populate(nullptr);
 			m_pSelectedMesh = nullptr;
 			return;
 		}
@@ -383,5 +426,7 @@ namespace Editors
 		Systems::NewAssetId meshId = m_pMeshListModel->GetAssetId(selectedRow.GetStartIndex());
 
 		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
+
+		m_pPopulator->Populate(m_pSelectedMesh);
 	}
 }

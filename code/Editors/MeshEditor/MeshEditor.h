@@ -1,10 +1,13 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Editors/BaseEditor.h"
+
+#include "Core/Math/Vec4f.h"
+#include "Core/Math/Vectors.h"
 
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -12,8 +15,6 @@
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
-
-#include "DirectXMath.h"
 
 #include <map>
 #include <vector>
@@ -31,6 +32,7 @@ namespace Widgets
 namespace Editors
 {
 	class MeshListModel;
+	class PropertyGridPopulator;
 
 	class MaterialEntry
 	{
@@ -50,8 +52,8 @@ namespace Editors
 
 	private:
 		//camera position
-		DirectX::XMVECTOR m_cameraTarget;
-		DirectX::XMVECTOR m_cameraEuler;
+		Core::Vec4f m_cameraTarget;
+		Core::Vec4f m_cameraEuler;
 
 		float m_cameraDistance;
 		float m_aspectRatio;
@@ -62,22 +64,22 @@ namespace Editors
 
 		Rendering::TextureId m_importIconTextureId;
 
-		DirectX::XMUINT2 m_mousePreviousPos;
+		Core::UInt2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
 
 		std::vector<Widgets::Button*> m_allEntryButton;
 		
-		Widgets::Text* m_pLogWidget;
-
 		MeshListModel* m_pMeshListModel;
 
 		Systems::MeshAsset* m_pSelectedMesh;
 
-		bool OnMeshImportClicked(int entryIndex);
+		PropertyGridPopulator* m_pPopulator;
+
 		bool OnMaterialClicked(int entryIndex);
 
 		void OnClicked_File_Save();
 		void OnClicked_File_Import();
+		void OnClicked_File_Reimport();
 		void OnClicked_File_Rename();
 		void OnClicked_File_Delete();
 

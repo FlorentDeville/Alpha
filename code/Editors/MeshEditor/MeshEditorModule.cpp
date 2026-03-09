@@ -85,6 +85,17 @@ namespace Editors
 		return res;
 	}
 
+	bool MeshEditorModule::ReimportMesh(const Systems::NewAssetId id)
+	{
+		Systems::MeshAsset* pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(id);
+		if (!pMesh)
+			return false;
+
+		FbxImporter::FbxImporter importer;
+		bool res = importer.Import(pMesh->GetSourceFile(), *pMesh);
+		return res;
+	}
+
 	bool MeshEditorModule::RenameMesh(const Systems::NewAssetId id, const std::string& newName)
 	{
 		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();

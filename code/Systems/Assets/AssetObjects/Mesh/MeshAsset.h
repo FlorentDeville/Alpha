@@ -43,17 +43,21 @@ namespace Systems
 		//Each 3 consecutive indices makes a triangle
 		Core::Array<uint16_t> m_indices;
 
-		//The low level mesh used by the renderer
-		Rendering::Mesh m_mesh;
+		//Invert the v coordinates in the uv when importing mesh.
+		bool m_importOptionInvertV;
 
 		START_REFLECTION(Systems::MeshAsset)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFile)
-			ADD_FIELD(m_position)
-			ADD_FIELD(m_uv)
-			ADD_FIELD(m_color)
-			ADD_FIELD(m_normal)
-			ADD_FIELD(m_indices)
+			ADD_FIELD_ATTR(m_position, Core::Hidden)
+			ADD_FIELD_ATTR(m_uv, Core::Hidden)
+			ADD_FIELD_ATTR(m_color, Core::Hidden)
+			ADD_FIELD_ATTR(m_normal, Core::Hidden)
+			ADD_FIELD_ATTR(m_indices, Core::Hidden)
+			ADD_FIELD_ATTR(m_importOptionInvertV, Core::Hidden)
 		END_REFLECTION()
+
+		//The low level mesh used by the renderer
+		Rendering::Mesh m_mesh;
 	};
 }
