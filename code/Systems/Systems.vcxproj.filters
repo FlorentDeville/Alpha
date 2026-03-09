@@ -41,6 +41,7 @@
     <ClInclude Include="Assets\AssetObjects\Texture\CubemapAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
+    <ClInclude Include="GameComponent\SkyboxComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -76,6 +77,7 @@
     <ClCompile Include="Assets\AssetObjects\Texture\CubemapAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset.cpp" />
+    <ClCompile Include="GameComponent\SkyboxComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

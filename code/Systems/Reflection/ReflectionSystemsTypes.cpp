@@ -18,6 +18,7 @@
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
+#include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Core/Reflection/ReflectionMacro.h"
@@ -37,6 +38,7 @@ namespace Systems
 		Systems::Object::RegisterReflection();
 		Systems::GameObject::RegisterReflection();
 		Systems::GameComponent::RegisterReflection();
+		Systems::SkyboxComponent::RegisterReflection();
 		Systems::StaticMeshComponent::RegisterReflection();
 		Systems::TransformComponent::RegisterReflection();
 		Systems::DirectionalLightComponent::RegisterReflection();
