@@ -10,6 +10,7 @@
 
 namespace Widgets
 {
+	class Container;
 	class Label;
 
 	class CheckBox : public Container
@@ -20,13 +21,14 @@ namespace Widgets
 		CheckBox(const std::string& text, bool value);
 		~CheckBox();
 
-		//void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
+		void ReComputeSize(const Core::UInt2& parentSize) override;
+		void Enable(bool recursive = true) override;
 
 		void SetValue(bool value);
 
+		void ShowLabel(bool show);
 		//bool Handle(const BaseEvent& ev) override;
-		//void Enable(bool recursive = true) override;
-		//void Disable(bool recursive = true) override;
+		
 
 
 		//void AddOption(const std::string& label, int64_t value);
@@ -37,7 +39,9 @@ namespace Widgets
 
 	private:
 		bool m_value;
+		bool m_showLabel;
 
 		Label* m_pLabel;
+		Container* m_pContainer;
 	};
 }
