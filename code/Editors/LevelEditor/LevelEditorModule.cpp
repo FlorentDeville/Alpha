@@ -153,6 +153,7 @@ namespace Editors
 		Core::Mat44f localTx;
 		localTx.SetIdentity();
 		pGo->GetTransform().SetLocalTx(localTx);
+		pGo->GetTransform().ComputeWorldTx();
 		
 		m_pLevel->AddGameObject(pGo, parentGuid);
 
