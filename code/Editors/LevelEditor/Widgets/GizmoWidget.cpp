@@ -161,6 +161,11 @@ namespace Editors
 		return m_internalState == InternalState::kMoving;
 	}
 
+	bool GizmoWidget::IsHovering() const
+	{
+		return !m_hoverAxis.IsEmpty();
+	}
+
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
 	{
 		UpdateMouseHover(mouse3dPosition);

@@ -65,6 +65,7 @@ namespace Editors
 		bool SnappingEnabled() const;
 
 		bool IsManipulating() const;
+		bool IsHovering() const;
 
 	private:
 		void UpdateState_Idle(const Core::Vec4f& mouse3dPosition);
