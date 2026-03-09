@@ -49,11 +49,11 @@ namespace Systems
 		START_REFLECTION(Systems::MeshAsset)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFile)
-			ADD_FIELD(m_position)
-			ADD_FIELD(m_uv)
-			ADD_FIELD(m_color)
-			ADD_FIELD(m_normal)
-			ADD_FIELD(m_indices)
+			ADD_FIELD_ATTR(m_position, Core::Hidden)
+			ADD_FIELD_ATTR(m_uv, Core::Hidden)
+			ADD_FIELD_ATTR(m_color, Core::Hidden)
+			ADD_FIELD_ATTR(m_normal, Core::Hidden)
+			ADD_FIELD_ATTR(m_indices, Core::Hidden)
 		END_REFLECTION()
 	};
 }
