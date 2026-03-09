@@ -4,9 +4,6 @@
 
 #pragma once
 
-//#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
-//#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
-
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Objects/GameComponent.h"
 
