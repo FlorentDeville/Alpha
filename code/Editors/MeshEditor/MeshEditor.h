@@ -32,6 +32,7 @@ namespace Widgets
 namespace Editors
 {
 	class MeshListModel;
+	class PropertyGridPopulator;
 
 	class MaterialEntry
 	{
@@ -71,6 +72,8 @@ namespace Editors
 		MeshListModel* m_pMeshListModel;
 
 		Systems::MeshAsset* m_pSelectedMesh;
+
+		PropertyGridPopulator* m_pPopulator;
 
 		bool OnMaterialClicked(int entryIndex);
 

@@ -12,6 +12,8 @@
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
+#include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -59,13 +61,17 @@ namespace Editors
 		, m_allMaterials()
 		, m_pSelectedMesh(nullptr)
 		, m_pMeshListModel(nullptr)
+		, m_pPopulator(nullptr)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
 	}
 
 	MeshEditor::~MeshEditor()
-	{ }
+	{
+		delete m_pPopulator;
+		m_pPopulator = nullptr;
+	}
 
 	void MeshEditor::CreateEditor(const EditorParameter& param)
 	{
@@ -101,6 +107,12 @@ namespace Editors
 		pSplit->SetLeftPanelWidth(400);
 		m_pInternalLayout->AddWidget(pSplit);
 
+		//create right side vertical split
+		Widgets::SplitHorizontal* pRightSideSplit = new Widgets::SplitHorizontal();
+		pRightSideSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pRightSideSplit->SetTopPanelHeight(700);
+		pSplit->AddRightPanel(pRightSideSplit);
+		
 		//create left viewport
 		const int VIEWPORT_WIDTH = 1280;
 		const int VIEWPORT_HEIGHT = 720;
@@ -109,7 +121,14 @@ namespace Editors
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
 		pViewport->OnRender([this]() { Viewport_OnRender(); });
-		pSplit->AddRightPanel(pViewport);
+		pRightSideSplit->AddTopPanel(pViewport);
+
+		//create property grid
+		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
+		pRightSideSplit->AddBottomPanel(pPropertyGrid);
+
+		m_pPopulator = new PropertyGridPopulator();
+		m_pPopulator->Init(pPropertyGrid);
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials
 		Widgets::SplitHorizontal* pLeftPanelSplit = new Widgets::SplitHorizontal();
@@ -398,6 +417,7 @@ namespace Editors
 	{
 		if (selected.empty())
 		{
+			m_pPopulator->Populate(nullptr);
 			m_pSelectedMesh = nullptr;
 			return;
 		}
@@ -406,5 +426,7 @@ namespace Editors
 		Systems::NewAssetId meshId = m_pMeshListModel->GetAssetId(selectedRow.GetStartIndex());
 
 		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
+
+		m_pPopulator->Populate(m_pSelectedMesh);
 	}
 }
