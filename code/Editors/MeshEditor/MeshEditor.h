@@ -6,6 +6,8 @@
 
 #include "Editors/BaseEditor.h"
 
+#include "Core/Math/Vectors.h"
+
 #include "Rendering/Mesh/MeshId.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/Texture/TextureId.h"
@@ -62,7 +64,7 @@ namespace Editors
 
 		Rendering::TextureId m_importIconTextureId;
 
-		DirectX::XMUINT2 m_mousePreviousPos;
+		Core::UInt2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
 
 		std::vector<Widgets::Button*> m_allEntryButton;
