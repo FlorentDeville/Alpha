@@ -128,9 +128,7 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[vertexStart]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[vertexStart]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[vertexStart]];
-						//ofbx::Vec4 color = colors.values[colors.indices[vertexStart]];
-
-						
+					
 						Core::Vec4f localPos = FromFbx(fbxLocalPos);
 						Core::Vec4f pos = localPos * worldTx;
 
@@ -141,10 +139,21 @@ namespace FbxImporter
 						m_position.PushBack(pos.GetY());
 						m_position.PushBack(pos.GetZ());
 
-						m_color.PushBack(0);
-						m_color.PushBack(0);
-						m_color.PushBack(0);
-						m_color.PushBack(0);
+						if (colors.count)
+						{
+							ofbx::Vec4 color = colors.values[colors.indices[vertexStart]];
+							m_color.PushBack(color.x);
+							m_color.PushBack(color.y);
+							m_color.PushBack(color.z);
+							m_color.PushBack(color.w);
+						}
+						else
+						{
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+						}
 
 						m_uv.PushBack(uv.x);
 						m_uv.PushBack(uv.y);
@@ -164,7 +173,6 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[secondVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[secondVertexIndex]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[secondVertexIndex]];
-						//ofbx::Vec4 color = colors.values[colors.indices[secondVertexIndex]];
 
 						size_t internalVertexIndex = m_position.GetSize();
 						
@@ -178,10 +186,21 @@ namespace FbxImporter
 						m_position.PushBack(pos.GetY());
 						m_position.PushBack(pos.GetZ());
 
-						m_color.PushBack(0);
-						m_color.PushBack(0);
-						m_color.PushBack(0);
-						m_color.PushBack(0);
+						if (colors.count)
+						{
+							ofbx::Vec4 color = colors.values[colors.indices[secondVertexIndex]];
+							m_color.PushBack(color.x);
+							m_color.PushBack(color.y);
+							m_color.PushBack(color.z);
+							m_color.PushBack(color.w);
+						}
+						else
+						{
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+						}
 
 						m_uv.PushBack(uv.x);
 						m_uv.PushBack(uv.y);
@@ -201,7 +220,6 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[lastVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[lastVertexIndex]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[lastVertexIndex]];
-						//ofbx::Vec4 color = colors.values[colors.indices[lastVertexIndex]];
 
 						size_t internalVertexIndex = m_position.GetSize();
 						
@@ -215,10 +233,21 @@ namespace FbxImporter
 						m_position.PushBack(pos.GetY());
 						m_position.PushBack(pos.GetZ());
 
-						m_color.PushBack(0);
-						m_color.PushBack(0);
-						m_color.PushBack(0);
-						m_color.PushBack(0);
+						if (colors.count)
+						{
+							ofbx::Vec4 color = colors.values[colors.indices[lastVertexIndex]];
+							m_color.PushBack(color.x);
+							m_color.PushBack(color.y);
+							m_color.PushBack(color.z);
+							m_color.PushBack(color.w);
+						}
+						else
+						{
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+							m_color.PushBack(0);
+						}
 
 						m_uv.PushBack(uv.x);
 						m_uv.PushBack(uv.y);
