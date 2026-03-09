@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -78,6 +78,7 @@ namespace Editors
 
 		void OnClicked_File_Save();
 		void OnClicked_File_Import();
+		void OnClicked_File_Reimport();
 		void OnClicked_File_Rename();
 		void OnClicked_File_Delete();
 

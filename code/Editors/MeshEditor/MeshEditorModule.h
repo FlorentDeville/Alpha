@@ -25,6 +25,8 @@ namespace Editors
 		bool SaveMesh(const Systems::NewAssetId id);
 		bool DeleteMesh(const Systems::NewAssetId id);
 		bool ImportMesh(const std::string& filename);
+		bool ReimportMesh(const Systems::NewAssetId id);
+
 		bool RenameMesh(const Systems::NewAssetId id, const std::string& newName);
 
 		EVENT_DECL(MeshCreated, void(const Systems::AssetMetadata& pMetadata));

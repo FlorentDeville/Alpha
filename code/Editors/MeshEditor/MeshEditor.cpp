@@ -1,8 +1,10 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/MeshEditor/MeshEditor.h"
+
+#include "Core/Log/LogModule.h"
 
 #include "Editors/EditorParameter.h"
 #include "Editors/MeshEditor/MeshEditorModule.h"
@@ -75,6 +77,10 @@ namespace Editors
 
 			Widgets::MenuItem* pNewItem = pFileMenu->AddMenuItem("Import...");
 			pNewItem->OnClick([this]() { OnClicked_File_Import(); });
+
+			Widgets::MenuItem* pReimportItem = pFileMenu->AddMenuItem("Reimport");
+			pReimportItem->SetShortcut("Ctrl+F5");
+			pReimportItem->OnClick([this]() { OnClicked_File_Reimport(); });
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
 			pSaveItem->SetShortcut("Ctrl+S");
@@ -220,7 +226,19 @@ namespace Editors
 		if (!m_pSelectedMesh)
 			return;
 
-		MeshEditorModule::Get().SaveMesh(m_pSelectedMesh->GetId());
+		bool res = MeshEditorModule::Get().SaveMesh(m_pSelectedMesh->GetId());
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_pSelectedMesh->GetId());
+		if (!pMetadata)
+		{
+			Core::LogModule::Get().LogError("Failed to find metadata for asset %s", m_pSelectedMesh->GetId().ToString().c_str());
+			return;
+		}
+
+		if(res)
+			Core::LogModule::Get().LogInfo("Mesh %s saved.", pMetadata->GetVirtualName().c_str());
+		else
+			Core::LogModule::Get().LogError("Failed to save mesh %s.", pMetadata->GetVirtualName().c_str());
 	}
 
 	void MeshEditor::OnClicked_File_Import()
@@ -231,6 +249,43 @@ namespace Editors
 			return;
 
 		MeshEditorModule::Get().ImportMesh(filename);
+	}
+
+	void MeshEditor::OnClicked_File_Reimport()
+	{
+		const Widgets::SelectionModel* pSelectionModel = m_pMeshListModel->GetSelectionModel();
+		if (!pSelectionModel)
+			return;
+
+		const std::list<Widgets::SelectionRow>& rows = pSelectionModel->GetSelectedRows();
+		if (rows.empty())
+		{
+			Core::LogModule::Get().LogError("Can't reimport mesh because there is no selection.");
+			return;
+		}
+		
+		MeshEditorModule& module = MeshEditorModule::Get();
+		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
+
+		for (const Widgets::SelectionRow& row : rows)
+		{
+			Systems::NewAssetId id = m_pMeshListModel->GetAssetId(row.GetStartIndex());
+			if (!id.IsValid())
+				continue;
+
+			const Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
+			if (!pMetadata)
+			{
+				Core::LogModule::Get().LogError("Failed to find metadata for asset %s", m_pSelectedMesh->GetId().ToString().c_str());
+				continue;
+			}
+
+			bool importResult = module.ReimportMesh(id);
+			if (!importResult)
+				Core::LogModule::Get().LogError("Failed to reimport %s", pMetadata->GetVirtualName().c_str());
+			else
+				Core::LogModule::Get().LogInfo("Mesh %s reimported.", pMetadata->GetVirtualName().c_str());
+		}
 	}
 
 	void MeshEditor::OnClicked_File_Rename()
