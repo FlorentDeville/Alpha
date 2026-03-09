@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
@@ -46,6 +46,8 @@ namespace Editors
 		, m_translationSnapDistance(1.f)
 		, m_rotationSnapDistance(3.14f * 0.25f)
 		, m_scaleSnapDistance(2.f)
+		, m_previousAngle(0)
+		, m_previousScaleDistance(0)
 	{}
 
 	GizmoWidget::~GizmoWidget()
