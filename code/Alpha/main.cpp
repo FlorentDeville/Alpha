@@ -66,6 +66,7 @@
 #include "Widgets/TabContainer.h"
 #include "Widgets/TextBox.h"
 #include "Widgets/WidgetMgr.h"
+#include "Widgets/Widgets/CheckBox.h"
 #include "Widgets/Widgets/ComboBox.h"
 #include "Widgets/Widgets/TableView.h"
 
@@ -474,14 +475,18 @@ void CreateMainWindow(const std::string& shaderPath)
 		//pVLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
 		//pLayout->AddWidget(pVLayout);
 
-		Widgets::ComboBox* pComboBox = new Widgets::ComboBox();
+		/*Widgets::ComboBox* pComboBox = new Widgets::ComboBox();
 		pComboBox->AddOption("Goku", 0);
 		pComboBox->AddOption("Vegeta", 1);
 		pComboBox->AddOption("Gohan", 2);
 		pComboBox->AddOption("Krilin", 3);
 		pComboBox->SetSelection(1);
 		pComboBox->SetX(10);
-		pComboBox->SetY(10);
+		pComboBox->SetY(10);*/
+
+		Widgets::CheckBox* pCheckBox = new Widgets::CheckBox("TEST label", true);
+		pCheckBox->SetX(10);
+		pCheckBox->SetY(10);
 		/*Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
 		pVLayout->AddWidget(pTopOffsetContainer);
 
@@ -492,7 +497,7 @@ void CreateMainWindow(const std::string& shaderPath)
 		//pTableView->SetModel(pModel);
 		//pTableView->SetMultiSelection(true);
 		
-		pOffsetContainer->AddWidget(pComboBox);
+		pOffsetContainer->AddWidget(pCheckBox);
 	}
 #endif
 
