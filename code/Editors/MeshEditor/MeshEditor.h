@@ -68,13 +68,10 @@ namespace Editors
 
 		std::vector<Widgets::Button*> m_allEntryButton;
 		
-		Widgets::Text* m_pLogWidget;
-
 		MeshListModel* m_pMeshListModel;
 
 		Systems::MeshAsset* m_pSelectedMesh;
 
-		bool OnMeshImportClicked(int entryIndex);
 		bool OnMaterialClicked(int entryIndex);
 
 		void OnClicked_File_Save();

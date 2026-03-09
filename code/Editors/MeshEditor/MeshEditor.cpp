@@ -56,7 +56,6 @@ namespace Editors
 		, m_firstFrameMouseDown(true)
 		, m_mousePreviousPos(0, 0)
 		, m_allEntryButton()
-		, m_pLogWidget(nullptr)
 		, m_allMaterials()
 		, m_pSelectedMesh(nullptr)
 		, m_pMeshListModel(nullptr)
@@ -144,13 +143,6 @@ namespace Editors
 		pMaterialLayout->SetDirection(Widgets::Layout::Vertical);
 		pMaterialTab->AddWidget(pMaterialLayout);
 
-		Widgets::Tab* pLogTab = new Widgets::Tab();
-		pTabContainer->AddTab("Log", pLogTab);
-
-		m_pLogWidget = new Widgets::Text(1, "");
-		m_pLogWidget->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
-		pLogTab->AddWidget(m_pLogWidget);
-
 		pTabContainer->SetSelectedTab(0);
 
 		//load all material
@@ -188,30 +180,6 @@ namespace Editors
 		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
 		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
 		meshModule.OnBeforeMeshDeleted([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->RemoveRow(metadata.GetAssetId()); });
-	}
-
-	bool MeshEditor::OnMeshImportClicked(int entryIndex)
-	{
-		/*MeshEntry& entry = m_allMeshes[entryIndex];
-		if (!entry.m_mesh)
-			LoadMesh(entry);
-
-		if (!entry.m_mesh)
-		{
-			m_pLogWidget->AppendText("Failed to load asset.");
-			return true;
-		}
-
-		FbxImporter::FbxImporter importer;
-		bool res = importer.Import(entry.m_mesh->GetSourceFile(), *entry.m_mesh);
-		if (!res)
-		{
-			m_pLogWidget->AppendText("Failed to import asset.");
-			return true;
-		}
-
-		return true;*/
-		return true;
 	}
 
 	bool MeshEditor::OnMaterialClicked(int entryIndex)
