@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
@@ -46,6 +46,8 @@ namespace Editors
 		, m_translationSnapDistance(1.f)
 		, m_rotationSnapDistance(3.14f * 0.25f)
 		, m_scaleSnapDistance(2.f)
+		, m_previousAngle(0)
+		, m_previousScaleDistance(0)
 	{}
 
 	GizmoWidget::~GizmoWidget()
@@ -159,6 +161,11 @@ namespace Editors
 	bool GizmoWidget::IsManipulating() const
 	{
 		return m_internalState == InternalState::kMoving;
+	}
+
+	bool GizmoWidget::IsHovering() const
+	{
+		return !m_hoverAxis.IsEmpty();
 	}
 
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
@@ -32,6 +32,7 @@
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
+#include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
@@ -127,7 +128,7 @@ namespace Editors
 	{
 		bool handled = false;
 
-		if(event.m_id == Widgets::EventType::kMouseDown && !m_pGizmoWidget->IsManipulating())
+		if(event.m_id == Widgets::EventType::kMouseDown && !m_pGizmoWidget->IsManipulating() && !m_pGizmoWidget->IsHovering())
 		{
 			const Widgets::MouseEvent& mouseEvent = static_cast<const Widgets::MouseEvent&>(event);
 			if (mouseEvent.HasButton(Widgets::MouseButton::LeftButton))
@@ -502,6 +503,29 @@ namespace Editors
 						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = RenderView::Game | RenderView::ShadowMap | RenderView::ObjectId;
+					}
+				}
+				else if (const Systems::SkyboxComponent* pSkybox = pComponent->Cast<Systems::SkyboxComponent>())
+				{
+					const Rendering::Mesh* pMesh = nullptr;
+					const Systems::MaterialInstanceAsset* pMaterial = nullptr;
+					if (pSkybox->GetMesh() && pSkybox->GetMesh()->GetRenderingMesh())
+						pMesh = pSkybox->GetMesh()->GetRenderingMesh();
+
+					pMaterial = pSkybox->GetMaterialInstance();
+
+					if (pMesh && pMaterial)
+					{
+						uint32_t index = renderables.GetSize();
+						renderables.PushBack(Renderable());
+						Renderable& renderable = renderables[index];
+
+						renderable.m_pMesh = pMesh;
+						renderable.m_pMaterial = pMaterial;
+						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx(); //no need to set the world matrix for a skybox
+						renderable.m_primitiveMesh = false;
+						renderable.m_pOwner = pGo;
+						renderable.m_view = RenderView::Game;
 					}
 				}
 			}
