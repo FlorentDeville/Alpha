@@ -43,6 +43,9 @@ namespace Core
 		static Mat44f CreateRotationMatrix(const Vec4f& axis, float angle);
 		static Mat44f CreateRotationMatrixFromEulerAngles(const Vec4f& eulerAngles);
 		static Mat44f CreateRotationMatrixFromQuaternion(const Vec4f& quat);
+		static Mat44f CreateRotationX(float angle);
+		static Mat44f CreateRotationY(float angle);
+		static Mat44f CreateRotationZ(float angle);
 		static Mat44f CreateTranslationMatrix(const Vec4f& translation);
 		static Mat44f CreateScaleMatrix(const Vec4f& scale);
 		static Mat44f CreateTransformMatrix(const Sqt& sqt);

@@ -6,6 +6,7 @@
 
 #include "Editors/BaseEditor.h"
 
+#include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
 #include "Rendering/Mesh/MeshId.h"
@@ -14,8 +15,6 @@
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
-
-#include "DirectXMath.h"
 
 #include <map>
 #include <vector>
@@ -52,8 +51,8 @@ namespace Editors
 
 	private:
 		//camera position
-		DirectX::XMVECTOR m_cameraTarget;
-		DirectX::XMVECTOR m_cameraEuler;
+		Core::Vec4f m_cameraTarget;
+		Core::Vec4f m_cameraEuler;
 
 		float m_cameraDistance;
 		float m_aspectRatio;
