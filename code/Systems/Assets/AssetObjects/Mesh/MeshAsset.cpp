@@ -14,12 +14,11 @@ namespace Systems
 		, m_color()
 		, m_indices()
 		, m_mesh()
-	{
-	}
+		, m_importOptionInvertV(true)
+	{ }
 
 	MeshAsset::~MeshAsset()
-	{
-	}
+	{ }
 
 	void MeshAsset::Init(const std::string& sourceFile,
 		Core::Array<float>&& pos,
