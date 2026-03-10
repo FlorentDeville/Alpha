@@ -19,7 +19,11 @@ namespace Widgets
 		, m_value(value)
 		, m_showLabel(true)
 		, pCheckedIcon(nullptr)
+		, m_isReadOnly(false)
 	{
+		GetDefaultStyle().SetBackgroundColor(Color(0, 0, 0, 0));
+		GetHoverStyle().SetBackgroundColor(Color(0, 0, 0, 0));
+
 		const int BOX_SIZE = 12;
 		m_pContainer = new Container(BOX_SIZE, BOX_SIZE);
 		m_pContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
@@ -37,11 +41,18 @@ namespace Widgets
 		hoverStyle.ShowBorder(true);
 		hoverStyle.SetBorderColor(Color(255, 255, 255, 255));
 		hoverStyle.SetBackgroundColor(Color(61, 61, 61, 255));
+		m_savedHoverStyle = hoverStyle;
 
 		ContainerStyle& defaultStyle = m_pContainer->GetDefaultStyle();
 		defaultStyle.SetBorderSize(1);
 		defaultStyle.ShowBorder(true);
 		defaultStyle.SetBorderColor(Color(255, 255, 255, 255));
+		m_savedDefaultStyle = defaultStyle;
+
+		m_readOnlyStyle.SetBorderColor(Color(91, 91, 91));
+		m_readOnlyStyle.ShowBorder(true);
+		m_readOnlyStyle.SetBorderSize(1);
+		m_readOnlyStyle.SetBackgroundColor(Color(31, 31, 31));
 
 		//checkbox icon
 		{
@@ -65,6 +76,13 @@ namespace Widgets
 		m_defaultSize.y = 20;
 
 		OnMouseDown([this](const MouseEvent& ev) { Internal_OnMouseDown(ev); });
+	}
+
+	CheckBox::CheckBox(bool value)
+		: CheckBox("", value)
+	{
+		m_showLabel = false;
+		m_pLabel->Disable();
 	}
 
 	CheckBox::~CheckBox()
@@ -97,7 +115,7 @@ namespace Widgets
 
 	void CheckBox::SetValue(bool value)
 	{
-		if (m_value == value)
+		if (m_value == value || m_isReadOnly)
 			return;
 
 		m_value = value;
@@ -112,6 +130,22 @@ namespace Widgets
 		}
 
 		m_onValueChanged(value);
+	}
+
+	void CheckBox::SetReadOnly(bool readOnly)
+	{
+		m_isReadOnly = readOnly;
+
+		if (readOnly)
+		{
+			m_pContainer->GetHoverStyle() = m_readOnlyStyle;
+			m_pContainer->GetDefaultStyle() = m_readOnlyStyle;
+		}
+		else
+		{
+			m_pContainer->GetDefaultStyle() = m_savedDefaultStyle;
+			m_pContainer->GetHoverStyle() = m_savedHoverStyle;
+		}
 	}
 
 	void CheckBox::ShowLabel(bool show)
