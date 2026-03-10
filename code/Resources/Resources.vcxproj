@@ -32,6 +32,7 @@
     <Image Include="fonts\segoeUI_0.png" />
     <Image Include="icons\alpha_white.ico" />
     <Image Include="icons\checkmark.png" />
+    <Image Include="icons\checkmark_white.png" />
     <Image Include="icons\close.png" />
     <Image Include="icons\close_hover.png" />
     <Image Include="icons\collapsed.png" />
