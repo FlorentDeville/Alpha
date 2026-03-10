@@ -33,11 +33,6 @@ namespace Widgets
 		m_pLabel->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		AddWidget(m_pLabel);
 
-		ContainerStyle& style = GetDefaultStyle();
-		style.SetBorderSize(1);
-		style.ShowBorder(true);
-		style.SetBorderColor(Color(255, 0, 0, 255));
-
 		m_defaultSize.y = 20;
 	}
 
