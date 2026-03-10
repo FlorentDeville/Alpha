@@ -74,10 +74,22 @@ namespace Editors
 			for (int column = 0; column < 4; ++column)
 			{
 				float fValue = pValue->Get(row, column);
+				float absValue = std::abs(fValue);
+
+				int32_t integerPart = static_cast<int32_t>(std::trunc(absValue));
+				int32_t decimalPart = static_cast<int32_t>(std::trunc((absValue - integerPart) * 1000));
 
 				const int BUFFER_SIZE = 16;
 				char buffer[BUFFER_SIZE] = { '\0' };
-				snprintf(buffer, BUFFER_SIZE, "%g", fValue); //%g removes the meaningless 0.
+
+				const char* pPositive = "";
+				const char* pNegative = "-";
+				const char* pSign = fValue < 0 ? pNegative : pPositive;
+
+				if(decimalPart != 0)
+					snprintf(buffer, BUFFER_SIZE, "%s%d.%d", pSign, integerPart, decimalPart);
+				else
+					snprintf(buffer, BUFFER_SIZE, "%s%d", pSign, integerPart);
 
 				m_pTextbox[row][column]->SetText(buffer);
 			}
