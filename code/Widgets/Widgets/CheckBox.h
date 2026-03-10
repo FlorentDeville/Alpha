@@ -11,6 +11,7 @@
 namespace Widgets
 {
 	class Container;
+	class Icon;
 	class Label;
 
 	class CheckBox : public Container
@@ -27,7 +28,6 @@ namespace Widgets
 		void SetValue(bool value);
 
 		void ShowLabel(bool show);
-		//bool Handle(const BaseEvent& ev) override;
 		
 
 
@@ -43,8 +43,8 @@ namespace Widgets
 
 		Label* m_pLabel;
 		Container* m_pContainer;
+		Icon* pCheckedIcon;
 
-		ContainerStyle m_checked;
-		ContainerStyle m_unchecked;
+		void Internal_OnMouseDown(const MouseEvent& ev);
 	};
 }

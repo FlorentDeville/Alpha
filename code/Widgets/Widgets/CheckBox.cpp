@@ -5,8 +5,10 @@
 #include "Widgets/Widgets/CheckBox.h"
 
 #include "Widgets/Container.h"
+#include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Style/Container/ContainerStyle.h"
+#include "Widgets/WidgetMgr.h"
 
 namespace Widgets
 {
@@ -16,8 +18,10 @@ namespace Widgets
 		, m_pLabel(nullptr)
 		, m_value(value)
 		, m_showLabel(true)
+		, pCheckedIcon(nullptr)
 	{
-		m_pContainer = new Container(11, 11);
+		const int BOX_SIZE = 12;
+		m_pContainer = new Container(BOX_SIZE, BOX_SIZE);
 		m_pContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		m_pContainer->SetY(4);
 		AddWidget(m_pContainer);
@@ -28,43 +32,39 @@ namespace Widgets
 		m_pLabel->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		AddWidget(m_pLabel);
 
-		m_checked.SetBorderSize(2);
-		m_checked.ShowBorder(true);
-		m_checked.SetBorderColor(Color(255, 255, 255, 255));
-		m_checked.SetBackgroundColor(Color(0, 0, 0, 255));
+		ContainerStyle& hoverStyle = m_pContainer->GetHoverStyle();
+		hoverStyle.SetBorderSize(1);
+		hoverStyle.ShowBorder(true);
+		hoverStyle.SetBorderColor(Color(255, 255, 255, 255));
+		hoverStyle.SetBackgroundColor(Color(61, 61, 61, 255));
 
-		m_unchecked.SetBorderSize(1);
-		m_unchecked.ShowBorder(true);
-		m_unchecked.SetBorderColor(Color(255, 255, 255, 255));
+		ContainerStyle& defaultStyle = m_pContainer->GetDefaultStyle();
+		defaultStyle.SetBorderSize(1);
+		defaultStyle.ShowBorder(true);
+		defaultStyle.SetBorderColor(Color(255, 255, 255, 255));
+
+		//checkbox icon
+		{
+			const int CHECKMARK_SIZE = 10;
+			pCheckedIcon = new Icon(WidgetMgr::Get().GetIconTextureId(IconId::kIconCheckmarkWhite));
+			pCheckedIcon->SetSizeStyle(SIZE_STYLE::DEFAULT);
+			pCheckedIcon->SetWidth(CHECKMARK_SIZE);
+			pCheckedIcon->SetHeight(CHECKMARK_SIZE);
+			m_pContainer->AddWidget(pCheckedIcon);
+		}
 
 		if (value)
 		{
-			m_pContainer->GetDefaultStyle() = m_checked;
-			m_pContainer->GetHoverStyle() = m_checked;
+			pCheckedIcon->Enable();
 		}
 		else
 		{
-			m_pContainer->GetDefaultStyle() = m_unchecked;
-			m_pContainer->GetHoverStyle() = m_unchecked;
+			pCheckedIcon->Disable();
 		}
 
 		m_defaultSize.y = 20;
 
-		m_pContainer->OnMouseDown([this](const MouseEvent& ev)
-			{
-				m_value = !m_value;
-
-				if (m_value)
-				{
-					m_pContainer->GetDefaultStyle() = m_checked;
-					m_pContainer->GetHoverStyle() = m_checked;
-				}
-				else
-				{
-					m_pContainer->GetDefaultStyle() = m_unchecked;
-					m_pContainer->GetHoverStyle() = m_unchecked;
-				}
-			});
+		OnMouseDown([this](const MouseEvent& ev) { Internal_OnMouseDown(ev); });
 	}
 
 	CheckBox::~CheckBox()
@@ -90,11 +90,28 @@ namespace Widgets
 
 		if (!m_showLabel)
 			m_pLabel->Disable();
+
+		if (!m_value)
+			pCheckedIcon->Disable();
 	}
 
 	void CheckBox::SetValue(bool value)
 	{
+		if (m_value == value)
+			return;
+
 		m_value = value;
+
+		if (m_value)
+		{
+			pCheckedIcon->Enable();
+		}
+		else
+		{
+			pCheckedIcon->Disable();
+		}
+
+		m_onValueChanged(value);
 	}
 
 	void CheckBox::ShowLabel(bool show)
@@ -107,5 +124,10 @@ namespace Widgets
 			m_pLabel->Enable();
 		else
 			m_pLabel->Disable();
+	}
+
+	void CheckBox::Internal_OnMouseDown(const MouseEvent& ev)
+	{
+		SetValue(!m_value);
 	}
 }
