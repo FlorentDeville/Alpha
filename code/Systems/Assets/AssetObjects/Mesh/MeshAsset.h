@@ -27,6 +27,9 @@ namespace Systems
 
 		void PostLoad() override;
 
+		//Invert V coordinate in uv during mesh import.
+		bool ImportUvMirrorVertical() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
@@ -44,7 +47,7 @@ namespace Systems
 		Core::Array<uint16_t> m_indices;
 
 		//Invert the v coordinates in the uv when importing mesh.
-		bool m_importOptionInvertV;
+		bool m_importUvMirrorVertical;
 
 		START_REFLECTION(Systems::MeshAsset)
 			ADD_BASETYPE(Systems::AssetObject)
@@ -54,7 +57,7 @@ namespace Systems
 			ADD_FIELD_ATTR(m_color, Core::Hidden)
 			ADD_FIELD_ATTR(m_normal, Core::Hidden)
 			ADD_FIELD_ATTR(m_indices, Core::Hidden)
-			ADD_FIELD_ATTR(m_importOptionInvertV, Core::Hidden)
+			ADD_FIELD(m_importUvMirrorVertical)
 		END_REFLECTION()
 
 		//The low level mesh used by the renderer

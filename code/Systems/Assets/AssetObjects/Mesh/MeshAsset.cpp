@@ -14,7 +14,7 @@ namespace Systems
 		, m_color()
 		, m_indices()
 		, m_mesh()
-		, m_importOptionInvertV(true)
+		, m_importUvMirrorVertical(true)
 	{ }
 
 	MeshAsset::~MeshAsset()
@@ -73,6 +73,11 @@ namespace Systems
 		}
 
 		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.GetData(), indexCount);
+	}
+
+	bool MeshAsset::ImportUvMirrorVertical() const
+	{
+		return m_importUvMirrorVertical;
 	}
 
 	const std::string& MeshAsset::GetAssetTypeName()
