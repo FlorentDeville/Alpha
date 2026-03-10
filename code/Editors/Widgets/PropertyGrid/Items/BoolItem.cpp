@@ -25,7 +25,7 @@ namespace Editors
 		m_pCheckbox = new Widgets::CheckBox(false);
 
 		UpdateValue();
-		//m_pTextbox->SetReadOnly(m_pField->IsReadOnly());
+		m_pCheckbox->SetReadOnly(m_pField->IsReadOnly());
 
 		m_pCheckbox->OnValueChanged([this](const bool newValue)
 			{
