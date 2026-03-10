@@ -18,11 +18,6 @@ namespace Widgets
 		, m_showLabel(true)
 	{
 		m_pContainer = new Container(11, 11);
-		ContainerStyle& defaultStyle = m_pContainer->GetDefaultStyle();
-		defaultStyle.SetBorderSize(1);
-		defaultStyle.ShowBorder(true);
-		defaultStyle.SetBorderColor(Color(255, 255, 255, 255));
-		m_pContainer->GetHoverStyle() = defaultStyle;
 		m_pContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		m_pContainer->SetY(4);
 		AddWidget(m_pContainer);
@@ -33,7 +28,43 @@ namespace Widgets
 		m_pLabel->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		AddWidget(m_pLabel);
 
+		m_checked.SetBorderSize(2);
+		m_checked.ShowBorder(true);
+		m_checked.SetBorderColor(Color(255, 255, 255, 255));
+		m_checked.SetBackgroundColor(Color(0, 0, 0, 255));
+
+		m_unchecked.SetBorderSize(1);
+		m_unchecked.ShowBorder(true);
+		m_unchecked.SetBorderColor(Color(255, 255, 255, 255));
+
+		if (value)
+		{
+			m_pContainer->GetDefaultStyle() = m_checked;
+			m_pContainer->GetHoverStyle() = m_checked;
+		}
+		else
+		{
+			m_pContainer->GetDefaultStyle() = m_unchecked;
+			m_pContainer->GetHoverStyle() = m_unchecked;
+		}
+
 		m_defaultSize.y = 20;
+
+		m_pContainer->OnMouseDown([this](const MouseEvent& ev)
+			{
+				m_value = !m_value;
+
+				if (m_value)
+				{
+					m_pContainer->GetDefaultStyle() = m_checked;
+					m_pContainer->GetHoverStyle() = m_checked;
+				}
+				else
+				{
+					m_pContainer->GetDefaultStyle() = m_unchecked;
+					m_pContainer->GetHoverStyle() = m_unchecked;
+				}
+			});
 	}
 
 	CheckBox::~CheckBox()

@@ -43,5 +43,8 @@ namespace Widgets
 
 		Label* m_pLabel;
 		Container* m_pContainer;
+
+		ContainerStyle m_checked;
+		ContainerStyle m_unchecked;
 	};
 }
