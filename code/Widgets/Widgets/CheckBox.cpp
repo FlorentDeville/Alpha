@@ -36,17 +36,18 @@ namespace Widgets
 		m_pLabel->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		AddWidget(m_pLabel);
 
+		const int BORDER_COLOR = 120;
 		ContainerStyle& hoverStyle = m_pContainer->GetHoverStyle();
 		hoverStyle.SetBorderSize(1);
 		hoverStyle.ShowBorder(true);
-		hoverStyle.SetBorderColor(Color(255, 255, 255, 255));
+		hoverStyle.SetBorderColor(Color(BORDER_COLOR, BORDER_COLOR, BORDER_COLOR, 255));
 		hoverStyle.SetBackgroundColor(Color(61, 61, 61, 255));
 		m_savedHoverStyle = hoverStyle;
 
 		ContainerStyle& defaultStyle = m_pContainer->GetDefaultStyle();
 		defaultStyle.SetBorderSize(1);
 		defaultStyle.ShowBorder(true);
-		defaultStyle.SetBorderColor(Color(255, 255, 255, 255));
+		defaultStyle.SetBorderColor(Color(BORDER_COLOR, BORDER_COLOR, BORDER_COLOR, 255));
 		m_savedDefaultStyle = defaultStyle;
 
 		m_readOnlyStyle.SetBorderColor(Color(91, 91, 91));
