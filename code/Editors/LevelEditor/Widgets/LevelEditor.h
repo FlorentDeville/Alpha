@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -125,7 +125,7 @@ namespace Editors
 		void OnClickEditMenu_AddGameObject();
 		void OnClickEditMenu_DeleteGameObject();
 		void OnClickEditMenu_RenameGameObject();
-		void OnClickEditMenu_DuplicateEntity();
+		void OnClickEditMenu_DuplicateGameObject();
 		void OnClickEditMenu_ReparentGameObject();
 
 		void OnClickTransformationMenu_Snap();

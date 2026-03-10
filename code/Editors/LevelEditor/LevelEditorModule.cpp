@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 
@@ -13,6 +13,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
 
 //#pragma optimize("", off)
@@ -145,25 +146,13 @@ namespace Editors
 
 	void LevelEditorModule::AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid)
 	{
-		if (!m_pLevel)
-			return;
-
-		Systems::GameObject* pGo = Systems::CreateNewGameObject<Systems::GameObject>("newentity");
+		const Systems::GameObject* pGoParent = m_pLevel->FindGameObject(parentGuid);
+		Systems::GameObject* pNewGo = nullptr;
 		
-		Core::Mat44f localTx;
-		localTx.SetIdentity();
-		pGo->GetTransform().SetLocalTx(localTx);
-		pGo->GetTransform().ComputeWorldTx();
+		bool res = Internal_AddGameObject(pGoParent, &pNewGo);
 		
-		m_pLevel->AddGameObject(pGo, parentGuid);
-
-		newGoGuid = pGo->GetGuid();
-
-		const Systems::GameObject* pGoParent = nullptr;
-		if (parentGuid.IsValid())
-			pGoParent = m_pLevel->FindGameObject(parentGuid);
-
-		m_onAddGameObject(pGo, pGoParent);
+		if(res)
+			m_onAddGameObject(pNewGo, pGoParent);
 	}
 
 	void LevelEditorModule::DeleteGameObject(const Core::Guid& guid)
@@ -244,6 +233,36 @@ namespace Editors
 		m_onReparentGameObject(pGoChild, pGoOldParent, pGoNewParent);
 	}
 
+	void LevelEditorModule::DuplicateGameObject(const Core::Guid& nodeGuid, Core::Guid& newNodeGuid)
+	{
+		const Systems::GameObject* pSrcObj = m_pLevel->FindGameObject(nodeGuid);
+		if (!pSrcObj)
+			return;
+
+		const Systems::GameObject* pParent = pSrcObj->GetTransform().GetParent();
+		Systems::GameObject* pNewGo = nullptr;
+		bool res = Internal_AddGameObject(pParent, &pNewGo);
+		if (!res)
+			return;
+
+		newNodeGuid = pNewGo->GetGuid();
+
+		pNewGo->SetName(pSrcObj->GetName() + "_new");
+		pNewGo->GetTransform().SetLocalTx(pSrcObj->GetTransform().GetLocalTx());
+		pNewGo->GetTransform().ComputeWorldTx();
+
+		const Core::Array<Systems::GameComponent*>& components = pSrcObj->GetComponents();
+		for (const Systems::GameComponent* pSrcComponent : components)
+		{
+			const Core::TypeDescriptor* pSrcComponentType = pSrcComponent->GetTypeDescriptor();
+			Systems::GameComponent* pDstComponent = Systems::CreateNewGameComponent(pSrcComponentType);
+			pSrcComponentType->Copy(pSrcComponent, pDstComponent);
+			pNewGo->AddComponent(pDstComponent);
+		}
+
+		m_onAddGameObject(pNewGo, pParent);
+	}
+
 	void LevelEditorModule::SetCameraWs(const Core::Mat44f& ws)
 	{
 		m_cameraWs = ws;
@@ -304,5 +323,26 @@ namespace Editors
 	Systems::LevelAsset* LevelEditorModule::GetCurrentLoadedLevel()
 	{
 		return m_pLevel;
+	}
+
+	bool LevelEditorModule::Internal_AddGameObject(const Systems::GameObject* pParent, Systems::GameObject** ppObj)
+	{
+		if (!m_pLevel)
+			return false;
+
+		*ppObj = Systems::CreateNewGameObject<Systems::GameObject>("newentity");
+
+		Core::Mat44f localTx;
+		localTx.SetIdentity();
+		(*ppObj)->GetTransform().SetLocalTx(localTx);
+		(*ppObj)->GetTransform().ComputeWorldTx();
+
+		Core::Guid parentGuid;
+		if (pParent)
+			parentGuid = pParent->GetGuid();
+
+		m_pLevel->AddGameObject(*ppObj, parentGuid);
+
+		return true;
 	}
 }

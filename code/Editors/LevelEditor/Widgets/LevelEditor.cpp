@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 
@@ -187,7 +187,7 @@ namespace Editors
 
 		Widgets::MenuItem* pDuplicateItem = pEditMenu->AddMenuItem("Duplicate");
 		pDuplicateItem->SetShortcut("Ctrl+D");
-		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateEntity(); });
+		pDuplicateItem->OnClick([this]() { OnClickEditMenu_DuplicateGameObject(); });
 
 		Widgets::MenuItem* pReparentItem = pEditMenu->AddMenuItem("Reparent Game Object...");
 		pReparentItem->OnClick([this]() { OnClickEditMenu_ReparentGameObject(); });
@@ -667,10 +667,9 @@ namespace Editors
 		pDialog->Open();
 	}
 
-	void LevelEditor::OnClickEditMenu_DuplicateEntity()
+	void LevelEditor::OnClickEditMenu_DuplicateGameObject()
 	{
-		return;
-		/*LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 
 		const SelectionMgr* pSelectionMgr = levelEditorModule.GetConstSelectionMgr();
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
@@ -681,13 +680,13 @@ namespace Editors
 		for (const Core::Guid& selectedGuid : selectionList)
 		{
 			Core::Guid copy;
-			levelEditorModule.DuplicateEntity(selectedGuid, copy);
+			levelEditorModule.DuplicateGameObject(selectedGuid, copy);
 			newNodes.push_back(copy);
 		}
 
 		levelEditorModule.ClearSelection();
 		for (const Core::Guid& guid : newNodes)
-			levelEditorModule.AddToSelection(guid);*/
+			levelEditorModule.AddToSelection(guid);
 	}
 
 	void LevelEditor::OnClickEditMenu_ReparentGameObject()

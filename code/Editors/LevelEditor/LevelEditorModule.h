@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -71,6 +71,8 @@ namespace Editors
 
 		void ReparentGameObject(const Core::Guid& parent, const Core::Guid& child);
 
+		void DuplicateGameObject(const Core::Guid& nodeGuid, Core::Guid& newNodeGuid);
+
 		void SetCameraWs(const Core::Mat44f& ws);
 		const Core::Mat44f& GetCameraWs() const;
 
@@ -112,5 +114,7 @@ namespace Editors
 		//camera state
 		Core::Mat44f m_cameraWs;
 		float m_fovRad;
+
+		bool Internal_AddGameObject(const Systems::GameObject* pParent, Systems::GameObject** ppObj);
 	};
 }
