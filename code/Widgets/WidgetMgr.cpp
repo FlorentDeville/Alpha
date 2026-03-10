@@ -207,6 +207,7 @@ namespace Widgets
 		m_iconTextureIdArray[static_cast<int>(IconId::kIconCursor)] = LoadApplicationResourceImage(AppResources::kUiIconCursor);
 		m_iconTextureIdArray[static_cast<int>(IconId::kIconCheckmark)] = LoadApplicationResourceImage(AppResources::kUiIconCheckmark);
 		m_iconTextureIdArray[static_cast<int>(IconId::kIconDown)] = LoadApplicationResourceImage(AppResources::kUiIconDown);
+		m_iconTextureIdArray[static_cast<int>(IconId::kIconCheckmarkWhite)] = LoadApplicationResourceImage(AppResources::kUiIconCheckmarkWhite);
 	}
 
 	void WidgetMgr::Release()

@@ -14,6 +14,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ArrayHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/BoolItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/EnumItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
@@ -284,6 +285,13 @@ namespace Editors
 
 		switch (pFieldType->GetSid())
 		{
+		case SID("bool"):
+		{
+			BoolItem* pItem = new BoolItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
 		case SID("std::string"):
 		{
 			StringItem* pItem = new StringItem(static_cast<Systems::Object*>(pObj), pField, indexElement);

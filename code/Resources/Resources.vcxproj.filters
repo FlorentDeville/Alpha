@@ -19,6 +19,7 @@
     <Image Include="icons\import.png" />
     <Image Include="fonts\segoeUI_0.png" />
     <Image Include="icons\down.png" />
+    <Image Include="icons\checkmark_white.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />

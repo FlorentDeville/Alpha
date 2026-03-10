@@ -16,6 +16,7 @@ namespace Widgets
 		kIconCloseHover,
 		kIconCursor,
 		kIconCheckmark,
+		kIconCheckmarkWhite,
 		kIconDown,
 
 		kCount

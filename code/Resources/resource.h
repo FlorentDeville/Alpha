@@ -14,12 +14,14 @@
 #define RES_FONT_DEF_SEGOEUI            110
 #define RES_FONT_TEX_SEGOEUI            112
 #define RES_ICON_DOWN                   113
+#define IDB_PNG1                        114
+#define RES_ICON_CHECKMARK_WHITE        114
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        114
+#define _APS_NEXT_RESOURCE_VALUE        115
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

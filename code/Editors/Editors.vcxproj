@@ -53,6 +53,7 @@
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_TextureBindingInfo.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\AssetIdItem.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\BoolItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ColorItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\EnumItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\FloatItem.h" />
@@ -111,6 +112,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayElementHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\AssetIdItem.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\BoolItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ColorItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\EnumItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\FloatItem.cpp" />

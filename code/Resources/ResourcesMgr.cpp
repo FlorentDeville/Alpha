@@ -27,18 +27,19 @@ namespace AppResources
 
 	void ResourcesMgr::Init()
 	{
-		s_appResMap[kAppIcon] =			{ RES_APP_ICON,			kAppIcon,			"ICON" };
-		s_appResMap[kUiIconExpanded] =	{ RES_ICON_EXPANDED,	kUiIconExpanded,	"PNG" };
-		s_appResMap[kUiIconCollapsed] = { RES_ICON_COLLAPSED,	kUiIconCollapsed,	"PNG" };
-		s_appResMap[kUiIconClose] =		{ RES_ICON_CLOSE,		kUiIconClose,		"PNG" };
-		s_appResMap[kUiIconCloseHover] ={ RES_ICON_CLOSE_HOVER,	kUiIconCloseHover,	"PNG" };
-		s_appResMap[kUiIconCursor] =	{ RES_ICON_CURSOR,		kUiIconCursor,		"PNG" };
-		s_appResMap[kUiIconCheckmark] = { RES_ICON_CHECKMARK,	kUiIconCheckmark,	"PNG" };
-		s_appResMap[kUiIconImport] =	{ RES_ICON_IMPORT,		kUiIconImport,		"PNG" };
-		s_appResMap[kUiIconDown] =		{ RES_ICON_DOWN,		kUiIconDown,		"PNG" };
+		s_appResMap[kAppIcon] =					{ RES_APP_ICON,				kAppIcon,				"ICON" };
+		s_appResMap[kUiIconExpanded] =			{ RES_ICON_EXPANDED,		kUiIconExpanded,		"PNG" };
+		s_appResMap[kUiIconCollapsed] =			{ RES_ICON_COLLAPSED,		kUiIconCollapsed,		"PNG" };
+		s_appResMap[kUiIconClose] =				{ RES_ICON_CLOSE,			kUiIconClose,			"PNG" };
+		s_appResMap[kUiIconCloseHover] =		{ RES_ICON_CLOSE_HOVER,		kUiIconCloseHover,		"PNG" };
+		s_appResMap[kUiIconCursor] =			{ RES_ICON_CURSOR,			kUiIconCursor,			"PNG" };
+		s_appResMap[kUiIconCheckmark] =			{ RES_ICON_CHECKMARK,		kUiIconCheckmark,		"PNG" };
+		s_appResMap[kUiIconCheckmarkWhite] =	{ RES_ICON_CHECKMARK_WHITE,	kUiIconCheckmarkWhite,	"PNG" };
+		s_appResMap[kUiIconImport] =			{ RES_ICON_IMPORT,			kUiIconImport,			"PNG" };
+		s_appResMap[kUiIconDown] =				{ RES_ICON_DOWN,			kUiIconDown,			"PNG" };
 		
-		s_appResMap[kFontDefSegoeUI] =	{ RES_FONT_DEF_SEGOEUI,	kFontDefSegoeUI,	"TEXT" };
-		s_appResMap[kFontTexSegoeUI] =	{ RES_FONT_TEX_SEGOEUI,	kFontTexSegoeUI,	"PNG" };
+		s_appResMap[kFontDefSegoeUI] =			{ RES_FONT_DEF_SEGOEUI,		kFontDefSegoeUI,		"TEXT" };
+		s_appResMap[kFontTexSegoeUI] =			{ RES_FONT_TEX_SEGOEUI,		kFontTexSegoeUI,		"PNG" };
 	}
 
 	void ResourcesMgr::Shutdown()

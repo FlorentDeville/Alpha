@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -24,6 +24,8 @@ struct Message;
 /* Every widget local frame of reference is its top left corner.	*/
 /* X goes right, Y goes down.										*/	
 /* Every position is relative to the parent widget.					*/
+/* Z is the depth of the widget, the closer to 0, the more on top	*/
+/* the widget is.													*/	
 /*																	*/
 /* Screen coordinate :  origin : center of the screen				*/ 
 /*						range : [-1, 1]								*/
