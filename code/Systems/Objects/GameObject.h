@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -40,6 +40,7 @@ namespace Systems
 		const TransformComponent& GetTransform() const;
 
 		const Core::Array<GameComponent*>& GetComponents() const;
+		void AddComponent(GameComponent* pComponent);
 
 		void PostLoad() override;
 

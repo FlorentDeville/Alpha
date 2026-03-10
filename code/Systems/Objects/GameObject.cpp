@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Objects/GameObject.h"
 
@@ -72,6 +72,12 @@ namespace Systems
 	const Core::Array<GameComponent*>& GameObject::GetComponents() const
 	{
 		return m_components;
+	}
+
+	void GameObject::AddComponent(GameComponent* pComponent)
+	{
+		m_components.PushBack(pComponent);
+		pComponent->SetOwner(this);
 	}
 
 	void GameObject::PostLoad()
