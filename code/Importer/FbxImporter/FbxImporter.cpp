@@ -58,7 +58,13 @@ namespace FbxImporter
 		delete[] pFileContent;
 		if (!res || m_indices.GetSize() == 0)
 			return false;
-			
+		
+		//vertical mirror
+		if (mesh.ImportUvMirrorVertical())
+		{
+			for (uint32_t ii = 1; ii < m_uv.GetSize(); ii = ii + 2)
+				m_uv[ii] = m_uv[ii] * -1;
+		}
 
 		mesh.Init(fbxFilename, std::move(m_position), std::move(m_uv), std::move(m_color), std::move(m_normal), std::move(m_indices));
 
