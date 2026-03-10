@@ -24,6 +24,7 @@
 
 #include "Rendering/RenderModule.h"
 
+#include "Systems/Assets/AssetMgr.h"
 #include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Container.h"
@@ -556,10 +557,26 @@ namespace Editors
 	{
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		Systems::NewAssetId id = levelEditorModule.GetCurrentLoadedLevelAssetId();
-		if (id.IsValid())
+		if (!id.IsValid())
 		{
-			levelEditorModule.SaveLevel();
+			Core::LogModule::Get().LogError("Can't save. No level loaded.");
+			return;
 		}
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
+		if (!pMetadata)
+		{
+			Core::LogModule::Get().LogError("Failed to find level with id %s", id.ToString().c_str());
+			return;
+		}
+
+		bool res = levelEditorModule.SaveLevel();
+
+		if(!res)
+			Core::LogModule::Get().LogError("Failed to save level %s", pMetadata->GetVirtualName().c_str());
+		else
+			Core::LogModule::Get().LogInfo("Level %s saved.", pMetadata->GetVirtualName().c_str());
+		
 	}
 
 	void LevelEditor::OnClickFileMenu_CloseLevel()
