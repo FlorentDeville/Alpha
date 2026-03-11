@@ -78,4 +78,15 @@ namespace Core
 		float z = cosX * cosY * sinZ - sinX * sinY * cosZ;
 		return Quaternion(x, y, z, w);
 	}
+
+	bool Quaternion::operator==(const Quaternion& other) const
+	{
+		__m128 res = _mm_cmpeq_ps(m_data, other.m_data);
+
+		// Extract the most significant bit of each 32-bit float into an integer mask
+		int mask = _mm_movemask_ps(res);
+
+		// Check if all bits in the mask are set (i.e., equal to 0xF or 15)
+		return mask == 0xF;
+	}
 }

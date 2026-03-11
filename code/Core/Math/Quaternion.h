@@ -23,6 +23,8 @@ namespace Core
 
 		static Quaternion FromEulerAngles(const Core::Vec4f& eulerAngles);
 
+		bool operator==(const Quaternion& other) const;
+
 		__m128 m_data;
 	};
 }
