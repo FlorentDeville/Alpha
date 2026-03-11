@@ -76,6 +76,9 @@ bool Split::Handle(const BaseEvent& ev)
 		else
 			g_pIconName = OsWin::CursorId::ResizeVertical;
 
+		if (!m_isDragged)
+			CaptureMouse();
+
 		return true;
 	}
 		break;
@@ -83,7 +86,10 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseExit:
 	{
 		if (!m_isDragged)
+		{
 			g_pIconName = OsWin::CursorId::Arrow;
+			ReleaseMouse();
+		}
 
 		return true;
 	}
@@ -111,7 +117,7 @@ bool Split::Handle(const BaseEvent& ev)
 		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
 		if (mouseEvent.HasButton(MouseButton::LeftButton) && !m_isDragged)
 		{
-			CaptureMouse();
+			//no need to capture the mouse here, it was already captured in the OnEnter event.
 
 			m_isDragged = true;
 			m_previousCursorPosition.x = mouseEvent.GetX();
