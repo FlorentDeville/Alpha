@@ -809,7 +809,7 @@ namespace Editors
 				{
 					float fValue = static_cast<float>(atof(value.c_str()));
 					float radian = fValue * Core::PI_OVER_180;
-					m_pViewport->GetGizmoWidget()->SetSnapDistanceTranslation(radian);
+					m_pViewport->GetGizmoWidget()->SetSnapDistanceRotation(radian);
 				});
 		}
 
