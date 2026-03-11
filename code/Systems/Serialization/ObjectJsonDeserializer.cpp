@@ -12,6 +12,7 @@
 #include "Core/Json/JsonMember.h"
 #include "Core/Json/JsonObject.h"
 #include "Core/Math/Mat44f.h"
+#include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Reflection/ReflectionMgr.h"
 #include "Core/String/BytesToHexa.h"
@@ -247,6 +248,26 @@ namespace Systems
 
 			pValue->Resize(blobSize);
 			Core::Base64::Decode(str.c_str(), stringSize, pValue->GetData(), pValue->GetSize());
+		}
+		break;
+
+		case SID("Core::Sqt"):
+		{
+			Core::Sqt* pValue = reinterpret_cast<Core::Sqt*>(ptr);
+			const Core::JsonArray* pArray = jsonFieldValue.GetValueAsArray();
+			if (pArray->GetSize() != 11)
+				assert(false && "Wrong number of floats for a sqt");
+
+			Core::Vec4f t((float)pArray->GetElement(0)->GetValueAsDouble(), (float)pArray->GetElement(1)->GetValueAsDouble(), 
+				(float)pArray->GetElement(2)->GetValueAsDouble(), (float)pArray->GetElement(3)->GetValueAsDouble());
+			pValue->SetTranslation(t);
+
+			Core::Quaternion q((float)pArray->GetElement(4)->GetValueAsDouble(), (float)pArray->GetElement(5)->GetValueAsDouble(), 
+				(float)pArray->GetElement(6)->GetValueAsDouble(), (float)pArray->GetElement(7)->GetValueAsDouble());
+			pValue->SetRotationQuaternion(q);
+
+			Core::Vec4f s((float)pArray->GetElement(8)->GetValueAsDouble(), (float)pArray->GetElement(9)->GetValueAsDouble(), (float)pArray->GetElement(10)->GetValueAsDouble(), 0);
+			pValue->SetScale(s);
 		}
 		break;
 

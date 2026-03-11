@@ -14,6 +14,7 @@
 #include "Core/Collections/BaseArray.h"
 #include "Core/Guid/Guid.h"
 #include "Core/Math/Mat44f.h"
+#include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/String/BytesToHexa.h"
 
@@ -89,6 +90,31 @@ namespace Systems
 		Core::Base64::Encode(data.GetData(), data.GetSize(), buffer.data());
 		
 		value.Set(buffer);
+		return true;
+	}
+
+	template<> bool SerializeData<Core::Sqt>(const Core::Sqt& data, Core::JsonValue& value)
+	{
+		Core::JsonArray* pArray = new Core::JsonArray();
+
+		const Core::Vec4f& t = data.GetTranslation();
+		pArray->AddElement(t.GetX());
+		pArray->AddElement(t.GetY());
+		pArray->AddElement(t.GetZ());
+		pArray->AddElement(t.GetW());
+
+		const Core::Quaternion& q = data.GetRotationQuaternion();
+		pArray->AddElement(q.GetX());
+		pArray->AddElement(q.GetY());
+		pArray->AddElement(q.GetZ());
+		pArray->AddElement(q.GetW());
+
+		const Core::Vec4f& s = data.GetScale();
+		pArray->AddElement(s.GetX());
+		pArray->AddElement(s.GetY());
+		pArray->AddElement(s.GetZ());
+
+		value.Set(pArray);
 		return true;
 	}
 
@@ -253,6 +279,13 @@ namespace Systems
 		{
 			const Core::Blob* pBlob = reinterpret_cast<const Core::Blob*>(pFieldPtr);
 			SerializeData(*pBlob, value);
+		}
+		break;
+
+		case SID("Core::Sqt"):
+		{
+			const Core::Sqt* pSqt = reinterpret_cast<const Core::Sqt*>(pFieldPtr);
+			SerializeData(*pSqt, value);
 		}
 		break;
 
