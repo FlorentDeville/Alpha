@@ -226,12 +226,14 @@ namespace Core
 
 	Mat44f Mat44f::CreateTransformMatrix(const Sqt& sqt)
 	{
-		Mat44f t = CreateTranslationMatrix(sqt.GetTranslation());
-		Mat44f q = CreateRotationMatrixFromQuaternion(sqt.GetRotationQuaternion());
-		Mat44f s = CreateScaleMatrix(sqt.GetScale());
+		Mat44f m = CreateRotationMatrixFromQuaternion(sqt.GetRotationQuaternion());
+		m.SetRow(0, m.GetX() * sqt.GetScale().GetX());
+		m.SetRow(1, m.GetY() * sqt.GetScale().GetY());
+		m.SetRow(2, m.GetZ() * sqt.GetScale().GetZ());
 
-		Mat44f res = s * q * t;
-		return res;
+		m.SetRow(3, sqt.GetTranslation());
+
+		return m;
 	}
 
 	Mat44f Mat44f::CreateIdentity()
