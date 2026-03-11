@@ -129,6 +129,7 @@ namespace Editors
 		void OnClickEditMenu_ReparentGameObject();
 
 		void OnClickTransformationMenu_Snap();
+		void OnClickTransformationMenu_SnapSettings();
 
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);

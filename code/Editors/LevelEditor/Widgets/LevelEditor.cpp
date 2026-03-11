@@ -5,6 +5,7 @@
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 
 #include "Core/Log/LogModule.h"
+#include "Core/Math/Constants.h"
 
 #include "Editors/EditorParameter.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -218,6 +219,9 @@ namespace Editors
 
 		m_pSnapItem = pTransformMenu->AddMenuItem("Snap");
 		m_pSnapItem->OnClick([this]() { OnClickTransformationMenu_Snap(); });
+
+		Widgets::MenuItem* pSnapSeetings = pTransformMenu->AddMenuItem("Snap Settings...");
+		pSnapSeetings->OnClick([this]() { OnClickTransformationMenu_SnapSettings(); });
 	}
 
 	void LevelEditor::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
@@ -733,6 +737,102 @@ namespace Editors
 		bool enabled = pGizmo->SnappingEnabled();
 		pGizmo->SetSnapping(!enabled);
 		m_pSnapItem->SetChecked(!enabled);
+	}
+
+	void LevelEditor::OnClickTransformationMenu_SnapSettings()
+	{
+		Widgets::ModalWindow* pNewWindow = new Widgets::ModalWindow("Snap Settings");
+
+		const int WINDOW_WIDTH = 250;
+		const int WINDOW_HEIGHT = 80;
+		const int OK_CANCEL_HEIGHT = 30;
+
+		pNewWindow->SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
+		pNewWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pNewWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
+
+		Widgets::Layout* pVLayout = new Widgets::Layout(Widgets::Layout::Vertical, Widgets::Widget::HSTRETCH_VFIT);
+		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pVLayout->SetSpace(Core::Int2(0, 5));
+		pNewWindow->AddWidget(pVLayout);
+
+		Widgets::Layout* pViewportMenuLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::HSTRETCH_VFIT);
+		pViewportMenuLayout->SetSpace(Core::Int2(3, 0));
+		pVLayout->AddWidget(pViewportMenuLayout);
+
+		const int SNAP_TEXTBOX_WIDTH = 40;
+		Widgets::Label* pSnapLabel = new Widgets::Label("Snap: T");
+		pSnapLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pViewportMenuLayout->AddWidget(pSnapLabel);
+
+		Widgets::TextBox* pSnapT = new Widgets::TextBox();
+		pSnapT->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pSnapT->SetWidth(SNAP_TEXTBOX_WIDTH);
+		pViewportMenuLayout->AddWidget(pSnapT);
+
+		Widgets::Label* pSnapLabelR = new Widgets::Label("R");
+		pSnapLabelR->SetSizeStyle(Widgets::Widget::FIT);
+		pViewportMenuLayout->AddWidget(pSnapLabelR);
+		Widgets::TextBox* pSnapR = new Widgets::TextBox();
+		pSnapR->SetWidth(SNAP_TEXTBOX_WIDTH);
+		pSnapR->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pViewportMenuLayout->AddWidget(pSnapR);
+
+		Widgets::Label* pSnapLabelS = new Widgets::Label("S");
+		pSnapLabelS->SetSizeStyle(Widgets::Widget::FIT);
+		pViewportMenuLayout->AddWidget(pSnapLabelS);
+		Widgets::TextBox* pSnapS = new Widgets::TextBox();
+		pSnapS->SetWidth(SNAP_TEXTBOX_WIDTH);
+		pSnapS->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pViewportMenuLayout->AddWidget(pSnapS);
+
+		{
+			const int BUFFER_SIZE = 8;
+			char buffer[BUFFER_SIZE] = { '\0' };
+			snprintf(buffer, BUFFER_SIZE, "%f", m_pViewport->GetGizmoWidget()->GetSnapDistanceTranslation());
+			pSnapT->SetText(buffer);
+			pSnapT->OnValidate([this](const std::string& value)
+				{
+					float fValue = static_cast<float>(atof(value.c_str()));
+					m_pViewport->GetGizmoWidget()->SetSnapDistanceTranslation(fValue);
+				});
+		}
+
+		{
+			float rotationRadian = m_pViewport->GetGizmoWidget()->GetSnapDistanceRotation();
+			float rotationDegree = rotationRadian * 180 / Core::PI;
+			const int BUFFER_SIZE = 8;
+			char buffer[BUFFER_SIZE] = { '\0' };
+			snprintf(buffer, BUFFER_SIZE, "%f", rotationDegree);
+			pSnapR->SetText(buffer);
+			pSnapR->OnValidate([this](const std::string& value)
+				{
+					float fValue = static_cast<float>(atof(value.c_str()));
+					float radian = fValue * Core::PI_OVER_180;
+					m_pViewport->GetGizmoWidget()->SetSnapDistanceTranslation(radian);
+				});
+		}
+
+		{
+			const int BUFFER_SIZE = 8;
+			char buffer[BUFFER_SIZE] = { '\0' };
+			snprintf(buffer, BUFFER_SIZE, "%f", m_pViewport->GetGizmoWidget()->GetSnapDistanceScale());
+			pSnapS->SetText(buffer);
+			pSnapS->OnValidate([this](const std::string& value)
+				{
+					float fValue = static_cast<float>(atof(value.c_str()));
+					m_pViewport->GetGizmoWidget()->SetSnapDistanceScale(fValue);
+				});
+		}
+
+		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::HSTRETCH_VFIT);
+		pVLayout->AddWidget(pButtonLayout);
+
+		Widgets::Button* pOk = new Widgets::Button("Close", WINDOW_WIDTH - 2, OK_CANCEL_HEIGHT);
+		pOk->OnClick([pNewWindow]() { pNewWindow->Close(); });
+		pButtonLayout->AddWidget(pOk);
+
+		pNewWindow->Open();
 	}
 
 	void LevelEditor::OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata)
