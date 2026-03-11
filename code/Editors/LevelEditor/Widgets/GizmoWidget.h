@@ -67,6 +67,14 @@ namespace Editors
 		bool IsManipulating() const;
 		bool IsHovering() const;
 
+		float GetSnapDistanceTranslation() const;
+		float GetSnapDistanceRotation() const;
+		float GetSnapDistanceScale() const;
+
+		void SetSnapDistanceTranslation(float distance);
+		void SetSnapDistanceRotation(float distance);
+		void SetSnapDistanceScale(float distance);
+
 	private:
 		void UpdateState_Idle(const Core::Vec4f& mouse3dPosition);
 		void UpdateState_Moving(const Core::Vec4f& mouse3dPosition);

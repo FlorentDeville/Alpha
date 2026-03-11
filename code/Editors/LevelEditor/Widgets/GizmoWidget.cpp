@@ -168,6 +168,36 @@ namespace Editors
 		return !m_hoverAxis.IsEmpty();
 	}
 
+	float GizmoWidget::GetSnapDistanceTranslation() const
+	{
+		return m_translationSnapDistance;
+	}
+
+	float GizmoWidget::GetSnapDistanceRotation() const
+	{
+		return m_rotationSnapDistance;
+	}
+
+	float GizmoWidget::GetSnapDistanceScale() const
+	{
+		return m_scaleSnapDistance;
+	}
+
+	void GizmoWidget::SetSnapDistanceTranslation(float distance)
+	{
+		m_translationSnapDistance = distance;
+	}
+
+	void GizmoWidget::SetSnapDistanceRotation(float distance)
+	{
+		m_rotationSnapDistance = distance;
+	}
+
+	void GizmoWidget::SetSnapDistanceScale(float distance)
+	{
+		m_scaleSnapDistance = distance;
+	}
+
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
 	{
 		UpdateMouseHover(mouse3dPosition);
