@@ -5,6 +5,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Core/Math/Aabb.h"
+#include "Core/Math/Constants.h"
 #include "Core/Math/Intersection.h"
 #include "Core/Math/Ray.h"
 #include "Core/Math/Vec4f.h"
@@ -43,8 +44,8 @@ namespace Editors
 		, m_sqt()
 		, m_enabled(true)
 		, m_snapEnabled(false)
-		, m_translationSnapDistance(1.f)
-		, m_rotationSnapDistance(3.14f * 0.25f)
+		, m_translationSnapDistance(0.1f)
+		, m_rotationSnapDistance(45 * Core::PI_OVER_180)
 		, m_scaleSnapDistance(2.f)
 		, m_previousAngle(0)
 		, m_previousScaleDistance(0)
@@ -166,6 +167,36 @@ namespace Editors
 	bool GizmoWidget::IsHovering() const
 	{
 		return !m_hoverAxis.IsEmpty();
+	}
+
+	float GizmoWidget::GetSnapDistanceTranslation() const
+	{
+		return m_translationSnapDistance;
+	}
+
+	float GizmoWidget::GetSnapDistanceRotation() const
+	{
+		return m_rotationSnapDistance;
+	}
+
+	float GizmoWidget::GetSnapDistanceScale() const
+	{
+		return m_scaleSnapDistance;
+	}
+
+	void GizmoWidget::SetSnapDistanceTranslation(float distance)
+	{
+		m_translationSnapDistance = distance;
+	}
+
+	void GizmoWidget::SetSnapDistanceRotation(float distance)
+	{
+		m_rotationSnapDistance = distance;
+	}
+
+	void GizmoWidget::SetSnapDistanceScale(float distance)
+	{
+		m_scaleSnapDistance = distance;
 	}
 
 	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
