@@ -89,4 +89,24 @@ namespace Core
 		// Check if all bits in the mask are set (i.e., equal to 0xF or 15)
 		return mask == 0xF;
 	}
+
+	float Quaternion::GetX() const
+	{
+		return m_data.m128_f32[0];
+	}
+
+	float Quaternion::GetY() const
+	{
+		return m_data.m128_f32[1];
+	}
+
+	float Quaternion::GetZ() const
+	{
+		return m_data.m128_f32[2];
+	}
+
+	float Quaternion::GetW() const
+	{
+		return m_data.m128_f32[3];
+	}
 }

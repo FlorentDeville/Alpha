@@ -25,6 +25,11 @@ namespace Core
 
 		bool operator==(const Quaternion& other) const;
 
+		float GetX() const;
+		float GetY() const;
+		float GetZ() const;
+		float GetW() const;
+
 		__m128 m_data;
 	};
 }
