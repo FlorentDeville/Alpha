@@ -16,7 +16,7 @@ namespace Widgets
 		, m_fontScale(1)
 		, m_text()
 	{
-		SetSizeStyle(Widget::FIT);
+		SetSizeStyle(Widget::HSIZE_STRETCH);
 		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
 
@@ -30,7 +30,7 @@ namespace Widgets
 
 		Core::UInt2 coreSize(size.x, size.y);
 		SetSize(coreSize);
-		SetSizeStyle(Widget::FIT);
+		SetSizeStyle(Widget::HSIZE_STRETCH);
 	}
 
 	Label::Label(int32_t locX, int32_t locY, float scale, const std::string& text)
