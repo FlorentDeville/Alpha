@@ -44,7 +44,7 @@ namespace Editors
 		, m_sqt()
 		, m_enabled(true)
 		, m_snapEnabled(false)
-		, m_translationSnapDistance(1.f)
+		, m_translationSnapDistance(0.1f)
 		, m_rotationSnapDistance(45 * Core::PI_OVER_180)
 		, m_scaleSnapDistance(2.f)
 		, m_previousAngle(0)
