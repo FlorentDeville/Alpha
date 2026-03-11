@@ -84,4 +84,12 @@ namespace Core
 
 		return m_matrix;
 	}
+
+	bool Sqt::IsIdentity() const
+	{
+		if (m_translation == Vec4f(0, 0, 0, 0) && m_quat == Quaternion(0, 0, 0, 1) && m_scale == Vec4f(1, 1, 1, 0))
+			return true;
+
+		return false;
+	}
 }

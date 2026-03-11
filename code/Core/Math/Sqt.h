@@ -28,6 +28,8 @@ namespace Core
 		
 		const Mat44f& GetMatrix() const;
 
+		bool IsIdentity() const;
+
 	private:
 		Vec4f m_translation;
 		Quaternion m_quat;
