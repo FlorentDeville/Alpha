@@ -5,6 +5,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Core/Math/Aabb.h"
+#include "Core/Math/Constants.h"
 #include "Core/Math/Intersection.h"
 #include "Core/Math/Ray.h"
 #include "Core/Math/Vec4f.h"
@@ -44,7 +45,7 @@ namespace Editors
 		, m_enabled(true)
 		, m_snapEnabled(false)
 		, m_translationSnapDistance(1.f)
-		, m_rotationSnapDistance(3.14f * 0.25f)
+		, m_rotationSnapDistance(45 * Core::PI_OVER_180)
 		, m_scaleSnapDistance(2.f)
 		, m_previousAngle(0)
 		, m_previousScaleDistance(0)
