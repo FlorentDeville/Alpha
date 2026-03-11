@@ -3,8 +3,8 @@
 /********************************************************************************/
 
 #include "Core/Math/Mat44f.h"
-
 #include "Core/Math/Constants.h"
+#include "Core/Math/Quaternion.h"
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 
@@ -65,12 +65,10 @@ namespace Core
 		return Mat44f(dxRes);
 	}
 
-	Vec4f Mat44f::GetRotationQuaternion() const
+	Quaternion Mat44f::GetRotationQuaternion() const
 	{
 		DirectX::XMVECTOR dxQuat = DirectX::XMQuaternionRotationMatrix(m_matrix);
-		Vec4f quat;
-		quat.m_vector = dxQuat;
-		return quat;
+		return Quaternion(dxQuat.m128_f32[0], dxQuat.m128_f32[1], dxQuat.m128_f32[2], dxQuat.m128_f32[3]);
 	}
 
 	void Mat44f::Decompose(Core::Vec4f& t, Core::Vec4f& r, Core::Vec4f& s) const
@@ -174,10 +172,10 @@ namespace Core
 		return rotationMatrix;
 	}
 
-	Mat44f Mat44f::CreateRotationMatrixFromQuaternion(const Vec4f& quat)
+	Mat44f Mat44f::CreateRotationMatrixFromQuaternion(const Quaternion& quat)
 	{
 		Mat44f rotationMatrix;
-		rotationMatrix.m_matrix = DirectX::XMMatrixRotationQuaternion(quat.m_vector);
+		rotationMatrix.m_matrix = DirectX::XMMatrixRotationQuaternion(quat.m_data);
 		return rotationMatrix;
 	}
 

@@ -114,6 +114,7 @@
     <ClCompile Include="Math\Aabb.cpp" />
     <ClCompile Include="Math\Intersection.cpp" />
     <ClCompile Include="Math\Mat44f.cpp" />
+    <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Log\LogModule.h" />
     <ClInclude Include="Math\Aabb.h" />
     <ClInclude Include="Math\Constants.h" />
+    <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Math\Vectors.h" />
     <ClInclude Include="Math\Intersection.h" />
     <ClInclude Include="Math\Mat44f.h" />

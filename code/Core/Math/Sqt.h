@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Core/Math/Mat44f.h"
+#include "Core/Math/Quaternion.h"
 #include "Core/Math/Vec4f.h"
 
 namespace Core
@@ -18,17 +19,18 @@ namespace Core
 
 		void SetTranslation(const Vec4f& translation);
 		void SetRotationQuaternion(const Vec4f& eulerAngles);
+		void SetRotationQuaternion(const Quaternion& eulerAngles);
 		void SetScale(const Vec4f& scale);
 
 		const Vec4f& GetTranslation() const;
-		const Vec4f& GetRotationQuaternion() const;
+		const Quaternion& GetRotationQuaternion() const;
 		const Vec4f& GetScale() const;
 		
 		const Mat44f& GetMatrix() const;
 
 	private:
 		Vec4f m_translation;
-		Vec4f m_quat;
+		Quaternion m_quat;
 		Vec4f m_scale;
 
 		//cached data

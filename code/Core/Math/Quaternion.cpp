@@ -1,0 +1,81 @@
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
+
+#include "Core/Math/Quaternion.h"
+
+#include "Core/Math/Vec4f.h"
+
+#include <cmath>
+
+namespace Core
+{
+	Quaternion::Quaternion()
+		: Quaternion(0, 0, 0, 1)
+	{ }
+
+	Quaternion::Quaternion(float x, float y, float z, float w)
+	{
+		m_data.m128_f32[0] = x;
+		m_data.m128_f32[1] = y;
+		m_data.m128_f32[2] = z;
+		m_data.m128_f32[3] = w;
+	}
+
+	void Quaternion::Normalize()
+	{
+		//[xx, yy, zz, ww]
+		__m128 sq = _mm_mul_ps(m_data, m_data);
+
+		//[y, x, w, z]
+		__m128 v1 = _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(1, 0, 3, 2));
+
+		//[y+x, x+y, w+z, z+w]
+		sq = _mm_add_ps(sq, v1);
+
+		//[w+z, z+w, y+x, x+y]
+		v1 = _mm_shuffle_ps(sq, sq, _MM_SHUFFLE(2, 3, 0, 1));
+
+		//[y+x+w+z, z+w+x+y, y+x+w+z, x+y+z+w]
+		sq = _mm_add_ps(sq, v1);
+
+		// inverse square root
+		__m128 invSqrt = _mm_rsqrt_ps(sq);
+
+		m_data = _mm_mul_ps(m_data, invSqrt);
+	}
+
+	Core::Vec4f Quaternion::ToEulerAngles() const
+	{
+		float x1 = 2 * (m_data.m128_f32[3] * m_data.m128_f32[0] + m_data.m128_f32[1] * m_data.m128_f32[2]);
+		float x2 = 1 - 2 * (m_data.m128_f32[0] * m_data.m128_f32[0] + m_data.m128_f32[1] * m_data.m128_f32[1]);
+		float x = atan2(x1, x2);
+
+		float y1 = 2 * (m_data.m128_f32[3] * m_data.m128_f32[1] - m_data.m128_f32[2] * m_data.m128_f32[0]);
+		float y = asin(y1);
+
+		float z1 = 2 * (m_data.m128_f32[3] * m_data.m128_f32[2] + m_data.m128_f32[0] * m_data.m128_f32[1]);
+		float z2 = 1 - 2 * (m_data.m128_f32[1] * m_data.m128_f32[1] + m_data.m128_f32[2] * m_data.m128_f32[2]);
+		float z = atan2(z1, z2);
+
+		return Core::Vec4f(x, y, z, 0);
+	}
+
+	Quaternion Quaternion::FromEulerAngles(const Core::Vec4f& eulerAngles)
+	{
+		Core::Vec4f half = eulerAngles * 0.5f;
+		float cosX = cos(half.GetX());
+		float cosY = cos(half.GetY());
+		float cosZ = cos(half.GetZ());
+
+		float sinX = sin(half.GetX());
+		float sinY = sin(half.GetY());
+		float sinZ = sin(half.GetZ());
+
+		float w = cosX * cosY * cosZ + sinX * sinY * sinZ;
+		float x = sinX * cosY * cosZ - cosX * sinY * sinZ;
+		float y = cosX * sinY * cosZ + sinX * cosY * sinZ;
+		float z = cosX * cosY * sinZ - sinX * sinY * cosZ;
+		return Quaternion(x, y, z, w);
+	}
+}

@@ -32,7 +32,6 @@ namespace Core
 		z.Normalize();
 
 		Mat44f rotationMatrix(x, y, z, t);
-		//m_eulerAngles = rotationMatrix.GetEulerAngle();
 		m_quat = rotationMatrix.GetRotationQuaternion();
 	}
 
@@ -42,7 +41,12 @@ namespace Core
 		m_dirty = true;
 	}
 
-	void Sqt::SetRotationQuaternion(const Vec4f& quat)
+	void Sqt::SetRotationQuaternion(const Vec4f& eulerAngles)
+	{
+		m_quat = Quaternion::FromEulerAngles(eulerAngles);
+	}
+
+	void Sqt::SetRotationQuaternion(const Quaternion& quat)
 	{
 		m_quat = quat;
 		m_dirty = true;
@@ -59,7 +63,7 @@ namespace Core
 		return m_translation;
 	}
 
-	const Vec4f& Sqt::GetRotationQuaternion() const
+	const Quaternion& Sqt::GetRotationQuaternion() const
 	{
 		return m_quat;
 	}
