@@ -44,6 +44,7 @@ namespace Core
 	void Sqt::SetRotationQuaternion(const Vec4f& eulerAngles)
 	{
 		m_quat = Quaternion::FromEulerAngles(eulerAngles);
+		m_dirty = true;
 	}
 
 	void Sqt::SetRotationQuaternion(const Quaternion& quat)
