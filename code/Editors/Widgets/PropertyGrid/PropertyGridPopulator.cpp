@@ -23,6 +23,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ObjectHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SidItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/SqtItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/UInt32Item.h"
 #include "Editors/Widgets/PropertyGrid/Items/Vec4fItem.h"
@@ -344,6 +345,13 @@ namespace Editors
 		case SID("Core::Color"):
 		{
 			ColorItem* pItem = new ColorItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
+		case SID("Core::Sqt"):
+		{
+			SqtItem* pItem = new SqtItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
 			return pItem;
 		}
 		break;
