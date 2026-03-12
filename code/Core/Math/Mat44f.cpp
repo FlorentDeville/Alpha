@@ -75,7 +75,7 @@ namespace Core
 
 	void Mat44f::Decompose(Core::Vec4f& t, Core::Vec4f& r, Core::Vec4f& s) const
 	{
-		t = GetX();
+		t = GetT();
 
 		float sx = GetX().Length();
 		float sy = GetY().Length();
@@ -147,9 +147,9 @@ namespace Core
 		}
 		else
 		{
-			float x = std::atan2(-R2.GetY(), R2.GetZ());
-			float y = std::asin(R2.GetX());
-			float z = std::atan2(-R1.GetX(), R0.GetX());
+			x = std::atan2(-R2.GetY(), R2.GetZ());
+			y = std::asin(R2.GetX());
+			z = std::atan2(-R1.GetX(), R0.GetX());
 		}
 
 		r.Set(0, x);
