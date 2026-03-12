@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -39,6 +39,10 @@ namespace Core
 		Mat44f operator*(const Mat44f& other) const;
 
 		Vec4f GetRotationQuaternion() const;
+
+		//Decompose a matrix into its srt part. 
+		//The rotations are the euler angles in radians applied in the order x, y then z (or Rz * Ry * Rx)
+		void Decompose(Core::Vec4f& t, Core::Vec4f& r, Core::Vec4f& s) const;
 
 		static Mat44f CreateRotationMatrix(const Vec4f& axis, float angle);
 		static Mat44f CreateRotationMatrixFromEulerAngles(const Vec4f& eulerAngles);
