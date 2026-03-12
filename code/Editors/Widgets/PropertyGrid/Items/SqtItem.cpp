@@ -7,15 +7,14 @@
 #include "Core/Math/Constants.h"
 #include "Core/Math/Sqt.h"
 
-//#include "Core/Math/Mat44f.h"
-//#include "Core/Reflection/FieldDescriptor.h"
-
 #include "Editors/Widgets/Utils.h"
-//#include "Editors/ObjectWatcher/ObjectWatcher.h"
+#include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/TextBox.h"
+
+#include <charconv>
 
 namespace Editors
 {
@@ -54,6 +53,19 @@ namespace Editors
 				m_pTranslationTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pTranslationTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 				m_pTranslationTextbox[ii]->SetWidth(40);
+				m_pTranslationTextbox[ii]->OnValidate([this, ii](const std::string& value)
+					{
+						float newValue = 0;
+						std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
+
+						const Core::Sqt* pValue = GetDataPtr<Core::Sqt>();
+						Core::Sqt copy = *pValue;
+						Core::Vec4f t = pValue->GetTranslation();
+						t.Set(ii, newValue);
+						copy.SetTranslation(t);
+
+						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, ObjectWatcher::SET_FIELD, m_index, &copy);
+					});
 				pRowLayout->AddWidget(m_pTranslationTextbox[ii]);
 			}
 		}
@@ -74,6 +86,27 @@ namespace Editors
 				m_pRotationTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pRotationTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 				m_pRotationTextbox[ii]->SetWidth(40);
+				m_pRotationTextbox[ii]->OnValidate([this, ii](const std::string& value)
+					{
+						float newValue = 0;
+						std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
+						
+						while (newValue >= 360)
+							newValue = newValue - 360;
+
+						while (newValue <= -360)
+							newValue = newValue + 360;
+
+						float radian = newValue * Core::PI_OVER_180;
+
+						const Core::Sqt* pValue = GetDataPtr<Core::Sqt>();
+						Core::Sqt copy = *pValue;
+						Core::Vec4f eulerAngles = pValue->GetRotationQuaternion().ToEulerAngles();
+						eulerAngles.Set(ii, radian);
+						copy.SetRotationQuaternion(Core::Quaternion::FromEulerAngles(eulerAngles));
+
+						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, ObjectWatcher::SET_FIELD, m_index, &copy);
+					});
 				pRowLayout->AddWidget(m_pRotationTextbox[ii]);
 			}
 		}
@@ -94,6 +127,19 @@ namespace Editors
 				m_pScaleTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pScaleTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 				m_pScaleTextbox[ii]->SetWidth(40);
+				m_pScaleTextbox[ii]->OnValidate([this, ii](const std::string& value)
+					{
+						float newValue = 0;
+						std::from_chars(value.c_str(), value.c_str() + value.size(), newValue);
+
+						const Core::Sqt* pValue = GetDataPtr<Core::Sqt>();
+						Core::Sqt copy = *pValue;
+						Core::Vec4f s = pValue->GetScale();
+						s.Set(ii, newValue);
+						copy.SetScale(s);
+
+						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, ObjectWatcher::SET_FIELD, m_index, &copy);
+					});
 				pRowLayout->AddWidget(m_pScaleTextbox[ii]);
 			}
 		}
