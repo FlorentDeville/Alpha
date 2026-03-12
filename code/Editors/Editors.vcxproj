@@ -63,6 +63,7 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\Mat44fItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ObjectHeaderItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\SidItem.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\SqtItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\StringItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\UInt32Item.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\Vec4fItem.h" />
@@ -71,6 +72,7 @@
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridWidget.h" />
     <ClInclude Include="Widgets\StatusBar\StatusBar.h" />
+    <ClInclude Include="Widgets\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEditor.cpp" />
@@ -121,6 +123,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\Mat44fItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ObjectHeaderItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\SidItem.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\SqtItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\StringItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\UInt32Item.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\Vec4fItem.cpp" />
@@ -129,6 +132,7 @@
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridWidget.cpp" />
     <ClCompile Include="Widgets\StatusBar\StatusBar.cpp" />
+    <ClCompile Include="Widgets\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
