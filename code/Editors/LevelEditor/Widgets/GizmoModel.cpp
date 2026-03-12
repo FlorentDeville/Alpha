@@ -144,7 +144,7 @@ namespace Editors
 	void GizmoModel::SendSignalToObjectWatcher()
 	{
 		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
-		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
+		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[1];
 		ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
 	}
 }
