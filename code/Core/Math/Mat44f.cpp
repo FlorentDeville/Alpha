@@ -2,8 +2,8 @@
 /* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Core/Math/Mat44f.h"
 #include "Core/Math/Constants.h"
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Quaternion.h"
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
