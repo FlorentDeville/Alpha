@@ -71,6 +71,7 @@
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridItemFactory.h" />
     <ClInclude Include="Widgets\PropertyGrid\PropertyGridWidget.h" />
     <ClInclude Include="Widgets\StatusBar\StatusBar.h" />
+    <ClInclude Include="Widgets\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseEditor.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridItemFactory.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\PropertyGridWidget.cpp" />
     <ClCompile Include="Widgets\StatusBar\StatusBar.cpp" />
+    <ClCompile Include="Widgets\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
