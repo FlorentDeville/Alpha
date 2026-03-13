@@ -64,7 +64,7 @@ namespace Editors
 
 		float m_cameraDirectionRotationY;
 		bool m_firstFrameMouseDown;
-		Core::UInt2 m_mousePreviousPos;
+		Core::Int2 m_mousePreviousPos;
 
 		ObjectWatcherCallbackId m_objWatcherCid;
 		

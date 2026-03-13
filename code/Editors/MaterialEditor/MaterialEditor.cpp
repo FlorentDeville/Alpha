@@ -714,8 +714,7 @@ namespace Editors
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 		if (inputs.IsMouseLeftButtonDown())
 		{
-			Core::UInt2 mousePosition;
-			inputs.GetMousePosition(mousePosition.x, mousePosition.y);
+			Core::Int2 mousePosition = inputs.GetMousePosition();
 			if (m_firstFrameMouseDown)
 			{
 				m_mousePreviousPos = mousePosition;

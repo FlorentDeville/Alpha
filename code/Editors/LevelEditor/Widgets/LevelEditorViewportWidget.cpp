@@ -105,9 +105,25 @@ namespace Editors
 
 		float dtInSeconds = dt / 1000.f;
 
-		DirectX::XMUINT2 mouseAbsPos;
-		Inputs::InputMgr::Get().GetMousePosition(mouseAbsPos.x, mouseAbsPos.y);
-		Core::Vec4f mouseWs = Compute3dPosition(mouseAbsPos);
+		Core::Int2 mouseAbsPos = Inputs::InputMgr::Get().GetMousePosition();
+
+		//clamp mouse abs position to the viewport
+		Core::UInt2 clampedMousePos;
+		if (mouseAbsPos.x < GetScreenX())
+			clampedMousePos.x = GetScreenX();
+		else if (mouseAbsPos.x > static_cast<int32_t>(GetScreenX() + GetWidth()))
+			clampedMousePos.x = GetScreenX() + GetWidth();
+		else
+			clampedMousePos.x = mouseAbsPos.x;
+
+		if (mouseAbsPos.y < GetScreenY())
+			clampedMousePos.y = GetScreenY();
+		else if (mouseAbsPos.y > static_cast<int32_t>(GetScreenY() + GetHeight()))
+			clampedMousePos.y = GetScreenY() + GetHeight();
+		else
+			clampedMousePos.y = mouseAbsPos.y;
+
+		Core::Vec4f mouseWs = Compute3dPosition(clampedMousePos);
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);

@@ -78,7 +78,7 @@ namespace Editors
 
 		//viewport inputs (mouse and keyboard)
 		bool m_firstFrameMouseDown;
-		Core::UInt2 m_mousePreviousPos;
+		Core::Int2 m_mousePreviousPos;
 
 		Rendering::Mesh* m_pMeshes[DisplayMesh::Count]; //list of possible meshes to render in the viewport
 		Widgets::MenuItem* m_pMeshesMenuItem[DisplayMesh::Count];
