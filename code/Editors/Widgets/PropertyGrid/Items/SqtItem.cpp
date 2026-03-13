@@ -37,6 +37,7 @@ namespace Editors
 		pLayout->GetDefaultStyle().SetBorderColor(Widgets::Color(255, 0, 0, 255));
 		pLayout->GetDefaultStyle().ShowBorder(true);
 
+		const uint32_t TEXTBOX_WIDTH = 50;
 		//T
 		{
 			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::Widget::FIT);
@@ -52,7 +53,7 @@ namespace Editors
 				m_pTranslationTextbox[ii] = new Widgets::TextBox();
 				m_pTranslationTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pTranslationTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
-				m_pTranslationTextbox[ii]->SetWidth(40);
+				m_pTranslationTextbox[ii]->SetWidth(TEXTBOX_WIDTH);
 				m_pTranslationTextbox[ii]->OnValidate([this, ii](const std::string& value)
 					{
 						float newValue = 0;
@@ -85,7 +86,7 @@ namespace Editors
 				m_pRotationTextbox[ii] = new Widgets::TextBox();
 				m_pRotationTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pRotationTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
-				m_pRotationTextbox[ii]->SetWidth(40);
+				m_pRotationTextbox[ii]->SetWidth(TEXTBOX_WIDTH);
 				m_pRotationTextbox[ii]->OnValidate([this, ii](const std::string& value)
 					{
 						float newValue = 0;
@@ -126,7 +127,6 @@ namespace Editors
 				m_pScaleTextbox[ii] = new Widgets::TextBox();
 				m_pScaleTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pScaleTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
-				m_pScaleTextbox[ii]->SetWidth(40);
 				m_pScaleTextbox[ii]->OnValidate([this, ii](const std::string& value)
 					{
 						float newValue = 0;
@@ -164,7 +164,9 @@ namespace Editors
 			m_pTranslationTextbox[ii]->SetText(buffer);
 		}
 
-		Core::Vec4f eulerAngles = pValue->GetRotationQuaternion().ToEulerAngles();
+		Core::Quaternion q = pValue->GetRotationQuaternion();
+		q.Normalize();
+		Core::Vec4f eulerAngles = q.ToEulerAngles();
 		for (int ii = 0; ii < 3; ++ii)
 		{
 			const uint32_t BUFFER_SIZE = 16;
