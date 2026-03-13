@@ -6,6 +6,7 @@
 
 #include "Editors/BaseEditor.h"
 
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
@@ -54,6 +55,8 @@ namespace Editors
 		//camera position
 		Core::Vec4f m_cameraTarget;
 		Core::Vec4f m_cameraEuler;
+		Core::Vec4f m_cameraPosition;
+		Core::Mat44f m_cameraView;
 
 		float m_cameraDistance;
 		float m_aspectRatio;
@@ -87,5 +90,7 @@ namespace Editors
 		void Viewport_OnRender();
 
 		void MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
+
+		void ComputeCameraPositionAndView();
 	};
 }

@@ -195,6 +195,8 @@ namespace Editors
 		if(!m_allMaterials.empty())
 			m_materialId = m_allMaterials.front().m_Id;
 
+		ComputeCameraPositionAndView();
+
 		MeshEditorModule& meshModule = MeshEditorModule::Get();
 		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
 		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
@@ -354,30 +356,14 @@ namespace Editors
 
 		if (m_cameraDistance < MIN_DISTANCE)
 			m_cameraDistance = MIN_DISTANCE;
+
+		ComputeCameraPositionAndView();
 	}
 
 	void MeshEditor::Viewport_OnRender()
 	{
 		//world
 		Core::Mat44f world = Core::Mat44f::CreateIdentity();
-
-		//view
-		Core::Vec4f cameraUp(0, 1, 0, 1);
-		Core::Vec4f cameraLookAt(0, 0, 0, 1);
-
-		//calculate the camera position
-		Core::Mat44f rotY = Core::Mat44f::CreateRotationY(m_cameraEuler.GetY());
-		Core::Mat44f rotX = Core::Mat44f::CreateRotationX(m_cameraEuler.GetX());
-		Core::Mat44f orientation = rotX * rotY;
-
-		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
-
-		Core::Mat44f txPos = tx * orientation;
-		Core::Vec4f cameraPosition = m_cameraTarget * txPos;
-
-		Core::Vec4f cameraDirection = cameraLookAt - cameraPosition;
-
-		Core::Mat44f view = Core::Mat44f::CreateView(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
 		constexpr float fov = 45.f;
@@ -388,7 +374,7 @@ namespace Editors
 
 		if (m_pSelectedMesh)
 		{
-			Core::Mat44f mvpMatrix = world * view * proj;
+			Core::Mat44f mvpMatrix = world * m_cameraView * proj;
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -398,8 +384,8 @@ namespace Editors
 				Rendering::PerObjectCBuffer perObjectData;
 				perObjectData.m_world = Core::Mat44f(world);
 
-				Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
-				Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+				Core::Float3 cameraPosFloat3(m_cameraPosition.GetX(), m_cameraPosition.GetY(), m_cameraPosition.GetZ());
+				Rendering::PerFrameCBuffer perFrameData(m_cameraView, proj, cameraPosFloat3);
 
 				Rendering::LightsArrayCBuffer lights;
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
@@ -427,5 +413,26 @@ namespace Editors
 		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
 
 		m_pPopulator->Populate(m_pSelectedMesh);
+	}
+
+	void MeshEditor::ComputeCameraPositionAndView()
+	{
+		//view
+		Core::Vec4f cameraUp(0, 1, 0, 1);
+		Core::Vec4f cameraLookAt(0, 0, 0, 1);
+
+		//calculate the camera position
+		Core::Mat44f rotY = Core::Mat44f::CreateRotationY(m_cameraEuler.GetY());
+		Core::Mat44f rotX = Core::Mat44f::CreateRotationX(m_cameraEuler.GetX());
+		Core::Mat44f orientation = rotX * rotY;
+
+		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
+
+		Core::Mat44f txPos = tx * orientation;
+		m_cameraPosition = m_cameraTarget * txPos;
+
+		Core::Vec4f cameraDirection = cameraLookAt - m_cameraPosition;
+
+		m_cameraView = Core::Mat44f::CreateView(m_cameraPosition, cameraDirection, cameraUp);
 	}
 }
