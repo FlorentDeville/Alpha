@@ -19,10 +19,13 @@
 
 #include "OsWin/FileDialog.h"
 
+#include "Rendering/Camera.h"
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/Texture/Texture.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
@@ -62,6 +65,7 @@ namespace Editors
 		, m_pSelectedMesh(nullptr)
 		, m_pMeshListModel(nullptr)
 		, m_pPopulator(nullptr)
+		, m_pWorldAxisRenderTarget(nullptr)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
@@ -71,6 +75,9 @@ namespace Editors
 	{
 		delete m_pPopulator;
 		m_pPopulator = nullptr;
+
+		delete m_pWorldAxisRenderTarget;
+		m_pWorldAxisRenderTarget = nullptr;
 	}
 
 	void MeshEditor::CreateEditor(const EditorParameter& param)
@@ -121,6 +128,7 @@ namespace Editors
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
 		pViewport->OnRender([this]() { Viewport_OnRender(); });
+		pViewport->OnPreRender([this]() { Viewport_OnPreRender(); });
 		pRightSideSplit->AddTopPanel(pViewport);
 
 		//create property grid
@@ -194,6 +202,14 @@ namespace Editors
 		//by default use the first material
 		if(!m_allMaterials.empty())
 			m_materialId = m_allMaterials.front().m_Id;
+
+		//world axis render target
+		{
+			const int WIDTH = 1080;
+			const int HEIGHT = 789;
+			m_pWorldAxisRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT); //make it smaller later
+			m_pWorldAxisRTRatio = WIDTH / HEIGHT;
+		}
 
 		ComputeCameraPositionAndView();
 
@@ -396,6 +412,23 @@ namespace Editors
 				renderer.RenderMesh(*pMesh);
 			}
 		}
+
+	}
+
+	void MeshEditor::Viewport_OnPreRender()
+	{
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+		renderer.GetCamera()->SetLookAt(m_cameraPosition, m_cameraTarget, Core::Vec4f(0, 1, 0, 0));
+		renderer.GetCamera()->SetProjection(45 * Core::PI_OVER_180, m_pWorldAxisRTRatio, 0.1f, 1000);
+
+		m_pWorldAxisRenderTarget->BeginScene();
+
+		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
+		renderer.RenderPrimitiveCube(identity, Core::Float4(1, 0, 0, 1));
+
+		m_pWorldAxisRenderTarget->EndScene();
+
+		m_pWorldAxisRenderTarget->GetColorTexture()->TransitionToShaderResource();
 	}
 
 	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)

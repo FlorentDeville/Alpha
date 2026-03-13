@@ -21,6 +21,11 @@
 #include <vector>
 #include <string>
 
+namespace Rendering
+{
+	class RenderTarget;
+}
+
 namespace Widgets
 {
 	class Button;
@@ -66,6 +71,8 @@ namespace Editors
 		Systems::NewAssetId m_materialId; //material to use to render the mesh
 
 		Rendering::TextureId m_importIconTextureId;
+		Rendering::RenderTarget* m_pWorldAxisRenderTarget;
+		float m_pWorldAxisRTRatio;
 
 		Core::Int2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
@@ -88,6 +95,7 @@ namespace Editors
 
 		void Viewport_OnUpdate();
 		void Viewport_OnRender();
+		void Viewport_OnPreRender();
 
 		void MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 
