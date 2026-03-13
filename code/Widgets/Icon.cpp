@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Icon.h"
 
@@ -16,18 +16,16 @@ namespace Widgets
 {
 	Icon::Icon()
 		: Widget()
-		, m_textureId(Rendering::TextureId::INVALID)
+		, m_pTexture(nullptr)
 		, m_isHidden(false)
 	{}
 
 	Icon::Icon(Rendering::TextureId textureId)
 	{
 		m_isHidden = false;
-		m_textureId = textureId;
-		const Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(textureId);
-
-		uint32_t w = static_cast<uint32_t>(pTexture->GetWidth());
-		uint32_t h = static_cast<uint32_t>(pTexture->GetHeight());
+		m_pTexture = Rendering::TextureMgr::Get().GetTexture(textureId);
+		uint32_t w = static_cast<uint32_t>(m_pTexture->GetWidth());
+		uint32_t h = static_cast<uint32_t>(m_pTexture->GetHeight());
 		SetSize(Core::UInt2(w, h));
 		SetX(0);
 		SetY(0);
@@ -37,13 +35,13 @@ namespace Widgets
 		: Widget()
 	{
 		m_isHidden = false;
-		Rendering::Texture* pTexture = nullptr;
-		Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_textureId);
+		Rendering::TextureId id;
+		Rendering::TextureMgr::Get().CreateTexture(&m_pTexture, id);
 
-		pTexture->Init(path);
+		m_pTexture->Init(path);
 
-		uint32_t w = static_cast<uint32_t>(pTexture->GetWidth());
-		uint32_t h = static_cast<uint32_t>(pTexture->GetHeight());
+		uint32_t w = static_cast<uint32_t>(m_pTexture->GetWidth());
+		uint32_t h = static_cast<uint32_t>(m_pTexture->GetHeight());
 		SetSize(Core::UInt2(w, h));
 		SetX(0);
 		SetY(0);
@@ -53,10 +51,10 @@ namespace Widgets
 		: Widget(size.x, size.y, pos.x, pos.y)
 	{
 		m_isHidden = false;
-		Rendering::Texture* pTexture = nullptr;
-		Rendering::TextureMgr::Get().CreateTexture(&pTexture, m_textureId);
+		Rendering::TextureId id;
+		Rendering::TextureMgr::Get().CreateTexture(&m_pTexture, id);
 
-		pTexture->Init(path);
+		m_pTexture->Init(path);
 	}
 
 	Icon::~Icon()
@@ -64,7 +62,7 @@ namespace Widgets
 
 	void Icon::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
-		if (m_isHidden)
+		if (m_isHidden || !m_pTexture)
 			return;
 
 		DirectX::XMMATRIX wvp;
@@ -79,7 +77,7 @@ namespace Widgets
 
 		renderer.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
 
-		ID3D12DescriptorHeap* pSrv = Rendering::TextureMgr::Get().GetTexture(m_textureId)->GetSRV();
+		ID3D12DescriptorHeap* pSrv = m_pTexture->GetSRV();
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 		renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
@@ -90,12 +88,12 @@ namespace Widgets
 
 	void Icon::SetTextureId(Rendering::TextureId tid)
 	{
-		m_textureId = tid;
+		m_pTexture = Rendering::TextureMgr::Get().GetTexture(tid);
 	}
 
-	Rendering::TextureId Icon::GetTextureId() const
+	void Icon::SetTexture(Rendering::Texture* pTexture)
 	{
-		return m_textureId;
+		m_pTexture = pTexture;
 	}
 
 	void Icon::Hide()
