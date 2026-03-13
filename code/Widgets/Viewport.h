@@ -34,6 +34,7 @@ namespace Widgets
 
 		EVENT_DECL(Update, void(uint64_t)) //Real time update called every frame
 		EVENT_DECL(Render, void()) //Do all your rendering inside this event
+		EVENT_DECL(PreRender, void()) //Called before rendering in the final render target
 
 	protected:
 		int m_width;
