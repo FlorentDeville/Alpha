@@ -4,13 +4,17 @@
 
 #pragma once
 
-#include "Core/Math/Mat44f.h"
 #include "Core/Math/Sqt.h"
 
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Reflection/ReflectionCoreTypes.h"
 
 ENABLE_REFLECTION(Systems, TransformComponent)
+
+namespace Core
+{
+	class Mat44f;
+}
 
 namespace Systems
 {
@@ -43,12 +47,9 @@ namespace Systems
 
 		void Update() override;
 
-		void PostLoad() override;
-
 		void ComputeWorldTx();
 
 	private:
-		Core::Mat44f m_localTx;
 		Core::Sqt m_localSqt;
 
 		Core::Guid m_parent;
@@ -56,7 +57,6 @@ namespace Systems
 
 		START_REFLECTION(Systems::TransformComponent)
 			ADD_BASETYPE(Systems::GameComponent)
-			ADD_FIELD_ATTR(m_localTx, Core::Hidden | Core::DoNotSerialize)
 			ADD_FIELD(m_localSqt)
 			ADD_FIELD_ATTR(m_parent, Core::Hidden)
 			ADD_FIELD_ATTR(m_children, Core::Hidden)

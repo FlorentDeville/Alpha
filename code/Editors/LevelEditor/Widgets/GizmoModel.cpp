@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 
@@ -144,7 +144,7 @@ namespace Editors
 	void GizmoModel::SendSignalToObjectWatcher()
 	{
 		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
-		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[1];
+		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
 		ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
 	}
 }

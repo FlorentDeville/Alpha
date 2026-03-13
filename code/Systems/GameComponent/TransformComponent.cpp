@@ -4,21 +4,20 @@
 
 #include "Systems/GameComponent/TransformComponent.h"
 
+#include "Core/Math/Mat44f.h"
+
 #include "Systems/Objects/GameObject.h"
 
 namespace Systems
 {
 	TransformComponent::TransformComponent()
 		: GameComponent()
-		, m_localTx()
 		, m_worldTx()
 		, m_parent()
 		, m_children()
 		, m_pParentGo(nullptr)
 		, m_localSqt()
-	{
-		m_localTx = Core::Mat44f::CreateIdentity();
-	}
+	{ }
 
 	TransformComponent::~TransformComponent()
 	{ }
@@ -109,13 +108,6 @@ namespace Systems
 
 		for (Systems::GameObject* pChildGo : m_childrenGo)
 			pChildGo->UpdateTransform();
-	}
-
-	void TransformComponent::PostLoad()
-	{
-		Core::Sqt temp(m_localTx);
-		if (!temp.IsIdentity())
-			m_localSqt = temp;
 	}
 
 	void TransformComponent::ComputeWorldTx()
