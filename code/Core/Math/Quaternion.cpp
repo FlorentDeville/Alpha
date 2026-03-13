@@ -4,6 +4,7 @@
 
 #include "Core/Math/Quaternion.h"
 
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
 #include <cmath>
@@ -47,18 +48,12 @@ namespace Core
 
 	Core::Vec4f Quaternion::ToEulerAngles() const
 	{
-		float x1 = 2 * (m_data.m128_f32[3] * m_data.m128_f32[0] + m_data.m128_f32[1] * m_data.m128_f32[2]);
-		float x2 = 1 - 2 * (m_data.m128_f32[0] * m_data.m128_f32[0] + m_data.m128_f32[1] * m_data.m128_f32[1]);
-		float x = atan2(x1, x2);
-
-		float y1 = 2 * (m_data.m128_f32[3] * m_data.m128_f32[1] - m_data.m128_f32[2] * m_data.m128_f32[0]);
-		float y = asin(y1);
-
-		float z1 = 2 * (m_data.m128_f32[3] * m_data.m128_f32[2] + m_data.m128_f32[0] * m_data.m128_f32[1]);
-		float z2 = 1 - 2 * (m_data.m128_f32[1] * m_data.m128_f32[1] + m_data.m128_f32[2] * m_data.m128_f32[2]);
-		float z = atan2(z1, z2);
-
-		return Core::Vec4f(x, y, z, 0);
+		Core::Mat44f m = Core::Mat44f::CreateRotationMatrixFromQuaternion(*this);
+		
+		Core::Vec4f t, r, s;
+		m.Decompose(t, r, s);
+		
+		return r;
 	}
 
 	Quaternion Quaternion::FromEulerAngles(const Core::Vec4f& eulerAngles)
