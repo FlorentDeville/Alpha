@@ -6,27 +6,29 @@
 
 #include "Editors/BaseEditor.h"
 
+#include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
-#include "Rendering/Mesh/MeshId.h"
-#include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/Texture/TextureId.h"
-
-#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
-#include <map>
 #include <vector>
-#include <string>
+
+namespace Rendering
+{
+	class RenderTarget;
+}
+
+namespace Systems
+{
+	class MeshAsset;
+}
 
 namespace Widgets
 {
 	class Button;
-	class Layout;
+	class Icon;
 	class SelectionRow;
-	class Text;
-	class Widget;
 }
 
 namespace Editors
@@ -54,6 +56,8 @@ namespace Editors
 		//camera position
 		Core::Vec4f m_cameraTarget;
 		Core::Vec4f m_cameraEuler;
+		Core::Vec4f m_cameraPosition;
+		Core::Mat44f m_cameraView;
 
 		float m_cameraDistance;
 		float m_aspectRatio;
@@ -62,7 +66,9 @@ namespace Editors
 
 		Systems::NewAssetId m_materialId; //material to use to render the mesh
 
-		Rendering::TextureId m_importIconTextureId;
+		Widgets::Icon* m_pWorldAxisIcon;
+		Rendering::RenderTarget* m_pWorldAxisRenderTarget;
+		float m_pWorldAxisRTRatio;
 
 		Core::Int2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
@@ -85,7 +91,10 @@ namespace Editors
 
 		void Viewport_OnUpdate();
 		void Viewport_OnRender();
+		void Viewport_OnPreRender();
 
 		void MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
+
+		void ComputeCameraPositionAndView();
 	};
 }

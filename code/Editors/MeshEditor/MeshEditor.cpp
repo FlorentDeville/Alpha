@@ -19,16 +19,20 @@
 
 #include "OsWin/FileDialog.h"
 
+#include "Rendering/Camera.h"
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/Texture/Texture.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
+#include "Widgets/Icon.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
@@ -62,6 +66,9 @@ namespace Editors
 		, m_pSelectedMesh(nullptr)
 		, m_pMeshListModel(nullptr)
 		, m_pPopulator(nullptr)
+		, m_pWorldAxisRenderTarget(nullptr)
+		, m_pWorldAxisRTRatio(0)
+		, m_pWorldAxisIcon(nullptr)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
@@ -71,6 +78,9 @@ namespace Editors
 	{
 		delete m_pPopulator;
 		m_pPopulator = nullptr;
+
+		delete m_pWorldAxisRenderTarget;
+		m_pWorldAxisRenderTarget = nullptr;
 	}
 
 	void MeshEditor::CreateEditor(const EditorParameter& param)
@@ -121,6 +131,7 @@ namespace Editors
 		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
 		pViewport->OnRender([this]() { Viewport_OnRender(); });
+		pViewport->OnPreRender([this]() { Viewport_OnPreRender(); });
 		pRightSideSplit->AddTopPanel(pViewport);
 
 		//create property grid
@@ -194,6 +205,21 @@ namespace Editors
 		//by default use the first material
 		if(!m_allMaterials.empty())
 			m_materialId = m_allMaterials.front().m_Id;
+
+		//world axis render target
+		{
+			const int WIDTH = 100;
+			const int HEIGHT = 100;
+			m_pWorldAxisRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT); //make it smaller later
+			m_pWorldAxisRTRatio = WIDTH / HEIGHT;
+		}
+
+		m_pWorldAxisIcon = new Widgets::Icon();
+		m_pWorldAxisIcon->SetSize(Core::UInt2(100, 100));
+		m_pWorldAxisIcon->SetTexture(m_pWorldAxisRenderTarget->GetColorTexture());
+		pViewport->AddWidget(m_pWorldAxisIcon);
+
+		ComputeCameraPositionAndView();
 
 		MeshEditorModule& meshModule = MeshEditorModule::Get();
 		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
@@ -354,30 +380,14 @@ namespace Editors
 
 		if (m_cameraDistance < MIN_DISTANCE)
 			m_cameraDistance = MIN_DISTANCE;
+
+		ComputeCameraPositionAndView();
 	}
 
 	void MeshEditor::Viewport_OnRender()
 	{
 		//world
 		Core::Mat44f world = Core::Mat44f::CreateIdentity();
-
-		//view
-		Core::Vec4f cameraUp(0, 1, 0, 1);
-		Core::Vec4f cameraLookAt(0, 0, 0, 1);
-
-		//calculate the camera position
-		Core::Mat44f rotY = Core::Mat44f::CreateRotationY(m_cameraEuler.GetY());
-		Core::Mat44f rotX = Core::Mat44f::CreateRotationX(m_cameraEuler.GetX());
-		Core::Mat44f orientation = rotX * rotY;
-
-		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
-
-		Core::Mat44f txPos = tx * orientation;
-		Core::Vec4f cameraPosition = m_cameraTarget * txPos;
-
-		Core::Vec4f cameraDirection = cameraLookAt - cameraPosition;
-
-		Core::Mat44f view = Core::Mat44f::CreateView(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
 		constexpr float fov = 45.f;
@@ -388,7 +398,7 @@ namespace Editors
 
 		if (m_pSelectedMesh)
 		{
-			Core::Mat44f mvpMatrix = world * view * proj;
+			Core::Mat44f mvpMatrix = world * m_cameraView * proj;
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -398,8 +408,8 @@ namespace Editors
 				Rendering::PerObjectCBuffer perObjectData;
 				perObjectData.m_world = Core::Mat44f(world);
 
-				Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
-				Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+				Core::Float3 cameraPosFloat3(m_cameraPosition.GetX(), m_cameraPosition.GetY(), m_cameraPosition.GetZ());
+				Rendering::PerFrameCBuffer perFrameData(m_cameraView, proj, cameraPosFloat3);
 
 				Rendering::LightsArrayCBuffer lights;
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
@@ -410,6 +420,57 @@ namespace Editors
 				renderer.RenderMesh(*pMesh);
 			}
 		}
+
+	}
+
+	void MeshEditor::Viewport_OnPreRender()
+	{
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+		renderer.GetCamera()->SetLookAt(m_cameraPosition, m_cameraTarget, Core::Vec4f(0, 1, 0, 0));
+		renderer.GetCamera()->SetProjection(45 * Core::PI_OVER_180, m_pWorldAxisRTRatio, 0.1f, 1000);
+
+		m_pWorldAxisRenderTarget->BeginScene();
+
+		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
+
+		constexpr float SCALE_LENGTH = 2;
+		constexpr float SCALE_DIAMETER = 0.5;
+		constexpr float HALF_SCALE_LENGTH = SCALE_LENGTH * 0.5f;
+		DirectX::XMMATRIX dxScale = DirectX::XMMatrixScaling(SCALE_DIAMETER, SCALE_LENGTH, SCALE_DIAMETER);
+
+		//x axis
+		{
+			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(HALF_SCALE_LENGTH, 0, 0);
+
+			//rotate everything 90 degres around z axis
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+
+			Core::Float4 red(1, 0, 0, 1);
+			renderer.RenderPrimitiveCylinder(dxScale * rotation * dxTranslation, red);
+		}
+
+		//y axis
+		{
+			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(0, HALF_SCALE_LENGTH, 0);
+			Core::Float4 green(0, 1, 0, 1);
+
+			renderer.RenderPrimitiveCylinder(dxScale * dxTranslation, green);
+		}
+
+		//z axis
+		{
+			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(0, 0, HALF_SCALE_LENGTH);
+
+			//rotate everything 90 degres around z axis
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+
+			Core::Float4 blue(0, 0, 1, 1);
+			renderer.RenderPrimitiveCylinder(dxScale * rotation * dxTranslation, blue);
+		}
+
+		m_pWorldAxisRenderTarget->EndScene();
+
+		m_pWorldAxisRenderTarget->GetColorTexture()->TransitionToShaderResource();
 	}
 
 	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
@@ -427,5 +488,26 @@ namespace Editors
 		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
 
 		m_pPopulator->Populate(m_pSelectedMesh);
+	}
+
+	void MeshEditor::ComputeCameraPositionAndView()
+	{
+		//view
+		Core::Vec4f cameraUp(0, 1, 0, 1);
+		Core::Vec4f cameraLookAt(0, 0, 0, 1);
+
+		//calculate the camera position
+		Core::Mat44f rotY = Core::Mat44f::CreateRotationY(m_cameraEuler.GetY());
+		Core::Mat44f rotX = Core::Mat44f::CreateRotationX(m_cameraEuler.GetX());
+		Core::Mat44f orientation = rotX * rotY;
+
+		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
+
+		Core::Mat44f txPos = tx * orientation;
+		m_cameraPosition = m_cameraTarget * txPos;
+
+		Core::Vec4f cameraDirection = cameraLookAt - m_cameraPosition;
+
+		m_cameraView = Core::Mat44f::CreateView(m_cameraPosition, cameraDirection, cameraUp);
 	}
 }

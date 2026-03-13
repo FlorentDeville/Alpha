@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -9,6 +9,11 @@
 #include "Rendering/Texture/TextureId.h"
 
 #include <string>
+
+namespace Rendering
+{
+	class Texture;
+}
 
 namespace Widgets
 {
@@ -24,14 +29,13 @@ namespace Widgets
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		void SetTextureId(Rendering::TextureId tid);
-
-		Rendering::TextureId GetTextureId() const;
+		void SetTexture(Rendering::Texture* pTexture);
 
 		void Hide();
 		void Show();
 
 	private:
-		Rendering::TextureId m_textureId;
+		Rendering::Texture* m_pTexture;
 
 		bool m_isHidden;
 	};
