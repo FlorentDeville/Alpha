@@ -10,29 +10,25 @@
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
-#include "Rendering/Mesh/MeshId.h"
-#include "Rendering/PipelineState/PipelineState.h"
-#include "Rendering/Texture/TextureId.h"
-
-#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/NewAssetId.h"
 
-#include <map>
 #include <vector>
-#include <string>
 
 namespace Rendering
 {
 	class RenderTarget;
 }
 
+namespace Systems
+{
+	class MeshAsset;
+}
+
 namespace Widgets
 {
 	class Button;
-	class Layout;
+	class Icon;
 	class SelectionRow;
-	class Text;
-	class Widget;
 }
 
 namespace Editors
@@ -70,7 +66,6 @@ namespace Editors
 
 		Systems::NewAssetId m_materialId; //material to use to render the mesh
 
-		Rendering::TextureId m_importIconTextureId;
 		Rendering::RenderTarget* m_pWorldAxisRenderTarget;
 		float m_pWorldAxisRTRatio;
 
