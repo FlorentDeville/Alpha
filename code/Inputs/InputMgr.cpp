@@ -97,10 +97,9 @@ namespace Inputs
 		return m_mouseState.m_mouseRightButton;
 	}
 
-	void InputMgr::GetMousePosition(uint32_t& x, uint32_t& y) const
+	const Core::Int2& InputMgr::GetMousePosition() const
 	{
-		x = m_mouseState.m_mouseX;
-		y = m_mouseState.m_mouseY;
+		return m_mouseState.m_mousePos;
 	}
 
 	int16_t InputMgr::GetMouseWheelDistance() const

@@ -64,7 +64,7 @@ namespace Editors
 
 		Rendering::TextureId m_importIconTextureId;
 
-		Core::UInt2 m_mousePreviousPos;
+		Core::Int2 m_mousePreviousPos;
 		bool m_firstFrameMouseDown;
 
 		std::vector<Widgets::Button*> m_allEntryButton;

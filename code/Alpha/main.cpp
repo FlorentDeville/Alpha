@@ -148,8 +148,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_MOUSEMOVE:
 	{
-		int x = GET_X_LPARAM(lParam);
-		int y = GET_Y_LPARAM(lParam);
+		int32_t x = GET_X_LPARAM(lParam);
+		int32_t y = GET_Y_LPARAM(lParam);
 
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::MouseMove;
@@ -161,8 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = x;
-		mouseState.m_mouseY = y;
+		mouseState.m_mousePos = Core::Int2(x, y);
 		mouseState.m_mouseLeftButton = wParam & MK_LBUTTON;
 		mouseState.m_mouseRightButton = wParam & MK_RBUTTON;
 		mouseState.m_mouseMiddleButton = wParam & MK_MBUTTON;
@@ -185,8 +184,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_MBUTTONDOWN:
 	{
-		uint16_t xPos = GET_X_LPARAM(lParam);
-		uint16_t yPos = GET_Y_LPARAM(lParam);
+		int32_t xPos = GET_X_LPARAM(lParam);
+		int32_t yPos = GET_Y_LPARAM(lParam);
 
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::MouseMDown;
@@ -197,8 +196,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = xPos;
-		mouseState.m_mouseY = yPos;
+		mouseState.m_mousePos = Core::Int2(xPos, yPos);
 		mouseState.m_mouseMiddleButton = true;
 
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
@@ -207,8 +205,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_MBUTTONUP:
 	{
-		uint16_t xPos = GET_X_LPARAM(lParam);
-		uint16_t yPos = GET_Y_LPARAM(lParam);
+		int32_t xPos = GET_X_LPARAM(lParam);
+		int32_t yPos = GET_Y_LPARAM(lParam);
 
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::MouseMUp;
@@ -219,8 +217,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = xPos;
-		mouseState.m_mouseY = yPos;
+		mouseState.m_mousePos = Core::Int2(xPos, yPos);
 		mouseState.m_mouseMiddleButton = false;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
@@ -243,8 +240,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = x;
-		mouseState.m_mouseY = y;
+		mouseState.m_mousePos = Core::Int2(x, y);
 		mouseState.m_mouseLeftButton = true;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
@@ -266,8 +262,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = x;
-		mouseState.m_mouseY = y;
+		mouseState.m_mousePos = Core::Int2(x, y);
 		mouseState.m_mouseLeftButton = false;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
@@ -287,8 +282,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = x;
-		mouseState.m_mouseY = y;
+		mouseState.m_mousePos = Core::Int2(x, y);
 		mouseState.m_mouseLeftButton = true;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
@@ -311,8 +305,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = x;
-		mouseState.m_mouseY = y;
+		mouseState.m_mousePos = Core::Int2(x, y);
 		mouseState.m_mouseRightButton = true;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}
@@ -334,8 +327,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
-		mouseState.m_mouseX = x;
-		mouseState.m_mouseY = y;
+		mouseState.m_mousePos = Core::Int2(x, y);
 		mouseState.m_mouseRightButton = false;
 		Inputs::InputMgr::Get().UpdateMouseState(mouseState);
 	}

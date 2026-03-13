@@ -1,9 +1,10 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
+#include "Core/Math/Vectors.h"
 #include "Core/Singleton.h"
 
 #include "InputCommand.h"
@@ -21,15 +22,13 @@ namespace Inputs
 			bool m_mouseMiddleButton;
 			bool m_mouseRightButton;
 			int16_t m_mouseWheel;
-			uint32_t m_mouseX;
-			uint32_t m_mouseY;
+			Core::Int2 m_mousePos; //The mouse position can be negative if outside of the client area.
 
 			MouseState()
 				: m_mouseLeftButton(false)
 				, m_mouseMiddleButton(false)
 				, m_mouseRightButton(false)
-				, m_mouseX(0)
-				, m_mouseY(0)
+				, m_mousePos(0, 0)
 				, m_mouseWheel(0)
 			{}
 		};
@@ -56,7 +55,7 @@ namespace Inputs
 		bool IsMouseLeftButtonDown() const;
 		bool IsMouseMiddleButtonDown() const;
 		bool IsMouseRightButtonDown() const;
-		void GetMousePosition(uint32_t& x, uint32_t& y) const;
+		const Core::Int2& GetMousePosition() const;
 		int16_t GetMouseWheelDistance() const;
 
 	private:
