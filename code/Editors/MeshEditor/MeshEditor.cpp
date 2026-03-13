@@ -32,6 +32,7 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
+#include "Widgets/Icon.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
@@ -67,6 +68,7 @@ namespace Editors
 		, m_pPopulator(nullptr)
 		, m_pWorldAxisRenderTarget(nullptr)
 		, m_pWorldAxisRTRatio(0)
+		, m_pWorldAxisIcon(nullptr)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
@@ -206,11 +208,16 @@ namespace Editors
 
 		//world axis render target
 		{
-			const int WIDTH = 1080;
-			const int HEIGHT = 789;
+			const int WIDTH = 100;
+			const int HEIGHT = 100;
 			m_pWorldAxisRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT); //make it smaller later
 			m_pWorldAxisRTRatio = WIDTH / HEIGHT;
 		}
+
+		m_pWorldAxisIcon = new Widgets::Icon();
+		m_pWorldAxisIcon->SetSize(Core::UInt2(100, 100));
+		m_pWorldAxisIcon->SetTexture(m_pWorldAxisRenderTarget->GetColorTexture());
+		pViewport->AddWidget(m_pWorldAxisIcon);
 
 		ComputeCameraPositionAndView();
 
@@ -425,7 +432,41 @@ namespace Editors
 		m_pWorldAxisRenderTarget->BeginScene();
 
 		DirectX::XMMATRIX identity = DirectX::XMMatrixIdentity();
-		renderer.RenderPrimitiveCube(identity, Core::Float4(1, 0, 0, 1));
+
+		constexpr float SCALE_LENGTH = 2;
+		constexpr float SCALE_DIAMETER = 0.5;
+		constexpr float HALF_SCALE_LENGTH = SCALE_LENGTH * 0.5f;
+		DirectX::XMMATRIX dxScale = DirectX::XMMatrixScaling(SCALE_DIAMETER, SCALE_LENGTH, SCALE_DIAMETER);
+
+		//x axis
+		{
+			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(HALF_SCALE_LENGTH, 0, 0);
+
+			//rotate everything 90 degres around z axis
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+
+			Core::Float4 red(1, 0, 0, 1);
+			renderer.RenderPrimitiveCylinder(dxScale * rotation * dxTranslation, red);
+		}
+
+		//y axis
+		{
+			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(0, HALF_SCALE_LENGTH, 0);
+			Core::Float4 green(0, 1, 0, 1);
+
+			renderer.RenderPrimitiveCylinder(dxScale * dxTranslation, green);
+		}
+
+		//z axis
+		{
+			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(0, 0, HALF_SCALE_LENGTH);
+
+			//rotate everything 90 degres around z axis
+			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+
+			Core::Float4 blue(0, 0, 1, 1);
+			renderer.RenderPrimitiveCylinder(dxScale * rotation * dxTranslation, blue);
+		}
 
 		m_pWorldAxisRenderTarget->EndScene();
 

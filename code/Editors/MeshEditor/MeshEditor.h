@@ -66,6 +66,7 @@ namespace Editors
 
 		Systems::NewAssetId m_materialId; //material to use to render the mesh
 
+		Widgets::Icon* m_pWorldAxisIcon;
 		Rendering::RenderTarget* m_pWorldAxisRenderTarget;
 		float m_pWorldAxisRTRatio;
 
