@@ -498,17 +498,8 @@ namespace Editors
 			{
 				Core::Vec4f dt = closestPointOnAxis - m_sqt.GetTranslation();
 				float distance = dt.Dot(bDir);
-				float absDistance = abs(distance);
-				if (absDistance < m_translationSnapDistance)
-				{
-					return;
-				}
-
-				float sign = 1;
-				if (distance < 0)
-					sign = -1;
-
-				closestPointOnAxis = m_sqt.GetTranslation() + bDir * m_translationSnapDistance * sign;
+				int32_t incrementalCount = static_cast<int32_t>(distance / m_translationSnapDistance);
+				closestPointOnAxis = m_sqt.GetTranslation() + bDir * m_translationSnapDistance * static_cast<float>(incrementalCount);
 			}
 
 			m_sqt.SetTranslation(closestPointOnAxis);
