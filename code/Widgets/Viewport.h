@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -30,7 +30,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		Core::Vec4f Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const;
+		Core::Vec4f Compute3dPosition(const Core::UInt2& windowAbsPos) const;
 
 		EVENT_DECL(Update, void(uint64_t)) //Real time update called every frame
 		EVENT_DECL(Render, void()) //Do all your rendering inside this event

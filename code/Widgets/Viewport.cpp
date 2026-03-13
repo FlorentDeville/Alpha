@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Viewport.h"
 
@@ -100,7 +100,7 @@ namespace Widgets
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
 
-	Core::Vec4f Viewport::Compute3dPosition(const DirectX::XMUINT2& windowAbsPos) const
+	Core::Vec4f Viewport::Compute3dPosition(const Core::UInt2& windowAbsPos) const
 	{
 		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
 

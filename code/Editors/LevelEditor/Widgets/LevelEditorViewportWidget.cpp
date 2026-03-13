@@ -105,7 +105,7 @@ namespace Editors
 
 		float dtInSeconds = dt / 1000.f;
 
-		DirectX::XMUINT2 mouseAbsPos;
+		Core::UInt2 mouseAbsPos;
 		Inputs::InputMgr::Get().GetMousePosition(mouseAbsPos.x, mouseAbsPos.y);
 		Core::Vec4f mouseWs = Compute3dPosition(mouseAbsPos);
 
