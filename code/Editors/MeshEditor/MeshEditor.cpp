@@ -66,6 +66,7 @@ namespace Editors
 		, m_pMeshListModel(nullptr)
 		, m_pPopulator(nullptr)
 		, m_pWorldAxisRenderTarget(nullptr)
+		, m_pWorldAxisRTRatio(0)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
