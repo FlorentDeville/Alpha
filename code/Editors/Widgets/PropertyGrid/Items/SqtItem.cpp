@@ -127,6 +127,7 @@ namespace Editors
 				m_pScaleTextbox[ii] = new Widgets::TextBox();
 				m_pScaleTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
 				m_pScaleTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
+				m_pScaleTextbox[ii]->SetWidth(TEXTBOX_WIDTH);
 				m_pScaleTextbox[ii]->OnValidate([this, ii](const std::string& value)
 					{
 						float newValue = 0;
