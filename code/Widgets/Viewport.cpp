@@ -98,6 +98,8 @@ namespace Widgets
 
 		//Draw!!!
 		pCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
+
+		Widget::Draw(windowSize, scissor);
 	}
 
 	Core::Vec4f Viewport::Compute3dPosition(const Core::UInt2& windowAbsPos) const
