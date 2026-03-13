@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/GameComponent/TransformComponent.h"
 
@@ -15,14 +15,17 @@ namespace Systems
 		, m_parent()
 		, m_children()
 		, m_pParentGo(nullptr)
-	{ }
+		, m_localSqt()
+	{
+		m_localTx = Core::Mat44f::CreateIdentity();
+	}
 
 	TransformComponent::~TransformComponent()
 	{ }
 
 	const Core::Mat44f& TransformComponent::GetLocalTx() const
 	{
-		return m_localTx;
+		return m_localSqt.GetMatrix();
 	}
 
 	const Core::Mat44f& TransformComponent::GetWorldTx() const
@@ -40,7 +43,7 @@ namespace Systems
 
 	void TransformComponent::SetLocalTx(const Core::Mat44f& localTx)
 	{
-		m_localTx = localTx;
+		m_localSqt = Core::Sqt(localTx);
 	}
 
 	const Core::Guid& TransformComponent::GetParentGuid() const
@@ -108,16 +111,23 @@ namespace Systems
 			pChildGo->UpdateTransform();
 	}
 
+	void TransformComponent::PostLoad()
+	{
+		Core::Sqt temp(m_localTx);
+		if (!temp.IsIdentity())
+			m_localSqt = temp;
+	}
+
 	void TransformComponent::ComputeWorldTx()
 	{
 		if (!m_parent.IsValid())
 		{
-			m_worldTx = m_localTx;
+			m_worldTx = m_localSqt.GetMatrix();
 		}
 		else if (m_pParentGo)
 		{
 			const Core::Mat44f& parentWorld = m_pParentGo->GetTransform().GetWorldTx();
-			m_worldTx = m_localTx * parentWorld;
+			m_worldTx = m_localSqt.GetMatrix() * parentWorld;
 		}
 	}
 }

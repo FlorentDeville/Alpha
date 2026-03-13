@@ -1,5 +1,5 @@
 /********************************************************************************/
-/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
 #pragma once
@@ -13,16 +13,18 @@ namespace Widgets
 
 namespace Editors
 {
-	class Mat44fItem : public PropertyGridItem
+	class SqtItem : public PropertyGridItem
 	{
 	public:
-		Mat44fItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
-		~Mat44fItem();
+		SqtItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
+		~SqtItem();
 
 		void CreateWidgets() override;
 		void UpdateValue() override;
 
 	private:
-		Widgets::TextBox* m_pTextbox[4][4];
+		Widgets::TextBox* m_pTranslationTextbox[3];
+		Widgets::TextBox* m_pRotationTextbox[3];
+		Widgets::TextBox* m_pScaleTextbox[3];
 	};
 }

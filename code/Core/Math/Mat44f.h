@@ -8,6 +8,7 @@
 
 namespace Core
 {
+	class Quaternion;
 	class Sqt;
 	class Vec4f;
 
@@ -38,7 +39,7 @@ namespace Core
 
 		Mat44f operator*(const Mat44f& other) const;
 
-		Vec4f GetRotationQuaternion() const;
+		Quaternion GetRotationQuaternion() const;
 
 		//Decompose a matrix into its srt part. 
 		//The rotations are the euler angles in radians applied in the order x, y then z (or Rz * Ry * Rx)
@@ -46,7 +47,7 @@ namespace Core
 
 		static Mat44f CreateRotationMatrix(const Vec4f& axis, float angle);
 		static Mat44f CreateRotationMatrixFromEulerAngles(const Vec4f& eulerAngles);
-		static Mat44f CreateRotationMatrixFromQuaternion(const Vec4f& quat);
+		static Mat44f CreateRotationMatrixFromQuaternion(const Quaternion& quat);
 		static Mat44f CreateRotationX(float angle);
 		static Mat44f CreateRotationY(float angle);
 		static Mat44f CreateRotationZ(float angle);

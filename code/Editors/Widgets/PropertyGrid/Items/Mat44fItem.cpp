@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
 
@@ -8,6 +8,7 @@
 #include "Core/Reflection/FieldDescriptor.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
+#include "Editors/Widgets/Utils.h"
 
 #include "Widgets/Layout.h"
 #include "Widgets/TextBox.h"
@@ -74,22 +75,10 @@ namespace Editors
 			for (int column = 0; column < 4; ++column)
 			{
 				float fValue = pValue->Get(row, column);
-				float absValue = std::abs(fValue);
-
-				int32_t integerPart = static_cast<int32_t>(std::trunc(absValue));
-				int32_t decimalPart = static_cast<int32_t>(std::trunc((absValue - integerPart) * 1000));
-
 				const int BUFFER_SIZE = 16;
 				char buffer[BUFFER_SIZE] = { '\0' };
 
-				const char* pPositive = "";
-				const char* pNegative = "-";
-				const char* pSign = fValue < 0 ? pNegative : pPositive;
-
-				if(decimalPart != 0)
-					snprintf(buffer, BUFFER_SIZE, "%s%d.%d", pSign, integerPart, decimalPart);
-				else
-					snprintf(buffer, BUFFER_SIZE, "%s%d", pSign, integerPart);
+				Utils::FToA(fValue, buffer, BUFFER_SIZE);
 
 				m_pTextbox[row][column]->SetText(buffer);
 			}
