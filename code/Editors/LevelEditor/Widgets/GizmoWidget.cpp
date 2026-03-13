@@ -37,7 +37,6 @@ namespace Editors
 		, m_debugCollisionDetected(false)
 #endif
 		, m_internalState(InternalState::kIdle)
-		, m_previousMousePosition()
 		, m_translationOffset()
 		, m_hoverAxis()
 		, m_hoverColor(0.99f, 0.49f, 0.22f, 1)
@@ -208,7 +207,6 @@ namespace Editors
 			if (Inputs::InputMgr::Get().IsMouseLeftButtonDown())
 			{
 				m_internalState = InternalState::kMoving;
-				Inputs::InputMgr::Get().GetMousePosition(m_previousMousePosition.x, m_previousMousePosition.y);
 
 				if (m_manipulatorMode == kTranslation)
 				{

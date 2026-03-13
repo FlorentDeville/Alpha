@@ -109,8 +109,6 @@ namespace Editors
 
 		ManipulatorMode m_manipulatorMode;
 
-		DirectX::XMUINT2 m_previousMousePosition;
-
 		Core::Vec4f m_translationOffset;
 		Core::Vec4f m_rotationInitialPoint; //where the user clicked for the first time
 		float m_previousAngle;
