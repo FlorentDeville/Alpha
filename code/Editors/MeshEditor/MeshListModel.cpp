@@ -199,6 +199,13 @@ namespace Editors
 		return m_cache[row].m_id;
 	}
 
+	void MeshListModel::SetSelection(const Systems::AssetMetadata& metadata)
+	{
+		Widgets::ModelIndex index = GetIndex(metadata.GetAssetId());
+		Widgets::SelectionRow row(index, index);
+		GetSelectionModel()->SetSelectionRow(row);
+	}
+
 	Widgets::ModelIndex MeshListModel::GetIndex(Systems::NewAssetId id) const
 	{
 		int row = -1;

@@ -47,6 +47,8 @@ namespace Editors
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
+		void SetSelection(const Systems::AssetMetadata& metadata);
+
 	private:
 		struct CachedMeshData
 		{
