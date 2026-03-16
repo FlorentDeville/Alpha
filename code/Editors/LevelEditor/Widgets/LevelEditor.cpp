@@ -893,6 +893,8 @@ namespace Editors
 	void LevelEditor::OnLevelEditorModule_ReparentGameObject(const Systems::GameObject* pGo, const Systems::GameObject* pGoOldParent, const Systems::GameObject* pGoNewParent)
 	{
 		m_pSceneTreeModel->ReparentGameObject(pGo, pGoOldParent, pGoNewParent);
+
+		m_pSceneTreeModel->SelectGameObject(pGo->GetGuid());
 	}
 
 	void LevelEditor::OnSceneTreeView_OnDropItem(const Widgets::ModelIndex& index, const Widgets::ModelIndex& parent)

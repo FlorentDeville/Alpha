@@ -69,12 +69,20 @@ namespace Systems
 		if (pGoNewParent)
 		{
 			pGoNewParent->GetTransform().AddChild(pGo);
+
+			//compute the new local to keep the object in the same world transform
+			Core::Mat44f txPs = pGoNewParent->GetTransform().GetWorldTx();
+			Core::Mat44f txInvPs = txPs.FastInverse();
+			Core::Mat44f newTxLs = pGo->GetTransform().GetWorldTx() * txInvPs;
+			pGo->GetTransform().SetLocalTx(newTxLs);
 		}
 		else
 		{
 			//no new parent then I'm a root object
 			m_roots.PushBack(pGo->GetGuid());
 			m_rootsGameObject.PushBack(pGo);
+
+			pGo->GetTransform().SetLocalTx(pGo->GetTransform().GetWorldTx());
 		}
 
 		//remove the child from its old parent
@@ -93,6 +101,7 @@ namespace Systems
 
 		//set the new parent to the child
 		pGo->GetTransform().SetParent(pGoNewParent);
+		pGo->GetTransform().Update();
 	}
 
 	void LevelAsset::DeleteGameObject(GameObject* pGo)

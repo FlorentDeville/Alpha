@@ -59,6 +59,27 @@ namespace Core
 		return Mat44f(DirectX::XMMatrixInverse(nullptr, m_matrix));
 	}
 
+	Mat44f Mat44f::FastInverse() const
+	{
+		Vec4f t = GetT() * -1;
+		Mat44f invT = Mat44f::CreateTranslationMatrix(t);
+
+		float sx = 1.f / GetX().Length();
+		float sy = 1.f / GetY().Length();
+		float sz = 1.f / GetZ().Length();
+
+		Vec4f Rx = GetX() * sx;
+		Vec4f Ry = GetY() * sy;
+		Vec4f Rz = GetZ() * sz;
+
+		Mat44f invR(Rx, Ry, Rz, Vec4f(0, 0, 0, 1));
+		invR.Transpose();
+
+		Mat44f invS = Mat44f::CreateScaleMatrix(Vec4f(sx, sy, sz, 0));
+
+		return invT * invR * invS;
+	}
+
 	Mat44f Mat44f::operator*(const Mat44f& other) const
 	{
 		DirectX::XMMATRIX dxRes = DirectX::XMMatrixMultiply(m_matrix, other.m_matrix);

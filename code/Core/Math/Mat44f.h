@@ -37,6 +37,9 @@ namespace Core
 		void Transpose();
 		Mat44f Inverse() const;
 
+		//Fast inverse, only works for orthogonal matrices (translation, rotation, scale)
+		Mat44f FastInverse() const;
+
 		Mat44f operator*(const Mat44f& other) const;
 
 		Quaternion GetRotationQuaternion() const;
