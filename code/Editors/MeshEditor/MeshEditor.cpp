@@ -222,7 +222,7 @@ namespace Editors
 		ComputeCameraPositionAndView();
 
 		MeshEditorModule& meshModule = MeshEditorModule::Get();
-		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
+		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { Module_OnMeshCreated(metadata); });
 		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
 		meshModule.OnBeforeMeshDeleted([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->RemoveRow(metadata.GetAssetId()); });
 	}
@@ -509,5 +509,11 @@ namespace Editors
 		Core::Vec4f cameraDirection = cameraLookAt - m_cameraPosition;
 
 		m_cameraView = Core::Mat44f::CreateView(m_cameraPosition, cameraDirection, cameraUp);
+	}
+
+	void MeshEditor::Module_OnMeshCreated(const Systems::AssetMetadata& metadata)
+	{
+		m_pMeshListModel->AddRow(metadata);
+		m_pMeshListModel->SetSelection(metadata);
 	}
 }

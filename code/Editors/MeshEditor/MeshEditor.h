@@ -21,6 +21,7 @@ namespace Rendering
 
 namespace Systems
 {
+	class AssetMetadata;
 	class MeshAsset;
 }
 
@@ -96,5 +97,7 @@ namespace Editors
 		void MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 
 		void ComputeCameraPositionAndView();
+
+		void Module_OnMeshCreated(const Systems::AssetMetadata& metadata);
 	};
 }
