@@ -216,19 +216,7 @@ namespace Editors
 		if (pGoNewParent == pGoOldParent)
 			return;
 
-		//add the child to its new parent if any
-		if (pGoNewParent)
-			pGoNewParent->GetTransform().AddChild(pGoChild);
-
-		//remove the child from its old parent
-		if (pGoOldParent)
-		{
-			Systems::TransformComponent& oldParentTx = pGoOldParent->GetTransform();
-			oldParentTx.RemoveChild(pGoChild->GetGuid());
-		}
-
-		//set the new parent to the child
-		pGoChild->GetTransform().SetParent(pGoNewParent);
+		m_pLevel->Reparent(pGoChild, pGoNewParent);
 
 		m_onReparentGameObject(pGoChild, pGoOldParent, pGoNewParent);
 	}

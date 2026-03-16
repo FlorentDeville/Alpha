@@ -63,6 +63,38 @@ namespace Systems
 		pGo->GetTransform().SetParent(pGoParent);
 	}
 
+	void LevelAsset::Reparent(GameObject* pGo, GameObject* pGoNewParent)
+	{
+		//add the child to its new parent if any
+		if (pGoNewParent)
+		{
+			pGoNewParent->GetTransform().AddChild(pGo);
+		}
+		else
+		{
+			//no new parent then I'm a root object
+			m_roots.PushBack(pGo->GetGuid());
+			m_rootsGameObject.PushBack(pGo);
+		}
+
+		//remove the child from its old parent
+		Systems::GameObject* pGoOldParent = FindGameObject(pGo->GetTransform().GetParentGuid());
+		if (pGoOldParent)
+		{
+			Systems::TransformComponent& oldParentTx = pGoOldParent->GetTransform();
+			oldParentTx.RemoveChild(pGo->GetGuid());
+		}
+		else
+		{
+			//if I had no parent, I was a root object. remove from the list of root
+			m_roots.Erase(pGo->GetGuid());
+			m_rootsGameObject.Erase(pGo);
+		}
+
+		//set the new parent to the child
+		pGo->GetTransform().SetParent(pGoNewParent);
+	}
+
 	void LevelAsset::DeleteGameObject(GameObject* pGo)
 	{
 		const Core::Guid& parentGuid = pGo->GetTransform().GetParentGuid();
