@@ -35,6 +35,8 @@ namespace Systems
 		// Add new game object to the specific parent. Invalid guid add it to the root
 		void AddGameObject(GameObject* pGo, const Core::Guid& parent);
 
+		void Reparent(GameObject* pGo, GameObject* pParent);
+
 		void DeleteGameObject(GameObject* pGo);
 		void DeleteGameObject(const Core::Guid& guid);
 
