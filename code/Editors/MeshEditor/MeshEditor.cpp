@@ -316,7 +316,7 @@ namespace Editors
 		char buffer[BUFFER_SIZE] = { '\0' };
 		snprintf(buffer, BUFFER_SIZE, "Rename texture %s", pMetadata->GetVirtualName().c_str());
 
-		UserInputDialog* pDialog = new UserInputDialog(buffer);
+		UserInputDialog* pDialog = new UserInputDialog(buffer, pMetadata->GetVirtualName());
 		pDialog->OnInputValidated([selectedMeshId](const std::string& input)
 			{
 				MeshEditorModule::Get().RenameMesh(selectedMeshId, input);
