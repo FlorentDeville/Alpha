@@ -247,7 +247,46 @@ namespace Editors
 
 		newNodeGuid = pNewGo->GetGuid();
 
-		pNewGo->SetName(pSrcObj->GetName() + "_new");
+		//set new name
+		{
+			uint32_t newSuffix = m_pLevel->GetGameObjectsArray().GetSize();
+			const int BUFFER_SIZE = 32;
+			char buffer[BUFFER_SIZE] = { '\0' };
+
+			//first find the base name
+			size_t pos = pSrcObj->GetName().find_last_of('_');
+			if (pos == std::string::npos)
+			{
+				snprintf(buffer, BUFFER_SIZE, "%s_%d", pSrcObj->GetName().c_str(), newSuffix);
+			}
+			else
+			{
+				bool isInteger = true;
+				std::string end = pSrcObj->GetName().substr(pos+1);
+				for (char c : end)
+				{
+					if (!std::isdigit(c))
+					{
+						isInteger = false;
+						break;
+					}
+				}
+
+				if (isInteger)
+				{
+					std::string baseName = pSrcObj->GetName().substr(0, pos);
+					snprintf(buffer, BUFFER_SIZE, "%s_%d", baseName.c_str(), newSuffix);
+
+				}
+				else
+				{
+					snprintf(buffer, BUFFER_SIZE, "%s_%d", pSrcObj->GetName().c_str(), newSuffix);
+				}
+			}
+		
+			pNewGo->SetName(buffer);
+		}
+
 		pNewGo->GetTransform().SetLocalTx(pSrcObj->GetTransform().GetLocalTx());
 		pNewGo->GetTransform().ComputeWorldTx();
 
