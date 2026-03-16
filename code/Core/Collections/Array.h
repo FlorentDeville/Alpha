@@ -31,11 +31,19 @@ namespace Core
 			reference operator*() const;
 			pointer operator->() const;
 
+			Iterator operator+(difference_type) const;
+			Iterator operator-(difference_type) const;
+
+			difference_type operator-(const Iterator& other) const;
+
 			Iterator& operator++();
 			Iterator& operator++(int);
 
+			Iterator& operator--();
+
 			bool operator==(const Iterator& other) const;
 			bool operator!=(const Iterator& other) const;
+			bool operator<(const Iterator& other) const;
 
 		private:
 			pointer m_pPtr;

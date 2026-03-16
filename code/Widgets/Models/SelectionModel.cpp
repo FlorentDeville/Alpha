@@ -130,10 +130,11 @@ namespace Widgets
 				continue;
 
 			ModelIndex endIndex = selectedRow.GetEndIndex();
-
 			int newRow = startIndex.GetRow() + count;
-			ModelIndex newStart = startIndex.GetIndex(newRow, 0);
-			ModelIndex newEnd = startIndex.GetIndex(newRow, endIndex.GetColumn());
+
+			const AbstractViewModel* pModel = startIndex.GetConstModel();
+			ModelIndex newStart = pModel->GetIndex(newRow, 0, startIndex.GetParent());
+			ModelIndex newEnd = pModel->GetIndex(newRow, endIndex.GetColumn(), startIndex.GetParent());
 			
 			selectedRow = SelectionRow(newStart, newEnd);
 		}

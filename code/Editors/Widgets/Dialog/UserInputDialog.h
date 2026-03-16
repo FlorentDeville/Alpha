@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -18,7 +18,7 @@ namespace Editors
 	class UserInputDialog : public Widgets::ModalWindow
 	{
 	public:
-		UserInputDialog(const std::string& title);
+		UserInputDialog(const std::string& title, const std::string& defaultValue = "");
 		~UserInputDialog();
 
 		void Open() override;

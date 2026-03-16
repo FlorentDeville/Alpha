@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 
@@ -12,7 +12,7 @@
 
 namespace Editors
 {
-	UserInputDialog::UserInputDialog(const std::string& title)
+	UserInputDialog::UserInputDialog(const std::string& title, const std::string& defaultValue)
 		: Widgets::ModalWindow(title)
 	{
 		const int WINDOW_WIDTH = 500;
@@ -31,6 +31,7 @@ namespace Editors
 
 		//input
 		m_pTextBox = new Widgets::TextBox();
+		m_pTextBox->SetText(defaultValue);
 		m_pTextBox->SetSize(Core::UInt2(0, 20));
 		m_pTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
 		m_pTextBox->OnValidate([this](const std::string& text) { OnOk(); });

@@ -222,7 +222,7 @@ namespace Editors
 		ComputeCameraPositionAndView();
 
 		MeshEditorModule& meshModule = MeshEditorModule::Get();
-		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->AddRow(metadata); });
+		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { Module_OnMeshCreated(metadata); });
 		meshModule.OnMeshRenamed([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->OnMeshRenamed(metadata); });
 		meshModule.OnBeforeMeshDeleted([this](const Systems::AssetMetadata& metadata) { m_pMeshListModel->RemoveRow(metadata.GetAssetId()); });
 	}
@@ -316,7 +316,7 @@ namespace Editors
 		char buffer[BUFFER_SIZE] = { '\0' };
 		snprintf(buffer, BUFFER_SIZE, "Rename texture %s", pMetadata->GetVirtualName().c_str());
 
-		UserInputDialog* pDialog = new UserInputDialog(buffer);
+		UserInputDialog* pDialog = new UserInputDialog(buffer, pMetadata->GetVirtualName());
 		pDialog->OnInputValidated([selectedMeshId](const std::string& input)
 			{
 				MeshEditorModule::Get().RenameMesh(selectedMeshId, input);
@@ -509,5 +509,11 @@ namespace Editors
 		Core::Vec4f cameraDirection = cameraLookAt - m_cameraPosition;
 
 		m_cameraView = Core::Mat44f::CreateView(m_cameraPosition, cameraDirection, cameraUp);
+	}
+
+	void MeshEditor::Module_OnMeshCreated(const Systems::AssetMetadata& metadata)
+	{
+		m_pMeshListModel->AddRow(metadata);
+		m_pMeshListModel->SetSelection(metadata);
 	}
 }
