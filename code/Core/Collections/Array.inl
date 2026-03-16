@@ -302,6 +302,21 @@ namespace Core
 		return m_pPtr;
 	}
 
+	template<typename T> typename Array<T>::Iterator Array<T>::Iterator::operator+(Array<T>::Iterator::difference_type diff) const
+	{
+		return m_pPtr + diff;
+	}
+
+	template<typename T> typename Array<T>::Iterator Array<T>::Iterator::operator-(Array<T>::Iterator::difference_type diff) const
+	{
+		return m_pPtr - diff;
+	}
+
+	template<typename T> typename Array<T>::Iterator::difference_type Array<T>::Iterator::operator-(const Iterator& other) const
+	{
+		return m_pPtr - other.m_pPtr;
+	}
+
 	template<typename T> typename Array<T>::Iterator& Array<T>::Iterator::operator++()
 	{
 		++m_pPtr;
@@ -315,6 +330,12 @@ namespace Core
 		return temp;
 	}
 
+	template<typename T> typename Array<T>::Iterator& Array<T>::Iterator::operator--()
+	{
+		--m_pPtr;
+		return *this;
+	}
+
 	template<typename T> bool Array<T>::Iterator::operator==(const Iterator& other) const
 	{
 		return m_pPtr == other.m_pPtr;
@@ -323,5 +344,10 @@ namespace Core
 	template<typename T> bool Array<T>::Iterator::operator!=(const Iterator& other) const
 	{
 		return !(*this == other);
+	}
+
+	template<typename T> bool Array<T>::Iterator::operator<(const Iterator& other) const
+	{
+		return m_pPtr < other.m_pPtr;
 	}
 }
