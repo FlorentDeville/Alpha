@@ -72,7 +72,7 @@ namespace Systems
 
 			//compute the new local to keep the object in the same world transform
 			Core::Mat44f txPs = pGoNewParent->GetTransform().GetWorldTx();
-			Core::Mat44f txInvPs = txPs.Inverse();
+			Core::Mat44f txInvPs = txPs.FastInverse();
 			Core::Mat44f newTxLs = pGo->GetTransform().GetWorldTx() * txInvPs;
 			pGo->GetTransform().SetLocalTx(newTxLs);
 		}
