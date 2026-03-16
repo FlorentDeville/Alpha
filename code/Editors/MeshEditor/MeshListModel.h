@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -57,5 +57,7 @@ namespace Editors
 		Core::Array<CachedMeshData> m_cache;
 
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
+
+		void SortCachedData();
 	};
 }
