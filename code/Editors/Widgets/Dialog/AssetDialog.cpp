@@ -18,6 +18,7 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/TableView.h"
 
+#include <algorithm>
 #include <list>
 
 namespace Editors
@@ -59,6 +60,8 @@ namespace Editors
 
 					m_cachedAsset.PushBack(cache);
 				});
+
+			std::sort(m_cachedAsset.begin(), m_cachedAsset.end(), [](const MetadataCache& data1, const MetadataCache& data2) { return data1.m_name < data2.m_name; });
 		}
 
 		~AssetListModel()
