@@ -170,8 +170,6 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[secondVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[secondVertexIndex]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[secondVertexIndex]];
-
-						size_t internalVertexIndex = m_position.GetSize();
 						
 						Core::Vec4f localPos = FromFbx(fbxLocalPos);
 						Core::Vec4f fbxPos = localPos * worldTx;
@@ -218,8 +216,6 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[lastVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[lastVertexIndex]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[lastVertexIndex]];
-
-						size_t internalVertexIndex = m_position.GetSize();
 						
 						Core::Vec4f localPos = FromFbx(fbxLocalPos);
 						Core::Vec4f fbxPos = localPos * worldTx;
