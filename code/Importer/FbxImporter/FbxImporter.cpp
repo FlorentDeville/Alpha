@@ -27,6 +27,16 @@ namespace FbxImporter
 		return mat;
 	}
 
+	static Core::Vec4f ConvertCoordSystem(const Core::Vec4f& fbxVec, const ofbx::GlobalSettings* pFbxSettings)
+	{
+		Core::Vec4f res = fbxVec;
+		if (pFbxSettings->CoordAxis == ofbx::CoordSystem_RightHanded)
+			res.Set(0, fbxVec.Get(0) * -1); // * -1 to convert to a left handed space.
+		else
+			res.Set(0, fbxVec.Get(0));
+
+		return res;
+	}
 
 	bool FbxImporter::Import(const std::string& fbxFilename, Systems::MeshAsset& mesh)
 	{
@@ -51,12 +61,18 @@ namespace FbxImporter
 			return false;
 		}
 
-		const ofbx::Object* pRoot = pScene->getRoot();
-		bool res = Visit(pRoot);
-
+		int meshCount = pScene->getMeshCount();
+		for (int ii = 0; ii < meshCount; ++ii)
+		{
+			const ofbx::Mesh* pMesh = pScene->getMesh(ii);
+			bool res = ImportMesh(pMesh);
+			if (!res)
+				return res;
+		}
+		
 		pScene->destroy();
 		delete[] pFileContent;
-		if (!res || m_indices.GetSize() == 0)
+		if (m_indices.GetSize() == 0)
 			return false;
 		
 		//vertical mirror
@@ -68,39 +84,13 @@ namespace FbxImporter
 
 		mesh.Init(fbxFilename, std::move(m_position), std::move(m_uv), std::move(m_color), std::move(m_normal), std::move(m_indices));
 
-		return res;
-	}
-
-	bool FbxImporter::Visit(const ofbx::Object* pNode)
-	{
-		if (!pNode)
-			return false;
-
-		int ii = 0;
-		while (ofbx::Object* pChild = pNode->resolveObjectLink(ii))
-		{
-			if (pChild->getType() == ofbx::Object::Type::MESH)
-			{
-				const ofbx::Mesh* pMesh = static_cast<ofbx::Mesh*>(pChild);
-				bool res = ImportMesh(pMesh);
-				if (!res)
-					return res;
-			}
-			else
-			{
-				bool res = Visit(pChild);
-				if (!res)
-					return res;
-			}
-
-			++ii;
-		}
-
 		return true;
 	}
 
 	bool FbxImporter::ImportMesh(const ofbx::Mesh* pMesh)
 	{
+		const ofbx::GlobalSettings* pSettings = pMesh->getScene().getGlobalSettings();
+
 		ofbx::DMatrix fbxWorldTx = pMesh->getGlobalTransform();
 		Core::Mat44f worldTx = FromFbx(fbxWorldTx);
 
@@ -136,10 +126,11 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[vertexStart]];
 					
 						Core::Vec4f localPos = FromFbx(fbxLocalPos);
-						Core::Vec4f pos = localPos * worldTx;
+						Core::Vec4f fbxPos = localPos * worldTx;
 
 						//fbx represents everything in centimeters. Divide by 100 to get it in meters
-						pos = pos * 0.01f;
+						fbxPos = fbxPos * 0.01f;
+						Core::Vec4f pos = ConvertCoordSystem(fbxPos, pSettings);
 
 						m_position.PushBack(pos.GetX());
 						m_position.PushBack(pos.GetY());
@@ -179,14 +170,13 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[secondVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[secondVertexIndex]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[secondVertexIndex]];
-
-						size_t internalVertexIndex = m_position.GetSize();
 						
 						Core::Vec4f localPos = FromFbx(fbxLocalPos);
-						Core::Vec4f pos = localPos * worldTx;
+						Core::Vec4f fbxPos = localPos * worldTx;
 
 						//fbx represents everything in centimeters. Divide by 100 to get it in meters
-						pos = pos * 0.01f;
+						fbxPos = fbxPos * 0.01f;
+						Core::Vec4f pos = ConvertCoordSystem(fbxPos, pSettings);
 
 						m_position.PushBack(pos.GetX());
 						m_position.PushBack(pos.GetY());
@@ -226,14 +216,13 @@ namespace FbxImporter
 						ofbx::Vec3 fbxLocalPos = positions.values[positions.indices[lastVertexIndex]];
 						ofbx::Vec2 uv = uvs.values[uvs.indices[lastVertexIndex]];
 						ofbx::Vec3 fbxLocalNormal = normals.values[normals.indices[lastVertexIndex]];
-
-						size_t internalVertexIndex = m_position.GetSize();
 						
 						Core::Vec4f localPos = FromFbx(fbxLocalPos);
-						Core::Vec4f pos = localPos * worldTx;
+						Core::Vec4f fbxPos = localPos * worldTx;
 
 						//fbx represents everything in centimeters. Divide by 100 to get it in meters
-						pos = pos * 0.01f;
+						fbxPos = fbxPos * 0.01f;
+						Core::Vec4f pos = ConvertCoordSystem(fbxPos, pSettings);
 
 						m_position.PushBack(pos.GetX());
 						m_position.PushBack(pos.GetY());
@@ -269,8 +258,8 @@ namespace FbxImporter
 					}
 
 					m_indices.PushBack(internalVertexIndex);
-					m_indices.PushBack(internalVertexIndex + 1);
 					m_indices.PushBack(internalVertexIndex + 2);
+					m_indices.PushBack(internalVertexIndex + 1);
 				}
 			}
 			
