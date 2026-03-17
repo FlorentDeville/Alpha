@@ -9,8 +9,8 @@ namespace Widgets
 	Container_V2::Container_V2()
 		: Widget()
 	{
-		m_virtualSize.x = UINT32_MAX;
-		m_virtualSize.y = UINT32_MAX;
+		m_virtualSize.x = INT32_MAX * 0.5f;
+		m_virtualSize.y = INT32_MAX * 0.5f;
 
 		//debug
 		m_showBorder = true;
