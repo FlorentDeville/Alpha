@@ -28,7 +28,6 @@ namespace FbxImporter
 		bool Import(const std::string& fbxFilename, Systems::MeshAsset& mesh);
 
 	private:
-		bool Visit(const ofbx::Object*);
 		bool ImportMesh(const ofbx::Mesh* pMesh);
 
 		Core::Array<float> m_position;
