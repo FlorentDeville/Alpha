@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Widgets/TreeView.h"
 
@@ -66,6 +66,20 @@ namespace Widgets
 		{
 			delete m_pModel;
 			m_pModel = nullptr;
+		}
+	}
+
+	void TreeView::Enable(bool recursive)
+	{
+		Parent::Enable(recursive);
+
+		for (std::map<const Widget*, RowInfo>::iterator it = m_rowInfoMap.begin(); it != m_rowInfoMap.end(); ++it)
+		{
+			if (it->second.m_collapsed)
+			{
+				ModelIndex index = ComputeModelIndexFromRowLayout(static_cast<const Layout*>(it->first));
+				Collapse(index, &it->second);
+			}
 		}
 	}
 
@@ -533,30 +547,12 @@ namespace Widgets
 
 		if (pInfo->m_collapsed)
 		{
-			Rendering::TextureId expandedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
-			pInfo->m_pIcon->SetTextureId(expandedIcon);
-
-			int rowCount = m_pModel->GetRowCount(index);
-			for (int ii = 0; ii < rowCount; ++ii)
-			{
-				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, index);
-				ShowRowsRecursively(childIndex);
-			}
+			Expand(index, pInfo);
 		}
 		else
 		{
-			Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
-			pInfo->m_pIcon->SetTextureId(collapsedIcon);
-
-			int rowCount = m_pModel->GetRowCount(index);
-			for (int ii = 0; ii < rowCount; ++ii)
-			{
-				ModelIndex childIndex = m_pModel->GetIndex(ii, 0, index);
-				HideRowsRecursively(childIndex);
-			}
+			Collapse(index, pInfo);
 		}
-
-		pInfo->m_collapsed = !pInfo->m_collapsed;
 
 		WidgetMgr::Get().RequestResize();
 	}
@@ -758,6 +754,36 @@ namespace Widgets
 			return nullptr;
 
 		return &it->second;
+	}
+
+	void TreeView::Collapse(ModelIndex& index, RowInfo* pInfo)
+	{
+		Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
+		pInfo->m_pIcon->SetTextureId(collapsedIcon);
+
+		int rowCount = m_pModel->GetRowCount(index);
+		for (int ii = 0; ii < rowCount; ++ii)
+		{
+			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, index);
+			HideRowsRecursively(childIndex);
+		}
+
+		pInfo->m_collapsed = true;
+	}
+
+	void TreeView::Expand(ModelIndex& index, RowInfo* pInfo)
+	{
+		Rendering::TextureId expandedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
+		pInfo->m_pIcon->SetTextureId(expandedIcon);
+
+		int rowCount = m_pModel->GetRowCount(index);
+		for (int ii = 0; ii < rowCount; ++ii)
+		{
+			ModelIndex childIndex = m_pModel->GetIndex(ii, 0, index);
+			ShowRowsRecursively(childIndex);
+		}
+
+		pInfo->m_collapsed = false;
 	}
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
