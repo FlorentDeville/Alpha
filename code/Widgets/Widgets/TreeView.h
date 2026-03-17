@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -25,8 +25,12 @@ namespace Widgets
 	class TreeView : public Widget
 	{
 	public:
+		using Parent = Widget;
+
 		TreeView();
 		~TreeView();
+
+		void Enable(bool recursive = true) override;
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor);
 
@@ -111,6 +115,9 @@ namespace Widgets
 		int GetRowIndexInLayout(const Layout* pLayout) const;
 
 		RowInfo* GetRowInfo(const Widget* pRowLayout);
+
+		void Collapse(ModelIndex& index, RowInfo* pInfo);
+		void Expand(ModelIndex& index, RowInfo* pInfo);
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);
