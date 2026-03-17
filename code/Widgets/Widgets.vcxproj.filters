@@ -157,6 +157,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tools\Rect.h">
+		<Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\Container_V2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -282,6 +285,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tools\Rect.cpp">
+		<Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Container_V2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
