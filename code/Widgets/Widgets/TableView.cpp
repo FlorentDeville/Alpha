@@ -36,10 +36,10 @@ namespace Widgets
 		, m_cellDefaultSize(75, 20)
 		, m_columnWidth()
 	{
-		SetSizeStyle(Widgets::Widget::STRETCH);
+		SetSizeStyle(Widgets::Widget::FIT);
 
 		m_pLayout = new Layout();
-		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
+		m_pLayout->SetSizeStyle(SIZE_STYLE::FIT);
 		m_pLayout->SetDirection(Layout::Vertical);
 		m_pLayout->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f)); //transparent
 		m_pLayout->GetHoverStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f)); //transparent
@@ -180,13 +180,14 @@ namespace Widgets
 			std::string data = "  " + m_pModel->GetHeaderData(jj);
 
 			Label* pLabel = new Label(data);
+
+			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pLabel->SetSize(m_cellDefaultSize);
+
+			pHeaderLayout->AddWidget(pLabel);
+
 			if (jj != columnCount - 1)
 			{
-				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				pLabel->SetSize(m_cellDefaultSize);
-
-				pHeaderLayout->AddWidget(pLabel);
-
 				Split* pSplit = new Split(true);
 				pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
 				pSplit->SetWidth(4);
@@ -194,13 +195,6 @@ namespace Widgets
 				pSplit->OnDrag([this, pLabel, jj](const Core::Int2& mousePosition) { HeaderSplit_OnDrag(mousePosition, pLabel, jj);	});
 
 				pHeaderLayout->AddWidget(pSplit);
-			}
-			else
-			{
-				pLabel->SetHeight(m_cellDefaultSize.y);
-				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-
-				pHeaderLayout->AddWidget(pLabel);
 			}
 		}
 
@@ -368,7 +362,7 @@ namespace Widgets
 	{
 		Layout* pRowLayout = new Layout();
 		pRowLayout->SetSpace(Core::Int2(5, 0));
-		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
+		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_FIT | SIZE_STYLE::VSIZE_FIT);
 		pRowLayout->SetDirection(Layout::Horizontal);
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pRowLayout->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, pRowLayout); });
@@ -384,17 +378,9 @@ namespace Widgets
 			std::string data = m_pModel->GetData(rowIndex);
 
 			Label* pLabel = new Label(data);
-			if (jj != columnCount - 1)
-			{
-				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-				Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
-				pLabel->SetSize(cellSize);
-			}
-			else
-			{
-				pLabel->SetHeight(m_cellDefaultSize.y);
-				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			}
+			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
+			pLabel->SetSize(cellSize);
 
 			pRowLayout->AddWidget(pLabel);
 		}
