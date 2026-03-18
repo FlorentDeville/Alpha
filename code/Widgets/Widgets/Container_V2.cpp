@@ -211,7 +211,12 @@ namespace Widgets
 			m_pHScrollContainer->ReComputePosition(m_absPos, m_size);
 
 			m_pHScrollBar->Enable();
-			m_pHScrollBar->SetX(0);
+			{
+				float ratio = -m_absPosOffset.x / static_cast<float>(m_scrollingDistance.x);
+				int32_t scrollBarXPos = static_cast<int32_t>((m_hScrollContainerSize / 2) * ratio);
+				m_pHScrollBar->SetX(scrollBarXPos);
+			}
+
 			m_pHScrollBar->SetY(m_size.y - SCROLL_CONTAINER_SIZE + ((SCROLL_CONTAINER_SIZE - SCROLLBAR_CONTAINER_SIZE) / 2));
 			m_pHScrollBar->SetWidth(m_hScrollContainerSize / 2);
 			m_pHScrollBar->SetHeight(SCROLLBAR_CONTAINER_SIZE);
