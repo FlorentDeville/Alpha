@@ -21,10 +21,10 @@ namespace Widgets
 		: Widget()
 		, m_absPosOffset(0, 0)
 		, m_scrollingDistance(0, 0)
-		, m_showVerticalScrollBar(false)
+		, m_showVScrollBar(false)
 		, m_isDraggingScrollBar(false)
 		, m_draggingStartMousePos(0, 0)
-		, m_verticalScrollContainerSize(0)
+		, m_vScrollContainerSize(0)
 		, m_hScrollContainerSize(0)
 		, m_showHScrollBar(false)
 	{
@@ -36,28 +36,28 @@ namespace Widgets
 		const Color scrollBarHoverColor(153, 153, 153);
 
 		{
-			m_pVerticalScrollContainer = new Container();
-			m_pVerticalScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
-			m_pVerticalScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
-			m_pVerticalScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
-			m_pVerticalScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
-			m_pVerticalScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
-			m_pVerticalScrollContainer->Disable();
-			WidgetMgr::Get().RegisterWidget(m_pVerticalScrollContainer);
+			m_pVScrollContainer = new Container();
+			m_pVScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pVScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
+			m_pVScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
+			m_pVScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
+			m_pVScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
+			m_pVScrollContainer->Disable();
+			WidgetMgr::Get().RegisterWidget(m_pVScrollContainer);
 		}
 
 		{
-			m_pVerticalScrollBar = new Container();
-			m_pVerticalScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
-			m_pVerticalScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
-			m_pVerticalScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
-			m_pVerticalScrollBar->GetDefaultStyle().SetBackgroundColor(scrollBarColor);
-			m_pVerticalScrollBar->GetHoverStyle().SetBackgroundColor(scrollBarHoverColor);
-			m_pVerticalScrollBar->Disable();
-			m_pVerticalScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseDown(ev); });
-			m_pVerticalScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseUp(ev); });
-			m_pVerticalScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseMove(ev); });
-			WidgetMgr::Get().RegisterWidget(m_pVerticalScrollBar);
+			m_pVScrollBar = new Container();
+			m_pVScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pVScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
+			m_pVScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
+			m_pVScrollBar->GetDefaultStyle().SetBackgroundColor(scrollBarColor);
+			m_pVScrollBar->GetHoverStyle().SetBackgroundColor(scrollBarHoverColor);
+			m_pVScrollBar->Disable();
+			m_pVScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseDown(ev); });
+			m_pVScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseUp(ev); });
+			m_pVScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseMove(ev); });
+			WidgetMgr::Get().RegisterWidget(m_pVScrollBar);
 		}
 
 		{
@@ -88,13 +88,13 @@ namespace Widgets
 
 	Container_V2::~Container_V2()
 	{
-		WidgetMgr::Get().UnregisterWidget(m_pVerticalScrollContainer);
-		delete m_pVerticalScrollContainer;
-		m_pVerticalScrollContainer = nullptr;
+		WidgetMgr::Get().UnregisterWidget(m_pVScrollContainer);
+		delete m_pVScrollContainer;
+		m_pVScrollContainer = nullptr;
 
-		WidgetMgr::Get().UnregisterWidget(m_pVerticalScrollBar);
-		delete m_pVerticalScrollBar;
-		m_pVerticalScrollBar = nullptr;
+		WidgetMgr::Get().UnregisterWidget(m_pVScrollBar);
+		delete m_pVScrollBar;
+		m_pVScrollBar = nullptr;
 
 		WidgetMgr::Get().UnregisterWidget(m_pHScrollContainer);
 		delete m_pHScrollContainer;
@@ -114,17 +114,17 @@ namespace Widgets
 		fullRect.bottom = m_absPos.y + m_size.y;
 
 		D3D12_RECT innerRect = fullRect;
-		if(m_showVerticalScrollBar)
+		if(m_showVScrollBar)
 			innerRect.right = m_absPos.x + m_size.x - SCROLL_CONTAINER_SIZE;
 		if(m_showHScrollBar)
 			innerRect.bottom = m_absPos.y + m_size.y - SCROLL_CONTAINER_SIZE;
 
 		Parent::Draw(windowSize, innerRect);
 
-		if (m_showVerticalScrollBar)
+		if (m_showVScrollBar)
 		{
-			m_pVerticalScrollContainer->Draw(windowSize, fullRect);
-			m_pVerticalScrollBar->Draw(windowSize, fullRect);
+			m_pVScrollContainer->Draw(windowSize, fullRect);
+			m_pVScrollBar->Draw(windowSize, fullRect);
 		}
 
 		if (m_showHScrollBar)
@@ -172,34 +172,34 @@ namespace Widgets
 	{
 		Parent::Resize(parentAbsPos, parentSize);
 
-		if (m_showVerticalScrollBar)
+		if (m_showVScrollBar)
 		{
 			if(!m_showHScrollBar)
-				m_verticalScrollContainerSize = m_size.y;
+				m_vScrollContainerSize = m_size.y;
 			else
-				m_verticalScrollContainerSize = m_size.y - SCROLL_CONTAINER_SIZE;
+				m_vScrollContainerSize = m_size.y - SCROLL_CONTAINER_SIZE;
 
-			m_pVerticalScrollContainer->Enable();
-			m_pVerticalScrollContainer->SetX(m_size.x - SCROLL_CONTAINER_SIZE);
-			m_pVerticalScrollContainer->SetY(0);
-			m_pVerticalScrollContainer->SetWidth(SCROLL_CONTAINER_SIZE);
-			m_pVerticalScrollContainer->SetHeight(m_verticalScrollContainerSize);
-			m_pVerticalScrollContainer->ReComputePosition(m_absPos, m_size);
+			m_pVScrollContainer->Enable();
+			m_pVScrollContainer->SetX(m_size.x - SCROLL_CONTAINER_SIZE);
+			m_pVScrollContainer->SetY(0);
+			m_pVScrollContainer->SetWidth(SCROLL_CONTAINER_SIZE);
+			m_pVScrollContainer->SetHeight(m_vScrollContainerSize);
+			m_pVScrollContainer->ReComputePosition(m_absPos, m_size);
 
-			m_pVerticalScrollBar->Enable();
-			m_pVerticalScrollBar->SetX(m_size.x - SCROLL_CONTAINER_SIZE + ((SCROLL_CONTAINER_SIZE - SCROLLBAR_CONTAINER_SIZE) / 2));
+			m_pVScrollBar->Enable();
+			m_pVScrollBar->SetX(m_size.x - SCROLL_CONTAINER_SIZE + ((SCROLL_CONTAINER_SIZE - SCROLLBAR_CONTAINER_SIZE) / 2));
 			UpdateVScrollBarPositionFromOffset();
 
-			m_pVerticalScrollBar->SetWidth(SCROLLBAR_CONTAINER_SIZE);
-			m_pVerticalScrollBar->SetHeight(m_verticalScrollContainerSize / 2);
+			m_pVScrollBar->SetWidth(SCROLLBAR_CONTAINER_SIZE);
+			m_pVScrollBar->SetHeight(m_vScrollContainerSize / 2);
 			Core::Int3 absPos = m_absPos;
 			absPos.z -= 1;
-			m_pVerticalScrollBar->ReComputePosition(absPos, m_size);
+			m_pVScrollBar->ReComputePosition(absPos, m_size);
 		}
 
 		if (m_showHScrollBar)
 		{
-			if(!m_showVerticalScrollBar)
+			if(!m_showVScrollBar)
 				m_hScrollContainerSize = m_size.x;
 			else
 				m_hScrollContainerSize = m_size.x - SCROLL_CONTAINER_SIZE;
@@ -256,11 +256,11 @@ namespace Widgets
 		if (m_size.y < childrenMax.y)
 		{
 			m_scrollingDistance.y = childrenMax.y - m_size.y;
-			m_showVerticalScrollBar = true;
+			m_showVScrollBar = true;
 		}
 		else
 		{
-			m_showVerticalScrollBar = false;
+			m_showVScrollBar = false;
 		}
 
 		m_absPosOffset.y = saturate(m_absPosOffset.y, -static_cast<int32_t>(m_scrollingDistance.y), 0);
@@ -270,13 +270,13 @@ namespace Widgets
 	void Container_V2::UpdateVScrollBarPositionFromOffset()
 	{
 		float ratio = -m_absPosOffset.y / static_cast<float>(m_scrollingDistance.y);
-		int32_t scrollBarYPos = static_cast<int32_t>((m_verticalScrollContainerSize / 2) * ratio);
-		m_pVerticalScrollBar->SetY(scrollBarYPos);
+		int32_t scrollBarYPos = static_cast<int32_t>((m_vScrollContainerSize / 2) * ratio);
+		m_pVScrollBar->SetY(scrollBarYPos);
 	}
 
 	void Container_V2::VScrollBar_OnMouseDown(const Widgets::MouseEvent& ev)
 	{
-		m_pVerticalScrollBar->CaptureMouse();
+		m_pVScrollBar->CaptureMouse();
 		m_isDraggingScrollBar = true;
 		m_draggingStartMousePos = Core::Int2(ev.GetX(), ev.GetY());
 		m_draggingStartPosOffset = m_absPosOffset;
@@ -284,7 +284,7 @@ namespace Widgets
 
 	void Container_V2::VScrollBar_OnMouseUp(const Widgets::MouseEvent& ev)
 	{
-		m_pVerticalScrollBar->ReleaseMouse();
+		m_pVScrollBar->ReleaseMouse();
 		m_isDraggingScrollBar = false;
 	}
 
@@ -294,7 +294,7 @@ namespace Widgets
 			return;
 
 		int32_t distance = ev.GetY() - m_draggingStartMousePos.y; //+ is down, - is up
-		float ratio = distance / static_cast<float>((m_verticalScrollContainerSize / 2));
+		float ratio = distance / static_cast<float>((m_vScrollContainerSize / 2));
 		m_absPosOffset.y = static_cast<int32_t>(-ratio * m_scrollingDistance.y) + m_draggingStartPosOffset.y;
 
 		WidgetMgr::Get().RequestResize();

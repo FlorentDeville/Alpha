@@ -37,10 +37,10 @@ namespace Widgets
 		Core::Int2 m_draggingStartPosOffset;
 
 		//vertical scroll bar
-		int32_t m_verticalScrollContainerSize;
-		Container* m_pVerticalScrollContainer;
-		Container* m_pVerticalScrollBar;
-		bool m_showVerticalScrollBar;	
+		Container* m_pVScrollContainer;
+		Container* m_pVScrollBar;
+		int32_t m_vScrollContainerSize;
+		bool m_showVScrollBar;	
 
 		//horizontal scroll bar
 		Container* m_pHScrollContainer;
