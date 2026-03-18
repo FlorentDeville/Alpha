@@ -16,7 +16,7 @@ namespace Widgets
 		MouseWheelEvent(int32_t wheelDistance);
 		~MouseWheelEvent() = default;
 
-		int32_t GetWheelDistance();
+		int32_t GetWheelDistance() const;
 
 	private:
 		int32_t m_wheelDistance;

@@ -13,7 +13,7 @@ namespace Widgets
 		m_id = EventType::kMouseWheel;
 	}
 
-	int32_t MouseWheelEvent::GetWheelDistance()
+	int32_t MouseWheelEvent::GetWheelDistance() const
 	{
 		return m_wheelDistance;
 	}
