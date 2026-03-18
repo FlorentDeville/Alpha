@@ -4,18 +4,17 @@
 
 #include "Widgets/Widgets/Container_V2.h"
 
+#include "Widgets/Events/MouseWheelEvent.h"
+#include "Widgets/WidgetMgr.h"
+
 namespace Widgets
 {
 	Container_V2::Container_V2()
 		: Widget()
+		, m_absPosOffset(0, 0)
 	{
-		m_virtualSize.x = INT32_MAX * 0.5f;
-		m_virtualSize.y = INT32_MAX * 0.5f;
-
-		//debug
-		m_showBorder = true;
-		m_borderWidth = 1;
-		m_borderColor = Color(255, 255, 255);
+		m_virtualSize.x = INT32_MAX / 2;
+		m_virtualSize.y = INT32_MAX / 2;
 	}
 
 	Container_V2::~Container_V2()
@@ -33,13 +32,42 @@ namespace Widgets
 
 	bool Container_V2::Handle(const BaseEvent& ev)
 	{
-		return Parent::Handle(ev);
+		switch (ev.m_id)
+		{
+		case EventType::kMouseWheel:
+		{
+			const int INCREMENT = 20;
+			const MouseWheelEvent& wheelEvent = static_cast<const MouseWheelEvent&>(ev);
+			if (wheelEvent.GetWheelDistance() > 0) //forward
+			{
+				m_absPosOffset.y += INCREMENT;
+			}
+			else //backward
+			{
+				m_absPosOffset.y -= INCREMENT;
+			}
+
+			Widgets::WidgetMgr::Get().RequestResize();
+			return true;
+		}
+		break;
+
+		default:
+			return Parent::Handle(ev);
+		break;
+
+		}
 	}
 
 	void Container_V2::ResizeChildren()
 	{
-		//Parent::ResizeChildren();
 		for (Widget* pChild : m_children)
-			pChild->Resize(m_absPos, m_virtualSize);
+		{
+			Core::Int3 absPos = m_absPos;
+			absPos.x += m_absPosOffset.x;
+			absPos.y += m_absPosOffset.y;
+
+			pChild->Resize(absPos, m_virtualSize);
+		}
 	}
 }

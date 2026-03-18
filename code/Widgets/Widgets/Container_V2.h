@@ -21,6 +21,7 @@ namespace Widgets
 		void ResizeChildren() override;
 
 	private:
-		Core::UInt2 m_virtualSize; //size propagated to the children
+		Core::Int2 m_absPosOffset;
+		Core::UInt2 m_virtualSize;		//size propagated to the children
 	};
 }
