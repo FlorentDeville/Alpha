@@ -482,6 +482,8 @@ void CreateMainWindow(const std::string& shaderPath)
 
 		Editors::MeshListModel* pModel = new Editors::MeshListModel();
 		pTableView->SetModel(pModel);
+		pTableView->SetColumnWidth(Editors::MeshListModel::Columns::Id, 200);
+		pTableView->SetColumnWidth(Editors::MeshListModel::Columns::Name, 300);
 		//Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
 		//pTableView->SetModel(pModel);
 		//pTableView->SetMultiSelection(true);
