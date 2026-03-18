@@ -110,9 +110,6 @@ namespace Widgets
 		void OpenModalWindow(Widget* pModalWindow);
 		void CloseModalWindow();
 
-		uint32_t GetWindowWidth() const;
-		uint32_t GetWindowHeight() const;
-
 		Rendering::TextureId GetIconTextureId(IconId iconId) const;
 
 		Rendering::PipelineStateId GetBaseWidgetPsoId() const;

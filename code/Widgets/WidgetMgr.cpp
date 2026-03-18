@@ -317,8 +317,7 @@ namespace Widgets
 
 		Core::Int3 absPos(0, 0, 100);
 		Core::UInt2 size(m_pMainSysWindow->GetWidth(), m_pMainSysWindow->GetHeight());
-		Rect rect(0, m_pMainSysWindow->GetWidth(), 0, m_pMainSysWindow->GetHeight());
-		m_pRoot->Resize(absPos, size, rect);
+		m_pRoot->Resize(absPos, size);
 
 		ComputeSortedWidgetQueue();
 	}
@@ -559,16 +558,6 @@ namespace Widgets
 		m_pModalWindow = nullptr;
 
 		RequestResize();
-	}
-
-	uint32_t WidgetMgr::GetWindowWidth() const
-	{
-		return m_pMainSysWindow->GetWidth();
-	}
-
-	uint32_t WidgetMgr::GetWindowHeight() const
-	{
-		return m_pMainSysWindow->GetHeight();
 	}
 
 	Rendering::TextureId WidgetMgr::GetIconTextureId(IconId iconId) const
