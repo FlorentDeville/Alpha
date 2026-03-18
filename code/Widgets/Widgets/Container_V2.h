@@ -28,8 +28,9 @@ namespace Widgets
 		Core::UInt2 m_virtualSize;		//size propagated to the children
 		Core::UInt2 m_scrollingDistance;
 
-		const int SCROLL_CONTAINER_SIZE = 20;
-		const int SCROLLBAR_CONTAINER_SIZE = 10;
+		const int32_t SCROLL_CONTAINER_SIZE = 20;
+		const int32_t SCROLLBAR_CONTAINER_SIZE = 10;
+		int32_t m_verticalScrollContainerSize;
 		Container* m_pVerticalScrollContainer;
 		Container* m_pVerticalScrollBar;
 
