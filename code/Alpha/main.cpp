@@ -30,6 +30,7 @@
 #include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/TextureEditor/TextureEditorModule.h"
+#include "Editors/MeshEditor/MeshListModel.h"
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Cursor/Cursor.h"
@@ -67,6 +68,7 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/CheckBox.h"
 #include "Widgets/Widgets/ComboBox.h"
+#include "Widgets/Widgets/Container_V2.h"
 #include "Widgets/Widgets/TableView.h"
 
 #ifdef _DEBUG
@@ -453,25 +455,41 @@ void CreateMainWindow(const std::string& shaderPath)
 #ifdef _DEBUG
 	{
 		Widgets::Tab* pTab = new Widgets::Tab();
+		//Widgets::Layout* pLayout = new Widgets::Layout();
+		//pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		/*pLayout->GetDefaultStyle().ShowBorder(true);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
 		pLayout->GetHoverStyle().ShowBorder(true);
 		pLayout->GetHoverStyle().SetBorderSize(3);*/
 
+		//pTab->AddWidget(pLayout);
 		pMiddleTabContainer->AddTab("Widgets", pTab);
 
+		Widgets::Container_V2* pOffsetContainer = new Widgets::Container_V2();
+		//Widgets::Container* pOffsetContainer = new Widgets::Container();
 		pOffsetContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pOffsetContainer->SetSize(Core::UInt2(500, 200));
+		pOffsetContainer->SetX(20);
+		pOffsetContainer->SetY(30);
+		pTab->AddWidget(pOffsetContainer);
 		//pOffsetContainer->GetDefaultStyle().ShowBorder(true);
 		//pOffsetContainer->GetDefaultStyle().SetBorderSize(2);
+		//pLayout->AddWidget(pOffsetContainer);
 
 		Widgets::TableView* pTableView = new Widgets::TableView();
+		pOffsetContainer->AddWidget(pTableView);
+		//pTableView->SetSize(Core::UInt2(300, 700));
 
+		Editors::MeshListModel* pModel = new Editors::MeshListModel();
+		pTableView->SetModel(pModel);
 		//Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
 		//pTableView->SetModel(pModel);
 		//pTableView->SetMultiSelection(true);
 	}
 #endif
 
+	//pMiddleTabContainer->SetSelectedTab(0);
+	pMiddleTabContainer->SetSelectedTab(SID("Widgets"));
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)
