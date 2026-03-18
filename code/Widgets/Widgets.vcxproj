@@ -47,6 +47,7 @@
     <ClInclude Include="Tools\AlternateColorCBuffer.h" />
     <ClInclude Include="Tools\Color.h" />
     <ClInclude Include="Tools\DefaultColors.h" />
+    <ClInclude Include="Tools\Rect.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WidgetMgr.h" />
@@ -89,6 +90,7 @@
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Tools\Color.cpp" />
     <ClCompile Include="Tools\DefaultColors.cpp" />
+    <ClCompile Include="Tools\Rect.cpp" />
     <ClCompile Include="Viewport.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WidgetMgr.cpp" />

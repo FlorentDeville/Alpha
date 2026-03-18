@@ -40,6 +40,12 @@ namespace Widgets
 
 	void Layout::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
+		//When a TableView is cropped, the visible rect of the cropped rows are not updated correctly
+		//because m_visibleRect is updated in Resize and Resize doesn't know anything about the parent visible rect.
+		//This triggers a bug where a not visible table row still receive mouse events.
+		Rect parentRect(scissor.left, scissor.right, scissor.top, scissor.bottom);
+		m_visibleRect.Intersect(parentRect);
+
 		LayoutStyle* pCurrentStyle = &m_defaultStyle;
 		if (m_hover)
 			pCurrentStyle = &m_hoverStyle;
@@ -195,7 +201,9 @@ namespace Widgets
 			}
 		}
 
-		ReComputeSize_PostChildren();	
+		ReComputeSize_PostChildren();
+
+		m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
 	}
 
 	void Layout::ReComputeSize_PostChildren()

@@ -31,7 +31,8 @@ namespace Widgets
 		, m_focusPolicy(FOCUS_POLICY::DEFAULT)
 		, m_pParent(nullptr)
 		, m_padding()
-	{}
+		, m_visibleRect()
+	{ }
 
 	Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
 		: Widget()
@@ -164,6 +165,8 @@ namespace Widgets
 		}
 
 		m_absPos.z = parentAbsPos.z - 1;
+
+		m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
 	}
 
 	void Widget::ResizeChildren()
@@ -189,6 +192,8 @@ namespace Widgets
 		Core::UInt2 oldSize = m_size;
 
 		ReComputeSize_PostChildren();
+
+		m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
 
 		//If my children forced me to change my size then I might need to reposition the children.
 		//For example the tab header have a Container with a Label. The Label stretches to contains the entire text
@@ -483,15 +488,9 @@ namespace Widgets
 		return m_pParent;
 	}
 
-	bool Widget::IsInside(uint32_t screenX, uint32_t screenY) const
+	bool Widget::IsInsideVisibleRect(uint32_t screenX, uint32_t screenY) const
 	{
-		if (screenX > (uint32_t)GetScreenX() && screenX < GetScreenX() + GetWidth() &&
-			screenY >(uint32_t)GetScreenY() && screenY < GetScreenY() + GetHeight())
-		{
-			return true;
-		}
-
-		return false;
+		return m_visibleRect.IsInside(screenX, screenY);
 	}
 
 	bool Widget::IsEnabled() const
