@@ -30,6 +30,8 @@ namespace Widgets
 
 		const int32_t SCROLL_CONTAINER_SIZE = 20;
 		const int32_t SCROLLBAR_CONTAINER_SIZE = 10;
+
+		//vertical scroll bar
 		int32_t m_verticalScrollContainerSize;
 		Container* m_pVerticalScrollContainer;
 		Container* m_pVerticalScrollBar;
@@ -37,6 +39,12 @@ namespace Widgets
 		bool m_showVerticalScrollBar;
 		bool m_isDraggingVerticalScrollBar;
 		Core::Int2 m_dragVScrollBarStartPos;
+
+		//horizontal scroll bar
+		Container* m_pHScrollContainer;
+		Container* m_pHScrollBar;
+		int32_t m_hScrollContainerSize;
+		bool m_showHScrollBar;
 
 		void UpdateVScrollBarPositionFromOffset();
 

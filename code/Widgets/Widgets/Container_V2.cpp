@@ -25,17 +25,20 @@ namespace Widgets
 		, m_isDraggingVerticalScrollBar(false)
 		, m_dragVScrollBarStartPos(0, 0)
 		, m_verticalScrollContainerSize(0)
+		, m_hScrollContainerSize(0)
 	{
 		m_virtualSize.x = INT32_MAX / 2;
 		m_virtualSize.y = INT32_MAX / 2;
+
+		const Color scrollContainerColor(46, 46, 46);
+		const Color scrollBarColor(77, 77, 77);
+		const Color scrollBarHoverColor(153, 153, 153);
 
 		{
 			m_pVerticalScrollContainer = new Container();
 			m_pVerticalScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
 			m_pVerticalScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
 			m_pVerticalScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
-
-			const Color scrollContainerColor(46, 46, 46);
 			m_pVerticalScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
 			m_pVerticalScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
 			m_pVerticalScrollContainer->Disable();
@@ -47,14 +50,38 @@ namespace Widgets
 			m_pVerticalScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
 			m_pVerticalScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
 			m_pVerticalScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
-
-			m_pVerticalScrollBar->GetDefaultStyle().SetBackgroundColor(Color(77, 77, 77));
-			m_pVerticalScrollBar->GetHoverStyle().SetBackgroundColor(Color(153, 153, 153));
+			m_pVerticalScrollBar->GetDefaultStyle().SetBackgroundColor(scrollBarColor);
+			m_pVerticalScrollBar->GetHoverStyle().SetBackgroundColor(scrollBarHoverColor);
 			m_pVerticalScrollBar->Disable();
 			m_pVerticalScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseDown(ev); });
 			m_pVerticalScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseUp(ev); });
 			m_pVerticalScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseMove(ev); });
 			WidgetMgr::Get().RegisterWidget(m_pVerticalScrollBar);
+		}
+
+		{
+			m_pHScrollContainer = new Container();
+			m_pHScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pHScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
+			m_pHScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
+			m_pHScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
+			m_pHScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
+			m_pHScrollContainer->Disable();
+			WidgetMgr::Get().RegisterWidget(m_pHScrollContainer);
+		}
+
+		{
+			m_pHScrollBar = new Container();
+			m_pHScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pHScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
+			m_pHScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
+			m_pHScrollBar->GetDefaultStyle().SetBackgroundColor(scrollBarColor);
+			m_pHScrollBar->GetHoverStyle().SetBackgroundColor(scrollBarHoverColor);
+			m_pHScrollBar->Disable();
+			//m_pHScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseDown(ev); });
+			//m_pHScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseUp(ev); });
+			//m_pHScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseMove(ev); });
+			WidgetMgr::Get().RegisterWidget(m_pHScrollBar);
 		}
 	}
 
@@ -67,6 +94,14 @@ namespace Widgets
 		WidgetMgr::Get().UnregisterWidget(m_pVerticalScrollBar);
 		delete m_pVerticalScrollBar;
 		m_pVerticalScrollBar = nullptr;
+
+		WidgetMgr::Get().UnregisterWidget(m_pHScrollContainer);
+		delete m_pHScrollContainer;
+		m_pHScrollContainer = nullptr;
+
+		WidgetMgr::Get().UnregisterWidget(m_pHScrollBar);
+		delete m_pHScrollBar;
+		m_pHScrollBar = nullptr;
 	}
 
 	void Container_V2::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
@@ -80,13 +115,21 @@ namespace Widgets
 		D3D12_RECT innerRect = fullRect;
 		if(m_showVerticalScrollBar)
 			innerRect.right = m_absPos.x + m_size.x - SCROLL_CONTAINER_SIZE;
-	
+		if(m_showHScrollBar)
+			innerRect.bottom = m_absPos.y + m_size.y - SCROLL_CONTAINER_SIZE;
+
 		Parent::Draw(windowSize, innerRect);
 
 		if (m_showVerticalScrollBar)
 		{
 			m_pVerticalScrollContainer->Draw(windowSize, fullRect);
 			m_pVerticalScrollBar->Draw(windowSize, fullRect);
+		}
+
+		if (m_showHScrollBar)
+		{
+			m_pHScrollContainer->Draw(windowSize, fullRect);
+			m_pHScrollBar->Draw(windowSize, fullRect);
 		}
 	}
 
@@ -130,7 +173,10 @@ namespace Widgets
 
 		if (m_showVerticalScrollBar)
 		{
-			m_verticalScrollContainerSize = m_size.y;
+			if(!m_showHScrollBar)
+				m_verticalScrollContainerSize = m_size.y;
+			else
+				m_verticalScrollContainerSize = m_size.y - SCROLL_CONTAINER_SIZE;
 
 			m_pVerticalScrollContainer->Enable();
 			m_pVerticalScrollContainer->SetX(m_size.x - SCROLL_CONTAINER_SIZE);
@@ -148,6 +194,30 @@ namespace Widgets
 			Core::Int3 absPos = m_absPos;
 			absPos.z -= 1;
 			m_pVerticalScrollBar->ReComputePosition(absPos, m_size);
+		}
+
+		if (m_showHScrollBar)
+		{
+			if(!m_showVerticalScrollBar)
+				m_hScrollContainerSize = m_size.x;
+			else
+				m_hScrollContainerSize = m_size.x - SCROLL_CONTAINER_SIZE;
+
+			m_pHScrollContainer->Enable();
+			m_pHScrollContainer->SetX(0);
+			m_pHScrollContainer->SetY(m_size.y - SCROLL_CONTAINER_SIZE);
+			m_pHScrollContainer->SetWidth(m_hScrollContainerSize);
+			m_pHScrollContainer->SetHeight(SCROLL_CONTAINER_SIZE);
+			m_pHScrollContainer->ReComputePosition(m_absPos, m_size);
+
+			m_pHScrollBar->Enable();
+			m_pHScrollBar->SetX(0);
+			m_pHScrollBar->SetY(m_size.y - SCROLL_CONTAINER_SIZE + ((SCROLL_CONTAINER_SIZE - SCROLLBAR_CONTAINER_SIZE) / 2));
+			m_pHScrollBar->SetWidth(m_hScrollContainerSize / 2);
+			m_pHScrollBar->SetHeight(SCROLLBAR_CONTAINER_SIZE);
+			Core::Int3 absPos = m_absPos;
+			absPos.z -= 1;
+			m_pHScrollBar->ReComputePosition(absPos, m_size);
 		}
 	}
 
@@ -168,7 +238,14 @@ namespace Widgets
 
 		m_scrollingDistance = Core::UInt2(0, 0);
 		if (m_size.x < childrenMax.x)
+		{
 			m_scrollingDistance.x = childrenMax.x - m_size.x;
+			m_showHScrollBar = true;
+		}
+		else
+		{
+			m_showHScrollBar = false;
+		}
 
 		if (m_size.y < childrenMax.y)
 		{
@@ -181,6 +258,7 @@ namespace Widgets
 		}
 
 		m_absPosOffset.y = saturate(m_absPosOffset.y, -static_cast<int32_t>(m_scrollingDistance.y), 0);
+		m_absPosOffset.x = saturate(m_absPosOffset.x, -static_cast<int32_t>(m_scrollingDistance.x), 0);
 	}
 
 	void Container_V2::UpdateVScrollBarPositionFromOffset()
