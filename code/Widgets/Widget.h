@@ -16,6 +16,7 @@
 #include "Core/Math/Vectors.h"
 
 #include "Widgets/Tools/Color.h"
+#include "Widgets/Tools/Rect.h"
 
 struct Message;
 
@@ -162,7 +163,6 @@ namespace Widgets
 
 		Widget* GetParent();
 
-		bool IsInside(uint32_t screenX, uint32_t screenY) const;
 		bool IsEnabled() const;
 
 		void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
@@ -208,6 +208,8 @@ namespace Widgets
 		FOCUS_POLICY m_focusPolicy;
 
 		std::string m_name;
+
+		Rect m_visibleRect;
 
 		void ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
 
