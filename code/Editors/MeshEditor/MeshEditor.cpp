@@ -157,7 +157,8 @@ namespace Editors
 				});
 
 			pMeshTableView->SetModel(m_pMeshListModel);
-			pMeshTableView->SetColumnWidth(MeshListModel::Columns::Name, 250);
+			pMeshTableView->SetColumnWidth(MeshListModel::Columns::Id, 120);
+			pMeshTableView->SetColumnWidth(MeshListModel::Columns::Name, 300);
 		}
 
 		//bottom split : tab container for materials and logs

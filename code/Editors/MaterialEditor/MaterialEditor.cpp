@@ -604,6 +604,7 @@ namespace Editors
 		pTableView->SetModel(m_pMaterialListModel);
 		pTableView->SetColumnWidth(MaterialListModel::Columns::Id, 120);
 		pTableView->SetColumnWidth(MaterialListModel::Columns::Name, 200);
+		pTableView->SetColumnWidth(MaterialListModel::Columns::Type, 100);
 
 		Widgets::SelectionModel* pSelectionModel = m_pMaterialListModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
