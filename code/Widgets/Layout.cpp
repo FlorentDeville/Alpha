@@ -40,6 +40,9 @@ namespace Widgets
 
 	void Layout::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
+		Rect parentRect(scissor.left, scissor.right, scissor.top, scissor.bottom);
+		m_visibleRect.Intersect(parentRect);
+
 		LayoutStyle* pCurrentStyle = &m_defaultStyle;
 		if (m_hover)
 			pCurrentStyle = &m_hoverStyle;
