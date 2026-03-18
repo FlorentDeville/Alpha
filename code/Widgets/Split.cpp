@@ -103,7 +103,7 @@ bool Split::Handle(const BaseEvent& ev)
 		{
 			ReleaseMouse();
 
-			if (!IsInside(mouseEvent.GetX(), mouseEvent.GetY()))
+			if (!IsInsideVisibleRect(mouseEvent.GetX(), mouseEvent.GetY()))
 				g_pIconName = OsWin::CursorId::Arrow;
 
 			m_isDragged = false;

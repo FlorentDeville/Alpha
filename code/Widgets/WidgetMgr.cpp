@@ -624,8 +624,8 @@ namespace Widgets
 		{
 		case OsWin::MouseMove:
 		{
-				bool isInside = pWidget->IsInside(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
-				bool wasInside = pWidget->IsInside(m_prevMouseX, m_prevMouseY);
+				bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
+				bool wasInside = pWidget->IsInsideVisibleRect(m_prevMouseX, m_prevMouseY);
 
 				MouseButton button = MouseButton::NoButton;
 				if (msg.m_high & OsWin::UIMouseMask::LeftButton) button = static_cast<MouseButton>(button | MouseButton::LeftButton);
@@ -668,7 +668,7 @@ namespace Widgets
 		case OsWin::MouseRUp:
 		case OsWin::MouseLDoubleClick:
 		{
-			bool isInside = pWidget->IsInside(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
+			bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 			bool isCaptured = m_pCapturedWidget == pWidget;
 
 			if (isInside || isCaptured)

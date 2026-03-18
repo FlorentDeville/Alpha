@@ -488,7 +488,9 @@ namespace Widgets
 		return m_pParent;
 	}
 
+	bool Widget::IsInsideVisibleRect(uint32_t screenX, uint32_t screenY) const
 	{
+		return m_visibleRect.IsInside(screenX, screenY);
 	}
 
 	bool Widget::IsEnabled() const

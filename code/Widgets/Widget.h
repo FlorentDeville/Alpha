@@ -163,6 +163,7 @@ namespace Widgets
 
 		Widget* GetParent();
 
+		bool IsInsideVisibleRect(uint32_t screenX, uint32_t screenY) const;
 		bool IsEnabled() const;
 
 		void CaptureMouse();	//Receive the mouse events events if the mouse is not on the widget
