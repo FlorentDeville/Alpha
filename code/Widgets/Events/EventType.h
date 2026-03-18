@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -21,6 +21,8 @@ namespace Widgets
 
 		//double click is the second mouse down. The sequence of events is Down, Up, DoubleClick, Up.
 		kMouseDoubleClick,
+
+		kMouseWheel,
 
 		//key
 		kVKeyDown,

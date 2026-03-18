@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -17,6 +17,7 @@ namespace OsWin
 		MouseMUp,
 		MouseRDown,
 		MouseRUp,
+		MouseWheel,
 		VirtualKeyDown,	//Virtual Key : the message is the virtual key code
 		VirtualKeyUp,		//Virtual Key : the message is the virtual key code
 		CharKeyDown,		//Character key : the message is the character. Only handles printable characters
