@@ -33,6 +33,8 @@ namespace Widgets
 		Container* m_pVerticalScrollContainer;
 		Container* m_pVerticalScrollBar;
 
+		bool m_showVerticalScrollBar;
+
 		void UpdateVScrollBarPositionFromOffset();
 	};
 }
