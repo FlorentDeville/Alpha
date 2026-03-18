@@ -4,6 +4,7 @@
 
 #include "Widgets/Widgets/Container_V2.h"
 
+#include "Widgets/Container.h"
 #include "Widgets/Events/MouseWheelEvent.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -23,19 +24,58 @@ namespace Widgets
 	{
 		m_virtualSize.x = INT32_MAX / 2;
 		m_virtualSize.y = INT32_MAX / 2;
+
+		{
+			m_pVerticalScrollContainer = new Container();
+			m_pVerticalScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pVerticalScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
+			m_pVerticalScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
+
+			const Color scrollContainerColor(46, 46, 46);
+			m_pVerticalScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
+			m_pVerticalScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
+
+			WidgetMgr::Get().RegisterWidget(m_pVerticalScrollContainer);
+		}
+
+		{
+			m_pVerticalScrollBar = new Container();
+			m_pVerticalScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pVerticalScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
+			m_pVerticalScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
+
+			m_pVerticalScrollBar->GetDefaultStyle().SetBackgroundColor(Color(77, 77, 77));
+			m_pVerticalScrollBar->GetHoverStyle().SetBackgroundColor(Color(153, 153, 153));
+
+			WidgetMgr::Get().RegisterWidget(m_pVerticalScrollBar);
+		}
 	}
 
 	Container_V2::~Container_V2()
-	{ }
+	{
+		WidgetMgr::Get().UnregisterWidget(m_pVerticalScrollContainer);
+		delete m_pVerticalScrollContainer;
+		m_pVerticalScrollContainer = nullptr;
+
+		WidgetMgr::Get().UnregisterWidget(m_pVerticalScrollBar);
+		delete m_pVerticalScrollBar;
+		m_pVerticalScrollBar = nullptr;
+	}
 
 	void Container_V2::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		D3D12_RECT innerRect;
 		innerRect.left = m_absPos.x;
-		innerRect.right = m_absPos.x + m_size.x;
+		innerRect.right = m_absPos.x + m_size.x - SCROLL_CONTAINER_SIZE;
 		innerRect.top = m_absPos.y;
 		innerRect.bottom = m_absPos.y + m_size.y;
 		Parent::Draw(windowSize, innerRect);
+
+		D3D12_RECT innerRectVScroll = innerRect;
+		innerRectVScroll.right += SCROLL_CONTAINER_SIZE;
+		m_pVerticalScrollContainer->Draw(windowSize, innerRectVScroll);
+		m_pVerticalScrollBar->Draw(windowSize, innerRectVScroll);
+
 	}
 
 	bool Container_V2::Handle(const BaseEvent& ev)
@@ -72,6 +112,26 @@ namespace Widgets
 		}
 	}
 
+	void Container_V2::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
+	{
+		Parent::Resize(parentAbsPos, parentSize);
+
+		m_pVerticalScrollContainer->SetX(m_size.x - SCROLL_CONTAINER_SIZE);
+		m_pVerticalScrollContainer->SetY(0);
+		m_pVerticalScrollContainer->SetWidth(SCROLL_CONTAINER_SIZE);
+		m_pVerticalScrollContainer->SetHeight(m_size.y);
+		m_pVerticalScrollContainer->ReComputePosition(m_absPos, m_size);
+
+		m_pVerticalScrollBar->SetX(m_size.x - SCROLL_CONTAINER_SIZE + ((SCROLL_CONTAINER_SIZE - SCROLLBAR_CONTAINER_SIZE) / 2));
+		UpdateVScrollBarPositionFromOffset();
+
+		m_pVerticalScrollBar->SetWidth(SCROLLBAR_CONTAINER_SIZE);
+		m_pVerticalScrollBar->SetHeight(m_size.y / 2);
+		Core::Int3 absPos = m_absPos;
+		absPos.z -= 1;
+		m_pVerticalScrollBar->ReComputePosition(absPos, m_size);
+	}
+
 	void Container_V2::ResizeChildren()
 	{
 		Core::UInt2 childrenMax = Core::UInt2(0, 0);
@@ -93,5 +153,15 @@ namespace Widgets
 
 		if (m_size.y < childrenMax.y)
 			m_scrollingDistance.y = childrenMax.y - m_size.y;
+	}
+
+	void Container_V2::UpdateVScrollBarPositionFromOffset()
+	{
+		float ratio = -m_absPosOffset.y / static_cast<float>(m_scrollingDistance.y);
+		int32_t scrollBarYPos = static_cast<int32_t>((m_size.y / 2) * ratio);
+		m_pVerticalScrollBar->SetY(scrollBarYPos);
+		/*Core::Int3 absPos = m_absPos;
+		absPos.z -= 1;
+		m_pVerticalScrollBar->ReComputePosition(absPos, m_size);*/
 	}
 }
