@@ -159,6 +159,7 @@ namespace Editors
 		m_pListModel = new TextureListModel();
 		pTable->SetModel(m_pListModel);
 		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
+		pTable->SetColumnWidth(TextureListModel::Columns::Modified, 200);
 		m_pListModel->GetSelectionModel()->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
 			{ 
 				OnSelectionChanged(selected, deselected); 

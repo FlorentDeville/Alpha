@@ -306,6 +306,8 @@ namespace Editors
 
 		m_pLevelListModel = new LevelListModel();
 		m_pLevelTableView->SetModel(m_pLevelListModel);
+		m_pLevelTableView->SetColumnWidth(LevelListModel::Id, 120);
+		m_pLevelTableView->SetColumnWidth(LevelListModel::Name, 200);
 
 		Widgets::SelectionModel* pSelectionModel = m_pLevelListModel->GetSelectionModel();
 		pSelectionModel->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
