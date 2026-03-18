@@ -90,7 +90,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::CharKeyDown;
-		msg.m_high = wParam;
+		msg.m_high.m_uint64 = wParam;
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 	}
 	break;
@@ -100,7 +100,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//wParam is a virtual key code
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::VirtualKeyDown;
-		msg.m_high = wParam; 
+		msg.m_high.m_uint64 = wParam;
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 		Inputs::InputMgr::Get().UpdateKeyboardState(wParam, true);
 	}
@@ -111,7 +111,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//wParam is a virtual key code
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::VirtualKeyUp;
-		msg.m_high = wParam;
+		msg.m_high.m_uint64 = wParam;
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 		Inputs::InputMgr::Get().UpdateKeyboardState(wParam, false);
 	}
@@ -155,7 +155,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		msg.m_id = OsWin::UIMessageId::MouseMove;
 		msg.m_low.m_uint32[0] = x;
 		msg.m_low.m_uint32[1] = y;
-		msg.m_high = wParam;
+		msg.m_high.m_uint64 = wParam;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 

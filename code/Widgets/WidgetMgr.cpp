@@ -466,7 +466,7 @@ namespace Widgets
 		{
 			//The first 32 characters of the ascii table are unprintable characters, so ignore them.
 			const int UNPRINTABLE_ASCII_CHARACTER = 32;
-			if (msg.m_high < UNPRINTABLE_ASCII_CHARACTER)
+			if (msg.m_high.m_uint64 < UNPRINTABLE_ASCII_CHARACTER)
 				break;
 
 			if (m_pFocusedWidget)
@@ -628,9 +628,9 @@ namespace Widgets
 				bool wasInside = pWidget->IsInsideVisibleRect(m_prevMouseX, m_prevMouseY);
 
 				MouseButton button = MouseButton::NoButton;
-				if (msg.m_high & OsWin::UIMouseMask::LeftButton) button = static_cast<MouseButton>(button | MouseButton::LeftButton);
-				if (msg.m_high & OsWin::UIMouseMask::RightButton) button = static_cast<MouseButton>(button | MouseButton::RightButton);
-				if (msg.m_high & OsWin::UIMouseMask::MiddleButton) button = static_cast<MouseButton>(button | MouseButton::MiddleButton);
+				if (msg.m_high.m_uint64 & OsWin::UIMouseMask::LeftButton) button = static_cast<MouseButton>(button | MouseButton::LeftButton);
+				if (msg.m_high.m_uint64 & OsWin::UIMouseMask::RightButton) button = static_cast<MouseButton>(button | MouseButton::RightButton);
+				if (msg.m_high.m_uint64 & OsWin::UIMouseMask::MiddleButton) button = static_cast<MouseButton>(button | MouseButton::MiddleButton);
 				
 				if (!wasInside && isInside)
 				{
@@ -730,7 +730,7 @@ namespace Widgets
 		{
 			if (m_pFocusedWidget == pWidget)
 			{
-				m_internalEvent.m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high);
+				m_internalEvent.m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high.m_uint64);
 
 				switch (msg.m_id)
 				{
