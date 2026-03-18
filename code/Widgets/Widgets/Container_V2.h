@@ -31,14 +31,16 @@ namespace Widgets
 		const int32_t SCROLL_CONTAINER_SIZE = 20;
 		const int32_t SCROLLBAR_CONTAINER_SIZE = 10;
 
+		//dragging
+		bool m_isDraggingScrollBar;
+		Core::Int2 m_draggingStartMousePos;
+		Core::Int2 m_draggingStartPosOffset;
+
 		//vertical scroll bar
 		int32_t m_verticalScrollContainerSize;
 		Container* m_pVerticalScrollContainer;
 		Container* m_pVerticalScrollBar;
-
-		bool m_showVerticalScrollBar;
-		bool m_isDraggingVerticalScrollBar;
-		Core::Int2 m_dragVScrollBarStartPos;
+		bool m_showVerticalScrollBar;	
 
 		//horizontal scroll bar
 		Container* m_pHScrollContainer;
@@ -51,5 +53,9 @@ namespace Widgets
 		void VScrollBar_OnMouseDown(const Widgets::MouseEvent& ev);
 		void VScrollBar_OnMouseUp(const Widgets::MouseEvent& ev);
 		void VScrollBar_OnMouseMove(const Widgets::MouseEvent& ev);
+
+		void HScrollBar_OnMouseDown(const Widgets::MouseEvent& ev);
+		void HScrollBar_OnMouseUp(const Widgets::MouseEvent& ev);
+		void HScrollBar_OnMouseMove(const Widgets::MouseEvent& ev);
 	};
 }
