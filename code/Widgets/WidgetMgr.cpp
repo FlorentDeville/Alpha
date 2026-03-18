@@ -759,7 +759,7 @@ namespace Widgets
 
 		case OsWin::MouseWheel:
 		{
-			bool isInside = pWidget->IsInside(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
+			bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 			if (isInside)
 			{
 				m_internalEvent.m_mouseWheelEvent = MouseWheelEvent(static_cast<int32_t>(msg.m_high.m_int64));
