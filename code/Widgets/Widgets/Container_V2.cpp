@@ -176,6 +176,8 @@ namespace Widgets
 		{
 			m_showVerticalScrollBar = false;
 		}
+
+		m_absPosOffset.y = saturate(m_absPosOffset.y, -static_cast<int32_t>(m_scrollingDistance.y), 0);
 	}
 
 	void Container_V2::UpdateVScrollBarPositionFromOffset()
