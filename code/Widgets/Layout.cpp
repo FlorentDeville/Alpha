@@ -195,7 +195,9 @@ namespace Widgets
 			}
 		}
 
-		ReComputeSize_PostChildren();	
+		ReComputeSize_PostChildren();
+
+		m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
 	}
 
 	void Layout::ReComputeSize_PostChildren()

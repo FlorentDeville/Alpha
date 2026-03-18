@@ -52,6 +52,8 @@ namespace Widgets
 		ReComputeSize(parentSize);
 		ReComputePosition(parentAbsPos, parentSize);
 
+		m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
+
 		for (Widget* pChild : m_children)
 			pChild->Resize(m_absPos, m_size);
 	}
