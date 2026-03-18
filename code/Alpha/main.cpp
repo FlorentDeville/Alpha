@@ -173,14 +173,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:
 	{
 		int16_t wheelDistance = GET_WHEEL_DELTA_WPARAM(wParam);
-		int32_t x = GET_X_LPARAM(lParam);
-		int32_t y = GET_Y_LPARAM(lParam);
+		POINT mousePoint;
+		mousePoint.x = GET_X_LPARAM(lParam);
+		mousePoint.y = GET_Y_LPARAM(lParam);
+
+		//WM_MOUSEWHEEL returns the mouse position in the screen space. I need to convert it to client space.
+		ScreenToClient(hWnd, &mousePoint);
 
 		OsWin::UIMessage msg;
 		msg.m_id = OsWin::UIMessageId::MouseWheel;
 		msg.m_high.m_int64 = wheelDistance;
-		msg.m_low.m_uint32[0] = x;
-		msg.m_low.m_uint32[1] = y;
+		msg.m_low.m_uint32[0] = mousePoint.x;
+		msg.m_low.m_uint32[1] = mousePoint.y;
 
 		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
