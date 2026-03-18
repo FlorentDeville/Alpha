@@ -18,6 +18,7 @@
     <ClInclude Include="Events\FocusEvent.h" />
     <ClInclude Include="Events\KeyboardEvent.h" />
     <ClInclude Include="Events\MouseEvent.h" />
+    <ClInclude Include="Events\MouseWheelEvent.h" />
     <ClInclude Include="Icon.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="Layout.h" />
@@ -65,6 +66,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Container.cpp" />
     <ClCompile Include="Events\MouseEvent.cpp" />
+    <ClCompile Include="Events\MouseWheelEvent.cpp" />
     <ClCompile Include="Icon.cpp" />
     <ClCompile Include="Label.cpp" />
     <ClCompile Include="Layout.cpp" />

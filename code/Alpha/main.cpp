@@ -30,7 +30,6 @@
 #include "Editors/MeshEditor/MeshEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 #include "Editors/TextureEditor/TextureEditorModule.h"
-
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Cursor/Cursor.h"
@@ -172,6 +171,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEWHEEL:
 	{
 		int16_t wheelDistance = GET_WHEEL_DELTA_WPARAM(wParam);
+		int32_t x = GET_X_LPARAM(lParam);
+		int32_t y = GET_Y_LPARAM(lParam);
+
+		OsWin::UIMessage msg;
+		msg.m_id = OsWin::UIMessageId::MouseWheel;
+		msg.m_high.m_int64 = wheelDistance;
+		msg.m_low.m_uint32[0] = x;
+		msg.m_low.m_uint32[1] = y;
+
+		Widgets::WidgetMgr::Get().HandleMsg(msg);
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 		Inputs::InputMgr::MouseState mouseState = inputMgr.GetMouseState();
@@ -444,57 +453,25 @@ void CreateMainWindow(const std::string& shaderPath)
 #ifdef _DEBUG
 	{
 		Widgets::Tab* pTab = new Widgets::Tab();
-		Widgets::Layout* pLayout = new Widgets::Layout();
-		pLayout->SetSizeStyle(Widgets::Widget::STRETCH);
 		/*pLayout->GetDefaultStyle().ShowBorder(true);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
 		pLayout->GetHoverStyle().ShowBorder(true);
 		pLayout->GetHoverStyle().SetBorderSize(3);*/
 
-		pTab->AddWidget(pLayout);
 		pMiddleTabContainer->AddTab("Widgets", pTab);
 
-		Widgets::Container* pOffsetContainer = new Widgets::Container(200, 40);
 		pOffsetContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
 		//pOffsetContainer->GetDefaultStyle().ShowBorder(true);
 		//pOffsetContainer->GetDefaultStyle().SetBorderSize(2);
-		pLayout->AddWidget(pOffsetContainer);
-
-		//Widgets::Layout* pVLayout = new Widgets::Layout(200, 40, 50, 50);
-		////pVLayout->SetSize(Core::UInt2(200, 40));
-		////pVLayout->Setle
-		//pVLayout->SetDirection(Widgets::Layout::Vertical);
-		//pVLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
-		//pLayout->AddWidget(pVLayout);
-
-		/*Widgets::ComboBox* pComboBox = new Widgets::ComboBox();
-		pComboBox->AddOption("Goku", 0);
-		pComboBox->AddOption("Vegeta", 1);
-		pComboBox->AddOption("Gohan", 2);
-		pComboBox->AddOption("Krilin", 3);
-		pComboBox->SetSelection(1);
-		pComboBox->SetX(10);
-		pComboBox->SetY(10);*/
-
-		Widgets::CheckBox* pCheckBox = new Widgets::CheckBox("TEST label", true);
-		pCheckBox->SetX(10);
-		pCheckBox->SetY(10);
-		/*Widgets::Container* pTopOffsetContainer = new Widgets::Container(10, 10);
-		pVLayout->AddWidget(pTopOffsetContainer);
 
 		Widgets::TableView* pTableView = new Widgets::TableView();
-		pTableView->SetSize(Core::UInt2(300, 700));*/
 
 		//Editors::AssetListModel* pModel = new Editors::AssetListModel(Systems::kMesh);
 		//pTableView->SetModel(pModel);
 		//pTableView->SetMultiSelection(true);
-		
-		pOffsetContainer->AddWidget(pCheckBox);
 	}
 #endif
 
-	pMiddleTabContainer->SetSelectedTab(0);
-	//pMiddleTabContainer->SetSelectedTab(SID("Widgets"));
 }
 
 int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstance*/, _In_ LPSTR /*lpCmdLine*/, _In_ int /*nCmdShow*/)

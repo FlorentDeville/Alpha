@@ -403,6 +403,7 @@ namespace Widgets
 		case OsWin::MouseRDown:
 		case OsWin::MouseRUp:
 		case OsWin::MouseLDoubleClick:
+		case OsWin::MouseWheel:
 		{
 			bool setFocus = false;
 			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
@@ -747,6 +748,22 @@ namespace Widgets
 					break;
 				}
 				return m_internalEvent.m_keyboardEvent;
+			}
+			else
+			{
+				m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
+				return m_internalEvent.m_baseEvent;
+			}
+		}
+		break;
+
+		case OsWin::MouseWheel:
+		{
+			bool isInside = pWidget->IsInside(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
+			if (isInside)
+			{
+				m_internalEvent.m_mouseWheelEvent = MouseWheelEvent(static_cast<int32_t>(msg.m_high.m_int64));
+				return m_internalEvent.m_mouseWheelEvent;
 			}
 			else
 			{

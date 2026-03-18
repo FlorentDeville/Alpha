@@ -22,6 +22,7 @@
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Events/MouseEvent.h"
+#include "Widgets/Events/MouseWheelEvent.h"
 #include "Widgets/IconId.h"
 
 struct Message;
@@ -163,6 +164,7 @@ namespace Widgets
 			BaseEvent m_baseEvent;
 			KeyboardEvent m_keyboardEvent;
 			MouseEvent m_mouseEvent;
+			MouseWheelEvent m_mouseWheelEvent;
 		};
 		
 		EventStorage m_internalEvent;
