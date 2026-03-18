@@ -34,7 +34,13 @@ namespace Widgets
 		Container* m_pVerticalScrollBar;
 
 		bool m_showVerticalScrollBar;
+		bool m_isDraggingVerticalScrollBar;
+		Core::Int2 m_dragVScrollBarStartPos;
 
 		void UpdateVScrollBarPositionFromOffset();
+
+		void VScrollBar_OnMouseDown(const Widgets::MouseEvent& ev);
+		void VScrollBar_OnMouseUp(const Widgets::MouseEvent& ev);
+		void VScrollBar_OnMouseMove(const Widgets::MouseEvent& ev);
 	};
 }

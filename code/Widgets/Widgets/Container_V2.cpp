@@ -22,6 +22,8 @@ namespace Widgets
 		, m_absPosOffset(0, 0)
 		, m_scrollingDistance(0, 0)
 		, m_showVerticalScrollBar(false)
+		, m_isDraggingVerticalScrollBar(false)
+		, m_dragVScrollBarStartPos(0, 0)
 	{
 		m_virtualSize.x = INT32_MAX / 2;
 		m_virtualSize.y = INT32_MAX / 2;
@@ -48,6 +50,9 @@ namespace Widgets
 			m_pVerticalScrollBar->GetDefaultStyle().SetBackgroundColor(Color(77, 77, 77));
 			m_pVerticalScrollBar->GetHoverStyle().SetBackgroundColor(Color(153, 153, 153));
 			m_pVerticalScrollBar->Disable();
+			m_pVerticalScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseDown(ev); });
+			m_pVerticalScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseUp(ev); });
+			m_pVerticalScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseMove(ev); });
 			WidgetMgr::Get().RegisterWidget(m_pVerticalScrollBar);
 		}
 	}
@@ -178,8 +183,35 @@ namespace Widgets
 		float ratio = -m_absPosOffset.y / static_cast<float>(m_scrollingDistance.y);
 		int32_t scrollBarYPos = static_cast<int32_t>((m_size.y / 2) * ratio);
 		m_pVerticalScrollBar->SetY(scrollBarYPos);
-		/*Core::Int3 absPos = m_absPos;
-		absPos.z -= 1;
-		m_pVerticalScrollBar->ReComputePosition(absPos, m_size);*/
+	}
+
+	void Container_V2::VScrollBar_OnMouseDown(const Widgets::MouseEvent& ev)
+	{
+		m_pVerticalScrollBar->CaptureMouse();
+		m_isDraggingVerticalScrollBar = true;
+		m_dragVScrollBarStartPos = Core::Int2(ev.GetX(), ev.GetY());
+	}
+
+	void Container_V2::VScrollBar_OnMouseUp(const Widgets::MouseEvent& ev)
+	{
+		m_pVerticalScrollBar->ReleaseMouse();
+		m_isDraggingVerticalScrollBar = false;
+	}
+
+	void Container_V2::VScrollBar_OnMouseMove(const Widgets::MouseEvent& ev)
+	{
+		if (!m_isDraggingVerticalScrollBar)
+			return;
+
+		int32_t distance = ev.GetY() - m_dragVScrollBarStartPos.y; //+ is down, - is up
+
+		int32_t newPos = m_pVerticalScrollBar->GetY() + distance;
+		newPos = saturate(newPos, 0, m_size.y / 2);
+		float ratio = newPos / static_cast<float>((m_size.y / 2));
+		m_absPosOffset.y = static_cast<int32_t>(-ratio * m_scrollingDistance.y);
+		m_dragVScrollBarStartPos = Core::Int2(ev.GetX(), ev.GetY());
+		m_pVerticalScrollBar->SetY(newPos);
+
+		WidgetMgr::Get().RequestResize();
 	}
 }
