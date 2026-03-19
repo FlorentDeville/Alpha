@@ -51,7 +51,7 @@ namespace Widgets
 		SetSizeStyle(Widgets::Widget::STRETCH);
 
 		m_pLayout = new Layout();
-		m_pLayout->SetSizeStyle(SIZE_STYLE::STRETCH);
+		m_pLayout->SetSizeStyle(SIZE_STYLE::FIT);
 		m_pLayout->SetDirection(Layout::Vertical);
 		m_pLayout->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
 		m_pLayout->GetHoverStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
@@ -226,17 +226,17 @@ namespace Widgets
 			std::string data = "  " + m_pModel->GetHeaderData(jj);
 
 			Label* pLabel = new Label(data);
+			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+
+			if (m_columnWidth.IsValidIndex(jj))
+				pLabel->SetSize(Core::UInt2(m_columnWidth[jj], m_cellDefaultSize.y));
+			else
+				pLabel->SetSize(m_cellDefaultSize);
+
+			pHeaderLayout->AddWidget(pLabel);
+
 			if (jj != columnCount - 1)
 			{
-				pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
-
-				if(m_columnWidth.IsValidIndex(jj))
-					pLabel->SetSize(Core::UInt2(m_columnWidth[jj], m_cellDefaultSize.y));
-				else
-					pLabel->SetSize(m_cellDefaultSize);
-
-				pHeaderLayout->AddWidget(pLabel);
-
 				Split* pSplit = new Split(true);
 				pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
 				pSplit->SetWidth(4);
@@ -244,12 +244,6 @@ namespace Widgets
 				pSplit->OnDrag([this, pLabel, jj](const Core::Int2& mousePosition) { HeaderSplit_OnDrag(mousePosition, pLabel, jj);	});
 
 				pHeaderLayout->AddWidget(pSplit);
-			}
-			else
-			{
-				pLabel->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-
-				pHeaderLayout->AddWidget(pLabel);
 			}
 		}
 
@@ -575,7 +569,7 @@ namespace Widgets
 	{
 		Layout* pRowLayout = new Layout();
 		pRowLayout->SetSpace(Core::Int2(5, 0));
-		pRowLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
+		pRowLayout->SetSizeStyle(SIZE_STYLE::FIT);
 		pRowLayout->SetDirection(Layout::Horizontal);
 		pRowLayout->GetHoverStyle().SetBackgroundColor(m_hoverBackgroundColor);
 		pRowLayout->OnMouseDown([this, pRowLayout](const Widgets::MouseEvent& ev) { OnMouseDown_ItemLayout(ev, pRowLayout); });
@@ -606,7 +600,7 @@ namespace Widgets
 			if (jj == 0)
 			{
 				Layout* pExpandLayout = new Layout();
-				pExpandLayout->SetSizeStyle(SIZE_STYLE::HSIZE_STRETCH | SIZE_STYLE::VSIZE_FIT);
+				pExpandLayout->SetSizeStyle(FIT);
 				pExpandLayout->SetDirection(Layout::Horizontal);
 				pExpandLayout->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
 				pExpandLayout->GetHoverStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 0.f));
@@ -632,17 +626,11 @@ namespace Widgets
 				pExpandLayout->AddWidget(pLabel);
 				pContainer = pExpandLayout;
 			}
+
+			pContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
+			Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
+			pContainer->SetSize(cellSize);
 			
-			if (jj != columnCount - 1)
-			{
-				pContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
-				Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
-				pContainer->SetSize(cellSize);
-			}
-			else
-			{
-				pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
-			}
 
 			pRowLayout->AddWidget(pContainer);
 		}
