@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -20,8 +20,14 @@ namespace OsWin
 			uint64_t m_uint64;
 		};
 
+		union High
+		{
+			uint64_t m_uint64;
+			int64_t m_int64;
+		};
+
 		UIMessageId m_id;
 		Low m_low;
-		uint64_t m_high;
+		High m_high;
 	};
 }

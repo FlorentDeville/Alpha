@@ -69,6 +69,9 @@ namespace Widgets
 		if (localScissorRect.bottom > scissor.bottom)
 			return;
 
+		if (localScissorRect.top < scissor.top)
+			return;
+
 		//intersect the scissor with the box of the widget
 		if (localScissorRect.left < scissor.left) localScissorRect.left = scissor.left;
 		if (localScissorRect.top < scissor.top) localScissorRect.top = scissor.top;
