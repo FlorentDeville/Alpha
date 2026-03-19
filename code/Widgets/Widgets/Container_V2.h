@@ -35,12 +35,16 @@ namespace Widgets
 		Core::Int2 m_absPosOffset;
 		Core::UInt2 m_virtualSize;		//size propagated to the children
 
+		const int32_t SCROLL_CONTAINER_SIZE = 20;
+
+		bool m_showVScrollBar;
+		bool m_showHScrollBar;
+
 	private:
 		Core::Array<Widget*> m_externalWidgets;
 
 		Core::UInt2 m_scrollingDistance;
 
-		const int32_t SCROLL_CONTAINER_SIZE = 20;
 		const int32_t SCROLLBAR_CONTAINER_SIZE = 10;
 
 		//dragging
@@ -51,14 +55,12 @@ namespace Widgets
 		//vertical scroll bar
 		Container* m_pVScrollContainer;
 		Container* m_pVScrollBar;
-		int32_t m_vScrollContainerSize;
-		bool m_showVScrollBar;	
+		int32_t m_vScrollContainerSize;			
 
 		//horizontal scroll bar
 		Container* m_pHScrollContainer;
 		Container* m_pHScrollBar;
 		int32_t m_hScrollContainerSize;
-		bool m_showHScrollBar;
 
 		void UpdateVScrollBarPositionFromOffset();
 

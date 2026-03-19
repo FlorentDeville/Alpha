@@ -412,7 +412,6 @@ namespace Widgets
 	void TableView::DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		DirectX::XMMATRIX wvp;
-		//ComputeWVPMatrix(windowSize, wvp);
 		ComputeBackgroundMatrix(windowSize, wvp);
 		int valueShowBorder = m_showBorder ? 1 : 0;
 		float rect[2] = { (float)m_virtualSize.x, (float)m_virtualSize.y };
@@ -422,6 +421,11 @@ namespace Widgets
 		if (localScissor.right > m_absPos.x + (int32_t)m_size.x) localScissor.right = m_absPos.x + m_size.x;
 		if (localScissor.top < m_absPos.y) localScissor.top = m_absPos.y;
 		if (localScissor.bottom > m_absPos.y + (int32_t)m_size.y) localScissor.bottom = m_absPos.y + m_size.y;
+
+		if (m_showVScrollBar)
+			localScissor.right -= SCROLL_CONTAINER_SIZE;
+		if (m_showHScrollBar)
+			localScissor.bottom -= SCROLL_CONTAINER_SIZE;
 
 		{
 			WidgetMgr& widgetMgr = WidgetMgr::Get();
