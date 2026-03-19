@@ -23,9 +23,12 @@ namespace Widgets
 		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 		void ResizeChildren() override;
 
-	private:
+	protected:
 		Core::Int2 m_absPosOffset;
 		Core::UInt2 m_virtualSize;		//size propagated to the children
+
+	private:
+		
 		Core::UInt2 m_scrollingDistance;
 
 		const int32_t SCROLL_CONTAINER_SIZE = 20;
