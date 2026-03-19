@@ -120,13 +120,7 @@ namespace Widgets
 			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
 		}
 
-		for (Widget* pWidget : m_children)
-		{
-			if (!pWidget->IsEnabled())
-				continue;
-
-			pWidget->Draw(windowSize, scissor);
-		}
+		Parent::Draw(windowSize, scissor);
 	}
 
 	void TreeView::SetModel(AbstractViewModel* pModel)
