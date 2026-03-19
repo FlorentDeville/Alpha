@@ -28,8 +28,6 @@ namespace Widgets
 		, m_hScrollContainerSize(0)
 		, m_showHScrollBar(false)
 	{
-		m_virtualSize.x = INT32_MAX / 2;
-		m_virtualSize.y = INT32_MAX / 2;
 
 		const Color scrollContainerColor(46, 46, 46);
 		const Color scrollBarColor(77, 77, 77);
@@ -302,6 +300,7 @@ namespace Widgets
 		int32_t distance = ev.GetY() - m_draggingStartMousePos.y; //+ is down, - is up
 		float ratio = distance / static_cast<float>((m_vScrollContainerSize / 2));
 		m_absPosOffset.y = static_cast<int32_t>(-ratio * m_scrollingDistance.y) + m_draggingStartPosOffset.y;
+		m_absPosOffset.y = saturate(m_absPosOffset.y, -static_cast<int32_t>(m_scrollingDistance.y), 0);
 
 		WidgetMgr::Get().RequestResize();
 	}
@@ -328,6 +327,7 @@ namespace Widgets
 		int32_t distance = ev.GetX() - m_draggingStartMousePos.x; //+ is left, - is right
 		float ratio = distance / static_cast<float>((m_hScrollContainerSize / 2));
 		m_absPosOffset.x = static_cast<int32_t>(-ratio * m_scrollingDistance.x) + m_draggingStartPosOffset.x;
+		m_absPosOffset.x = saturate(m_absPosOffset.x, -static_cast<int32_t>(m_scrollingDistance.x), 0);
 
 		WidgetMgr::Get().RequestResize();
 	}
