@@ -10,7 +10,7 @@
 
 #include "Widgets/Models/ModelIndex.h"
 #include "Widgets/Tools/Color.h"
-#include "Widgets/Widget.h"
+#include "Widgets/Widgets/Container_V2.h"
 
 namespace Widgets
 {
@@ -22,10 +22,10 @@ namespace Widgets
 	class SelectionRow;
 	class Split;
 
-	class TreeView : public Widget
+	class TreeView : public Container_V2
 	{
 	public:
-		using Parent = Widget;
+		using Parent = Container_V2;
 
 		TreeView();
 		~TreeView();
@@ -123,5 +123,9 @@ namespace Widgets
 		void ShowRowsRecursively(const ModelIndex& indexToShow);
 
 		void DeleteRowRecursively(Layout* pParentRow, Layout* pRowToRemove);
+
+		void ComputeBackgroundMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
+
+		void DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor);
 	};
 }
