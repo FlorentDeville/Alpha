@@ -28,6 +28,8 @@ namespace Widgets
 		, m_hScrollContainerSize(0)
 		, m_showHScrollBar(false)
 	{
+		m_virtualSize.x = 100000;
+		m_virtualSize.y = 100000;
 
 		const Color scrollContainerColor(46, 46, 46);
 		const Color scrollBarColor(77, 77, 77);
