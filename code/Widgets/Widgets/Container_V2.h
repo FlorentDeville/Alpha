@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+
 #include "Widgets/Widget.h"
 
 namespace Widgets
@@ -18,6 +20,11 @@ namespace Widgets
 		Container_V2();
 		~Container_V2();
 
+		void AddWidget(Widget* pWidget) override;
+		void InsertWidget(Widget* pWidget, int position) override;
+		void DeleteChild(Widget* pWidget) override;
+		void DeleteAllChildren() override;
+
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		bool Handle(const BaseEvent& ev) override;
 		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
@@ -28,7 +35,8 @@ namespace Widgets
 		Core::UInt2 m_virtualSize;		//size propagated to the children
 
 	private:
-		
+		Core::Array<Widget*> m_externalWidgets;
+
 		Core::UInt2 m_scrollingDistance;
 
 		const int32_t SCROLL_CONTAINER_SIZE = 20;

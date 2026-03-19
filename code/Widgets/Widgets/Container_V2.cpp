@@ -27,6 +27,7 @@ namespace Widgets
 		, m_vScrollContainerSize(0)
 		, m_hScrollContainerSize(0)
 		, m_showHScrollBar(false)
+		, m_externalWidgets()
 	{
 		m_virtualSize.x = 100000;
 		m_virtualSize.y = 100000;
@@ -43,7 +44,7 @@ namespace Widgets
 			m_pVScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
 			m_pVScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
 			m_pVScrollContainer->Disable();
-			WidgetMgr::Get().RegisterWidget(m_pVScrollContainer);
+			Parent::AddWidget(m_pVScrollContainer);
 		}
 
 		{
@@ -57,7 +58,7 @@ namespace Widgets
 			m_pVScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseDown(ev); });
 			m_pVScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseUp(ev); });
 			m_pVScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { VScrollBar_OnMouseMove(ev); });
-			WidgetMgr::Get().RegisterWidget(m_pVScrollBar);
+			Parent::AddWidget(m_pVScrollBar);
 		}
 
 		{
@@ -68,7 +69,7 @@ namespace Widgets
 			m_pHScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
 			m_pHScrollContainer->GetHoverStyle().SetBackgroundColor(scrollContainerColor);
 			m_pHScrollContainer->Disable();
-			WidgetMgr::Get().RegisterWidget(m_pHScrollContainer);
+			Parent::AddWidget(m_pHScrollContainer);
 		}
 
 		{
@@ -82,27 +83,43 @@ namespace Widgets
 			m_pHScrollBar->OnMouseDown([this](const Widgets::MouseEvent& ev) { HScrollBar_OnMouseDown(ev); });
 			m_pHScrollBar->OnMouseUp([this](const Widgets::MouseEvent& ev) { HScrollBar_OnMouseUp(ev); });
 			m_pHScrollBar->OnMouseMove([this](const Widgets::MouseEvent& ev) { HScrollBar_OnMouseMove(ev); });
-			WidgetMgr::Get().RegisterWidget(m_pHScrollBar);
+			Parent::AddWidget(m_pHScrollBar);
 		}
 	}
 
 	Container_V2::~Container_V2()
 	{
-		WidgetMgr::Get().UnregisterWidget(m_pVScrollContainer);
-		delete m_pVScrollContainer;
-		m_pVScrollContainer = nullptr;
+		Parent::DeleteChild(m_pVScrollContainer);
+		Parent::DeleteChild(m_pVScrollBar);
+		Parent::DeleteChild(m_pHScrollContainer);
+		Parent::DeleteChild(m_pHScrollBar);
+	}
 
-		WidgetMgr::Get().UnregisterWidget(m_pVScrollBar);
-		delete m_pVScrollBar;
-		m_pVScrollBar = nullptr;
+	void Container_V2::AddWidget(Widget* pWidget)
+	{
+		Parent::AddWidget(pWidget);
+		m_externalWidgets.PushBack(pWidget);
+	}
 
-		WidgetMgr::Get().UnregisterWidget(m_pHScrollContainer);
-		delete m_pHScrollContainer;
-		m_pHScrollContainer = nullptr;
+	void Container_V2::InsertWidget(Widget* pWidget, int position)
+	{
+		const int32_t INTERNAL_WIDGETS_COUNT = 4;
+		Parent::InsertWidget(pWidget, position + INTERNAL_WIDGETS_COUNT);
+		m_externalWidgets.PushBack(pWidget);
+	}
 
-		WidgetMgr::Get().UnregisterWidget(m_pHScrollBar);
-		delete m_pHScrollBar;
-		m_pHScrollBar = nullptr;
+	void Container_V2::DeleteChild(Widget* pWidget)
+	{
+		Parent::DeleteChild(pWidget);
+		m_externalWidgets.Erase(pWidget);
+	}
+
+	void Container_V2::DeleteAllChildren()
+	{
+		for (Widget* pExternalWidget : m_externalWidgets)
+			Parent::DeleteChild(pExternalWidget);
+
+		m_externalWidgets.Clear();
 	}
 
 	void Container_V2::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
@@ -119,7 +136,8 @@ namespace Widgets
 		if(m_showHScrollBar)
 			innerRect.bottom = m_absPos.y + m_size.y - SCROLL_CONTAINER_SIZE;
 
-		Parent::Draw(windowSize, innerRect);
+		for (Widget* pChild : m_externalWidgets)
+			pChild->Draw(windowSize, innerRect);
 
 		if (m_showVScrollBar)
 		{
@@ -231,7 +249,7 @@ namespace Widgets
 	{
 		Core::UInt2 childrenMax = Core::UInt2(0, 0);
 
-		for (Widget* pChild : m_children)
+		for (Widget* pChild : m_externalWidgets)
 		{
 			Core::Int3 absPos = m_absPos;
 			absPos.x += m_absPosOffset.x;
