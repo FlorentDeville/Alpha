@@ -242,14 +242,16 @@ namespace Widgets
 			childrenMax.y = max(childrenMax.y, pChild->GetY() + pChild->GetHeight());
 		}
 
-		m_scrollingDistance = Core::UInt2(0, 0);
-		if (m_size.x < childrenMax.x)
-		{
-			if(!m_showVScrollBar)
-				m_scrollingDistance.x = childrenMax.x - m_size.x;
-			else
-				m_scrollingDistance.x = childrenMax.x - m_size.x + SCROLL_CONTAINER_SIZE;
+		Core::UInt2 innerSize = m_size;
+		if (m_showVScrollBar)
+			innerSize.x -= SCROLL_CONTAINER_SIZE;
+		if (m_showHScrollBar)
+			innerSize.y -= SCROLL_CONTAINER_SIZE;
 
+		m_scrollingDistance = Core::UInt2(0, 0);
+		if (innerSize.x < childrenMax.x)
+		{
+			m_scrollingDistance.x = childrenMax.x - innerSize.x;
 			m_showHScrollBar = true;
 		}
 		else
@@ -257,13 +259,9 @@ namespace Widgets
 			m_showHScrollBar = false;
 		}
 
-		if (m_size.y < childrenMax.y)
+		if (innerSize.y < childrenMax.y)
 		{
-			if(!m_showHScrollBar)
-				m_scrollingDistance.y = childrenMax.y - m_size.y;
-			else
-				m_scrollingDistance.y = childrenMax.y - m_size.y + SCROLL_CONTAINER_SIZE;
-
+			m_scrollingDistance.y = childrenMax.y - innerSize.y;
 			m_showVScrollBar = true;
 		}
 		else
