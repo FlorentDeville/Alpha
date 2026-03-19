@@ -29,6 +29,7 @@ namespace Widgets
 		bool Handle(const BaseEvent& ev) override;
 		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 		void ResizeChildren() override;
+		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
 	protected:
 		Core::Int2 m_absPosOffset;

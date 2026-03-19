@@ -291,6 +291,19 @@ namespace Widgets
 		m_absPosOffset.x = saturate(m_absPosOffset.x, -static_cast<int32_t>(m_scrollingDistance.x), 0);
 	}
 
+	void Container_V2::ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
+	{
+		Parent::ReComputePosition(parentAbsPos, parentSize);
+
+		Core::Int3 absScrollBarPos = m_absPos;
+		absScrollBarPos.z -= 1;
+
+		m_pVScrollContainer->ReComputePosition(m_absPos, m_size);
+		m_pVScrollBar->ReComputePosition(absScrollBarPos, m_size);
+		m_pHScrollContainer->ReComputePosition(m_absPos, m_size);
+		m_pHScrollBar->ReComputePosition(absScrollBarPos, m_size);
+	}
+
 	void Container_V2::UpdateVScrollBarPositionFromOffset()
 	{
 		float ratio = -m_absPosOffset.y / static_cast<float>(m_scrollingDistance.y);
