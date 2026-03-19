@@ -85,40 +85,7 @@ namespace Widgets
 
 	void TreeView::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
-		DirectX::XMMATRIX wvp;
-		ComputeWVPMatrix(windowSize, wvp);
-		int valueShowBorder = m_showBorder ? 1 : 0;
-		float rect[2] = { (float)m_size.x, (float)m_size.y };
-
-		{
-			WidgetMgr& widgetMgr = WidgetMgr::Get();
-			Rendering::RenderModule& render = Rendering::RenderModule::Get();
-			Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
-
-			render.SetScissorRectangle(scissor);
-
-			const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetBaseWidgetPsoId());
-			render.BindMaterial(*pPso);
-
-			render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
-			render.SetConstantBuffer(1, sizeof(m_backgroundColor), &m_backgroundColor, 0);
-			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
-			render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
-			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
-			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
-
-			AlternateColorCBuffer altColor;
-			altColor.m_color1 = m_evenRowBackgroundColor;
-			altColor.m_color2 = m_oddRowBackgroundColor;
-			altColor.m_size = 20;
-			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
-
-			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());
-			render.RenderMesh(*pMesh);
-
-			altColor.m_size = 0;
-			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
-		}
+		DrawBackground(windowSize, scissor);
 
 		Parent::Draw(windowSize, scissor);
 	}
@@ -822,5 +789,83 @@ namespace Widgets
 		m_rowInfoMap.erase(pRowToRemove);
 		m_rowLayoutTree.erase(pRowToRemove);
 		m_rowLayoutTree[pParentRow].Erase(pRowToRemove);
+	}
+
+	void TreeView::ComputeBackgroundMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const
+	{
+		float width = static_cast<float>(m_virtualSize.x);
+		float height = static_cast<float>(m_virtualSize.y);
+		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(width, height, 0);
+
+		//position : top left corner
+		float windowWidth = windowSize.x;
+		float windowHeight = windowSize.y;
+
+		//compute the position on the screen.
+		//this is in screen space coordinate but the unit is a pixel
+		//so the origin is the center of the screen and it goes from [-window size / 2; window size / 2]
+		float x = (float)(m_absPos.x + m_absPosOffset.x) + (width * 0.5f) - (windowWidth * 0.5f);
+		float y = -(m_absPos.y + m_absPosOffset.y) - (height * 0.5f) + (windowHeight * 0.5f);
+		float z = (float)m_absPos.z;
+		DirectX::XMMATRIX position = DirectX::XMMatrixTranslation(x, y, z);
+
+		DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 0, 10, 1), DirectX::XMVectorSet(0, 1, 0, 1));
+
+		float projWidth = static_cast<float>(windowWidth);
+		float projHeight = static_cast<float>(windowHeight);
+		DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(projWidth, projHeight, NEAR_CAMERA_PLANE, FAR_CAMERA_PLANE);
+
+		wvp = DirectX::XMMatrixMultiply(scale, position);
+		wvp = DirectX::XMMatrixMultiply(wvp, view);
+		wvp = DirectX::XMMatrixMultiply(wvp, projection);
+	}
+
+	void TreeView::DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor)
+	{
+		DirectX::XMMATRIX wvp;
+		ComputeBackgroundMatrix(windowSize, wvp);
+		int valueShowBorder = m_showBorder ? 1 : 0;
+		float rect[2] = { (float)m_virtualSize.x, (float)m_virtualSize.y };
+
+		D3D12_RECT localScissor = scissor;
+		if (localScissor.left < m_absPos.x) localScissor.left = m_absPos.x;
+		if (localScissor.right > m_absPos.x + (int32_t)m_size.x) localScissor.right = m_absPos.x + m_size.x;
+		if (localScissor.top < m_absPos.y) localScissor.top = m_absPos.y;
+		if (localScissor.bottom > m_absPos.y + (int32_t)m_size.y) localScissor.bottom = m_absPos.y + m_size.y;
+
+		if (m_showVScrollBar)
+			localScissor.right -= SCROLL_CONTAINER_SIZE;
+		if (m_showHScrollBar)
+			localScissor.bottom -= SCROLL_CONTAINER_SIZE;
+
+		{
+			WidgetMgr& widgetMgr = WidgetMgr::Get();
+			Rendering::RenderModule& render = Rendering::RenderModule::Get();
+			Rendering::PipelineStateMgr& psoMgr = Rendering::PipelineStateMgr::Get();
+
+			render.SetScissorRectangle(localScissor);
+
+			const Rendering::PipelineState* pPso = psoMgr.GetPipelineState(widgetMgr.GetBaseWidgetPsoId());
+			render.BindMaterial(*pPso);
+
+			render.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
+			render.SetConstantBuffer(1, sizeof(m_backgroundColor), &m_backgroundColor, 0);
+			render.SetConstantBuffer(2, sizeof(valueShowBorder), &valueShowBorder, 0);
+			render.SetConstantBuffer(3, sizeof(m_borderColor), &m_borderColor, 0);
+			render.SetConstantBuffer(4, sizeof(rect), &rect, 0);
+			render.SetConstantBuffer(5, sizeof(m_borderWidth), &m_borderWidth, 0);
+
+			AlternateColorCBuffer altColor;
+			altColor.m_color1 = m_evenRowBackgroundColor;
+			altColor.m_color2 = m_oddRowBackgroundColor;
+			altColor.m_size = 20;
+			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
+
+			const Rendering::Mesh* pMesh = Rendering::MeshMgr::Get().GetMesh(widgetMgr.GetQuadMeshId());
+			render.RenderMesh(*pMesh);
+
+			altColor.m_size = 0;
+			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
+		}
 	}
 }

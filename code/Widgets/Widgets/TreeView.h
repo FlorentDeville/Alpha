@@ -123,5 +123,9 @@ namespace Widgets
 		void ShowRowsRecursively(const ModelIndex& indexToShow);
 
 		void DeleteRowRecursively(Layout* pParentRow, Layout* pRowToRemove);
+
+		void ComputeBackgroundMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
+
+		void DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor);
 	};
 }
