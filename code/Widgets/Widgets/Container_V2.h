@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+
 #include "Widgets/Widget.h"
 
 namespace Widgets
@@ -18,17 +20,31 @@ namespace Widgets
 		Container_V2();
 		~Container_V2();
 
+		void AddWidget(Widget* pWidget) override;
+		void InsertWidget(Widget* pWidget, int position) override;
+		void DeleteChild(Widget* pWidget) override;
+		void DeleteAllChildren() override;
+
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		bool Handle(const BaseEvent& ev) override;
 		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 		void ResizeChildren() override;
+		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
-	private:
+	protected:
 		Core::Int2 m_absPosOffset;
 		Core::UInt2 m_virtualSize;		//size propagated to the children
-		Core::UInt2 m_scrollingDistance;
 
 		const int32_t SCROLL_CONTAINER_SIZE = 20;
+
+		bool m_showVScrollBar;
+		bool m_showHScrollBar;
+
+	private:
+		Core::Array<Widget*> m_externalWidgets;
+
+		Core::UInt2 m_scrollingDistance;
+
 		const int32_t SCROLLBAR_CONTAINER_SIZE = 10;
 
 		//dragging
@@ -39,14 +55,12 @@ namespace Widgets
 		//vertical scroll bar
 		Container* m_pVScrollContainer;
 		Container* m_pVScrollBar;
-		int32_t m_vScrollContainerSize;
-		bool m_showVScrollBar;	
+		int32_t m_vScrollContainerSize;			
 
 		//horizontal scroll bar
 		Container* m_pHScrollContainer;
 		Container* m_pHScrollBar;
 		int32_t m_hScrollContainerSize;
-		bool m_showHScrollBar;
 
 		void UpdateVScrollBarPositionFromOffset();
 

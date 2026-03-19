@@ -9,7 +9,7 @@
 #include "Core/Collections/Array.h"
 
 #include "Widgets/Tools/Color.h"
-#include "Widgets/Widget.h"
+#include "Widgets/Widgets/Container_V2.h"
 
 namespace Widgets
 {
@@ -20,9 +20,11 @@ namespace Widgets
 	class SelectionRow;
 	class Split;
 
-	class TableView : public Widget
+	class TableView : public Container_V2
 	{
 	public:
+		using Parent = Container_V2;
+
 		TableView();
 		~TableView();
 
@@ -80,5 +82,9 @@ namespace Widgets
 		int GetRowLayoutIndex(int row) const;
 
 		void HeaderSplit_OnDrag(const Core::Int2& mousePosition, Label* pHeader, int columnIndex);
+
+		void DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor);
+
+		void ComputeBackgroundMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp);
 	};
 }
