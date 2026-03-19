@@ -32,7 +32,7 @@ extern OsWin::CursorId g_pIconName;
 namespace Widgets
 {
 	TreeView::TreeView()
-		: Widget()
+		: Parent()
 		, m_pModel(nullptr)
 		, m_oddRowBackgroundColor(TableViewStyle::s_oddRowBackgroundColor)
 		, m_evenRowBackgroundColor(TableViewStyle::s_evenRowBackgroundColor)
