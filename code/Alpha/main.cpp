@@ -469,19 +469,24 @@ void CreateMainWindow(const std::string& shaderPath)
 		//pTab->AddWidget(pLayout);
 		pMiddleTabContainer->AddTab("Widgets", pTab);
 
-		Widgets::Container_V2* pOffsetContainer = new Widgets::Container_V2();
+		//Widgets::Container_V2* pOffsetContainer = new Widgets::Container_V2();
 		//Widgets::Container* pOffsetContainer = new Widgets::Container();
-		pOffsetContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
-		pOffsetContainer->SetSize(Core::UInt2(500, 200));
-		pOffsetContainer->SetX(20);
-		pOffsetContainer->SetY(30);
-		pTab->AddWidget(pOffsetContainer);
+		//pOffsetContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
+		//pOffsetContainer->SetSize(Core::UInt2(500, 200));
+		//pOffsetContainer->SetX(20);
+		//pOffsetContainer->SetY(30);
+		//pTab->AddWidget(pOffsetContainer);
 		//pOffsetContainer->GetDefaultStyle().ShowBorder(true);
 		//pOffsetContainer->GetDefaultStyle().SetBorderSize(2);
 		//pLayout->AddWidget(pOffsetContainer);
 
 		Widgets::TableView* pTableView = new Widgets::TableView();
-		pOffsetContainer->AddWidget(pTableView);
+		pTableView->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pTableView->SetSize(Core::UInt2(500, 200));
+		pTableView->SetX(20);
+		pTableView->SetY(30);
+		pTab->AddWidget(pTableView);
+
 		//pTableView->SetSize(Core::UInt2(300, 700));
 
 		Editors::MeshListModel* pModel = new Editors::MeshListModel();
