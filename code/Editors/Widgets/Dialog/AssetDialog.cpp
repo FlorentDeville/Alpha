@@ -205,7 +205,7 @@ namespace Editors
 
 		m_pAssetViewModel = new Editors::AssetListModel(assetType);
 		m_pAssetView->SetModel(m_pAssetViewModel);
-		m_pAssetView->SetColumnWidth(0, 300);
+		m_pAssetView->SetColumnWidth(AssetListModel::Columns::Name, 318);
 
 		pVLayout->AddWidget(m_pAssetView);
 	}
