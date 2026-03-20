@@ -135,6 +135,7 @@ namespace Editors
 
 		m_pClassModel = new ClassModel(baseClassSid);
 		m_pClassView->SetModel(m_pClassModel);
+		m_pClassView->SetColumnWidth(0, WIDTH - 2); // -2 for the border size
 
 		SetSize(Core::UInt2(WIDTH, HEIGHT));
 		SetSizeStyle(Widgets::Widget::DEFAULT);
