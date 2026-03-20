@@ -31,7 +31,9 @@ namespace Editors
 					{
 						if (pParentType->GetSid() == baseClassSid)
 						{
-							m_cache.PushBack(pType);
+							CachedItem& cache = m_cache.PushBackDefault();
+							cache.m_pType = pType;
+							cache.m_name = pType->GetName();
 							return;
 						}
 
@@ -56,7 +58,7 @@ namespace Editors
 			if(!m_cache.IsValidIndex(row))
 				return Widgets::ModelIndex();
 
-			return CreateIndex(row, column, m_cache[row]);
+			return CreateIndex(row, column, &m_cache[row]);
 		}
 
 		int GetRowCount(const Widgets::ModelIndex& parent) const override
@@ -81,7 +83,7 @@ namespace Editors
 			if (!m_cache.IsValidIndex(row))
 				return "";
 
-			return m_cache[row]->GetName();
+			return m_cache[row].m_name;
 		}
 
 		std::string GetHeaderData(int columnIndex)
@@ -97,11 +99,17 @@ namespace Editors
 			if (!index.IsValid())
 				return nullptr;
 
-			return m_cache[index.GetRow()];
+			return m_cache[index.GetRow()].m_pType;
 		}
 
 	private:
-		Core::Array<const Core::TypeDescriptor*> m_cache;
+		struct CachedItem
+		{
+			std::string m_name;
+			const Core::TypeDescriptor* m_pType;
+		};
+
+		Core::Array<CachedItem> m_cache;
 	};
 
 	ClassSelectionDialog::ClassSelectionDialog(const Core::Sid& baseClassSid)
