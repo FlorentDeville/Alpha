@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/Dialog/ClassSelectionDialog.h"
 
@@ -15,6 +15,8 @@
 #include "Widgets/Widgets/TableView.h"
 #include "Widgets/WidgetMgr.h"
 
+#include <algorithm>
+
 namespace Editors
 {
 	class ClassModel : public Widgets::AbstractViewModel
@@ -25,21 +27,15 @@ namespace Editors
 		{
 			Core::ReflectionMgr::Get().ForEachType([this, baseClassSid](const Core::TypeDescriptor* pType)
 				{
-					bool validType = false;
-					const Core::TypeDescriptor* pParentType = pType;
-					while (pParentType)
-					{
-						if (pParentType->GetSid() == baseClassSid)
-						{
-							CachedItem& cache = m_cache.PushBackDefault();
-							cache.m_pType = pType;
-							cache.m_name = pType->GetName();
-							return;
-						}
+					if (!pType->InheritsFrom(baseClassSid))
+						return;
 
-						pParentType = pParentType->GetBaseType();
-					}
+					CachedItem& cache = m_cache.PushBackDefault();
+					cache.m_pType = pType;
+					cache.m_name = CreateCleanTypeName(pType);					
 				});
+
+			std::sort(m_cache.begin(), m_cache.end(), [](const CachedItem& data1, const CachedItem& data2) { return data1.m_name < data2.m_name; });
 		}
 
 		~ClassModel()
@@ -110,6 +106,38 @@ namespace Editors
 		};
 
 		Core::Array<CachedItem> m_cache;
+
+		std::string CreateCleanTypeName(const Core::TypeDescriptor* pType) const
+		{
+			const std::string& typeName = pType->GetName();
+
+			//remove the namespace
+			std::string cleanedName;
+			size_t pos = typeName.find_last_of(':');
+			if (pos != std::string::npos)
+				cleanedName = typeName.substr(pos + 1);
+			else
+				cleanedName = typeName;
+
+			std::string splittedString;
+
+			//split the words
+			size_t start = 0;
+			for (int ii = 1; ii < cleanedName.size(); ++ii)
+			{
+				if (!std::isupper(cleanedName[ii]))
+					continue;
+
+				size_t end = ii;
+				splittedString = splittedString + " " + cleanedName.substr(start, end - start);
+				start = end;
+				++ii;
+			}
+
+			splittedString = splittedString + " " + cleanedName.substr(start, cleanedName.size() - start);
+
+			return splittedString;
+		}
 	};
 
 	ClassSelectionDialog::ClassSelectionDialog(const Core::Sid& baseClassSid)
