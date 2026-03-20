@@ -74,5 +74,7 @@ namespace Editors
 		void AddToCache(const Systems::AssetMetadata* pMetadata);
 
 		int FindCacheIndex(Systems::NewAssetId id) const;
+
+		void SortCachedData();
 	};
 }
