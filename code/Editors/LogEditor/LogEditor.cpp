@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LogEditor/LogEditor.h"
 
@@ -10,6 +10,7 @@
 #include "Widgets/Layout.h"
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
+#include "Widgets/Widgets/Container_V2.h"
 
 namespace Editors
 {
@@ -35,10 +36,14 @@ namespace Editors
 			parameter.m_pParent->AddWidget(pViewportTab);
 		}
 
+		Widgets::Container_V2* pScrollContainer = new Widgets::Container_V2();
+		pScrollContainer->SetSizeStyle(Widgets::Widget::STRETCH);
+		pViewportTab->AddWidget(pScrollContainer);
+
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		m_pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
-		pViewportTab->AddWidget(m_pInternalLayout);
+		m_pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::FIT);
+		pScrollContainer->AddWidget(m_pInternalLayout);
 
 		Core::LogModule& logModule = Core::LogModule::Get();
 		const Core::Array<Core::LogModule::LogEntry>& allLogs = logModule.GetAllLogEntries();
@@ -53,6 +58,7 @@ namespace Editors
 		//strip \r\n
 		
 		Widgets::Label* pNewLabel = new Widgets::Label(text);
+		pNewLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
 		m_pInternalLayout->AddWidget(pNewLabel);
 	}
 }
