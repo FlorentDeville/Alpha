@@ -48,6 +48,12 @@ namespace Core
 		++m_size;
 	}
 
+	template<typename T> T& Array<T>::PushBackDefault()
+	{
+		Resize(m_size + 1);
+		return (*this)[m_size - 1];
+	}
+
 	template<typename T> void Array<T>::Insert(const T& item, uint32_t position)
 	{
 		uint32_t newSize = m_size + 1;
