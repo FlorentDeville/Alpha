@@ -48,6 +48,9 @@ namespace Editors
 		//This event is called for Material and MaterialInstance
 		EVENT_DECL(MaterialRenamed, void(const Systems::AssetMetadata& metadata, const std::string& newName));
 
+		//This event is called when a material is compiled or when a MaterialInstance is refreshed
+		EVENT_DECL(MaterialCompiled, void(const Systems::AssetMetadata& metadata));
+
 	private:
 
 		class BaseToInstanceCache
