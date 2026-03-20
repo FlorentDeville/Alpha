@@ -158,6 +158,7 @@ namespace FbxImporter
 						Core::Vec4f localNormal = FromFbx(fbxLocalNormal);
 						localNormal.Set(3, 0);
 						Core::Vec4f normal = localNormal * worldTx;
+						normal = ConvertCoordSystem(normal, pSettings);
 						normal.Normalize();
 
 						m_normal.PushBack(normal.GetX());
@@ -204,6 +205,7 @@ namespace FbxImporter
 						Core::Vec4f localNormal = FromFbx(fbxLocalNormal);
 						localNormal.Set(3, 0);
 						Core::Vec4f normal = localNormal * worldTx;
+						normal = ConvertCoordSystem(normal, pSettings);
 						normal.Normalize();
 
 						m_normal.PushBack(normal.GetX());
@@ -250,6 +252,7 @@ namespace FbxImporter
 						Core::Vec4f localNormal = FromFbx(fbxLocalNormal);
 						localNormal.Set(3, 0);
 						Core::Vec4f normal = localNormal * worldTx;
+						normal = ConvertCoordSystem(normal, pSettings);
 						normal.Normalize();
 
 						m_normal.PushBack(normal.GetX());
