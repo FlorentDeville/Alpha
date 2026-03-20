@@ -12,6 +12,10 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 
 #include "Widgets/Models/ModelIndex.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
+
+#include <algorithm>
 
 namespace Editors
 {
@@ -26,6 +30,8 @@ namespace Editors
 			const Systems::AssetMetadata* pMetadata = assetMgr.GetMetadata(id);
 			AddToCache(pMetadata);
 		}
+
+		SortCachedData();
 	}
 
 	MaterialListModel::~MaterialListModel()
@@ -147,7 +153,9 @@ namespace Editors
 		
 		AddToCache(pMetadata);
 		
-		CommitInsertRows(row, 1, Widgets::ModelIndex());
+		SortCachedData();
+		Widgets::ModelIndex newIndex = GetIndex(pMetadata->GetAssetId());
+		CommitInsertRows(newIndex.GetRow(), 1, Widgets::ModelIndex());
 	}
 
 	void MaterialListModel::RemoveRow(Systems::NewAssetId id)
@@ -192,16 +200,30 @@ namespace Editors
 
 	void MaterialListModel::OnMaterialRenamed(const Systems::AssetMetadata& metadata)
 	{
-		//first update the cache
-		int cacheIndex = FindCacheIndex(metadata.GetAssetId());
-		if (cacheIndex == -1)
-			return;
+		//save the selection
+		Core::Array<Systems::NewAssetId> selectedAssetIds;
+		const std::list<Widgets::SelectionRow>& selectedRow = GetSelectionModel()->GetSelectedRows();
+		selectedAssetIds.Reserve(static_cast<uint32_t>(selectedRow.size()));
+		for (const Widgets::SelectionRow& row : selectedRow)
+		{
+			Systems::NewAssetId id = GetAssetId(row.GetStartIndex());
+			selectedAssetIds.PushBack(id);
+		}
 
-		m_cache[cacheIndex].m_virtualName = metadata.GetVirtualName();
+		//clear the selection because RemoveRow automatically select the next entry if something is selected.
+		GetSelectionModel()->ClearSelectedRows();
 
-		Widgets::ModelIndex index = GetIndex(metadata.GetAssetId());
-		index = index.GetSiblingAtColumn(Columns::Name);
-		m_onDataChanged(index);
+		//to keep everything sorted, remove the row then added it back
+		RemoveRow(metadata.GetAssetId());
+		AddRow(&metadata);
+
+		//now reset the selection
+		for (const Systems::NewAssetId& id : selectedAssetIds)
+		{
+			Widgets::ModelIndex modelIndex = GetIndex(id);
+			Widgets::SelectionRow row(modelIndex, modelIndex);
+			GetSelectionModel()->SelectRow(row);
+		}
 	}
 
 	Systems::NewAssetId MaterialListModel::GetAssetId(const Widgets::ModelIndex& index) const
@@ -244,5 +266,10 @@ namespace Editors
 		}
 		
 		return -1;
+	}
+
+	void MaterialListModel::SortCachedData()
+	{
+		std::sort(m_cache.begin(), m_cache.end(), [](const CachedMaterialData& data1, const CachedMaterialData& data2) { return data1.m_virtualName < data2.m_virtualName; });
 	}
 }

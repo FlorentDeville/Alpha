@@ -77,9 +77,6 @@ namespace Systems
 			{
 				if (perMaterialPoolIndex == -1)
 				{
-					//if there is a cbuffer in the root signature but no variable in it, it's weird, it shouldn't be there!!
-					assert(perMaterialParam.GetSize() > 0);
-
 					Rendering::LinearConstantBufferPool* pCBufferPool = renderer.GetLinearCBufferPool();
 					perMaterialPoolIndex = pCBufferPool->GetFreeConstantBufferIndex();
 

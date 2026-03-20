@@ -321,6 +321,11 @@ namespace Editors
 				m_pMaterialListModel->OnMaterialRenamed(metadata);
 			});
 
+		MaterialEditorModule::Get().OnMaterialCompiled([this](const Systems::AssetMetadata& metadata)
+			{
+				RefreshPropertyGrid();
+			});
+
 		m_pMeshes[DisplayMesh::Sphere] = new Rendering::Mesh();
 		const uint32_t SUBDIVISION = 20;
 		Rendering::BaseShape::CreateSphere(m_pMeshes[DisplayMesh::Sphere], SUBDIVISION, SUBDIVISION);
@@ -784,12 +789,12 @@ namespace Editors
 
 		bool res = MaterialEditorModule::Get().CompileMaterial(id, debug);
 
-		RefreshPropertyGrid();
-
 		if (!res)
 			return true;
 
 		m_pMaterialListModel->SetShaderModified(id);
+
+		Core::LogModule::Get().LogInfo("Material compiled successfully.");
 
 		return true;
 	}

@@ -348,7 +348,10 @@ namespace Editors
 		pMaterial->UpdateRenderingObjects();
 		
 		if (res)
-			Core::LogModule::Get().LogInfo("Material compiled successfully.");
+		{
+			if (Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id))
+				m_onMaterialCompiled(*pMetadata);
+		}
 
 		return res;
 	}
@@ -366,7 +369,14 @@ namespace Editors
 		if (!pMaterial)
 			return false;
 
-		return pMaterial->Refresh();
+		bool res = pMaterial->Refresh();
+		if (!res)
+			return res;
+
+		if (Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id))
+			m_onMaterialCompiled(*pMetadata);
+
+		return true;
 	}
 
 	void MaterialEditorModule::BaseToInstanceCache::AddMaterialInstance(Systems::NewAssetId id)
