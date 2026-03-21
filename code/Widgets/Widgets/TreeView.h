@@ -115,11 +115,14 @@ namespace Widgets
 		int GetRowIndexInLayout(const Layout* pLayout) const;
 
 		RowInfo* GetRowInfo(const Widget* pRowLayout);
+		RowInfo* GetRowInfo(const ModelIndex& index);
 
 		void Collapse(const ModelIndex& index, RowInfo* pInfo);
 		void Expand(const ModelIndex& index, RowInfo* pInfo);
 
 		void CollapseAll();
+
+		void ExpandAllParents(const ModelIndex& index);
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);

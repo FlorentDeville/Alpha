@@ -486,8 +486,13 @@ namespace Widgets
 
 		for (const SelectionRow& selectedRow : selected)
 		{
-			if (Layout* pLayout = ComputeRowLayoutFromModelIndex(selectedRow.GetStartIndex()))
-				SetSelectedRowStyle(pLayout);
+			Layout* pLayout = ComputeRowLayoutFromModelIndex(selectedRow.GetStartIndex());
+			if (!pLayout)
+				continue;
+
+			SetSelectedRowStyle(pLayout);
+
+			ExpandAllParents(selectedRow.GetStartIndex());
 		}
 	}
 
@@ -704,6 +709,15 @@ namespace Widgets
 		return &it->second;
 	}
 
+	TreeView::RowInfo* TreeView::GetRowInfo(const ModelIndex& index)
+	{
+		Layout* pLayout = ComputeRowLayoutFromModelIndex(index);
+		if (!pLayout)
+			return nullptr;
+
+		return GetRowInfo(pLayout);
+	}
+
 	void TreeView::Collapse(const ModelIndex& index, RowInfo* pInfo)
 	{
 		Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
@@ -743,6 +757,26 @@ namespace Widgets
 				ModelIndex index = ComputeModelIndexFromRowLayout(static_cast<const Layout*>(it->first));
 				Collapse(index, &it->second);
 			}
+		}
+	}
+
+	void TreeView::ExpandAllParents(const ModelIndex& index)
+	{
+		RowInfo* pInfo = GetRowInfo(index);
+		if (!pInfo)
+			return;
+
+		Widgets::Layout* pParent = pInfo->m_pParent;
+		while (pParent)
+		{
+			RowInfo* pParentInfo = GetRowInfo(pParent);
+			if (!pParentInfo)
+				break;
+
+			ModelIndex indexParent = ComputeModelIndexFromRowLayout(pParent);
+			Expand(indexParent, pParentInfo);
+
+			pParent = pParentInfo->m_pParent;
 		}
 	}
 
