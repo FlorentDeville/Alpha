@@ -62,5 +62,7 @@ namespace Systems
 
 		//Cached pointers to the root game objects
 		Core::Array<GameObject*> m_rootsGameObject;
+
+		void DeleteChildrenRecursive(GameObject* pGo);
 	};
 }

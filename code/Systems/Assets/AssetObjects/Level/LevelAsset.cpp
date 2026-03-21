@@ -117,6 +117,8 @@ namespace Systems
 			m_rootsGameObject.Erase(pGo);
 		}
 
+		DeleteChildrenRecursive(pGo);
+
 		m_gameObjectsArray.Erase(pGo);
 		Systems::DeleteObject(pGo);
 	}
@@ -184,6 +186,18 @@ namespace Systems
 
 				pGo->GetTransform().AddChildCachedPointer(pChildGo);
 			}
+		}
+	}
+
+	void LevelAsset::DeleteChildrenRecursive(GameObject* pGo)
+	{
+		TransformComponent& transform = pGo->GetTransform();
+		for (Systems::GameObject* pChild : transform.m_childrenGo)
+		{
+			DeleteChildrenRecursive(pChild);
+
+			m_gameObjectsArray.Erase(pChild);
+			Systems::DeleteObject(pChild);
 		}
 	}
 }

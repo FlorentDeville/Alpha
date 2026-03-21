@@ -68,6 +68,11 @@ namespace Systems
 		return m_children;
 	}
 
+	const Core::Array<Systems::GameObject*>& TransformComponent::GetChildren() const
+	{
+		return m_childrenGo;
+	}
+
 	void TransformComponent::AddChild(Systems::GameObject* pChild)
 	{
 		Core::Array<Core::Guid>::Iterator it = std::find(m_children.cbegin(), m_children.cend(), pChild->GetGuid());
@@ -95,6 +100,12 @@ namespace Systems
 
 		if(pChildGo)
 			m_childrenGo.Erase(pChildGo);
+	}
+
+	void TransformComponent::RemoveAllChildren()
+	{
+		m_children.Clear();
+		m_childrenGo.Clear();
 	}
 
 	void TransformComponent::AddChildCachedPointer(Systems::GameObject* pGo)
