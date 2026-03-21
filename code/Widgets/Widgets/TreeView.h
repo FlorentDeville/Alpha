@@ -119,6 +119,8 @@ namespace Widgets
 		void Collapse(ModelIndex& index, RowInfo* pInfo);
 		void Expand(ModelIndex& index, RowInfo* pInfo);
 
+		void CollapseAll();
+
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);
 

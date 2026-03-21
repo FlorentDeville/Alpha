@@ -118,6 +118,8 @@ namespace Widgets
 
 		CreateHeader();
 		CreateView();
+
+		CollapseAll();
 	}
 
 	void TreeView::SetMultiSelection(bool enable)
@@ -730,6 +732,18 @@ namespace Widgets
 		}
 
 		pInfo->m_collapsed = false;
+	}
+
+	void TreeView::CollapseAll()
+	{
+		for (std::map<const Widget*, RowInfo>::iterator it = m_rowInfoMap.begin(); it != m_rowInfoMap.end(); ++it)
+		{
+			if (!it->second.m_collapsed)
+			{
+				ModelIndex index = ComputeModelIndexFromRowLayout(static_cast<const Layout*>(it->first));
+				Collapse(index, &it->second);
+			}
+		}
 	}
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
