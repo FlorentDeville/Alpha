@@ -97,6 +97,12 @@ namespace Systems
 			m_childrenGo.Erase(pChildGo);
 	}
 
+	void TransformComponent::RemoveAllChildren()
+	{
+		m_children.Clear();
+		m_childrenGo.Clear();
+	}
+
 	void TransformComponent::AddChildCachedPointer(Systems::GameObject* pGo)
 	{
 		m_childrenGo.PushBack(pGo);

@@ -42,6 +42,7 @@ namespace Systems
 
 		void AddChild(Systems::GameObject* pChild);
 		void RemoveChild(const Core::Guid& child);
+		void RemoveAllChildren();
 
 		void AddChildCachedPointer(Systems::GameObject* pGo);
 
