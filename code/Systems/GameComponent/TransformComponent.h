@@ -39,6 +39,7 @@ namespace Systems
 		void SetParent(Systems::GameObject* pParentGo);
 
 		const Core::Array<Core::Guid>& GetChildrenGuid() const;
+		const Core::Array<Systems::GameObject*>& GetChildren() const;
 
 		void AddChild(Systems::GameObject* pChild);
 		void RemoveChild(const Core::Guid& child);
