@@ -31,6 +31,9 @@ namespace Widgets
 		void ResizeChildren() override;
 		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
+		//Vertical scroll so the relative position inside the container is visible.
+		void ScrollToHeight(uint32_t height);
+
 	protected:
 		Core::Int2 m_absPosOffset;
 		Core::UInt2 m_virtualSize;		//size propagated to the children
