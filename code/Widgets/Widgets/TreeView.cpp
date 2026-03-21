@@ -704,7 +704,7 @@ namespace Widgets
 		return &it->second;
 	}
 
-	void TreeView::Collapse(ModelIndex& index, RowInfo* pInfo)
+	void TreeView::Collapse(const ModelIndex& index, RowInfo* pInfo)
 	{
 		Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
 		pInfo->m_pIcon->SetTextureId(collapsedIcon);
@@ -719,7 +719,7 @@ namespace Widgets
 		pInfo->m_collapsed = true;
 	}
 
-	void TreeView::Expand(ModelIndex& index, RowInfo* pInfo)
+	void TreeView::Expand(const ModelIndex& index, RowInfo* pInfo)
 	{
 		Rendering::TextureId expandedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
 		pInfo->m_pIcon->SetTextureId(expandedIcon);

@@ -116,8 +116,8 @@ namespace Widgets
 
 		RowInfo* GetRowInfo(const Widget* pRowLayout);
 
-		void Collapse(ModelIndex& index, RowInfo* pInfo);
-		void Expand(ModelIndex& index, RowInfo* pInfo);
+		void Collapse(const ModelIndex& index, RowInfo* pInfo);
+		void Expand(const ModelIndex& index, RowInfo* pInfo);
 
 		void CollapseAll();
 
