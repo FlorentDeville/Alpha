@@ -323,7 +323,7 @@ namespace Widgets
 		ComputeSortedWidgetQueue();
 	}
 
-	void WidgetMgr::HandleMsg(const OsWin::UIMessage& msg)
+	void WidgetMgr::HandleMsg(const Os::UIMessage& msg)
 	{
 		std::deque<Widget*>* widgetsSortedQueue = &m_sortedWidgets;
 
@@ -339,7 +339,7 @@ namespace Widgets
 		}
 		switch (msg.m_id)
 		{
-		case OsWin::MouseMove:
+		case Os::MouseMove:
 		{
 			bool hasExited = false;
 			bool hasMoved = false; //you can only move or enter in a single frame. So I use the same flag here.
@@ -397,14 +397,14 @@ namespace Widgets
 		}
 		break;
 
-		case OsWin::MouseLDown:
-		case OsWin::MouseLUp:
-		case OsWin::MouseMDown:
-		case OsWin::MouseMUp:
-		case OsWin::MouseRDown:
-		case OsWin::MouseRUp:
-		case OsWin::MouseLDoubleClick:
-		case OsWin::MouseWheel:
+		case Os::MouseLDown:
+		case Os::MouseLUp:
+		case Os::MouseMDown:
+		case Os::MouseMUp:
+		case Os::MouseRDown:
+		case Os::MouseRUp:
+		case Os::MouseLDoubleClick:
+		case Os::MouseWheel:
 		{
 			bool setFocus = false;
 			for (std::deque<Widget*>::reverse_iterator it = widgetsSortedQueue->rbegin(); it != widgetsSortedQueue->rend(); ++it)
@@ -431,7 +431,7 @@ namespace Widgets
 		}
 		break;
 
-		case OsWin::VirtualKeyDown:
+		case Os::VirtualKeyDown:
 		{
 			//First try to handle the inputs, then check if it's a shortcut.
 			//Shortcuts need to be checked after regular inputs. For example a TextBox wants to handle
@@ -463,8 +463,8 @@ namespace Widgets
 		}
 		break;
 
-		case OsWin::VirtualKeyUp:
-		case OsWin::CharKeyDown:
+		case Os::VirtualKeyUp:
+		case Os::CharKeyDown:
 		{
 			//The first 32 characters of the ascii table are unprintable characters, so ignore them.
 			const int UNPRINTABLE_ASCII_CHARACTER = 32;
@@ -631,19 +631,19 @@ namespace Widgets
 		return m_pFocusedWidget;
 	}
 
-	const BaseEvent& WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const OsWin::UIMessage& msg)
+	const BaseEvent& WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg)
 	{
 		switch (msg.m_id)
 		{
-		case OsWin::MouseMove:
+		case Os::MouseMove:
 		{
 				bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 				bool wasInside = pWidget->IsInsideVisibleRect(m_prevMouseX, m_prevMouseY);
 
 				MouseButton button = MouseButton::NoButton;
-				if (msg.m_high.m_uint64 & OsWin::UIMouseMask::LeftButton) button = static_cast<MouseButton>(button | MouseButton::LeftButton);
-				if (msg.m_high.m_uint64 & OsWin::UIMouseMask::RightButton) button = static_cast<MouseButton>(button | MouseButton::RightButton);
-				if (msg.m_high.m_uint64 & OsWin::UIMouseMask::MiddleButton) button = static_cast<MouseButton>(button | MouseButton::MiddleButton);
+				if (msg.m_high.m_uint64 & Os::UIMouseMask::LeftButton) button = static_cast<MouseButton>(button | MouseButton::LeftButton);
+				if (msg.m_high.m_uint64 & Os::UIMouseMask::RightButton) button = static_cast<MouseButton>(button | MouseButton::RightButton);
+				if (msg.m_high.m_uint64 & Os::UIMouseMask::MiddleButton) button = static_cast<MouseButton>(button | MouseButton::MiddleButton);
 				
 				if (!wasInside && isInside)
 				{
@@ -673,13 +673,13 @@ namespace Widgets
 		}
 		break;
 
-		case OsWin::MouseLDown:
-		case OsWin::MouseLUp:
-		case OsWin::MouseMDown:
-		case OsWin::MouseMUp:
-		case OsWin::MouseRDown:
-		case OsWin::MouseRUp:
-		case OsWin::MouseLDoubleClick:
+		case Os::MouseLDown:
+		case Os::MouseLUp:
+		case Os::MouseMDown:
+		case Os::MouseMUp:
+		case Os::MouseRDown:
+		case Os::MouseRUp:
+		case Os::MouseLDoubleClick:
 		{
 			bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 			bool isCaptured = m_pCapturedWidget == pWidget;
@@ -690,37 +690,37 @@ namespace Widgets
 				EventType currentId = EventType::kUnknown;
 				switch (msg.m_id)
 				{
-				case OsWin::MouseLDown:
+				case Os::MouseLDown:
 					currentId = EventType::kMouseDown;
 					currentButton = MouseButton::LeftButton;
 					break;
 
-				case OsWin::MouseLUp:
+				case Os::MouseLUp:
 					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::LeftButton;
 					break;
 
-				case OsWin::MouseMDown:
+				case Os::MouseMDown:
 					currentId = EventType::kMouseDown;
 					currentButton = MouseButton::MiddleButton;
 					break;
 
-				case OsWin::MouseMUp:
+				case Os::MouseMUp:
 					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::MiddleButton;
 					break;
 
-				case OsWin::MouseRDown:
+				case Os::MouseRDown:
 					currentId = EventType::kMouseDown;
 					currentButton = MouseButton::RightButton;
 					break;
 
-				case OsWin::MouseRUp:
+				case Os::MouseRUp:
 					currentId = EventType::kMouseUp;
 					currentButton = MouseButton::RightButton;
 					break;
 
-				case OsWin::MouseLDoubleClick:
+				case Os::MouseLDoubleClick:
 					currentId = EventType::kMouseDoubleClick;
 					currentButton = MouseButton::LeftButton;
 					break;
@@ -737,9 +737,9 @@ namespace Widgets
 		}
 		break;
 
-		case OsWin::VirtualKeyDown:
-		case OsWin::VirtualKeyUp:
-		case OsWin::CharKeyDown:
+		case Os::VirtualKeyDown:
+		case Os::VirtualKeyUp:
+		case Os::CharKeyDown:
 		{
 			if (m_pFocusedWidget == pWidget)
 			{
@@ -747,15 +747,15 @@ namespace Widgets
 
 				switch (msg.m_id)
 				{
-				case OsWin::VirtualKeyDown:
+				case Os::VirtualKeyDown:
 					m_internalEvent.m_keyboardEvent.m_id = EventType::kVKeyDown;
 					break;
 
-				case OsWin::VirtualKeyUp:
+				case Os::VirtualKeyUp:
 					m_internalEvent.m_keyboardEvent.m_id = EventType::kVKeyUp;
 					break;
 
-				case OsWin::CharKeyDown:
+				case Os::CharKeyDown:
 					m_internalEvent.m_keyboardEvent.m_id = EventType::kCharKeyDown;
 					break;
 				}
@@ -769,7 +769,7 @@ namespace Widgets
 		}
 		break;
 
-		case OsWin::MouseWheel:
+		case Os::MouseWheel:
 		{
 			bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 			if (isInside)

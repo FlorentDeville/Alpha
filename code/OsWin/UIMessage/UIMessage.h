@@ -8,7 +8,7 @@
 
 #include <cstdint>
 
-namespace OsWin
+namespace Os
 {
 	// Wrapper around windows ui messages so the rest of the application doesn't have to deal with it.
 	class UIMessage
