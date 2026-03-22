@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #define NOMINMAX
 
@@ -79,7 +79,7 @@
 
 //#pragma optimize("", off)
 
-SysWindow* g_pWindow = nullptr;
+Os::SysWindow* g_pWindow = nullptr;
 
 OsWin::CursorId g_pIconName = OsWin::CursorId::Arrow;
 
@@ -564,8 +564,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	DirectX::XMUINT2 gameResolution(configuration.m_gameResolutionWidth, configuration.m_gameResolutionHeight);
 	
 	const char* pWindowClassName = "DX12WindowClass";
-	SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, resourcesMgr.GetSystemResourceId(AppResources::kAppIcon));
-	g_pWindow = new SysWindow();
+	Os::SysWindow::RegisterWindowClass(hInstance, pWindowClassName, WndProc, resourcesMgr.GetSystemResourceId(AppResources::kAppIcon));
+	g_pWindow = new Os::SysWindow();
 	g_pWindow->Create(pWindowClassName, "Alpha", windowResolution.x, windowResolution.y, hInstance);
 
 	Rendering::RenderModule& render = Rendering::RenderModule::InitSingleton();

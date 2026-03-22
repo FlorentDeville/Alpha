@@ -26,7 +26,11 @@
 #include "Widgets/IconId.h"
 
 struct Message;
-class SysWindow;
+
+namespace Os
+{
+	class SysWindow;
+}
 
 namespace OsWin
 {
@@ -51,7 +55,7 @@ namespace Widgets
 	{
 	public:
 		std::string m_gameShaderPath;
-		SysWindow* m_pMainWindow;
+		Os::SysWindow* m_pMainWindow;
 	};
 
 	//Manager for all the widgets.
@@ -153,7 +157,7 @@ namespace Widgets
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;
 
-		SysWindow* m_pMainSysWindow;
+		Os::SysWindow* m_pMainSysWindow;
 
 		//internal event storage
 		union EventStorage
