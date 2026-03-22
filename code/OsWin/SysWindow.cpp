@@ -48,7 +48,7 @@ namespace Os
 		int windowX = (screenWidth - windowWidth) / 2;
 		int windowY = (screenHeight - windowHeight) / 2;
 
-		m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, windowStyle, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, nullptr);
+		m_hWindow = ::CreateWindowEx(0, pWindowClassName, pWindowTitle, windowStyle, windowX, windowY, windowWidth, windowHeight, nullptr, nullptr, hInstance, this);
 		if (m_hWindow == 0)
 		{
 			DWORD error = GetLastError();

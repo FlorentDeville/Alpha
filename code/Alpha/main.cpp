@@ -87,6 +87,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
+	case WM_NCCREATE:
+	{
+		const CREATESTRUCT* pCreateStruct = reinterpret_cast<const CREATESTRUCT*>(lParam);
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
+		return ::DefWindowProc(hWnd, message, wParam, lParam);
+	}
+	break;
+
 	case WM_CHAR:
 	{
 		OsWin::UIMessage msg;
