@@ -19,8 +19,9 @@ namespace Widgets
 	class MouseEvent : public BaseEvent
 	{
 	public:
+		MouseEvent() = default;
 		MouseEvent(EventType id, int x, int y, MouseButton button);
-		~MouseEvent();
+		~MouseEvent() = default;
 		
 		//Mouse position in ui coordinate (origin is the top left of the screen)
 		int GetX() const;

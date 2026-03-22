@@ -13,6 +13,7 @@ namespace Widgets
 	class MouseWheelEvent : public BaseEvent
 	{
 	public:
+		MouseWheelEvent() = default;
 		MouseWheelEvent(int32_t wheelDistance);
 		~MouseWheelEvent() = default;
 

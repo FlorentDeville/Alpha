@@ -14,9 +14,6 @@ namespace Widgets
 		m_id = id;
 	}
 
-	MouseEvent::~MouseEvent()
-	{}
-
 	int MouseEvent::GetX() const
 	{
 		return m_x;
