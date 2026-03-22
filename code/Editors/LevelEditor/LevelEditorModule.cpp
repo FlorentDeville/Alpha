@@ -151,8 +151,11 @@ namespace Editors
 		
 		bool res = Internal_AddGameObject(pGoParent, &pNewGo);
 		
-		if(res)
+		if (res)
+		{
+			newGoGuid = pNewGo->GetGuid();
 			m_onAddGameObject(pNewGo, pGoParent);
+		}
 	}
 
 	void LevelEditorModule::DeleteGameObject(const Core::Guid& guid)

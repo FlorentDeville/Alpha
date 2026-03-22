@@ -297,4 +297,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Events\PostedEventCallback.h" />
+  </ItemGroup>
 </Project>

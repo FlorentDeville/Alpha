@@ -293,7 +293,7 @@ namespace Editors
 
 		Widgets::SelectionRow row(startIndex, endIndex);
 		Widgets::SelectionModel* pSelection = GetSelectionModel();
-		pSelection->SetSelectionRow(row);
+		pSelection->SelectRow(row);
 	}
 
 	void SceneTreeModel::DeselectGameObject(const Core::Guid& guid)

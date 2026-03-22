@@ -112,6 +112,9 @@
       <Project>{f6d68a90-3996-495a-977c-db2e9121805e}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Events\PostedEventCallback.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

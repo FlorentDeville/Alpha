@@ -502,6 +502,11 @@ namespace Widgets
 		WidgetMgr::Get().CaptureMouse(nullptr);
 	}
 
+	void Widget::PostEvent(const PostedEventCallback& event)
+	{
+		WidgetMgr::Get().PostEvent(event);
+	}
+
 	void Widget::ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const
 	{
 		float width = static_cast<float>(m_size.x);

@@ -304,6 +304,25 @@ namespace Widgets
 		m_pHScrollBar->ReComputePosition(absScrollBarPos, m_size);
 	}
 
+	void Container_V2::ScrollToHeight(uint32_t height)
+	{
+		if (!m_showVScrollBar)
+			return;
+
+		//compute the min and max offset value so height is visible
+		int32_t min = -static_cast<int32_t>(height);
+		int32_t max = min + m_size.y;
+		if (m_showHScrollBar) max -= SCROLL_CONTAINER_SIZE;
+
+		min = saturate(min, -static_cast<int32_t>(m_scrollingDistance.y), 0);
+		max = saturate(max, -static_cast<int32_t>(m_scrollingDistance.y), 0);
+
+		if (m_absPosOffset.y <= min)
+			m_absPosOffset.y = min;
+		else if (m_absPosOffset.y >= max)
+			m_absPosOffset.y = max;
+	}
+
 	void Container_V2::UpdateVScrollBarPositionFromOffset()
 	{
 		float ratio = -m_absPosOffset.y / static_cast<float>(m_scrollingDistance.y);

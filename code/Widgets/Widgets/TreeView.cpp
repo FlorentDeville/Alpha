@@ -118,6 +118,8 @@ namespace Widgets
 
 		CreateHeader();
 		CreateView();
+
+		CollapseAll();
 	}
 
 	void TreeView::SetMultiSelection(bool enable)
@@ -484,9 +486,17 @@ namespace Widgets
 
 		for (const SelectionRow& selectedRow : selected)
 		{
-			if (Layout* pLayout = ComputeRowLayoutFromModelIndex(selectedRow.GetStartIndex()))
-				SetSelectedRowStyle(pLayout);
+			Layout* pLayout = ComputeRowLayoutFromModelIndex(selectedRow.GetStartIndex());
+			if (!pLayout)
+				continue;
+
+			SetSelectedRowStyle(pLayout);
+
+			ExpandAllParents(selectedRow.GetStartIndex());
 		}
+
+		if(!selected.empty())
+			PostEvent([this]() { ScrollToLastSelectedItem(); });
 	}
 
 	void TreeView::OnClick_Icon(Layout* pRowLayout)
@@ -702,7 +712,16 @@ namespace Widgets
 		return &it->second;
 	}
 
-	void TreeView::Collapse(ModelIndex& index, RowInfo* pInfo)
+	TreeView::RowInfo* TreeView::GetRowInfo(const ModelIndex& index)
+	{
+		Layout* pLayout = ComputeRowLayoutFromModelIndex(index);
+		if (!pLayout)
+			return nullptr;
+
+		return GetRowInfo(pLayout);
+	}
+
+	void TreeView::Collapse(const ModelIndex& index, RowInfo* pInfo)
 	{
 		Rendering::TextureId collapsedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconCollapsed);
 		pInfo->m_pIcon->SetTextureId(collapsedIcon);
@@ -717,7 +736,7 @@ namespace Widgets
 		pInfo->m_collapsed = true;
 	}
 
-	void TreeView::Expand(ModelIndex& index, RowInfo* pInfo)
+	void TreeView::Expand(const ModelIndex& index, RowInfo* pInfo)
 	{
 		Rendering::TextureId expandedIcon = WidgetMgr::Get().GetIconTextureId(Widgets::IconId::kIconExpanded);
 		pInfo->m_pIcon->SetTextureId(expandedIcon);
@@ -730,6 +749,38 @@ namespace Widgets
 		}
 
 		pInfo->m_collapsed = false;
+	}
+
+	void TreeView::CollapseAll()
+	{
+		for (std::map<const Widget*, RowInfo>::iterator it = m_rowInfoMap.begin(); it != m_rowInfoMap.end(); ++it)
+		{
+			if (!it->second.m_collapsed)
+			{
+				ModelIndex index = ComputeModelIndexFromRowLayout(static_cast<const Layout*>(it->first));
+				Collapse(index, &it->second);
+			}
+		}
+	}
+
+	void TreeView::ExpandAllParents(const ModelIndex& index)
+	{
+		RowInfo* pInfo = GetRowInfo(index);
+		if (!pInfo)
+			return;
+
+		Widgets::Layout* pParent = pInfo->m_pParent;
+		while (pParent)
+		{
+			RowInfo* pParentInfo = GetRowInfo(pParent);
+			if (!pParentInfo)
+				break;
+
+			ModelIndex indexParent = ComputeModelIndexFromRowLayout(pParent);
+			Expand(indexParent, pParentInfo);
+
+			pParent = pParentInfo->m_pParent;
+		}
 	}
 
 	void TreeView::HideRowsRecursively(const ModelIndex& indexToHide)
@@ -863,6 +914,38 @@ namespace Widgets
 
 			altColor.m_size = 0;
 			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
+		}
+	}
+
+	void TreeView::ScrollToLastSelectedItem()
+	{
+		if (!m_pModel)
+			return;
+
+		const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+		if (selectedRows.empty())
+			return;
+
+		ModelIndex index = selectedRows.rbegin()->GetStartIndex();
+		Layout* pLayout = ComputeRowLayoutFromModelIndex(index);
+		if (!pLayout)
+			return;
+
+		int32_t minPos = pLayout->GetY();
+		int32_t maxPos = minPos + pLayout->GetHeight();
+
+		int32_t visibleHeight = m_size.y;
+		if (m_showHScrollBar) visibleHeight -= SCROLL_CONTAINER_SIZE;
+
+		if (minPos + m_absPosOffset.y <= 0) //too high
+		{
+			ScrollToHeight(minPos);
+			Widgets::WidgetMgr::Get().RequestResize();
+		}
+		else if (maxPos + m_absPosOffset.y >= visibleHeight) // too low
+		{
+			ScrollToHeight(maxPos);
+			Widgets::WidgetMgr::Get().RequestResize();
 		}
 	}
 }

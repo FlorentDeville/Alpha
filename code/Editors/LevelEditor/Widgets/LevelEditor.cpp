@@ -645,6 +645,7 @@ namespace Editors
 		if (!newGuid.IsValid())
 			return;
 
+		m_pSceneTreeModel->ClearSelection();
 		m_pSceneTreeModel->SelectGameObject(newGuid);
 	}
 

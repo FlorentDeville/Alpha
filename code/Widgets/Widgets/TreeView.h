@@ -115,9 +115,14 @@ namespace Widgets
 		int GetRowIndexInLayout(const Layout* pLayout) const;
 
 		RowInfo* GetRowInfo(const Widget* pRowLayout);
+		RowInfo* GetRowInfo(const ModelIndex& index);
 
-		void Collapse(ModelIndex& index, RowInfo* pInfo);
-		void Expand(ModelIndex& index, RowInfo* pInfo);
+		void Collapse(const ModelIndex& index, RowInfo* pInfo);
+		void Expand(const ModelIndex& index, RowInfo* pInfo);
+
+		void CollapseAll();
+
+		void ExpandAllParents(const ModelIndex& index);
 
 		void HideRowsRecursively(const ModelIndex& indexToHide);
 		void ShowRowsRecursively(const ModelIndex& indexToShow);
@@ -127,5 +132,7 @@ namespace Widgets
 		void ComputeBackgroundMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
 
 		void DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor);
+
+		void ScrollToLastSelectedItem();
 	};
 }
