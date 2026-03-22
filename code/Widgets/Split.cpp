@@ -14,7 +14,7 @@
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/WidgetMgr.h"
 
-extern OsWin::CursorId g_pIconName;
+extern Os::CursorId g_pIconName;
 
 namespace Widgets
 {
@@ -72,9 +72,9 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseEnter:
 	{
 		if (m_isVerticalSplit)
-			g_pIconName = OsWin::CursorId::ResizeHorizontal;
+			g_pIconName = Os::CursorId::ResizeHorizontal;
 		else
-			g_pIconName = OsWin::CursorId::ResizeVertical;
+			g_pIconName = Os::CursorId::ResizeVertical;
 
 		if (!m_isDragged)
 			CaptureMouse();
@@ -87,7 +87,7 @@ bool Split::Handle(const BaseEvent& ev)
 	{
 		if (!m_isDragged)
 		{
-			g_pIconName = OsWin::CursorId::Arrow;
+			g_pIconName = Os::CursorId::Arrow;
 			ReleaseMouse();
 		}
 
@@ -104,7 +104,7 @@ bool Split::Handle(const BaseEvent& ev)
 			ReleaseMouse();
 
 			if (!IsInsideVisibleRect(mouseEvent.GetX(), mouseEvent.GetY()))
-				g_pIconName = OsWin::CursorId::Arrow;
+				g_pIconName = Os::CursorId::Arrow;
 
 			m_isDragged = false;
 			return true;
@@ -124,9 +124,9 @@ bool Split::Handle(const BaseEvent& ev)
 			m_previousCursorPosition.y = mouseEvent.GetY();
 
 			if (m_isVerticalSplit)
-				g_pIconName = OsWin::CursorId::ResizeHorizontal;
+				g_pIconName = Os::CursorId::ResizeHorizontal;
 			else
-				g_pIconName = OsWin::CursorId::ResizeVertical;
+				g_pIconName = Os::CursorId::ResizeVertical;
 			return true;
 		}
 	}

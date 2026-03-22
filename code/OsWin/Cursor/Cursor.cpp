@@ -1,12 +1,12 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "OsWin/Cursor/Cursor.h"
 
 #include <Windows.h>
 
-namespace OsWin
+namespace Os
 {
 	LPCSTR winCursorTable[static_cast<int>(CursorId::Count)] =
 	{

@@ -81,7 +81,7 @@
 
 Os::SysWindow* g_pWindow = nullptr;
 
-OsWin::CursorId g_pIconName = OsWin::CursorId::Arrow;
+Os::CursorId g_pIconName = Os::CursorId::Arrow;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -358,28 +358,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	
 	case WM_SETCURSOR:
 	{
-		OsWin::CursorId cursor;
+		Os::CursorId cursor;
 		uint16_t hitResult = LOWORD(lParam);
 		switch (hitResult)
 		{
 		case HTTOP:
 		case HTBOTTOM:
-			cursor = OsWin::CursorId::ResizeVertical;
+			cursor = Os::CursorId::ResizeVertical;
 			break;
 
 		case HTLEFT:
 		case HTRIGHT:
-			cursor = OsWin::CursorId::ResizeHorizontal;
+			cursor = Os::CursorId::ResizeHorizontal;
 			break;
 
 		case HTTOPLEFT:
 		case HTBOTTOMRIGHT:
-			cursor = OsWin::CursorId::ResizeDiagonalNWSE;
+			cursor = Os::CursorId::ResizeDiagonalNWSE;
 			break;
 
 		case HTTOPRIGHT:
 		case HTBOTTOMLEFT:
-			cursor = OsWin::CursorId::ResizeDiagonalNESW;
+			cursor = Os::CursorId::ResizeDiagonalNESW;
 			break;
 
 		default:
@@ -387,7 +387,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		
-		OsWin::SetCursor(cursor);
+		Os::SetCursor(cursor);
 		return 1;
 	}
 		break;
