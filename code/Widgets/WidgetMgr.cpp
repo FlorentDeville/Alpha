@@ -64,6 +64,7 @@ namespace Widgets
 		, m_baseWidgetPsoId()
 		, m_iconWidgetPsoId()
 		, m_shadowMapPsoId()
+		, m_cursorId(Os::CursorId::Arrow)
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -594,6 +595,17 @@ namespace Widgets
 	Rendering::PipelineStateId WidgetMgr::GetShadowMapDirLightPsoId() const
 	{
 		return m_shadowMapDirLightPsoId;
+	}
+
+	void WidgetMgr::SetCursorId(Os::CursorId id)
+	{
+		m_cursorId = id;
+		Os::SetCursor(id);
+	}
+
+	void WidgetMgr::ResetCursorId()
+	{
+		Os::SetCursor(m_cursorId);
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()

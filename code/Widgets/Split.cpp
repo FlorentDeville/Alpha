@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Split.h"
 
@@ -13,8 +13,6 @@
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/WidgetMgr.h"
-
-extern Os::CursorId g_pIconName;
 
 namespace Widgets
 {
@@ -72,9 +70,9 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseEnter:
 	{
 		if (m_isVerticalSplit)
-			g_pIconName = Os::CursorId::ResizeHorizontal;
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeHorizontal);
 		else
-			g_pIconName = Os::CursorId::ResizeVertical;
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeVertical);
 
 		if (!m_isDragged)
 			CaptureMouse();
@@ -87,7 +85,7 @@ bool Split::Handle(const BaseEvent& ev)
 	{
 		if (!m_isDragged)
 		{
-			g_pIconName = Os::CursorId::Arrow;
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 			ReleaseMouse();
 		}
 
@@ -104,7 +102,7 @@ bool Split::Handle(const BaseEvent& ev)
 			ReleaseMouse();
 
 			if (!IsInsideVisibleRect(mouseEvent.GetX(), mouseEvent.GetY()))
-				g_pIconName = Os::CursorId::Arrow;
+				Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 
 			m_isDragged = false;
 			return true;
@@ -124,9 +122,9 @@ bool Split::Handle(const BaseEvent& ev)
 			m_previousCursorPosition.y = mouseEvent.GetY();
 
 			if (m_isVerticalSplit)
-				g_pIconName = Os::CursorId::ResizeHorizontal;
+				Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeHorizontal);
 			else
-				g_pIconName = Os::CursorId::ResizeVertical;
+				Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeVertical);
 			return true;
 		}
 	}

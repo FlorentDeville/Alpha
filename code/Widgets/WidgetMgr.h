@@ -8,6 +8,9 @@
 #include <set>
 #include <vector>
 
+#include "Core/Singleton.h"
+
+#include "OsWin/Cursor/Cursor.h"
 
 #include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/MeshId.h"
@@ -16,8 +19,6 @@
 #include "Rendering/RenderModule.h"
 
 #include "Resources/AppResourceId.h"
-
-#include "Core/Singleton.h"
 
 #include "Widgets/Events/BaseEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
@@ -125,6 +126,9 @@ namespace Widgets
 		Rendering::PipelineStateId GetShadowMapPsoId() const;
 		Rendering::PipelineStateId GetShadowMapDirLightPsoId() const;
 
+		void SetCursorId(Os::CursorId id);
+		void ResetCursorId();
+
 	private:
 
 		std::set<Widget*> m_widgets;
@@ -158,6 +162,8 @@ namespace Widgets
 		std::vector<Widget*> m_deleteRequestArray;
 
 		Os::SysWindow* m_pMainSysWindow;
+
+		Os::CursorId m_cursorId;
 
 		//internal event storage
 		union EventStorage

@@ -27,8 +27,6 @@
 
 #include <stack>
 
-extern Os::CursorId g_pIconName;
-
 namespace Widgets
 {
 	TreeView::TreeView()
@@ -244,7 +242,7 @@ namespace Widgets
 			return;
 		
 		m_isDragStarted = false;
-		g_pIconName = Os::CursorId::Arrow;
+		Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 	}
 
 	void TreeView::OnMouseDown_ItemLayout(const Widgets::MouseEvent& ev, Widgets::Layout* pRowLayout)
@@ -309,7 +307,7 @@ namespace Widgets
 			return;
 
 		m_isDragStarted = false;
-		g_pIconName = Os::CursorId::Arrow;
+		Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 
 		if (m_pDraggedRowLayout == pRowLayout) // I can't reparent to myself
 			return;
@@ -336,8 +334,7 @@ namespace Widgets
 			m_dragModelIndex = start;
 			m_pDraggedRowLayout = pRowLayout;
 
-			g_pIconName = Os::CursorId::Move;
-			Os::SetCursor(g_pIconName);
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Move);
 		}
 	}
 

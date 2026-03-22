@@ -81,8 +81,6 @@
 
 Os::SysWindow* g_pWindow = nullptr;
 
-Os::CursorId g_pIconName = Os::CursorId::Arrow;
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -383,14 +381,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 		default:
-			cursor = g_pIconName;
+			Widgets::WidgetMgr::Get().ResetCursorId();
+			return 1;
 			break;
 		}
 		
 		Os::SetCursor(cursor);
 		return 1;
 	}
-		break;
+	break;
 
 	default:
 		return ::DefWindowProc(hWnd, message, wParam, lParam);
