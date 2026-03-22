@@ -494,6 +494,9 @@ namespace Widgets
 
 			ExpandAllParents(selectedRow.GetStartIndex());
 		}
+
+		if(!selected.empty())
+			PostEvent([this]() { ScrollToLastSelectedItem(); });
 	}
 
 	void TreeView::OnClick_Icon(Layout* pRowLayout)
@@ -911,6 +914,38 @@ namespace Widgets
 
 			altColor.m_size = 0;
 			render.SetConstantBuffer(6, sizeof(AlternateColorCBuffer), &altColor, 0);
+		}
+	}
+
+	void TreeView::ScrollToLastSelectedItem()
+	{
+		if (!m_pModel)
+			return;
+
+		const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+		if (selectedRows.empty())
+			return;
+
+		ModelIndex index = selectedRows.rbegin()->GetStartIndex();
+		Layout* pLayout = ComputeRowLayoutFromModelIndex(index);
+		if (!pLayout)
+			return;
+
+		int32_t minPos = pLayout->GetY();
+		int32_t maxPos = minPos + pLayout->GetHeight();
+
+		int32_t visibleHeight = m_size.y;
+		if (m_showHScrollBar) visibleHeight -= SCROLL_CONTAINER_SIZE;
+
+		if (minPos + m_absPosOffset.y <= 0) //too high
+		{
+			ScrollToHeight(minPos);
+			Widgets::WidgetMgr::Get().RequestResize();
+		}
+		else if (maxPos + m_absPosOffset.y >= visibleHeight) // too low
+		{
+			ScrollToHeight(maxPos);
+			Widgets::WidgetMgr::Get().RequestResize();
 		}
 	}
 }

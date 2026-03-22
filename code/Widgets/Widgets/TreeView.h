@@ -132,5 +132,7 @@ namespace Widgets
 		void ComputeBackgroundMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
 
 		void DrawBackground(const Core::Float2& windowSize, const D3D12_RECT& scissor);
+
+		void ScrollToLastSelectedItem();
 	};
 }
