@@ -20,7 +20,7 @@
 
 #include "Resources/AppResourceId.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventType.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Events/MouseWheelEvent.h"

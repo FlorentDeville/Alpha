@@ -1,10 +1,8 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
-
-#include "Widgets/Events/BaseEvent.h"
 
 namespace Widgets
 {
@@ -16,11 +14,11 @@ namespace Widgets
 		MiddleButton = 0x4
 	};
 
-	class MouseEvent : public BaseEvent
+	class MouseEvent
 	{
 	public:
 		MouseEvent() = default;
-		MouseEvent(EventType id, int x, int y, MouseButton button);
+		MouseEvent(int x, int y, MouseButton button);
 		~MouseEvent() = default;
 		
 		//Mouse position in ui coordinate (origin is the top left of the screen)

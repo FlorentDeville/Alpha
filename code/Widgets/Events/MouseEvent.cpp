@@ -1,18 +1,16 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Events/MouseEvent.h"
 
 namespace Widgets
 {
-	MouseEvent::MouseEvent(EventType id, int x, int y, MouseButton button)
+	MouseEvent::MouseEvent(int x, int y, MouseButton button)
 		: m_x(x)
 		, m_y(y)
 		, m_button(button)
-	{
-		m_id = id;
-	}
+	{ }
 
 	int MouseEvent::GetX() const
 	{

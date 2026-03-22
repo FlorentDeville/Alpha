@@ -90,9 +90,6 @@
     <ClInclude Include="MenuItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\BaseEvent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Events\EventType.h">
       <Filter>Header Files</Filter>
     </ClInclude>

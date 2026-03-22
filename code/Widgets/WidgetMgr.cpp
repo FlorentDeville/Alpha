@@ -650,25 +650,25 @@ namespace Widgets
 				if (!wasInside && isInside)
 				{
 					event.m_id = EventType::kMouseEnter;
-					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseEnter, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					event.m_param.m_mouseEvent = MouseEvent(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return;
 				}
 				else if (wasInside && !isInside)
 				{
 					event.m_id = EventType::kMouseExit;
-					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseExit, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					event.m_param.m_mouseEvent = MouseEvent(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return;
 				}
 				else if (isInside)
 				{
 					event.m_id = EventType::kMouseMove;
-					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					event.m_param.m_mouseEvent = MouseEvent(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return;
 				}
 				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make an event if we captured the mouse
 				{
 					event.m_id = EventType::kMouseMove;
-					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					event.m_param.m_mouseEvent = MouseEvent(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
 					return;
 				}
 				else //this message doesn't concern this widget
@@ -733,7 +733,7 @@ namespace Widgets
 				}	
 				
 				event.m_id = currentId;
-				event.m_param.m_mouseEvent = MouseEvent(currentId, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], currentButton);
+				event.m_param.m_mouseEvent = MouseEvent(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], currentButton);
 				return;
 			}
 			else

@@ -4,13 +4,11 @@
 
 #pragma once
 
-#include "Widgets/Events/BaseEvent.h"
-
 #include <cstdint>
 
 namespace Widgets
 {
-	class MouseWheelEvent : public BaseEvent
+	class MouseWheelEvent
 	{
 	public:
 		MouseWheelEvent() = default;
