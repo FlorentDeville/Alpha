@@ -8,7 +8,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -88,7 +88,7 @@ namespace Widgets
 		}
 	}
 
-	bool Layout::Handle(const BaseEvent& ev)
+	bool Layout::Handle(const EventStorage& ev)
 	{
 		switch (ev.m_id)
 		{

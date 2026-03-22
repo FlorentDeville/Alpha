@@ -157,12 +157,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tools\Rect.h">
-		<Filter>Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Container_V2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Events\MouseWheelEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\EventStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -288,7 +291,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tools\Rect.cpp">
-		<Filter>Source Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Container_V2.cpp">
       <Filter>Source Files</Filter>

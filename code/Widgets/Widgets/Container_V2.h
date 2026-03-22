@@ -26,7 +26,7 @@ namespace Widgets
 		void DeleteAllChildren() override;
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const EventStorage& ev) override;
 		void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 		void ResizeChildren() override;
 		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;

@@ -24,7 +24,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const EventStorage& ev) override;
 		void Enable(bool recursive = true) override;
 		void Disable(bool recursive = true) override;
 

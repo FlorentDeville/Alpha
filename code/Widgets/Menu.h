@@ -10,7 +10,6 @@
 
 namespace Widgets
 {
-	class BaseEvent;
 	class Layout;
 	class MenuItem;
 
@@ -22,7 +21,7 @@ namespace Widgets
 		Menu();
 		~Menu();
 
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const EventStorage& ev) override;
 		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
 		MenuItem* AddMenuItem(const std::string& itemName);

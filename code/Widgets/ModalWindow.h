@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -8,7 +8,6 @@
 
 namespace Widgets
 {
-	class BaseEvent;
 	class Label;
 	class Layout;
 
@@ -20,7 +19,7 @@ namespace Widgets
 
 		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const EventStorage& ev) override;
 
 		void AddWidget(Widget* pWidget) override;
 		void DeleteChild(Widget* pWidget) override;

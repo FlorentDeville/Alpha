@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -17,7 +17,7 @@ namespace Widgets
 		AbstractClickable(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		~AbstractClickable();
 
-		bool Handle(const BaseEvent& event) override;
+		bool Handle(const EventStorage& event) override;
 
 		EVENT_DECL(Click, void())
 

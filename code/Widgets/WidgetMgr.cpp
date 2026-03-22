@@ -23,8 +23,8 @@
 #include "OsWin/UIMessage/UIMouseMask.h"
 #include "OsWin/VirtualKeyCode.h"
 
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/Events/FocusEvent.h"
-#include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Shortcuts/Shortcut.h"
 #include "Widgets/Widget.h"
 
@@ -34,12 +34,6 @@
 
 namespace Widgets
 {
-	WidgetMgr::EventStorage::EventStorage()
-	{}
-
-	WidgetMgr::EventStorage::~EventStorage()
-	{}
-
 	void CreateRecursiveWidgetsDeque(Widget* pWidget, std::deque<Widget*>& widgetsDeque)
 	{
 		widgetsDeque.push_back(pWidget);
@@ -363,7 +357,7 @@ namespace Widgets
 					}
 					else
 					{
-						hasMoved = pWidget->Handle(ev.m_param.m_mouseEvent);
+						hasMoved = pWidget->Handle(ev);
 					}
 				}
 				break;
@@ -376,7 +370,7 @@ namespace Widgets
 					}
 					else
 					{
-						hasExited = pWidget->Handle(ev.m_param.m_mouseEvent);
+						hasExited = pWidget->Handle(ev);
 					}
 				}
 				break;
@@ -426,9 +420,9 @@ namespace Widgets
 
 					bool handled = false;
 					if(ev.m_id == Os::MouseWheel)
-						handled = pWidget->Handle(ev.m_param.m_mouseWheelEvent);
+						handled = pWidget->Handle(ev);
 					else
-						handled = pWidget->Handle(ev.m_param.m_mouseEvent);
+						handled = pWidget->Handle(ev);
 
 					if (handled)
 						break;
@@ -454,7 +448,7 @@ namespace Widgets
 					
 					while (pWidget && !handled)
 					{
-						handled = pWidget->Handle(ev.m_param.m_keyboardEvent);
+						handled = pWidget->Handle(ev);
 						pWidget = pWidget->GetParent();
 					}
 				}
@@ -483,7 +477,7 @@ namespace Widgets
 				EventStorage ev;
 				ConvertMessageToEvent(m_pFocusedWidget, msg, ev);
 				if (ev.m_id != EventType::kUnknown)
-					m_pFocusedWidget->Handle(ev.m_param.m_keyboardEvent);
+					m_pFocusedWidget->Handle(ev);
 			}
 		}
 			break;

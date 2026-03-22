@@ -5,7 +5,7 @@
 #include "Widgets/Widgets/Container_V2.h"
 
 #include "Widgets/Container.h"
-#include "Widgets/Events/MouseWheelEvent.h"
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -152,7 +152,7 @@ namespace Widgets
 		}
 	}
 
-	bool Container_V2::Handle(const BaseEvent& ev)
+	bool Container_V2::Handle(const EventStorage& ev)
 	{
 		switch (ev.m_id)
 		{
@@ -162,7 +162,7 @@ namespace Widgets
 				return true;
 
 			const int INCREMENT = 20;
-			const MouseWheelEvent& wheelEvent = static_cast<const MouseWheelEvent&>(ev);
+			const MouseWheelEvent& wheelEvent = ev.m_param.m_mouseWheelEvent;
 			if (wheelEvent.GetWheelDistance() > 0) //forward
 			{
 				m_absPosOffset.y += INCREMENT;

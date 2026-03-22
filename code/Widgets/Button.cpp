@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Button.h"
 
@@ -8,7 +8,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/Label.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -98,7 +98,7 @@ namespace Widgets
 		Widget::Draw(windowSize, scissor);
 	}
 
-	bool Button::Handle(const BaseEvent& ev)
+	bool Button::Handle(const EventStorage& ev)
 	{
 		switch (ev.m_id)
 		{

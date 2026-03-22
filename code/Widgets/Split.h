@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -10,8 +10,6 @@
 
 namespace Widgets
 {
-	class BaseEvent;
-
 	class Split : public Widget
 	{
 	public:
@@ -19,7 +17,7 @@ namespace Widgets
 		~Split();
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const EventStorage& ev) override;
 
 		bool IsDragged();
 		Core::Int2 GetPreviousCursorPosition() const;

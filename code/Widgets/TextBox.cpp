@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/TextBox.h"
 
@@ -8,7 +8,7 @@
 #include "OsWin/Input.h"
 #include "OsWin/VirtualKeyCode.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Icon.h"
 #include "Widgets/WidgetMgr.h"
@@ -126,7 +126,7 @@ namespace Widgets
 		m_pCursorIcon->Resize(m_absPos, m_size);
 	}
 
-	bool TextBox::Handle(const BaseEvent& ev)
+	bool TextBox::Handle(const EventStorage& ev)
 	{
 		if (m_currentState == READONLY)
 			return true;
@@ -153,7 +153,7 @@ namespace Widgets
 		{
 			if (m_currentState == EDIT)
 			{
-				const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
+				const KeyboardEvent& keyboardEvent = ev.m_param.m_keyboardEvent;
 				if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Right) //right
 				{
 					if (m_cursorPosition < m_text.size())
@@ -232,7 +232,7 @@ namespace Widgets
 		{
 			if(m_currentState == EDIT)
 			{
-				const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
+				const KeyboardEvent& keyboardEvent = ev.m_param.m_keyboardEvent;
 				char newChar = static_cast<char>(keyboardEvent.m_virtualKey);
 				if (newChar == '\b' || newChar == '\t' || newChar == '\r' || newChar == '\n')
 					return true;

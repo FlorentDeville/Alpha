@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -22,7 +22,7 @@ namespace Widgets
 		MenuItem(const std::string& name);
 		~MenuItem();
 
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const EventStorage& ev) override;
 		void Enable(bool recursive = true) override;
 
 		void SetShortcut(const std::string& shortcut);

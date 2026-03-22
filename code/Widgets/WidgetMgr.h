@@ -37,6 +37,7 @@ namespace Os
 namespace Widgets
 {
 	class Button;
+	class EventStorage;
 	class Icon;
 	class Container;
 	class Layout;
@@ -161,26 +162,7 @@ namespace Widgets
 
 		Os::CursorId m_cursorId;
 
-		//internal event storage
-		class EventStorage
-		{
-		public:
-			EventStorage();
-			~EventStorage();
-
-			union Param
-			{
-				KeyboardEvent m_keyboardEvent;
-				MouseEvent m_mouseEvent;
-				MouseWheelEvent m_mouseWheelEvent;
-			};
-
-			EventType m_id;
-			Param m_param;
-		};
-		
 		std::vector<Shortcut*> m_shortcutsArray;
-
 
 		void ComputeSortedWidgetQueue();
 

@@ -1,11 +1,11 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/MenuItem.h"
 
 #include "Widgets/Button.h"
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -82,12 +82,11 @@ namespace Widgets
 		}
 	}
 
-	bool MenuItem::Handle(const BaseEvent& ev)
+	bool MenuItem::Handle(const EventStorage& ev)
 	{
 		if (ev.m_id == EventType::kMouseUp)
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-			if (mouseEvent.HasButton(MouseButton::LeftButton))
+			if (ev.m_param.m_mouseEvent.HasButton(MouseButton::LeftButton))
 			{
 				m_hover = false;
 			}

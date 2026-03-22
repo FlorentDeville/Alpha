@@ -37,6 +37,7 @@
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/WidgetMgr.h"
 
 //needed for the operator* between vectors and floats.
@@ -140,13 +141,13 @@ namespace Editors
 		}
 	}
 
-	bool LevelEditorViewportWidget::Handle(const Widgets::BaseEvent& event)
+	bool LevelEditorViewportWidget::Handle(const Widgets::EventStorage& event)
 	{
 		bool handled = false;
 
 		if(event.m_id == Widgets::EventType::kMouseDown && !m_pGizmoWidget->IsManipulating() && !m_pGizmoWidget->IsHovering())
 		{
-			const Widgets::MouseEvent& mouseEvent = static_cast<const Widgets::MouseEvent&>(event);
+			const Widgets::MouseEvent& mouseEvent = event.m_param.m_mouseEvent;
 			if (mouseEvent.HasButton(Widgets::MouseButton::LeftButton))
 			{
 				handled = true;

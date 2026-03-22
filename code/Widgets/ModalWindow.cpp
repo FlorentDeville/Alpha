@@ -1,10 +1,10 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/ModalWindow.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventStorage.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -50,12 +50,11 @@ namespace Widgets
 		m_absPos.z = 10;
 	}
 
-	bool ModalWindow::Handle(const BaseEvent& ev)
+	bool ModalWindow::Handle(const EventStorage& ev)
 	{
 		if (ev.m_id == EventType::kVKeyDown)
 		{
-			const KeyboardEvent& keyboardEvent = static_cast<const KeyboardEvent&>(ev);
-			if(keyboardEvent.m_virtualKey == 0x1B)//escape	
+			if(ev.m_param.m_keyboardEvent.m_virtualKey == 0x1B)//escape	
 			{
 				Widgets::WidgetMgr::Get().CloseModalWindow();
 			}
