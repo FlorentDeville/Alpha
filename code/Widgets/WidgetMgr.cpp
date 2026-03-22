@@ -58,6 +58,7 @@ namespace Widgets
 		, m_iconWidgetPsoId()
 		, m_shadowMapPsoId()
 		, m_cursorId(Os::CursorId::Arrow)
+		, m_postedEvents()
 	{}
 
 	WidgetMgr::~WidgetMgr()
@@ -275,6 +276,11 @@ namespace Widgets
 
 		for (Widget* pWidget : m_widgets)
 			pWidget->Update(dt);
+
+		for (const PostedEventCallback& postedEvent : m_postedEvents)
+			postedEvent();
+		
+		m_postedEvents.Clear();
 	}
 
 	void WidgetMgr::Render()
@@ -608,6 +614,11 @@ namespace Widgets
 	void WidgetMgr::ResetCursorId()
 	{
 		Os::SetCursor(m_cursorId);
+	}
+
+	void WidgetMgr::PostEvent(const PostedEventCallback& callback)
+	{
+		m_postedEvents.PushBack(callback);
 	}
 
 	void WidgetMgr::ComputeSortedWidgetQueue()

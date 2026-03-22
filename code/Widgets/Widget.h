@@ -15,6 +15,7 @@
 #include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Math/Vectors.h"
 
+#include "Widgets/Events/PostedEventCallback.h"
 #include "Widgets/Tools/Color.h"
 #include "Widgets/Tools/Rect.h"
 
@@ -174,6 +175,8 @@ namespace Widgets
 		virtual void ReComputeSize_PostChildren(); //recompute the size after the resize children for the FIT style.
 		virtual void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize);
 		virtual void ResizeChildren();
+
+		void PostEvent(const PostedEventCallback& event);
 
 		/* Let's put all events declaration here*/
 		EVENT_DECL(MouseEnter, void(const MouseEvent&))

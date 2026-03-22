@@ -21,9 +21,11 @@
 #include "Resources/AppResourceId.h"
 
 #include "Widgets/Events/EventType.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Events/MouseWheelEvent.h"
+#include "Widgets/Events/PostedEventCallback.h"
 #include "Widgets/IconId.h"
 
 struct Message;
@@ -126,6 +128,8 @@ namespace Widgets
 		void SetCursorId(Os::CursorId id);
 		void ResetCursorId();
 
+		void PostEvent(const PostedEventCallback& callback);
+
 	private:
 
 		std::set<Widget*> m_widgets;
@@ -163,6 +167,8 @@ namespace Widgets
 		Os::CursorId m_cursorId;
 
 		std::vector<Shortcut*> m_shortcutsArray;
+
+		Core::Array<PostedEventCallback> m_postedEvents;
 
 		void ComputeSortedWidgetQueue();
 
