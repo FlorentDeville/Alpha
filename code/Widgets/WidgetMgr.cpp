@@ -59,7 +59,6 @@ namespace Widgets
 		, m_pMainSysWindow(nullptr)
 		, m_pModalWindow(nullptr)
 		, m_shortcutsArray()
-		, m_internalEvent()
 		, m_iconTextureIdArray()
 		, m_baseWidgetPsoId()
 		, m_iconWidgetPsoId()
@@ -350,7 +349,8 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				const BaseEvent& ev = ConvertMessageToEvent(pWidget, msg);
+				EventStorage ev;
+				ConvertMessageToEvent(pWidget, msg, ev);
 
 				switch (ev.m_id)
 				{
@@ -363,7 +363,7 @@ namespace Widgets
 					}
 					else
 					{
-						hasMoved = pWidget->Handle(ev);
+						hasMoved = pWidget->Handle(ev.m_param.m_mouseEvent);
 					}
 				}
 				break;
@@ -376,7 +376,7 @@ namespace Widgets
 					}
 					else
 					{
-						hasExited = pWidget->Handle(ev);
+						hasExited = pWidget->Handle(ev.m_param.m_mouseEvent);
 					}
 				}
 				break;
@@ -413,7 +413,8 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				const BaseEvent& ev = ConvertMessageToEvent(pWidget, msg);
+				EventStorage ev;
+				ConvertMessageToEvent(pWidget, msg, ev);
 
 				if (ev.m_id != EventType::kUnknown)
 				{
@@ -423,7 +424,12 @@ namespace Widgets
 						setFocus = true;
 					}
 
-					bool handled = pWidget->Handle(ev);
+					bool handled = false;
+					if(ev.m_id == Os::MouseWheel)
+						handled = pWidget->Handle(ev.m_param.m_mouseWheelEvent);
+					else
+						handled = pWidget->Handle(ev.m_param.m_mouseEvent);
+
 					if (handled)
 						break;
 				}
@@ -440,14 +446,15 @@ namespace Widgets
 
 			if (m_pFocusedWidget)
 			{
-				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
+				EventStorage ev;
+				ConvertMessageToEvent(m_pFocusedWidget, msg, ev);
 				if (ev.m_id != EventType::kUnknown)
 				{
 					Widget* pWidget = m_pFocusedWidget;
 					
 					while (pWidget && !handled)
 					{
-						handled = pWidget->Handle(ev);
+						handled = pWidget->Handle(ev.m_param.m_keyboardEvent);
 						pWidget = pWidget->GetParent();
 					}
 				}
@@ -473,9 +480,10 @@ namespace Widgets
 
 			if (m_pFocusedWidget)
 			{
-				const BaseEvent& ev = ConvertMessageToEvent(m_pFocusedWidget, msg);
+				EventStorage ev;
+				ConvertMessageToEvent(m_pFocusedWidget, msg, ev);
 				if (ev.m_id != EventType::kUnknown)
-					m_pFocusedWidget->Handle(ev);
+					m_pFocusedWidget->Handle(ev.m_param.m_keyboardEvent);
 			}
 		}
 			break;
@@ -631,7 +639,7 @@ namespace Widgets
 		return m_pFocusedWidget;
 	}
 
-	const BaseEvent& WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg)
+	void WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, EventStorage& event) const
 	{
 		switch (msg.m_id)
 		{
@@ -647,28 +655,32 @@ namespace Widgets
 				
 				if (!wasInside && isInside)
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseEnter, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
-					return m_internalEvent.m_mouseEvent;
+					event.m_id = EventType::kMouseEnter;
+					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseEnter, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					return;
 				}
 				else if (wasInside && !isInside)
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseExit, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
-					return m_internalEvent.m_mouseEvent;
+					event.m_id = EventType::kMouseExit;
+					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseExit, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					return;
 				}
 				else if (isInside)
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
-					return m_internalEvent.m_mouseEvent;
+					event.m_id = EventType::kMouseMove;
+					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					return;
 				}
 				else if (pWidget == m_pCapturedWidget) //the mouse is outside, only make an event if we captured the mouse
 				{
-					m_internalEvent.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
-					return m_internalEvent.m_mouseEvent;
+					event.m_id = EventType::kMouseMove;
+					event.m_param.m_mouseEvent = MouseEvent(EventType::kMouseMove, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], button);
+					return;
 				}
 				else //this message doesn't concern this widget
 				{
-					m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
-					return m_internalEvent.m_baseEvent;
+					event.m_id = EventType::kUnknown;
+					return;
 				}
 		}
 		break;
@@ -726,13 +738,14 @@ namespace Widgets
 					break;
 				}	
 				
-				m_internalEvent.m_mouseEvent = MouseEvent(currentId, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], currentButton);
-				return m_internalEvent.m_mouseEvent;
+				event.m_id = currentId;
+				event.m_param.m_mouseEvent = MouseEvent(currentId, msg.m_low.m_uint32[0], msg.m_low.m_uint32[1], currentButton);
+				return;
 			}
 			else
 			{
-				m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
-				return m_internalEvent.m_baseEvent;
+				event.m_id = EventType::kUnknown;
+				return;
 			}
 		}
 		break;
@@ -743,28 +756,28 @@ namespace Widgets
 		{
 			if (m_pFocusedWidget == pWidget)
 			{
-				m_internalEvent.m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high.m_uint64);
+				event.m_param.m_keyboardEvent.m_virtualKey = static_cast<char>(msg.m_high.m_uint64);
 
 				switch (msg.m_id)
 				{
 				case Os::VirtualKeyDown:
-					m_internalEvent.m_keyboardEvent.m_id = EventType::kVKeyDown;
+					event.m_id = EventType::kVKeyDown;
 					break;
 
 				case Os::VirtualKeyUp:
-					m_internalEvent.m_keyboardEvent.m_id = EventType::kVKeyUp;
+					event.m_id = EventType::kVKeyUp;
 					break;
 
 				case Os::CharKeyDown:
-					m_internalEvent.m_keyboardEvent.m_id = EventType::kCharKeyDown;
+					event.m_id = EventType::kCharKeyDown;
 					break;
 				}
-				return m_internalEvent.m_keyboardEvent;
+				return;
 			}
 			else
 			{
-				m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
-				return m_internalEvent.m_baseEvent;
+				event.m_id = EventType::kUnknown;
+				return;
 			}
 		}
 		break;
@@ -774,13 +787,14 @@ namespace Widgets
 			bool isInside = pWidget->IsInsideVisibleRect(msg.m_low.m_uint32[0], msg.m_low.m_uint32[1]);
 			if (isInside)
 			{
-				m_internalEvent.m_mouseWheelEvent = MouseWheelEvent(static_cast<int32_t>(msg.m_high.m_int64));
-				return m_internalEvent.m_mouseWheelEvent;
+				event.m_id = EventType::kMouseWheel;
+				event.m_param.m_mouseWheelEvent = MouseWheelEvent(static_cast<int32_t>(msg.m_high.m_int64));
+				return;
 			}
 			else
 			{
-				m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
-				return m_internalEvent.m_baseEvent;
+				event.m_id = EventType::kUnknown;
+				return;
 			}
 		}
 		break;
@@ -790,8 +804,8 @@ namespace Widgets
 		break;
 		}
 
-		m_internalEvent.m_baseEvent.m_id = EventType::kUnknown;
-		return m_internalEvent.m_baseEvent;
+		event.m_id = EventType::kUnknown;
+		return;
 	}
 
 	Rendering::TextureId WidgetMgr::LoadApplicationResourceImage(AppResources::AppResourceId id) const

@@ -162,19 +162,23 @@ namespace Widgets
 		Os::CursorId m_cursorId;
 
 		//internal event storage
-		union EventStorage
+		class EventStorage
 		{
+		public:
 			EventStorage();
 			~EventStorage();
 
-			BaseEvent m_baseEvent;
-			KeyboardEvent m_keyboardEvent;
-			MouseEvent m_mouseEvent;
-			MouseWheelEvent m_mouseWheelEvent;
+			union Param
+			{
+				KeyboardEvent m_keyboardEvent;
+				MouseEvent m_mouseEvent;
+				MouseWheelEvent m_mouseWheelEvent;
+			};
+
+			EventType m_id;
+			Param m_param;
 		};
 		
-		EventStorage m_internalEvent;
-
 		std::vector<Shortcut*> m_shortcutsArray;
 
 
@@ -182,7 +186,7 @@ namespace Widgets
 
 		const Widget* GetFocusedWidget() const;
 
-		const BaseEvent& ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg);
+		void ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, EventStorage& event) const;
 
 		Rendering::TextureId LoadApplicationResourceImage(AppResources::AppResourceId id) const;
 	};
