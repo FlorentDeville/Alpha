@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 
@@ -8,8 +8,7 @@
 
 #include "Widgets/Button.h"
 #include "Widgets/Container.h"
-#include "Widgets/Events/EventType.h"
-#include "Widgets/Events/KeyboardEvent.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 
@@ -64,11 +63,11 @@ namespace Editors
 	OkCancelDialog::~OkCancelDialog()
 	{ }
 
-	bool OkCancelDialog::Handle(const Widgets::BaseEvent& ev)
+	bool OkCancelDialog::Handle(const Widgets::GlobalEvent& ev)
 	{
 		if (ev.m_id == Widgets::EventType::kVKeyDown)
 		{
-			const Widgets::KeyboardEvent& keyboardEvent = static_cast<const Widgets::KeyboardEvent&>(ev);
+			const Widgets::KeyboardEvent& keyboardEvent = ev.m_param.m_keyboardEvent;
 			if (keyboardEvent.m_virtualKey == Os::VKeyCodes::Esc)//escape	
 			{
 				Internal_OnCancel();

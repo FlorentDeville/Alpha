@@ -1,14 +1,12 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include "Widgets/Events/BaseEvent.h"
-
 namespace Widgets
 {
-	class KeyboardEvent : public BaseEvent
+	class KeyboardEvent
 	{
 	public:
 		char m_virtualKey;

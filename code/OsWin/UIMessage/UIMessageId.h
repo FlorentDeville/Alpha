@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace OsWin
+namespace Os
 {
 	enum UIMessageId
 	{

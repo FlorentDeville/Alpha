@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -24,7 +24,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		bool Handle(const BaseEvent& event) override;
+		bool Handle(const GlobalEvent& event) override;
 
 		void Select();
 		void Unselect();

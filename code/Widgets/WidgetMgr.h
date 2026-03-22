@@ -8,6 +8,9 @@
 #include <set>
 #include <vector>
 
+#include "Core/Singleton.h"
+
+#include "OsWin/Cursor/Cursor.h"
 
 #include "Rendering/Font/Font.h"
 #include "Rendering/Mesh/MeshId.h"
@@ -17,25 +20,24 @@
 
 #include "Resources/AppResourceId.h"
 
-#include "Core/Singleton.h"
-
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/EventType.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/Events/MouseWheelEvent.h"
 #include "Widgets/IconId.h"
 
 struct Message;
-class SysWindow;
 
-namespace OsWin
+namespace Os
 {
+	class SysWindow;
 	class UIMessage;
 }
 
 namespace Widgets
 {
 	class Button;
+	class GlobalEvent;
 	class Icon;
 	class Container;
 	class Layout;
@@ -51,7 +53,7 @@ namespace Widgets
 	{
 	public:
 		std::string m_gameShaderPath;
-		SysWindow* m_pMainWindow;
+		Os::SysWindow* m_pMainWindow;
 	};
 
 	//Manager for all the widgets.
@@ -95,7 +97,7 @@ namespace Widgets
 		void Resize();
 
 		//Handle messages coming from windows
-		void HandleMsg(const OsWin::UIMessage& msg);
+		void HandleMsg(const Os::UIMessage& msg);
 
 		Rendering::FontId GetUIFontId() const;
 
@@ -120,6 +122,9 @@ namespace Widgets
 		Rendering::PipelineStateId GetObjectIdsPsoId() const;
 		Rendering::PipelineStateId GetShadowMapPsoId() const;
 		Rendering::PipelineStateId GetShadowMapDirLightPsoId() const;
+
+		void SetCursorId(Os::CursorId id);
+		void ResetCursorId();
 
 	private:
 
@@ -153,30 +158,17 @@ namespace Widgets
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;
 
-		SysWindow* m_pMainSysWindow;
+		Os::SysWindow* m_pMainSysWindow;
 
-		//internal event storage
-		union EventStorage
-		{
-			EventStorage();
-			~EventStorage();
-
-			BaseEvent m_baseEvent;
-			KeyboardEvent m_keyboardEvent;
-			MouseEvent m_mouseEvent;
-			MouseWheelEvent m_mouseWheelEvent;
-		};
-		
-		EventStorage m_internalEvent;
+		Os::CursorId m_cursorId;
 
 		std::vector<Shortcut*> m_shortcutsArray;
-
 
 		void ComputeSortedWidgetQueue();
 
 		const Widget* GetFocusedWidget() const;
 
-		const BaseEvent& ConvertMessageToEvent(const Widget* pWidget, const OsWin::UIMessage& msg);
+		void ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, GlobalEvent& event) const;
 
 		Rendering::TextureId LoadApplicationResourceImage(AppResources::AppResourceId id) const;
 	};

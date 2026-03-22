@@ -1,10 +1,10 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widget.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -206,7 +206,7 @@ namespace Widgets
 		}
 	}
 
-	bool Widget::Handle(const BaseEvent& event)
+	bool Widget::Handle(const GlobalEvent& event)
 	{
 		bool handled = false;
 
@@ -216,8 +216,7 @@ namespace Widgets
 			m_hover = true;
 			if (m_onMouseEnter)
 			{
-				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
-				m_onMouseEnter(mouseEvent);
+				m_onMouseEnter(event.m_param.m_mouseEvent);
 				return true;
 			}
 			break;
@@ -226,18 +225,16 @@ namespace Widgets
 			m_hover = false;
 			if (m_onMouseExit)
 			{
-				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
-				m_onMouseExit(mouseEvent);
+				m_onMouseExit(event.m_param.m_mouseEvent);
 				return true;
 			}
 			break;
 
 		case EventType::kMouseDown:
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
 			if (m_onMouseDown)
 			{
-				m_onMouseDown(mouseEvent);
+				m_onMouseDown(event.m_param.m_mouseEvent);
 				handled = true;
 			}
 		}
@@ -245,10 +242,9 @@ namespace Widgets
 
 		case EventType::kMouseMove:
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
 			if (m_onMouseMove)
 			{
-				m_onMouseMove(mouseEvent);
+				m_onMouseMove(event.m_param.m_mouseEvent);
 				handled = true;
 			}
 		}
@@ -256,10 +252,9 @@ namespace Widgets
 
 		case EventType::kMouseUp:
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
 			if (m_onMouseUp)
 			{
-				m_onMouseUp(mouseEvent);
+				m_onMouseUp(event.m_param.m_mouseEvent);
 				handled = true;
 			}
 			break;
@@ -269,8 +264,7 @@ namespace Widgets
 		{
 			if (m_onMouseDoubleClick)
 			{
-				const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(event);
-				m_onMouseDoubleClick(mouseEvent);
+				m_onMouseDoubleClick(event.m_param.m_mouseEvent);
 				handled = true;
 			}
 			break;

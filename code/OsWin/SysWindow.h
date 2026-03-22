@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -12,41 +12,44 @@
 #include <cstdint>
 #include <string>
 
-typedef LRESULT (*WndProcCallback)(HWND, UINT, WPARAM, LPARAM);
-
-class SysWindow
+namespace Os
 {
-public:
-	SysWindow();
-	virtual ~SysWindow();
+	typedef LRESULT(*WndProcCallback)(HWND, UINT, WPARAM, LPARAM);
 
-	bool Create(const char* pWindowClassName, const char* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance);
+	class SysWindow
+	{
+	public:
+		SysWindow();
+		virtual ~SysWindow();
 
-	void SetFullscreen(bool fullscreen);
-	void ToggleFullscreen();
+		bool Create(const char* pWindowClassName, const char* pWindowTitle, uint32_t width, uint32_t height, HINSTANCE hInstance);
 
-	void Resize(uint32_t width, uint32_t height);
+		void SetFullscreen(bool fullscreen);
+		void ToggleFullscreen();
 
-	void Show() const;
-	void ShowMaximized() const;
+		void Resize(uint32_t width, uint32_t height);
 
-	HWND GetWindowHandle() const;
-	RECT GetWindowRectangle() const;
-	RECT GetClientRectangle() const;
+		void Show() const;
+		void ShowMaximized() const;
 
-	uint32_t GetWidth() const;
-	uint32_t GetHeight() const;
+		HWND GetWindowHandle() const;
+		RECT GetWindowRectangle() const;
+		RECT GetClientRectangle() const;
 
-	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, int32_t iconResourceId);
-	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename);
-	static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, HICON hIcon);
+		uint32_t GetWidth() const;
+		uint32_t GetHeight() const;
 
-private:
-	HWND m_hWindow;
-	bool m_fullscreen;
+		static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, int32_t iconResourceId);
+		static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, const std::string& iconFilename);
+		static void RegisterWindowClass(HINSTANCE hInst, const char* pWindowClassName, WndProcCallback callback, HICON hIcon);
 
-	uint32_t m_width;
-	uint32_t m_height;
+	private:
+		HWND m_hWindow;
+		bool m_fullscreen;
 
-	RECT m_windowRectangle;	//save the window dimension when going to full screen so it can be restored when going back to windowed mode.
-};
+		uint32_t m_width;
+		uint32_t m_height;
+
+		RECT m_windowRectangle;	//save the window dimension when going to full screen so it can be restored when going back to windowed mode.
+	};
+}

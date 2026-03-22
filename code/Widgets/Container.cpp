@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Container.h"
 
@@ -8,6 +8,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Tools/AlternateColorCBuffer.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -94,7 +95,7 @@ namespace Widgets
 		render.SetScissorRectangle(scissor);
 	}
 
-	bool Container::Handle(const BaseEvent& ev)
+	bool Container::Handle(const GlobalEvent& ev)
 	{
 		switch (ev.m_id)
 		{

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -29,7 +29,7 @@ namespace Widgets
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		void ResizeChildren() override;
 
-		bool Handle(const BaseEvent& ev) override;
+		bool Handle(const GlobalEvent& ev) override;
 
 		void SetText(const std::string& text);
 		void SetTextAlignment(TextAlignment alignment);

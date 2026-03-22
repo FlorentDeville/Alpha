@@ -7,6 +7,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 
 #include "Widgets/Button.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -94,7 +95,7 @@ namespace Widgets
 		
 	}
 
-	bool ComboBox::Handle(const BaseEvent& ev)
+	bool ComboBox::Handle(const GlobalEvent& ev)
 	{
 		switch (ev.m_id)
 		{

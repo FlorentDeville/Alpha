@@ -1,13 +1,10 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Widgets/Widget.h"
-
-//class Label;
-class Layout;
 
 namespace Widgets
 {
@@ -19,7 +16,6 @@ namespace Widgets
 		Tab();
 		~Tab();
 
-		bool Handle(const BaseEvent& ev) override;
-
+		bool Handle(const GlobalEvent& ev) override;
 	};
 }

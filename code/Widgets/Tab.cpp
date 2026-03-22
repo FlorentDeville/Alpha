@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Tab.h"
 
@@ -20,7 +20,7 @@ namespace Widgets
 	Tab::~Tab()
 	{}
 
-	bool Tab::Handle(const BaseEvent& /*ev*/)
+	bool Tab::Handle(const GlobalEvent& /*ev*/)
 	{
 		return false;
 	}

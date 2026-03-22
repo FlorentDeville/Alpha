@@ -1,10 +1,11 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Widgets/AbstractClickable.h"
 
-#include "Widgets/Events/MouseEvent.h"
+#include "Widgets/Events/GlobalEvent.h"
+//#include "Widgets/Events/MouseEvent.h"
 
 namespace Widgets
 {
@@ -21,12 +22,11 @@ namespace Widgets
 	AbstractClickable::~AbstractClickable()
 	{}
 
-	bool AbstractClickable::Handle(const BaseEvent& ev)
+	bool AbstractClickable::Handle(const GlobalEvent& ev)
 	{
 		if (ev.m_id == EventType::kMouseDown)
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-			bool leftClick = mouseEvent.HasButton(MouseButton::LeftButton);
+			bool leftClick = ev.m_param.m_mouseEvent.HasButton(MouseButton::LeftButton);
 			if(leftClick)
 				m_mouseDownEvent = true;
 
@@ -41,8 +41,7 @@ namespace Widgets
 
 		if (ev.m_id == EventType::kMouseUp)
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-			bool leftClick = mouseEvent.HasButton(MouseButton::LeftButton);
+			bool leftClick = ev.m_param.m_mouseEvent.HasButton(MouseButton::LeftButton);
 
 			//first handle the mouse up event then do a click
 			bool handled = ParentClass::Handle(ev);

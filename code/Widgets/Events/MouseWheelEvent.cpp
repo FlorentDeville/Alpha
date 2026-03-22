@@ -7,11 +7,8 @@
 namespace Widgets
 {
 	MouseWheelEvent::MouseWheelEvent(int32_t wheelDistance)
-		: BaseEvent()
-		, m_wheelDistance(wheelDistance)
-	{
-		m_id = EventType::kMouseWheel;
-	}
+		: m_wheelDistance(wheelDistance)
+	{ }
 
 	int32_t MouseWheelEvent::GetWheelDistance() const
 	{

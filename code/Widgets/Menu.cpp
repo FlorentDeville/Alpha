@@ -31,7 +31,7 @@ namespace Widgets
 	Menu::~Menu()
 	{}
 
-	bool Menu::Handle(const BaseEvent& ev)
+	bool Menu::Handle(const GlobalEvent& ev)
 	{
 		//return true so the widgets behind the menu don't get any event.
 		Widget::Handle(ev);

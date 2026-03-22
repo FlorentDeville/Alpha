@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="Container.h" />
-    <ClInclude Include="Events\BaseEvent.h" />
+    <ClInclude Include="Events\GlobalEvent.h" />
     <ClInclude Include="Events\EventType.h" />
     <ClInclude Include="Events\FocusEvent.h" />
     <ClInclude Include="Events\KeyboardEvent.h" />

@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Widgets/Split.h"
 
@@ -10,11 +10,9 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
-#include "Widgets/Events/BaseEvent.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/WidgetMgr.h"
-
-extern OsWin::CursorId g_pIconName;
 
 namespace Widgets
 {
@@ -65,16 +63,16 @@ void Split::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	Widget::Draw(windowSize, scissor);
 }
 
-bool Split::Handle(const BaseEvent& ev)
+bool Split::Handle(const GlobalEvent& ev)
 {
 	switch (ev.m_id)
 	{
 	case EventType::kMouseEnter:
 	{
 		if (m_isVerticalSplit)
-			g_pIconName = OsWin::CursorId::ResizeHorizontal;
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeHorizontal);
 		else
-			g_pIconName = OsWin::CursorId::ResizeVertical;
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeVertical);
 
 		if (!m_isDragged)
 			CaptureMouse();
@@ -87,7 +85,7 @@ bool Split::Handle(const BaseEvent& ev)
 	{
 		if (!m_isDragged)
 		{
-			g_pIconName = OsWin::CursorId::Arrow;
+			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 			ReleaseMouse();
 		}
 
@@ -98,13 +96,13 @@ bool Split::Handle(const BaseEvent& ev)
 	case EventType::kMouseUp:
 	{
 		//left button
-		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
-		if (mouseEvent.HasButton(MouseButton::LeftButton))
+		const MouseEvent& mouseEvent = ev.m_param.m_mouseEvent;
+		if (ev.m_param.m_mouseEvent.HasButton(MouseButton::LeftButton))
 		{
 			ReleaseMouse();
 
 			if (!IsInsideVisibleRect(mouseEvent.GetX(), mouseEvent.GetY()))
-				g_pIconName = OsWin::CursorId::Arrow;
+				Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 
 			m_isDragged = false;
 			return true;
@@ -114,7 +112,7 @@ bool Split::Handle(const BaseEvent& ev)
 
 	case EventType::kMouseDown:
 	{
-		const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
+		const MouseEvent& mouseEvent = ev.m_param.m_mouseEvent;
 		if (mouseEvent.HasButton(MouseButton::LeftButton) && !m_isDragged)
 		{
 			//no need to capture the mouse here, it was already captured in the OnEnter event.
@@ -124,9 +122,9 @@ bool Split::Handle(const BaseEvent& ev)
 			m_previousCursorPosition.y = mouseEvent.GetY();
 
 			if (m_isVerticalSplit)
-				g_pIconName = OsWin::CursorId::ResizeHorizontal;
+				Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeHorizontal);
 			else
-				g_pIconName = OsWin::CursorId::ResizeVertical;
+				Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::ResizeVertical);
 			return true;
 		}
 	}
@@ -136,7 +134,7 @@ bool Split::Handle(const BaseEvent& ev)
 	{
 		if (m_isDragged)
 		{
-			const MouseEvent& mouseEvent = static_cast<const MouseEvent&>(ev);
+			const MouseEvent& mouseEvent = ev.m_param.m_mouseEvent;
 
 			Core::Int2 currentMousePos(mouseEvent.GetX(), mouseEvent.GetY());
 			m_onDrag(currentMousePos);
