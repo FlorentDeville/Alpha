@@ -37,7 +37,7 @@ namespace Os
 namespace Widgets
 {
 	class Button;
-	class EventStorage;
+	class GlobalEvent;
 	class Icon;
 	class Container;
 	class Layout;
@@ -168,7 +168,7 @@ namespace Widgets
 
 		const Widget* GetFocusedWidget() const;
 
-		void ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, EventStorage& event) const;
+		void ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, GlobalEvent& event) const;
 
 		Rendering::TextureId LoadApplicationResourceImage(AppResources::AppResourceId id) const;
 	};

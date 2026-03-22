@@ -5,7 +5,7 @@
 #include "Widgets/Widgets/Container_V2.h"
 
 #include "Widgets/Container.h"
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -152,7 +152,7 @@ namespace Widgets
 		}
 	}
 
-	bool Container_V2::Handle(const EventStorage& ev)
+	bool Container_V2::Handle(const GlobalEvent& ev)
 	{
 		switch (ev.m_id)
 		{

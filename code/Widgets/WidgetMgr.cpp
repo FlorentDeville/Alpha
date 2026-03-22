@@ -23,7 +23,7 @@
 #include "OsWin/UIMessage/UIMouseMask.h"
 #include "OsWin/VirtualKeyCode.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/FocusEvent.h"
 #include "Widgets/Shortcuts/Shortcut.h"
 #include "Widgets/Widget.h"
@@ -343,7 +343,7 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				EventStorage ev;
+				GlobalEvent ev;
 				ConvertMessageToEvent(pWidget, msg, ev);
 
 				switch (ev.m_id)
@@ -407,7 +407,7 @@ namespace Widgets
 				if (!pWidget->IsEnabled())
 					continue;
 
-				EventStorage ev;
+				GlobalEvent ev;
 				ConvertMessageToEvent(pWidget, msg, ev);
 
 				if (ev.m_id != EventType::kUnknown)
@@ -440,7 +440,7 @@ namespace Widgets
 
 			if (m_pFocusedWidget)
 			{
-				EventStorage ev;
+				GlobalEvent ev;
 				ConvertMessageToEvent(m_pFocusedWidget, msg, ev);
 				if (ev.m_id != EventType::kUnknown)
 				{
@@ -474,7 +474,7 @@ namespace Widgets
 
 			if (m_pFocusedWidget)
 			{
-				EventStorage ev;
+				GlobalEvent ev;
 				ConvertMessageToEvent(m_pFocusedWidget, msg, ev);
 				if (ev.m_id != EventType::kUnknown)
 					m_pFocusedWidget->Handle(ev);
@@ -633,7 +633,7 @@ namespace Widgets
 		return m_pFocusedWidget;
 	}
 
-	void WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, EventStorage& event) const
+	void WidgetMgr::ConvertMessageToEvent(const Widget* pWidget, const Os::UIMessage& msg, GlobalEvent& event) const
 	{
 		switch (msg.m_id)
 		{

@@ -4,8 +4,7 @@
 
 #include "Widget.h"
 
-#include "Widgets/Events/BaseEvent.h"
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -207,7 +206,7 @@ namespace Widgets
 		}
 	}
 
-	bool Widget::Handle(const EventStorage& event)
+	bool Widget::Handle(const GlobalEvent& event)
 	{
 		bool handled = false;
 

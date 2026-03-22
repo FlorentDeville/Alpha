@@ -24,7 +24,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		bool Handle(const EventStorage& event) override;
+		bool Handle(const GlobalEvent& event) override;
 
 		void Select();
 		void Unselect();

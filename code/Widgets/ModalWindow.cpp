@@ -4,7 +4,7 @@
 
 #include "Widgets/ModalWindow.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -50,7 +50,7 @@ namespace Widgets
 		m_absPos.z = 10;
 	}
 
-	bool ModalWindow::Handle(const EventStorage& ev)
+	bool ModalWindow::Handle(const GlobalEvent& ev)
 	{
 		if (ev.m_id == EventType::kVKeyDown)
 		{

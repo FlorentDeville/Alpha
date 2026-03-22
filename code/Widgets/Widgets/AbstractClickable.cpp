@@ -4,7 +4,7 @@
 
 #include "Widgets/Widgets/AbstractClickable.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 //#include "Widgets/Events/MouseEvent.h"
 
 namespace Widgets
@@ -22,7 +22,7 @@ namespace Widgets
 	AbstractClickable::~AbstractClickable()
 	{}
 
-	bool AbstractClickable::Handle(const EventStorage& ev)
+	bool AbstractClickable::Handle(const GlobalEvent& ev)
 	{
 		if (ev.m_id == EventType::kMouseDown)
 		{

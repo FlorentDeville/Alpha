@@ -16,6 +16,6 @@ namespace Widgets
 		Tab();
 		~Tab();
 
-		bool Handle(const EventStorage& ev) override;
+		bool Handle(const GlobalEvent& ev) override;
 	};
 }

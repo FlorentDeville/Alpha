@@ -20,7 +20,7 @@ namespace Widgets
 	Tab::~Tab()
 	{}
 
-	bool Tab::Handle(const EventStorage& /*ev*/)
+	bool Tab::Handle(const GlobalEvent& /*ev*/)
 	{
 		return false;
 	}

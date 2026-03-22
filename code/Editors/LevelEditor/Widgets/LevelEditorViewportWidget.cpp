@@ -37,7 +37,7 @@
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
 
 //needed for the operator* between vectors and floats.
@@ -141,7 +141,7 @@ namespace Editors
 		}
 	}
 
-	bool LevelEditorViewportWidget::Handle(const Widgets::EventStorage& event)
+	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)
 	{
 		bool handled = false;
 

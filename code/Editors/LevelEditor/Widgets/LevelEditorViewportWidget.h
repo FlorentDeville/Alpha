@@ -59,7 +59,7 @@ namespace Editors
 
 		void Update(uint64_t dt) override;
 
-		bool Handle(const Widgets::EventStorage& event) override;
+		bool Handle(const Widgets::GlobalEvent& event) override;
 
 		void SetEnableViewportControl(bool enable);
 

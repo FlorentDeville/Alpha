@@ -14,7 +14,7 @@ namespace Editors
 		OkCancelDialog(const std::string& title, const std::string& text);
 		~OkCancelDialog();
 
-		bool Handle(const Widgets::EventStorage& ev) override;
+		bool Handle(const Widgets::GlobalEvent& ev) override;
 
 		EVENT_DECL(Ok, void())
 		EVENT_DECL(Cancel, void())

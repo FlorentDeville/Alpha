@@ -17,7 +17,7 @@ namespace Widgets
 		AbstractClickable(uint32_t w, uint32_t h, int32_t x, int32_t y);
 		~AbstractClickable();
 
-		bool Handle(const EventStorage& event) override;
+		bool Handle(const GlobalEvent& event) override;
 
 		EVENT_DECL(Click, void())
 

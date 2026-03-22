@@ -22,7 +22,7 @@ namespace Widgets
 		MenuItem(const std::string& name);
 		~MenuItem();
 
-		bool Handle(const EventStorage& ev) override;
+		bool Handle(const GlobalEvent& ev) override;
 		void Enable(bool recursive = true) override;
 
 		void SetShortcut(const std::string& shortcut);

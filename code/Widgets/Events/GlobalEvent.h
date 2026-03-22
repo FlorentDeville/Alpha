@@ -11,7 +11,7 @@
 
 namespace Widgets
 {
-	class EventStorage
+	class GlobalEvent
 	{
 	public:
 		union Param

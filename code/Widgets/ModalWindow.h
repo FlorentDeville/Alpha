@@ -19,7 +19,7 @@ namespace Widgets
 
 		void ReComputePosition(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize) override;
 
-		bool Handle(const EventStorage& ev) override;
+		bool Handle(const GlobalEvent& ev) override;
 
 		void AddWidget(Widget* pWidget) override;
 		void DeleteChild(Widget* pWidget) override;

@@ -5,7 +5,7 @@
 #include "Widgets/MenuItem.h"
 
 #include "Widgets/Button.h"
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Icon.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
@@ -82,7 +82,7 @@ namespace Widgets
 		}
 	}
 
-	bool MenuItem::Handle(const EventStorage& ev)
+	bool MenuItem::Handle(const GlobalEvent& ev)
 	{
 		if (ev.m_id == EventType::kMouseUp)
 		{

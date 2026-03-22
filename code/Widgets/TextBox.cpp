@@ -8,7 +8,7 @@
 #include "OsWin/Input.h"
 #include "OsWin/VirtualKeyCode.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Icon.h"
 #include "Widgets/WidgetMgr.h"
@@ -126,7 +126,7 @@ namespace Widgets
 		m_pCursorIcon->Resize(m_absPos, m_size);
 	}
 
-	bool TextBox::Handle(const EventStorage& ev)
+	bool TextBox::Handle(const GlobalEvent& ev)
 	{
 		if (m_currentState == READONLY)
 			return true;

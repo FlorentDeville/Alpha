@@ -162,7 +162,7 @@
     <ClInclude Include="Events\MouseWheelEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Events\EventStorage.h">
+    <ClInclude Include="Events\GlobalEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

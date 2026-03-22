@@ -10,7 +10,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/MouseEvent.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -63,7 +63,7 @@ void Split::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	Widget::Draw(windowSize, scissor);
 }
 
-bool Split::Handle(const EventStorage& ev)
+bool Split::Handle(const GlobalEvent& ev)
 {
 	switch (ev.m_id)
 	{

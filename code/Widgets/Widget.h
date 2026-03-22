@@ -41,7 +41,7 @@ struct Message;
 namespace Widgets
 {
 	class BaseEvent;
-	class EventStorage;
+	class GlobalEvent;
 	class FocusEvent;
 	class MouseEvent;
 
@@ -112,7 +112,7 @@ namespace Widgets
 
 		virtual void Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize);
 
-		virtual bool Handle(const EventStorage& event); //Handle events and propagate to children
+		virtual bool Handle(const GlobalEvent& event); //Handle events and propagate to children
 
 		virtual void AddWidget(Widget* pWidget);
 		virtual void InsertWidget(Widget* pWidget, int position);

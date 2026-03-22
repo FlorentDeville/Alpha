@@ -8,7 +8,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -98,7 +98,7 @@ namespace Widgets
 		Widget::Draw(windowSize, scissor);
 	}
 
-	bool Button::Handle(const EventStorage& ev)
+	bool Button::Handle(const GlobalEvent& ev)
 	{
 		switch (ev.m_id)
 		{

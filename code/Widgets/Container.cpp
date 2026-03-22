@@ -8,7 +8,7 @@
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderModule.h"
 
-#include "Widgets/Events/EventStorage.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Tools/AlternateColorCBuffer.h"
 #include "Widgets/WidgetMgr.h"
 
@@ -95,7 +95,7 @@ namespace Widgets
 		render.SetScissorRectangle(scissor);
 	}
 
-	bool Container::Handle(const EventStorage& ev)
+	bool Container::Handle(const GlobalEvent& ev)
 	{
 		switch (ev.m_id)
 		{

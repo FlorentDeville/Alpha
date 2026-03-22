@@ -29,7 +29,7 @@ namespace Widgets
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		void ResizeChildren() override;
 
-		bool Handle(const EventStorage& ev) override;
+		bool Handle(const GlobalEvent& ev) override;
 
 		void SetText(const std::string& text);
 		void SetTextAlignment(TextAlignment alignment);

@@ -8,8 +8,7 @@
 
 #include "Widgets/Button.h"
 #include "Widgets/Container.h"
-#include "Widgets/Events/EventStorage.h"
-#include "Widgets/Events/KeyboardEvent.h"
+#include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 
@@ -64,7 +63,7 @@ namespace Editors
 	OkCancelDialog::~OkCancelDialog()
 	{ }
 
-	bool OkCancelDialog::Handle(const Widgets::EventStorage& ev)
+	bool OkCancelDialog::Handle(const Widgets::GlobalEvent& ev)
 	{
 		if (ev.m_id == Widgets::EventType::kVKeyDown)
 		{

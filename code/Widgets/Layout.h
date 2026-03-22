@@ -32,7 +32,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		bool Handle(const EventStorage& ev) override;
+		bool Handle(const GlobalEvent& ev) override;
 
 		void SetDirection(Direction dir);
 		void SetSpace(const Core::Int2& space);
