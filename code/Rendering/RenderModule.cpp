@@ -114,7 +114,7 @@ namespace Rendering
 
 		m_pLinearCBufferPool = new LinearConstantBufferPool();
 		const int CBUFFER_SIZE = 512;
-		const int CBUFFER_COUNT = 1000;
+		const int CBUFFER_COUNT = 2000;
 		m_pLinearCBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
 
 		//Render target for the game
