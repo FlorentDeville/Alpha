@@ -23,7 +23,6 @@
 
 #include "Editors/EditorManager.h"
 #include "Editors/EditorParameter.h"
-#include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
@@ -452,7 +451,7 @@ void CreateMainWindow(const std::string& shaderPath)
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
 	pContainer->AddWidget(pMiddleTabContainer);
 
-	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
+	//Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 
 	Editors::EditorParameter parameter;
 	parameter.m_pParent = pMiddleTabContainer;
@@ -602,8 +601,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Editors::EditorManager& editorManager = Editors::EditorManager::InitSingleton();
 
-	Editors::GamePlayer::InitSingleton();
-
 	Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::InitSingleton();
 	levelEditorModule.Init();
 
@@ -647,8 +644,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MaterialEditorModule::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();
-	
-	Editors::GamePlayer::ReleaseSingleton();
 
 	gameMgr.Release();
 	GameMgr::ReleaseSingleton();

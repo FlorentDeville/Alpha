@@ -1,15 +1,12 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/GamePlayer/GamePlayer.h"
 
-#include "Inputs/InputMgr.h"
+#include "Editors/EditorParameter.h"
 
-#include "Rendering/RenderModule.h"
-
-#include "Widgets/Tab.h"
-#include "Widgets/TabContainer.h"
+#include "Widgets/Layout.h"
 #include "Widgets/Viewport.h"
 
 namespace Editors
@@ -20,25 +17,15 @@ namespace Editors
 	GamePlayer::~GamePlayer()
 	{}
 
-	void GamePlayer::CreateEditor(Widgets::Widget* pParent)
+	void GamePlayer::CreateEditor(const EditorParameter& param)
 	{
-		Widgets::Tab* pViewportTab = new Widgets::Tab();
-		
+		CreateDefaultWidgets(param.m_pParent, "Game");
+	
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-		pViewport->SetSizeStyle(Widgets::STRETCH);
-		pViewportTab->AddWidget(pViewport);
-
-		Widgets::TabContainer* pTabContainer = dynamic_cast<Widgets::TabContainer*>(pParent);
-		if (pTabContainer)
-		{
-			pTabContainer->AddTab("Game", pViewportTab);
-		}
-		else
-		{
-			pParent->AddWidget(pViewportTab);
-		}
+		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pInternalLayout->AddWidget(pViewport);
 	}
 }
