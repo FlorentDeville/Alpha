@@ -706,6 +706,15 @@ namespace Editors
 			Core::Guid copy;
 			levelEditorModule.DuplicateGameObject(selectedGuid, copy);
 			newNodes.push_back(copy);
+
+			const int BUFFER_SIZE = 64;
+			char bufferSelectedGuid[BUFFER_SIZE] = { '\0' };
+			selectedGuid.ToString(bufferSelectedGuid, BUFFER_SIZE);
+
+			char bufferCopyGuid[BUFFER_SIZE] = { '\0' };
+			copy.ToString(bufferCopyGuid, BUFFER_SIZE);
+
+			Core::LogModule::Get().LogInfo("Game object %s duplicated to %s.", bufferSelectedGuid, bufferCopyGuid);
 		}
 
 		levelEditorModule.ClearSelection();
