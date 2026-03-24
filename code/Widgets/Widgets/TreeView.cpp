@@ -734,6 +734,8 @@ namespace Widgets
 		}
 
 		pInfo->m_collapsed = true;
+
+		WidgetMgr::Get().RequestResize();
 	}
 
 	void TreeView::Expand(const ModelIndex& index, RowInfo* pInfo)
@@ -749,6 +751,8 @@ namespace Widgets
 		}
 
 		pInfo->m_collapsed = false;
+
+		WidgetMgr::Get().RequestResize();
 	}
 
 	void TreeView::CollapseAll()
