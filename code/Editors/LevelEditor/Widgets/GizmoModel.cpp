@@ -122,21 +122,26 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::Scale(const Core::Vec4f& scale)
+	void GizmoModel::IncrementScale(const Core::Vec4f& scale)
 	{
 		if (!m_pGo)
 			return;
 
-		Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
+		const Core::Mat44f localTx = m_pGo->GetTransform().GetLocalTx();
+		float scaleX = localTx.GetX().Length();
+		float scaleY = localTx.GetY().Length();
+		float scaleZ = localTx.GetZ().Length();
 
-		Core::Mat44f newScale = Core::Mat44f::CreateScaleMatrix(scale);
-		Core::Mat44f newTxWs = newScale * oldTxWs;
+		Core::Vec4f localScale(scaleX, scaleY, scaleZ, 0);
+		Core::Vec4f newLocalScale = localScale + scale;
 
-		Core::Mat44f txPs = m_pGo->GetTransform().GetParentWorldTx();
-		Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
+		Core::Mat44f newLocalTx;
+		newLocalTx.SetRow(0, localTx.GetX() * (1.f / scaleX * newLocalScale.GetX()));
+		newLocalTx.SetRow(1, localTx.GetY() * (1.f / scaleY * newLocalScale.GetY()));
+		newLocalTx.SetRow(2, localTx.GetZ() * (1.f / scaleZ * newLocalScale.GetZ()));
+		newLocalTx.SetRow(3, localTx.GetT());
 
-		Core::Mat44f txLs = newTxWs * invTxPs;
-		m_pGo->GetTransform().SetLocalTx(txLs);
+		m_pGo->GetTransform().SetLocalTx(newLocalTx);
 
 		SendSignalToObjectWatcher();
 	}
