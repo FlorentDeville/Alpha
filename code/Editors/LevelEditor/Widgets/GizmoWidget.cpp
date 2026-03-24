@@ -603,24 +603,19 @@ namespace Editors
 
 			float dt = distance - m_previousScaleDistance;
 			
-			float scaleValue = 1 + dt;
-
 			if (m_snapEnabled)
 			{
-				if (scaleValue < m_scaleSnapDistance && scaleValue > (1.f/m_scaleSnapDistance))
+				if (abs(dt) < m_scaleSnapDistance)
 					return;
 
-				if(scaleValue > m_scaleSnapDistance)
-					scaleValue = m_scaleSnapDistance;
-
-				if (scaleValue < (1.f / m_scaleSnapDistance))
-					scaleValue = 1.f / m_scaleSnapDistance;
+				int32_t incrementalCount = static_cast<int32_t>(dt / m_scaleSnapDistance);
+				dt = incrementalCount * m_scaleSnapDistance;
 			}
 
-			Core::Vec4f newScale(1, 1, 1, 0);
-			newScale.Set(axisIndex, scaleValue);
+			Core::Vec4f scaleIncrement(0, 0, 0, 0);
+			scaleIncrement.Set(axisIndex, dt);
 
-			m_pModel->Scale(newScale);
+			m_pModel->IncrementScale(scaleIncrement);
 			m_previousScaleDistance = distance;
 		}
 	}
