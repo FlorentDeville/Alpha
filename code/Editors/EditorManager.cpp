@@ -4,6 +4,7 @@
 
 #include "Editors/EditorManager.h"
 
+#include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
@@ -26,6 +27,7 @@ namespace Editors
 
 	void EditorManager::Init(const EditorParameter& param)
 	{
+		m_editors.PushBack(new GamePlayer());
 		m_editors.PushBack(new LevelEditor());
 		m_editors.PushBack(new MeshEditor());
 		m_editors.PushBack(new MaterialEditor());
