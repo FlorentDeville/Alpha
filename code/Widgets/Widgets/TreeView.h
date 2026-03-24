@@ -32,7 +32,7 @@ namespace Widgets
 
 		void Enable(bool recursive = true) override;
 
-		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor);
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
 		void SetModel(AbstractViewModel* pModel);
 
