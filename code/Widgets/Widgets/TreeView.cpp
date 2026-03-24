@@ -185,6 +185,32 @@ namespace Widgets
 			}
 			break;
 
+			case Os::VKeyCodes::Up:
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				ModelIndex selectedIndex = lastSelectedRow.GetStartIndex();
+
+				if (selectedIndex.GetRow() > 0)
+				{
+					ModelIndex newIndex = m_pModel->GetIndex(selectedIndex.GetRow() - 1, 0, selectedIndex.GetParent());
+					m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(newIndex, newIndex));
+				}
+				else
+				{
+					m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(selectedIndex.GetParent(), selectedIndex.GetParent()));
+				}
+	
+				return true;
+			}
+			break;
+
 			}
 		}
 
