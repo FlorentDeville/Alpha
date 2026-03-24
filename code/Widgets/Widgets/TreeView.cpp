@@ -755,6 +755,15 @@ namespace Widgets
 		WidgetMgr::Get().RequestResize();
 	}
 
+	void TreeView::Expand(const ModelIndex& index)
+	{
+		RowInfo* pInfo = GetRowInfo(index);
+		if (!pInfo)
+			return;
+
+		Expand(index, pInfo);
+	}
+
 	void TreeView::CollapseAll()
 	{
 		for (std::map<const Widget*, RowInfo>::iterator it = m_rowInfoMap.begin(); it != m_rowInfoMap.end(); ++it)

@@ -119,6 +119,7 @@ namespace Widgets
 
 		void Collapse(const ModelIndex& index, RowInfo* pInfo);
 		void Expand(const ModelIndex& index, RowInfo* pInfo);
+		void Expand(const ModelIndex& index);
 
 		void CollapseAll();
 
