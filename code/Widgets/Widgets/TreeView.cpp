@@ -140,6 +140,51 @@ namespace Widgets
 			}
 			break;
 
+			case Os::VKeyCodes::Down:
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				ModelIndex startIndex = lastSelectedRow.GetStartIndex();
+
+				int childrenCount = m_pModel->GetRowCount(startIndex);
+				if (childrenCount)
+				{
+					RowInfo* pInfo = GetRowInfo(startIndex);
+					if (pInfo && !pInfo->m_collapsed)
+					{
+						ModelIndex newIndex = m_pModel->GetIndex(0, 0, startIndex);
+						m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(newIndex, newIndex));
+						return true;
+					}
+				}
+
+				ModelIndex parentIndex = startIndex.GetParent();
+				int currentRow = startIndex.GetRow();
+				while (currentRow != -1)
+				{
+					int siblingCount = m_pModel->GetRowCount(parentIndex);
+					if (currentRow != siblingCount - 1) //this is the last row
+						break;
+
+					currentRow = parentIndex.GetRow();
+					parentIndex = parentIndex.GetParent();
+				}
+
+				if (currentRow == -1)
+					return false;
+
+				ModelIndex newIndex = m_pModel->GetIndex(currentRow + 1, 0, parentIndex);
+				m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(newIndex, newIndex));
+				return true;
+			}
+			break;
+
 			}
 		}
 
