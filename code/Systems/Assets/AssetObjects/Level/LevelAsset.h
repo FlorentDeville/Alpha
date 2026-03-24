@@ -43,6 +43,7 @@ namespace Systems
 		GameObject* FindGameObject(const Core::Guid& guid);
 		const GameObject* FindGameObject(const Core::Guid& guid) const;
 
+		Core::Array<GameObject*>& GetGameObjectsArray();
 		const Core::Array<GameObject*>& GetGameObjectsArray() const;
 
 		Core::Array<GameObject*>& GetRootGameObjects();
