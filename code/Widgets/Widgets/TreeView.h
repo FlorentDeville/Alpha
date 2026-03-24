@@ -32,7 +32,9 @@ namespace Widgets
 
 		void Enable(bool recursive = true) override;
 
-		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor);
+		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
+
+		bool Handle(const GlobalEvent& ev) override;
 
 		void SetModel(AbstractViewModel* pModel);
 
@@ -119,6 +121,7 @@ namespace Widgets
 
 		void Collapse(const ModelIndex& index, RowInfo* pInfo);
 		void Expand(const ModelIndex& index, RowInfo* pInfo);
+		void Expand(const ModelIndex& index);
 
 		void CollapseAll();
 

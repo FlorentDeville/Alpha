@@ -88,6 +88,135 @@ namespace Widgets
 		Parent::Draw(windowSize, scissor);
 	}
 
+	bool TreeView::Handle(const GlobalEvent& ev)
+	{
+		if (ev.m_id == EventType::kVKeyUp)
+		{
+			const KeyboardEvent& keyboardEvent = ev.m_param.m_keyboardEvent;
+			switch (keyboardEvent.m_virtualKey)
+			{
+			case Os::VKeyCodes::Left: // collapse if expanded or go to the parent
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				ModelIndex startIndex = lastSelectedRow.GetStartIndex();
+				RowInfo* pInfo = GetRowInfo(startIndex);
+
+				//collapse if expanded
+				if (pInfo && !pInfo->m_collapsed)
+				{
+					Collapse(startIndex, pInfo);
+					return true;
+				}
+				
+				//already collapsed or no children, then go to the parent
+				ModelIndex parentIndex = lastSelectedRow.GetParent();
+				if (!parentIndex.IsValid())
+					return true;
+
+				m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(parentIndex, parentIndex));
+				
+				return true;
+			}
+			break;
+
+			case Os::VKeyCodes::Right: //expand 
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				Expand(lastSelectedRow.GetStartIndex());
+			}
+			break;
+
+			case Os::VKeyCodes::Down:
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				ModelIndex startIndex = lastSelectedRow.GetStartIndex();
+
+				int childrenCount = m_pModel->GetRowCount(startIndex);
+				if (childrenCount)
+				{
+					RowInfo* pInfo = GetRowInfo(startIndex);
+					if (pInfo && !pInfo->m_collapsed)
+					{
+						ModelIndex newIndex = m_pModel->GetIndex(0, 0, startIndex);
+						m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(newIndex, newIndex));
+						return true;
+					}
+				}
+
+				ModelIndex parentIndex = startIndex.GetParent();
+				int currentRow = startIndex.GetRow();
+				while (currentRow != -1)
+				{
+					int siblingCount = m_pModel->GetRowCount(parentIndex);
+					if (currentRow != siblingCount - 1) //this is the last row
+						break;
+
+					currentRow = parentIndex.GetRow();
+					parentIndex = parentIndex.GetParent();
+				}
+
+				if (currentRow == -1)
+					return false;
+
+				ModelIndex newIndex = m_pModel->GetIndex(currentRow + 1, 0, parentIndex);
+				m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(newIndex, newIndex));
+				return true;
+			}
+			break;
+
+			case Os::VKeyCodes::Up:
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				ModelIndex selectedIndex = lastSelectedRow.GetStartIndex();
+
+				if (selectedIndex.GetRow() > 0)
+				{
+					ModelIndex newIndex = m_pModel->GetIndex(selectedIndex.GetRow() - 1, 0, selectedIndex.GetParent());
+					m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(newIndex, newIndex));
+				}
+				else
+				{
+					m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(selectedIndex.GetParent(), selectedIndex.GetParent()));
+				}
+	
+				return true;
+			}
+			break;
+
+			}
+		}
+
+		return Parent::Handle(ev);
+	}
+
 	void TreeView::SetModel(AbstractViewModel* pModel)
 	{
 		if (m_pModel == pModel)
@@ -734,6 +863,8 @@ namespace Widgets
 		}
 
 		pInfo->m_collapsed = true;
+
+		WidgetMgr::Get().RequestResize();
 	}
 
 	void TreeView::Expand(const ModelIndex& index, RowInfo* pInfo)
@@ -749,6 +880,17 @@ namespace Widgets
 		}
 
 		pInfo->m_collapsed = false;
+
+		WidgetMgr::Get().RequestResize();
+	}
+
+	void TreeView::Expand(const ModelIndex& index)
+	{
+		RowInfo* pInfo = GetRowInfo(index);
+		if (!pInfo)
+			return;
+
+		Expand(index, pInfo);
 	}
 
 	void TreeView::CollapseAll()

@@ -471,6 +471,25 @@ namespace Widgets
 		break;
 
 		case Os::VirtualKeyUp:
+		{
+			if (m_pFocusedWidget)
+			{
+				GlobalEvent ev;
+				ConvertMessageToEvent(m_pFocusedWidget, msg, ev);
+				if (ev.m_id != EventType::kUnknown)
+				{
+					Widget* pWidget = m_pFocusedWidget;
+					bool handled = false;
+					while (pWidget && !handled)
+					{
+						handled = pWidget->Handle(ev);
+						pWidget = pWidget->GetParent();
+					}
+				}
+			}
+		}
+		break;
+
 		case Os::CharKeyDown:
 		{
 			//The first 32 characters of the ascii table are unprintable characters, so ignore them.
