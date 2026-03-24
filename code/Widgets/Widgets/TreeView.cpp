@@ -88,6 +88,64 @@ namespace Widgets
 		Parent::Draw(windowSize, scissor);
 	}
 
+	bool TreeView::Handle(const GlobalEvent& ev)
+	{
+		if (ev.m_id == EventType::kVKeyUp)
+		{
+			const KeyboardEvent& keyboardEvent = ev.m_param.m_keyboardEvent;
+			switch (keyboardEvent.m_virtualKey)
+			{
+			case Os::VKeyCodes::Left: // collapse if expanded or go to the parent
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				ModelIndex startIndex = lastSelectedRow.GetStartIndex();
+				RowInfo* pInfo = GetRowInfo(startIndex);
+
+				//collapse if expanded
+				if (pInfo && !pInfo->m_collapsed)
+				{
+					Collapse(startIndex, pInfo);
+					return true;
+				}
+				
+				//already collapsed or no children, then go to the parent
+				ModelIndex parentIndex = lastSelectedRow.GetParent();
+				if (!parentIndex.IsValid())
+					return true;
+
+				m_pModel->GetSelectionModel()->SetSelectionRow(SelectionRow(parentIndex, parentIndex));
+				
+				return true;
+			}
+			break;
+
+			case Os::VKeyCodes::Right: //expand 
+			{
+				if (!m_pModel)
+					return true;
+
+				const std::list<SelectionRow>& selectedRows = m_pModel->GetSelectionModel()->GetSelectedRows();
+				if (selectedRows.empty())
+					return true;
+
+				const SelectionRow& lastSelectedRow = *selectedRows.rbegin();
+				Expand(lastSelectedRow.GetStartIndex());
+			}
+			break;
+
+			}
+		}
+
+		return Parent::Handle(ev);
+	}
+
 	void TreeView::SetModel(AbstractViewModel* pModel)
 	{
 		if (m_pModel == pModel)

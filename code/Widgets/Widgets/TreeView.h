@@ -34,6 +34,8 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
+		bool Handle(const GlobalEvent& ev) override;
+
 		void SetModel(AbstractViewModel* pModel);
 
 		void SetMultiSelection(bool enable);
