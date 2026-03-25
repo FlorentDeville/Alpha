@@ -121,8 +121,6 @@ namespace Widgets
 		Rendering::PipelineStateId GetIconWidgetPsoId() const;
 		Rendering::MeshId GetQuadMeshId() const;
 
-		Rendering::PipelineStateId GetObjectIdsPsoId() const;
-
 		void SetCursorId(Os::CursorId id);
 		void ResetCursorId();
 
@@ -153,7 +151,7 @@ namespace Widgets
 
 		Rendering::TextureId m_iconTextureIdArray[static_cast<int>(IconId::kCount)];
 
-		Rendering::PipelineStateId m_objectIdsPsoId; //pso used to render the object ids frame buffer. This should not be here, it's specific to the level editor
+		//Rendering::PipelineStateId m_objectIdsPsoId; //pso used to render the object ids frame buffer. This should not be here, it's specific to the level editor
 
 		bool m_resizeRequest;
 		std::vector<Widget*> m_deleteRequestArray;

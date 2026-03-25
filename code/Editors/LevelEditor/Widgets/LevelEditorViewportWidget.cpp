@@ -92,6 +92,14 @@ namespace Editors
 		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
 
 		m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
+
+		m_pObjectIdRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::OBJECTID);
+		Rendering::Shader* pVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_VS);
+		Rendering::Shader* pPS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_PS);
+
+		Rendering::PipelineStateId psoId;
+		m_pObjectIdPso = Rendering::PipelineStateMgr::Get().CreatePipelineState(psoId);
+		m_pObjectIdPso->Init_Generic(*m_pObjectIdRootSig, *pVS, *pPS, DXGI_FORMAT_R8G8B8A8_UINT);
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -611,10 +619,7 @@ namespace Editors
 		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix().m_matrix;
 		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix().m_matrix;
 
-		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
-		Rendering::PipelineStateId objectIdsPsoId = widgetMgr.GetObjectIdsPsoId();
-		Rendering::PipelineState* pPso = Rendering::PipelineStateMgr::Get().GetPipelineState(objectIdsPsoId);
-		renderModule.BindMaterial(*pPso);
+		renderModule.BindMaterial(*m_pObjectIdPso, *m_pObjectIdRootSig);
 
 		renderModule.SetConstantBuffer(1, sizeof(ConstBufferPerFrame), &perFrame, 0);
 

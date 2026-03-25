@@ -247,23 +247,26 @@ namespace Rendering
 
 	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format)
 	{
-		m_rsId = rsId;
-		m_vsId = vsId;
-		m_psId = psId;
+		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
+		ShaderMgr& shaderMgr = ShaderMgr::Get();
+		Shader* pVS = shaderMgr.GetShader(vsId);
+		Shader* pPS = shaderMgr.GetShader(psId);
 
+		Init_Generic(*pRootSignature, *pVS, *pPS);
+	}
+
+	void PipelineState::Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, DXGI_FORMAT format)
+	{
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 		rtvFormats.NumRenderTargets = 1;
 		rtvFormats.RTFormats[0] = format;
 
-		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
-		ShaderMgr& shaderMgr = ShaderMgr::Get();
-
 		PipelineStateStream pipelineStateStream;
-		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.pRootSignature = rs.GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vs.GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(ps.GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 

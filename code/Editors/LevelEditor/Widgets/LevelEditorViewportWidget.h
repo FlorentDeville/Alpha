@@ -65,6 +65,8 @@ namespace Editors
 
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 
+		Rendering::RootSignature* m_pObjectIdRootSig;
+		Rendering::PipelineState* m_pObjectIdPso;
 		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
 		Rendering::Texture* m_pReadbackBuffer;
 

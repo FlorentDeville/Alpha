@@ -165,17 +165,6 @@ namespace Widgets
 			pPipelineState->Init_PosUv(rsId, vsId, psId);
 		}
 
-		//object id material
-		{
-			Rendering::RootSignatureId rsId;
-			rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\object_ids.rs.cso", rsId);
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\object_ids.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\object_ids.ps.cso");
-
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_objectIdsPsoId);
-			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UINT);
-		}
-
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
 
 		//Load expanded icon from resources
@@ -591,11 +580,6 @@ namespace Widgets
 	Rendering::MeshId WidgetMgr::GetQuadMeshId() const
 	{
 		return m_quadMeshId;
-	}
-
-	Rendering::PipelineStateId WidgetMgr::GetObjectIdsPsoId() const
-	{
-		return m_objectIdsPsoId;
 	}
 
 	void WidgetMgr::SetCursorId(Os::CursorId id)
