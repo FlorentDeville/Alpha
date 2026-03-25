@@ -18,7 +18,7 @@ namespace Systems
 	class GameObject;
 	class MaterialInstanceAsset;
 
-	class Renderable
+	class RenderableObject
 	{
 	public:
 		const Rendering::Mesh* m_pMesh;

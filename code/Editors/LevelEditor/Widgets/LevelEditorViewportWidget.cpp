@@ -40,7 +40,7 @@
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
 #include "Systems/Rendering/Scene/Light.h"
-#include "Systems/Rendering/Scene/Renderable.h"
+#include "Systems/Rendering/Scene/RenderableObject.h"
 
 #include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
@@ -212,7 +212,7 @@ namespace Editors
 		m_pCamera->Render(m_aspectRatio);
 
 		//create the render scene
-		Core::Array<Systems::Renderable> allRenderables;
+		Core::Array<Systems::RenderableObject> allRenderables;
 		Core::Array<Systems::Light> allLights;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
@@ -303,7 +303,7 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::Renderable>& renderables, Core::Array<Systems::Light>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::Light>& lights) const
 	{
 		renderables.Reserve(10);
 		lights.Reserve(10);
@@ -368,7 +368,7 @@ namespace Editors
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
 						{
-							Systems::Renderable& renderable = renderables.PushBackDefault();
+							Systems::RenderableObject& renderable = renderables.PushBackDefault();
 
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
 							renderable.m_pMaterial = nullptr;
@@ -379,7 +379,7 @@ namespace Editors
 						}
 
 						{
-							Systems::Renderable& renderable = renderables.PushBackDefault();
+							Systems::RenderableObject& renderable = renderables.PushBackDefault();
 
 							float arrowTipScaleValue = 1.f * screenScale;
 
@@ -412,7 +412,7 @@ namespace Editors
 					gfxLight.m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
 					{
-						Systems::Renderable& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = renderables.PushBackDefault();
 
 						const float SIZE = 0.5f;
 						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
@@ -480,7 +480,7 @@ namespace Editors
 						
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
-						Systems::Renderable& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = renderables.PushBackDefault();
 
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 						renderable.m_pMaterial = nullptr;
@@ -502,7 +502,7 @@ namespace Editors
 
 					if (pMesh && pMaterial)
 					{
-						Systems::Renderable& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = renderables.PushBackDefault();
 
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
@@ -523,7 +523,7 @@ namespace Editors
 
 					if (pMesh && pMaterial)
 					{
-						Systems::Renderable& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = renderables.PushBackDefault();
 
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
@@ -537,7 +537,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::Renderable>& renderables, Core::Array<Systems::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::Light>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -569,7 +569,7 @@ namespace Editors
 		}
 
 		//now render all renderables
-		for (const Systems::Renderable& renderable : renderables)
+		for (const Systems::RenderableObject& renderable : renderables)
 		{
 			if (!(renderable.m_view & Systems::RenderPassId::Game))
 				continue;
@@ -603,7 +603,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ObjectId(Core::Array<Systems::Renderable>& renderables)
+	void LevelEditorViewportWidget::RenderView_ObjectId(Core::Array<Systems::RenderableObject>& renderables)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
@@ -620,7 +620,7 @@ namespace Editors
 
 		uint32_t objectIdCounter = 0;
 
-		for (const Systems::Renderable& renderable : renderables)
+		for (const Systems::RenderableObject& renderable : renderables)
 		{
 			if (!(renderable.m_view & Systems::RenderPassId::ObjectId))
 				continue;
@@ -644,7 +644,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::Renderable>& renderables, Core::Array<Systems::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::Light>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
@@ -683,7 +683,7 @@ namespace Editors
 			m_pShadowRenderTarget[ii]->BeginScene();
 
 			//loop through renderable
-			for (const Systems::Renderable& renderable : renderables)
+			for (const Systems::RenderableObject& renderable : renderables)
 			{
 				if (!(renderable.m_view & Systems::RenderPassId::ShadowMap))
 					continue;
