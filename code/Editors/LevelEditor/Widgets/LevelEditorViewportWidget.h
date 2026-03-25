@@ -13,6 +13,7 @@
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Rendering/RenderPass/RenderPassId.h"
 
 #include <map>
 
@@ -34,23 +35,6 @@ namespace Editors
 	class CameraWidget;
 	class GizmoModel;
 	class GizmoWidget;
-
-	enum class RenderView : uint8_t
-	{
-		Game = 0x1,
-		ShadowMap = 0x2,
-		ObjectId = 0x4
-	};
-
-	inline RenderView operator|(RenderView a, RenderView b)
-	{
-		return static_cast<RenderView>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
-	}
-
-	inline bool operator&(RenderView a, RenderView b)
-	{
-		return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;
-	}
 
 	class LevelEditorViewportWidget : public Widgets::Viewport
 	{
@@ -76,7 +60,7 @@ namespace Editors
 			const Systems::GameObject* m_pOwner;
 			Core::Mat44f m_worldTx;
 			
-			RenderView m_view;
+			Systems::RenderPassId m_view;
 			bool m_primitiveMesh; // Call RenderBaseShape and don't use m_pMaterial
 		};
 
