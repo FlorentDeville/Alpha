@@ -4,21 +4,17 @@
 
 #pragma once
 
-#include "Core/Collections/Array.h"
-
-#include "Systems/Rendering/Renderable/RenderableCamera.h"
+#include "Core/Math/Mat44f.h"
+#include "Core/Math/Vec4f.h"
 
 namespace Systems
 {
-	class RenderableObject;
-	class RenderableLight;
-
-	class RenderableScene
+	class RenderableCamera
 	{
 	public:
-		Core::Array<RenderableObject> m_objects;
-		Core::Array<RenderableLight> m_lights;
+		Core::Mat44f m_view;
+		Core::Mat44f m_proj;
 
-		RenderableCamera m_camera;
+		Core::Vec4f m_position;
 	};
 }

@@ -311,6 +311,12 @@ namespace Editors
 
 	void LevelEditorViewportWidget::CreateRenderScene(Systems::RenderableScene& scene) const
 	{
+		Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetCamera();
+
+		scene.m_camera.m_view = pCamera->GetViewMatrix();
+		scene.m_camera.m_proj = pCamera->GetProjectionMatrix();
+		scene.m_camera.m_position = pCamera->GetPosition();
+
 		scene.m_objects.Reserve(10);
 		scene.m_lights.Reserve(10);
 
@@ -616,8 +622,8 @@ namespace Editors
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 		ConstBufferPerFrame perFrame;
-		perFrame.m_view.m_matrix = renderModule.GetConstCamera()->GetViewMatrix().m_matrix;
-		perFrame.m_proj.m_matrix = renderModule.GetConstCamera()->GetProjectionMatrix().m_matrix;
+		perFrame.m_view = scene.m_camera.m_view;
+		perFrame.m_proj = scene.m_camera.m_proj;
 
 		renderModule.BindMaterial(*m_pObjectIdPso, *m_pObjectIdRootSig);
 

@@ -48,6 +48,7 @@
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassShadowMaps.h" />
+    <ClInclude Include="Rendering\Renderable\RenderableCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
