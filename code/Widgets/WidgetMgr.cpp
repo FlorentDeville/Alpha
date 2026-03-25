@@ -172,14 +172,14 @@ namespace Widgets
 			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UINT);
 		}
 
-		//shadow map material
+		//shadow map spot light material
 		{
-			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\shadowmap.rs.cso");
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap.ps.cso");
+			Rendering::RootSignature* pRootSig = rootSignatureMgr.GetRootSignature(Rendering::EngineRootSigs::SHADOWMAP_SPOTLIGHT);
+			Rendering::Shader* pVS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_VS);
+			Rendering::Shader* pPS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_PS);
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_shadowMapPsoId);
-			pPipelineState->Init_Generic_ShadowMap_SpotLight(rsId, vsId, psId);
+			pPipelineState->Init_Generic_ShadowMap_SpotLight(pRootSig, pVS, pPS);
 		}
 
 		//dir light shadow map material

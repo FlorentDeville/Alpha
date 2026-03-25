@@ -376,7 +376,7 @@ namespace Rendering
 		ThrowIfFailed(res);
 	}
 
-	void PipelineState::Init_Generic_ShadowMap_SpotLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
+	void PipelineState::Init_Generic_ShadowMap_SpotLight(RootSignature* pRootSig, Shader* pVS, Shader* pPS)
 	{
 		struct PipelineStateStream
 		{
@@ -390,13 +390,6 @@ namespace Rendering
 			CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
 		};
 
-		m_rsId = rsId;
-		m_vsId = vsId;
-		m_psId = psId;
-
-		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
-		ShaderMgr& shaderMgr = ShaderMgr::Get();
-
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 		rtvFormats.NumRenderTargets = 1;
 		rtvFormats.RTFormats[0] = DXGI_FORMAT_R32_FLOAT;
@@ -406,11 +399,11 @@ namespace Rendering
 
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.Rasterizer = rasterizerDesc;
-		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
+		pipelineStateStream.pRootSignature = pRootSig->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVS->GetBlob());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(pPS->GetBlob());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
