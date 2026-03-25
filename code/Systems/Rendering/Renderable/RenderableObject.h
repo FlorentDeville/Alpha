@@ -6,7 +6,7 @@
 
 #include "Core/Math/Mat44f.h"
 
-#include "Systems/Rendering/RenderPass/RenderPassId.h"
+#include "Systems/Rendering/RenderPass/RenderView.h"
 
 namespace Rendering
 {
@@ -26,7 +26,7 @@ namespace Systems
 		const Systems::GameObject* m_pOwner;
 		Core::Mat44f m_worldTx;
 
-		RenderPassId m_view;
+		RenderView m_view;
 		bool m_primitiveMesh; // Call RenderBaseShape and don't use m_pMaterial
 	};
 }

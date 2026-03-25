@@ -8,19 +8,19 @@
 
 namespace Systems
 {
-	enum class RenderPassId : uint8_t
+	enum class RenderView : uint8_t
 	{
 		Game = 0x1,
 		ShadowMap = 0x2,
 		ObjectId = 0x4
 	};
 
-	inline RenderPassId operator|(RenderPassId a, RenderPassId b)
+	inline RenderView operator|(RenderView a, RenderView b)
 	{
-		return static_cast<RenderPassId>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
+		return static_cast<RenderView>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
 	}
 
-	inline bool operator&(RenderPassId a, RenderPassId b)
+	inline bool operator&(RenderView a, RenderView b)
 	{
 		return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;
 	}

@@ -123,7 +123,7 @@ namespace Systems
 			//loop through renderable
 			for (const Systems::RenderableObject& renderable : scene.m_objects)
 			{
-				if (!(renderable.m_view & Systems::RenderPassId::ShadowMap))
+				if (!(renderable.m_view & Systems::RenderView::ShadowMap))
 					continue;
 
 				renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);

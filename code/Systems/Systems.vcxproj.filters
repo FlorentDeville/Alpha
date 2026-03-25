@@ -43,7 +43,7 @@
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="GameComponent\SkyboxComponent.h" />
     <ClInclude Include="Rendering\Renderable\RenderableObject.h" />
-    <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
+    <ClInclude Include="Rendering\RenderPass\RenderView.h" />
     <ClInclude Include="Rendering\Renderable\RenderableLight.h" />
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />

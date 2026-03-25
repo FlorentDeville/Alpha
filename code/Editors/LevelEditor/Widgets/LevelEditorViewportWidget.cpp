@@ -378,7 +378,7 @@ namespace Editors
 							renderable.m_worldTx = proxyWorldTx;
 							renderable.m_primitiveMesh = true;
 							renderable.m_pOwner = pGo;
-							renderable.m_view = Systems::RenderPassId::Game | Systems::RenderPassId::ObjectId;
+							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
 
 						{
@@ -395,7 +395,7 @@ namespace Editors
 							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
 							renderable.m_primitiveMesh = true;
 							renderable.m_pOwner = pGo;
-							renderable.m_view = Systems::RenderPassId::Game | Systems::RenderPassId::ObjectId;
+							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
 					}
 				}
@@ -428,7 +428,7 @@ namespace Editors
 						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
-						renderable.m_view = Systems::RenderPassId::Game | Systems::RenderPassId::ObjectId;
+						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 					}
 				}
 				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
@@ -490,7 +490,7 @@ namespace Editors
 						renderable.m_worldTx = proxyWorldTx;
 						renderable.m_primitiveMesh = true;
 						renderable.m_pOwner = pGo;
-						renderable.m_view = Systems::RenderPassId::Game | Systems::RenderPassId::ObjectId;
+						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 					}
 
 				}
@@ -512,7 +512,7 @@ namespace Editors
 						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
 						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
-						renderable.m_view = Systems::RenderPassId::Game | Systems::RenderPassId::ShadowMap | Systems::RenderPassId::ObjectId;
+						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
 				}
 				else if (const Systems::SkyboxComponent* pSkybox = pComponent->Cast<Systems::SkyboxComponent>())
@@ -533,7 +533,7 @@ namespace Editors
 						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx(); //no need to set the world matrix for a skybox
 						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
-						renderable.m_view = Systems::RenderPassId::Game;
+						renderable.m_view = Systems::RenderView::Game;
 					}
 				}
 			}
@@ -575,7 +575,7 @@ namespace Editors
 		//now render all renderables
 		for (const Systems::RenderableObject& renderable : scene.m_objects)
 		{
-			if (!(renderable.m_view & Systems::RenderPassId::Game))
+			if (!(renderable.m_view & Systems::RenderView::Game))
 				continue;
 
 			if (renderable.m_primitiveMesh)

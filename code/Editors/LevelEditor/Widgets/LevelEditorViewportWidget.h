@@ -13,7 +13,7 @@
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
-#include "Systems/Rendering/RenderPass/RenderPassId.h"
+#include "Systems/Rendering/RenderPass/RenderView.h"
 
 #include <map>
 

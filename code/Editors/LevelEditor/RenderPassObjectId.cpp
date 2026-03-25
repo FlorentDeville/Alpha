@@ -73,7 +73,7 @@ namespace Editors
 
 		for (const Systems::RenderableObject& renderable : scene.m_objects)
 		{
-			if (!(renderable.m_view & Systems::RenderPassId::ObjectId))
+			if (!(renderable.m_view & Systems::RenderView::ObjectId))
 				continue;
 
 			++objectIdCounter;

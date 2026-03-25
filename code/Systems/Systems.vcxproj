@@ -51,7 +51,7 @@
     <ClInclude Include="Rendering\Renderable\RenderableObject.h" />
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
-    <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
+    <ClInclude Include="Rendering\RenderPass\RenderView.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassShadowMaps.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
     <ClInclude Include="Serialization\ContainerJsonSerializer.h" />
