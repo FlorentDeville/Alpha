@@ -1,30 +1,43 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include <d3d12.h>
 #include <cstdint>
+#include <d3d12.h>
 
 namespace Rendering
 {
+	class DescriptorHeapImpl;
+	class Device;
+
+	enum class DescriptorHeapFlag
+	{
+		DEFAULT,		//D3D12_DESCRIPTOR_HEAP_FLAG_NONE
+		SHADER_VISIBLE	//D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE
+	};
+
+	enum class DescriptorHeapType
+	{
+		CBV_SRV_UAV,	//const buffer, textures
+		RTV,			//render target
+		DSV,			//depth stencil view
+		SAMPLER			//texture sampler
+	};
+
 	class DescriptorHeap
 	{
 	public:
 		DescriptorHeap();
 		~DescriptorHeap();
 
-		void Init(ID3D12Device2* pDevice, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32_t numDescriptors);
+		void Init(Device* pDevice, DescriptorHeapFlag flag, DescriptorHeapType type, uint32_t numDescriptors);
 		void Release();
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetNewHandle();
 
 	private:
-		D3D12_DESCRIPTOR_HEAP_TYPE m_heapType;
-		uint32_t m_count;
-		uint32_t m_current;
-		ID3D12DescriptorHeap* m_pHeap;
-		uint32_t m_descriptorSize;
+		DescriptorHeapImpl* m_pImpl;
 	};
 }

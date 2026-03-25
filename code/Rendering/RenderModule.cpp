@@ -651,14 +651,14 @@ namespace Rendering
 	Rendering::DescriptorHeap* RenderModule::CreateRTVHeap()
 	{
 		Rendering::DescriptorHeap* heap = new Rendering::DescriptorHeap();
-		heap->Init(m_pDevice->GetDx12Device(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames * 2);
+		heap->Init(m_pDevice, DescriptorHeapFlag::DEFAULT, DescriptorHeapType::RTV, m_numFrames * 2);
 		return heap;
 	}
 
 	Rendering::DescriptorHeap* RenderModule::CreateDSVHeap()
 	{
 		Rendering::DescriptorHeap* heap = new Rendering::DescriptorHeap();
-		heap->Init(m_pDevice->GetDx12Device(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2);
+		heap->Init(m_pDevice, DescriptorHeapFlag::DEFAULT, DescriptorHeapType::DSV, 2);
 		return heap;
 	}
 
