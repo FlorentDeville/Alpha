@@ -662,11 +662,6 @@ namespace Editors
 
 	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
-		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
-
-		Rendering::PipelineStateId shadowMapDirLightPsoId = widgetMgr.GetShadowMapDirLightPsoId();
-		Rendering::PipelineState* pDirLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapDirLightPsoId);
-
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
@@ -679,13 +674,13 @@ namespace Editors
 
 			if (light.m_cbuffer.m_type == Rendering::Directional)
 			{
-				renderModule.BindMaterial(*pDirLightPso);
+				renderModule.BindMaterial(*m_pShadowDirLightPso, *m_pShadowDirLightRootSig);
 
 				renderModule.SetConstantBuffer(1, sizeof(Core::Mat44f), &light.m_lightSpaceTX, 0);
 			}
 			else if (light.m_cbuffer.m_type == Rendering::Spot)
 			{
-				renderModule.BindMaterial(*m_pShadowSpotLightPso);
+				renderModule.BindMaterial(*m_pShadowSpotLightPso, *m_pShadowSpotLightRootSig);
 
 				struct PerObject
 				{
@@ -739,13 +734,24 @@ namespace Editors
 
 		//shadow map spot light material
 		{
-			Rendering::RootSignature* pRootSig = rootSignatureMgr.GetRootSignature(Rendering::EngineRootSigs::SHADOWMAP_SPOTLIGHT);
+			m_pShadowSpotLightRootSig = rootSignatureMgr.GetRootSignature(Rendering::EngineRootSigs::SHADOWMAP_SPOTLIGHT);
 			Rendering::Shader* pVS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_VS);
 			Rendering::Shader* pPS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_PS);
 
 			Rendering::PipelineStateId psoId;
 			m_pShadowSpotLightPso = pipelineStateMgr.CreatePipelineState(psoId);
-			m_pShadowSpotLightPso->Init_Generic_ShadowMap_SpotLight(pRootSig, pVS, pPS);
+			m_pShadowSpotLightPso->Init_Generic_ShadowMap_SpotLight(m_pShadowSpotLightRootSig, pVS, pPS);
+		}
+
+		//dir light shadow map material
+		{
+			m_pShadowDirLightRootSig = rootSignatureMgr.GetRootSignature(Rendering::EngineRootSigs::SHADOWMAP_DIRLIGHT);
+			Rendering::Shader* pVS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_DIRLIGHT_VS);
+			Rendering::Shader* pPS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_DIRLIGHT_PS);
+
+			Rendering::PipelineStateId psoId;
+			m_pShadowDirLightPso = pipelineStateMgr.CreatePipelineState(psoId);
+			m_pShadowDirLightPso->Init_Generic_ShadowMap_DirLight(m_pShadowDirLightRootSig, pVS, pPS);
 		}
 
 		Rendering::Device* pDevice = Rendering::RenderModule::Get().GetDevice();

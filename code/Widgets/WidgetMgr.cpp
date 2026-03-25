@@ -171,16 +171,6 @@ namespace Widgets
 			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UINT);
 		}
 
-		//dir light shadow map material
-		{
-			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\shadowmap_dirlight.rs.cso");
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap_dirlight.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap_dirlight.ps.cso");
-
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_shadowMapDirLightPsoId);
-			pPipelineState->Init_Generic_ShadowMap_DirLight(rsId, vsId, psId);
-		}
-
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
 
 		//Load expanded icon from resources
@@ -601,11 +591,6 @@ namespace Widgets
 	Rendering::PipelineStateId WidgetMgr::GetObjectIdsPsoId() const
 	{
 		return m_objectIdsPsoId;
-	}
-
-	Rendering::PipelineStateId WidgetMgr::GetShadowMapDirLightPsoId() const
-	{
-		return m_shadowMapDirLightPsoId;
 	}
 
 	void WidgetMgr::SetCursorId(Os::CursorId id)
