@@ -419,13 +419,10 @@ void Render()
 	renderModule.PreRender();
 
 	//first render the game
-	renderModule.m_gameRenderTarget->BeginScene();
-
 	GameMgr::Get().Render();
 
-	renderModule.m_gameRenderTarget->EndScene();
-
-	widgetsModule.Render(); //render all the viewports
+	//render all the viewports from the editors
+	widgetsModule.Render();
 
 	//So far everything was rendered onto target texture, now render to the frame buffer
 	renderModule.BeginMainScene();

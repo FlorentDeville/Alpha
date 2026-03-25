@@ -125,9 +125,6 @@ namespace Rendering
 		const int CBUFFER_COUNT = 2000;
 		m_pLinearCBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
 
-		//Render target for the game
-		m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
-
 		m_pCamera = new Camera();
 
 		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
@@ -188,8 +185,6 @@ namespace Rendering
 					pResource->Release();
 			}
 		}
-
-		delete m_gameRenderTarget;
 
 		Rendering::FontMgr::ReleaseSingleton();
 		Rendering::MeshMgr::ReleaseSingleton();
@@ -640,11 +635,6 @@ namespace Rendering
 			//reset the character count for next frame
 			info.m_characterCount = 0;
 		}
-	}
-
-	Rendering::TextureId RenderModule::GetGameRenderTargetTextureId() const
-	{
-		return GetRenderTargetTextureId(m_gameRenderTarget);
 	}
 
 	void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)
