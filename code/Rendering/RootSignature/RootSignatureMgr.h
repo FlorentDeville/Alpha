@@ -31,7 +31,7 @@ namespace Rendering
 		void Init(const std::string&);
 		void Shutdown();
 
-		RootSignatureId CreateRootSignature(const std::string& path);
+		RootSignature* CreateRootSignature(const std::string& path, RootSignatureId& id);
 
 		RootSignature* GetRootSignature(RootSignatureId id) const;
 		RootSignature* GetRootSignature(EngineRootSigs id) const;

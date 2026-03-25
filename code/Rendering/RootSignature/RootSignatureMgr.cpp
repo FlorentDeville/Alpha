@@ -33,12 +33,12 @@ namespace Rendering
 	void RootSignatureMgr::Shutdown()
 	{ }
 
-	RootSignatureId RootSignatureMgr::CreateRootSignature(const std::string& path)
+	RootSignature* RootSignatureMgr::CreateRootSignature(const std::string& path, RootSignatureId& id)
 	{
-		RootSignatureId id;
 		id.m_id = m_rootSignatures.size();
-		m_rootSignatures.push_back(new RootSignature(path));
-		return id;
+		RootSignature* pRootSignature = new RootSignature(path);
+		m_rootSignatures.push_back(pRootSignature);
+		return pRootSignature;
 	}
 
 	RootSignature* RootSignatureMgr::GetRootSignature(RootSignatureId id) const
