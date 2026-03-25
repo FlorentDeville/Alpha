@@ -18,6 +18,7 @@ namespace Rendering
 	{
 		SHADOWMAP_SPOTLIGHT,
 		SHADOWMAP_DIRLIGHT,
+		OBJECTID,
 
 		COUNT
 	};

@@ -30,6 +30,9 @@ namespace Rendering
 
 		m_shaders[static_cast<size_t>(EngineShaders::SHADOWMAP_DIRLIGHT_VS)] = new Shader(shaderPath + "\\shadowmap_dirlight.vs.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::SHADOWMAP_DIRLIGHT_PS)] = new Shader(shaderPath + "\\shadowmap_dirlight.ps.cso");
+
+		m_shaders[static_cast<size_t>(EngineShaders::OBJECTID_VS)] = new Shader(shaderPath + "\\object_ids.vs.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::OBJECTID_PS)] = new Shader(shaderPath + "\\object_ids.ps.cso");
 	}
 
 	void ShaderMgr::Shutdown()
