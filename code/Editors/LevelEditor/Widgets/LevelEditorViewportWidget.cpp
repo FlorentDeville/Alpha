@@ -736,21 +736,9 @@ namespace Editors
 		Rendering::Device* pDevice = Rendering::RenderModule::Get().GetDevice();
 		ID3D12Device2* pDx12Device = pDevice->GetDx12Device();
 
-		//UINT srvSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
 		m_pShadowHeapSrv = new Rendering::DescriptorHeap();
 		m_pShadowHeapSrv->Init(Rendering::RenderModule::Get().GetDevice(), Rendering::DescriptorHeapFlag::SHADER_VISIBLE, Rendering::DescriptorHeapType::CBV_SRV_UAV, Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		
-		////Create the SRV heap
-		//{
-		//	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-		//	srvHeapDesc.NumDescriptors = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
-		//	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-		//	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		//	HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pShadowMapSrvDescriptorHeap));
-		//	ThrowIfFailed(res);
-		//}
-
 		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT;
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 		{
@@ -765,7 +753,6 @@ namespace Editors
 				srvDesc.Texture2D.MipLevels = 1;
 
 				D3D12_CPU_DESCRIPTOR_HANDLE handle = m_pShadowHeapSrv->GetNewHandle();
-				//handle.ptr = SIZE_T(uint64_t(m_pShadowMapSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr) + INT64(ii) * srvSize);
 				pDx12Device->CreateShaderResourceView(m_pShadowRenderTarget[ii]->GetColorTexture()->GetResource(), &srvDesc, handle);
 			}
 		}
