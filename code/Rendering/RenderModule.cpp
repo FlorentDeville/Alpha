@@ -672,6 +672,11 @@ namespace Rendering
 		return m_pLinearCBufferPool;
 	}
 
+	Device* RenderModule::GetDevice()
+	{
+		return m_pDevice;
+	}
+
 	CommandQueue* RenderModule::GetRenderCommandQueue()
 	{
 		return m_pRenderCommandQueue;

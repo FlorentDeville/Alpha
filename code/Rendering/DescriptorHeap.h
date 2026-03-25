@@ -37,6 +37,8 @@ namespace Rendering
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetNewHandle();
 
+		ID3D12DescriptorHeap* GetHeap();
+
 	private:
 		DescriptorHeapImpl* m_pImpl;
 	};

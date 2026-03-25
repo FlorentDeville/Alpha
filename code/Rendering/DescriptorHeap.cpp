@@ -101,4 +101,9 @@ namespace Rendering
 		++(m_pImpl->m_current);
 		return rtv;
 	}
+
+	ID3D12DescriptorHeap* DescriptorHeap::GetHeap()
+	{
+		return m_pImpl->m_pHeap;
+	}
 }

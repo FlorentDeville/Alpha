@@ -18,6 +18,7 @@
 
 namespace Rendering
 {
+	class DescriptorHeap;
 	class Mesh;
 	class RenderTarget;
 	class Texture;
@@ -95,7 +96,7 @@ namespace Editors
 		bool m_isPanning; //when the user is panning the camera	
 
 		Rendering::RenderTarget* m_pShadowRenderTarget[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
-		ID3D12DescriptorHeap* m_pShadowMapSrvDescriptorHeap; //special heap for shadow maps with contiguous srv.
+		Rendering::DescriptorHeap* m_pShadowHeapSrv; //special heap for shadow maps with contiguous srv.
 
 		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
 		Rendering::Texture* m_pReadbackBuffer;

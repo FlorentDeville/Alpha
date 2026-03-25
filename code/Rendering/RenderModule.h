@@ -107,6 +107,8 @@ namespace Rendering
 
 		LinearConstantBufferPool* GetLinearCBufferPool();
 
+		Device* GetDevice();
+
 		//Temp functions
 		CommandQueue* GetRenderCommandQueue();
 		CommandQueue* GetCopyCommandQueue();
