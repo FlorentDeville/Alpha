@@ -31,8 +31,6 @@ struct ID3D12CommandQueue;
 struct ID3D12DescriptorHeap;
 struct ID3D12Device2;
 
-class CommandQueue;
-
 namespace Core
 {
 	class Float4;
@@ -41,6 +39,7 @@ namespace Core
 namespace Rendering
 {
 	class Camera;
+	class CommandQueue;
 	class LinearConstantBufferPool;
 	class Material;
 	class Mesh;
@@ -135,10 +134,10 @@ namespace Rendering
 		Rendering::DescriptorHeap* m_pRTVHeap;
 		Rendering::DescriptorHeap* m_pDSVHeap;
 
-		CommandQueue* m_pRenderCommandQueue;
+		Rendering::CommandQueue* m_pRenderCommandQueue;
 		ID3D12GraphicsCommandList2* m_pRenderCommandList;
 
-		CommandQueue* m_pCopyCommandQueue;
+		Rendering::CommandQueue* m_pCopyCommandQueue;
 
 		bool m_allowTearing;
 		bool m_vSync; //True to limit to 60 fps

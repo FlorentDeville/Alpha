@@ -93,8 +93,8 @@ namespace Rendering
 		CreateDevice(pAdapter);
 		pAdapter->Release();
 
-		m_pRenderCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
-		m_pCopyCommandQueue = new CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
+		m_pRenderCommandQueue = new Rendering::CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
+		m_pCopyCommandQueue = new Rendering::CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
 
 		CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), mainResolution.x, mainResolution.y, m_numFrames);
 		m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
