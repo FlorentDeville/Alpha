@@ -6,7 +6,7 @@
 
 #include "Systems/Rendering/RenderPass/IRenderPass.h"
 
-#include <string>
+#include <cstdint>
 
 namespace Rendering
 {
