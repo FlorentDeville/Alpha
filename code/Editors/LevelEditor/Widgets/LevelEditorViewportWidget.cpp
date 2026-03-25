@@ -43,6 +43,7 @@
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
+#include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
 
 #include "Widgets/Events/GlobalEvent.h"
@@ -91,6 +92,10 @@ namespace Editors
 
 		m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
 		m_pRenderPassObjectId = new RenderPassObjectId(width, height);
+
+		m_pRenderPassBase = new Systems::RenderPassBase();
+		m_pRenderPassBase->SetRenderTarget(m_pRenderTarget);
+		m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -99,6 +104,7 @@ namespace Editors
 		delete m_pGizmoWidget;
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassObjectId;
+		delete m_pRenderPassBase;
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
@@ -235,13 +241,14 @@ namespace Editors
 		m_pRenderPassShadowMaps->PostRender(scene);
 
 		//now render the level editor view of the scene.
-		m_pRenderTarget->BeginScene();
+		m_pRenderPassBase->PreRender(scene);
+		m_pRenderPassBase->Render(scene);
 		
-		RenderView_LevelEditor(scene);
-		m_pRenderTarget->ClearDepthBuffer();
+		m_pRenderPassBase->ClearDepthBuffer();
+
 		m_pGizmoWidget->Render();
 
-		m_pRenderTarget->EndScene();
+		m_pRenderPassBase->PostRender(scene);
 
 		//now render the object ids view
 		m_pRenderPassObjectId->PreRender(scene);
@@ -535,70 +542,6 @@ namespace Editors
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game;
 					}
-				}
-			}
-		}
-	}
-
-	void LevelEditorViewportWidget::RenderView_LevelEditor(const Systems::RenderableScene& scene) const
-	{
-		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-
-		const Core::Vec4f& pos = scene.m_camera.m_position;
-		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
-		Rendering::PerFrameCBuffer perFrameData(scene.m_camera.m_view, scene.m_camera.m_proj, cameraPosFloat3);
-
-		//bind the shadow map
-		Rendering::RenderTarget** pShadowRenderTargets = m_pRenderPassShadowMaps->GetRenderTargets();
-		for (uint32_t ii = 0; ii < m_pRenderPassShadowMaps->GetRenderTargetsCount(); ++ii)
-		{
-			Rendering::Texture* pShadowMapTexture = pShadowRenderTargets[ii]->GetColorTexture();
-			pShadowMapTexture->TransitionToShaderResource();
-		}
-
-		//for now add all lights
-		Rendering::LightsArrayCBuffer lightsConstBuffer;
-		Core::Mat44f lightSpace[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
-
-		uint32_t lightCount = min(scene.m_lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
-		for (uint32_t ii = 0; ii < lightCount; ++ii)
-		{
-			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
-			*pLight = scene.m_lights[ii].m_cbuffer;
-			lightSpace[ii] = scene.m_lights[ii].m_lightSpaceTX;
-		}
-
-		//now render all renderables
-		for (const Systems::RenderableObject& renderable : scene.m_objects)
-		{
-			if (!(renderable.m_view & Systems::RenderView::Game))
-				continue;
-
-			if (renderable.m_primitiveMesh)
-			{
-				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx.m_matrix, Core::Float4(1, 1, 1, 1));
-			}
-			else
-			{
-				const Systems::MaterialAsset* pMaterial = renderable.m_pMaterial->GetBaseMaterial();
-				if (pMaterial && pMaterial->IsValidForRendering())
-				{
-					Rendering::PerObjectCBuffer perObjectData;
-					perObjectData.m_world = Core::Mat44f(renderable.m_worldTx.m_matrix);
-					memcpy(perObjectData.m_lightSpaceMatrix, lightSpace, sizeof(Core::Mat44f) * Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
-
-					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
-
-					int32_t shadowMapsRootSigIndex = pMaterial->GetShadowMapsRootSigIndex();
-					if (shadowMapsRootSigIndex != -1)
-					{
-						Rendering::DescriptorHeap* pDescriptionHeap = m_pRenderPassShadowMaps->GetSrvHeap();
-						ID3D12DescriptorHeap* pDescriptorHeap[] = { pDescriptionHeap->GetHeap() };
-						renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-						renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(shadowMapsRootSigIndex, pDescriptionHeap->GetHeap()->GetGPUDescriptorHandleForHeapStart());
-					}
-
-					renderModule.RenderMesh(*renderable.m_pMesh);
 				}
 			}
 		}

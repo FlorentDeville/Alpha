@@ -49,6 +49,7 @@
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassShadowMaps.h" />
     <ClInclude Include="Rendering\Renderable\RenderableCamera.h" />
+    <ClInclude Include="Rendering\RenderPass\RenderPassBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset.cpp" />
     <ClCompile Include="GameComponent\SkyboxComponent.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassShadowMaps.cpp" />
+    <ClCompile Include="Rendering\RenderPass\RenderPassBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

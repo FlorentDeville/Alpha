@@ -29,6 +29,7 @@ namespace Systems
 {
 	class GameObject;
 	class RenderableScene;
+	class RenderPassBase;
 	class RenderPassShadowMaps;
 }
 
@@ -64,6 +65,7 @@ namespace Editors
 		
 		bool m_isPanning; //when the user is panning the camera	
 
+		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 		
 		RenderPassObjectId* m_pRenderPassObjectId;
@@ -75,8 +77,6 @@ namespace Editors
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
 
 		void CreateRenderScene(Systems::RenderableScene& scene) const;
-
-		void RenderView_LevelEditor(const Systems::RenderableScene& scene) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};
