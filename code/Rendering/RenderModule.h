@@ -40,6 +40,7 @@ namespace Rendering
 {
 	class Camera;
 	class CommandQueue;
+	class Device;
 	class LinearConstantBufferPool;
 	class Material;
 	class Mesh;
@@ -106,11 +107,13 @@ namespace Rendering
 
 		LinearConstantBufferPool* GetLinearCBufferPool();
 
+		Device* GetDevice();
+
 		//Temp functions
 		CommandQueue* GetRenderCommandQueue();
 		CommandQueue* GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* GetRenderCommandList();
-		ID3D12Device2* GetDevice();
+		ID3D12Device2* GetDx12Device();
 
 		static void ReportLiveObject();
 
@@ -123,7 +126,7 @@ namespace Rendering
 
 		static const int m_numFrames = 3;
 
-		ID3D12Device2* m_pDevice;
+		Device* m_pDevice;
 
 #if defined(_DEBUG)
 		ID3D12Debug* m_pDebugInterface;
@@ -189,9 +192,6 @@ namespace Rendering
 		Texture* m_pNullCubemap; //used to bind to a null cubemap
 		Texture* m_pNullTexture2D; //used to bind to a null texture
 
-		void CreateDevice(IDXGIAdapter4* pAdapter);
-
-		IDXGIAdapter4* GetAdapter(bool useWarp);
 		void EnableDebugLayer();
 		void CheckTearingSupport();
 

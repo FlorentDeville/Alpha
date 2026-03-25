@@ -20,6 +20,7 @@
     <ClInclude Include="ConstantBuffer\PerFrameCBuffer.h" />
     <ClInclude Include="ConstantBuffer\PerObjectCBuffer.h" />
     <ClInclude Include="DescriptorHeap.h" />
+    <ClInclude Include="Device.h" />
     <ClInclude Include="Font\Font.h" />
     <ClInclude Include="Font\FontId.h" />
     <ClInclude Include="Font\FontMgr.h" />
@@ -58,6 +59,7 @@
     <ClCompile Include="ConstantBuffer\PerFrameCBuffer.cpp" />
     <ClCompile Include="ConstantBuffer\PerObjectCBuffer.cpp" />
     <ClCompile Include="DescriptorHeap.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Font\Font.cpp" />
     <ClCompile Include="Font\FontId.cpp" />
     <ClCompile Include="Font\FontMgr.cpp" />

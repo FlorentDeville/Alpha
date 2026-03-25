@@ -61,7 +61,7 @@ namespace Rendering
 
 	void Texture::InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize)
 	{
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 
 		bool isCubemap = false;
 		std::vector<D3D12_SUBRESOURCE_DATA> subResources;
@@ -148,7 +148,7 @@ namespace Rendering
 		clear.Color[2] = clearColor[2];
 		clear.Color[3] = clearColor[3];
 
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 		pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &m_resourceDesc,
 			m_currentState, &clear, IID_PPV_ARGS(&m_pResource));
 
@@ -176,7 +176,7 @@ namespace Rendering
 	void Texture::InitAsReadbackBuffer(int width, int height, int depth)
 	{
 		int bufferSize = width * height * depth;
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
 
 		D3D12_HEAP_PROPERTIES readbackHeapProperties { CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_READBACK) };
@@ -187,7 +187,7 @@ namespace Rendering
 
 	void Texture::InitAsNullCubemap()
 	{
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 
 		//Create the SRV heap
 		{
@@ -212,7 +212,7 @@ namespace Rendering
 
 	void Texture::InitAsNullTexture2D()
 	{
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 
 		//Create the SRV heap
 		{
@@ -295,7 +295,7 @@ namespace Rendering
 
 	void Texture::Internal_Init(const unsigned char* pData, int width, int height, DXGI_FORMAT format, uint32_t rowPitch, uint32_t slicePitch, uint32_t mipCount)
 	{
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 
 		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
 

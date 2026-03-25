@@ -22,6 +22,7 @@
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
+#include "Rendering/Device.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
@@ -96,7 +97,8 @@ namespace Editors
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 			delete m_pShadowRenderTarget[ii];
 
-		m_pShadowMapSrvDescriptorHeap->Release();
+		m_pShadowHeapSrv->Release();
+		delete m_pShadowHeapSrv;
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
@@ -604,9 +606,9 @@ namespace Editors
 					int32_t shadowMapsRootSigIndex = pMaterial->GetShadowMapsRootSigIndex();
 					if (shadowMapsRootSigIndex != -1)
 					{
-						ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowMapSrvDescriptorHeap };
+						ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowHeapSrv->GetHeap() };
 						renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-						renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(shadowMapsRootSigIndex, m_pShadowMapSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+						renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(shadowMapsRootSigIndex, m_pShadowHeapSrv->GetHeap()->GetGPUDescriptorHandleForHeapStart());
 					}
 
 					renderModule.RenderMesh(*renderable.m_pMesh);
@@ -731,21 +733,13 @@ namespace Editors
 
 	void LevelEditorViewportWidget::CreateShadowMaps()
 	{
-		ID3D12Device2* pDevice = Rendering::RenderModule::Get().GetDevice();
+		Rendering::Device* pDevice = Rendering::RenderModule::Get().GetDevice();
+		ID3D12Device2* pDx12Device = pDevice->GetDx12Device();
 
-		UINT srvSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
-		//Create the SRV heap
-		{
-			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
-			srvHeapDesc.NumDescriptors = Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT;
-			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pShadowMapSrvDescriptorHeap));
-			ThrowIfFailed(res);
-		}
-
-		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT; //DXGI_FORMAT_R8G8B8A8_UNORM
+		m_pShadowHeapSrv = new Rendering::DescriptorHeap();
+		m_pShadowHeapSrv->Init(Rendering::RenderModule::Get().GetDevice(), Rendering::DescriptorHeapFlag::SHADER_VISIBLE, Rendering::DescriptorHeapType::CBV_SRV_UAV, Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+		
+		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT;
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 		{
 			m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, format, Core::Vec4f(1, 1, 1, 1));
@@ -758,9 +752,8 @@ namespace Editors
 				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 				srvDesc.Texture2D.MipLevels = 1;
 
-				D3D12_CPU_DESCRIPTOR_HANDLE handle;
-				handle.ptr = SIZE_T(uint64_t(m_pShadowMapSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr) + INT64(ii) * srvSize);
-				pDevice->CreateShaderResourceView(m_pShadowRenderTarget[ii]->GetColorTexture()->GetResource(), &srvDesc, handle);
+				D3D12_CPU_DESCRIPTOR_HANDLE handle = m_pShadowHeapSrv->GetNewHandle();
+				pDx12Device->CreateShaderResourceView(m_pShadowRenderTarget[ii]->GetColorTexture()->GetResource(), &srvDesc, handle);
 			}
 		}
 	}

@@ -44,7 +44,7 @@ namespace Rendering
 		m_pDSVHeap = renderModule.CreateDSVHeap();
 
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
-		ID3D12Device2* pDevice = renderModule.GetDevice();
+		ID3D12Device2* pDevice = renderModule.GetDx12Device();
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_pTexture, m_textureId);
@@ -124,7 +124,7 @@ namespace Rendering
 		dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
-		renderModule.GetDevice()->GetCopyableFootprints(&m_pTexture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
+		renderModule.GetDx12Device()->GetCopyableFootprints(&m_pTexture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
 
 		dest.PlacedFootprint = footprint;
 
@@ -155,7 +155,7 @@ namespace Rendering
 		if (m_pDepthBuffer)
 			m_pDepthBuffer->Release();
 
-		ID3D12Device2* pDevice = renderModule.GetDevice();
+		ID3D12Device2* pDevice = renderModule.GetDx12Device();
 
 		ThrowIfFailed(pDevice->CreateCommittedResource(
 			&heapProperty,

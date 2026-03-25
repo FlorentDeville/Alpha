@@ -17,6 +17,7 @@
 #include "Rendering/BaseShape.h"
 #include "Rendering/Camera.h"
 #include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
+#include "Rendering/Device.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Mesh/Mesh.h"
@@ -71,7 +72,11 @@ namespace Rendering
 	}
 
 	RenderModule::~RenderModule()
-	{}
+	{
+		delete m_pDevice;
+		m_pDevice = nullptr;
+
+	}
 
 	void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution, const std::string& binPath)
 	{
@@ -89,12 +94,11 @@ namespace Rendering
 
 		CheckTearingSupport();
 
-		IDXGIAdapter4* pAdapter = GetAdapter(false);
-		CreateDevice(pAdapter);
-		pAdapter->Release();
+		m_pDevice = new Device();
+		m_pDevice->Init();
 
-		m_pRenderCommandQueue = new Rendering::CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_DIRECT);
-		m_pCopyCommandQueue = new Rendering::CommandQueue(m_pDevice, D3D12_COMMAND_LIST_TYPE_COPY);
+		m_pRenderCommandQueue = new Rendering::CommandQueue(m_pDevice->GetDx12Device(), D3D12_COMMAND_LIST_TYPE_DIRECT);
+		m_pCopyCommandQueue = new Rendering::CommandQueue(m_pDevice->GetDx12Device(), D3D12_COMMAND_LIST_TYPE_COPY);
 
 		CreateSwapChain(hWindow, m_pRenderCommandQueue->GetD3D12CommandQueue(), mainResolution.x, mainResolution.y, m_numFrames);
 		m_currentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
@@ -234,7 +238,7 @@ namespace Rendering
 		}
 
 		m_pSwapChain->Release();
-		m_pDevice->Release();
+		m_pDevice->Shutdown();
 
 		ReportLiveObject();
 	}
@@ -421,7 +425,7 @@ namespace Rendering
 		if (*pResource)
 			(*pResource)->Release();
 
-		ThrowIfFailed(m_pDevice->CreateCommittedResource(
+		ThrowIfFailed(m_pDevice->GetDx12Device()->CreateCommittedResource(
 			&heapProperty,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,
@@ -437,7 +441,7 @@ namespace Rendering
 		dsvDesc.Texture2D.MipSlice = 0;
 		dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-		m_pDevice->CreateDepthStencilView(*pResource, &dsvDesc, dsv);
+		m_pDevice->GetDx12Device()->CreateDepthStencilView(*pResource, &dsvDesc, dsv);
 
 		char buffer[500];
 		sprintf_s(buffer, 500, "Resized depth buffer %d %d\n", width, height);
@@ -477,7 +481,7 @@ namespace Rendering
 			// create upload heap. We will fill this with data for our text
 			D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 			D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxCharacterCount * sizeof(Rendering::VertexText));
-			HRESULT hr = RenderModule::Get().GetDevice()->CreateCommittedResource(
+			HRESULT hr = RenderModule::Get().GetDx12Device()->CreateCommittedResource(
 				&prop, // upload heap
 				D3D12_HEAP_FLAG_NONE, // no flags
 				&desc, // resource description for a buffer
@@ -647,14 +651,14 @@ namespace Rendering
 	Rendering::DescriptorHeap* RenderModule::CreateRTVHeap()
 	{
 		Rendering::DescriptorHeap* heap = new Rendering::DescriptorHeap();
-		heap->Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, m_numFrames * 2);
+		heap->Init(m_pDevice, DescriptorHeapFlag::DEFAULT, DescriptorHeapType::RTV, m_numFrames * 2);
 		return heap;
 	}
 
 	Rendering::DescriptorHeap* RenderModule::CreateDSVHeap()
 	{
 		Rendering::DescriptorHeap* heap = new Rendering::DescriptorHeap();
-		heap->Init(m_pDevice, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2);
+		heap->Init(m_pDevice, DescriptorHeapFlag::DEFAULT, DescriptorHeapType::DSV, 2);
 		return heap;
 	}
 
@@ -666,6 +670,11 @@ namespace Rendering
 	LinearConstantBufferPool* RenderModule::GetLinearCBufferPool()
 	{
 		return m_pLinearCBufferPool;
+	}
+
+	Device* RenderModule::GetDevice()
+	{
+		return m_pDevice;
 	}
 
 	CommandQueue* RenderModule::GetRenderCommandQueue()
@@ -683,9 +692,9 @@ namespace Rendering
 		return m_pRenderCommandList;
 	}
 
-	ID3D12Device2* RenderModule::GetDevice()
+	ID3D12Device2* RenderModule::GetDx12Device()
 	{
-		return m_pDevice;
+		return m_pDevice->GetDx12Device();
 	}
 
 	void RenderModule::ReportLiveObject()
@@ -721,94 +730,6 @@ namespace Rendering
 
 		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		pCommandList->SetGraphicsRootDescriptorTable(rootSigIndex, pSrv->GetGPUDescriptorHandleForHeapStart());
-	}
-
-	void RenderModule::CreateDevice(IDXGIAdapter4* pAdapter)
-	{
-		ID3D12Device2* pD3d12Device2;
-		HRESULT res = D3D12CreateDevice(pAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&pD3d12Device2));
-		ThrowIfFailed(res);
-
-#if defined(_DEBUG)
-		ID3D12InfoQueue* pInfoQueue;
-		res = pD3d12Device2->QueryInterface(&pInfoQueue);
-		ThrowIfFailed(res);
-
-		//pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-		//pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-		//pInfoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
-
-		pInfoQueue->Release();
-#endif
-
-		m_pDevice = pD3d12Device2;
-	}
-
-	IDXGIAdapter4* RenderModule::GetAdapter(bool useWarp)
-	{
-		IDXGIFactory4* pDxgiFactory;
-		UINT createFactoryFlag = 0;
-
-#if defined(_DEBUG)
-		createFactoryFlag = DXGI_CREATE_FACTORY_DEBUG;
-#endif
-
-		HRESULT res = CreateDXGIFactory2(createFactoryFlag, IID_PPV_ARGS(&pDxgiFactory));
-		ThrowIfFailed(res);
-
-		IDXGIAdapter1* pDxgiAdapter1;
-		IDXGIAdapter4* pDxgiAdapter4 = nullptr;
-
-		if (useWarp)
-		{
-			res = pDxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pDxgiAdapter1));
-			ThrowIfFailed(res);
-			res = pDxgiAdapter1->QueryInterface(&pDxgiAdapter4);
-			ThrowIfFailed(res);
-
-			pDxgiAdapter1->Release();
-		}
-		else
-		{
-			SIZE_T maxDedicatedVideoMemory = 0;
-			for (UINT i = 0; pDxgiFactory->EnumAdapters1(i, &pDxgiAdapter1) != DXGI_ERROR_NOT_FOUND; ++i)
-			{
-				DXGI_ADAPTER_DESC1 dxgiAdapterDesc1;
-				pDxgiAdapter1->GetDesc1(&dxgiAdapterDesc1);
-
-				//check if we can create a d3d12 device and pick the adapter with most memory
-
-				if ((dxgiAdapterDesc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0) //no hardware
-				{
-					pDxgiAdapter1->Release();
-					continue;
-				}
-
-				if (dxgiAdapterDesc1.DedicatedVideoMemory <= maxDedicatedVideoMemory) //less memory
-				{
-					pDxgiAdapter1->Release();
-					continue;
-				}
-
-				res = D3D12CreateDevice(pDxgiAdapter1, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
-				if (SUCCEEDED(res))
-				{
-					if (pDxgiAdapter4 != nullptr)
-						pDxgiAdapter4->Release();
-
-					maxDedicatedVideoMemory = dxgiAdapterDesc1.DedicatedVideoMemory;
-					res = pDxgiAdapter1->QueryInterface(&pDxgiAdapter4);
-					ThrowIfFailed(res);
-				}
-
-				pDxgiAdapter1->Release();
-
-			}
-		}
-
-		pDxgiFactory->Release();
-
-		return pDxgiAdapter4;
 	}
 
 	void RenderModule::EnableDebugLayer()
@@ -902,7 +823,7 @@ namespace Rendering
 			rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 			rtvDesc.Texture2D.MipSlice = 0;
 
-			m_pDevice->CreateRenderTargetView(backBuffer, nullptr, m_mainRTV[ii]);
+			m_pDevice->GetDx12Device()->CreateRenderTargetView(backBuffer, nullptr, m_mainRTV[ii]);
 
 			m_pBackBuffers[ii] = backBuffer;
 		}

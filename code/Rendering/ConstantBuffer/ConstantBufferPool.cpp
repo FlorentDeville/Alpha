@@ -42,7 +42,7 @@ namespace Rendering
 		m_elementSize = elementSize;
 		m_elementCount = elementCount;
 
-		ID3D12Device* pDevice = RenderModule::Get().GetDevice();
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
 
 		//allocate the resource (buffer)
 		uint64_t bufferSize = elementSize * elementCount;
