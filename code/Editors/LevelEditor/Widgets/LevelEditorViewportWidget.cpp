@@ -39,6 +39,7 @@
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
+#include "Systems/Rendering/Scene/Light.h"
 #include "Systems/Rendering/Scene/Renderable.h"
 
 #include "Widgets/Events/GlobalEvent.h"
@@ -212,7 +213,7 @@ namespace Editors
 
 		//create the render scene
 		Core::Array<Systems::Renderable> allRenderables;
-		Core::Array<Light> allLights;
+		Core::Array<Systems::Light> allLights;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -302,7 +303,7 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::Renderable>& renderables, Core::Array<Light>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::Renderable>& renderables, Core::Array<Systems::Light>& lights) const
 	{
 		renderables.Reserve(10);
 		lights.Reserve(10);
@@ -318,9 +319,7 @@ namespace Editors
 			{
 				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
 				{
-					uint32_t index = lights.GetSize();
-					lights.Resize(index + 1);
-					Light* pGfxLight = &lights[index];
+					Systems::Light& gfxLight = lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f localDirection = pLight->GetDirection();
@@ -331,7 +330,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->m_cbuffer.MakeDirectionalLight(direction, ambient, diffuse, specular);
+					gfxLight.m_cbuffer.MakeDirectionalLight(direction, ambient, diffuse, specular);
 
 					{
 						Core::Vec4f lightDir = worldDirection;
@@ -349,7 +348,7 @@ namespace Editors
 						Core::Mat44f lightProjection = Core::Mat44f::CreateOrthographic(-side, side, -side, side, -side, side);
 
 						Core::Mat44f lightSpace = lightView * lightProjection;
-						pGfxLight->m_lightSpaceTX = lightSpace;
+						gfxLight.m_lightSpaceTX = lightSpace;
 					}
 
 					{
@@ -399,9 +398,7 @@ namespace Editors
 				}
 				else if (const Systems::PointLightComponent* pLight = pComponent->Cast<Systems::PointLightComponent>())
 				{
-					uint32_t index = lights.GetSize();
-					lights.Resize(index + 1);
-					Light* pGfxLight = &lights[index];
+					Systems::Light& gfxLight = lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -412,7 +409,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
+					gfxLight.m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
 					{
 						Systems::Renderable& renderable = renderables.PushBackDefault();
@@ -433,9 +430,7 @@ namespace Editors
 				}
 				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
 				{
-					uint32_t index = lights.GetSize();
-					lights.Resize(index + 1);
-					Light* pGfxLight = &lights[index];
+					Systems::Light& gfxLight = lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -451,7 +446,7 @@ namespace Editors
 					Core::Float3 ambient(pLight->GetAmbient().GetRed(), pLight->GetAmbient().GetGreen(), pLight->GetAmbient().GetBlue());
 					Core::Float3 diffuse(pLight->GetDiffuse().GetRed(), pLight->GetDiffuse().GetGreen(), pLight->GetDiffuse().GetBlue());
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
-					pGfxLight->m_cbuffer.MakeSpotLight(position, direction, ambient, diffuse, specular,
+					gfxLight.m_cbuffer.MakeSpotLight(position, direction, ambient, diffuse, specular,
 						pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic(),
 						pLight->GetCutOff(), pLight->GetOuterCutOff());
 
@@ -463,7 +458,7 @@ namespace Editors
 						Core::Mat44f lightProjection = Core::Mat44f::CreatePerspective(pLight->GetOuterCutOff() * 2, 1.f, 0.1f, 100);
 
 						Core::Mat44f lightSpace = lightView * lightProjection;
-						pGfxLight->m_lightSpaceTX = lightSpace;
+						gfxLight.m_lightSpaceTX = lightSpace;
 					}
 
 					{
@@ -542,7 +537,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::Renderable>& renderables, Core::Array<Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::Renderable>& renderables, Core::Array<Systems::Light>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -649,14 +644,14 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::Renderable>& renderables, Core::Array<Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::Renderable>& renderables, Core::Array<Systems::Light>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for(int ii = 0; ii < lightCount; ++ii)
 		{
-			const Light& light = lights[ii];
+			const Systems::Light& light = lights[ii];
 
 			if (light.m_cbuffer.m_type == Rendering::Point)
 				continue;
