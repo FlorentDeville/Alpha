@@ -56,7 +56,6 @@ namespace Widgets
 		, m_iconTextureIdArray()
 		, m_baseWidgetPsoId()
 		, m_iconWidgetPsoId()
-		, m_shadowMapPsoId()
 		, m_cursorId(Os::CursorId::Arrow)
 		, m_postedEvents()
 	{}
@@ -170,16 +169,6 @@ namespace Widgets
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_objectIdsPsoId);
 			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UINT);
-		}
-
-		//shadow map spot light material
-		{
-			Rendering::RootSignature* pRootSig = rootSignatureMgr.GetRootSignature(Rendering::EngineRootSigs::SHADOWMAP_SPOTLIGHT);
-			Rendering::Shader* pVS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_VS);
-			Rendering::Shader* pPS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_PS);
-
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_shadowMapPsoId);
-			pPipelineState->Init_Generic_ShadowMap_SpotLight(pRootSig, pVS, pPS);
 		}
 
 		//dir light shadow map material
@@ -612,11 +601,6 @@ namespace Widgets
 	Rendering::PipelineStateId WidgetMgr::GetObjectIdsPsoId() const
 	{
 		return m_objectIdsPsoId;
-	}
-
-	Rendering::PipelineStateId WidgetMgr::GetShadowMapPsoId() const
-	{
-		return m_shadowMapPsoId;
 	}
 
 	Rendering::PipelineStateId WidgetMgr::GetShadowMapDirLightPsoId() const

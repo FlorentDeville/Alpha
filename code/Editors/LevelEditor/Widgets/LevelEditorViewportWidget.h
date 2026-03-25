@@ -97,6 +97,7 @@ namespace Editors
 
 		Rendering::RenderTarget* m_pShadowRenderTarget[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
 		Rendering::DescriptorHeap* m_pShadowHeapSrv; //special heap for shadow maps with contiguous srv.
+		Rendering::PipelineState* m_pShadowSpotLightPso;
 
 		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
 		Rendering::Texture* m_pReadbackBuffer;

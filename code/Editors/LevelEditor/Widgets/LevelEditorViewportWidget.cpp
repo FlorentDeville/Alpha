@@ -24,9 +24,11 @@
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/Device.h"
 #include "Rendering/Mesh/MeshMgr.h"
-#include "Rendering/RenderModule.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
+#include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 
@@ -661,8 +663,6 @@ namespace Editors
 	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const
 	{
 		Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
-		Rendering::PipelineStateId shadowMapPsoId = widgetMgr.GetShadowMapPsoId();
-		Rendering::PipelineState* pSpotLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapPsoId);
 
 		Rendering::PipelineStateId shadowMapDirLightPsoId = widgetMgr.GetShadowMapDirLightPsoId();
 		Rendering::PipelineState* pDirLightPso = Rendering::PipelineStateMgr::Get().GetPipelineState(shadowMapDirLightPsoId);
@@ -685,7 +685,7 @@ namespace Editors
 			}
 			else if (light.m_cbuffer.m_type == Rendering::Spot)
 			{
-				renderModule.BindMaterial(*pSpotLightPso);
+				renderModule.BindMaterial(*m_pShadowSpotLightPso);
 
 				struct PerObject
 				{
@@ -733,6 +733,21 @@ namespace Editors
 
 	void LevelEditorViewportWidget::CreateShadowMaps()
 	{
+		Rendering::PipelineStateMgr& pipelineStateMgr = Rendering::PipelineStateMgr::Get();
+		Rendering::RootSignatureMgr& rootSignatureMgr = Rendering::RootSignatureMgr::Get();
+		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
+
+		//shadow map spot light material
+		{
+			Rendering::RootSignature* pRootSig = rootSignatureMgr.GetRootSignature(Rendering::EngineRootSigs::SHADOWMAP_SPOTLIGHT);
+			Rendering::Shader* pVS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_VS);
+			Rendering::Shader* pPS = shaderMgr.GetShader(Rendering::EngineShaders::SHADOWMAP_SPOTLIGHT_PS);
+
+			Rendering::PipelineStateId psoId;
+			m_pShadowSpotLightPso = pipelineStateMgr.CreatePipelineState(psoId);
+			m_pShadowSpotLightPso->Init_Generic_ShadowMap_SpotLight(pRootSig, pVS, pPS);
+		}
+
 		Rendering::Device* pDevice = Rendering::RenderModule::Get().GetDevice();
 		ID3D12Device2* pDx12Device = pDevice->GetDx12Device();
 
