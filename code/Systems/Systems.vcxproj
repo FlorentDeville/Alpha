@@ -49,6 +49,7 @@
     <ClInclude Include="Rendering\Renderable\RenderableLight.h" />
     <ClInclude Include="Rendering\Renderable\RenderableObject.h" />
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
+    <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
     <ClInclude Include="Serialization\ContainerJsonSerializer.h" />

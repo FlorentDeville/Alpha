@@ -46,6 +46,7 @@
     <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
     <ClInclude Include="Rendering\Renderable\RenderableLight.h" />
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
+    <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
