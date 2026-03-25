@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -14,15 +14,27 @@ namespace Rendering
 	struct RootSignatureId;
 	class RootSignature;
 
+	enum class EngineRootSigs
+	{
+		SHADOWMAP_SPOTLIGHT,
+		SHADOWMAP_DIRLIGHT,
+
+		COUNT
+	};
+
 	class RootSignatureMgr : public Core::Singleton<RootSignatureMgr>
 	{
 	public:
 		RootSignatureMgr();
 		~RootSignatureMgr();
 
+		void Init(const std::string&);
+		void Shutdown();
+
 		RootSignatureId CreateRootSignature(const std::string& path);
 
 		RootSignature* GetRootSignature(RootSignatureId id) const;
+		RootSignature* GetRootSignature(EngineRootSigs id) const;
 
 	private:
 		std::vector<RootSignature*> m_rootSignatures;

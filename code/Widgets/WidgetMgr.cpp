@@ -56,7 +56,6 @@ namespace Widgets
 		, m_iconTextureIdArray()
 		, m_baseWidgetPsoId()
 		, m_iconWidgetPsoId()
-		, m_shadowMapPsoId()
 		, m_cursorId(Os::CursorId::Arrow)
 		, m_postedEvents()
 	{}
@@ -170,26 +169,6 @@ namespace Widgets
 
 			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_objectIdsPsoId);
 			pPipelineState->Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UINT);
-		}
-
-		//shadow map material
-		{
-			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\shadowmap.rs.cso");
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap.ps.cso");
-
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_shadowMapPsoId);
-			pPipelineState->Init_Generic_ShadowMap_SpotLight(rsId, vsId, psId);
-		}
-
-		//dir light shadow map material
-		{
-			Rendering::RootSignatureId rsId = rootSignatureMgr.CreateRootSignature(parameter.m_gameShaderPath + "\\shadowmap_dirlight.rs.cso");
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap_dirlight.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(parameter.m_gameShaderPath + "\\shadowmap_dirlight.ps.cso");
-
-			Rendering::PipelineState* pPipelineState = pipelineStateMgr.CreatePipelineState(m_shadowMapDirLightPsoId);
-			pPipelineState->Init_Generic_ShadowMap_DirLight(rsId, vsId, psId);
 		}
 
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
@@ -612,16 +591,6 @@ namespace Widgets
 	Rendering::PipelineStateId WidgetMgr::GetObjectIdsPsoId() const
 	{
 		return m_objectIdsPsoId;
-	}
-
-	Rendering::PipelineStateId WidgetMgr::GetShadowMapPsoId() const
-	{
-		return m_shadowMapPsoId;
-	}
-
-	Rendering::PipelineStateId WidgetMgr::GetShadowMapDirLightPsoId() const
-	{
-		return m_shadowMapDirLightPsoId;
 	}
 
 	void WidgetMgr::SetCursorId(Os::CursorId id)

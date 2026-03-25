@@ -37,8 +37,8 @@ namespace Rendering
 		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CullMode cullMode);
 		void Init_Generic(const PipelineStateDesc& desc);
 
-		void Init_Generic_ShadowMap_SpotLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
-		void Init_Generic_ShadowMap_DirLight(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
+		void Init_Generic_ShadowMap_SpotLight(RootSignature* pRootSig, Shader* pVS, Shader* pPS);
+		void Init_Generic_ShadowMap_DirLight(RootSignature* pRootSig, Shader* pVS, Shader* pPS);
 
 		ID3D12PipelineState* GetPipelineState() const;
 		RootSignatureId GetRootSignatureId() const;
