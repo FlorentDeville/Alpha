@@ -28,8 +28,7 @@ namespace Rendering
 namespace Systems
 {
 	class GameObject;
-	class RenderableLight;
-	class RenderableObject;
+	class RenderableScene;
 }
 
 namespace Editors
@@ -80,11 +79,11 @@ namespace Editors
 		// Find the object id from the mouse position. The mouse position is local to the widget.
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
 
-		void CreateRenderScene(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const;
+		void CreateRenderScene(Systems::RenderableScene& scene) const;
 
-		void RenderView_LevelEditor(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const;
-		void RenderView_ObjectId(Core::Array<Systems::RenderableObject>& renderables);
-		void RenderView_ShadowMap(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const;
+		void RenderView_LevelEditor(const Systems::RenderableScene& scene) const;
+		void RenderView_ObjectId(const Systems::RenderableScene& scene);
+		void RenderView_ShadowMap(const Systems::RenderableScene& scene) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 

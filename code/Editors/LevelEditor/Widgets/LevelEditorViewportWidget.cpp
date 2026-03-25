@@ -41,6 +41,7 @@
 #include "Systems/Rendering/MaterialRendering.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
+#include "Systems/Rendering/Renderable/RenderableScene.h"
 
 #include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
@@ -212,8 +213,7 @@ namespace Editors
 		m_pCamera->Render(m_aspectRatio);
 
 		//create the render scene
-		Core::Array<Systems::RenderableObject> allRenderables;
-		Core::Array<Systems::RenderableLight> allLights;
+		Systems::RenderableScene scene;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -231,16 +231,16 @@ namespace Editors
 
 			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 
-			CreateRenderScene(allRenderables, allLights);
+			CreateRenderScene(scene);
 		}
 
 		//first do the shadow maps
-		RenderView_ShadowMap(allRenderables, allLights);
+		RenderView_ShadowMap(scene);
 
 		//now render the level editor view of the scene.
 		m_pRenderTarget->BeginScene();
 		
-		RenderView_LevelEditor(allRenderables, allLights);
+		RenderView_LevelEditor(scene);
 		m_pRenderTarget->ClearDepthBuffer();
 		m_pGizmoWidget->Render();
 
@@ -248,7 +248,7 @@ namespace Editors
 
 		//now render the object ids view
 		m_pObjectIdRenderTarget->BeginScene();
-		RenderView_ObjectId(allRenderables);
+		RenderView_ObjectId(scene);
 		m_pObjectIdRenderTarget->EndScene();
 
 		m_pObjectIdRenderTarget->CopyToReabackBuffer(m_pReadbackBuffer);
@@ -303,10 +303,10 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Systems::RenderableScene& scene) const
 	{
-		renderables.Reserve(10);
-		lights.Reserve(10);
+		scene.m_objects.Reserve(10);
+		scene.m_lights.Reserve(10);
 
 		Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 		Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -319,7 +319,7 @@ namespace Editors
 			{
 				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
 				{
-					Systems::RenderableLight& gfxLight = lights.PushBackDefault();
+					Systems::RenderableLight& gfxLight = scene.m_lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f localDirection = pLight->GetDirection();
@@ -368,7 +368,7 @@ namespace Editors
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
 						{
-							Systems::RenderableObject& renderable = renderables.PushBackDefault();
+							Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
 
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
 							renderable.m_pMaterial = nullptr;
@@ -379,7 +379,7 @@ namespace Editors
 						}
 
 						{
-							Systems::RenderableObject& renderable = renderables.PushBackDefault();
+							Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
 
 							float arrowTipScaleValue = 1.f * screenScale;
 
@@ -398,7 +398,7 @@ namespace Editors
 				}
 				else if (const Systems::PointLightComponent* pLight = pComponent->Cast<Systems::PointLightComponent>())
 				{
-					Systems::RenderableLight& gfxLight = lights.PushBackDefault();
+					Systems::RenderableLight& gfxLight = scene.m_lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -412,7 +412,7 @@ namespace Editors
 					gfxLight.m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
 					{
-						Systems::RenderableObject& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
 
 						const float SIZE = 0.5f;
 						float realSize = ComputeConstantScreenSizeScale(worldPosition) * SIZE;
@@ -430,7 +430,7 @@ namespace Editors
 				}
 				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
 				{
-					Systems::RenderableLight& gfxLight = lights.PushBackDefault();
+					Systems::RenderableLight& gfxLight = scene.m_lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -480,7 +480,7 @@ namespace Editors
 						
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
-						Systems::RenderableObject& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
 
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 						renderable.m_pMaterial = nullptr;
@@ -502,7 +502,7 @@ namespace Editors
 
 					if (pMesh && pMaterial)
 					{
-						Systems::RenderableObject& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
 
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
@@ -523,7 +523,7 @@ namespace Editors
 
 					if (pMesh && pMaterial)
 					{
-						Systems::RenderableObject& renderable = renderables.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
 
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
@@ -537,7 +537,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(const Systems::RenderableScene& scene) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -560,16 +560,16 @@ namespace Editors
 		Rendering::LightsArrayCBuffer lightsConstBuffer;
 		Core::Mat44f lightSpace[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
 
-		uint32_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+		uint32_t lightCount = min(scene.m_lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for (uint32_t ii = 0; ii < lightCount; ++ii)
 		{
 			Rendering::LightCBuffer* pLight = lightsConstBuffer.AddLight();
-			*pLight = lights[ii].m_cbuffer;
-			lightSpace[ii] = lights[ii].m_lightSpaceTX;
+			*pLight = scene.m_lights[ii].m_cbuffer;
+			lightSpace[ii] = scene.m_lights[ii].m_lightSpaceTX;
 		}
 
 		//now render all renderables
-		for (const Systems::RenderableObject& renderable : renderables)
+		for (const Systems::RenderableObject& renderable : scene.m_objects)
 		{
 			if (!(renderable.m_view & Systems::RenderPassId::Game))
 				continue;
@@ -603,7 +603,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ObjectId(Core::Array<Systems::RenderableObject>& renderables)
+	void LevelEditorViewportWidget::RenderView_ObjectId(const Systems::RenderableScene& scene)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
@@ -620,7 +620,7 @@ namespace Editors
 
 		uint32_t objectIdCounter = 0;
 
-		for (const Systems::RenderableObject& renderable : renderables)
+		for (const Systems::RenderableObject& renderable : scene.m_objects)
 		{
 			if (!(renderable.m_view & Systems::RenderPassId::ObjectId))
 				continue;
@@ -644,14 +644,14 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const
+	void LevelEditorViewportWidget::RenderView_ShadowMap(const Systems::RenderableScene& scene) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
-		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+		uint8_t lightCount = min(scene.m_lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for(int ii = 0; ii < lightCount; ++ii)
 		{
-			const Systems::RenderableLight& light = lights[ii];
+			const Systems::RenderableLight& light = scene.m_lights[ii];
 
 			if (light.m_cbuffer.m_type == Rendering::Point)
 				continue;
@@ -683,7 +683,7 @@ namespace Editors
 			m_pShadowRenderTarget[ii]->BeginScene();
 
 			//loop through renderable
-			for (const Systems::RenderableObject& renderable : renderables)
+			for (const Systems::RenderableObject& renderable : scene.m_objects)
 			{
 				if (!(renderable.m_view & Systems::RenderPassId::ShadowMap))
 					continue;
