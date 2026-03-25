@@ -28,6 +28,7 @@ namespace Rendering
 namespace Systems
 {
 	class GameObject;
+	class Renderable;
 }
 
 namespace Editors
@@ -52,18 +53,6 @@ namespace Editors
 		GizmoModel* GetGizmoModel();
 
 	private:
-		
-		struct Renderable
-		{
-			const Rendering::Mesh* m_pMesh;
-			const Systems::MaterialInstanceAsset* m_pMaterial;
-			const Systems::GameObject* m_pOwner;
-			Core::Mat44f m_worldTx;
-			
-			Systems::RenderPassId m_view;
-			bool m_primitiveMesh; // Call RenderBaseShape and don't use m_pMaterial
-		};
-
 		struct Light
 		{
 			Core::Mat44f m_lightSpaceTX; // transform from world space to light space.
@@ -96,11 +85,11 @@ namespace Editors
 		// Find the object id from the mouse position. The mouse position is local to the widget.
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
 
-		void CreateRenderScene(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const;
+		void CreateRenderScene(Core::Array<Systems::Renderable>& renderables, Core::Array<Light>& lights) const;
 
-		void RenderView_LevelEditor(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const;
-		void RenderView_ObjectId(Core::Array<Renderable>& renderables);
-		void RenderView_ShadowMap(Core::Array<Renderable>& renderables, Core::Array<Light>& lights) const;
+		void RenderView_LevelEditor(Core::Array<Systems::Renderable>& renderables, Core::Array<Light>& lights) const;
+		void RenderView_ObjectId(Core::Array<Systems::Renderable>& renderables);
+		void RenderView_ShadowMap(Core::Array<Systems::Renderable>& renderables, Core::Array<Light>& lights) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 

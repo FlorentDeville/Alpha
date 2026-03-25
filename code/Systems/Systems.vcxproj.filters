@@ -42,6 +42,7 @@
     <ClInclude Include="Assets\AssetObjects\Mesh\MeshAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="GameComponent\SkyboxComponent.h" />
+    <ClInclude Include="Rendering\Scene\Renderable.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
   </ItemGroup>
   <ItemGroup>
