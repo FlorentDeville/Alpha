@@ -93,8 +93,6 @@ namespace Rendering
 		int PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor, float nearCameraPlane, float farCameraPlane);
 		void RenderAllText();
 
-		Rendering::TextureId GetGameRenderTargetTextureId() const;
-
 		void ChangeMainResolution(const DirectX::XMUINT2& size);
 
 		Rendering::RenderTarget* CreateRenderTarget(int width, int height);
@@ -163,7 +161,6 @@ namespace Rendering
 
 	public:
 		UINT m_currentBackBufferIndex;
-		Rendering::RenderTarget* m_gameRenderTarget;
 
 		Mesh* m_pCylinderMesh;
 		Mesh* m_pConeMesh;
