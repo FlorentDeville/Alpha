@@ -10,6 +10,7 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
+#include "Editors/LevelEditor/RenderPassObjectId.h"
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
@@ -71,7 +72,6 @@ namespace Editors
 		: Widgets::Viewport(width, height)
 		, m_enableViewportControl(false)
 		, m_isPanning(false)
-		, m_objectIdToGuid()
 	{
 		m_pCamera = new CameraWidget();
 		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditorModule::Get().SetCameraWs(mat); });
@@ -85,29 +85,20 @@ namespace Editors
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
 
-		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UINT, Core::Vec4f(0, 0, 0, 0));
-
 		Rendering::TextureId readbackTextureId;
 		Rendering::TextureMgr::Get().CreateTexture(&m_pReadbackBuffer, readbackTextureId);
 		m_pReadbackBuffer->InitAsReadbackBuffer(width, height, 12);
 
 		m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
-
-		m_pObjectIdRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::OBJECTID);
-		Rendering::Shader* pVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_VS);
-		Rendering::Shader* pPS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_PS);
-
-		Rendering::PipelineStateId psoId;
-		m_pObjectIdPso = Rendering::PipelineStateMgr::Get().CreatePipelineState(psoId);
-		m_pObjectIdPso->Init_Generic(*m_pObjectIdRootSig, *pVS, *pPS, DXGI_FORMAT_R8G8B8A8_UINT);
+		m_pRenderPassObjectId = new RenderPassObjectId(width, height);
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
 	{
 		delete m_pCamera;
 		delete m_pGizmoWidget;
-		delete m_pObjectIdRenderTarget;
 		delete m_pRenderPassShadowMaps;
+		delete m_pRenderPassObjectId;
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
@@ -169,24 +160,24 @@ namespace Editors
 				if (objectId == 0)
 					return handled;
 
-				std::map<uint32_t, Core::Guid>::const_iterator it = m_objectIdToGuid.find(objectId);
-				if (it == m_objectIdToGuid.cend())
+				const Core::Guid* pSelectedGuid = m_pRenderPassObjectId->GetGuid(objectId);
+				if (!pSelectedGuid)
 					return handled;
-
+				
 				bool toggle = false;
 				if (Os::IsKeyDown(Os::VKeyCodes::Control))
 					toggle = true;
 
 				LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-				bool isAlreadySelected = levelEditorModule.IsSelected(it->second);
+				bool isAlreadySelected = levelEditorModule.IsSelected(*pSelectedGuid);
 				if (isAlreadySelected && toggle)
 				{
-					levelEditorModule.RemoveFromSelection(it->second);
+					levelEditorModule.RemoveFromSelection(*pSelectedGuid);
 				}
 				else if (!isAlreadySelected)
 				{
 					levelEditorModule.ClearSelection();
-					levelEditorModule.AddToSelection(it->second);
+					levelEditorModule.AddToSelection(*pSelectedGuid);
 				}
 
 				return handled;
@@ -253,11 +244,11 @@ namespace Editors
 		m_pRenderTarget->EndScene();
 
 		//now render the object ids view
-		m_pObjectIdRenderTarget->BeginScene();
-		RenderView_ObjectId(scene);
-		m_pObjectIdRenderTarget->EndScene();
+		m_pRenderPassObjectId->PreRender(scene);
+		m_pRenderPassObjectId->Render(scene);
+		m_pRenderPassObjectId->PostRender(scene);
 
-		m_pObjectIdRenderTarget->CopyToReabackBuffer(m_pReadbackBuffer);
+		m_pRenderPassObjectId->GetRenderTarget()->CopyToReabackBuffer(m_pReadbackBuffer);
 	}
 
 	uint32_t LevelEditorViewportWidget::GetObjectId(int mouseX, int mouseY) const
@@ -614,44 +605,6 @@ namespace Editors
 					renderModule.RenderMesh(*renderable.m_pMesh);
 				}
 			}
-		}
-	}
-
-	void LevelEditorViewportWidget::RenderView_ObjectId(const Systems::RenderableScene& scene)
-	{
-		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-
-		ConstBufferPerFrame perFrame;
-		perFrame.m_view = scene.m_camera.m_view;
-		perFrame.m_proj = scene.m_camera.m_proj;
-
-		renderModule.BindMaterial(*m_pObjectIdPso, *m_pObjectIdRootSig);
-
-		renderModule.SetConstantBuffer(1, sizeof(ConstBufferPerFrame), &perFrame, 0);
-
-		uint32_t objectIdCounter = 0;
-
-		for (const Systems::RenderableObject& renderable : scene.m_objects)
-		{
-			if (!(renderable.m_view & Systems::RenderPassId::ObjectId))
-				continue;
-
-			++objectIdCounter;
-
-			const Core::Mat44f& world = renderable.m_worldTx;
-			ConstBufferPerObject perObject;
-			perObject.m_world = world;
-			perObject.m_objectId[3] = (objectIdCounter & 0xFF000000) >> 24;
-			perObject.m_objectId[2] = (objectIdCounter & 0x00FF0000) >> 16;
-			perObject.m_objectId[1] = (objectIdCounter & 0x0000FF00) >> 8;
-			perObject.m_objectId[0] = (objectIdCounter & 0x000000FF);
-
-			m_objectIdToGuid[objectIdCounter] = renderable.m_pOwner->GetGuid();
-
-			renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
-
-			const Rendering::Mesh* pRenderingMesh = renderable.m_pMesh;
-			renderModule.RenderMesh(*pRenderingMesh);
 		}
 	}
 

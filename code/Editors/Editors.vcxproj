@@ -16,6 +16,7 @@
     <ClInclude Include="EditorParameter.h" />
     <ClInclude Include="GamePlayer\GamePlayer.h" />
     <ClInclude Include="LevelEditor\LevelListModel.h" />
+    <ClInclude Include="LevelEditor\RenderPassObjectId.h" />
     <ClInclude Include="LevelEditor\SceneTreeModel.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
     <ClInclude Include="LevelEditor\SelectionMgr.h" />
@@ -79,6 +80,7 @@
     <ClCompile Include="EditorManager.cpp" />
     <ClCompile Include="GamePlayer\GamePlayer.cpp" />
     <ClCompile Include="LevelEditor\LevelListModel.cpp" />
+    <ClCompile Include="LevelEditor\RenderPassObjectId.cpp" />
     <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
     <ClCompile Include="LevelEditor\SelectionMgr.cpp" />

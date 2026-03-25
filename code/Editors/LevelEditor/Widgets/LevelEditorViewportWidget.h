@@ -37,6 +37,7 @@ namespace Editors
 	class CameraWidget;
 	class GizmoModel;
 	class GizmoWidget;
+	class RenderPassObjectId;
 
 	class LevelEditorViewportWidget : public Widgets::Viewport
 	{
@@ -64,13 +65,9 @@ namespace Editors
 		bool m_isPanning; //when the user is panning the camera	
 
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
-
-		Rendering::RootSignature* m_pObjectIdRootSig;
-		Rendering::PipelineState* m_pObjectIdPso;
-		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
+		
+		RenderPassObjectId* m_pRenderPassObjectId;
 		Rendering::Texture* m_pReadbackBuffer;
-
-		std::map<uint32_t, Core::Guid> m_objectIdToGuid;
 
 		void Internal_Render() override;
 
@@ -80,7 +77,6 @@ namespace Editors
 		void CreateRenderScene(Systems::RenderableScene& scene) const;
 
 		void RenderView_LevelEditor(const Systems::RenderableScene& scene) const;
-		void RenderView_ObjectId(const Systems::RenderableScene& scene);
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};
