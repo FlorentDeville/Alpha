@@ -543,14 +543,10 @@ namespace Editors
 	void LevelEditorViewportWidget::RenderView_LevelEditor(const Systems::RenderableScene& scene) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-		Rendering::Camera* pCamera = renderModule.GetCamera();
 
-		const Core::Mat44f view = pCamera->GetViewMatrix();
-		const Core::Mat44f proj = pCamera->GetProjectionMatrix();
-
-		const Core::Vec4f& pos = pCamera->GetPosition();
+		const Core::Vec4f& pos = scene.m_camera.m_position;
 		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
-		Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+		Rendering::PerFrameCBuffer perFrameData(scene.m_camera.m_view, scene.m_camera.m_proj, cameraPosFloat3);
 
 		//bind the shadow map
 		Rendering::RenderTarget** pShadowRenderTargets = m_pRenderPassShadowMaps->GetRenderTargets();
