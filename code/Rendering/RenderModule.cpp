@@ -83,7 +83,9 @@ namespace Rendering
 		m_gameResolution = gameResolution;
 		m_mainResolution = mainResolution;
 
-		Rendering::ShaderMgr::InitSingleton();
+		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::InitSingleton();
+		shaderMgr.Init(binPath);
+
 		Rendering::RootSignatureMgr::InitSingleton();
 		Rendering::MeshMgr::InitSingleton();
 		Rendering::PipelineStateMgr::InitSingleton();
@@ -190,6 +192,8 @@ namespace Rendering
 		Rendering::MeshMgr::ReleaseSingleton();
 		Rendering::RootSignatureMgr::ReleaseSingleton();
 		Rendering::PipelineStateMgr::ReleaseSingleton();
+
+		Rendering::ShaderMgr::Get().Shutdown();
 		Rendering::ShaderMgr::ReleaseSingleton();
 		Rendering::TextureMgr::ReleaseSingleton();
 

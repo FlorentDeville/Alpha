@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -14,15 +14,30 @@ namespace Rendering
 {
 	class Shader;
 
+	enum class EngineShaders
+	{
+		SHADOWMAP_SPOTLIGHT_VS,
+		SHADOWMAP_SPOTLIGHT_PS,
+
+		SHADOWMAP_DIRLIGHT_VS,
+		SHADOWMAP_DIRLIGHT_PS,
+
+		COUNT
+	};
+
 	class ShaderMgr : public Core::Singleton<ShaderMgr>
 	{
 	public:
 		ShaderMgr();
 		~ShaderMgr();
 
+		void Init(const std::string& shaderPath);
+		void Shutdown();
+
 		ShaderId CreateShader(const std::string& path);
 
 		Shader* GetShader(ShaderId id) const;
+		Shader* GetShader(EngineShaders shader) const;
 
 	private:
 		std::vector<Shader*> m_shaders;
