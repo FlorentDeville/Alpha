@@ -84,9 +84,7 @@ namespace Rendering
 		m_mainResolution = mainResolution;
 
 		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::InitSingleton();
-		shaderMgr.Init(binPath);
-
-		Rendering::RootSignatureMgr::InitSingleton();
+		Rendering::RootSignatureMgr& rootSigMgr = Rendering::RootSignatureMgr::InitSingleton();
 		Rendering::MeshMgr::InitSingleton();
 		Rendering::PipelineStateMgr::InitSingleton();
 		Rendering::FontMgr::InitSingleton();
@@ -98,6 +96,10 @@ namespace Rendering
 
 		m_pDevice = new Device();
 		m_pDevice->Init();
+
+		//init after the device is created
+		shaderMgr.Init(binPath);
+		rootSigMgr.Init(binPath);
 
 		m_pRenderCommandQueue = new Rendering::CommandQueue(m_pDevice->GetDx12Device(), D3D12_COMMAND_LIST_TYPE_DIRECT);
 		m_pCopyCommandQueue = new Rendering::CommandQueue(m_pDevice->GetDx12Device(), D3D12_COMMAND_LIST_TYPE_COPY);
@@ -190,7 +192,10 @@ namespace Rendering
 
 		Rendering::FontMgr::ReleaseSingleton();
 		Rendering::MeshMgr::ReleaseSingleton();
+
+		Rendering::RootSignatureMgr::Get().Shutdown();
 		Rendering::RootSignatureMgr::ReleaseSingleton();
+
 		Rendering::PipelineStateMgr::ReleaseSingleton();
 
 		Rendering::ShaderMgr::Get().Shutdown();
