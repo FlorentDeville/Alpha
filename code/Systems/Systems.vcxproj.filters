@@ -47,6 +47,7 @@
     <ClInclude Include="Rendering\Renderable\RenderableLight.h" />
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
+    <ClInclude Include="Rendering\RenderPass\RenderPassShadowMaps.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -83,6 +84,7 @@
     <ClCompile Include="Assets\AssetObjects\Mesh\MeshAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\Level\LevelAsset.cpp" />
     <ClCompile Include="GameComponent\SkyboxComponent.cpp" />
+    <ClCompile Include="Rendering\RenderPass\RenderPassShadowMaps.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

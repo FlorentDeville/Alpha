@@ -51,6 +51,7 @@
     <ClInclude Include="Rendering\Renderable\RenderableScene.h" />
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
+    <ClInclude Include="Rendering\RenderPass\RenderPassShadowMaps.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
     <ClInclude Include="Serialization\ContainerJsonSerializer.h" />
     <ClInclude Include="Serialization\ObjectHeader.h" />
@@ -88,6 +89,7 @@
     <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />
     <ClCompile Include="Rendering\MaterialRendering.cpp" />
+    <ClCompile Include="Rendering\RenderPass\RenderPassShadowMaps.cpp" />
     <ClCompile Include="Serialization\ContainerJsonDeserializer.cpp" />
     <ClCompile Include="Serialization\ContainerJsonSerializer.cpp" />
     <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />

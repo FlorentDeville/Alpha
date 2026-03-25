@@ -29,6 +29,7 @@ namespace Systems
 {
 	class GameObject;
 	class RenderableScene;
+	class RenderPassShadowMaps;
 }
 
 namespace Editors
@@ -62,12 +63,7 @@ namespace Editors
 		
 		bool m_isPanning; //when the user is panning the camera	
 
-		Rendering::RenderTarget* m_pShadowRenderTarget[Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT];
-		Rendering::DescriptorHeap* m_pShadowHeapSrv; //special heap for shadow maps with contiguous srv.
-		Rendering::RootSignature* m_pShadowSpotLightRootSig;
-		Rendering::PipelineState* m_pShadowSpotLightPso;
-		Rendering::RootSignature* m_pShadowDirLightRootSig;
-		Rendering::PipelineState* m_pShadowDirLightPso;
+		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 
 		Rendering::RenderTarget* m_pObjectIdRenderTarget; //the render target where the object ids are written
 		Rendering::Texture* m_pReadbackBuffer;
@@ -83,10 +79,7 @@ namespace Editors
 
 		void RenderView_LevelEditor(const Systems::RenderableScene& scene) const;
 		void RenderView_ObjectId(const Systems::RenderableScene& scene);
-		void RenderView_ShadowMap(const Systems::RenderableScene& scene) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
-
-		void CreateShadowMaps();
 	};
 }
