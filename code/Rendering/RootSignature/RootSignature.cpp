@@ -29,13 +29,13 @@ namespace Rendering
 		// Create a root signature.
 		D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
 		featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
-		if (FAILED(RenderModule::Get().GetDevice()->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
+		if (FAILED(RenderModule::Get().GetDx12Device()->CheckFeatureSupport(D3D12_FEATURE_ROOT_SIGNATURE, &featureData, sizeof(featureData))))
 		{
 			featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_0;
 		}
 
 		// Create the root signature.
-		ThrowIfFailed(RenderModule::Get().GetDevice()->CreateRootSignature(0, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
+		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreateRootSignature(0, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), IID_PPV_ARGS(&m_pRootSignature)));
 
 		pBlob->Release();
 	}
@@ -56,7 +56,7 @@ namespace Rendering
 		if (m_pRootSignature)
 			m_pRootSignature->Release();
 
-		HRESULT res = RenderModule::Get().GetDevice()->CreateRootSignature(0, bytecode.GetData(), bytecode.GetSize(), IID_PPV_ARGS(&m_pRootSignature));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreateRootSignature(0, bytecode.GetData(), bytecode.GetSize(), IID_PPV_ARGS(&m_pRootSignature));
 		if (res != S_OK)
 			return false;
 
@@ -68,7 +68,7 @@ namespace Rendering
 		if (m_pRootSignature)
 			m_pRootSignature->Release();
 
-		HRESULT res = RenderModule::Get().GetDevice()->CreateRootSignature(0, bytecode.GetData(), bytecode.GetSize(), IID_PPV_ARGS(&m_pRootSignature));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreateRootSignature(0, bytecode.GetData(), bytecode.GetSize(), IID_PPV_ARGS(&m_pRootSignature));
 		if (res != S_OK)
 			return false;
 

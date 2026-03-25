@@ -481,7 +481,7 @@ namespace Rendering
 			// create upload heap. We will fill this with data for our text
 			D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 			D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(maxCharacterCount * sizeof(Rendering::VertexText));
-			HRESULT hr = RenderModule::Get().GetDevice()->CreateCommittedResource(
+			HRESULT hr = RenderModule::Get().GetDx12Device()->CreateCommittedResource(
 				&prop, // upload heap
 				D3D12_HEAP_FLAG_NONE, // no flags
 				&desc, // resource description for a buffer
@@ -687,7 +687,7 @@ namespace Rendering
 		return m_pRenderCommandList;
 	}
 
-	ID3D12Device2* RenderModule::GetDevice()
+	ID3D12Device2* RenderModule::GetDx12Device()
 	{
 		return m_pDevice->GetDx12Device();
 	}

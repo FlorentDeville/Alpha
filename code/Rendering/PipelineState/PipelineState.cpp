@@ -144,7 +144,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
 	void PipelineState::Init_Text(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -188,7 +188,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(TextPipelineStateStream), &pipelineStateStream
 		};
-		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
 	void PipelineState::Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -237,7 +237,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(TextPipelineStateStream), &pipelineStateStream
 		};
-		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
 	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
@@ -270,7 +270,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		ThrowIfFailed(RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
+		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
 	void PipelineState::Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps)
@@ -291,7 +291,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
 		ThrowIfFailed(res);
 	}
 
@@ -329,7 +329,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
 		ThrowIfFailed(res);
 	}
 
@@ -372,7 +372,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
 		ThrowIfFailed(res);
 	}
 
@@ -417,7 +417,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
 		ThrowIfFailed(res);
 	}
 
@@ -462,7 +462,7 @@ namespace Rendering
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
-		HRESULT res = RenderModule::Get().GetDevice()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
 		ThrowIfFailed(res);
 	}
 

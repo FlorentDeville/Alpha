@@ -731,7 +731,7 @@ namespace Editors
 
 	void LevelEditorViewportWidget::CreateShadowMaps()
 	{
-		ID3D12Device2* pDevice = Rendering::RenderModule::Get().GetDevice();
+		ID3D12Device2* pDevice = Rendering::RenderModule::Get().GetDx12Device();
 
 		UINT srvSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
@@ -745,7 +745,7 @@ namespace Editors
 			ThrowIfFailed(res);
 		}
 
-		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT; //DXGI_FORMAT_R8G8B8A8_UNORM
+		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT;
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 		{
 			m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, format, Core::Vec4f(1, 1, 1, 1));

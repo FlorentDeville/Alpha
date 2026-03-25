@@ -22,7 +22,7 @@ namespace Rendering
 		// Create a committed resource for the GPU resource in a default heap.
 		D3D12_HEAP_PROPERTIES heapProrperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize, flags);
-		HRESULT res = RenderModule::Get().GetDevice()->CreateCommittedResource(&heapProrperty, D3D12_HEAP_FLAG_NONE, &resourceDesc,
+		HRESULT res = RenderModule::Get().GetDx12Device()->CreateCommittedResource(&heapProrperty, D3D12_HEAP_FLAG_NONE, &resourceDesc,
 			D3D12_RESOURCE_STATE_COPY_DEST,
 			nullptr,
 			IID_PPV_ARGS(pDestinationResource));
@@ -35,7 +35,7 @@ namespace Rendering
 			D3D12_HEAP_PROPERTIES heapPropertyInt = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 			D3D12_RESOURCE_DESC resourceDescInt = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
 
-			res = RenderModule::Get().GetDevice()->CreateCommittedResource(
+			res = RenderModule::Get().GetDx12Device()->CreateCommittedResource(
 				&heapPropertyInt,
 				D3D12_HEAP_FLAG_NONE,
 				&resourceDescInt,

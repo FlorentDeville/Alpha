@@ -111,7 +111,7 @@ namespace Rendering
 		CommandQueue* GetRenderCommandQueue();
 		CommandQueue* GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* GetRenderCommandList();
-		ID3D12Device2* GetDevice();
+		ID3D12Device2* GetDx12Device();
 
 		static void ReportLiveObject();
 
