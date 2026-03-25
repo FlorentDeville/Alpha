@@ -39,8 +39,8 @@
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
-#include "Systems/Rendering/Scene/Light.h"
-#include "Systems/Rendering/Scene/RenderableObject.h"
+#include "Systems/Rendering/Renderable/Light.h"
+#include "Systems/Rendering/Renderable/RenderableObject.h"
 
 #include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
