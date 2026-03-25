@@ -46,7 +46,7 @@
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
     <ClInclude Include="Rendering\MaterialRendering.h" />
-    <ClInclude Include="Rendering\Renderable\Light.h" />
+    <ClInclude Include="Rendering\Renderable\RenderableLight.h" />
     <ClInclude Include="Rendering\Renderable\RenderableObject.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassId.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />

@@ -9,7 +9,7 @@
 
 namespace Systems
 {
-	class Light
+	class RenderableLight
 	{
 	public:
 		Core::Mat44f m_lightSpaceTX; // transform from world space to light space.

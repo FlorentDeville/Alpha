@@ -39,7 +39,7 @@
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/MaterialRendering.h"
-#include "Systems/Rendering/Renderable/Light.h"
+#include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 
 #include "Widgets/Events/GlobalEvent.h"
@@ -213,7 +213,7 @@ namespace Editors
 
 		//create the render scene
 		Core::Array<Systems::RenderableObject> allRenderables;
-		Core::Array<Systems::Light> allLights;
+		Core::Array<Systems::RenderableLight> allLights;
 		{
 			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
@@ -303,7 +303,7 @@ namespace Editors
 		return objectId;
 	}
 
-	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::Light>& lights) const
+	void LevelEditorViewportWidget::CreateRenderScene(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const
 	{
 		renderables.Reserve(10);
 		lights.Reserve(10);
@@ -319,7 +319,7 @@ namespace Editors
 			{
 				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
 				{
-					Systems::Light& gfxLight = lights.PushBackDefault();
+					Systems::RenderableLight& gfxLight = lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f localDirection = pLight->GetDirection();
@@ -398,7 +398,7 @@ namespace Editors
 				}
 				else if (const Systems::PointLightComponent* pLight = pComponent->Cast<Systems::PointLightComponent>())
 				{
-					Systems::Light& gfxLight = lights.PushBackDefault();
+					Systems::RenderableLight& gfxLight = lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -430,7 +430,7 @@ namespace Editors
 				}
 				else if (const Systems::SpotLightComponent* pLight = pComponent->Cast<Systems::SpotLightComponent>())
 				{
-					Systems::Light& gfxLight = lights.PushBackDefault();
+					Systems::RenderableLight& gfxLight = lights.PushBackDefault();
 
 					Core::Mat44f worldTx = pLight->GetOwner()->GetTransform().GetWorldTx();
 					Core::Vec4f lightPosition = pLight->GetPosition();
@@ -537,7 +537,7 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_LevelEditor(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
@@ -644,14 +644,14 @@ namespace Editors
 		}
 	}
 
-	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::Light>& lights) const
+	void LevelEditorViewportWidget::RenderView_ShadowMap(Core::Array<Systems::RenderableObject>& renderables, Core::Array<Systems::RenderableLight>& lights) const
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
 		uint8_t lightCount = min(lights.GetSize(), Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 		for(int ii = 0; ii < lightCount; ++ii)
 		{
-			const Systems::Light& light = lights[ii];
+			const Systems::RenderableLight& light = lights[ii];
 
 			if (light.m_cbuffer.m_type == Rendering::Point)
 				continue;
