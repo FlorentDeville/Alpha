@@ -88,6 +88,7 @@
     <ClCompile Include="GameComponent\SkyboxComponent.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassShadowMaps.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassBase.cpp" />
+    <ClCompile Include="Rendering\Renderable\RenderableScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

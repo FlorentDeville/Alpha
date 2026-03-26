@@ -6,17 +6,6 @@
 
 #include "Widgets/Viewport.h"
 
-#include "Core/Collections/Array.h"
-#include "Core/Guid/Guid.h"
-#include "Core/Math/Mat44f.h"
-
-#include "Rendering/ConstantBuffer/LightsCBuffer.h"
-
-#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
-#include "Systems/Rendering/RenderPass/RenderView.h"
-
-#include <map>
-
 namespace Rendering
 {
 	class DescriptorHeap;
@@ -75,9 +64,5 @@ namespace Editors
 
 		// Find the object id from the mouse position. The mouse position is local to the widget.
 		uint32_t GetObjectId(int mouseX, int mouseY) const;
-
-		void CreateRenderScene(Systems::RenderableScene& scene) const;
-
-		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 	};
 }

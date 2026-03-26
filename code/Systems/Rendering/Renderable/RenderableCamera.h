@@ -16,5 +16,7 @@ namespace Systems
 		Core::Mat44f m_proj;
 
 		Core::Vec4f m_position;
+
+		float m_fov; //in radian
 	};
 }

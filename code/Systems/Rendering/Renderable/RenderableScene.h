@@ -10,6 +10,8 @@
 
 namespace Systems
 {
+	class LevelAsset;
+
 	class RenderableObject;
 	class RenderableLight;
 
@@ -21,4 +23,7 @@ namespace Systems
 
 		RenderableCamera m_camera;
 	};
+
+	void PrepareRenderableCamera(const Core::Mat44f& view, const Core::Mat44f& proj, const Core::Vec4f& position, float fov, RenderableScene& scene);
+	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene);
 }

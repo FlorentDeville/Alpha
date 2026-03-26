@@ -91,6 +91,7 @@
     <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />
     <ClCompile Include="Rendering\MaterialRendering.cpp" />
+    <ClCompile Include="Rendering\Renderable\RenderableScene.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassBase.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassShadowMaps.cpp" />
     <ClCompile Include="Serialization\ContainerJsonDeserializer.cpp" />
