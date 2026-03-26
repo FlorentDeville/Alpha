@@ -21,29 +21,29 @@ namespace Widgets
 		GetDefaultStyle().SetBorderColor(DefaultColors::FrameBorder);
 
 		m_pInternalLayout = new Layout();
-		m_pInternalLayout->SetSizeStyle(Widget::STRETCH);
+		m_pInternalLayout->SetSizeStyle(STRETCH);
 		m_pInternalLayout->SetDirection(Layout::Vertical);
 		Container::AddWidget(m_pInternalLayout);
 
 		m_pTitleLayout = new Layout();
-		m_pTitleLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_FIT);
+		m_pTitleLayout->SetSizeStyle(HSIZE_STRETCH | VSIZE_FIT);
 		m_pTitleLayout->SetDirection(Layout::Horizontal);
 		m_pInternalLayout->AddWidget(m_pTitleLayout);
 
 		m_pInternalContainer = new Container();
-		m_pInternalContainer->SetSizeStyle(Widget::STRETCH);
+		m_pInternalContainer->SetSizeStyle(STRETCH);
 		m_pInternalLayout->AddWidget(m_pInternalContainer);
 
 		//title bar
 		m_pTitleLayout->AddWidget(new Container(5, 0));
 
 		m_pTitleLabel = new Label(title);
-		m_pTitleLabel->SetSizeStyle(Widget::FIT);
+		m_pTitleLabel->SetSizeStyle(FIT);
 		m_pTitleLayout->AddWidget(m_pTitleLabel);
 
 		Layout* pIconLayout = new Layout();
 		pIconLayout->SetDirection(Layout::Horizontal_Reverse);
-		pIconLayout->SetSizeStyle(Widget::STRETCH);
+		pIconLayout->SetSizeStyle(STRETCH);
 		m_pTitleLayout->AddWidget(pIconLayout);
 
 		const WidgetMgr& widgetMgr = WidgetMgr::Get();

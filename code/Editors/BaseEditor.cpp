@@ -35,7 +35,7 @@ namespace Editors
 
 		Widgets::Layout* pOutsideLayout = new Widgets::Layout();
 		pOutsideLayout->SetDirection(Widgets::Layout::Vertical_Reverse);
-		pOutsideLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pOutsideLayout->SetSizeStyle(Widgets::STRETCH);
 		pViewportTab->AddWidget(pOutsideLayout);
 
 		m_pStatusBar = new StatusBar();
@@ -43,7 +43,7 @@ namespace Editors
 
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		m_pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
+		m_pInternalLayout->SetSizeStyle(Widgets::SIZE_STYLE::STRETCH);
 		pOutsideLayout->AddWidget(m_pInternalLayout);
 
 		m_pMenuBar = new Widgets::MenuBar();

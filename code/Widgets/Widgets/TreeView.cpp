@@ -46,7 +46,7 @@ namespace Widgets
 		, m_dragModelIndex()
 		, m_pDraggedRowLayout(nullptr)
 	{
-		SetSizeStyle(Widgets::Widget::STRETCH);
+		SetSizeStyle(STRETCH);
 
 		m_pLayout = new Layout();
 		m_pLayout->SetSizeStyle(SIZE_STYLE::FIT);
@@ -316,7 +316,7 @@ namespace Widgets
 			std::string data = "  " + m_pModel->GetHeaderData(jj);
 
 			Label* pLabel = new Label(data);
-			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pLabel->SetSizeStyle(DEFAULT);
 
 			if (m_columnWidth.IsValidIndex(jj))
 				pLabel->SetSize(Core::UInt2(m_columnWidth[jj], m_cellDefaultSize.y));
@@ -328,7 +328,7 @@ namespace Widgets
 			if (jj != columnCount - 1)
 			{
 				Split* pSplit = new Split(true);
-				pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
+				pSplit->SetSizeStyle(VSIZE_STRETCH);
 				pSplit->SetWidth(4);
 				pSplit->SetBackgroundColor(Color(61, 61, 61));
 				pSplit->OnDrag([this, pLabel, jj](const Core::Int2& mousePosition) { HeaderSplit_OnDrag(mousePosition, pLabel, jj);	});
@@ -724,7 +724,7 @@ namespace Widgets
 				pContainer = pExpandLayout;
 			}
 
-			pContainer->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pContainer->SetSizeStyle(DEFAULT);
 			Core::UInt2 cellSize(m_columnWidth[jj], m_cellDefaultSize.y);
 			pContainer->SetSize(cellSize);
 			

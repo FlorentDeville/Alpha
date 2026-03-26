@@ -71,9 +71,9 @@ namespace Widgets
 
 		//cheat padding
 		Label* pTitleLabel = new Label(" " + header + " ");
-		pTitleLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		pTitleLabel->SetSizeStyle(HSIZE_FIT | VSIZE_DEFAULT);
 		pTitleLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
-		pTitleContainer->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		pTitleContainer->SetSizeStyle(HSIZE_FIT | VSIZE_DEFAULT);
 		pTitleContainer->AddWidget(pTitleLabel);
 		pTitleContainer->OnMouseDown([this, pTitleContainer](const MouseEvent& ev) { OnMouseDown_TitleContainer(ev, pTitleContainer); });
 

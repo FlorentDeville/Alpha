@@ -7,6 +7,7 @@
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/RenderModule.h"
 
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -16,7 +17,7 @@ namespace Widgets
 		, m_fontScale(1)
 		, m_text()
 	{
-		SetSizeStyle(Widget::HSIZE_STRETCH);
+		SetSizeStyle(HSIZE_STRETCH);
 		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
 
@@ -30,7 +31,7 @@ namespace Widgets
 
 		Core::UInt2 coreSize(size.x, size.y);
 		SetSize(coreSize);
-		SetSizeStyle(Widget::HSIZE_STRETCH);
+		SetSizeStyle(HSIZE_STRETCH);
 	}
 
 	Label::Label(int32_t locX, int32_t locY, float scale, const std::string& text)
@@ -46,7 +47,7 @@ namespace Widgets
 		Core::UInt2 coreSize(size.x, size.y);
 		SetSize(coreSize);
 
-		SetSizeStyle(Widget::HSIZE_STRETCH);
+		SetSizeStyle(HSIZE_STRETCH);
 		m_focusPolicy = Widget::FOCUS_POLICY::NO_FOCUS;
 	}
 
@@ -86,8 +87,8 @@ namespace Widgets
 
 	void Label::ReComputeSize(const Core::UInt2& parentSize)
 	{
-		bool anyNotFit = ((m_sizeStyle & Widget::HSIZE_FIT) == 0) && ((m_sizeStyle & Widget::VSIZE_FIT) == 0);
-		bool anyFit = (m_sizeStyle & Widget::HSIZE_FIT) || (m_sizeStyle & Widget::VSIZE_FIT);
+		bool anyNotFit = ((m_sizeStyle & HSIZE_FIT) == 0) && ((m_sizeStyle & VSIZE_FIT) == 0);
+		bool anyFit = (m_sizeStyle & HSIZE_FIT) || (m_sizeStyle & VSIZE_FIT);
 
 		if (anyNotFit)
 		{
@@ -102,12 +103,12 @@ namespace Widgets
 			DirectX::XMUINT2 textSize;
 			pFont->ComputeRect(m_text, textSize);
 
-			if ((m_sizeStyle & Widget::HSIZE_FIT) != 0)
+			if ((m_sizeStyle & HSIZE_FIT) != 0)
 			{
 				m_size.x = textSize.x;
 			}
 
-			if ((m_sizeStyle & Widget::VSIZE_FIT) != 0)
+			if ((m_sizeStyle & VSIZE_FIT) != 0)
 			{
 				m_size.y = textSize.y;
 			}

@@ -12,6 +12,7 @@
 
 #include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Events/MouseEvent.h"
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -22,7 +23,7 @@ Split::Split(bool isVerticalSplit)
 	, m_isDragged(false)
 	, m_isVerticalSplit(isVerticalSplit)
 {
-	SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_STRETCH);
+	SetSizeStyle(HSIZE_DEFAULT | VSIZE_STRETCH);
 	m_size.x = 10;
 	m_size.y = 10;
 }

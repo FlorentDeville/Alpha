@@ -28,7 +28,7 @@ namespace Editors
 	{
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
-		pLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
+		pLayout->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_FIT);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
 		pLayout->GetDefaultStyle().SetBorderColor(Widgets::Color(255, 0, 0, 255));
 		pLayout->GetDefaultStyle().ShowBorder(true);
@@ -36,7 +36,7 @@ namespace Editors
 		for (int ii = 0; ii < 4; ++ii)
 		{
 			m_pTextbox[ii] = new Widgets::TextBox();
-			m_pTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
+			m_pTextbox[ii]->SetSizeStyle(Widgets::DEFAULT);
 			m_pTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 			m_pTextbox[ii]->SetWidth(40);
 			m_pTextbox[ii]->OnValidate([ii, this](const std::string& value)

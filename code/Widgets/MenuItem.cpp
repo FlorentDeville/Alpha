@@ -10,6 +10,7 @@
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Shortcuts/Shortcut.h"
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -20,7 +21,7 @@ namespace Widgets
 		, m_isChecked(false)
 	{
 		SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
-		SetSizeStyle(Widget::SIZE_STYLE::FIT);
+		SetSizeStyle(SIZE_STYLE::FIT);
 		const int HEIGHT = 20;
 		GetHoverStyle().SetBorderColor(Color(0.48f, 0.48f, 0.48f, 1.f));
 
@@ -44,7 +45,7 @@ namespace Widgets
 
 		{
 			m_pLabel = new Label(name);
-			m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::DEFAULT);
+			m_pLabel->SetSizeStyle(SIZE_STYLE::DEFAULT);
 			m_pLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 			Core::UInt2 size = m_pLabel->GetSize();
 			size.x = LABEL_WIDTH;
@@ -58,7 +59,7 @@ namespace Widgets
 
 		{
 			m_pShortcutLabel = new Label();
-			m_pShortcutLabel->SetSizeStyle(Widget::SIZE_STYLE::HSIZE_DEFAULT | Widget::SIZE_STYLE::VSIZE_FIT);
+			m_pShortcutLabel->SetSizeStyle(SIZE_STYLE::HSIZE_DEFAULT | SIZE_STYLE::VSIZE_FIT);
 			m_pShortcutLabel->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS);
 			Core::UInt2 size = m_pShortcutLabel->GetSize();
 			size.x = SHORTCUT_WIDTH;

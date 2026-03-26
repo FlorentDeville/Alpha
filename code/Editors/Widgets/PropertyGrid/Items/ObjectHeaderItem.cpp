@@ -27,9 +27,9 @@ namespace Editors
 		sprintf_s(buffer, "%s (%s)", m_pField->GetName().c_str(), m_pField->GetType()->GetName().c_str());
 
 		Widgets::Label* pNameLabel = new Widgets::Label(buffer);
-		pNameLabel->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		pNameLabel->SetSizeStyle(Widgets::HSIZE_FIT | Widgets::VSIZE_DEFAULT);
 
-		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
+		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::FIT);
 		pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		pNameLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		pNameLayout->SetSpace(Core::Int2(5, 0));

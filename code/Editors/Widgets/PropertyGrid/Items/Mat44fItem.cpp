@@ -29,19 +29,19 @@ namespace Editors
 	{
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
+		pLayout->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_FIT);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
 		pLayout->GetDefaultStyle().SetBorderColor(Widgets::Color(255, 0, 0, 255));
 		pLayout->GetDefaultStyle().ShowBorder(true);
 
 		for (int row = 0; row < 4; ++row)
 		{
-			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::Widget::FIT);
+			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::FIT);
 			pLayout->AddWidget(pRowLayout);
 			for (int column = 0; column < 4; ++column)
 			{
 				m_pTextbox[row][column] = new Widgets::TextBox();
-				m_pTextbox[row][column]->SetSizeStyle(Widgets::Widget::DEFAULT);
+				m_pTextbox[row][column]->SetSizeStyle(Widgets::DEFAULT);
 				m_pTextbox[row][column]->SetReadOnly(m_pField->IsReadOnly());
 				m_pTextbox[row][column]->SetWidth(40);
 				m_pTextbox[row][column]->OnValidate([row, column, this](const std::string& value)

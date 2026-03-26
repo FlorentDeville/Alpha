@@ -146,11 +146,11 @@ namespace Editors
 		const int WIDTH = 500;
 		const int HEIGHT = 500;
 
-		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Vertical_Reverse, Widgets::Widget::STRETCH);
+		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Vertical_Reverse, Widgets::STRETCH);
 		AddWidget(pLayout);
 
 		//ok/cancel button
-		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, (Widgets::Widget::SIZE_STYLE)(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT));
+		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, (Widgets::SIZE_STYLE)(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT));
 		pLayout->AddWidget(pButtonLayout);
 
 		const int BUTTON_HEIGHT = 40;
@@ -174,7 +174,7 @@ namespace Editors
 		m_pClassView->SetColumnWidth(0, WIDTH - 2); // -2 for the border size
 
 		SetSize(Core::UInt2(WIDTH, HEIGHT));
-		SetSizeStyle(Widgets::Widget::DEFAULT);
+		SetSizeStyle(Widgets::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 	}
 

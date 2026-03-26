@@ -9,6 +9,7 @@
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 //#pragma optimize("", off)
@@ -78,13 +79,13 @@ namespace Widgets
 
 	void MenuBar::ReComputeSize_PostChildren()
 	{
-		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
+		if (m_sizeStyle & HSIZE_FIT)
 		{
 			int max = m_pLayout->GetWidth() + m_pLayout->GetX();
 			m_size.x = max;
 		}
 
-		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
+		if (m_sizeStyle & VSIZE_FIT)
 		{
 			int max = m_pLayout->GetHeight() + m_pLayout->GetY();
 			m_size.y = max;

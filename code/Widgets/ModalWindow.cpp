@@ -8,6 +8,7 @@
 #include "Widgets/Events/KeyboardEvent.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -21,12 +22,12 @@ namespace Widgets
 
 		m_pInnerLayout = new Widgets::Layout();
 		m_pInnerLayout->SetDirection(Widgets::Layout::Vertical);
-		m_pInnerLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pInnerLayout->SetSizeStyle(STRETCH);
 		
 		Container::AddWidget(m_pInnerLayout);
 
 		Container* pLabelContainer = new Container(0, TITLE_HEIGHT);
-		pLabelContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pLabelContainer->SetSizeStyle(HSIZE_STRETCH | VSIZE_DEFAULT);
 		pLabelContainer->GetDefaultStyle().SetBackgroundColor(Color(0.f, 0.f, 0.f, 1.f));
 		m_pInnerLayout->AddWidget(pLabelContainer);
 
@@ -37,7 +38,7 @@ namespace Widgets
 		pLabelContainer->AddWidget(m_pTitleLabel);
 
 		m_pContent = new Widgets::Container();
-		m_pContent->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pContent->SetSizeStyle(STRETCH);
 		m_pInnerLayout->AddWidget(m_pContent);
 	}
 

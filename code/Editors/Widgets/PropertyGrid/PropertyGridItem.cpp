@@ -108,7 +108,7 @@ namespace Editors
 	{
 		assert(m_pField->GetType()->IsContainer());
 
-		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::FIT);
+		Widgets::Layout* pNameLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::FIT);
 		pNameLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		pNameLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		pNameLayout->SetSpace(Core::Int2(5, 0));
@@ -124,7 +124,7 @@ namespace Editors
 		pNameLayout->AddWidget(m_pDeleteButton);
 
 		m_pFieldName = new Widgets::Label();
-		m_pFieldName->SetSizeStyle(Widgets::Widget::HSIZE_FIT | Widgets::Widget::VSIZE_DEFAULT);
+		m_pFieldName->SetSizeStyle(Widgets::HSIZE_FIT | Widgets::VSIZE_DEFAULT);
 		pNameLayout->AddWidget(m_pFieldName);
 
 		ArrayItemLabel_Init();

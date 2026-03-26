@@ -148,7 +148,7 @@ namespace Editors
 		}
 
 		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
-		pVerticalSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pVerticalSplit->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pVerticalSplit->SetLeftPanelWidth(500);
 
 		m_pInternalLayout->AddWidget(pVerticalSplit);
@@ -166,7 +166,7 @@ namespace Editors
 			});
 
 		Widgets::SplitHorizontal* pHorizontalSplit = new Widgets::SplitHorizontal();
-		pHorizontalSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		pHorizontalSplit->SetSizeStyle(Widgets::STRETCH);
 		pHorizontalSplit->SetTopPanelHeight(800);
 		pVerticalSplit->AddRightPanel(pHorizontalSplit);
 

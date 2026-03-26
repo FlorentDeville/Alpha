@@ -29,14 +29,14 @@ namespace Editors
 
 	void HardAssetRefItem::CreateWidgets()
 	{
-		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widgets::Widget::HSTRETCH_VFIT);
+		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widgets::HSTRETCH_VFIT);
 
 		Widgets::Label* pLabel = new Widgets::Label("...");
-		pLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pLabel->SetSizeStyle(Widgets::FIT);
 		pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
 		Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
-		pButton->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pButton->SetSizeStyle(Widgets::DEFAULT);
 		pButton->AddWidget(pLabel);
 		pButton->OnClick([this]()
 			{

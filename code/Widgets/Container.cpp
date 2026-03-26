@@ -10,6 +10,7 @@
 
 #include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/Tools/AlternateColorCBuffer.h"
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -20,7 +21,7 @@ namespace Widgets
 		, m_hoverStyle()
 		, m_currentState(State::Default)
 	{
-		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		SetSizeStyle(HSIZE_STRETCH | VSIZE_STRETCH);
 	}
 
 	Container::Container(int width, int height)

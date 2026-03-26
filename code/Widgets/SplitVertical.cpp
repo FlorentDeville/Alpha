@@ -20,22 +20,22 @@ namespace Widgets
 		, m_resizePolicy(KeepRatio)
 	{
 		m_pLayout = new Layout(0, 0, 0, 0);
-		m_pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		m_pLayout->SetSizeStyle(HSIZE_STRETCH | VSIZE_STRETCH);
 		m_pLayout->SetDirection(Layout::Direction::Horizontal);
 		Widget::AddWidget(m_pLayout);
 
 		m_pLeftContainer = new Container(200, 0);
-		m_pLeftContainer->SetSizeStyle(Widget::VSIZE_STRETCH);
+		m_pLeftContainer->SetSizeStyle(VSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pLeftContainer);
 
 		m_pSplit = new Split(true);
-		m_pSplit->SetSizeStyle(Widget::VSIZE_STRETCH);
+		m_pSplit->SetSizeStyle(VSIZE_STRETCH);
 		m_pSplit->OnDrag([this](const Core::Int2& mousePosition) { Split_OnDrag(mousePosition); });
 
 		m_pLayout->AddWidget(m_pSplit);
 
 		m_pRightContainer = new Container(200, 0);
-		m_pRightContainer->SetSizeStyle(Widget::VSIZE_STRETCH | Widget::HSIZE_STRETCH);
+		m_pRightContainer->SetSizeStyle(VSIZE_STRETCH | HSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pRightContainer);
 	}
 

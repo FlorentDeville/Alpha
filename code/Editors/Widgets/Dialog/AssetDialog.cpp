@@ -161,46 +161,46 @@ namespace Editors
 		int TABLE_HEIGHT = WINDOW_HEIGHT - OK_CANCEL_HEIGHT;
 
 		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
-		SetSizeStyle(Widgets::Widget::DEFAULT);
+		SetSizeStyle(Widgets::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
 		//vlayout
 		Widgets::Layout* pVLayout = new Widgets::Layout();
 		pVLayout->SetDirection(Widgets::Layout::Vertical_Reverse);
-		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pVLayout->SetSizeStyle(Widgets::STRETCH);
 		AddWidget(pVLayout);
 
 		{
 			//button ok escape
 			Widgets::Layout* pHLayout = new Widgets::Layout();
 			pHLayout->SetDirection(Widgets::Layout::Horizontal);
-			pHLayout->SetSizeStyle(Widgets::Widget::HSTRETCH_VFIT);
+			pHLayout->SetSizeStyle(Widgets::HSTRETCH_VFIT);
 			pVLayout->AddWidget(pHLayout);
 
 			std::string okLabel = "Select";
 			Widgets::Button* pOkButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
 			Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, okLabel);
-			pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+			pOkLabel->SetSizeStyle(Widgets::FIT);
 			pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 			pOkButton->AddWidget(pOkLabel);
-			pOkButton->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pOkButton->SetSizeStyle(Widgets::DEFAULT);
 			pOkButton->OnClick([this]() { OnOk(); });
 
 			pHLayout->AddWidget(pOkButton);
 
 			Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
 			Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
-			pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+			pCancelLabel->SetSizeStyle(Widgets::FIT);
 			pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 			pCancelButton->AddWidget(pCancelLabel);
-			pCancelButton->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pCancelButton->SetSizeStyle(Widgets::DEFAULT);
 			pCancelButton->OnClick([this]() { OnCancel(); });
 			pHLayout->AddWidget(pCancelButton);
 		}
 
 		//list
 		m_pAssetView = new Widgets::TableView();
-		m_pAssetView->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pAssetView->SetSizeStyle(Widgets::STRETCH);
 		m_pAssetView->OnItemDoubleClick([this](const Widgets::ModelIndex& index) { OnOk(); });
 
 		m_pAssetViewModel = new Editors::AssetListModel(assetType);

@@ -32,12 +32,12 @@ namespace Editors
 		if (m_enableAddElementButton)
 		{
 			Widgets::Label* pLabel = new Widgets::Label("+");
-			pLabel->SetSizeStyle(Widgets::Widget::FIT);
+			pLabel->SetSizeStyle(Widgets::FIT);
 			pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
 			Widgets::Button* pAddElementButton = new Widgets::Button(10, 20, 0, 0);
 			pAddElementButton->AddWidget(pLabel);
-			pAddElementButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+			pAddElementButton->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_DEFAULT);
 			pAddElementButton->OnClick([this]() { OnClick_AddArrayElement(); });
 
 			m_pEditingWidget = pAddElementButton;

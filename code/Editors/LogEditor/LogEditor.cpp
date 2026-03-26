@@ -37,12 +37,12 @@ namespace Editors
 		}
 
 		Widgets::Container_V2* pScrollContainer = new Widgets::Container_V2();
-		pScrollContainer->SetSizeStyle(Widgets::Widget::STRETCH);
+		pScrollContainer->SetSizeStyle(Widgets::STRETCH);
 		pViewportTab->AddWidget(pScrollContainer);
 
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		m_pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::FIT);
+		m_pInternalLayout->SetSizeStyle(Widgets::SIZE_STYLE::FIT);
 		pScrollContainer->AddWidget(m_pInternalLayout);
 
 		Core::LogModule& logModule = Core::LogModule::Get();
@@ -58,7 +58,7 @@ namespace Editors
 		//strip \r\n
 		
 		Widgets::Label* pNewLabel = new Widgets::Label(text);
-		pNewLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pNewLabel->SetSizeStyle(Widgets::DEFAULT);
 		m_pInternalLayout->AddWidget(pNewLabel);
 	}
 }

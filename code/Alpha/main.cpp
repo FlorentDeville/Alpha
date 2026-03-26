@@ -446,7 +446,7 @@ void Render()
 void CreateMainWindow(const std::string& shaderPath)
 {
 	Widgets::Container* pContainer = new Widgets::Container();
-	pContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+	pContainer->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 	Widgets::WidgetMgr::Get().SetRoot(pContainer);
 
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
@@ -488,7 +488,7 @@ void CreateMainWindow(const std::string& shaderPath)
 		//pLayout->AddWidget(pOffsetContainer);
 
 		Widgets::TableView* pTableView = new Widgets::TableView();
-		pTableView->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pTableView->SetSizeStyle(Widgets::DEFAULT);
 		pTableView->SetSize(Core::UInt2(500, 200));
 		pTableView->SetX(20);
 		pTableView->SetY(30);
