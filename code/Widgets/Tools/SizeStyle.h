@@ -29,4 +29,14 @@ namespace Widgets
 
 		HSTRETCH_VFIT = HSIZE_STRETCH | VSIZE_FIT
 	};
+
+	inline SIZE_STYLE operator|(SIZE_STYLE a, SIZE_STYLE b)
+	{
+		return static_cast<SIZE_STYLE>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+	}
+
+	inline bool operator&(SIZE_STYLE a, SIZE_STYLE b)
+	{
+		return (static_cast<uint32_t>(a) & static_cast<uint32_t>(b)) != 0;
+	}
 }
