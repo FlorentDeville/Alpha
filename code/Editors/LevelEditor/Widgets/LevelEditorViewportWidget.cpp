@@ -112,7 +112,7 @@ namespace Editors
 		else
 			clampedMousePos.y = mouseAbsPos.y;
 
-		Core::Vec4f mouseWs = Compute3dPosition(clampedMousePos);
+		Core::Vec4f mouseWs = Compute3dPosition(clampedMousePos, m_pCamera->GetView(), m_pCamera->GetProjection());
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);

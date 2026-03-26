@@ -8,6 +8,7 @@
 
 namespace Core
 {
+	class Mat44f;
 	class Vec4f;
 }
 
@@ -30,7 +31,7 @@ namespace Widgets
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
-		Core::Vec4f Compute3dPosition(const Core::UInt2& windowAbsPos) const;
+		Core::Vec4f Compute3dPosition(const Core::UInt2& windowAbsPos, const Core::Mat44f& view, const Core::Mat44f& proj) const;
 
 		EVENT_DECL(Update, void(uint64_t)) //Real time update called every frame
 		EVENT_DECL(Render, void()) //Do all your rendering inside this event
