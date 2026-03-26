@@ -4,21 +4,42 @@
 
 #include "GameMgr.h"
 
+#include "Rendering/RenderTargets/RenderTarget.h"
+
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 #include "Systems/Objects/GameObject.h"
+#include "Systems/Rendering/Renderable/RenderableScene.h"
+#include "Systems/Rendering/RenderPass/RenderPassBase.h"
+#include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
 
 GameMgr::GameMgr()
+	: Core::Singleton<GameMgr>()
+	, m_pRenderPassBase(nullptr)
+	, m_pRenderPassShadowMaps(nullptr)
+	, m_pFinalRenderTarget(nullptr)
 { }
 
 GameMgr::~GameMgr()
 { }
 
 void GameMgr::Init()
-{ }
+{
+	m_pFinalRenderTarget = new Rendering::RenderTarget(1920, 1080, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+
+	m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
+
+	m_pRenderPassBase = new Systems::RenderPassBase();
+	m_pRenderPassBase->SetRenderTarget(m_pFinalRenderTarget);
+	m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
+}
 
 void GameMgr::Release()
-{ }
+{
+	delete m_pRenderPassBase;
+	delete m_pRenderPassShadowMaps;
+	delete m_pFinalRenderTarget;
+}
 
 void GameMgr::Update()
 {
@@ -40,7 +61,29 @@ void GameMgr::Update()
 
 void GameMgr::Render()
 {
+	Systems::RenderableScene scene;
 
+	for (Systems::LevelAsset* pLevel : m_loadedLevels)
+	{
+		//going through the list of game object of levels will cause problems when game objects
+		//are created at runtime.
+		//I should make an internal array of all game object pointers in the GameMgr.
+		Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
+		for (Systems::GameObject* pGo : roots)
+			pGo->UpdateTransform();
+
+		Systems::PrepareRenderableScene(pLevel, scene);
+	}
+
+	//call the render pass and render the scene.
+	m_pRenderPassShadowMaps->PreRender(scene);
+	m_pRenderPassShadowMaps->Render(scene);
+	m_pRenderPassShadowMaps->PostRender(scene);
+
+	//now render the level editor view of the scene.
+	m_pRenderPassBase->PreRender(scene);
+	m_pRenderPassBase->Render(scene);
+	m_pRenderPassBase->PostRender(scene);
 }
 
 void GameMgr::RequestLoadingLevel(Systems::NewAssetId levelId)

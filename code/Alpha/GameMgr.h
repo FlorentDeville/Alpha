@@ -9,9 +9,16 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
+namespace Rendering
+{
+	class RenderTarget;
+}
+
 namespace Systems
 {
 	class LevelAsset;
+	class RenderPassBase;
+	class RenderPassShadowMaps;
 }
 
 class GameMgr : public Core::Singleton<GameMgr>
@@ -37,6 +44,11 @@ private:
 
 	Core::Array<Systems::NewAssetId> m_loadingRequest;
 	Core::Array<Systems::NewAssetId> m_unloadingRequest;
+
+	Rendering::RenderTarget* m_pFinalRenderTarget;
+
+	Systems::RenderPassBase* m_pRenderPassBase;
+	Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 
 	bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 
