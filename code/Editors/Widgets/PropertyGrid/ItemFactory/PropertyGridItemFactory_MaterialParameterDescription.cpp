@@ -53,7 +53,7 @@ namespace Editors
 			float* pFloat = reinterpret_cast<float*>(pMatParamDesc->m_value.GetData());
 
 			Widgets::Layout* pLayout = new Widgets::Layout();
-			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+			pLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(Core::Int2(SPACE, 0));
 			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
@@ -73,7 +73,7 @@ namespace Editors
 			Widgets::Color currentColor(pFloat[0], pFloat[1], pFloat[2], 1.f);
 
 			Widgets::Layout* pLayout = new Widgets::Layout();
-			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+			pLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(Core::Int2(SPACE, 0));
 			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
@@ -92,7 +92,7 @@ namespace Editors
 
 			Widgets::Container* pColorWidget = new Widgets::Container(20, 20);
 			pColorWidget->GetDefaultStyle().SetBackgroundColor(currentColor);
-			pColorWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
+			pColorWidget->SetSizeStyle(Widgets::SIZE_STYLE::DEFAULT);
 			pLayout->AddWidget(pColorWidget);
 
 			pRedChannel->OnValidate([this, pField, pObj, index, pColorWidget, pFloat](const float value)
@@ -144,7 +144,7 @@ namespace Editors
 			float* pFloat = reinterpret_cast<float*>(pMatParamDesc->m_value.GetData());
 
 			Widgets::Layout* pLayout = new Widgets::Layout();
-			pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+			pLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT);
 			pLayout->SetDirection(Widgets::Layout::Horizontal);
 			pLayout->SetSpace(Core::Int2(SPACE, 0));
 			pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
@@ -175,7 +175,7 @@ namespace Editors
 	{
 		Widgets::TextBox* pWidget = new Widgets::TextBox();
 		pWidget->SetSize(Core::UInt2(TEXT_BOX_WIDTH, 20));
-		pWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
+		pWidget->SetSizeStyle(Widgets::SIZE_STYLE::DEFAULT);
 
 		const int BUFFER_SIZE = 32;
 		char buffer[BUFFER_SIZE] = { '\0' };
