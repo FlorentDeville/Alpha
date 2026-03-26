@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
 
@@ -31,6 +31,8 @@ namespace Editors
 		, m_cameraPosition()
 		, m_cameraRotation()
 		, m_cameraTransform()
+		, m_view()
+		, m_proj()
 	{}
 
 	CameraWidget::~CameraWidget()
@@ -56,20 +58,26 @@ namespace Editors
 
 	void CameraWidget::Render(float aspectRatio)
 	{
-		float fovRad = LevelEditorModule::Get().GetFovRad();
-
+		float fovRad = LevelEditorModule::Get().GetFovRad(); //pass this through getter/setter
+		
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
-		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR targetOffset = DirectX::XMVectorSet(0, 0, 1, 1);
-		DirectX::XMVECTOR cameraLookAt = DirectX::XMVector4Transform(targetOffset, m_cameraTransform);
+		Core::Vec4f cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
+		Core::Vec4f targetOffset = DirectX::XMVectorSet(0, 0, 1, 1);
+
+		Core::Mat44f cameraWorld;
+		cameraWorld.m_matrix = m_cameraTransform;
+		Core::Vec4f cameraLookAt = targetOffset * cameraWorld;
 		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
+
+		m_view = Core::Mat44f::CreateLookAt(cameraPosition, cameraLookAt - cameraPosition, cameraUp);
 		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
 
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
 		pCamera->SetProjection(fovRad, aspectRatio, nearDistance, farDistance);
+		m_proj = Core::Mat44f::CreatePerspective(fovRad, aspectRatio, nearDistance, farDistance);
 	}
 
 	void CameraWidget::SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle)
@@ -94,6 +102,16 @@ namespace Editors
 		Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
 		Core::Mat44f mat(x, y, z, w);
 		m_onWsChanged(mat);
+	}
+
+	const Core::Mat44f& CameraWidget::GetView() const
+	{
+		return m_view;
+	}
+
+	const Core::Mat44f& CameraWidget::GetProjection() const
+	{
+		return m_proj;
 	}
 
 	Core::CallbackId CameraWidget::OnWsChanged(const OnWsChangedEvent::Callback& callback)

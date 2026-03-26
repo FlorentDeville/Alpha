@@ -1,17 +1,13 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Core/Callbacks/CallbackList.h"
+#include "Core/Math/Mat44f.h"
 
 #include <DirectXMath.h>
-
-namespace Core
-{
-	class Mat44f;
-}
 
 namespace Editors
 {
@@ -25,6 +21,9 @@ namespace Editors
 		void Render(float aspectRatio);
 
 		void SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle);
+
+		const Core::Mat44f& GetView() const;
+		const Core::Mat44f& GetProjection() const;
 
 		//event
 		using OnWsChangedEvent = Core::CallbackList<void(const Core::Mat44f&)>;
@@ -42,6 +41,9 @@ namespace Editors
 		DirectX::XMVECTOR m_cameraEulerAngle;	//euler angle of the camera (same as m_cameraRotation)
 		DirectX::XMVECTOR m_cameraPosition;		//position of the camera in world space
 		DirectX::XMMATRIX m_cameraTransform;	//transform of the camera in world space
+
+		Core::Mat44f m_view;
+		Core::Mat44f m_proj;
 
 		float m_translationSpeed;
 		float m_rotationSpeed;
