@@ -7,6 +7,8 @@
 #include "Core/Collections/Array.h"
 
 #include "Systems/Rendering/Renderable/RenderableCamera.h"
+#include "Systems/Rendering/Renderable/RenderableLight.h"
+#include "Systems/Rendering/Renderable/RenderableObject.h"
 
 namespace Systems
 {
