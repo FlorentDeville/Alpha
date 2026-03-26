@@ -86,7 +86,7 @@ namespace Widgets
 
 		pCommandList->SetGraphicsRoot32BitConstants(1, sizeof(m_size) / 4, &m_size, 0);
 
-		DirectX::XMFLOAT2 textureRect;
+		Core::Float2 textureRect;
 		textureRect.x = (float)pTexture->GetWidth();
 		textureRect.y = (float)pTexture->GetHeight();
 		pCommandList->SetGraphicsRoot32BitConstants(2, sizeof(textureRect) / 4, &textureRect, 0);
@@ -144,10 +144,6 @@ namespace Widgets
 			mouseViewportPos.y = mouseViewportWidgetPos.y;
 		}
 
-		DirectX::XMFLOAT2 mouseScreenSpace;
-		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.GetX().GetX();
-		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
-
 		//get mouse 3d position
 
 		//calculate the inverse of the view
@@ -160,7 +156,9 @@ namespace Widgets
 		Core::Mat44f invView = invR;
 		invView.SetRow(3, invViewPos);
 
-		Core::Vec4f mousePosition(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
+		float mouseScreenSpaceX = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.GetX().GetX();
+		float mouseScreenSpaceY = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
+		Core::Vec4f mousePosition(mouseScreenSpaceX, mouseScreenSpaceY, 1, 1);
 		Core::Vec4f mousePosition3d = mousePosition * invView;
 		return mousePosition3d;
 	}
