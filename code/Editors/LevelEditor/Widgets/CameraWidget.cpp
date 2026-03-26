@@ -71,7 +71,7 @@ namespace Editors
 		Core::Vec4f cameraLookAt = targetOffset * cameraWorld;
 		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
 
-		m_view = Core::Mat44f::CreateLookAt(cameraPosition, cameraLookAt - cameraPosition, cameraUp);
+		m_view = Core::Mat44f::CreateView(cameraPosition, cameraLookAt - cameraPosition, cameraUp);
 		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
 
 		const float nearDistance = 0.1f;
