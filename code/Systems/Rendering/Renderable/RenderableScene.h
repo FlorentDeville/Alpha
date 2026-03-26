@@ -7,15 +7,12 @@
 #include "Core/Collections/Array.h"
 
 #include "Systems/Rendering/Renderable/RenderableCamera.h"
-#include "Systems/Rendering/Renderable/RenderableLight.h"
-#include "Systems/Rendering/Renderable/RenderableObject.h"
+#include "Systems/Rendering/Renderable/RenderableLight.h"	//don't forward declare, I'll have to include it anyway
+#include "Systems/Rendering/Renderable/RenderableObject.h"	//don't forward declare, I'll have to include it anyway
 
 namespace Systems
 {
 	class LevelAsset;
-
-	class RenderableObject;
-	class RenderableLight;
 
 	class RenderableScene
 	{
