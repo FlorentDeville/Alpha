@@ -115,7 +115,7 @@ namespace Widgets
 		void SetFocus();
 
 		void SetBackgroundColor(const Color& color);
-		void SetSizeStyle(int sizeStyle);
+		void SetSizeStyle(SIZE_STYLE sizeStyle);
 		void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
 
 		void SetName(const std::string& name);
@@ -185,7 +185,7 @@ namespace Widgets
 		std::vector<Widget*> m_children;
 		Widget* m_pParent;
 
-		int m_sizeStyle;
+		SIZE_STYLE m_sizeStyle;
 		HPOSITION_STYLE m_hPositionStyle;
 		VPOSITION_STYLE m_vPositionStyle;
 

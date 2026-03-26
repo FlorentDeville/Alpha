@@ -383,7 +383,7 @@ namespace Widgets
 		m_backgroundColor = color;
 	}
 
-	void Widget::SetSizeStyle(int sizeStyle)
+	void Widget::SetSizeStyle(SIZE_STYLE sizeStyle)
 	{
 		m_sizeStyle = sizeStyle;
 	}
