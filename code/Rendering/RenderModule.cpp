@@ -159,8 +159,9 @@ namespace Rendering
 
 			const std::string shaderPath = binPath + "\\";
 
-			Rendering::RootSignatureId rsId = rootSigMgr.CreateRootSignature(shaderPath + "base-shape.rs.cso");
-			m_pBaseShapeRootSig = rootSigMgr.GetRootSignature(rsId);
+			Rendering::RootSignatureId rsId;
+			m_pBaseShapeRootSig = rootSigMgr.CreateRootSignature(shaderPath + "base-shape.rs.cso", rsId);
+
 			Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
 			Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
 

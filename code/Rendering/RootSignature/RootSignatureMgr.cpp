@@ -28,17 +28,18 @@ namespace Rendering
 
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::SHADOWMAP_SPOTLIGHT)] = new RootSignature(binPath + "\\shadowmap.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::SHADOWMAP_DIRLIGHT)] = new RootSignature(binPath + "\\shadowmap_dirlight.rs.cso");
+		m_rootSignatures[static_cast<size_t>(EngineRootSigs::OBJECTID)] = new RootSignature(binPath + "\\object_ids.rs.cso");
 	}
 
 	void RootSignatureMgr::Shutdown()
 	{ }
 
-	RootSignatureId RootSignatureMgr::CreateRootSignature(const std::string& path)
+	RootSignature* RootSignatureMgr::CreateRootSignature(const std::string& path, RootSignatureId& id)
 	{
-		RootSignatureId id;
 		id.m_id = m_rootSignatures.size();
-		m_rootSignatures.push_back(new RootSignature(path));
-		return id;
+		RootSignature* pRootSignature = new RootSignature(path);
+		m_rootSignatures.push_back(pRootSignature);
+		return pRootSignature;
 	}
 
 	RootSignature* RootSignatureMgr::GetRootSignature(RootSignatureId id) const

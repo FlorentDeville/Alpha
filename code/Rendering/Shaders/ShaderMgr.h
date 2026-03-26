@@ -22,6 +22,9 @@ namespace Rendering
 		SHADOWMAP_DIRLIGHT_VS,
 		SHADOWMAP_DIRLIGHT_PS,
 
+		OBJECTID_VS,
+		OBJECTID_PS,
+
 		COUNT
 	};
 
