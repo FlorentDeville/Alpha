@@ -70,20 +70,17 @@ namespace Editors
 		m_proj = Core::Mat44f::CreatePerspective(m_fov, aspectRatio, nearDistance, farDistance);
 	}
 
-	void CameraWidget::SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle)
+	void CameraWidget::SetTransform(const Core::Vec4f& pos, const Core::Vec4f& eulerAngle)
 	{
 		m_cameraPosition = pos;
 		m_cameraEulerAngle = eulerAngle;
 
-		Core::Vec4f cameraPosition(m_cameraPosition);
-		Core::Vec4f cameraEulerAngle(m_cameraEulerAngle);
-
-		Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(cameraEulerAngle.GetX());
-		Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(cameraEulerAngle.GetY());
+		Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(m_cameraEulerAngle.GetX());
+		Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(m_cameraEulerAngle.GetY());
 
 		m_cameraRotation = XRotation * YRotation;
 		
-		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(cameraPosition);
+		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
 		m_cameraTransform = m_cameraRotation * translation;
 
 		m_onWsChanged(m_cameraTransform);

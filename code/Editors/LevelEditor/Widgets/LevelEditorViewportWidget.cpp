@@ -4,6 +4,8 @@
 
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
 
+#include "Core/Math/Constants.h"
+
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/RenderPassObjectId.h"
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
@@ -58,8 +60,8 @@ namespace Editors
 		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditorModule::Get().SetCameraWs(mat); });
 		m_pCamera->SetFov(LevelEditorModule::Get().GetFovRad());
 
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVectorSet(0, 10, -10, 1);
-		DirectX::XMVECTOR cameraEulerAngle = DirectX::XMVectorSet(3.14f / 4.f, 0, 0, 0);
+		Core::Vec4f cameraPosition(0, 10, -10, 1);
+		Core::Vec4f cameraEulerAngle(Core::PI * 0.25f, 0, 0, 0);
 		m_pCamera->SetTransform(cameraPosition, cameraEulerAngle);
 
 		m_pGizmoModel = new GizmoModel();

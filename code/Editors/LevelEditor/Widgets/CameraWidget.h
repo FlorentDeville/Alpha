@@ -21,7 +21,7 @@ namespace Editors
 		void Update(float dtInSeconds);
 		void Render(float aspectRatio);
 
-		void SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle);
+		void SetTransform(const Core::Vec4f& pos, const Core::Vec4f& eulerAngle);
 		void SetFov(float fov);
 
 		const Core::Mat44f& GetView() const;
