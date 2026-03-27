@@ -2,7 +2,7 @@
 /* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "GameMgr.h"
+#include "Systems/Game/GameMgr.h"
 
 #include "Core/Math/Constants.h"
 

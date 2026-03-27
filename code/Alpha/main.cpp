@@ -14,7 +14,6 @@
 #include <DirectXMath.h>
 
 #include "Alpha/Configuration.h"
-#include "Alpha/GameMgr.h"
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
@@ -48,7 +47,7 @@
 #include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Container/ContainerMgr.h"
-
+#include "Systems/Game/GameMgr.h"
 #include "Systems/Reflection/ReflectionCoreTypes.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 #include "Systems/Reflection/ReflectionSystemsTypes.h"

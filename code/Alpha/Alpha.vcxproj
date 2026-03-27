@@ -99,7 +99,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Configuration.cpp" />
-    <ClCompile Include="GameMgr.cpp" />
     <ClCompile Include="main.cpp" />
     <FxCompile Include="Shaders\shadowmap.ps.hlsl">
       <FileType>Document</FileType>
@@ -321,7 +320,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration.h" />
-    <ClInclude Include="GameMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini">
