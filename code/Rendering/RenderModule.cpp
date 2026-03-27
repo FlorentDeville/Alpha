@@ -121,7 +121,7 @@ namespace Rendering
 
 		m_pLinearCBufferPool = new LinearConstantBufferPool();
 		const int CBUFFER_SIZE = 512;
-		const int CBUFFER_COUNT = 2000;
+		const int CBUFFER_COUNT = 4000;
 		m_pLinearCBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
 
 
