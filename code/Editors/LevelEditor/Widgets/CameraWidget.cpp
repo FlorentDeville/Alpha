@@ -1,11 +1,8 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
-
-#include "Core/Math/Mat44f.h"
-#include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 
@@ -13,11 +10,7 @@
 
 #include "OsWin/Input.h"
 
-#include "Rendering/Camera.h"
 #include "Rendering/RenderModule.h"
-
-//needed for the operators *-+ between vectors and floats.
-using namespace DirectX;
 
 namespace Editors
 {
@@ -31,6 +24,9 @@ namespace Editors
 		, m_cameraPosition()
 		, m_cameraRotation()
 		, m_cameraTransform()
+		, m_view()
+		, m_proj()
+		, m_fov(0)
 	{}
 
 	CameraWidget::~CameraWidget()
@@ -56,44 +52,57 @@ namespace Editors
 
 	void CameraWidget::Render(float aspectRatio)
 	{
-		float fovRad = LevelEditorModule::Get().GetFovRad();
+		Core::Vec4f cameraUp(0, 1, 0, 0);
+		Core::Vec4f targetOffset(0, 0, 1, 1);
 
-		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-		Rendering::Camera* pCamera = renderModule.GetCamera();
+		Core::Vec4f cameraLookAt = targetOffset * m_cameraTransform;
 
-		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR targetOffset = DirectX::XMVectorSet(0, 0, 1, 1);
-		DirectX::XMVECTOR cameraLookAt = DirectX::XMVector4Transform(targetOffset, m_cameraTransform);
-		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
-		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
+		m_view = Core::Mat44f::CreateView(m_cameraPosition, cameraLookAt - m_cameraPosition, cameraUp);
 
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
-		pCamera->SetProjection(fovRad, aspectRatio, nearDistance, farDistance);
+		m_proj = Core::Mat44f::CreatePerspective(m_fov, aspectRatio, nearDistance, farDistance);
 	}
 
-	void CameraWidget::SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle)
+	void CameraWidget::SetTransform(const Core::Vec4f& pos, const Core::Vec4f& eulerAngle)
 	{
 		m_cameraPosition = pos;
 		m_cameraEulerAngle = eulerAngle;
 
-		DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
-		DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
+		Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(m_cameraEulerAngle.GetX());
+		Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(m_cameraEulerAngle.GetY());
+
 		m_cameraRotation = XRotation * YRotation;
 		
-		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
-		m_cameraTransform = m_cameraRotation * translationMatrix;
+		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
+		m_cameraTransform = m_cameraRotation * translation;
 
-		const DirectX::XMVECTOR& dxX = m_cameraTransform.r[0];
-		const DirectX::XMVECTOR& dxY = m_cameraTransform.r[1];
-		const DirectX::XMVECTOR& dxZ = m_cameraTransform.r[2];
-		const DirectX::XMVECTOR& dxW = m_cameraTransform.r[3];
-		Core::Vec4f x(dxX.m128_f32[0], dxX.m128_f32[1], dxX.m128_f32[2], dxX.m128_f32[3]);
-		Core::Vec4f y(dxY.m128_f32[0], dxY.m128_f32[1], dxY.m128_f32[2], dxY.m128_f32[3]);
-		Core::Vec4f z(dxZ.m128_f32[0], dxZ.m128_f32[1], dxZ.m128_f32[2], dxZ.m128_f32[3]);
-		Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
-		Core::Mat44f mat(x, y, z, w);
-		m_onWsChanged(mat);
+		m_onWsChanged(m_cameraTransform);
+	}
+
+	void CameraWidget::SetFov(float fov)
+	{
+		m_fov = fov;
+	}
+
+	const Core::Mat44f& CameraWidget::GetView() const
+	{
+		return m_view;
+	}
+
+	const Core::Mat44f& CameraWidget::GetProjection() const
+	{
+		return m_proj;
+	}
+
+	const Core::Vec4f& CameraWidget::GetPosition() const
+	{
+		return m_cameraPosition;
+	}
+
+	float CameraWidget::GetFov() const
+	{
+		return m_fov;
 	}
 
 	Core::CallbackId CameraWidget::OnWsChanged(const OnWsChangedEvent::Callback& callback)
@@ -112,7 +121,7 @@ namespace Editors
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 
-		DirectX::XMINT2 mousePosition;
+		Core::Int2 mousePosition;
 		Os::GetMousePosition(mousePosition.x, mousePosition.y);
 
 		if (!inputs.IsMouseRightButtonDown())
@@ -135,38 +144,38 @@ namespace Editors
 
 		if (inputs.IsKeyPressed('W')) //forward
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f zAxis = m_cameraRotation.GetZ();
+			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('S')) //backward
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f zAxis = m_cameraRotation.GetZ();
+			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('A')) //left
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f xAxis = m_cameraRotation.GetX();
+			m_cameraPosition = m_cameraPosition - (xAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('D')) //right
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f xAxis = m_cameraRotation.GetX();
+			m_cameraPosition = m_cameraPosition + (xAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('Q')) //up
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f yAxis = m_cameraRotation.GetY();
+			m_cameraPosition = m_cameraPosition + (yAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('E')) //down
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f yAxis = m_cameraRotation.GetY();
+			m_cameraPosition = m_cameraPosition - (yAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 
@@ -187,13 +196,13 @@ namespace Editors
 				float x = -static_cast<float>(mouseDelta.y) * m_rotationSpeed * dtInSeconds;
 				float y = -static_cast<float>(mouseDelta.x) * m_rotationSpeed * dtInSeconds;
 				
-				DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(x, y, 0, 0);
-				m_cameraEulerAngle += eulerRotation;
+				Core::Vec4f eulerRotation(x, y, 0, 0);
+				m_cameraEulerAngle = m_cameraEulerAngle + eulerRotation;
 				
-				DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
-				DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
+				Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(m_cameraEulerAngle.GetY());
+				Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(m_cameraEulerAngle.GetX());
 
-				m_cameraRotation = DirectX::XMMatrixMultiply(XRotation, YRotation);
+				m_cameraRotation = XRotation * YRotation;
 
 				updateCameraTransform = true;
 			}
@@ -201,19 +210,9 @@ namespace Editors
 
 		if (updateCameraTransform)
 		{
-			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
-			m_cameraTransform = m_cameraRotation * translationMatrix;
-
-			const DirectX::XMVECTOR& dxX = m_cameraTransform.r[0];
-			const DirectX::XMVECTOR& dxY = m_cameraTransform.r[1];
-			const DirectX::XMVECTOR& dxZ = m_cameraTransform.r[2];
-			const DirectX::XMVECTOR& dxW = m_cameraTransform.r[3];
-			Core::Vec4f x(dxX.m128_f32[0], dxX.m128_f32[1], dxX.m128_f32[2], dxX.m128_f32[3]);
-			Core::Vec4f y(dxY.m128_f32[0], dxY.m128_f32[1], dxY.m128_f32[2], dxY.m128_f32[3]);
-			Core::Vec4f z(dxZ.m128_f32[0], dxZ.m128_f32[1], dxZ.m128_f32[2], dxZ.m128_f32[3]);
-			Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
-			Core::Mat44f mat(x, y, z, w);
-			m_onWsChanged(mat);
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
+			m_cameraTransform = m_cameraRotation * translation;
+			m_onWsChanged(m_cameraTransform);
 		}
 
 		m_mousePreviousPos = mousePosition;

@@ -34,6 +34,7 @@ struct ID3D12Device2;
 namespace Core
 {
 	class Float4;
+	class Mat44f;
 }
 
 namespace Rendering
@@ -72,11 +73,11 @@ namespace Rendering
 
 		void SetScissorRectangle(const D3D12_RECT& rect);
 
-		void RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const Core::Float4& color);
-		void RenderPrimitiveCone(const DirectX::XMMATRIX& world, const Core::Float4& color);
-		void RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const Core::Float4& color);
-		void RenderPrimitiveCube(const DirectX::XMMATRIX& world, const Core::Float4& color);
-		void RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const Core::Float4& color);
+		void RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color);
+		void RenderPrimitiveCone(const Core::Mat44f& wvp, const Core::Float4& color);
+		void RenderPrimitiveTorus(const Core::Mat44f& wvp, const Core::Float4& color);
+		void RenderPrimitiveCube(const Core::Mat44f& wvp, const Core::Float4& color);
+		void RenderPrimitiveSphere(const Core::Mat44f& wvp, const Core::Float4& color);
 
 		void ExecuteRenderCommand();
 
@@ -84,9 +85,6 @@ namespace Rendering
 
 		int GetNumFrames() const;
 		const DirectX::XMUINT2& GetGameResolution() const;
-
-		Camera* GetCamera();
-		const Camera* GetConstCamera() const;
 
 		void InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
 
@@ -160,8 +158,6 @@ namespace Rendering
 
 		float m_clearColor[4];
 
-		Camera* m_pCamera;
-
 		//CBuffer pool being reset every frame used for PerFrame cbuffer.
 		LinearConstantBufferPool* m_pLinearCBufferPool;
 
@@ -202,6 +198,6 @@ namespace Rendering
 		void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 
 	public:
-		void RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& wvp, const Core::Float4& color) const;
+		void RenderBaseShape(const Mesh* pMesh, const Core::Mat44f& wvp, const Core::Float4& color) const;
 	};
 }

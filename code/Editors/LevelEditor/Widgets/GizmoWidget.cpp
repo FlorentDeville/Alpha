@@ -18,8 +18,6 @@
 
 #include "Rendering/RenderModule.h"
 
-using namespace DirectX;
-
 //#pragma optimize("", off)
 
 namespace Editors
@@ -79,7 +77,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::Render()
+	void GizmoWidget::Render(const Core::Mat44f& viewProj)
 	{
 		if (!m_enabled || !m_pModel->ShouldRender())
 			return;
@@ -100,15 +98,15 @@ namespace Editors
 		switch (m_manipulatorMode)
 		{
 		case kTranslation:
-			RenderTranslationManipulator();
+			RenderTranslationManipulator(viewProj);
 			break;
 
 		case kRotation:
-			RenderRotationManipulator();
+			RenderRotationManipulator(viewProj);
 			break;
 
 		case kScale:
-			RenderScaleManipulator();
+			RenderScaleManipulator(viewProj);
 			break;
 
 		default:
@@ -620,88 +618,69 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderRotationManipulator()
+	void GizmoWidget::RenderRotationManipulator(const Core::Mat44f& viewProj)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
-		const Core::Vec4f& dxXAxis = txWs.GetX();
-		const Core::Vec4f& dxYAxis = txWs.GetY();
-		const Core::Vec4f& dxZAxis = txWs.GetZ();
-		const Core::Vec4f& dxTAxis = txWs.GetT();
-		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
-		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
-		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
-		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
-		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
 
 		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realRotationDiameter = ROTATION_DIAMATER * size;
-		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(realRotationDiameter, realRotationDiameter, realRotationDiameter);
+		Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realRotationDiameter, realRotationDiameter, realRotationDiameter, 0));
 
 		//rotation x axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(0, 0, rotationAngle);
-			DirectX::XMMATRIX mvpMatrix = scale * rotation * dxTxWs;
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(rotationAngle);
+			Core::Mat44f transform = scale * rotation * txWs * viewProj;
 
 			Core::Float4 red(1, 0, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				red = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				red = m_hoverColor;
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, red);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, red);
 		}
 
 		//rotation y axis
 		{
 			Core::Float4 green(0, 1, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				green = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				green = m_hoverColor;
 
-			DirectX::XMMATRIX mvpMatrix = scale * dxTxWs;
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, green);
+			Core::Mat44f transform = scale * txWs * viewProj;
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, green);
 		}
 
 		//rotation z axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(rotationAngle, 0, 0);
-			DirectX::XMMATRIX mvpMatrix = scale * rotation * dxTxWs;
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(rotationAngle);
+			Core::Mat44f transform = scale * rotation * txWs * viewProj;
 
 			Core::Float4 blue(0, 0, 1, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				blue = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				blue = m_hoverColor;
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, blue);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, blue);
 		}
 	}
 
-	void GizmoWidget::RenderTranslationManipulator()
+	void GizmoWidget::RenderTranslationManipulator(const Core::Mat44f& viewProj)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
-		const Core::Vec4f& dxXAxis = txWs.GetX();
-		const Core::Vec4f& dxYAxis = txWs.GetY();
-		const Core::Vec4f& dxZAxis = txWs.GetZ();
-		const Core::Vec4f& dxTAxis = txWs.GetT();
-		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
-		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
-		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
-		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
-		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
-
-		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 		//x axis
 		{
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
+			Core::Mat44f transform = rotation * txWs;
 
 			Core::Float4 red(1, 0, 0, 0);
 			Core::Float4 appliedColor = red;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(rotation * dxTxWs, appliedColor);
+			RenderTranslationSingleAxis(transform, viewProj, appliedColor);
 		}
 
 		//y axis
@@ -709,77 +688,71 @@ namespace Editors
 			Core::Float4 green(0, 1, 0, 0);
 			Core::Float4 appliedColor = green;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(dxTxWs, appliedColor);
+			RenderTranslationSingleAxis(txWs, viewProj, appliedColor);
 		}
 
 		//z axis
 		{
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
+			Core::Mat44f transform = rotation * txWs;
 
 			Core::Float4 blue(0, 0, 1, 0);
 			Core::Float4 appliedColor = blue;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(rotation * dxTxWs, appliedColor);
+			RenderTranslationSingleAxis(transform, viewProj, appliedColor);
 		}
 	}
 
-	void GizmoWidget::RenderScaleManipulator()
+	void GizmoWidget::RenderScaleManipulator(const Core::Mat44f& viewProj)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
-		const Core::Vec4f& dxXAxis = txWs.GetX();
-		const Core::Vec4f& dxYAxis = txWs.GetY();
-		const Core::Vec4f& dxZAxis = txWs.GetZ();
-		const Core::Vec4f& dxTAxis = txWs.GetT();
-		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
-		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
-		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
-		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
-		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
-
-		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 		//x axis
 		{
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
+			Core::Mat44f transform = rotation * txWs;
+
 			Core::Float4 red(1, 0, 0, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				red = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				red = m_hoverColor;
 
-			RenderScaleSingleAxis(rotation * dxTxWs, red);
+			RenderScaleSingleAxis(transform, viewProj, red);
 		}
 
 		//y axis
 		{
 			Core::Float4 green(0, 1, 0, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				green = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				green = m_hoverColor;
 
-			RenderScaleSingleAxis(dxTxWs, green);
+			RenderScaleSingleAxis(txWs, viewProj, green);
 		}
 
 		//z axis
 		{
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
+			Core::Mat44f transform = rotation * txWs;
+
 			Core::Float4 blue(0, 0, 1, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				blue = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				blue = m_hoverColor;
 
-			RenderScaleSingleAxis(rotation * dxTxWs, blue);
+			RenderScaleSingleAxis(transform, viewProj, blue);
 		}
 	}
 
-	void GizmoWidget::RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const Core::Float4& color)
+	void GizmoWidget::RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color)
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 		
-		Core::Vec4f objectPosition(txWs.r[3].m128_f32[0], txWs.r[3].m128_f32[1], txWs.r[3].m128_f32[2], 1);
+		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realDiameter = BASE_DIAMETER * size;
@@ -804,59 +777,49 @@ namespace Editors
 #endif
 
 		{
-			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realDiameter, realLength, realDiameter, 0);
-			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0.f, realLength * 0.5f, 0, 0);
-			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
-			DirectX::XMMATRIX ws = txLs * txWs;
+			Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realDiameter, realLength, realDiameter, 0));
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength * 0.5f, 0, 0));
+			Core::Mat44f txLs = scale * translation;
+			Core::Mat44f ws = txLs * txWs * viewProj;
 			renderingMgr.RenderPrimitiveCylinder(ws, color);
 		}
 
-		{
-			
+		{		
 			float coneDiameter = CONE_BASE_DIAMETER * size;
 			float coneLength = CONE_BASE_LENGTH * size;
 
-			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, realLength, 0, 0);
-			DirectX::XMVECTOR localRotationOrigin = DirectX::XMVectorSet(0, 0, 0, 1);
-			DirectX::XMVECTOR localRotation = DirectX::XMQuaternionIdentity();
-			DirectX::XMVECTOR localScale = DirectX::XMVectorSet(coneDiameter, coneLength, coneDiameter, 0);
-			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(localScale, localRotationOrigin, localRotation, localTranslation);
-
-			DirectX::XMMATRIX ws = txLs * txWs;
+			Core::Mat44f localScale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(coneDiameter, coneLength, coneDiameter, 0));
+			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength, 0, 0));
+			Core::Mat44f txLs = localScale * localTranslation;
+			Core::Mat44f ws = txLs * txWs * viewProj;
 			renderingMgr.RenderPrimitiveCone(ws, color);
 		}
 	}
 
-	void GizmoWidget::RenderScaleSingleAxis(const DirectX::XMMATRIX& txWs, const Core::Float4& color) const
+	void GizmoWidget::RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color) const
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
-		Core::Vec4f objectPosition(txWs.r[3].m128_f32[0], txWs.r[3].m128_f32[1], txWs.r[3].m128_f32[2], 1);
+		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realDiameter = BASE_DIAMETER * size;
 		float realLength = LENGTH * size;
 
 		{
-			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realDiameter, realLength, realDiameter, 0);
-			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0.f, realLength * 0.5f, 0, 0);
-			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
-			DirectX::XMMATRIX ws = txLs * txWs;
+			Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(realDiameter, realLength, realDiameter);
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0.f, realLength * 0.5f, 0);
+			Core::Mat44f ws = scale * translation * txWs * viewProj;
 			renderingMgr.RenderPrimitiveCylinder(ws, color);
 		}
 
 		{
-
 			float coneDiameter = CONE_BASE_DIAMETER * size;
 			float coneLength = SCALE_SQUARE_SIZE * size;
 
-			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, realLength, 0, 0);
-			DirectX::XMVECTOR localRotationOrigin = DirectX::XMVectorSet(0, 0, 0, 1);
-			DirectX::XMVECTOR localRotation = DirectX::XMQuaternionIdentity();
-			DirectX::XMVECTOR localScale = DirectX::XMVectorSet(coneLength, coneLength, coneLength, 0);
-			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(localScale, localRotationOrigin, localRotation, localTranslation);
-
-			DirectX::XMMATRIX ws = txLs * txWs;
+			Core::Mat44f localScale = Core::Mat44f::CreateScaleMatrix(coneLength);
+			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(0, realLength, 0);
+			Core::Mat44f ws = localScale * localTranslation * txWs * viewProj;
 			renderingMgr.RenderPrimitiveCube(ws, color);
 		}
 	}

@@ -86,7 +86,7 @@ namespace Widgets
 
 		pCommandList->SetGraphicsRoot32BitConstants(1, sizeof(m_size) / 4, &m_size, 0);
 
-		DirectX::XMFLOAT2 textureRect;
+		Core::Float2 textureRect;
 		textureRect.x = (float)pTexture->GetWidth();
 		textureRect.y = (float)pTexture->GetHeight();
 		pCommandList->SetGraphicsRoot32BitConstants(2, sizeof(textureRect) / 4, &textureRect, 0);
@@ -102,10 +102,8 @@ namespace Widgets
 		Widget::Draw(windowSize, scissor);
 	}
 
-	Core::Vec4f Viewport::Compute3dPosition(const Core::UInt2& windowAbsPos) const
+	Core::Vec4f Viewport::Compute3dPosition(const Core::UInt2& windowAbsPos, const Core::Mat44f& view, const Core::Mat44f& proj) const
 	{
-		const Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetConstCamera();
-
 		//get position in viewport widget
 		Core::UInt2 absPos(GetScreenX(), GetScreenY());
 		Core::UInt2 size = GetSize();
@@ -146,15 +144,8 @@ namespace Widgets
 			mouseViewportPos.y = mouseViewportWidgetPos.y;
 		}
 
-		const Core::Mat44f& proj = pCamera->GetProjectionMatrix();
-
-		DirectX::XMFLOAT2 mouseScreenSpace;
-		mouseScreenSpace.x = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.GetX().GetX();
-		mouseScreenSpace.y = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
-
 		//get mouse 3d position
-		const Core::Mat44f& view = pCamera->GetViewMatrix();
-		
+
 		//calculate the inverse of the view
 		Core::Mat44f invR = view;
 		invR.SetRow(3, Core::Vec4f(0, 0, 0, 1));
@@ -165,7 +156,9 @@ namespace Widgets
 		Core::Mat44f invView = invR;
 		invView.SetRow(3, invViewPos);
 
-		Core::Vec4f mousePosition(mouseScreenSpace.x, mouseScreenSpace.y, 1, 1);
+		float mouseScreenSpaceX = ((mouseViewportPos.x / (float)w) * 2 - 1) / proj.GetX().GetX();
+		float mouseScreenSpaceY = ((mouseViewportPos.y / (float)h) * -2 + 1) / proj.GetY().GetY();
+		Core::Vec4f mousePosition(mouseScreenSpaceX, mouseScreenSpaceY, 1, 1);
 		Core::Vec4f mousePosition3d = mousePosition * invView;
 		return mousePosition3d;
 	}

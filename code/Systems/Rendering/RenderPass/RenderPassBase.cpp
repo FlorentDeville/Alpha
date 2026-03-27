@@ -80,6 +80,8 @@ namespace Systems
 			lightSpace[ii] = scene.m_lights[ii].m_lightSpaceTX;
 		}
 
+		Core::Mat44f viewProj = scene.m_camera.m_view * scene.m_camera.m_proj;
+
 		//now render all renderables
 		for (const Systems::RenderableObject& renderable : scene.m_objects)
 		{
@@ -88,7 +90,7 @@ namespace Systems
 
 			if (renderable.m_primitiveMesh)
 			{
-				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx.m_matrix, Core::Float4(1, 1, 1, 1));
+				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx * viewProj, Core::Float4(1, 1, 1, 1));
 			}
 			else
 			{
