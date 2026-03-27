@@ -83,23 +83,21 @@ namespace Editors
 		m_cameraPosition = pos;
 		m_cameraEulerAngle = eulerAngle;
 
-		DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
-		DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
-		m_cameraRotation = XRotation * YRotation;
-		
-		DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
-		m_cameraTransform = m_cameraRotation * translationMatrix;
+		Core::Vec4f cameraPosition(m_cameraPosition);
+		Core::Vec4f cameraEulerAngle(m_cameraEulerAngle);
 
-		const DirectX::XMVECTOR& dxX = m_cameraTransform.r[0];
-		const DirectX::XMVECTOR& dxY = m_cameraTransform.r[1];
-		const DirectX::XMVECTOR& dxZ = m_cameraTransform.r[2];
-		const DirectX::XMVECTOR& dxW = m_cameraTransform.r[3];
-		Core::Vec4f x(dxX.m128_f32[0], dxX.m128_f32[1], dxX.m128_f32[2], dxX.m128_f32[3]);
-		Core::Vec4f y(dxY.m128_f32[0], dxY.m128_f32[1], dxY.m128_f32[2], dxY.m128_f32[3]);
-		Core::Vec4f z(dxZ.m128_f32[0], dxZ.m128_f32[1], dxZ.m128_f32[2], dxZ.m128_f32[3]);
-		Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
-		Core::Mat44f mat(x, y, z, w);
-		m_onWsChanged(mat);
+		Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(cameraEulerAngle.GetX());
+		Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(cameraEulerAngle.GetY());
+
+		Core::Mat44f rotXY = XRotation * YRotation;
+		m_cameraRotation = rotXY.m_matrix;
+		
+		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(cameraPosition);
+		Core::Mat44f transform = rotXY * translation;
+
+		m_cameraTransform = transform.m_matrix;
+
+		m_onWsChanged(transform);
 	}
 
 	void CameraWidget::SetFov(float fov)
