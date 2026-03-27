@@ -21,9 +21,11 @@ namespace Editors
 		void Render(float aspectRatio);
 
 		void SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle);
+		void SetFov(float fov);
 
 		const Core::Mat44f& GetView() const;
 		const Core::Mat44f& GetProjection() const;
+		float GetFov() const;
 
 		//event
 		using OnWsChangedEvent = Core::CallbackList<void(const Core::Mat44f&)>;
@@ -44,6 +46,8 @@ namespace Editors
 
 		Core::Mat44f m_view;
 		Core::Mat44f m_proj;
+		
+		float m_fov;
 
 		float m_translationSpeed;
 		float m_rotationSpeed;

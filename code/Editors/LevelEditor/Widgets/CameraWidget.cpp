@@ -58,8 +58,6 @@ namespace Editors
 
 	void CameraWidget::Render(float aspectRatio)
 	{
-		float fovRad = LevelEditorModule::Get().GetFovRad(); //pass this through getter/setter
-		
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 		Rendering::Camera* pCamera = renderModule.GetCamera();
 
@@ -76,8 +74,8 @@ namespace Editors
 
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
-		pCamera->SetProjection(fovRad, aspectRatio, nearDistance, farDistance);
-		m_proj = Core::Mat44f::CreatePerspective(fovRad, aspectRatio, nearDistance, farDistance);
+		pCamera->SetProjection(m_fov, aspectRatio, nearDistance, farDistance);
+		m_proj = Core::Mat44f::CreatePerspective(m_fov, aspectRatio, nearDistance, farDistance);
 	}
 
 	void CameraWidget::SetTransform(const DirectX::XMVECTOR& pos, const DirectX::XMVECTOR& eulerAngle)
@@ -104,6 +102,11 @@ namespace Editors
 		m_onWsChanged(mat);
 	}
 
+	void CameraWidget::SetFov(float fov)
+	{
+		m_fov = fov;
+	}
+
 	const Core::Mat44f& CameraWidget::GetView() const
 	{
 		return m_view;
@@ -112,6 +115,11 @@ namespace Editors
 	const Core::Mat44f& CameraWidget::GetProjection() const
 	{
 		return m_proj;
+	}
+
+	float CameraWidget::GetFov() const
+	{
+		return m_fov;
 	}
 
 	Core::CallbackId CameraWidget::OnWsChanged(const OnWsChangedEvent::Callback& callback)
