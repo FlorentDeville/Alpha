@@ -406,7 +406,7 @@ void Update()
 	start = clock.now();
 	std::chrono::milliseconds dtMs = std::chrono::duration_cast<std::chrono::milliseconds>(dt);
 
-	GameMgr::Get().Update();
+	Systems::GameMgr::Get().Update();
 	Widgets::WidgetMgr::Get().Update(dtMs.count());
 }
 
@@ -418,7 +418,7 @@ void Render()
 	renderModule.PreRender();
 
 	//first render the game
-	GameMgr::Get().Render();
+	Systems::GameMgr::Get().Render();
 
 	//render all the viewports from the editors
 	widgetsModule.Render();
@@ -579,7 +579,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	widgetMgrParameter.m_pMainWindow = g_pWindow;
 	widgetMgr.Init(widgetMgrParameter);
 
-	GameMgr& gameMgr = GameMgr::InitSingleton();
+	Systems::GameMgr& gameMgr = Systems::GameMgr::InitSingleton();
 	gameMgr.Init();
 
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
@@ -642,7 +642,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	levelEditorModule.Shutdown();
 
 	gameMgr.Release();
-	GameMgr::ReleaseSingleton();
+	Systems::GameMgr::ReleaseSingleton();
 
 	inputMgr.Release();
 	Inputs::InputMgr::ReleaseSingleton();
