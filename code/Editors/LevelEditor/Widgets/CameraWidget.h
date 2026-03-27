@@ -7,8 +7,7 @@
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
-
-#include <DirectXMath.h>
+#include "Core/Math/Vectors.h"
 
 namespace Editors
 {
@@ -56,7 +55,7 @@ namespace Editors
 
 		bool m_firstFrameMouseDown;
 
-		DirectX::XMINT2 m_mousePreviousPos;
+		Core::Int2 m_mousePreviousPos;
 
 		CameraState m_cameraState;
 

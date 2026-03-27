@@ -4,20 +4,13 @@
 
 #include "Editors/LevelEditor/Widgets/CameraWidget.h"
 
-#include "Core/Math/Mat44f.h"
-#include "Core/Math/Vec4f.h"
-
 #include "Editors/LevelEditor/LevelEditorModule.h"
 
 #include "Inputs/InputMgr.h"
 
 #include "OsWin/Input.h"
 
-#include "Rendering/Camera.h"
 #include "Rendering/RenderModule.h"
-
-//needed for the operators *-+ between vectors and floats.
-using namespace DirectX;
 
 namespace Editors
 {
@@ -33,6 +26,7 @@ namespace Editors
 		, m_cameraTransform()
 		, m_view()
 		, m_proj()
+		, m_fov(0)
 	{}
 
 	CameraWidget::~CameraWidget()
@@ -127,7 +121,7 @@ namespace Editors
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
 
-		DirectX::XMINT2 mousePosition;
+		Core::Int2 mousePosition;
 		Os::GetMousePosition(mousePosition.x, mousePosition.y);
 
 		if (!inputs.IsMouseRightButtonDown())
