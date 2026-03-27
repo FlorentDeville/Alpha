@@ -58,11 +58,8 @@ namespace Editors
 
 	void CameraWidget::Render(float aspectRatio)
 	{
-		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
-		Rendering::Camera* pCamera = renderModule.GetCamera();
-
-		Core::Vec4f cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		Core::Vec4f targetOffset = DirectX::XMVectorSet(0, 0, 1, 1);
+		Core::Vec4f cameraUp(0, 1, 0, 0);
+		Core::Vec4f targetOffset(0, 0, 1, 1);
 
 		Core::Mat44f cameraWorld;
 		cameraWorld.m_matrix = m_cameraTransform;
@@ -70,11 +67,9 @@ namespace Editors
 		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
 
 		m_view = Core::Mat44f::CreateView(cameraPosition, cameraLookAt - cameraPosition, cameraUp);
-		pCamera->SetLookAt(cameraPosition, cameraLookAt, cameraUp);
 
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
-		pCamera->SetProjection(m_fov, aspectRatio, nearDistance, farDistance);
 		m_proj = Core::Mat44f::CreatePerspective(m_fov, aspectRatio, nearDistance, farDistance);
 	}
 
