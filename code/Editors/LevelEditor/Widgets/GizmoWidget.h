@@ -93,7 +93,7 @@ namespace Editors
 		void RenderScaleManipulator();
 
 		void RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Float4& color);
-		void RenderScaleSingleAxis(const DirectX::XMMATRIX& txWs, const Core::Float4& color) const;
+		void RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Float4& color) const;
 
 		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
 

@@ -233,6 +233,11 @@ namespace Core
 		return matrix;
 	}
 
+	Mat44f Mat44f::CreateTranslationMatrix(float x, float y, float z)
+	{
+		return CreateTranslationMatrix(Core::Vec4f(x, y, z, 0));
+	}
+
 	Mat44f Mat44f::CreateScaleMatrix(const Vec4f& scale)
 	{
 		Mat44f matrix;
@@ -241,6 +246,16 @@ namespace Core
 		matrix.Set(2, 2, scale.GetZ());
 		matrix.Set(3, 3, 1);
 		return matrix;
+	}
+
+	Mat44f Mat44f::CreateScaleMatrix(float uniformScale)
+	{
+		return CreateScaleMatrix(Core::Vec4f(uniformScale, uniformScale, uniformScale, 0));
+	}
+
+	Mat44f Mat44f::CreateScaleMatrix(float x, float y, float z)
+	{
+		return CreateScaleMatrix(Core::Vec4f(x, y, z, 0));
 	}
 
 	Mat44f Mat44f::CreateTransformMatrix(const Sqt& sqt)

@@ -55,7 +55,10 @@ namespace Core
 		static Mat44f CreateRotationY(float angle);
 		static Mat44f CreateRotationZ(float angle);
 		static Mat44f CreateTranslationMatrix(const Vec4f& translation);
+		static Mat44f CreateTranslationMatrix(float x, float y, float z);
 		static Mat44f CreateScaleMatrix(const Vec4f& scale);
+		static Mat44f CreateScaleMatrix(float uniformScale);
+		static Mat44f CreateScaleMatrix(float x, float y, float z);
 		static Mat44f CreateTransformMatrix(const Sqt& sqt);
 		static Mat44f CreateIdentity();
 
