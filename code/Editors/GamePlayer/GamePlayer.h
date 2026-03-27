@@ -27,5 +27,9 @@ namespace Editors
 		Rendering::RootSignature* m_pRootSig;
 
 		void Viewport_OnRender();
+
+		void OnClick_Play();
+		void OnClick_Pause();
+		void OnClick_Stop();
 	};
 }

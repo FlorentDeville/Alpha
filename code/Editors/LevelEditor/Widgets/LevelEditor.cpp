@@ -16,6 +16,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
+#include "Editors/EditorManager.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
@@ -26,6 +27,7 @@
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Game/GameMgr.h"
 #include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Container.h"
@@ -755,7 +757,12 @@ namespace Editors
 
 	void LevelEditor::OnClickGameMenu_Play()
 	{
+		Systems::NewAssetId id = LevelEditorModule::Get().GetCurrentLoadedLevelAssetId();
+		if (!id.IsValid())
+			return;
 
+		Systems::GameMgr::Get().RequestLoadingLevel(id);
+		EditorManager::Get().SwitchTab(TabId::GAME_PLAYER);
 	}
 
 	void LevelEditor::OnClickTransformationMenu_Snap()

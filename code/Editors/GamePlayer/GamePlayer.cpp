@@ -4,6 +4,8 @@
 
 #include "Editors/GamePlayer/GamePlayer.h"
 
+#include "Core/Log/LogModule.h"
+
 #include "Editors/EditorParameter.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
@@ -41,12 +43,15 @@ namespace Editors
 		m_pInternalLayout->AddWidget(pMenu);
 
 		Widgets::Button* pPlayButton = new Widgets::Button("Play");
+		pPlayButton->OnClick([this]() { OnClick_Play(); });
 		pMenu->AddWidget(pPlayButton);
 
 		Widgets::Button* pPauseButton = new Widgets::Button("Pause");
+		pPauseButton->OnClick([this]() { OnClick_Pause(); });
 		pMenu->AddWidget(pPauseButton);
 
 		Widgets::Button* pStopButton = new Widgets::Button("Stop");
+		pStopButton->OnClick([this]() { OnClick_Stop(); });
 		pMenu->AddWidget(pStopButton);
 
 		const int WIDTH = 1920;
@@ -90,5 +95,21 @@ namespace Editors
 		}
 
 		renderer.RenderNoBufferTriangle();
+	}
+
+	void GamePlayer::OnClick_Play()
+	{
+		Core::LogModule::Get().LogError("Play not implemented!");
+	}
+
+	void GamePlayer::OnClick_Pause()
+	{
+		Core::LogModule::Get().LogError("Pause not implemented!");
+	}
+
+	void GamePlayer::OnClick_Stop()
+	{
+		Systems::GameMgr::Get().RequestUnloadingAllLevels();
+		Core::LogModule::Get().LogError("Game stopped.");
 	}
 }
