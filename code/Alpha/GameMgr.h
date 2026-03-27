@@ -9,8 +9,11 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
+#include <stack>
+
 namespace Rendering
 {
+	class Camera;
 	class RenderTarget;
 }
 
@@ -49,6 +52,9 @@ private:
 
 	Systems::RenderPassBase* m_pRenderPassBase;
 	Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
+
+	//Stack of camera. The currently active camera is the one at the top. There is always a default camera.
+	std::stack<Rendering::Camera*> m_cameraStack;
 
 	bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

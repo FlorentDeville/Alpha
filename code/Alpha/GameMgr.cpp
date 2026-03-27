@@ -4,6 +4,9 @@
 
 #include "GameMgr.h"
 
+#include "Core/Math/Constants.h"
+
+#include "Rendering/Camera.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
@@ -25,13 +28,22 @@ GameMgr::~GameMgr()
 
 void GameMgr::Init()
 {
-	m_pFinalRenderTarget = new Rendering::RenderTarget(1920, 1080, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	const int WIDTH = 1920;
+	const int HEIGHT = 1080;
+	constexpr float RATIO = static_cast<float>(WIDTH) / static_cast<float>(HEIGHT);
+
+	m_pFinalRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
 
 	m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
 
 	m_pRenderPassBase = new Systems::RenderPassBase();
 	m_pRenderPassBase->SetRenderTarget(m_pFinalRenderTarget);
 	m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
+
+	Rendering::Camera* pDefaultCamera = new Rendering::Camera();
+	pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
+	pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
+	m_cameraStack.push(pDefaultCamera);
 }
 
 void GameMgr::Release()
@@ -39,6 +51,13 @@ void GameMgr::Release()
 	delete m_pRenderPassBase;
 	delete m_pRenderPassShadowMaps;
 	delete m_pFinalRenderTarget;
+
+	while (!m_cameraStack.empty())
+	{
+		Rendering::Camera* pCamera = m_cameraStack.top();
+		delete pCamera;
+		m_cameraStack.pop();
+	}
 }
 
 void GameMgr::Update()
@@ -62,6 +81,9 @@ void GameMgr::Update()
 void GameMgr::Render()
 {
 	Systems::RenderableScene scene;
+
+	const Rendering::Camera* pCamera = m_cameraStack.top();
+	Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
 
 	for (Systems::LevelAsset* pLevel : m_loadedLevels)
 	{
