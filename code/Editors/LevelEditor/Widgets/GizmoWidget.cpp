@@ -623,33 +623,24 @@ namespace Editors
 	void GizmoWidget::RenderRotationManipulator()
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
-		const Core::Vec4f& dxXAxis = txWs.GetX();
-		const Core::Vec4f& dxYAxis = txWs.GetY();
-		const Core::Vec4f& dxZAxis = txWs.GetZ();
-		const Core::Vec4f& dxTAxis = txWs.GetT();
-		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
-		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
-		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
-		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
-		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
 
 		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realRotationDiameter = ROTATION_DIAMATER * size;
-		DirectX::XMMATRIX scale = DirectX::XMMatrixScaling(realRotationDiameter, realRotationDiameter, realRotationDiameter);
+		Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realRotationDiameter, realRotationDiameter, realRotationDiameter, 0));
 
 		//rotation x axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(0, 0, rotationAngle);
-			DirectX::XMMATRIX mvpMatrix = scale * rotation * dxTxWs;
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(rotationAngle);
+			Core::Mat44f transform = scale * rotation * txWs;
 
 			Core::Float4 red(1, 0, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				red = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, red);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, red);
 		}
 
 		//rotation y axis
@@ -658,21 +649,21 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				green = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			DirectX::XMMATRIX mvpMatrix = scale * dxTxWs;
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, green);
+			Core::Mat44f transform = scale * txWs;
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, green);
 		}
 
 		//rotation z axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationRollPitchYaw(rotationAngle, 0, 0);
-			DirectX::XMMATRIX mvpMatrix = scale * rotation * dxTxWs;
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(rotationAngle);
+			Core::Mat44f transform = scale * rotation * txWs;
 
 			Core::Float4 blue(0, 0, 1, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				blue = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(mvpMatrix, blue);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, blue);
 		}
 	}
 
