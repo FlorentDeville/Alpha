@@ -91,6 +91,7 @@ namespace Editors
 		void CreateMenuFile(Widgets::MenuBar* pMenuBar);
 		void CreateMenuEdit(Widgets::MenuBar* pMenuBar);
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
+		void CreateMenuGame(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
 
 		void CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit);
@@ -127,6 +128,8 @@ namespace Editors
 		void OnClickEditMenu_RenameGameObject();
 		void OnClickEditMenu_DuplicateGameObject();
 		void OnClickEditMenu_ReparentGameObject();
+
+		void OnClickGameMenu_Play();
 
 		void OnClickTransformationMenu_Snap();
 		void OnClickTransformationMenu_SnapSettings();

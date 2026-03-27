@@ -86,6 +86,7 @@ namespace Editors
 		CreateMenuFile(m_pMenuBar);
 		CreateMenuEdit(m_pMenuBar);
 		CreateMenuTransformation(m_pMenuBar);
+		CreateMenuGame(m_pMenuBar);
 		CreateMenuWindows(m_pMenuBar);
 
 		//create the split between viewport and right panel
@@ -222,6 +223,15 @@ namespace Editors
 
 		Widgets::MenuItem* pSnapSeetings = pTransformMenu->AddMenuItem("Snap Settings...");
 		pSnapSeetings->OnClick([this]() { OnClickTransformationMenu_SnapSettings(); });
+	}
+
+	void LevelEditor::CreateMenuGame(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pMenu = pMenuBar->AddMenu("Game");
+
+		Widgets::MenuItem* pPlayItem = pMenu->AddMenuItem("Play");
+		pPlayItem->SetShortcut("Ctrl+F5");
+		pPlayItem->OnClick([this]() { OnClickGameMenu_Play(); });
 	}
 
 	void LevelEditor::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
@@ -741,6 +751,11 @@ namespace Editors
 		{
 			levelEditorModule.ReparentGameObject(newParent, *it);
 		}
+	}
+
+	void LevelEditor::OnClickGameMenu_Play()
+	{
+
 	}
 
 	void LevelEditor::OnClickTransformationMenu_Snap()
