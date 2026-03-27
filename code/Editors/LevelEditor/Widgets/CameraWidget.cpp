@@ -210,13 +210,14 @@ namespace Editors
 				float x = -static_cast<float>(mouseDelta.y) * m_rotationSpeed * dtInSeconds;
 				float y = -static_cast<float>(mouseDelta.x) * m_rotationSpeed * dtInSeconds;
 				
-				DirectX::XMVECTOR eulerRotation = DirectX::XMVectorSet(x, y, 0, 0);
-				m_cameraEulerAngle += eulerRotation;
+				Core::Vec4f eulerRotation(x, y, 0, 0);
+				m_cameraEulerAngle = m_cameraEulerAngle + eulerRotation;
 				
-				DirectX::XMMATRIX YRotation = DirectX::XMMatrixRotationY(m_cameraEulerAngle.m128_f32[1]);
-				DirectX::XMMATRIX XRotation = DirectX::XMMatrixRotationX(m_cameraEulerAngle.m128_f32[0]);
+				Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(m_cameraEulerAngle.GetY());
+				Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(m_cameraEulerAngle.GetX());
 
-				m_cameraRotation = DirectX::XMMatrixMultiply(XRotation, YRotation);
+				Core::Mat44f rotation = XRotation * YRotation;
+				m_cameraRotation = rotation.m_matrix;
 
 				updateCameraTransform = true;
 			}
