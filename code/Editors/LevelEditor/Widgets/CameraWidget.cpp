@@ -83,11 +83,10 @@ namespace Editors
 		Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(cameraEulerAngle.GetX());
 		Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(cameraEulerAngle.GetY());
 
-		Core::Mat44f rotXY = XRotation * YRotation;
-		m_cameraRotation = rotXY.m_matrix;
+		m_cameraRotation = XRotation * YRotation;
 		
 		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(cameraPosition);
-		Core::Mat44f transform = rotXY * translation;
+		Core::Mat44f transform = m_cameraRotation * translation;
 
 		m_cameraTransform = transform.m_matrix;
 
@@ -158,38 +157,38 @@ namespace Editors
 
 		if (inputs.IsKeyPressed('W')) //forward
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			Core::Vec4f zAxis = m_cameraRotation.GetZ();
 			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('S')) //backward
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
+			Core::Vec4f zAxis = m_cameraRotation.GetZ();
 			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('A')) //left
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f xAxis = m_cameraRotation.GetX();
+			m_cameraPosition = m_cameraPosition - (xAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('D')) //right
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f xAxis = m_cameraRotation.GetX();
+			m_cameraPosition = m_cameraPosition + (xAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('Q')) //up
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f yAxis = m_cameraRotation.GetY();
+			m_cameraPosition = m_cameraPosition + (yAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('E')) //down
 		{
-			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
+			Core::Vec4f yAxis = m_cameraRotation.GetY();
+			m_cameraPosition = m_cameraPosition - (yAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 
@@ -216,8 +215,7 @@ namespace Editors
 				Core::Mat44f YRotation = Core::Mat44f::CreateRotationY(m_cameraEulerAngle.GetY());
 				Core::Mat44f XRotation = Core::Mat44f::CreateRotationX(m_cameraEulerAngle.GetX());
 
-				Core::Mat44f rotation = XRotation * YRotation;
-				m_cameraRotation = rotation.m_matrix;
+				m_cameraRotation = XRotation * YRotation;
 
 				updateCameraTransform = true;
 			}
@@ -226,10 +224,7 @@ namespace Editors
 		if (updateCameraTransform)
 		{
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
-			Core::Mat44f rotation;
-			rotation.m_matrix = m_cameraRotation;
-
-			Core::Mat44f transform = rotation * translation;
+			Core::Mat44f transform = m_cameraRotation * translation;
 			m_cameraTransform = transform.m_matrix;
 			m_onWsChanged(transform);
 		}

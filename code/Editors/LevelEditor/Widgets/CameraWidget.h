@@ -41,7 +41,7 @@ namespace Editors
 		};
 
 		//camera transform
-		DirectX::XMMATRIX m_cameraRotation;		//matrix for the orientation of the camera (same as m_cameraEulerAngle)
+		Core::Mat44f m_cameraRotation;		//matrix for the orientation of the camera (same as m_cameraEulerAngle)
 		Core::Vec4f m_cameraEulerAngle;			//euler angle of the camera (same as m_cameraRotation)
 		Core::Vec4f m_cameraPosition;			//position of the camera in world space
 		DirectX::XMMATRIX m_cameraTransform;	//transform of the camera in world space
