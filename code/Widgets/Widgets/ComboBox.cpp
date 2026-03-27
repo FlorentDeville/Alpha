@@ -24,9 +24,9 @@ namespace Widgets
 		, m_readOnly(false)
 	{
 		SetSize(Core::UInt2(100, 22));
-		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_DEFAULT);
+		SetSizeStyle(HSIZE_STRETCH | VSIZE_DEFAULT);
 		
-		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, Widget::STRETCH);
+		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Horizontal_Reverse, STRETCH);
 		AddWidget(pLayout);
 
 		const Widgets::WidgetMgr& widgetMgr = Widgets::WidgetMgr::Get();
@@ -46,7 +46,7 @@ namespace Widgets
 
 		m_pOptionsContainer = new Container();
 		m_pOptionsContainer->Disable();
-		m_pOptionsContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_FIT);
+		m_pOptionsContainer->SetSizeStyle(HSIZE_DEFAULT | VSIZE_FIT);
 		m_pOptionsContainer->GetDefaultStyle().SetBorderSize(1);
 		m_pOptionsContainer->GetDefaultStyle().ShowBorder(true);
 		m_pOptionsContainer->GetDefaultStyle().SetBackgroundColor(Widgets::Color(46, 46, 46));
@@ -54,7 +54,7 @@ namespace Widgets
 		m_pOptionsContainer->GetHoverStyle() = m_pOptionsContainer->GetDefaultStyle();
 		AddWidget(m_pOptionsContainer);
 
-		m_pOptionsLayout = new Layout(Layout::Vertical, Widget::SIZE_STYLE(Widget::HSIZE_STRETCH | Widget::VSIZE_FIT));
+		m_pOptionsLayout = new Layout(Layout::Vertical, SIZE_STYLE(HSIZE_STRETCH | VSIZE_FIT));
 		m_pOptionsLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		m_pOptionsLayout->GetHoverStyle().SetBackgroundColor(Widgets::Color(0, 0, 0, 0));
 		m_pOptionsContainer->AddWidget(m_pOptionsLayout);
@@ -139,7 +139,7 @@ namespace Widgets
 		m_options.PushBack(newOption);
 
 		Button* pButton = new Button(label);
-		pButton->SetSizeStyle(Widget::HSIZE_STRETCH);
+		pButton->SetSizeStyle(HSIZE_STRETCH);
 		pButton->SetFocusPolicy(Widget::FOCUS_POLICY::NO_FOCUS, true);
 		pButton->OnMouseDown([this, optionIndex](const Widgets::MouseEvent& ev)
 			{

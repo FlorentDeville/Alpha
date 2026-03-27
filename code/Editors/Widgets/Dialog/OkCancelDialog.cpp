@@ -28,11 +28,11 @@ namespace Editors
 		const int LABEL_WIDTH = WINDOW_WIDTH;
 
 		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
-		SetSizeStyle(Widgets::Widget::DEFAULT);
+		SetSizeStyle(Widgets::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
 		//create layout
-		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Vertical, Widgets::Widget::STRETCH);
+		Widgets::Layout* pLayout = new Widgets::Layout(Widgets::Layout::Vertical, Widgets::STRETCH);
 		AddWidget(pLayout);
 
 		//create a container for the label
@@ -41,12 +41,12 @@ namespace Editors
 
 		//create label
 		Widgets::Label* pLabel = new Widgets::Label(text);
-		pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pLabel->SetSizeStyle(Widgets::DEFAULT);
 		pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pContainer->AddWidget(pLabel);
 
 		//create layout containing ok and cancel buttons
-		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::HSTRETCH_VFIT);
+		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::HSTRETCH_VFIT);
 		pLayout->AddWidget(pButtonLayout);
 
 		//create ok button

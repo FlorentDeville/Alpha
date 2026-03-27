@@ -15,7 +15,7 @@ namespace Editors
 		: Widgets::Layout()
 	{
 		SetDirection(Widgets::Layout::Horizontal);
-		SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_FIT);
+		SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT);
 
 		Widgets::Container* pSpacer = new Widgets::Container(10, 20);
 		AddWidget(pSpacer);

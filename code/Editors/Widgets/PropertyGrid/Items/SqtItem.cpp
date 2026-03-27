@@ -32,7 +32,7 @@ namespace Editors
 	{
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		pLayout->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_FIT);
+		pLayout->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_FIT);
 		pLayout->GetDefaultStyle().SetBorderSize(1);
 		pLayout->GetDefaultStyle().SetBorderColor(Widgets::Color(255, 0, 0, 255));
 		pLayout->GetDefaultStyle().ShowBorder(true);
@@ -40,18 +40,18 @@ namespace Editors
 		const uint32_t TEXTBOX_WIDTH = 50;
 		//T
 		{
-			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::Widget::FIT);
+			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::FIT);
 			pLayout->AddWidget(pRowLayout);
 
 			Widgets::Label* pLabel = new Widgets::Label("T ");
-			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pLabel->SetSizeStyle(Widgets::DEFAULT);
 			pLabel->SetWidth(30);
 			pRowLayout->AddWidget(pLabel);
 
 			for (int ii = 0; ii < 3; ++ii)
 			{
 				m_pTranslationTextbox[ii] = new Widgets::TextBox();
-				m_pTranslationTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
+				m_pTranslationTextbox[ii]->SetSizeStyle(Widgets::DEFAULT);
 				m_pTranslationTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 				m_pTranslationTextbox[ii]->SetWidth(TEXTBOX_WIDTH);
 				m_pTranslationTextbox[ii]->OnValidate([this, ii](const std::string& value)
@@ -73,18 +73,18 @@ namespace Editors
 
 		//Q
 		{
-			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::Widget::FIT);
+			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::FIT);
 			pLayout->AddWidget(pRowLayout);
 
 			Widgets::Label* pLabel = new Widgets::Label("R ");
-			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pLabel->SetSizeStyle(Widgets::DEFAULT);
 			pLabel->SetWidth(30);
 			pRowLayout->AddWidget(pLabel);
 
 			for (int ii = 0; ii < 3; ++ii)
 			{
 				m_pRotationTextbox[ii] = new Widgets::TextBox();
-				m_pRotationTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
+				m_pRotationTextbox[ii]->SetSizeStyle(Widgets::DEFAULT);
 				m_pRotationTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 				m_pRotationTextbox[ii]->SetWidth(TEXTBOX_WIDTH);
 				m_pRotationTextbox[ii]->OnValidate([this, ii](const std::string& value)
@@ -114,18 +114,18 @@ namespace Editors
 
 		//S
 		{
-			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::Widget::FIT);
+			Widgets::Layout* pRowLayout = new Widgets::Layout(Widgets::Layout::Direction::Horizontal, Widgets::FIT);
 			pLayout->AddWidget(pRowLayout);
 
 			Widgets::Label* pLabel = new Widgets::Label("S ");
-			pLabel->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pLabel->SetSizeStyle(Widgets::DEFAULT);
 			pLabel->SetWidth(30);
 			pRowLayout->AddWidget(pLabel);
 
 			for (int ii = 0; ii < 3; ++ii)
 			{
 				m_pScaleTextbox[ii] = new Widgets::TextBox();
-				m_pScaleTextbox[ii]->SetSizeStyle(Widgets::Widget::DEFAULT);
+				m_pScaleTextbox[ii]->SetSizeStyle(Widgets::DEFAULT);
 				m_pScaleTextbox[ii]->SetReadOnly(m_pField->IsReadOnly());
 				m_pScaleTextbox[ii]->SetWidth(TEXTBOX_WIDTH);
 				m_pScaleTextbox[ii]->OnValidate([this, ii](const std::string& value)

@@ -31,7 +31,7 @@ namespace Widgets
 		AddWidget(m_pContainer);
 
 		m_pLabel = new Label(text);
-		m_pLabel->SetSizeStyle(Widget::SIZE_STYLE::FIT);
+		m_pLabel->SetSizeStyle(FIT);
 		m_pLabel->SetX(15);
 		m_pLabel->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 		AddWidget(m_pLabel);

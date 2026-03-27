@@ -20,22 +20,22 @@ namespace Widgets
 		, m_splitDragged(false)
 	{
 		m_pLayout = new Layout(0, 0, 0, 0);
-		m_pLayout->SetSizeStyle(Widget::HSIZE_STRETCH | Widget::VSIZE_STRETCH);
+		m_pLayout->SetSizeStyle(HSIZE_STRETCH | VSIZE_STRETCH);
 		m_pLayout->SetDirection(Layout::Direction::Vertical);
 		Widget::AddWidget(m_pLayout);
 
 		m_pTopContainer = new Container(0, 200);
-		m_pTopContainer->SetSizeStyle(Widget::HSIZE_STRETCH);
+		m_pTopContainer->SetSizeStyle(HSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pTopContainer);
 
 		m_pSplit = new Split(false);
-		m_pSplit->SetSizeStyle(Widget::HSIZE_STRETCH);
+		m_pSplit->SetSizeStyle(HSIZE_STRETCH);
 		m_pSplit->OnDrag([this](const Core::Int2& mousePosition) { Split_OnDrag(mousePosition); });
 
 		m_pLayout->AddWidget(m_pSplit);
 
 		m_pBottomContainer = new Container(0, 200);
-		m_pBottomContainer->SetSizeStyle(Widget::VSIZE_STRETCH | Widget::HSIZE_STRETCH);
+		m_pBottomContainer->SetSizeStyle(VSIZE_STRETCH | HSIZE_STRETCH);
 		m_pLayout->AddWidget(m_pBottomContainer);
 	}
 

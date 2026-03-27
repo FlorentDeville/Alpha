@@ -42,7 +42,7 @@ namespace Editors
 		for (int ii = 0; ii < 4; ++ii)
 		{
 			Widgets::Layout* pRowLayout = new Widgets::Layout(0, FIELD_HEIGHT, 0, 0);
-			pRowLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH);
+			pRowLayout->SetSizeStyle(Widgets::HSIZE_STRETCH);
 			pRowLayout->SetDirection(Widgets::Layout::Horizontal);
 			m_pLayout->AddWidget(pRowLayout);
 

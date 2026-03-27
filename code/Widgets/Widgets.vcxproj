@@ -32,6 +32,7 @@
     <ClInclude Include="Models\SelectionModel.h" />
     <ClInclude Include="Models\SelectionRow.h" />
     <ClInclude Include="Shortcuts\Shortcut.h" />
+    <ClInclude Include="Tools\SizeStyle.h" />
     <ClInclude Include="Split.h" />
     <ClInclude Include="SplitHorizontal.h" />
     <ClInclude Include="SplitVertical.h" />

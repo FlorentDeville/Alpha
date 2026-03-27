@@ -38,7 +38,7 @@ namespace Widgets
 
 		{
 			m_pVScrollContainer = new Container();
-			m_pVScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pVScrollContainer->SetSizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT);
 			m_pVScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
 			m_pVScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 			m_pVScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
@@ -49,7 +49,7 @@ namespace Widgets
 
 		{
 			m_pVScrollBar = new Container();
-			m_pVScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pVScrollBar->SetSizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT);
 			m_pVScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
 			m_pVScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 			m_pVScrollBar->GetDefaultStyle().SetBackgroundColor(scrollBarColor);
@@ -63,7 +63,7 @@ namespace Widgets
 
 		{
 			m_pHScrollContainer = new Container();
-			m_pHScrollContainer->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pHScrollContainer->SetSizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT);
 			m_pHScrollContainer->SetSize(Core::UInt2(SCROLL_CONTAINER_SIZE, SCROLL_CONTAINER_SIZE));
 			m_pHScrollContainer->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 			m_pHScrollContainer->GetDefaultStyle().SetBackgroundColor(scrollContainerColor);
@@ -74,7 +74,7 @@ namespace Widgets
 
 		{
 			m_pHScrollBar = new Container();
-			m_pHScrollBar->SetSizeStyle(Widget::HSIZE_DEFAULT | Widget::VSIZE_DEFAULT);
+			m_pHScrollBar->SetSizeStyle(HSIZE_DEFAULT | VSIZE_DEFAULT);
 			m_pHScrollBar->SetSize(Core::UInt2(SCROLLBAR_CONTAINER_SIZE, SCROLLBAR_CONTAINER_SIZE));
 			m_pHScrollBar->SetPositionStyle(Widget::HPOSITION_STYLE::NONE, Widget::VPOSITION_STYLE::NONE);
 			m_pHScrollBar->GetDefaultStyle().SetBackgroundColor(scrollBarColor);

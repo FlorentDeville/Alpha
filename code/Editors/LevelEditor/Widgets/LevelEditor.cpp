@@ -90,13 +90,13 @@ namespace Editors
 
 		//create the split between viewport and right panel
 		m_pSplit = new Widgets::SplitVertical();
-		m_pSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pSplit->SetSizeStyle(Widgets::STRETCH);
 		m_pSplit->SetRightPanelWidth(400);
 		m_pSplit->SetResizePolicy(Widgets::SplitVertical::KeepRightSize);
 		m_pInternalLayout->AddWidget(m_pSplit);
 
 		m_pViewport = new LevelEditorViewportWidget(width, height);
-		m_pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pViewport->SetSizeStyle(Widgets::STRETCH);
 		m_pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(true); });
 		m_pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(false); });
 		m_pViewport->GetGizmoWidget()->SetEnable(false);
@@ -104,7 +104,7 @@ namespace Editors
 
 		//create split between viewport and left panel
 		m_pLeftSplit = new Widgets::SplitVertical();
-		m_pLeftSplit->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pLeftSplit->SetSizeStyle(Widgets::STRETCH);
 		m_pLeftSplit->SetLeftPanelWidth(300);
 		m_pLeftSplit->SetResizePolicy(Widgets::SplitVertical::KeepLeftSize);
 		m_pLeftSplit->AddRightPanel(m_pViewport);
@@ -241,7 +241,7 @@ namespace Editors
 		pSplit->AddRightPanel(pFrame);
 
 		Widgets::Layout* pLayout = new Widgets::Layout(0, 0, 0, 0);
-		pLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
+		pLayout->SetSizeStyle(Widgets::STRETCH);
 		pLayout->SetDirection(Widgets::Layout::Vertical);
 
 		pFrame->AddWidget(pLayout);
@@ -334,19 +334,19 @@ namespace Editors
 		//show a modal window to enter the entity name
 		Widgets::ModalWindow* pWindow = new Widgets::ModalWindow("Entity Name");
 		pWindow->SetSize(Core::UInt2(500, 70));
-		pWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pWindow->SetSizeStyle(Widgets::DEFAULT);
 		pWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
 		//vlayout
 		Widgets::Layout* pVLayout = new Widgets::Layout();
 		pVLayout->SetDirection(Widgets::Layout::Vertical);
-		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pVLayout->SetSizeStyle(Widgets::STRETCH);
 		pWindow->AddWidget(pVLayout);
 
 		//text box for the name of the entity
 		Widgets::TextBox* pNameTextBox = new Widgets::TextBox();
 		pNameTextBox->SetSize(Core::UInt2(0, 20));
-		pNameTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		pNameTextBox->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_DEFAULT);
 
 		pNameTextBox->OnValidate([this, callback](const std::string& value) -> bool
 			{
@@ -359,15 +359,15 @@ namespace Editors
 		//button ok escape
 		Widgets::Layout* pHLayout = new Widgets::Layout();
 		pHLayout->SetDirection(Widgets::Layout::Horizontal);
-		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pHLayout->SetSizeStyle(Widgets::STRETCH);
 		pVLayout->AddWidget(pHLayout);
 
 		Widgets::Button* pOkButton = new Widgets::Button(250, 25, 0, 0);
 		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "OK");
-		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pOkLabel->SetSizeStyle(Widgets::FIT);
 		pOkLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pOkButton->AddWidget(pOkLabel);
-		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pOkButton->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 		pOkButton->OnClick([this, pNameTextBox, callback]() -> bool
 			{
 				const std::string& text = pNameTextBox->GetText();
@@ -379,10 +379,10 @@ namespace Editors
 
 		Widgets::Button* pCancelButton = new Widgets::Button(250, 25, 0, 0);
 		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "CANCEL");
-		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pCancelLabel->SetSizeStyle(Widgets::FIT);
 		pCancelLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 		pCancelButton->AddWidget(pCancelLabel);
-		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pCancelButton->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 		pCancelButton->OnClick([]() -> bool { Widgets::WidgetMgr::Get().CloseModalWindow(); return true; });
 		pHLayout->AddWidget(pCancelButton);
 
@@ -760,42 +760,42 @@ namespace Editors
 		const int OK_CANCEL_HEIGHT = 30;
 
 		pNewWindow->SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
-		pNewWindow->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pNewWindow->SetSizeStyle(Widgets::DEFAULT);
 		pNewWindow->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
-		Widgets::Layout* pVLayout = new Widgets::Layout(Widgets::Layout::Vertical, Widgets::Widget::HSTRETCH_VFIT);
-		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		Widgets::Layout* pVLayout = new Widgets::Layout(Widgets::Layout::Vertical, Widgets::HSTRETCH_VFIT);
+		pVLayout->SetSizeStyle(Widgets::STRETCH);
 		pVLayout->SetSpace(Core::Int2(0, 5));
 		pNewWindow->AddWidget(pVLayout);
 
-		Widgets::Layout* pViewportMenuLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::HSTRETCH_VFIT);
+		Widgets::Layout* pViewportMenuLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::HSTRETCH_VFIT);
 		pViewportMenuLayout->SetSpace(Core::Int2(3, 0));
 		pVLayout->AddWidget(pViewportMenuLayout);
 
 		const int SNAP_TEXTBOX_WIDTH = 40;
 		Widgets::Label* pSnapLabel = new Widgets::Label("Snap: T");
-		pSnapLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pSnapLabel->SetSizeStyle(Widgets::FIT);
 		pViewportMenuLayout->AddWidget(pSnapLabel);
 
 		Widgets::TextBox* pSnapT = new Widgets::TextBox();
-		pSnapT->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pSnapT->SetSizeStyle(Widgets::DEFAULT);
 		pSnapT->SetWidth(SNAP_TEXTBOX_WIDTH);
 		pViewportMenuLayout->AddWidget(pSnapT);
 
 		Widgets::Label* pSnapLabelR = new Widgets::Label("R");
-		pSnapLabelR->SetSizeStyle(Widgets::Widget::FIT);
+		pSnapLabelR->SetSizeStyle(Widgets::FIT);
 		pViewportMenuLayout->AddWidget(pSnapLabelR);
 		Widgets::TextBox* pSnapR = new Widgets::TextBox();
 		pSnapR->SetWidth(SNAP_TEXTBOX_WIDTH);
-		pSnapR->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pSnapR->SetSizeStyle(Widgets::DEFAULT);
 		pViewportMenuLayout->AddWidget(pSnapR);
 
 		Widgets::Label* pSnapLabelS = new Widgets::Label("S");
-		pSnapLabelS->SetSizeStyle(Widgets::Widget::FIT);
+		pSnapLabelS->SetSizeStyle(Widgets::FIT);
 		pViewportMenuLayout->AddWidget(pSnapLabelS);
 		Widgets::TextBox* pSnapS = new Widgets::TextBox();
 		pSnapS->SetWidth(SNAP_TEXTBOX_WIDTH);
-		pSnapS->SetSizeStyle(Widgets::Widget::DEFAULT);
+		pSnapS->SetSizeStyle(Widgets::DEFAULT);
 		pViewportMenuLayout->AddWidget(pSnapS);
 
 		{
@@ -837,7 +837,7 @@ namespace Editors
 				});
 		}
 
-		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::Widget::HSTRETCH_VFIT);
+		Widgets::Layout* pButtonLayout = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::HSTRETCH_VFIT);
 		pVLayout->AddWidget(pButtonLayout);
 
 		Widgets::Button* pOk = new Widgets::Button("Close", WINDOW_WIDTH - 2, OK_CANCEL_HEIGHT);

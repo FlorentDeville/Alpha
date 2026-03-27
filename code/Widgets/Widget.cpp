@@ -5,6 +5,7 @@
 #include "Widget.h"
 
 #include "Widgets/Events/GlobalEvent.h"
+#include "Widgets/Tools/SizeStyle.h"
 #include "Widgets/WidgetMgr.h"
 
 namespace Widgets
@@ -80,7 +81,7 @@ namespace Widgets
 
 	void Widget::ReComputeSize_PostChildren()
 	{
-		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
+		if (m_sizeStyle & HSIZE_FIT)
 		{
 			if (m_children.empty())
 			{
@@ -101,7 +102,7 @@ namespace Widgets
 				m_size.x = maxSize;
 			}
 		}
-		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
+		if (m_sizeStyle & VSIZE_FIT)
 		{
 			if (m_children.empty())
 			{
@@ -382,7 +383,7 @@ namespace Widgets
 		m_backgroundColor = color;
 	}
 
-	void Widget::SetSizeStyle(int sizeStyle)
+	void Widget::SetSizeStyle(SIZE_STYLE sizeStyle)
 	{
 		m_sizeStyle = sizeStyle;
 	}

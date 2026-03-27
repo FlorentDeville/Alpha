@@ -212,14 +212,14 @@ namespace Editors
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
-		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pSplit->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(500);
 
 		m_pInternalLayout->AddWidget(pSplit);
 
 		//create a button and label per shader
 		m_pShaderListLayout = new Widgets::Layout(0, 0, 0, 0);
-		m_pShaderListLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		m_pShaderListLayout->SetSizeStyle(Widgets::STRETCH);
 		m_pShaderListLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pSplit->AddLeftPanel(m_pShaderListLayout);
 
@@ -227,7 +227,7 @@ namespace Editors
 
 		//create the horizontal split between the viewport and the property grid
 		Widgets::SplitHorizontal* pHSplit = new Widgets::SplitHorizontal();
-		pHSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pHSplit->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pHSplit->SetTopPanelHeight(500);
 		pSplit->AddRightPanel(pHSplit);
 
@@ -238,7 +238,7 @@ namespace Editors
 			m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
 
 			Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-			pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+			pViewport->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 			pViewport->OnRender([this]() { Viewport_OnRender(); });
 			pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
 			pHSplit->AddTopPanel(pViewport);
@@ -246,13 +246,13 @@ namespace Editors
 
 		//right panel : add option layout
 		Widgets::Layout* pRightPanelLayout = new Widgets::Layout(0, 0, 0, 0);
-		pRightPanelLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pRightPanelLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pRightPanelLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		pHSplit->AddBottomPanel(pRightPanelLayout);
 		
 		//horizontal layout for buttons
 		Widgets::Layout* pButtonLayout = new Widgets::Layout(0, 20, 0, 0);
-		pButtonLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+		pButtonLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT);
 		pButtonLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
 		pRightPanelLayout->AddWidget(pButtonLayout);
 
@@ -602,7 +602,7 @@ namespace Editors
 	void MaterialEditor::CreateShadersList()
 	{
 		Widgets::TableView* pTableView = new Widgets::TableView();
-		pTableView->SetSizeStyle(Widgets::Widget::STRETCH);
+		pTableView->SetSizeStyle(Widgets::STRETCH);
 		m_pShaderListLayout->AddWidget(pTableView);
 
 		m_pMaterialListModel = new MaterialListModel();

@@ -6,6 +6,7 @@
 
 #include "Widgets/Widget.h"
 #include "Widgets/Style/Layout/LayoutStyle.h"
+#include "Widgets/Tools/SizeStyle.h"
 
 namespace Widgets
 {
@@ -22,7 +23,7 @@ namespace Widgets
 
 		Layout();
 		Layout(uint32_t w, uint32_t h, int32_t x, int32_t y);
-		Layout(Direction dir, Widget::SIZE_STYLE sizeStyle);
+		Layout(Direction dir, SIZE_STYLE sizeStyle);
 
 		virtual ~Layout();
 

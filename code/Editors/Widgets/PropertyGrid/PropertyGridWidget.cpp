@@ -20,7 +20,7 @@ namespace Editors
 	{
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		m_pInternalLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::STRETCH);
+		m_pInternalLayout->SetSizeStyle(Widgets::SIZE_STYLE::STRETCH);
 		AddWidget(m_pInternalLayout);
 	}
 
@@ -40,7 +40,7 @@ namespace Editors
 
 		Widgets::Layout* pPropertyLayout = new Widgets::Layout();
 		pPropertyLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
-		pPropertyLayout->SetSizeStyle(Widgets::Widget::SIZE_STYLE::HSIZE_STRETCH | Widgets::Widget::SIZE_STYLE::VSIZE_FIT);
+		pPropertyLayout->SetSizeStyle(Widgets::SIZE_STYLE::HSIZE_STRETCH | Widgets::SIZE_STYLE::VSIZE_FIT);
 
 		if (m_pInternalLayout->GetChildrenCount() % 2 == 0)
 			pPropertyLayout->GetDefaultStyle().SetBackgroundColor(Widgets::TableViewStyle::s_evenRowBackgroundColor);
@@ -58,13 +58,13 @@ namespace Editors
 				const int OFFSET_DEPTH = 10;
 				uint32_t containerWidth = OFFSET_DEPTH * depth;
 				Widgets::Widget* pSpacer = new Widgets::Widget(containerWidth, 0, 0, 0);
-				pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+				pSpacer->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 				pPropertyLayout->AddWidget(pSpacer);
 
 				nameColumnWidth -= containerWidth;
 			}
 
-			pNameWidget->SetSizeStyle(Widgets::Widget::DEFAULT);
+			pNameWidget->SetSizeStyle(Widgets::DEFAULT);
 			pNameWidget->SetSize(Core::UInt2(nameColumnWidth, m_rowHeight));
 
 			pPropertyLayout->AddWidget(pNameWidget);
@@ -72,14 +72,14 @@ namespace Editors
 		else
 		{
 			Widgets::Widget* pSpacer = new Widgets::Widget(m_nameColumnWidth, 0, 0, 0);
-			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+			pSpacer->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 			pPropertyLayout->AddWidget(pSpacer);
 		}
 
 		if (pNewProperty->GetEditingWidget())
 		{
 			Widgets::Widget* pSpacer = new Widgets::Widget(10, 0, 0, 0);
-			pSpacer->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+			pSpacer->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 
 			pPropertyLayout->AddWidget(pSpacer);
 			pPropertyLayout->AddWidget(pNewProperty->GetEditingWidget());

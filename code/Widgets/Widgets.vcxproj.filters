@@ -165,6 +165,9 @@
     <ClInclude Include="Events\GlobalEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tools\SizeStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp">

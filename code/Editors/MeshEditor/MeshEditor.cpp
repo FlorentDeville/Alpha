@@ -113,13 +113,13 @@ namespace Editors
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
-		pSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pSplit->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pSplit->SetLeftPanelWidth(400);
 		m_pInternalLayout->AddWidget(pSplit);
 
 		//create right side vertical split
 		Widgets::SplitHorizontal* pRightSideSplit = new Widgets::SplitHorizontal();
-		pRightSideSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pRightSideSplit->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pRightSideSplit->SetTopPanelHeight(700);
 		pSplit->AddRightPanel(pRightSideSplit);
 		
@@ -128,7 +128,7 @@ namespace Editors
 		const int VIEWPORT_HEIGHT = 720;
 		m_aspectRatio = VIEWPORT_WIDTH / static_cast<float>(VIEWPORT_HEIGHT);
 		Widgets::Viewport* pViewport = new Widgets::Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-		pViewport->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pViewport->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
 		pViewport->OnRender([this]() { Viewport_OnRender(); });
 		pViewport->OnPreRender([this]() { Viewport_OnPreRender(); });
@@ -143,7 +143,7 @@ namespace Editors
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials
 		Widgets::SplitHorizontal* pLeftPanelSplit = new Widgets::SplitHorizontal();
-		pLeftPanelSplit->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pLeftPanelSplit->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pSplit->AddLeftPanel(pLeftPanelSplit);
 
 		{
@@ -163,14 +163,14 @@ namespace Editors
 
 		//bottom split : tab container for materials and logs
 		Widgets::TabContainer* pTabContainer = new Widgets::TabContainer();
-		pTabContainer->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pTabContainer->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pLeftPanelSplit->AddBottomPanel(pTabContainer);
 
 		Widgets::Tab* pMaterialTab = new Widgets::Tab();
 		pTabContainer->AddTab("Material", pMaterialTab);
 
 		Widgets::Layout* pMaterialLayout = new Widgets::Layout(0, 0, 0, 0);
-		pMaterialLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_STRETCH);
+		pMaterialLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
 		pMaterialLayout->SetDirection(Widgets::Layout::Vertical);
 		pMaterialTab->AddWidget(pMaterialLayout);
 
@@ -194,7 +194,7 @@ namespace Editors
 				//material widget
 				const int LINE_HEIGHT = 20;
 				Widgets::Button* pButton = new Widgets::Button(0, LINE_HEIGHT, 0, 0);
-				pButton->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+				pButton->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_DEFAULT);
 				pButton->OnClick([this, materialIndex]() -> bool { return OnMaterialClicked(materialIndex); });
 				pMaterialLayout->AddWidget(pButton);
 

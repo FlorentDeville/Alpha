@@ -18,6 +18,7 @@
 #include "Widgets/Events/PostedEventCallback.h"
 #include "Widgets/Tools/Color.h"
 #include "Widgets/Tools/Rect.h"
+#include "Widgets/Tools/SizeStyle.h"
 
 struct Message;
 
@@ -55,28 +56,6 @@ namespace Widgets
 		//All the widgets (including the text) are between the near and far plane. The distances are in world space.
 		static const float NEAR_CAMERA_PLANE;
 		static const float FAR_CAMERA_PLANE;
-
-		// Defines how to compute the size of a widget:
-		// DEFAULT	: fixed size.
-		// STRETCH	: stretch the widget to take all its parent's space.
-		// FIT		: take the size of its content.
-		enum SIZE_STYLE
-		{
-			HSIZE_DEFAULT	= 0x00000001,
-			VSIZE_DEFAULT	= 0x00000010,
-
-			HSIZE_STRETCH	= 0x00000100,
-			VSIZE_STRETCH	= 0x00001000,
-
-			HSIZE_FIT		= 0x00010000,
-			VSIZE_FIT		= 0x00100000,
-
-			DEFAULT = HSIZE_DEFAULT | VSIZE_DEFAULT,
-			STRETCH = HSIZE_STRETCH | VSIZE_STRETCH,
-			FIT = HSIZE_FIT | VSIZE_FIT,
-
-			HSTRETCH_VFIT = HSIZE_STRETCH | VSIZE_FIT
-		};
 
 		enum class HPOSITION_STYLE
 		{
@@ -136,7 +115,7 @@ namespace Widgets
 		void SetFocus();
 
 		void SetBackgroundColor(const Color& color);
-		void SetSizeStyle(int sizeStyle);
+		void SetSizeStyle(SIZE_STYLE sizeStyle);
 		void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
 
 		void SetName(const std::string& name);
@@ -206,7 +185,7 @@ namespace Widgets
 		std::vector<Widget*> m_children;
 		Widget* m_pParent;
 
-		int m_sizeStyle;
+		SIZE_STYLE m_sizeStyle;
 		HPOSITION_STYLE m_hPositionStyle;
 		VPOSITION_STYLE m_vPositionStyle;
 

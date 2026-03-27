@@ -20,20 +20,20 @@ namespace Editors
 		const int OK_CANCEL_HEIGHT = 50;
 
 		SetSize(Core::UInt2(WINDOW_WIDTH, WINDOW_HEIGHT));
-		SetSizeStyle(Widgets::Widget::DEFAULT);
+		SetSizeStyle(Widgets::DEFAULT);
 		SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
 		//vlayout
 		Widgets::Layout* pVLayout = new Widgets::Layout();
 		pVLayout->SetDirection(Widgets::Layout::Vertical);
-		pVLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pVLayout->SetSizeStyle(Widgets::STRETCH);
 		AddWidget(pVLayout);
 
 		//input
 		m_pTextBox = new Widgets::TextBox();
 		m_pTextBox->SetText(defaultValue);
 		m_pTextBox->SetSize(Core::UInt2(0, 20));
-		m_pTextBox->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		m_pTextBox->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_DEFAULT);
 		m_pTextBox->OnValidate([this](const std::string& text) { OnOk(); });
 		m_pTextBox->OnEscape([this]() { OnCancel(); });
 		pVLayout->AddWidget(m_pTextBox);
@@ -41,25 +41,25 @@ namespace Editors
 		//ok cancel button
 		Widgets::Layout* pHLayout = new Widgets::Layout();
 		pHLayout->SetDirection(Widgets::Layout::Horizontal);
-		pHLayout->SetSizeStyle(Widgets::Widget::STRETCH);
+		pHLayout->SetSizeStyle(Widgets::STRETCH);
 		pVLayout->AddWidget(pHLayout);
 
 		Widgets::Button* pOkButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
 		Widgets::Label* pOkLabel = new Widgets::Label(0, 0, 1, "Ok");
-		pOkLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pOkLabel->SetSizeStyle(Widgets::FIT);
 		pOkLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 		pOkButton->AddWidget(pOkLabel);
-		pOkButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pOkButton->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 		pOkButton->OnClick([this]() { OnOk(); });
 
 		pHLayout->AddWidget(pOkButton);
 
 		Widgets::Button* pCancelButton = new Widgets::Button(250, OK_CANCEL_HEIGHT, 0, 0);
 		Widgets::Label* pCancelLabel = new Widgets::Label(0, 0, 1, "Cancel");
-		pCancelLabel->SetSizeStyle(Widgets::Widget::FIT);
+		pCancelLabel->SetSizeStyle(Widgets::FIT);
 		pCancelLabel->SetPositionStyle(Widget::HPOSITION_STYLE::CENTER, Widget::VPOSITION_STYLE::MIDDLE);
 		pCancelButton->AddWidget(pCancelLabel);
-		pCancelButton->SetSizeStyle(Widgets::Widget::HSIZE_DEFAULT | Widgets::Widget::VSIZE_STRETCH);
+		pCancelButton->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 		pCancelButton->OnClick([this]() { OnCancel(); });
 		pHLayout->AddWidget(pCancelButton);
 	}

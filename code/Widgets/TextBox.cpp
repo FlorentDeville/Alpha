@@ -55,7 +55,7 @@ namespace Widgets
 		OnFocusLost([this](const FocusEvent& ev) { OnLoseFocusCallback(); });
 
 		SetSize(Core::UInt2(100, 20));
-		SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_DEFAULT);
+		SetSizeStyle(HSIZE_STRETCH | VSIZE_DEFAULT);
 	}
 
 	TextBox::~TextBox()

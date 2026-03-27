@@ -28,7 +28,7 @@ namespace Widgets
 		, m_defaultStyle()
 	{}
 
-	Layout::Layout(Direction dir, Widget::SIZE_STYLE sizeStyle)
+	Layout::Layout(Direction dir, SIZE_STYLE sizeStyle)
 		: Layout()
 	{
 		m_dir = dir;
@@ -208,7 +208,7 @@ namespace Widgets
 
 	void Layout::ReComputeSize_PostChildren()
 	{
-		if (m_sizeStyle & Widgets::Widget::HSIZE_FIT)
+		if (m_sizeStyle & HSIZE_FIT)
 		{
 			int maxSize = 0;
 			for (const Widget* pChild : m_children)
@@ -222,7 +222,7 @@ namespace Widgets
 
 			m_size.x = maxSize;
 		}
-		if (m_sizeStyle & Widgets::Widget::VSIZE_FIT)
+		if (m_sizeStyle & VSIZE_FIT)
 		{
 			int maxSize = 0;
 			for (const Widget* pChild : m_children)

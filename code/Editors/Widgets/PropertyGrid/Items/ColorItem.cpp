@@ -38,7 +38,7 @@ namespace Editors
 		Widgets::Color currentColor(pValue->GetRed(), pValue->GetGreen(), pValue->GetBlue(), 1.f);
 
 		Widgets::Layout* pLayout = new Widgets::Layout();
-		pLayout->SetSizeStyle(Widgets::Widget::HSIZE_STRETCH | Widgets::Widget::VSIZE_FIT);
+		pLayout->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_FIT);
 		pLayout->SetDirection(Widgets::Layout::Horizontal);
 		pLayout->SetSpace(Core::Int2(SPACE, 0));
 		pLayout->GetDefaultStyle().SetBackgroundColor(Widgets::Color(0.f, 0.f, 0.f, 0.f));
@@ -57,7 +57,7 @@ namespace Editors
 
 		m_pColorWidget = new Widgets::Container(20, 20);
 		m_pColorWidget->GetDefaultStyle().SetBackgroundColor(currentColor);
-		m_pColorWidget->SetSizeStyle(Widgets::Widget::SIZE_STYLE::DEFAULT);
+		m_pColorWidget->SetSizeStyle(Widgets::SIZE_STYLE::DEFAULT);
 		pLayout->AddWidget(m_pColorWidget);
 
 		m_pSliderRedChannel->OnValidate([this, pValue](const float value)
