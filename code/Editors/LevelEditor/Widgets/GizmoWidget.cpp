@@ -682,7 +682,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			RenderTranslationSingleAxis(transform.m_matrix, appliedColor);
+			RenderTranslationSingleAxis(transform, appliedColor);
 		}
 
 		//y axis
@@ -692,7 +692,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			RenderTranslationSingleAxis(txWs.m_matrix, appliedColor);
+			RenderTranslationSingleAxis(txWs, appliedColor);
 		}
 
 		//z axis
@@ -706,7 +706,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			RenderTranslationSingleAxis(transform.m_matrix, appliedColor);
+			RenderTranslationSingleAxis(transform, appliedColor);
 		}
 	}
 
@@ -757,11 +757,11 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderTranslationSingleAxis(const DirectX::XMMATRIX& txWs, const Core::Float4& color)
+	void GizmoWidget::RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Float4& color)
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 		
-		Core::Vec4f objectPosition(txWs.r[3].m128_f32[0], txWs.r[3].m128_f32[1], txWs.r[3].m128_f32[2], 1);
+		Core::Vec4f objectPosition = txWs.GetT();
 		float size = ComputeConstantScreenSizeScale(objectPosition);
 
 		float realDiameter = BASE_DIAMETER * size;
@@ -786,26 +786,22 @@ namespace Editors
 #endif
 
 		{
-			DirectX::XMVECTOR scale = DirectX::XMVectorSet(realDiameter, realLength, realDiameter, 0);
-			DirectX::XMVECTOR translation = DirectX::XMVectorSet(0.f, realLength * 0.5f, 0, 0);
-			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(scale, DirectX::g_XMZero, DirectX::g_XMIdentityR3, translation);
-			DirectX::XMMATRIX ws = txLs * txWs;
-			renderingMgr.RenderPrimitiveCylinder(ws, color);
+			Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realDiameter, realLength, realDiameter, 0));
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength * 0.5f, 0, 0));
+			Core::Mat44f txLs = scale * translation;
+			Core::Mat44f ws = txLs * txWs;
+			renderingMgr.RenderPrimitiveCylinder(ws.m_matrix, color);
 		}
 
-		{
-			
+		{		
 			float coneDiameter = CONE_BASE_DIAMETER * size;
 			float coneLength = CONE_BASE_LENGTH * size;
 
-			DirectX::XMVECTOR localTranslation = DirectX::XMVectorSet(0, realLength, 0, 0);
-			DirectX::XMVECTOR localRotationOrigin = DirectX::XMVectorSet(0, 0, 0, 1);
-			DirectX::XMVECTOR localRotation = DirectX::XMQuaternionIdentity();
-			DirectX::XMVECTOR localScale = DirectX::XMVectorSet(coneDiameter, coneLength, coneDiameter, 0);
-			DirectX::XMMATRIX txLs = DirectX::XMMatrixAffineTransformation(localScale, localRotationOrigin, localRotation, localTranslation);
-
-			DirectX::XMMATRIX ws = txLs * txWs;
-			renderingMgr.RenderPrimitiveCone(ws, color);
+			Core::Mat44f localScale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(coneDiameter, coneLength, coneDiameter, 0));
+			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength, 0, 0));
+			Core::Mat44f txLs = localScale * localTranslation;
+			Core::Mat44f ws = txLs * txWs;
+			renderingMgr.RenderPrimitiveCone(ws.m_matrix, color);
 		}
 	}
 
