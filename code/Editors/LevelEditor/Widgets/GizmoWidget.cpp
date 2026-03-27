@@ -18,8 +18,6 @@
 
 #include "Rendering/RenderModule.h"
 
-using namespace DirectX;
-
 //#pragma optimize("", off)
 
 namespace Editors
@@ -638,7 +636,7 @@ namespace Editors
 
 			Core::Float4 red(1, 0, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				red = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				red = m_hoverColor;
 
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, red);
 		}
@@ -647,7 +645,7 @@ namespace Editors
 		{
 			Core::Float4 green(0, 1, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				green = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				green = m_hoverColor;
 
 			Core::Mat44f transform = scale * txWs;
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, green);
@@ -661,7 +659,7 @@ namespace Editors
 
 			Core::Float4 blue(0, 0, 1, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				blue = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				blue = m_hoverColor;
 
 			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, blue);
 		}
@@ -680,7 +678,7 @@ namespace Editors
 			Core::Float4 red(1, 0, 0, 0);
 			Core::Float4 appliedColor = red;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				appliedColor = m_hoverColor;
 
 			RenderTranslationSingleAxis(transform, appliedColor);
 		}
@@ -690,7 +688,7 @@ namespace Editors
 			Core::Float4 green(0, 1, 0, 0);
 			Core::Float4 appliedColor = green;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				appliedColor = m_hoverColor;
 
 			RenderTranslationSingleAxis(txWs, appliedColor);
 		}
@@ -704,7 +702,7 @@ namespace Editors
 			Core::Float4 blue(0, 0, 1, 0);
 			Core::Float4 appliedColor = blue;
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				appliedColor = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				appliedColor = m_hoverColor;
 
 			RenderTranslationSingleAxis(transform, appliedColor);
 		}
@@ -722,7 +720,7 @@ namespace Editors
 
 			Core::Float4 red(1, 0, 0, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
-				red = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				red = m_hoverColor;
 
 			RenderScaleSingleAxis(transform, red);
 		}
@@ -731,7 +729,7 @@ namespace Editors
 		{
 			Core::Float4 green(0, 1, 0, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
-				green = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				green = m_hoverColor;
 
 			RenderScaleSingleAxis(txWs, green);
 		}
@@ -744,7 +742,7 @@ namespace Editors
 
 			Core::Float4 blue(0, 0, 1, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
-				blue = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
+				blue = m_hoverColor;
 
 			RenderScaleSingleAxis(transform, blue);
 		}

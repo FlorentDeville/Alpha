@@ -4,9 +4,8 @@
 
 #pragma once
 
-#include <DirectXMath.h>
-
 #include "Core/Math/Sqt.h"
+#include "Core/Math/Vectors.h"
 
 #include "Editors/LevelEditor/Widgets/GizmoAxis.h"
 
@@ -127,7 +126,7 @@ namespace Editors
 		const float SCALE_SQUARE_SIZE;
 
 		GizmoAxis m_hoverAxis;
-		DirectX::XMFLOAT4 m_hoverColor;
+		Core::Float4 m_hoverColor;
 
 		bool m_snapEnabled;
 		float m_translationSnapDistance;
