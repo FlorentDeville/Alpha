@@ -328,6 +328,12 @@ namespace Rendering
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 	}
 
+	void RenderModule::RenderNoBufferTriangle()
+	{
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_pRenderCommandList->DrawInstanced(3, 1, 0, 0);
+	}
+
 	void RenderModule::SetScissorRectangle(const D3D12_RECT& rect)
 	{
 		m_pRenderCommandList->RSSetScissorRects(1, &rect);

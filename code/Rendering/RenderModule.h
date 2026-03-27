@@ -71,6 +71,10 @@ namespace Rendering
 
 		void RenderMesh(const Rendering::Mesh& mesh);
 
+		//Render a single triangle without passing any vertex buffer. The shader has to do everything with the vertexId.
+		//Used to render a single triangle to copy a render target on another one or for post process.
+		void RenderNoBufferTriangle();
+
 		void SetScissorRectangle(const D3D12_RECT& rect);
 
 		void RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color);

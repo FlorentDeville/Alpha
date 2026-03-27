@@ -6,9 +6,10 @@
 
 #include "Editors/BaseEditor.h"
 
-namespace Widgets
+namespace Rendering
 {
-	class Widget;
+	class PipelineState;
+	class RootSignature;
 }
 
 namespace Editors
@@ -20,5 +21,11 @@ namespace Editors
 		~GamePlayer();
 
 		void CreateEditor(const EditorParameter& param) override;
+
+	private:
+		Rendering::PipelineState* m_pPso;
+		Rendering::RootSignature* m_pRootSig;
+
+		void Viewport_OnRender();
 	};
 }

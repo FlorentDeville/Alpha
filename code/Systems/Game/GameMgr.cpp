@@ -127,6 +127,11 @@ namespace Systems
 		m_unloadingRequest = m_loadedLevelsIds;
 	}
 
+	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
+	{
+		return m_pFinalRenderTarget;
+	}
+
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
 	{
 		for (const Systems::NewAssetId loadedId : m_loadedLevelsIds)
