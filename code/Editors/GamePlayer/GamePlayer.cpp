@@ -6,6 +6,7 @@
 
 #include "Editors/EditorParameter.h"
 
+#include "Widgets/Button.h"
 #include "Widgets/Layout.h"
 #include "Widgets/Viewport.h"
 
@@ -21,6 +22,18 @@ namespace Editors
 	{
 		CreateDefaultWidgets(param.m_pParent, "Game");
 	
+		Widgets::Layout* pMenu = new Widgets::Layout(Widgets::Layout::Horizontal, Widgets::HSTRETCH_VFIT);
+		m_pInternalLayout->AddWidget(pMenu);
+
+		Widgets::Button* pPlayButton = new Widgets::Button("Play");
+		pMenu->AddWidget(pPlayButton);
+
+		Widgets::Button* pPauseButton = new Widgets::Button("Pause");
+		pMenu->AddWidget(pPauseButton);
+
+		Widgets::Button* pStopButton = new Widgets::Button("Stop");
+		pMenu->AddWidget(pStopButton);
+
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
