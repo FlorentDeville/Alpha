@@ -115,6 +115,11 @@ namespace Editors
 		return m_proj;
 	}
 
+	const Core::Vec4f& CameraWidget::GetPosition() const
+	{
+		return m_cameraPosition;
+	}
+
 	float CameraWidget::GetFov() const
 	{
 		return m_fov;

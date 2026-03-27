@@ -26,6 +26,7 @@ namespace Editors
 
 		const Core::Mat44f& GetView() const;
 		const Core::Mat44f& GetProjection() const;
+		const Core::Vec4f& GetPosition() const;
 		float GetFov() const;
 
 		//event

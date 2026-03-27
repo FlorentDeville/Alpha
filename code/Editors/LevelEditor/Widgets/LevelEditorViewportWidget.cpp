@@ -211,9 +211,7 @@ namespace Editors
 			for (Systems::GameObject* pRoot : roots)
 				pRoot->UpdateTransform();
 
-			Rendering::Camera* pCamera = Rendering::RenderModule::Get().GetCamera();
-			Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
-
+			Systems::PrepareRenderableCamera(m_pCamera->GetView(), m_pCamera->GetProjection(), m_pCamera->GetPosition(), m_pCamera->GetFov(), scene);
 			Systems::PrepareRenderableScene(pLevel, scene);
 		}
 
