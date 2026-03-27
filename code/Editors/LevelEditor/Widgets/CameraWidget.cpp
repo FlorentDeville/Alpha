@@ -64,9 +64,8 @@ namespace Editors
 		Core::Mat44f cameraWorld;
 		cameraWorld.m_matrix = m_cameraTransform;
 		Core::Vec4f cameraLookAt = targetOffset * cameraWorld;
-		DirectX::XMVECTOR cameraPosition = m_cameraTransform.r[3];
 
-		m_view = Core::Mat44f::CreateView(cameraPosition, cameraLookAt - cameraPosition, cameraUp);
+		m_view = Core::Mat44f::CreateView(m_cameraPosition, cameraLookAt - m_cameraPosition, cameraUp);
 
 		const float nearDistance = 0.1f;
 		const float farDistance = 1000.f;
