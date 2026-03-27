@@ -225,19 +225,14 @@ namespace Editors
 
 		if (updateCameraTransform)
 		{
-			DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(m_cameraPosition);
-			m_cameraTransform = m_cameraRotation * translationMatrix;
+			Core::Vec4f cameraPos = m_cameraPosition;
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(cameraPos);
+			Core::Mat44f rotation;
+			rotation.m_matrix = m_cameraRotation;
 
-			const DirectX::XMVECTOR& dxX = m_cameraTransform.r[0];
-			const DirectX::XMVECTOR& dxY = m_cameraTransform.r[1];
-			const DirectX::XMVECTOR& dxZ = m_cameraTransform.r[2];
-			const DirectX::XMVECTOR& dxW = m_cameraTransform.r[3];
-			Core::Vec4f x(dxX.m128_f32[0], dxX.m128_f32[1], dxX.m128_f32[2], dxX.m128_f32[3]);
-			Core::Vec4f y(dxY.m128_f32[0], dxY.m128_f32[1], dxY.m128_f32[2], dxY.m128_f32[3]);
-			Core::Vec4f z(dxZ.m128_f32[0], dxZ.m128_f32[1], dxZ.m128_f32[2], dxZ.m128_f32[3]);
-			Core::Vec4f w(dxW.m128_f32[0], dxW.m128_f32[1], dxW.m128_f32[2], dxW.m128_f32[3]);
-			Core::Mat44f mat(x, y, z, w);
-			m_onWsChanged(mat);
+			Core::Mat44f transform = rotation * translation;
+			m_cameraTransform = transform.m_matrix;
+			m_onWsChanged(transform);
 		}
 
 		m_mousePreviousPos = mousePosition;
