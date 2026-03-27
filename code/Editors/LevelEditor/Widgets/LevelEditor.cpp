@@ -16,6 +16,7 @@
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
+#include "Editors/EditorManager.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
@@ -26,6 +27,7 @@
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Game/GameMgr.h"
 #include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Container.h"
@@ -86,6 +88,7 @@ namespace Editors
 		CreateMenuFile(m_pMenuBar);
 		CreateMenuEdit(m_pMenuBar);
 		CreateMenuTransformation(m_pMenuBar);
+		CreateMenuGame(m_pMenuBar);
 		CreateMenuWindows(m_pMenuBar);
 
 		//create the split between viewport and right panel
@@ -222,6 +225,15 @@ namespace Editors
 
 		Widgets::MenuItem* pSnapSeetings = pTransformMenu->AddMenuItem("Snap Settings...");
 		pSnapSeetings->OnClick([this]() { OnClickTransformationMenu_SnapSettings(); });
+	}
+
+	void LevelEditor::CreateMenuGame(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pMenu = pMenuBar->AddMenu("Game");
+
+		Widgets::MenuItem* pPlayItem = pMenu->AddMenuItem("Play");
+		pPlayItem->SetShortcut("Ctrl+F5");
+		pPlayItem->OnClick([this]() { OnClickGameMenu_Play(); });
 	}
 
 	void LevelEditor::CreateMenuWindows(Widgets::MenuBar* pMenuBar)
@@ -741,6 +753,16 @@ namespace Editors
 		{
 			levelEditorModule.ReparentGameObject(newParent, *it);
 		}
+	}
+
+	void LevelEditor::OnClickGameMenu_Play()
+	{
+		Systems::NewAssetId id = LevelEditorModule::Get().GetCurrentLoadedLevelAssetId();
+		if (!id.IsValid())
+			return;
+
+		Systems::GameMgr::Get().RequestLoadingLevel(id);
+		EditorManager::Get().SwitchTab(TabId::GAME_PLAYER);
 	}
 
 	void LevelEditor::OnClickTransformationMenu_Snap()

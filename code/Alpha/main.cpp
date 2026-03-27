@@ -14,7 +14,6 @@
 #include <DirectXMath.h>
 
 #include "Alpha/Configuration.h"
-#include "Alpha/GameMgr.h"
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
@@ -23,7 +22,6 @@
 
 #include "Editors/EditorManager.h"
 #include "Editors/EditorParameter.h"
-#include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LogEditor/LogEditor.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
@@ -49,7 +47,7 @@
 #include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Container/ContainerMgr.h"
-
+#include "Systems/Game/GameMgr.h"
 #include "Systems/Reflection/ReflectionCoreTypes.h"
 #include "Systems/Reflection/ReflectionStandardTypes.h"
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
@@ -408,7 +406,7 @@ void Update()
 	start = clock.now();
 	std::chrono::milliseconds dtMs = std::chrono::duration_cast<std::chrono::milliseconds>(dt);
 
-	GameMgr::Get().Update();
+	Systems::GameMgr::Get().Update();
 	Widgets::WidgetMgr::Get().Update(dtMs.count());
 }
 
@@ -420,13 +418,10 @@ void Render()
 	renderModule.PreRender();
 
 	//first render the game
-	renderModule.m_gameRenderTarget->BeginScene();
+	Systems::GameMgr::Get().Render();
 
-	GameMgr::Get().Render();
-
-	renderModule.m_gameRenderTarget->EndScene();
-
-	widgetsModule.Render(); //render all the viewports
+	//render all the viewports from the editors
+	widgetsModule.Render();
 
 	//So far everything was rendered onto target texture, now render to the frame buffer
 	renderModule.BeginMainScene();
@@ -452,7 +447,7 @@ void CreateMainWindow(const std::string& shaderPath)
 	Widgets::TabContainer* pMiddleTabContainer = new Widgets::TabContainer();
 	pContainer->AddWidget(pMiddleTabContainer);
 
-	Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
+	//Editors::GamePlayer::Get().CreateEditor(pMiddleTabContainer);
 
 	Editors::EditorParameter parameter;
 	parameter.m_pParent = pMiddleTabContainer;
@@ -584,7 +579,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	widgetMgrParameter.m_pMainWindow = g_pWindow;
 	widgetMgr.Init(widgetMgrParameter);
 
-	GameMgr& gameMgr = GameMgr::InitSingleton();
+	Systems::GameMgr& gameMgr = Systems::GameMgr::InitSingleton();
 	gameMgr.Init();
 
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
@@ -601,8 +596,6 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	meshEditorModule.Init();
 
 	Editors::EditorManager& editorManager = Editors::EditorManager::InitSingleton();
-
-	Editors::GamePlayer::InitSingleton();
 
 	Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::InitSingleton();
 	levelEditorModule.Init();
@@ -647,11 +640,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::MaterialEditorModule::ReleaseSingleton();
 
 	levelEditorModule.Shutdown();
-	
-	Editors::GamePlayer::ReleaseSingleton();
 
 	gameMgr.Release();
-	GameMgr::ReleaseSingleton();
+	Systems::GameMgr::ReleaseSingleton();
 
 	inputMgr.Release();
 	Inputs::InputMgr::ReleaseSingleton();

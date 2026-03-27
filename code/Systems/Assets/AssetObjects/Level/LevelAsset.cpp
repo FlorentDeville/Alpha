@@ -150,6 +150,11 @@ namespace Systems
 		return *it;
 	}
 
+	Core::Array<GameObject*>& LevelAsset::GetGameObjectsArray()
+	{
+		return m_gameObjectsArray;
+	}
+
 	const Core::Array<GameObject*>& LevelAsset::GetGameObjectsArray() const
 	{
 		return m_gameObjectsArray;

@@ -33,6 +33,9 @@ namespace Rendering
 
 		m_shaders[static_cast<size_t>(EngineShaders::OBJECTID_VS)] = new Shader(shaderPath + "\\object_ids.vs.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::OBJECTID_PS)] = new Shader(shaderPath + "\\object_ids.ps.cso");
+
+		m_shaders[static_cast<size_t>(EngineShaders::COPY_RENDER_TARGET_VS)] = new Shader(shaderPath + "\\copy_render_target.vs.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::COPY_RENDER_TARGET_PS)] = new Shader(shaderPath + "\\copy_render_target.ps.cso");
 	}
 
 	void ShaderMgr::Shutdown()

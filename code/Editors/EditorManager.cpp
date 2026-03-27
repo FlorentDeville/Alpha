@@ -4,10 +4,14 @@
 
 #include "Editors/EditorManager.h"
 
+#include "Editors/EditorParameter.h"
+#include "Editors/GamePlayer/GamePlayer.h"
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
 #include "Editors/TextureEditor/TextureEditor.h"
+
+#include "Widgets/TabContainer.h"
 
 namespace Editors
 {
@@ -26,6 +30,9 @@ namespace Editors
 
 	void EditorManager::Init(const EditorParameter& param)
 	{
+		m_pTabContainer = static_cast<Widgets::TabContainer*>(param.m_pParent);
+
+		m_editors.PushBack(new GamePlayer());
 		m_editors.PushBack(new LevelEditor());
 		m_editors.PushBack(new MeshEditor());
 		m_editors.PushBack(new MaterialEditor());
@@ -41,5 +48,10 @@ namespace Editors
 			delete pEditor;
 
 		m_editors.Clear();
+	}
+
+	void EditorManager::SwitchTab(TabId id)
+	{
+		m_pTabContainer->SetSelectedTab(static_cast<int>(id));
 	}
 }

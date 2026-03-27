@@ -19,9 +19,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameMgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Configuration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,9 +64,11 @@
     <FxCompile Include="Shaders\texture_editor_viewport.ps.hlsl" />
     <FxCompile Include="Shaders\texture_editor_viewport.rs.hlsl" />
     <FxCompile Include="Shaders\texture_editor_viewport.vs.hlsl" />
+    <FxCompile Include="Shaders\copy_render_target.ps.hlsl" />
+    <FxCompile Include="Shaders\copy_render_target.rs.hlsl" />
+    <FxCompile Include="Shaders\copy_render_target.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameMgr.h" />
     <ClInclude Include="Configuration.h" />
   </ItemGroup>
   <ItemGroup>

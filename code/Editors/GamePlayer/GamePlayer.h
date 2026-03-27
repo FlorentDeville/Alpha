@@ -1,24 +1,35 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include "Core/Singleton.h"
+#include "Editors/BaseEditor.h"
 
-namespace Widgets
+namespace Rendering
 {
-	class Widget;
+	class PipelineState;
+	class RootSignature;
 }
 
 namespace Editors
 {
-	class GamePlayer : public Core::Singleton<GamePlayer>
+	class GamePlayer : public BaseEditor
 	{
 	public:
 		GamePlayer();
 		~GamePlayer();
 
-		void CreateEditor(Widgets::Widget* pParent);
+		void CreateEditor(const EditorParameter& param) override;
+
+	private:
+		Rendering::PipelineState* m_pPso;
+		Rendering::RootSignature* m_pRootSig;
+
+		void Viewport_OnRender();
+
+		void OnClick_Play();
+		void OnClick_Pause();
+		void OnClick_Stop();
 	};
 }

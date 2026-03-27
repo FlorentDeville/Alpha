@@ -121,11 +121,9 @@ namespace Rendering
 
 		m_pLinearCBufferPool = new LinearConstantBufferPool();
 		const int CBUFFER_SIZE = 512;
-		const int CBUFFER_COUNT = 2000;
+		const int CBUFFER_COUNT = 4000;
 		m_pLinearCBufferPool->Init(CBUFFER_SIZE, CBUFFER_COUNT);
 
-		//Render target for the game
-		m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
 
 		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
 
@@ -185,8 +183,6 @@ namespace Rendering
 					pResource->Release();
 			}
 		}
-
-		delete m_gameRenderTarget;
 
 		Rendering::FontMgr::ReleaseSingleton();
 		Rendering::MeshMgr::ReleaseSingleton();
@@ -330,6 +326,12 @@ namespace Rendering
 		m_pRenderCommandList->IASetIndexBuffer(&mesh.GetIndexBufferView());
 
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
+	}
+
+	void RenderModule::RenderNoBufferTriangle()
+	{
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_pRenderCommandList->DrawInstanced(3, 1, 0, 0);
 	}
 
 	void RenderModule::SetScissorRectangle(const D3D12_RECT& rect)
@@ -626,11 +628,6 @@ namespace Rendering
 			//reset the character count for next frame
 			info.m_characterCount = 0;
 		}
-	}
-
-	Rendering::TextureId RenderModule::GetGameRenderTargetTextureId() const
-	{
-		return GetRenderTargetTextureId(m_gameRenderTarget);
 	}
 
 	void RenderModule::ChangeMainResolution(const DirectX::XMUINT2& size)

@@ -71,6 +71,10 @@ namespace Rendering
 
 		void RenderMesh(const Rendering::Mesh& mesh);
 
+		//Render a single triangle without passing any vertex buffer. The shader has to do everything with the vertexId.
+		//Used to render a single triangle to copy a render target on another one or for post process.
+		void RenderNoBufferTriangle();
+
 		void SetScissorRectangle(const D3D12_RECT& rect);
 
 		void RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color);
@@ -92,8 +96,6 @@ namespace Rendering
 		//return the number of character written
 		int PrepareRenderText(const std::string& text, Rendering::FontId fontId, const DirectX::XMFLOAT3& uiPos, const DirectX::XMFLOAT2& scale, const DirectX::XMUINT4& scissor, float nearCameraPlane, float farCameraPlane);
 		void RenderAllText();
-
-		Rendering::TextureId GetGameRenderTargetTextureId() const;
 
 		void ChangeMainResolution(const DirectX::XMUINT2& size);
 
@@ -163,7 +165,6 @@ namespace Rendering
 
 	public:
 		UINT m_currentBackBufferIndex;
-		Rendering::RenderTarget* m_gameRenderTarget;
 
 		Mesh* m_pCylinderMesh;
 		Mesh* m_pConeMesh;
