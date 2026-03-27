@@ -713,27 +713,18 @@ namespace Editors
 	void GizmoWidget::RenderScaleManipulator()
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
-		const Core::Vec4f& dxXAxis = txWs.GetX();
-		const Core::Vec4f& dxYAxis = txWs.GetY();
-		const Core::Vec4f& dxZAxis = txWs.GetZ();
-		const Core::Vec4f& dxTAxis = txWs.GetT();
-		DirectX::XMVECTOR xAxis = DirectX::XMVectorSet(dxXAxis.GetX(), dxXAxis.GetY(), dxXAxis.GetZ(), 0);
-		DirectX::XMVECTOR yAxis = DirectX::XMVectorSet(dxYAxis.GetX(), dxYAxis.GetY(), dxYAxis.GetZ(), 0);
-		DirectX::XMVECTOR zAxis = DirectX::XMVectorSet(dxZAxis.GetX(), dxZAxis.GetY(), dxZAxis.GetZ(), 0);
-		DirectX::XMVECTOR tAxis = DirectX::XMVectorSet(dxTAxis.GetX(), dxTAxis.GetY(), dxTAxis.GetZ(), 1);
-		DirectX::XMMATRIX dxTxWs(xAxis, yAxis, zAxis, tAxis);
-
-		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 		//x axis
 		{
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
+			Core::Mat44f transform = rotation * txWs;
+
 			Core::Float4 red(1, 0, 0, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				red = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			RenderScaleSingleAxis(rotation * dxTxWs, red);
+			RenderScaleSingleAxis(transform.m_matrix, red);
 		}
 
 		//y axis
@@ -742,18 +733,20 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				green = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			RenderScaleSingleAxis(dxTxWs, green);
+			RenderScaleSingleAxis(txWs.m_matrix, green);
 		}
 
 		//z axis
 		{
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
+			Core::Mat44f transform = rotation * txWs;
+
 			Core::Float4 blue(0, 0, 1, 0);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				blue = Core::Float4(m_hoverColor.x, m_hoverColor.y, m_hoverColor.z, m_hoverColor.w);
 
-			RenderScaleSingleAxis(rotation * dxTxWs, blue);
+			RenderScaleSingleAxis(transform.m_matrix, blue);
 		}
 	}
 
