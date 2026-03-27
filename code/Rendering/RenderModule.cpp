@@ -341,29 +341,29 @@ namespace Rendering
 		m_pRenderCommandList->RSSetScissorRects(1, &rect);
 	}
 
-	void RenderModule::RenderPrimitiveCylinder(const DirectX::XMMATRIX& world, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color)
 	{
-		RenderBaseShape(m_pCylinderMesh, world, color);
+		RenderBaseShape(m_pCylinderMesh, wvp, color);
 	}
 
-	void RenderModule::RenderPrimitiveCone(const DirectX::XMMATRIX& world, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveCone(const Core::Mat44f& wvp, const Core::Float4& color)
 	{
-		RenderBaseShape(m_pConeMesh, world, color);
+		RenderBaseShape(m_pConeMesh, wvp, color);
 	}
 
-	void RenderModule::RenderPrimitiveTorus(const DirectX::XMMATRIX& world, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveTorus(const Core::Mat44f& wvp, const Core::Float4& color)
 	{
-		RenderBaseShape(m_pTorusMesh, world, color);
+		RenderBaseShape(m_pTorusMesh, wvp, color);
 	}
 
-	void RenderModule::RenderPrimitiveCube(const DirectX::XMMATRIX& world, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveCube(const Core::Mat44f& wvp, const Core::Float4& color)
 	{
-		RenderBaseShape(m_pCubeMesh, world, color);
+		RenderBaseShape(m_pCubeMesh, wvp, color);
 	}
 
-	void RenderModule::RenderPrimitiveSphere(const DirectX::XMMATRIX& world, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveSphere(const Core::Mat44f& wvp, const Core::Float4& color)
 	{
-		RenderBaseShape(m_pSphereMesh, world, color);
+		RenderBaseShape(m_pSphereMesh, wvp, color);
 	}
 
 	void RenderModule::ExecuteRenderCommand()
@@ -839,14 +839,13 @@ namespace Rendering
 		}
 	}
 
-	void RenderModule::RenderBaseShape(const Mesh* pMesh, const DirectX::XMMATRIX& txWs, const Core::Float4& color) const
+	void RenderModule::RenderBaseShape(const Mesh* pMesh, const Core::Mat44f& wvp, const Core::Float4& color) const
 	{
 		m_pRenderCommandList->SetPipelineState(m_pBaseShapePso->GetPipelineState());
 		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeRootSig->GetRootSignature());
 
-		DirectX::XMMATRIX wvp = txWs * m_pCamera->GetViewMatrix().m_matrix * m_pCamera->GetProjectionMatrix().m_matrix;
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMMATRIX) / 4, &wvp, 0);
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(DirectX::XMMATRIX) / 4);
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(Core::Mat44f) / 4, &wvp, 0);
+		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(Core::Mat44f) / 4);
 
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

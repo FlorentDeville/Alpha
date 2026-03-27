@@ -632,13 +632,13 @@ namespace Editors
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
 			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(rotationAngle);
-			Core::Mat44f transform = scale * rotation * txWs;
+			Core::Mat44f transform = scale * rotation * txWs * viewProj;
 
 			Core::Float4 red(1, 0, 0, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				red = m_hoverColor;
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, red);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, red);
 		}
 
 		//rotation y axis
@@ -647,21 +647,21 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				green = m_hoverColor;
 
-			Core::Mat44f transform = scale * txWs;
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, green);
+			Core::Mat44f transform = scale * txWs * viewProj;
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, green);
 		}
 
 		//rotation z axis
 		{
 			constexpr float rotationAngle = DirectX::XMConvertToRadians(90.f);
 			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(rotationAngle);
-			Core::Mat44f transform = scale * rotation * txWs;
+			Core::Mat44f transform = scale * rotation * txWs * viewProj;
 
 			Core::Float4 blue(0, 0, 1, 1);
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				blue = m_hoverColor;
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform.m_matrix, blue);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, blue);
 		}
 	}
 
@@ -780,8 +780,8 @@ namespace Editors
 			Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realDiameter, realLength, realDiameter, 0));
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength * 0.5f, 0, 0));
 			Core::Mat44f txLs = scale * translation;
-			Core::Mat44f ws = txLs * txWs;
-			renderingMgr.RenderPrimitiveCylinder(ws.m_matrix, color);
+			Core::Mat44f ws = txLs * txWs * viewProj;
+			renderingMgr.RenderPrimitiveCylinder(ws, color);
 		}
 
 		{		
@@ -791,8 +791,8 @@ namespace Editors
 			Core::Mat44f localScale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(coneDiameter, coneLength, coneDiameter, 0));
 			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength, 0, 0));
 			Core::Mat44f txLs = localScale * localTranslation;
-			Core::Mat44f ws = txLs * txWs;
-			renderingMgr.RenderPrimitiveCone(ws.m_matrix, color);
+			Core::Mat44f ws = txLs * txWs * viewProj;
+			renderingMgr.RenderPrimitiveCone(ws, color);
 		}
 	}
 
@@ -809,8 +809,8 @@ namespace Editors
 		{
 			Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(realDiameter, realLength, realDiameter);
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0.f, realLength * 0.5f, 0);
-			Core::Mat44f ws = scale * translation * txWs;
-			renderingMgr.RenderPrimitiveCylinder(ws.m_matrix, color);
+			Core::Mat44f ws = scale * translation * txWs * viewProj;
+			renderingMgr.RenderPrimitiveCylinder(ws, color);
 		}
 
 		{
@@ -819,8 +819,8 @@ namespace Editors
 
 			Core::Mat44f localScale = Core::Mat44f::CreateScaleMatrix(coneLength);
 			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(0, realLength, 0);
-			Core::Mat44f ws = localScale * localTranslation * txWs;
-			renderingMgr.RenderPrimitiveCube(ws.m_matrix, color);
+			Core::Mat44f ws = localScale * localTranslation * txWs * viewProj;
+			renderingMgr.RenderPrimitiveCube(ws, color);
 		}
 	}
 

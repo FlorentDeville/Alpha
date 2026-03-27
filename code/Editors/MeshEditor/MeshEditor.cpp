@@ -427,8 +427,9 @@ namespace Editors
 	void MeshEditor::Viewport_OnPreRender()
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
-		renderer.GetCamera()->SetLookAt(m_cameraPosition, m_cameraTarget, Core::Vec4f(0, 1, 0, 0));
-		renderer.GetCamera()->SetProjection(45 * Core::PI_OVER_180, m_pWorldAxisRTRatio, 0.1f, 1000);
+		Core::Mat44f view = Core::Mat44f::CreateView(m_cameraPosition, m_cameraTarget - m_cameraPosition, Core::Vec4f(0, 1, 0, 0));
+		Core::Mat44f proj = Core::Mat44f::CreatePerspective(45 * Core::PI_OVER_180, m_pWorldAxisRTRatio, 0.1f, 1000);
+		Core::Mat44f viewProj = view * proj;
 
 		m_pWorldAxisRenderTarget->BeginScene();
 
@@ -437,36 +438,36 @@ namespace Editors
 		constexpr float SCALE_LENGTH = 2;
 		constexpr float SCALE_DIAMETER = 0.5;
 		constexpr float HALF_SCALE_LENGTH = SCALE_LENGTH * 0.5f;
-		DirectX::XMMATRIX dxScale = DirectX::XMMatrixScaling(SCALE_DIAMETER, SCALE_LENGTH, SCALE_DIAMETER);
+		Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(SCALE_DIAMETER, SCALE_LENGTH, SCALE_DIAMETER);
 
 		//x axis
 		{
-			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(HALF_SCALE_LENGTH, 0, 0);
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(HALF_SCALE_LENGTH, 0, 0);
 
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationZ(-DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
 
 			Core::Float4 red(1, 0, 0, 1);
-			renderer.RenderPrimitiveCylinder(dxScale * rotation * dxTranslation, red);
+			renderer.RenderPrimitiveCylinder(scale * rotation * translation * viewProj, red);
 		}
 
 		//y axis
 		{
-			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(0, HALF_SCALE_LENGTH, 0);
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, HALF_SCALE_LENGTH, 0);
 			Core::Float4 green(0, 1, 0, 1);
 
-			renderer.RenderPrimitiveCylinder(dxScale * dxTranslation, green);
+			renderer.RenderPrimitiveCylinder(scale * translation * viewProj, green);
 		}
 
 		//z axis
 		{
-			DirectX::XMMATRIX dxTranslation = DirectX::XMMatrixTranslation(0, 0, HALF_SCALE_LENGTH);
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, 0, HALF_SCALE_LENGTH);
 
 			//rotate everything 90 degres around z axis
-			DirectX::XMMATRIX rotation = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2);
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
 
 			Core::Float4 blue(0, 0, 1, 1);
-			renderer.RenderPrimitiveCylinder(dxScale * rotation * dxTranslation, blue);
+			renderer.RenderPrimitiveCylinder(scale * rotation * translation * viewProj, blue);
 		}
 
 		m_pWorldAxisRenderTarget->EndScene();
