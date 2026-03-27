@@ -25,7 +25,7 @@ namespace Editors
 		const int HEIGHT = 1080;
 
 		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-		pViewport->SetSizeStyle(Widgets::Widget::STRETCH);
+		pViewport->SetSizeStyle(Widgets::STRETCH);
 		m_pInternalLayout->AddWidget(pViewport);
 	}
 }
