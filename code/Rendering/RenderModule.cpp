@@ -56,7 +56,6 @@ namespace Rendering
 		, m_pDebugInterface(nullptr)
 #endif
 		, m_pRenderCommandList(nullptr)
-		, m_pCamera(nullptr)
 		, m_pCubeMesh(nullptr)
 		, m_pSphereMesh(nullptr)
 		, m_pLinearCBufferPool(nullptr)
@@ -127,8 +126,6 @@ namespace Rendering
 
 		//Render target for the game
 		m_gameRenderTarget = CreateRenderTarget(gameResolution.x, gameResolution.y);
-
-		m_pCamera = new Camera();
 
 		Rendering::MeshMgr& meshMgr = Rendering::MeshMgr::Get();
 
@@ -208,7 +205,6 @@ namespace Rendering
 
 		delete m_pRenderCommandQueue;
 		delete m_pCopyCommandQueue;
-		delete m_pCamera;
 
 		delete m_pNullCubemap;
 		m_pNullCubemap = nullptr;
@@ -467,16 +463,6 @@ namespace Rendering
 	const DirectX::XMUINT2& RenderModule::GetGameResolution() const
 	{
 		return m_gameResolution;
-	}
-
-	Camera* RenderModule::GetCamera()
-	{
-		return m_pCamera;
-	}
-
-	const Camera* RenderModule::GetConstCamera() const
-	{
-		return m_pCamera;
 	}
 
 	void RenderModule::InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount)

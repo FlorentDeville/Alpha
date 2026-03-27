@@ -86,9 +86,6 @@ namespace Rendering
 		int GetNumFrames() const;
 		const DirectX::XMUINT2& GetGameResolution() const;
 
-		Camera* GetCamera();
-		const Camera* GetConstCamera() const;
-
 		void InitialiseFont(Rendering::FontId fontId, Rendering::PipelineStateId psoId, int maxCharacterCount);
 
 		//uiPos : origin : top left, range : [0, pixel screen size]
@@ -160,8 +157,6 @@ namespace Rendering
 		std::map<Rendering::FontId, FontRenderInfo> m_fontVertexBuffers;	//one font info per font used
 
 		float m_clearColor[4];
-
-		Camera* m_pCamera;
 
 		//CBuffer pool being reset every frame used for PerFrame cbuffer.
 		LinearConstantBufferPool* m_pLinearCBufferPool;
