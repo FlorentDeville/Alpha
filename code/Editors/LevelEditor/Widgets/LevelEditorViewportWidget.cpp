@@ -226,7 +226,8 @@ namespace Editors
 		
 		m_pRenderPassBase->ClearDepthBuffer();
 
-		m_pGizmoWidget->Render();
+		Core::Mat44f viewProj = m_pCamera->GetView() * m_pCamera->GetProjection();
+		m_pGizmoWidget->Render(viewProj);
 
 		m_pRenderPassBase->PostRender(scene);
 

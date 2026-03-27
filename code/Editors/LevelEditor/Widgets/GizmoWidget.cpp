@@ -77,7 +77,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::Render()
+	void GizmoWidget::Render(const Core::Mat44f& viewProj)
 	{
 		if (!m_enabled || !m_pModel->ShouldRender())
 			return;
@@ -98,15 +98,15 @@ namespace Editors
 		switch (m_manipulatorMode)
 		{
 		case kTranslation:
-			RenderTranslationManipulator();
+			RenderTranslationManipulator(viewProj);
 			break;
 
 		case kRotation:
-			RenderRotationManipulator();
+			RenderRotationManipulator(viewProj);
 			break;
 
 		case kScale:
-			RenderScaleManipulator();
+			RenderScaleManipulator(viewProj);
 			break;
 
 		default:
@@ -618,7 +618,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderRotationManipulator()
+	void GizmoWidget::RenderRotationManipulator(const Core::Mat44f& viewProj)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 
@@ -665,7 +665,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderTranslationManipulator()
+	void GizmoWidget::RenderTranslationManipulator(const Core::Mat44f& viewProj)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 
@@ -680,7 +680,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(transform, appliedColor);
+			RenderTranslationSingleAxis(transform, viewProj, appliedColor);
 		}
 
 		//y axis
@@ -690,7 +690,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(txWs, appliedColor);
+			RenderTranslationSingleAxis(txWs, viewProj, appliedColor);
 		}
 
 		//z axis
@@ -704,11 +704,11 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(transform, appliedColor);
+			RenderTranslationSingleAxis(transform, viewProj, appliedColor);
 		}
 	}
 
-	void GizmoWidget::RenderScaleManipulator()
+	void GizmoWidget::RenderScaleManipulator(const Core::Mat44f& viewProj)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 
@@ -722,7 +722,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				red = m_hoverColor;
 
-			RenderScaleSingleAxis(transform, red);
+			RenderScaleSingleAxis(transform, viewProj, red);
 		}
 
 		//y axis
@@ -731,7 +731,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				green = m_hoverColor;
 
-			RenderScaleSingleAxis(txWs, green);
+			RenderScaleSingleAxis(txWs, viewProj, green);
 		}
 
 		//z axis
@@ -744,11 +744,11 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				blue = m_hoverColor;
 
-			RenderScaleSingleAxis(transform, blue);
+			RenderScaleSingleAxis(transform, viewProj, blue);
 		}
 	}
 
-	void GizmoWidget::RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Float4& color)
+	void GizmoWidget::RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color)
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 		
@@ -796,7 +796,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Float4& color) const
+	void GizmoWidget::RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color) const
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
