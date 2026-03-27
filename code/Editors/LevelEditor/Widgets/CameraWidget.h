@@ -6,6 +6,7 @@
 
 #include "Core/Callbacks/CallbackList.h"
 #include "Core/Math/Mat44f.h"
+#include "Core/Math/Vec4f.h"
 
 #include <DirectXMath.h>
 
@@ -41,7 +42,7 @@ namespace Editors
 		//camera transform
 		DirectX::XMMATRIX m_cameraRotation;		//matrix for the orientation of the camera (same as m_cameraEulerAngle)
 		DirectX::XMVECTOR m_cameraEulerAngle;	//euler angle of the camera (same as m_cameraRotation)
-		DirectX::XMVECTOR m_cameraPosition;		//position of the camera in world space
+		Core::Vec4f m_cameraPosition;		//position of the camera in world space
 		DirectX::XMMATRIX m_cameraTransform;	//transform of the camera in world space
 
 		Core::Mat44f m_view;

@@ -160,37 +160,37 @@ namespace Editors
 		if (inputs.IsKeyPressed('W')) //forward
 		{
 			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('S')) //backward
 		{
 			DirectX::XMVECTOR zAxis = m_cameraRotation.r[2];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('A')) //left
 		{
 			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('D')) //right
 		{
 			DirectX::XMVECTOR zAxis = m_cameraRotation.r[0];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('Q')) //up
 		{
 			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, zAxis * m_translationSpeed * dtInSeconds);
+			m_cameraPosition = m_cameraPosition + (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 		if (inputs.IsKeyPressed('E')) //down
 		{
 			DirectX::XMVECTOR zAxis = m_cameraRotation.r[1];
-			m_cameraPosition = DirectX::XMVectorAdd(m_cameraPosition, -zAxis * m_translationSpeed * dtInSeconds);
+			m_cameraPosition = m_cameraPosition - (zAxis * m_translationSpeed * dtInSeconds);
 			updateCameraTransform = true;
 		}
 
@@ -225,8 +225,7 @@ namespace Editors
 
 		if (updateCameraTransform)
 		{
-			Core::Vec4f cameraPos = m_cameraPosition;
-			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(cameraPos);
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
 			Core::Mat44f rotation;
 			rotation.m_matrix = m_cameraRotation;
 
