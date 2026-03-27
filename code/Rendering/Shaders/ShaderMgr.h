@@ -25,6 +25,9 @@ namespace Rendering
 		OBJECTID_VS,
 		OBJECTID_PS,
 
+		COPY_RENDER_TARGET_VS,
+		COPY_RENDER_TARGET_PS,
+
 		COUNT
 	};
 
