@@ -61,9 +61,7 @@ namespace Editors
 		Core::Vec4f cameraUp(0, 1, 0, 0);
 		Core::Vec4f targetOffset(0, 0, 1, 1);
 
-		Core::Mat44f cameraWorld;
-		cameraWorld.m_matrix = m_cameraTransform;
-		Core::Vec4f cameraLookAt = targetOffset * cameraWorld;
+		Core::Vec4f cameraLookAt = targetOffset * m_cameraTransform;
 
 		m_view = Core::Mat44f::CreateView(m_cameraPosition, cameraLookAt - m_cameraPosition, cameraUp);
 
@@ -86,11 +84,9 @@ namespace Editors
 		m_cameraRotation = XRotation * YRotation;
 		
 		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(cameraPosition);
-		Core::Mat44f transform = m_cameraRotation * translation;
+		m_cameraTransform = m_cameraRotation * translation;
 
-		m_cameraTransform = transform.m_matrix;
-
-		m_onWsChanged(transform);
+		m_onWsChanged(m_cameraTransform);
 	}
 
 	void CameraWidget::SetFov(float fov)
@@ -224,9 +220,8 @@ namespace Editors
 		if (updateCameraTransform)
 		{
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
-			Core::Mat44f transform = m_cameraRotation * translation;
-			m_cameraTransform = transform.m_matrix;
-			m_onWsChanged(transform);
+			m_cameraTransform = m_cameraRotation * translation;
+			m_onWsChanged(m_cameraTransform);
 		}
 
 		m_mousePreviousPos = mousePosition;
