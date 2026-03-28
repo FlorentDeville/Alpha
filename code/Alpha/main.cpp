@@ -14,6 +14,7 @@
 #include <DirectXMath.h>
 
 #include "Alpha/Configuration.h"
+#include "Alpha/Reflection/ReflectionGameTypes.h"
 
 #include "Core/CommandLine.h"
 #include "Core/Helper.h"
@@ -534,6 +535,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Rendering::RegisterRenderingTypesToReflection();
 	Systems::RegisterCoreTypesToReflection();
 	Systems::RegisterSystemsTypesToReflection();
+	RegisterGameTypesToReflection();
 
 	Core::LogModule& logModule = Core::LogModule::InitSingleton();
 	logModule.Init();
