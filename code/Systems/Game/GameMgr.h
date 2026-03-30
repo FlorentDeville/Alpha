@@ -40,6 +40,8 @@ namespace Systems
 
 		void RequestUnloadingAllLevels();
 
+		void PushCamera(Rendering::Camera* pCamera);
+
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
 	private:
@@ -53,6 +55,8 @@ namespace Systems
 
 		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
+
+		Rendering::Camera* m_pDefaultCamera;
 
 		//Stack of camera. The currently active camera is the one at the top. There is always a default camera.
 		std::stack<Rendering::Camera*> m_cameraStack;

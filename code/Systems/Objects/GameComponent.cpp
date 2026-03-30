@@ -36,6 +36,11 @@ namespace Systems
 		return m_pOwnerGo;
 	}
 
+	GameObject* GameComponent::GetOwner()
+	{
+		return m_pOwnerGo;
+	}
+
 	GameComponent* CreateNewGameComponent(const Core::TypeDescriptor* pType)
 	{
 		GameComponent* ptr = static_cast<GameComponent*>(CreateObject(pType));

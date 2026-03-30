@@ -44,10 +44,10 @@ namespace Systems
 		m_pRenderPassBase->SetRenderTarget(m_pFinalRenderTarget);
 		m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
 
-		Rendering::Camera* pDefaultCamera = new Rendering::Camera();
-		pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
-		pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
-		m_cameraStack.push(pDefaultCamera);
+		m_pDefaultCamera = new Rendering::Camera();
+		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
+		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
+		m_cameraStack.push(m_pDefaultCamera);
 	}
 
 	void GameMgr::Release()
@@ -55,13 +55,7 @@ namespace Systems
 		delete m_pRenderPassBase;
 		delete m_pRenderPassShadowMaps;
 		delete m_pFinalRenderTarget;
-
-		while (!m_cameraStack.empty())
-		{
-			Rendering::Camera* pCamera = m_cameraStack.top();
-			delete pCamera;
-			m_cameraStack.pop();
-		}
+		delete m_pDefaultCamera;
 	}
 
 	void GameMgr::Update()
@@ -125,6 +119,11 @@ namespace Systems
 	void GameMgr::RequestUnloadingAllLevels()
 	{
 		m_unloadingRequest = m_loadedLevelsIds;
+	}
+
+	void GameMgr::PushCamera(Rendering::Camera* pCamera)
+	{
+		m_cameraStack.push(pCamera);
 	}
 
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
