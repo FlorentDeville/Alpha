@@ -101,7 +101,7 @@ namespace Systems
 
 		//set the new parent to the child
 		pGo->GetTransform().SetParent(pGoNewParent);
-		pGo->GetTransform().Update();
+		pGo->UpdateTransform();
 	}
 
 	void LevelAsset::DeleteGameObject(GameObject* pGo)
