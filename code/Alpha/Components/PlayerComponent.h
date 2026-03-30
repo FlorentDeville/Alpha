@@ -20,7 +20,7 @@ public:
 	~PlayerComponent();
 
 	void PostLoad() override;
-	void Update() override;
+	void Update(float dt) override;
 
 private:
 

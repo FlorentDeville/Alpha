@@ -32,7 +32,7 @@ namespace Systems
 		void Init();
 		void Release();
 
-		void Update();
+		void Update(float dt);
 		void Render();
 
 		void RequestLoadingLevel(Systems::NewAssetId levelId);

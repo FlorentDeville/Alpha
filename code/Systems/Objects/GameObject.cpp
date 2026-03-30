@@ -22,15 +22,15 @@ namespace Systems
 		m_components.Clear();
 	}
 
-	void GameObject::Update()
+	void GameObject::Update(float dt)
 	{
 		for (GameComponent* pComponent : m_components)
-			pComponent->Update();
+			pComponent->Update(dt);
 	}
 
 	void GameObject::UpdateTransform()
 	{
-		m_transform.Update();
+		m_transform.Update(0);
 	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)

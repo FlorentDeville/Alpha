@@ -15,7 +15,7 @@ namespace Systems
 	GameComponent::~GameComponent()
 	{ }
 
-	void GameComponent::Update()
+	void GameComponent::Update(float dt)
 	{ }
 
 	void GameComponent::SetGuid(const Core::Guid& guid)

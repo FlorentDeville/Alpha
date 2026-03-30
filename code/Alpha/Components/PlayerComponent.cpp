@@ -33,7 +33,7 @@ void PlayerComponent::PostLoad()
 {
 }
 
-void PlayerComponent::Update()
+void PlayerComponent::Update(float dt)
 {
 	Systems::TransformComponent& transform = GetOwner()->GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
@@ -67,7 +67,7 @@ void PlayerComponent::Update()
 	if (direction.Length() != 0)
 	{
 		direction.Normalize();
-		Core::Vec4f newPosition = oldPosition + direction * m_speed;
+		Core::Vec4f newPosition = oldPosition + direction * m_speed * dt;
 
 		Core::Mat44f newLocalTx = localTx;
 		newLocalTx.SetRow(3, newPosition);

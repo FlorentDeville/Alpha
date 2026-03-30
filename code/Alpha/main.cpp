@@ -415,8 +415,8 @@ void Update()
 	{
 		float currentGameTick = Systems::Clock::Get().GetGameTime();
 		float gameDt = currentGameTick - previousGameTick;
-		gameDt;
-		Systems::GameMgr::Get().Update();
+
+		Systems::GameMgr::Get().Update(gameDt);
 
 		previousGameTick = currentGameTick;
 	}
