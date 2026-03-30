@@ -18,8 +18,6 @@ namespace Systems
 		PointLightComponent();
 		~PointLightComponent();
 
-		void Render() override;
-
 		const Core::Vec4f& GetPosition() const;
 
 		const Core::Color& GetAmbient() const;

@@ -26,9 +26,6 @@ namespace Systems
 	SpotLightComponent::~SpotLightComponent()
 	{ }
 
-	void SpotLightComponent::Render()
-	{ }
-
 	const Core::Vec4f& SpotLightComponent::GetPosition() const
 	{
 		return m_position;

@@ -18,8 +18,6 @@ namespace Systems
 		SpotLightComponent();
 		~SpotLightComponent();
 
-		void Render() override;
-
 		const Core::Vec4f& GetPosition() const;
 		const Core::Vec4f& GetDirection() const;
 

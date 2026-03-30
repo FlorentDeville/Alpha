@@ -28,7 +28,6 @@ namespace Systems
 
 		virtual void Update();
 		virtual void UpdateTransform();
-		virtual void Render();
 
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;

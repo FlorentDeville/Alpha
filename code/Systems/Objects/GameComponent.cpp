@@ -18,9 +18,6 @@ namespace Systems
 	void GameComponent::Update()
 	{ }
 
-	void GameComponent::Render()
-	{ }
-
 	void GameComponent::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;

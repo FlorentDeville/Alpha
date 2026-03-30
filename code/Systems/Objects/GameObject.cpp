@@ -33,12 +33,6 @@ namespace Systems
 		m_transform.Update();
 	}
 
-	void GameObject::Render()
-	{
-		for (GameComponent* pComponent : m_components)
-			pComponent->Render();
-	}
-
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;
