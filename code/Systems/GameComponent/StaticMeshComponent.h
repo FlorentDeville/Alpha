@@ -20,8 +20,6 @@ namespace Systems
 		StaticMeshComponent();
 		~StaticMeshComponent();
 
-		void Render() override;
-
 		const MeshAsset* GetMesh() const;
 		const MaterialInstanceAsset* GetMaterialInstance() const;
 

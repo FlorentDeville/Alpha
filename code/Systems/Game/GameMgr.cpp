@@ -58,7 +58,7 @@ namespace Systems
 		delete m_pDefaultCamera;
 	}
 
-	void GameMgr::Update()
+	void GameMgr::Update(float dt)
 	{
 		ExecuteLoadingRequests();
 		ExecuteUnloadingRequests();
@@ -71,7 +71,7 @@ namespace Systems
 			Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 			for (Systems::GameObject* pGo : gameObjects)
 			{
-				pGo->Update();
+				pGo->Update(dt);
 			}
 		}
 	}

@@ -113,7 +113,7 @@ namespace Systems
 		m_childrenGo.PushBack(pGo);
 	}
 
-	void TransformComponent::Update()
+	void TransformComponent::Update(float dt)
 	{
 		ComputeWorldTx();
 

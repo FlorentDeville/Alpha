@@ -21,8 +21,7 @@ namespace Systems
 		GameComponent();
 		~GameComponent();
 
-		virtual void Update();
-		virtual void Render();
+		virtual void Update(float dt);
 
 		void SetGuid(const Core::Guid& guid);
 

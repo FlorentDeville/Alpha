@@ -24,9 +24,6 @@ namespace Systems
 	StaticMeshComponent::~StaticMeshComponent()
 	{ }
 
-	void StaticMeshComponent::Render()
-	{ }
-
 	const MeshAsset* StaticMeshComponent::GetMesh() const
 	{
 		return m_mesh.GetPtr();

@@ -23,9 +23,6 @@ namespace Systems
 	PointLightComponent::~PointLightComponent()
 	{ }
 
-	void PointLightComponent::Render()
-	{ }
-
 	const Core::Vec4f& PointLightComponent::GetPosition() const
 	{
 		return m_position;

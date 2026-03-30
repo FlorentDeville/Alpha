@@ -47,7 +47,7 @@ namespace Systems
 
 		void AddChildCachedPointer(Systems::GameObject* pGo);
 
-		void Update() override;
+		void Update(float dt) override;
 
 		void ComputeWorldTx();
 

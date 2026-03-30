@@ -119,17 +119,6 @@ namespace Editors
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
-
-		{
-			Editors::LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
-			Systems::LevelAsset* pLevel = levelEditorModule.GetCurrentLoadedLevel();
-			if (!pLevel)
-				return;
-
-			const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
-			for (Systems::GameObject* pGo : gameObjects)
-				pGo->Update();
-		}
 	}
 
 	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)
