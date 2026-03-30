@@ -29,6 +29,7 @@ namespace Systems
 		void SetOwner(GameObject* pOwnerGo);
 
 		const GameObject* GetOwner() const;
+		GameObject* GetOwner();
 
 	private:
 		Core::Guid m_guid;
