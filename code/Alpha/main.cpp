@@ -47,6 +47,7 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
+#include "Systems/Clock/Clock.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Reflection/ReflectionCoreTypes.h"
@@ -400,15 +401,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Update()
 {
-	static std::chrono::high_resolution_clock clock;
-	static auto start = clock.now();
+	const int FPS = 60;
+	constexpr float FRAME_DURATION = 1.f / FPS;
 
-	std::chrono::nanoseconds dt = clock.now() - start;
-	start = clock.now();
-	std::chrono::milliseconds dtMs = std::chrono::duration_cast<std::chrono::milliseconds>(dt);
+	static float previousGameTick = Systems::Clock::Get().GetGameTime();
+	static float previousApplicationTick = Systems::Clock::Get().GetApplicationTime();
 
-	Systems::GameMgr::Get().Update();
-	Widgets::WidgetMgr::Get().Update(dtMs.count());
+	float currentApplicationTick = Systems::Clock::Get().GetApplicationTime();
+	float applicationDt = currentApplicationTick - previousApplicationTick;
+	uint64_t applicationDtMs = static_cast<uint64_t>(applicationDt * 1000);
+
+	if (applicationDt >= FRAME_DURATION)
+	{
+		float currentGameTick = Systems::Clock::Get().GetGameTime();
+		float gameDt = currentGameTick - previousGameTick;
+		gameDt;
+		Systems::GameMgr::Get().Update();
+
+		previousGameTick = currentGameTick;
+	}
+
+	
+	Widgets::WidgetMgr::Get().Update(applicationDtMs);
+
+	previousApplicationTick = currentApplicationTick;
 }
 
 void Render()
@@ -519,6 +535,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	//cmd.AddArgument("-dataroot", "", CommandLine::ARG_TYPE::STRING, CommandLine::ARG_ACTION::STORE, &g_dataRoot, "Path of the data folder.");
 	//cmd.Parse(lpCmdLine);
 
+	Systems::Clock& clock = Systems::Clock::InitSingleton();
+	clock.Init();
+
 	const int size = 256;
 	char buffer[size];
 	GetModuleFileNameA(NULL, buffer, size);
@@ -621,8 +640,11 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 			::DispatchMessage(&msg);
 		}
 
+		clock.Update();
+
 		Update();
 		Render();
+
 		Inputs::InputMgr::Get().ClearAllStates();
 	}
 
@@ -674,6 +696,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Core::LogModule::ReleaseSingleton();
 
 	Core::ReflectionMgr::ReleaseSingleton();
+
+	clock.Shutdown();
+	Systems::Clock::Get().ReleaseSingleton();
 
 	return 0;
 }
