@@ -34,12 +34,13 @@ namespace Systems
 
 	void ContainerMgr::Shutdown()
 	{
-		for (std::pair<const ContainerId, Container*>& pair : m_containerMap)
+		for (uint8_t ii = 0; ii < static_cast<uint8_t>(LoadingDomain::COUNT); ++ii)
 		{
-			delete pair.second;
+			for (std::pair<const ContainerId, Container*>& pair : m_containerMap[ii])
+			{
+				delete pair.second;
+			}
 		}
-
-		m_containerMap.clear();
 	}
 
 	Container* ContainerMgr::CreateContainer(ContainerId cid)
@@ -49,7 +50,7 @@ namespace Systems
 
 		//now create the container
 		Container* pContainer = new Container(cid);
-		m_containerMap[cid] = pContainer;
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)][cid] = pContainer;
 
 		return pContainer;
 	}
@@ -84,15 +85,15 @@ namespace Systems
 			delete pContainer;
 
 		//remove the container from the manager
-		m_containerMap.erase(cid);
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)].erase(cid);
 
 		return true;
 	}
 
 	Container* ContainerMgr::GetContainer(ContainerId cid)
 	{
-		std::map<ContainerId, Container*>::const_iterator it = m_containerMap.find(cid);
-		if (it == m_containerMap.cend())
+		std::map<ContainerId, Container*>::const_iterator it = m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)].find(cid);
+		if (it == m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)].cend())
 			return nullptr;
 
 		return it->second;
@@ -135,7 +136,7 @@ namespace Systems
 		if (!res)
 			return nullptr;
 
-		m_containerMap[pContainer->GetId()] = pContainer;
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)][pContainer->GetId()] = pContainer;
 		return pContainer;
 	}
 

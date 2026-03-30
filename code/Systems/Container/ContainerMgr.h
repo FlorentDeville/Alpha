@@ -14,6 +14,14 @@ namespace Systems
 	class Container;
 	class ContainerId;
 
+	enum class LoadingDomain : uint8_t
+	{
+		GAME = 0,
+		EDITOR,
+
+		COUNT
+	};
+
 	class ContainerMgr : public Core::Singleton<ContainerMgr>
 	{
 	public:
@@ -40,7 +48,7 @@ namespace Systems
 
 	private:
 		std::string m_root;
-		std::map<ContainerId, Container*> m_containerMap;
+		std::map<ContainerId, Container*> m_containerMap[static_cast<uint8_t>(LoadingDomain::COUNT)];
 
 		std::string MakeDirectory(ContainerId cid) const;
 		std::string MakeFilename(ContainerId cid) const;
