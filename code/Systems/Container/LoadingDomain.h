@@ -1,5 +1,5 @@
 /********************************************************************************/
-/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
 #pragma once
