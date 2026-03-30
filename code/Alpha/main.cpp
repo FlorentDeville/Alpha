@@ -401,30 +401,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Update()
 {
+	Systems::Clock& clock = Systems::Clock::Get();
+	clock.Update();
+
 	const int FPS = 60;
 	constexpr float FRAME_DURATION = 1.f / FPS;
 
-	static float previousGameTick = Systems::Clock::Get().GetGameTime();
-	static float previousApplicationTick = Systems::Clock::Get().GetApplicationTime();
+	static float previousGameTick = clock.GetGameTime();
+	static float previousApplicationTick = clock.GetApplicationTime();
 
-	float currentApplicationTick = Systems::Clock::Get().GetApplicationTime();
+	float currentApplicationTick = clock.GetApplicationTime();
 	float applicationDt = currentApplicationTick - previousApplicationTick;
 	uint64_t applicationDtMs = static_cast<uint64_t>(applicationDt * 1000);
 
 	if (applicationDt >= FRAME_DURATION)
 	{
-		float currentGameTick = Systems::Clock::Get().GetGameTime();
+		float currentGameTick = clock.GetGameTime();
 		float gameDt = currentGameTick - previousGameTick;
 
 		Systems::GameMgr::Get().Update(gameDt);
 
 		previousGameTick = currentGameTick;
+
+		Widgets::WidgetMgr::Get().Update(applicationDtMs);
+
+		previousApplicationTick = currentApplicationTick;
+
+		Inputs::InputMgr::Get().ClearAllStates();
 	}
-
-	
-	Widgets::WidgetMgr::Get().Update(applicationDtMs);
-
-	previousApplicationTick = currentApplicationTick;
 }
 
 void Render()
@@ -640,12 +644,8 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 			::DispatchMessage(&msg);
 		}
 
-		clock.Update();
-
 		Update();
 		Render();
-
-		Inputs::InputMgr::Get().ClearAllStates();
 	}
 
 	logEditor.Shutdown();
