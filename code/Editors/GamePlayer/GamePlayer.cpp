@@ -16,6 +16,7 @@
 #include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
+#include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameMgr.h"
 
 #include "Widgets/Button.h"
@@ -99,16 +100,19 @@ namespace Editors
 
 	void GamePlayer::OnClick_Play()
 	{
-		Core::LogModule::Get().LogError("Play not implemented!");
+		Systems::Clock::Get().StartGameClock();
+		Core::LogModule::Get().LogInfo("Play");
 	}
 
 	void GamePlayer::OnClick_Pause()
 	{
-		Core::LogModule::Get().LogError("Pause not implemented!");
+		Systems::Clock::Get().PauseGameClock();
+		Core::LogModule::Get().LogInfo("Pause");
 	}
 
 	void GamePlayer::OnClick_Stop()
 	{
+		Systems::Clock::Get().StopGameClock();
 		Systems::GameMgr::Get().RequestUnloadingAllLevels();
 		Core::LogModule::Get().LogError("Game stopped.");
 	}
