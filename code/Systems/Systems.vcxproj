@@ -29,6 +29,7 @@
     <ClInclude Include="Assets\AssetType\NewAssetType.h" />
     <ClInclude Include="Assets\Metadata\AssetMetadata.h" />
     <ClInclude Include="Assets\NewAssetId.h" />
+    <ClInclude Include="Clock\Clock.h" />
     <ClInclude Include="Container\Container.h" />
     <ClInclude Include="Container\ContainerId.h" />
     <ClInclude Include="Container\ContainerMgr.h" />
@@ -74,6 +75,7 @@
     <ClCompile Include="Assets\AssetType\NewAssetType.cpp" />
     <ClCompile Include="Assets\Metadata\AssetMetadata.cpp" />
     <ClCompile Include="Assets\NewAssetId.cpp" />
+    <ClCompile Include="Clock\Clock.cpp" />
     <ClCompile Include="Container\Container.cpp" />
     <ClCompile Include="Container\ContainerId.cpp" />
     <ClCompile Include="Container\ContainerMgr.cpp" />
