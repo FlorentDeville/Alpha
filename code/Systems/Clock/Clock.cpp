@@ -9,6 +9,9 @@ namespace Systems
 	Clock::Clock()
 		: Core::Singleton<Clock>()
 		, m_isGameClockRunning(false)
+		, m_applicationTime()
+		, m_gameTime()
+		, m_lastUpdate()
 	{ }
 
 	Clock::~Clock()
@@ -16,8 +19,8 @@ namespace Systems
 
 	void Clock::Init()
 	{
-		m_applicationClock = Second(0);
-		m_gameClock = Second(0);
+		m_applicationTime = Second(0);
+		m_gameTime = Second(0);
 		
 		m_lastUpdate = std::chrono::steady_clock::now();
 	}
@@ -28,10 +31,10 @@ namespace Systems
 		std::chrono::steady_clock::duration dt = now - m_lastUpdate;
 		Second dtInSeconds = std::chrono::duration_cast<Second>(dt);
 
-		m_applicationClock += dtInSeconds;
+		m_applicationTime += dtInSeconds;
 
 		if(m_isGameClockRunning)
-			m_gameClock += dtInSeconds;
+			m_gameTime += dtInSeconds;
 
 		m_lastUpdate = now;
 	}
@@ -44,7 +47,7 @@ namespace Systems
 	void Clock::StopGameClock()
 	{
 		m_isGameClockRunning = false;
-		m_gameClock = Second(0);
+		m_gameTime = Second(0);
 	}
 
 	void Clock::PauseGameClock()
@@ -55,12 +58,12 @@ namespace Systems
 	//Return the elasped time since the application started in seconds.
 	float Clock::GetApplicationTime() const
 	{
-		return m_applicationClock.count();
+		return m_applicationTime.count();
 	}
 
 	//Return the elapsed time since the game started in seconds.
 	float Clock::GetGameTime() const
 	{
-		return m_gameClock.count();
+		return m_gameTime.count();
 	}
 }

@@ -8,7 +8,6 @@
 #include <cmath>
 #include <cstdint>
 #include <exception>
-#include <chrono>
 #include <windowsx.h>
 
 #include <DirectXMath.h>

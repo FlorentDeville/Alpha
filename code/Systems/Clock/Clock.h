@@ -38,9 +38,9 @@ namespace Systems
 	private:
 		std::chrono::steady_clock::time_point m_lastUpdate;			// time the last update of the clock happened
 
-		Second m_applicationClock;	// time elapsed since the application started
+		Second m_applicationTime;	// time elapsed since the application started
 		
-		Second m_gameClock;			// time elapsed since the game started
+		Second m_gameTime;			// time elapsed since the game started
 		bool m_isGameClockRunning;
 	};
 }
