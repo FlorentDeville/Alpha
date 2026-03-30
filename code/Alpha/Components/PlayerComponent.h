@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Math/Vec4f.h"
+
 #include "Systems/Objects/GameComponent.h"
 
 ENABLE_GAME_REFLECTION(PlayerComponent)
@@ -25,10 +27,12 @@ public:
 private:
 
 	float m_speed;
+	Core::Vec4f m_cameraOffset;
 
 	START_REFLECTION(PlayerComponent)
 		ADD_BASETYPE(Systems::GameComponent)
 		ADD_FIELD(m_speed)
+		ADD_FIELD(m_cameraOffset)
 	END_REFLECTION()
 
 	Rendering::Camera* m_pCamera;
