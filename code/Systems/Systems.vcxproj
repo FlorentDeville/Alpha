@@ -33,6 +33,7 @@
     <ClInclude Include="Container\Container.h" />
     <ClInclude Include="Container\ContainerId.h" />
     <ClInclude Include="Container\ContainerMgr.h" />
+    <ClInclude Include="Container\LoadingDomain.h" />
     <ClInclude Include="Container\ObjectId.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />

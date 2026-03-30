@@ -6,6 +6,8 @@
 
 #include "Core/Singleton.h"
 
+#include "Systems/Container/LoadingDomain.h"
+
 #include <map>
 #include <string>
 
@@ -13,14 +15,6 @@ namespace Systems
 {
 	class Container;
 	class ContainerId;
-
-	enum class LoadingDomain : uint8_t
-	{
-		GAME = 0,
-		EDITOR,
-
-		COUNT
-	};
 
 	class ContainerMgr : public Core::Singleton<ContainerMgr>
 	{
