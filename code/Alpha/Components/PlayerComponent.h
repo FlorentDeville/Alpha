@@ -8,12 +8,18 @@
 
 ENABLE_GAME_REFLECTION(PlayerComponent)
 
+namespace Rendering
+{
+	class Camera;
+}
+
 class PlayerComponent : public Systems::GameComponent
 {
 public:
 	PlayerComponent();
 	~PlayerComponent();
 
+	void PostLoad() override;
 	void Update() override;
 
 private:
@@ -24,4 +30,7 @@ private:
 		ADD_BASETYPE(Systems::GameComponent)
 		ADD_FIELD(m_speed)
 	END_REFLECTION()
+
+	Rendering::Camera* m_pCamera;
+	bool m_isCameraRegistered;
 };
