@@ -28,25 +28,6 @@ namespace Systems
 			pContainer.SetId(cid);
 		}
 
-		//load the hard asset ref
-		const Core::JsonValue& jsonValue = jsonObj.GetMember("hard-asset-refs");
-		if (!jsonValue.IsNull())
-		{
-			const Core::JsonArray* pHardAssetRefArray = jsonValue.GetValueAsArray();
-			if (pHardAssetRefArray)
-			{
-				const size_t size = pHardAssetRefArray->GetSize();
-				for (int ii = 0; ii < size; ++ii)
-				{
-					const Core::JsonValue* pValue = pHardAssetRefArray->GetElement(ii);
-					const std::string& pValueAsString = pValue->GetValueAsString();
-					uint64_t value = Core::HexaToUint64(pValueAsString);
-					Systems::NewAssetId id(value);
-					AssetUtil::LoadAsset(id, pContainer.GetLoadingDomain());
-				}
-			}
-		}
-
 		//now read the objects
 		Core::JsonArray* pJsonArray = jsonObj.GetMember("objects").GetValueAsArray();
 
@@ -63,11 +44,11 @@ namespace Systems
 
 			pContainer.AddAsset(pAssetObject);
 
-			//resolve the hard asset ref.
+			//load the hard asset ref.
 			const Core::Array<HardAssetRefRaw*>& hardAssetRefArray = deser.GetHardAssetRefArray();
 			for (HardAssetRefRaw* pPtr : hardAssetRefArray)
 			{
-				pPtr->Resolve(pContainer.GetLoadingDomain());
+				pPtr->Load(pContainer.GetLoadingDomain());
 			}
 		}
 
