@@ -36,20 +36,20 @@ namespace Systems
 	{
 		for (uint8_t ii = 0; ii < static_cast<uint8_t>(LoadingDomain::COUNT); ++ii)
 		{
-			for (std::pair<const ContainerId, Container*>& pair : m_containerMap[ii])
+			for (std::pair<const ContainerId, ContainerRefCount>& pair : m_containerMap[ii])
 			{
-				delete pair.second;
+				delete pair.second.m_pPtr;
 			}
 		}
 	}
 
 	Container* ContainerMgr::GetContainer(ContainerId cid, LoadingDomain domain)
 	{
-		std::map<ContainerId, Container*>::const_iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(cid);
+		std::map<ContainerId, ContainerRefCount>::const_iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(cid);
 		if (it == m_containerMap[static_cast<uint8_t>(domain)].cend())
 			return nullptr;
 
-		return it->second;
+		return it->second.m_pPtr;
 	}
 
 	Container* ContainerMgr::LoadContainer(ContainerId cid, LoadingDomain domain)
@@ -89,7 +89,11 @@ namespace Systems
 		if (!res)
 			return nullptr;
 
-		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = pContainer;
+		ContainerRefCount refCount;
+		refCount.m_pPtr = pContainer;
+		refCount.m_count = 1;
+
+		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = refCount;
 		return pContainer;
 	}
 
@@ -100,7 +104,12 @@ namespace Systems
 
 		//now create the container
 		Container* pContainer = new Container(cid, LoadingDomain::EDITOR);
-		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = pContainer;
+
+		ContainerRefCount refCount;
+		refCount.m_pPtr = pContainer;
+		refCount.m_count = 1;
+
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = refCount;
 
 		return pContainer;
 	}

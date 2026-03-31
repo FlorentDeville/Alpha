@@ -44,8 +44,14 @@ namespace Systems
 		bool DoesContainerExistsOnDisk(ContainerId cid) const;
 
 	private:
+		struct ContainerRefCount
+		{
+			Container* m_pPtr;
+			uint8_t m_count;
+		};
+
 		std::string m_root;
-		std::map<ContainerId, Container*> m_containerMap[static_cast<uint8_t>(LoadingDomain::COUNT)];
+		std::map<ContainerId, ContainerRefCount> m_containerMap[static_cast<uint8_t>(LoadingDomain::COUNT)];
 
 		std::string MakeDirectory(ContainerId cid) const;
 		std::string MakeFilename(ContainerId cid) const;
