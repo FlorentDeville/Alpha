@@ -4,6 +4,7 @@
 
 #include "Systems/Container/ContainerMgr.h"
 
+#include "Core/Collections/Array.h"
 #include "Core/Json/JsonDeserializer.h"
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonSerializer.h"
@@ -54,6 +55,13 @@ namespace Systems
 
 	Container* ContainerMgr::LoadContainer(ContainerId cid, LoadingDomain domain)
 	{
+		ContainerRefCount* pRefCount = GetContainerRefCount(cid, domain);
+		if (pRefCount)
+		{
+			++pRefCount->m_count;
+			return pRefCount->m_pPtr;
+		}
+
 		std::string fileContent;
 
 		//first let's read the file
@@ -95,6 +103,38 @@ namespace Systems
 
 		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = refCount;
 		return pContainer;
+	}
+
+	void ContainerMgr::UnloadContainer(ContainerId cid, LoadingDomain domain)
+	{
+		ContainerRefCount* pRefCount = GetContainerRefCount(cid, domain);
+		if (!pRefCount)
+			return;
+
+		--pRefCount->m_count;
+	}
+
+	void ContainerMgr::GarbageCollect()
+	{
+		const uint8_t LOADING_DOMAIN_COUNT = static_cast<uint8_t>(LoadingDomain::COUNT);
+
+		for (uint8_t domain = 0; domain < LOADING_DOMAIN_COUNT; ++domain)
+		{
+			Core::Array<ContainerId> entryToRemove;
+			std::map<ContainerId, ContainerRefCount>& containerMap = m_containerMap[domain];
+
+			for (std::pair<const ContainerId, ContainerRefCount>& pair : containerMap)
+			{
+				if (pair.second.m_count != 0)
+					continue;
+
+				delete pair.second.m_pPtr;
+				entryToRemove.PushBack(pair.first);
+			}
+
+			for (ContainerId id : entryToRemove)
+				containerMap.erase(id);
+		}
 	}
 
 	Container* ContainerMgr::CreateContainer(ContainerId cid)
@@ -204,5 +244,14 @@ namespace Systems
 	{
 		std::string cidStr = cid.ToString();
 		return MakeDirectory(cid) + cidStr;
+	}
+
+	ContainerMgr::ContainerRefCount* ContainerMgr::GetContainerRefCount(ContainerId id, LoadingDomain domain)
+	{
+		std::map<ContainerId, ContainerRefCount>::iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(id);
+		if (it == m_containerMap[static_cast<uint8_t>(domain)].end())
+			return nullptr;
+
+		return &it->second;
 	}
 }

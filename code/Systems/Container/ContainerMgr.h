@@ -25,10 +25,18 @@ namespace Systems
 		void Init(const std::string& root);
 		void Shutdown() override;
 
-		//Return a pointer to a container. The container needs to have been loaded or created before.
+		//Return a pointer to a container. The container needs to have been loaded or created before or the function returns nullptr.
+		//It doesn't increas the ref count.
 		Container* GetContainer(ContainerId cid, LoadingDomain domain);
 
+		//Load a container. If the container is already loaded, returns a pointer to the already loaded container and increase the ref count.
 		Container* LoadContainer(ContainerId cid, LoadingDomain domain);
+
+		//Decrease the ref count for the container. When reaching 0, it doesn't free the memory right away. The memory is freed when calling GarbageCollect.
+		void UnloadContainer(ContainerId cid, LoadingDomain domain);
+
+		//Free the memory for all containers with a refcount of 0
+		void GarbageCollect();
 
 		// Editor functions
 
@@ -55,5 +63,7 @@ namespace Systems
 
 		std::string MakeDirectory(ContainerId cid) const;
 		std::string MakeFilename(ContainerId cid) const;
+
+		ContainerRefCount* GetContainerRefCount(ContainerId id, LoadingDomain domain);
 	};
 }
