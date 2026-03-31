@@ -55,7 +55,7 @@ namespace Systems
 		struct ContainerRefCount
 		{
 			Container* m_pPtr;
-			uint8_t m_count;
+			int8_t m_count;
 		};
 
 		std::string m_root;
