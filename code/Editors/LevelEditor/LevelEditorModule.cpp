@@ -98,7 +98,7 @@ namespace Editors
 		if (m_loadedLevelAssetId == id)
 			return false;
 
-		Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id);
+		Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pLevel)
 			return false;
 

@@ -24,9 +24,9 @@ namespace Systems
 		m_pPtr = nullptr;
 	}
 
-	bool HardAssetRefRaw::Resolve()
+	bool HardAssetRefRaw::Resolve(LoadingDomain domain)
 	{
-		m_pPtr = AssetUtil::GetAsset(m_id);
+		m_pPtr = AssetUtil::GetAsset(m_id, domain);
 		return m_pPtr != nullptr;
 	}
 
@@ -40,9 +40,9 @@ namespace Systems
 		return m_id;
 	}
 
-	bool HardAssetRefRaw::Load()
+	bool HardAssetRefRaw::Load(LoadingDomain domain)
 	{
-		m_pPtr = AssetUtil::LoadAsset(m_id);
+		m_pPtr = AssetUtil::LoadAsset(m_id, domain);
 		return IsResolved();
 	}
 }

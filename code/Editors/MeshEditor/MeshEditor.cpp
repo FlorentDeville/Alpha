@@ -189,7 +189,7 @@ namespace Editors
 				m_allMaterials.push_back(MaterialEntry());
 				MaterialEntry& materialEntry = m_allMaterials.back();
 				materialEntry.m_Id = metadata.GetAssetId();
-				Systems::AssetUtil::LoadAsset(materialEntry.m_Id);
+				Systems::AssetUtil::LoadAsset(materialEntry.m_Id, Systems::LoadingDomain::EDITOR);
 
 				//material widget
 				const int LINE_HEIGHT = 20;
@@ -403,7 +403,7 @@ namespace Editors
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId);
+			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_materialId, Systems::LoadingDomain::EDITOR);
 			if (pMaterial && pMaterial->IsValidForRendering())
 			{
 				Rendering::PerObjectCBuffer perObjectData;
@@ -487,7 +487,7 @@ namespace Editors
 		const Widgets::SelectionRow& selectedRow = selected[0];
 		Systems::NewAssetId meshId = m_pMeshListModel->GetAssetId(selectedRow.GetStartIndex());
 
-		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId);
+		m_pSelectedMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(meshId, Systems::LoadingDomain::EDITOR);
 
 		m_pPopulator->Populate(m_pSelectedMesh);
 	}

@@ -30,13 +30,14 @@ namespace Systems
 		Container* CreateContainer(ContainerId cid);
 
 		//Return a pointer to a container. The container needs to have been loaded or created before.
-		Container* GetContainer(ContainerId cid);
+		Container* GetContainer(ContainerId cid, LoadingDomain domain);
+
+		Container* LoadContainer(ContainerId cid, LoadingDomain domain);
+
+		bool SaveContainer(ContainerId cid);
 
 		// Delete the container from memory and disk.
 		bool DeleteContainer(ContainerId cid);
-
-		Container* LoadContainer(ContainerId cid);
-		bool SaveContainer(ContainerId cid);
 
 		bool DoesContainerExistsOnDisk(ContainerId cid) const;
 

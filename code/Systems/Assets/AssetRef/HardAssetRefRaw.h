@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Systems/Assets/NewAssetId.h"
+#include "Systems/Container/ContainerMgr.h"
 
 namespace Systems
 {
@@ -17,13 +18,13 @@ namespace Systems
 		HardAssetRefRaw(NewAssetId id);
 		~HardAssetRefRaw();
 
-		bool Resolve();
+		bool Resolve(LoadingDomain domain);
 
 		bool IsResolved() const;
 
 		NewAssetId GetAssetId() const;
 
-		bool Load();
+		bool Load(LoadingDomain domain);
 
 	private:
 		NewAssetId m_id;

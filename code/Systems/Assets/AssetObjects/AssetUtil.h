@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -19,27 +19,27 @@ namespace Systems
 	public:
 		static bool DeleteAsset(NewAssetId id);
 
-		static AssetObject* GetAsset(NewAssetId id);
+		static AssetObject* GetAsset(NewAssetId id, LoadingDomain domain);
 
-		static AssetObject* LoadAsset(NewAssetId id);
+		static AssetObject* LoadAsset(NewAssetId id, LoadingDomain domain);
 
-		template<class T> static T* GetAsset(NewAssetId id);
+		template<class T> static T* GetAsset(NewAssetId id, LoadingDomain domain);
 
-		template<class T> static T* LoadAsset(NewAssetId id);
+		template<class T> static T* LoadAsset(NewAssetId id, LoadingDomain domain);
 
 		template<class T> static T* CreateAsset(const std::string& virtualName);
 
 		template<class T> static bool IsA(NewAssetId id);
 	};
 
-	template<class T> T* AssetUtil::GetAsset(NewAssetId id)
+	template<class T> T* AssetUtil::GetAsset(NewAssetId id, LoadingDomain domain)
 	{
-		return static_cast<T*>(GetAsset(id));
+		return static_cast<T*>(GetAsset(id, domain));
 	}
 
-	template<class T> T* AssetUtil::LoadAsset(NewAssetId id)
+	template<class T> T* AssetUtil::LoadAsset(NewAssetId id, LoadingDomain domain)
 	{
-		return static_cast<T*>(LoadAsset(id));
+		return static_cast<T*>(LoadAsset(id, domain));
 	}
 
 	template<class T> T* AssetUtil::CreateAsset(const std::string& virtualName)

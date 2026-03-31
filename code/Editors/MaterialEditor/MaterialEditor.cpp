@@ -494,10 +494,10 @@ namespace Editors
 		}
 
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
+		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId(), Systems::LoadingDomain::EDITOR);
 		if (!pContainer)
 		{
-			pContainer = containerMgr.LoadContainer(id.GetContainerId());
+			pContainer = containerMgr.LoadContainer(id.GetContainerId(), Systems::LoadingDomain::EDITOR);
 		}
 
 		if (!pContainer)
@@ -552,7 +552,7 @@ namespace Editors
 		if (!pMetadata->IsA<Systems::MaterialAsset>())
 			return true;
 
-		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_selectedMaterialId);
+		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_selectedMaterialId, Systems::LoadingDomain::EDITOR);
 		if (!pMaterial)
 			return false;
 
@@ -674,7 +674,7 @@ namespace Editors
 		bool isBaseMaterial = Systems::AssetUtil::IsA<Systems::MaterialAsset>(m_selectedMaterialId);
 		if (isBaseMaterial)
 		{
-			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId);
+			Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(m_selectedMaterialId, Systems::LoadingDomain::EDITOR);
 			if (!pMaterial || !pMaterial->IsValidForRendering())
 				return;
 			
@@ -693,7 +693,7 @@ namespace Editors
 		}
 		else if (Systems::AssetUtil::IsA<Systems::MaterialInstanceAsset>(m_selectedMaterialId))
 		{
-			const Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(m_selectedMaterialId);
+			const Systems::MaterialInstanceAsset* pMaterialInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(m_selectedMaterialId, Systems::LoadingDomain::EDITOR);
 			const Systems::MaterialAsset* pMaterial = pMaterialInstance->GetBaseMaterial();
 			if (!pMaterial || !pMaterial->IsValidForRendering())
 				return;
@@ -761,10 +761,10 @@ namespace Editors
 			return;
 
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.GetContainer(m_selectedMaterialId.GetContainerId());
+		Systems::Container* pContainer = containerMgr.GetContainer(m_selectedMaterialId.GetContainerId(), Systems::LoadingDomain::EDITOR);
 		if (!pContainer)
 		{
-			pContainer = containerMgr.LoadContainer(m_selectedMaterialId.GetContainerId());
+			pContainer = containerMgr.LoadContainer(m_selectedMaterialId.GetContainerId(), Systems::LoadingDomain::EDITOR);
 		}
 
 		if (!pContainer)

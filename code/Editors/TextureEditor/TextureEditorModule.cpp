@@ -115,7 +115,7 @@ namespace Editors
 	{
 		if (Systems::AssetUtil::IsA<Systems::Texture2DAsset>(id))
 		{
-			if (Systems::Texture2DAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::Texture2DAsset>(id))
+			if (Systems::Texture2DAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::Texture2DAsset>(id, Systems::LoadingDomain::EDITOR))
 			{
 				Importer::TextureImporter importer;
 				bool res = importer.Import(pTexture->GetSourceFilename(), pTexture);
@@ -126,7 +126,7 @@ namespace Editors
 		}
 		else if (Systems::AssetUtil::IsA<Systems::CubemapAsset>(id))
 		{
-			if (Systems::CubemapAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::CubemapAsset>(id))
+			if (Systems::CubemapAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::CubemapAsset>(id, Systems::LoadingDomain::EDITOR))
 			{
 				std::string filenames[6];
 				filenames[0] = pTexture->GetRightSourceFilename();
@@ -171,7 +171,7 @@ namespace Editors
 		if (!id.IsValid())
 			return false;
 
-		const Systems::AssetObject* pObj = Systems::AssetUtil::LoadAsset(id);
+		const Systems::AssetObject* pObj = Systems::AssetUtil::LoadAsset(id, Systems::LoadingDomain::EDITOR);
 		if (!pObj)
 			return false;
 

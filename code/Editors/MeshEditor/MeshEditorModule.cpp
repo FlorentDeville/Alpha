@@ -87,7 +87,7 @@ namespace Editors
 
 	bool MeshEditorModule::ReimportMesh(const Systems::NewAssetId id)
 	{
-		Systems::MeshAsset* pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(id);
+		Systems::MeshAsset* pMesh = Systems::AssetUtil::LoadAsset<Systems::MeshAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pMesh)
 			return false;
 

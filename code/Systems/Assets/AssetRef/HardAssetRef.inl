@@ -35,9 +35,9 @@ namespace Systems
 		return *static_cast<T*>(m_internalRef.m_pPtr);
 	}
 
-	template<typename T> bool HardAssetRef<T>::Resolve()
+	template<typename T> bool HardAssetRef<T>::Resolve(Systems::LoadingDomain domain)
 	{
-		return m_internalRef.Resolve();
+		return m_internalRef.Resolve(domain);
 	}
 
 	template<typename T> T* HardAssetRef<T>::GetPtr()

@@ -42,7 +42,7 @@ namespace Systems
 					const std::string& pValueAsString = pValue->GetValueAsString();
 					uint64_t value = Core::HexaToUint64(pValueAsString);
 					Systems::NewAssetId id(value);
-					AssetUtil::LoadAsset(id);
+					AssetUtil::LoadAsset(id, pContainer.GetLoadingDomain());
 				}
 			}
 		}
@@ -67,7 +67,7 @@ namespace Systems
 			const Core::Array<HardAssetRefRaw*>& hardAssetRefArray = deser.GetHardAssetRefArray();
 			for (HardAssetRefRaw* pPtr : hardAssetRefArray)
 			{
-				pPtr->Resolve();
+				pPtr->Resolve(pContainer.GetLoadingDomain());
 			}
 		}
 

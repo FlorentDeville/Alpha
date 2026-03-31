@@ -149,7 +149,7 @@ namespace Systems
 			if (IsLevelAlreadyLoaded(id))
 				continue;
 
-			Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id);
+			Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
 			if (!pLevel)
 				return; //doesn't exist
 
@@ -167,7 +167,7 @@ namespace Systems
 			if (!IsLevelAlreadyLoaded(id))
 				continue;
 
-			Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id);
+			Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
 			if (!pLevel)
 				return; //doesn't exist
 
