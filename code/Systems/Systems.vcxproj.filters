@@ -97,5 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
+    <None Include="Assets\AssetObjects\AssetUtil.inl" />
   </ItemGroup>
 </Project>
