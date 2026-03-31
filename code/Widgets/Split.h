@@ -19,6 +19,8 @@ namespace Widgets
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 		bool Handle(const GlobalEvent& ev) override;
 
+		void Disable(bool recursive) override;
+
 		bool IsDragged();
 		Core::Int2 GetPreviousCursorPosition() const;
 
@@ -27,6 +29,7 @@ namespace Widgets
 		EVENT_DECL(Drag, void(const Core::Int2& offset))
 
 	private:
+		bool m_isHovered;
 		bool m_isDragged;
 		Core::Int2 m_previousCursorPosition;
 
