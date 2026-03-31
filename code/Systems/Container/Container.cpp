@@ -14,6 +14,12 @@ namespace Systems
 		, m_domain(LoadingDomain::UNKNOWN)
 	{ }
 
+	Container::Container(LoadingDomain domain)
+		: m_id()
+		, m_assets()
+		, m_domain(domain)
+	{ }
+
 	Container::Container(ContainerId cid, LoadingDomain domain)
 		: m_id(cid)
 		, m_assets()

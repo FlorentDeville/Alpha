@@ -20,6 +20,7 @@ namespace Systems
 	{
 	public:
 		Container();
+		Container(LoadingDomain domain);
 		Container(ContainerId cid, LoadingDomain domain);
 		~Container();
 
