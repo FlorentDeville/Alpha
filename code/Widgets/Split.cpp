@@ -22,6 +22,7 @@ Split::Split(bool isVerticalSplit)
 	: Widget()
 	, m_isDragged(false)
 	, m_isVerticalSplit(isVerticalSplit)
+	, m_isHovered(false)
 {
 	SetSizeStyle(HSIZE_DEFAULT | VSIZE_STRETCH);
 	m_size.x = 10;
@@ -78,6 +79,8 @@ bool Split::Handle(const GlobalEvent& ev)
 		if (!m_isDragged)
 			CaptureMouse();
 
+		m_isHovered = true;
+
 		return true;
 	}
 		break;
@@ -89,6 +92,8 @@ bool Split::Handle(const GlobalEvent& ev)
 			Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
 			ReleaseMouse();
 		}
+
+		m_isHovered = false;
 
 		return true;
 	}
@@ -149,6 +154,19 @@ bool Split::Handle(const GlobalEvent& ev)
 	}
 
 	return Widget::Handle(ev);
+}
+
+void Split::Disable(bool recursive)
+{
+	if (m_isHovered || m_isDragged)
+	{
+		m_isHovered = false;
+		m_isDragged = false;
+		Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
+		ReleaseMouse();
+	}
+
+	Widget::Disable(recursive);
 }
 
 bool Split::IsDragged()
