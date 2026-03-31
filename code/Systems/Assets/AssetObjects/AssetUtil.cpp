@@ -47,4 +47,10 @@ namespace Systems
 		AssetObject* pAsset = pContainer->GetAsset(id.GetObjectId());
 		return pAsset;
 	}
+
+	void AssetUtil::UnloadAsset(NewAssetId id, LoadingDomain domain)
+	{
+		ContainerMgr& containerMgr = ContainerMgr::Get();
+		containerMgr.UnloadContainer(id.GetContainerId(), domain);
+	}
 }

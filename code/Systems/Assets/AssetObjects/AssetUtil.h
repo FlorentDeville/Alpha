@@ -23,6 +23,8 @@ namespace Systems
 
 		static AssetObject* LoadAsset(NewAssetId id, LoadingDomain domain);
 
+		static void UnloadAsset(NewAssetId id, LoadingDomain domain);
+
 		template<class T> static T* GetAsset(NewAssetId id, LoadingDomain domain);
 
 		template<class T> static T* LoadAsset(NewAssetId id, LoadingDomain domain);
