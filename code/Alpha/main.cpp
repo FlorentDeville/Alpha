@@ -415,6 +415,10 @@ void Update()
 
 	if (applicationDt >= FRAME_DURATION)
 	{
+		//start with a garbage collect
+		Systems::ContainerMgr::Get().GarbageCollect();
+
+		//compute game dt and update game
 		float currentGameTick = clock.GetGameTime();
 		float gameDt = currentGameTick - previousGameTick;
 
@@ -422,6 +426,7 @@ void Update()
 
 		previousGameTick = currentGameTick;
 
+		//update widgets
 		Widgets::WidgetMgr::Get().Update(applicationDtMs);
 
 		previousApplicationTick = currentApplicationTick;

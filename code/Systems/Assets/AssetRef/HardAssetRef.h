@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -28,9 +28,8 @@ namespace Systems
 		T& operator*();
 		const T& operator*() const;
 
-		// Get a pointer to the asset if the asset is loaded, otherwise the pointer stays null. 
-		// Return true if a valid pointer is found, false otherwise.
-		bool Resolve(Systems::LoadingDomain domain);
+		//Return true if the asset was found.
+		bool Load(Systems::LoadingDomain domain);
 
 		T* GetPtr();
 		const T* GetPtr() const;

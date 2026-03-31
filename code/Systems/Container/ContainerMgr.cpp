@@ -4,6 +4,7 @@
 
 #include "Systems/Container/ContainerMgr.h"
 
+#include "Core/Collections/Array.h"
 #include "Core/Json/JsonDeserializer.h"
 #include "Core/Json/JsonObject.h"
 #include "Core/Json/JsonSerializer.h"
@@ -36,36 +37,31 @@ namespace Systems
 	{
 		for (uint8_t ii = 0; ii < static_cast<uint8_t>(LoadingDomain::COUNT); ++ii)
 		{
-			for (std::pair<const ContainerId, Container*>& pair : m_containerMap[ii])
+			for (std::pair<const ContainerId, ContainerRefCount>& pair : m_containerMap[ii])
 			{
-				delete pair.second;
+				delete pair.second.m_pPtr;
 			}
 		}
 	}
 
-	Container* ContainerMgr::CreateContainer(ContainerId cid)
-	{
-		if (DoesContainerExistsOnDisk(cid))
-			return nullptr;
-
-		//now create the container
-		Container* pContainer = new Container(cid, LoadingDomain::EDITOR);
-		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = pContainer;
-
-		return pContainer;
-	}
-
 	Container* ContainerMgr::GetContainer(ContainerId cid, LoadingDomain domain)
 	{
-		std::map<ContainerId, Container*>::const_iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(cid);
+		std::map<ContainerId, ContainerRefCount>::const_iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(cid);
 		if (it == m_containerMap[static_cast<uint8_t>(domain)].cend())
 			return nullptr;
 
-		return it->second;
+		return it->second.m_pPtr;
 	}
 
 	Container* ContainerMgr::LoadContainer(ContainerId cid, LoadingDomain domain)
 	{
+		ContainerRefCount* pRefCount = GetContainerRefCount(cid, domain);
+		if (pRefCount)
+		{
+			++pRefCount->m_count;
+			return pRefCount->m_pPtr;
+		}
+
 		std::string fileContent;
 
 		//first let's read the file
@@ -101,7 +97,60 @@ namespace Systems
 		if (!res)
 			return nullptr;
 
-		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = pContainer;
+		ContainerRefCount refCount;
+		refCount.m_pPtr = pContainer;
+		refCount.m_count = 1;
+
+		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = refCount;
+		return pContainer;
+	}
+
+	void ContainerMgr::UnloadContainer(ContainerId cid, LoadingDomain domain)
+	{
+		ContainerRefCount* pRefCount = GetContainerRefCount(cid, domain);
+		if (!pRefCount)
+			return;
+
+		--pRefCount->m_count;
+	}
+
+	void ContainerMgr::GarbageCollect()
+	{
+		const uint8_t LOADING_DOMAIN_COUNT = static_cast<uint8_t>(LoadingDomain::COUNT);
+
+		for (uint8_t domain = 0; domain < LOADING_DOMAIN_COUNT; ++domain)
+		{
+			Core::Array<ContainerId> entryToRemove;
+			std::map<ContainerId, ContainerRefCount>& containerMap = m_containerMap[domain];
+
+			for (std::pair<const ContainerId, ContainerRefCount>& pair : containerMap)
+			{
+				if (pair.second.m_count != 0)
+					continue;
+
+				delete pair.second.m_pPtr;
+				entryToRemove.PushBack(pair.first);
+			}
+
+			for (ContainerId id : entryToRemove)
+				containerMap.erase(id);
+		}
+	}
+
+	Container* ContainerMgr::CreateContainer(ContainerId cid)
+	{
+		if (DoesContainerExistsOnDisk(cid))
+			return nullptr;
+
+		//now create the container
+		Container* pContainer = new Container(cid, LoadingDomain::EDITOR);
+
+		ContainerRefCount refCount;
+		refCount.m_pPtr = pContainer;
+		refCount.m_count = 1;
+
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = refCount;
+
 		return pContainer;
 	}
 
@@ -195,5 +244,14 @@ namespace Systems
 	{
 		std::string cidStr = cid.ToString();
 		return MakeDirectory(cid) + cidStr;
+	}
+
+	ContainerMgr::ContainerRefCount* ContainerMgr::GetContainerRefCount(ContainerId id, LoadingDomain domain)
+	{
+		std::map<ContainerId, ContainerRefCount>::iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(id);
+		if (it == m_containerMap[static_cast<uint8_t>(domain)].end())
+			return nullptr;
+
+		return &it->second;
 	}
 }

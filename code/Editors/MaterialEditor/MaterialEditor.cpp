@@ -493,17 +493,7 @@ namespace Editors
 			m_objWatcherCid.Reset();
 		}
 
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId(), Systems::LoadingDomain::EDITOR);
-		if (!pContainer)
-		{
-			pContainer = containerMgr.LoadContainer(id.GetContainerId(), Systems::LoadingDomain::EDITOR);
-		}
-
-		if (!pContainer)
-			return true;
-
-		Systems::AssetObject* pObject = pContainer->GetAsset(id.GetObjectId());
+		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(id, Systems::LoadingDomain::EDITOR);
 		if (!pObject)
 			return true;
 
@@ -760,17 +750,7 @@ namespace Editors
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
 
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.GetContainer(m_selectedMaterialId.GetContainerId(), Systems::LoadingDomain::EDITOR);
-		if (!pContainer)
-		{
-			pContainer = containerMgr.LoadContainer(m_selectedMaterialId.GetContainerId(), Systems::LoadingDomain::EDITOR);
-		}
-
-		if (!pContainer)
-			return;
-
-		Systems::AssetObject* pObject = pContainer->GetAsset(m_selectedMaterialId.GetObjectId());
+		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(m_selectedMaterialId, Systems::LoadingDomain::EDITOR);
 		if (!pObject)
 			return;
 

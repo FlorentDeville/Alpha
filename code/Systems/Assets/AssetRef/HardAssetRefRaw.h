@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -18,8 +18,6 @@ namespace Systems
 		HardAssetRefRaw(NewAssetId id);
 		~HardAssetRefRaw();
 
-		bool Resolve(LoadingDomain domain);
-
 		bool IsResolved() const;
 
 		NewAssetId GetAssetId() const;
@@ -29,6 +27,7 @@ namespace Systems
 	private:
 		NewAssetId m_id;
 		void* m_pPtr;
+		LoadingDomain m_domain;
 
 		template<class T> friend class HardAssetRef;
 	};

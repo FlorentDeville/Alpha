@@ -27,6 +27,7 @@
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Objects/GameObject.h"
 
@@ -762,6 +763,7 @@ namespace Editors
 			return;
 
 		Systems::GameMgr::Get().RequestLoadingLevel(id);
+		Systems::Clock::Get().StartGameClock();
 		EditorManager::Get().SwitchTab(TabId::GAME_PLAYER);
 	}
 

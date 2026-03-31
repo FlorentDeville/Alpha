@@ -40,15 +40,17 @@ namespace Systems
 	AssetObject* AssetUtil::LoadAsset(NewAssetId id, LoadingDomain domain)
 	{
 		ContainerMgr& containerMgr = ContainerMgr::Get();
-		Container* pContainer = containerMgr.GetContainer(id.GetContainerId(), domain);
+		Container* pContainer = containerMgr.LoadContainer(id.GetContainerId(), domain);
 		if (!pContainer)
-		{
-			pContainer = containerMgr.LoadContainer(id.GetContainerId(), domain);
-			if (!pContainer)
-				return nullptr;
-		}
-			
+			return nullptr;
+
 		AssetObject* pAsset = pContainer->GetAsset(id.GetObjectId());
 		return pAsset;
+	}
+
+	void AssetUtil::UnloadAsset(NewAssetId id, LoadingDomain domain)
+	{
+		ContainerMgr& containerMgr = ContainerMgr::Get();
+		containerMgr.UnloadContainer(id.GetContainerId(), domain);
 	}
 }

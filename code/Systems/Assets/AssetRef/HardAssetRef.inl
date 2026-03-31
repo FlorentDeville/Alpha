@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 namespace Systems
 {
@@ -35,9 +35,9 @@ namespace Systems
 		return *static_cast<T*>(m_internalRef.m_pPtr);
 	}
 
-	template<typename T> bool HardAssetRef<T>::Resolve(Systems::LoadingDomain domain)
+	template<typename T> bool HardAssetRef<T>::Load(Systems::LoadingDomain domain)
 	{
-		return m_internalRef.Resolve(domain);
+		return m_internalRef.Load(domain);
 	}
 
 	template<typename T> T* HardAssetRef<T>::GetPtr()

@@ -205,16 +205,7 @@ namespace Editors
 
 	bool MaterialEditorModule::CompileMaterial(Systems::NewAssetId id, bool debug)
 	{
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId(), Systems::LoadingDomain::EDITOR);
-		if (!pContainer)
-			return false;
-
-		Systems::AssetObject* pObj = pContainer->GetAsset(id.GetObjectId());
-		if (!pObj->IsA<Systems::MaterialAsset>())
-			return false;
-
-		Systems::MaterialAsset* pMaterial = static_cast<Systems::MaterialAsset*>(pContainer->GetAsset(id.GetObjectId()));
+		Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pMaterial)
 			return false;
 
