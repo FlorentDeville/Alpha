@@ -23,8 +23,8 @@ namespace Systems
 		, m_pRenderPassBase(nullptr)
 		, m_pRenderPassShadowMaps(nullptr)
 		, m_pFinalRenderTarget(nullptr)
-	{
-	}
+		, m_pDefaultCamera(nullptr)
+	{ }
 
 	GameMgr::~GameMgr()
 	{
@@ -118,7 +118,9 @@ namespace Systems
 
 	void GameMgr::RequestUnloadingAllLevels()
 	{
-		m_unloadingRequest = m_loadedLevelsIds;
+		m_unloadingRequest.Reserve(m_loadedLevels.GetSize());
+		for (const LevelAsset* pLevel : m_loadedLevels)
+			m_unloadingRequest.PushBack(pLevel->GetId());
 	}
 
 	void GameMgr::PushCamera(Rendering::Camera* pCamera)
@@ -133,9 +135,9 @@ namespace Systems
 
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
 	{
-		for (const Systems::NewAssetId loadedId : m_loadedLevelsIds)
+		for (const LevelAsset* pLevel : m_loadedLevels)
 		{
-			if (id == loadedId)
+			if (id == pLevel->GetId())
 				return true;
 		}
 
@@ -151,9 +153,11 @@ namespace Systems
 
 			Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
 			if (!pLevel)
+			{
+				assert(false && "Tried to load a level that doesn't exist");
 				return; //doesn't exist
+			}
 
-			m_loadedLevelsIds.PushBack(id);
 			m_loadedLevels.PushBack(pLevel);
 		}
 
@@ -169,11 +173,13 @@ namespace Systems
 
 			Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
 			if (!pLevel)
+			{
+				assert(false && "Tried to unload a level that doesn't exist");
 				return; //doesn't exist
+			}
 
 			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
 
-			m_loadedLevelsIds.Erase(id);
 			m_loadedLevels.Erase(pLevel);
 		}
 

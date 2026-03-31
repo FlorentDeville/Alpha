@@ -45,7 +45,6 @@ namespace Systems
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
 	private:
-		Core::Array<Systems::NewAssetId> m_loadedLevelsIds;		//currently loaded level
 		Core::Array<Systems::LevelAsset*> m_loadedLevels;		//pointers to the currently loaded levels.
 
 		Core::Array<Systems::NewAssetId> m_loadingRequest;
