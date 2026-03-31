@@ -49,7 +49,7 @@ namespace Systems
 			return nullptr;
 
 		//now create the container
-		Container* pContainer = new Container(cid);
+		Container* pContainer = new Container(cid, LoadingDomain::GAME);
 		m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)][cid] = pContainer;
 
 		return pContainer;
