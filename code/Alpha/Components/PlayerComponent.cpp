@@ -43,6 +43,7 @@ void PlayerComponent::Update(float dt)
 		Systems::GameMgr::Get().PushCamera(m_pCamera);
 		m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
 		m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
+		m_isCameraRegistered = true;
 	}
 
 	const Core::Vec4f forward = localTx.GetZ();
