@@ -25,14 +25,16 @@ namespace Systems
 		void Init(const std::string& root);
 		void Shutdown() override;
 
-		//Create a new container using the provided container id. If a container already exists on disk using the 
-		//provided container id, the function will fail and return nullptr.
-		Container* CreateContainer(ContainerId cid);
-
 		//Return a pointer to a container. The container needs to have been loaded or created before.
 		Container* GetContainer(ContainerId cid, LoadingDomain domain);
 
 		Container* LoadContainer(ContainerId cid, LoadingDomain domain);
+
+		// Editor functions
+
+		//Create a new container using the provided container id. If a container already exists on disk using the 
+		//provided container id, the function will fail and return nullptr.
+		Container* CreateContainer(ContainerId cid);
 
 		bool SaveContainer(ContainerId cid);
 

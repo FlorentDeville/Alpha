@@ -43,18 +43,6 @@ namespace Systems
 		}
 	}
 
-	Container* ContainerMgr::CreateContainer(ContainerId cid)
-	{
-		if (DoesContainerExistsOnDisk(cid))
-			return nullptr;
-
-		//now create the container
-		Container* pContainer = new Container(cid, LoadingDomain::EDITOR);
-		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = pContainer;
-
-		return pContainer;
-	}
-
 	Container* ContainerMgr::GetContainer(ContainerId cid, LoadingDomain domain)
 	{
 		std::map<ContainerId, Container*>::const_iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(cid);
@@ -102,6 +90,18 @@ namespace Systems
 			return nullptr;
 
 		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = pContainer;
+		return pContainer;
+	}
+
+	Container* ContainerMgr::CreateContainer(ContainerId cid)
+	{
+		if (DoesContainerExistsOnDisk(cid))
+			return nullptr;
+
+		//now create the container
+		Container* pContainer = new Container(cid, LoadingDomain::EDITOR);
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = pContainer;
+
 		return pContainer;
 	}
 
