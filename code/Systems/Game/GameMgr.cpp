@@ -171,6 +171,8 @@ namespace Systems
 			if (!pLevel)
 				return; //doesn't exist
 
+			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
+
 			m_loadedLevelsIds.Erase(id);
 			m_loadedLevels.Erase(pLevel);
 		}
