@@ -52,7 +52,7 @@ namespace Editors
 						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 
 						Systems::HardAssetRefRaw hardRef(id);
-						hardRef.Resolve();
+						hardRef.Resolve(Systems::LoadingDomain::EDITOR);
 
 						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &hardRef);
 					});
@@ -80,6 +80,6 @@ namespace Editors
 		else
 			m_pTextbox->SetText("Unknown");
 
-		pRaw->Load();
+		pRaw->Load(Systems::LoadingDomain::EDITOR);
 	}
 }

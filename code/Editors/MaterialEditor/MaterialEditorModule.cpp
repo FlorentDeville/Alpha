@@ -105,7 +105,7 @@ namespace Editors
 		if (!pNewMaterialInstance)
 			return nullptr;
 
-		Systems::MaterialAsset* pBaseMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(baseMaterialId);
+		Systems::MaterialAsset* pBaseMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(baseMaterialId, Systems::LoadingDomain::EDITOR);
 		if (!pBaseMaterial)
 			return nullptr;
 
@@ -147,7 +147,7 @@ namespace Editors
 
 		if (pMetadata->GetAssetType() == Systems::MaterialAsset::GetAssetTypeNameSid())
 		{
-			const Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(id);
+			const Systems::MaterialAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialAsset>(id, Systems::LoadingDomain::EDITOR);
 			if (!pMaterial)
 				return false;
 
@@ -184,7 +184,7 @@ namespace Editors
 				const Core::Array<Systems::NewAssetId>& instancesArray = m_instancesMaterialCache.GetMaterialInstances(id);
 				for (Systems::NewAssetId instanceId : instancesArray)
 				{
-					if(Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(instanceId))
+					if(Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(instanceId, Systems::LoadingDomain::EDITOR))
 						pInstance->InitialiseFromBaseMaterial(nullptr);
 				}
 			}
@@ -206,7 +206,7 @@ namespace Editors
 	bool MaterialEditorModule::CompileMaterial(Systems::NewAssetId id, bool debug)
 	{
 		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
-		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
+		Systems::Container* pContainer = containerMgr.GetContainer(id.GetContainerId(), Systems::LoadingDomain::EDITOR);
 		if (!pContainer)
 			return false;
 
@@ -365,7 +365,7 @@ namespace Editors
 		if (!pMetadata->IsA<Systems::MaterialInstanceAsset>())
 			return false;
 
-		Systems::MaterialInstanceAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(id);
+		Systems::MaterialInstanceAsset* pMaterial = Systems::AssetUtil::GetAsset<Systems::MaterialInstanceAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pMaterial)
 			return false;
 
@@ -381,7 +381,7 @@ namespace Editors
 
 	void MaterialEditorModule::BaseToInstanceCache::AddMaterialInstance(Systems::NewAssetId id)
 	{
-		const Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
+		const Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pInstance)
 			return;
 
@@ -393,7 +393,7 @@ namespace Editors
 
 	void MaterialEditorModule::BaseToInstanceCache::RemoveMaterialInstance(Systems::NewAssetId id)
 	{
-		const Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id);
+		const Systems::MaterialInstanceAsset* pInstance = Systems::AssetUtil::LoadAsset<Systems::MaterialInstanceAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pInstance)
 			return;
 

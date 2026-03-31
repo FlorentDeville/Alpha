@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 
@@ -27,9 +27,9 @@ namespace Systems
 		return res;
 	}
 
-	AssetObject* AssetUtil::GetAsset(NewAssetId id)
+	AssetObject* AssetUtil::GetAsset(NewAssetId id, LoadingDomain domain)
 	{
-		Container* pContainer = ContainerMgr::Get().GetContainer(id.GetContainerId());
+		Container* pContainer = ContainerMgr::Get().GetContainer(id.GetContainerId(), domain);
 		if (!pContainer)
 			return nullptr;
 
@@ -37,13 +37,13 @@ namespace Systems
 		return pAsset;
 	}
 
-	AssetObject* AssetUtil::LoadAsset(NewAssetId id)
+	AssetObject* AssetUtil::LoadAsset(NewAssetId id, LoadingDomain domain)
 	{
 		ContainerMgr& containerMgr = ContainerMgr::Get();
-		Container* pContainer = containerMgr.GetContainer(id.GetContainerId());
+		Container* pContainer = containerMgr.GetContainer(id.GetContainerId(), domain);
 		if (!pContainer)
 		{
-			pContainer = containerMgr.LoadContainer(id.GetContainerId());
+			pContainer = containerMgr.LoadContainer(id.GetContainerId(), domain);
 			if (!pContainer)
 				return nullptr;
 		}

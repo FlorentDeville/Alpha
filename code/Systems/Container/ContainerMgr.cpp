@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Container/ContainerMgr.h"
 
@@ -34,12 +34,13 @@ namespace Systems
 
 	void ContainerMgr::Shutdown()
 	{
-		for (std::pair<const ContainerId, Container*>& pair : m_containerMap)
+		for (uint8_t ii = 0; ii < static_cast<uint8_t>(LoadingDomain::COUNT); ++ii)
 		{
-			delete pair.second;
+			for (std::pair<const ContainerId, Container*>& pair : m_containerMap[ii])
+			{
+				delete pair.second;
+			}
 		}
-
-		m_containerMap.clear();
 	}
 
 	Container* ContainerMgr::CreateContainer(ContainerId cid)
@@ -48,57 +49,22 @@ namespace Systems
 			return nullptr;
 
 		//now create the container
-		Container* pContainer = new Container(cid);
-		m_containerMap[cid] = pContainer;
+		Container* pContainer = new Container(cid, LoadingDomain::EDITOR);
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)][cid] = pContainer;
 
 		return pContainer;
 	}
 
-	bool ContainerMgr::DeleteContainer(ContainerId cid)
+	Container* ContainerMgr::GetContainer(ContainerId cid, LoadingDomain domain)
 	{
-		//delete the container file
-		std::string rawFilename = MakeFilename(cid);
-		std::filesystem::path filename(rawFilename);
-		std::error_code error;
-		std::filesystem::remove(filename, error);
-
-		//delete empty folders
-		std::filesystem::path root(m_root);
-		if(m_root.back() == '\\')
-			root = root.parent_path();
-
-		std::filesystem::path parentPath = filename.parent_path();
-		while (parentPath != filename && parentPath != root)
-		{
-			bool deleted = std::filesystem::remove(parentPath, error);
-			if (!deleted)
-				break;
-
-			filename = parentPath;
-			parentPath = filename.parent_path();
-		}
-
-		//delete the container
-		Container* pContainer = GetContainer(cid);
-		if (pContainer)
-			delete pContainer;
-
-		//remove the container from the manager
-		m_containerMap.erase(cid);
-
-		return true;
-	}
-
-	Container* ContainerMgr::GetContainer(ContainerId cid)
-	{
-		std::map<ContainerId, Container*>::const_iterator it = m_containerMap.find(cid);
-		if (it == m_containerMap.cend())
+		std::map<ContainerId, Container*>::const_iterator it = m_containerMap[static_cast<uint8_t>(domain)].find(cid);
+		if (it == m_containerMap[static_cast<uint8_t>(domain)].cend())
 			return nullptr;
 
 		return it->second;
 	}
 
-	Container* ContainerMgr::LoadContainer(ContainerId cid)
+	Container* ContainerMgr::LoadContainer(ContainerId cid, LoadingDomain domain)
 	{
 		std::string fileContent;
 
@@ -129,19 +95,19 @@ namespace Systems
 		if (!res)
 			return nullptr;
 
-		Container* pContainer = new Container();
+		Container* pContainer = new Container(domain);
 		ContainerJsonDeserializer containerDeser;
 		res = containerDeser.Deserialize(json, *pContainer);
 		if (!res)
 			return nullptr;
 
-		m_containerMap[pContainer->GetId()] = pContainer;
+		m_containerMap[static_cast<uint8_t>(domain)][pContainer->GetId()] = pContainer;
 		return pContainer;
 	}
 
 	bool ContainerMgr::SaveContainer(ContainerId cid)
 	{
-		Container* pContainer = GetContainer(cid);
+		Container* pContainer = GetContainer(cid, LoadingDomain::EDITOR);
 		if (!pContainer)
 			return false;
 
@@ -164,6 +130,46 @@ namespace Systems
 		std::ofstream fileStream(filename);
 		fileStream << strContainer;
 		fileStream.close();
+
+		return true;
+	}
+
+	bool ContainerMgr::DeleteContainer(ContainerId cid)
+	{
+		//delete the container file
+		std::string rawFilename = MakeFilename(cid);
+		std::filesystem::path filename(rawFilename);
+		std::error_code error;
+		std::filesystem::remove(filename, error);
+
+		//delete empty folders
+		std::filesystem::path root(m_root);
+		if (m_root.back() == '\\')
+			root = root.parent_path();
+
+		std::filesystem::path parentPath = filename.parent_path();
+		while (parentPath != filename && parentPath != root)
+		{
+			bool deleted = std::filesystem::remove(parentPath, error);
+			if (!deleted)
+				break;
+
+			filename = parentPath;
+			parentPath = filename.parent_path();
+		}
+
+		//delete the container
+		Container* pContainer = GetContainer(cid, LoadingDomain::GAME);
+		if (pContainer)
+			delete pContainer;
+
+		pContainer = GetContainer(cid, LoadingDomain::EDITOR);
+		if (pContainer)
+			delete pContainer;
+
+		//remove the container from the manager
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::GAME)].erase(cid);
+		m_containerMap[static_cast<uint8_t>(LoadingDomain::EDITOR)].erase(cid);
 
 		return true;
 	}

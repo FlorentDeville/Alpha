@@ -361,7 +361,7 @@ namespace Systems
 
 		if (pType->GetSidWithoutTemplateParam() == CONSTSID("Systems::HardAssetRef"))
 		{
-			m_hardAssetRefArray.PushBack(pObject);
+			m_hardAssetRefArray.PushBack(static_cast<HardAssetRefRaw*>(pObject));
 		}
 
 		return true;
@@ -417,7 +417,7 @@ namespace Systems
 		return DeserializeObject(&jsonObject, ppObject, false);
 	}
 
-	const Core::Array<void*>& ObjectJsonDeserializer::GetHardAssetRefArray() const
+	const Core::Array<HardAssetRefRaw*>& ObjectJsonDeserializer::GetHardAssetRefArray() const
 	{
 		return m_hardAssetRefArray;
 	}

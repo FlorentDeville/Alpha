@@ -1,10 +1,12 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
 #include "Core/Singleton.h"
+
+#include "Systems/Container/LoadingDomain.h"
 
 #include <map>
 #include <string>
@@ -28,19 +30,20 @@ namespace Systems
 		Container* CreateContainer(ContainerId cid);
 
 		//Return a pointer to a container. The container needs to have been loaded or created before.
-		Container* GetContainer(ContainerId cid);
+		Container* GetContainer(ContainerId cid, LoadingDomain domain);
+
+		Container* LoadContainer(ContainerId cid, LoadingDomain domain);
+
+		bool SaveContainer(ContainerId cid);
 
 		// Delete the container from memory and disk.
 		bool DeleteContainer(ContainerId cid);
-
-		Container* LoadContainer(ContainerId cid);
-		bool SaveContainer(ContainerId cid);
 
 		bool DoesContainerExistsOnDisk(ContainerId cid) const;
 
 	private:
 		std::string m_root;
-		std::map<ContainerId, Container*> m_containerMap;
+		std::map<ContainerId, Container*> m_containerMap[static_cast<uint8_t>(LoadingDomain::COUNT)];
 
 		std::string MakeDirectory(ContainerId cid) const;
 		std::string MakeFilename(ContainerId cid) const;

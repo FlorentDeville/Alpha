@@ -52,6 +52,7 @@
     <ClInclude Include="Rendering\RenderPass\RenderPassBase.h" />
     <ClInclude Include="Game\GameMgr.h" />
     <ClInclude Include="Clock\Clock.h" />
+    <ClInclude Include="Container\LoadingDomain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />

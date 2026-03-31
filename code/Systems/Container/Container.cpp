@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Systems/Container/Container.h"
 
@@ -11,11 +11,19 @@ namespace Systems
 	Container::Container()
 		: m_id()
 		, m_assets()
+		, m_domain(LoadingDomain::UNKNOWN)
 	{ }
 
-	Container::Container(ContainerId cid)
+	Container::Container(LoadingDomain domain)
+		: m_id()
+		, m_assets()
+		, m_domain(domain)
+	{ }
+
+	Container::Container(ContainerId cid, LoadingDomain domain)
 		: m_id(cid)
 		, m_assets()
+		, m_domain(domain)
 	{ }
 
 	Container::~Container()
@@ -57,5 +65,10 @@ namespace Systems
 	AssetObject* Container::GetAsset(ObjectId objectId)
 	{
 		return m_assets[objectId.ToUint64()];
+	}
+
+	LoadingDomain Container::GetLoadingDomain() const
+	{
+		return m_domain;
 	}
 }

@@ -422,7 +422,7 @@ namespace Editors
 
 		if (isATexture)
 		{
-			Systems::Texture2DAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::Texture2DAsset>(selectedTextureId);
+			Systems::Texture2DAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::Texture2DAsset>(selectedTextureId, Systems::LoadingDomain::EDITOR);
 			if (!pTexture)
 				return;
 
@@ -449,7 +449,7 @@ namespace Editors
 		}
 		else
 		{
-			Systems::CubemapAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::CubemapAsset>(selectedTextureId);
+			Systems::CubemapAsset* pTexture = Systems::AssetUtil::GetAsset<Systems::CubemapAsset>(selectedTextureId, Systems::LoadingDomain::EDITOR);
 			if (!pTexture)
 				return;
 
@@ -570,7 +570,7 @@ namespace Editors
 			return;
 		}
 
-		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(assetId);
+		Systems::AssetObject* pObject = Systems::AssetUtil::LoadAsset(assetId, Systems::LoadingDomain::EDITOR);
 		m_pPopulator->Populate(pObject);
 
 		if(pObject->IsA<Systems::Texture2DAsset>())

@@ -18,6 +18,7 @@ namespace Core
 
 namespace Systems
 {
+	class HardAssetRefRaw;
 	class Object;
 
 	class ObjectJsonDeserializer
@@ -28,10 +29,10 @@ namespace Systems
 
 		bool Deserialize(const Core::JsonObject& jsonObject, Object** ppObject);
 
-		const Core::Array<void*>& GetHardAssetRefArray() const;
+		const Core::Array<HardAssetRefRaw*>& GetHardAssetRefArray() const;
 
 	private:
-		Core::Array<void*> m_hardAssetRefArray;
+		Core::Array<HardAssetRefRaw*> m_hardAssetRefArray;
 
 		bool DeserializeArray(const Core::JsonArray& jsonArray, const Core::TypeDescriptor* pElementType, bool elementIsPointer, Core::BaseArray& array);
 		bool DeserializeField(const Core::JsonValue& jsonFieldValue, const Core::TypeDescriptor* pFieldType, const Core::FieldDescriptor* pFieldDescriptor, void* pFieldPtr, bool isPointer);

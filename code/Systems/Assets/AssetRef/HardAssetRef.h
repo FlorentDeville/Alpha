@@ -30,7 +30,7 @@ namespace Systems
 
 		// Get a pointer to the asset if the asset is loaded, otherwise the pointer stays null. 
 		// Return true if a valid pointer is found, false otherwise.
-		bool Resolve();
+		bool Resolve(Systems::LoadingDomain domain);
 
 		T* GetPtr();
 		const T* GetPtr() const;

@@ -99,7 +99,7 @@ namespace Systems
 	const Systems::MaterialAsset* MaterialInstanceAsset::GetBaseMaterial() const
 	{
 		if (!m_pBaseMaterial && m_material.IsValid())
-			m_pBaseMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_material);
+			m_pBaseMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_material, Systems::LoadingDomain::EDITOR);
 
 		return m_pBaseMaterial;
 	}
