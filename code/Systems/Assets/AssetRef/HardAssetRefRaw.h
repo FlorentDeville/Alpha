@@ -29,7 +29,6 @@ namespace Systems
 	private:
 		NewAssetId m_id;
 		void* m_pPtr;
-		LoadingDomain m_domain;
 
 		template<class T> friend class HardAssetRef;
 	};
