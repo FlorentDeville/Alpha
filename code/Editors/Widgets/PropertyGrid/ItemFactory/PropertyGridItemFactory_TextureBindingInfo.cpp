@@ -119,11 +119,8 @@ namespace Editors
 		pDialog->Open();
 		pDialog->OnOk([this](Systems::NewAssetId id)
 			{
-				Systems::HardAssetRefRaw hardRef(id);
-				hardRef.Load(Systems::LoadingDomain::EDITOR);
-
 				m_pBindingInfo->m_texture = id;
-				m_pBindingInfo->m_texture.Resolve(Systems::LoadingDomain::EDITOR);
+				m_pBindingInfo->m_texture.Load(Systems::LoadingDomain::EDITOR);
 
 				UpdateTextbox();
 

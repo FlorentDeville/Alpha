@@ -52,7 +52,7 @@ namespace Editors
 						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 
 						Systems::HardAssetRefRaw hardRef(id);
-						hardRef.Resolve(Systems::LoadingDomain::EDITOR);
+						hardRef.Load(Systems::LoadingDomain::EDITOR);
 
 						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &hardRef);
 					});

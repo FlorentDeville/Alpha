@@ -18,8 +18,6 @@ namespace Systems
 		HardAssetRefRaw(NewAssetId id);
 		~HardAssetRefRaw();
 
-		bool Resolve(LoadingDomain domain);
-
 		bool IsResolved() const;
 
 		NewAssetId GetAssetId() const;

@@ -27,13 +27,6 @@ namespace Systems
 		m_pPtr = nullptr;
 	}
 
-	bool HardAssetRefRaw::Resolve(LoadingDomain domain)
-	{
-		m_domain = domain;
-		m_pPtr = AssetUtil::GetAsset(m_id, domain);
-		return m_pPtr != nullptr;
-	}
-
 	bool HardAssetRefRaw::IsResolved() const
 	{
 		return m_pPtr != nullptr;
