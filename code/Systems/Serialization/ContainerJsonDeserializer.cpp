@@ -10,6 +10,7 @@
 #include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Assets/AssetRef/HardAssetRefRaw.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Serialization/ObjectJsonDeserializer.h"
 #include "Systems/Objects/AssetObject.h"
@@ -62,17 +63,11 @@ namespace Systems
 
 			pContainer.AddAsset(pAssetObject);
 
-			//resolve the hard asset ref. It's ugly but it works.
-			const Core::Array<void*>& hardAssetRefArray = deser.GetHardAssetRefArray();
-			for (void* pPtr : hardAssetRefArray)
+			//resolve the hard asset ref.
+			const Core::Array<HardAssetRefRaw*>& hardAssetRefArray = deser.GetHardAssetRefArray();
+			for (HardAssetRefRaw* pPtr : hardAssetRefArray)
 			{
-				const NewAssetId* pId = reinterpret_cast<const NewAssetId*>(pPtr);
-				if (!pId->IsValid())
-					continue;
-
-				uint64_t* pBasePtr = reinterpret_cast<uint64_t*>(pPtr);
-				Systems::AssetObject** pAssetPtr = reinterpret_cast<Systems::AssetObject**>(pBasePtr + 1);
-				*pAssetPtr = AssetUtil::GetAsset(*pId);
+				pPtr->Resolve();
 			}
 		}
 
