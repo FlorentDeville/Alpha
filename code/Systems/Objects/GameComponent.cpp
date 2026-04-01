@@ -15,7 +15,13 @@ namespace Systems
 	GameComponent::~GameComponent()
 	{ }
 
+	void GameComponent::OnStart()
+	{ }
+
 	void GameComponent::Update(float dt)
+	{ }
+
+	void GameComponent::OnDestroy()
 	{ }
 
 	void GameComponent::SetGuid(const Core::Guid& guid)

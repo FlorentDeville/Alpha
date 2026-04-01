@@ -21,7 +21,9 @@ namespace Systems
 		GameComponent();
 		~GameComponent();
 
+		virtual void OnStart();
 		virtual void Update(float dt);
+		virtual void OnDestroy();
 
 		void SetGuid(const Core::Guid& guid);
 

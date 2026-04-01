@@ -23,7 +23,10 @@ namespace Systems
 	}
 
 	void GameObject::OnStart()
-	{ }
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnStart();
+	}
 
 	void GameObject::Update(float dt)
 	{
@@ -37,7 +40,10 @@ namespace Systems
 	}
 
 	void GameObject::OnDestroy()
-	{ }
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnDestroy();
+	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{
