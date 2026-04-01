@@ -40,19 +40,19 @@ namespace Inputs
 
 		switch (command)
 		{
-		case InputCommand::MoveForward:
+		case InputCommand::FORWARD:
 			vkey = Os::VKeyCodes::Vk_W;
 			break;
 
-		case InputCommand::MoveBackward:
+		case InputCommand::BACKWARD:
 			vkey = Os::VKeyCodes::Vk_S;
 			break;
 
-		case InputCommand::MoveLeft:
+		case InputCommand::LEFT:
 			vkey = Os::VKeyCodes::Vk_A;
 			break;
 
-		case InputCommand::MoveRight:
+		case InputCommand::RIGHT:
 			vkey = Os::VKeyCodes::Vk_D;
 			break;
 		}

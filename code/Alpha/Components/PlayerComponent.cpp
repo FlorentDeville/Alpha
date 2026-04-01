@@ -51,14 +51,14 @@ void PlayerComponent::Update(float dt)
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 
 	Core::Vec4f direction;
-	if (inputMgr.GetState(Inputs::InputCommand::MoveForward))
+	if (inputMgr.GetState(Inputs::InputCommand::FORWARD))
 		direction = direction + forward;
-	else if(inputMgr.GetState(Inputs::InputCommand::MoveBackward))
+	else if(inputMgr.GetState(Inputs::InputCommand::BACKWARD))
 		direction = direction - forward;
 
-	if (inputMgr.GetState(Inputs::InputCommand::MoveLeft))
+	if (inputMgr.GetState(Inputs::InputCommand::LEFT))
 		direction = direction - right;
-	else if (inputMgr.GetState(Inputs::InputCommand::MoveRight))
+	else if (inputMgr.GetState(Inputs::InputCommand::RIGHT))
 		direction = direction + right;
 
 	if (direction.Length() != 0)

@@ -6,11 +6,12 @@
 
 namespace Inputs
 {
+	//This should be moved to alpha. Make a GameInput class and register it to the InputMgr at start up.
 	enum class InputCommand
 	{
-		MoveForward,
-		MoveBackward,
-		MoveLeft,
-		MoveRight
+		FORWARD,
+		BACKWARD,
+		LEFT,
+		RIGHT
 	};
 }
