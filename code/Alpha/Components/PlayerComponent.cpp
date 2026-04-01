@@ -8,8 +8,6 @@
 
 #include "Inputs/InputMgr.h"
 
-#include "OsWin/VirtualKeyCode.h"
-
 #include "Rendering/Camera.h"
 
 #include "Systems/Game/GameMgr.h"
@@ -53,14 +51,14 @@ void PlayerComponent::Update(float dt)
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 
 	Core::Vec4f direction;
-	if (inputMgr.IsKeyPressed(Os::VKeyCodes::Vk_W))
+	if (inputMgr.GetState(Inputs::InputCommand::FORWARD))
 		direction = direction + forward;
-	else if(inputMgr.IsKeyPressed(Os::VKeyCodes::Vk_S))
+	else if(inputMgr.GetState(Inputs::InputCommand::BACKWARD))
 		direction = direction - forward;
 
-	if (inputMgr.IsKeyPressed(Os::VKeyCodes::Vk_A))
+	if (inputMgr.GetState(Inputs::InputCommand::LEFT))
 		direction = direction - right;
-	else if (inputMgr.IsKeyPressed(Os::VKeyCodes::Vk_D))
+	else if (inputMgr.GetState(Inputs::InputCommand::RIGHT))
 		direction = direction + right;
 
 	if (direction.Length() != 0)

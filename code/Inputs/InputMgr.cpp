@@ -1,8 +1,10 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "InputMgr.h"
+
+#include "OsWin/VirtualKeyCode.h"
 
 //#pragma optimize("", off)
 
@@ -17,16 +19,7 @@ namespace Inputs
 	{}
 
 	void InputMgr::Init()
-	{
-		m_keyToCommand['w'] = InputCommand::MoveForward;
-		m_keyToCommand['W'] = InputCommand::MoveForward;
-		m_keyToCommand['s'] = InputCommand::MoveBackward;
-		m_keyToCommand['S'] = InputCommand::MoveBackward;
-		m_keyToCommand['a'] = InputCommand::MoveLeft;
-		m_keyToCommand['A'] = InputCommand::MoveLeft;
-		m_keyToCommand['d'] = InputCommand::MoveRight;
-		m_keyToCommand['D'] = InputCommand::MoveRight;
-	}
+	{ }
 
 	void InputMgr::Release()
 	{}
@@ -43,18 +36,32 @@ namespace Inputs
 
 	bool InputMgr::GetState(InputCommand command) const
 	{
-		std::map<InputCommand, bool>::const_iterator it = m_commandState.find(command);
-		if (it == m_commandState.cend())
-			return false;
+		Os::VKeyCode vkey;
 
-		return it->second;
+		switch (command)
+		{
+		case InputCommand::FORWARD:
+			vkey = Os::VKeyCodes::Vk_W;
+			break;
+
+		case InputCommand::BACKWARD:
+			vkey = Os::VKeyCodes::Vk_S;
+			break;
+
+		case InputCommand::LEFT:
+			vkey = Os::VKeyCodes::Vk_A;
+			break;
+
+		case InputCommand::RIGHT:
+			vkey = Os::VKeyCodes::Vk_D;
+			break;
+		}
+
+		return IsKeyPressed(vkey);
 	}
 
 	void InputMgr::ClearAllStates()
 	{
-		for (std::map<InputCommand, bool>::iterator it = m_commandState.begin(); it != m_commandState.end(); ++it)
-			it->second = false;
-
 		m_mouseState.m_mouseWheel = 0; //reset the mouse wheel distance
 	}
 

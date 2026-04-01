@@ -59,15 +59,10 @@ namespace Inputs
 		int16_t GetMouseWheelDistance() const;
 
 	private:
-		//game command
-		std::map<uint64_t, InputCommand> m_keyToCommand;
-		std::map<InputCommand, bool> m_commandState;
-
 		bool m_enabled;
 
 		//raw keyboard mouse event
 		std::map<uint64_t, bool> m_keyboardState; //true for down
-		bool m_mouseLeftButton;
 		MouseState m_mouseState;
 	};
 }
