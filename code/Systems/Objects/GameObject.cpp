@@ -22,6 +22,12 @@ namespace Systems
 		m_components.Clear();
 	}
 
+	void GameObject::OnStart()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnStart();
+	}
+
 	void GameObject::Update(float dt)
 	{
 		for (GameComponent* pComponent : m_components)
@@ -31,6 +37,12 @@ namespace Systems
 	void GameObject::UpdateTransform()
 	{
 		m_transform.Update(0);
+	}
+
+	void GameObject::OnDestroy()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnDestroy();
 	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)

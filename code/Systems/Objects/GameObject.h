@@ -26,8 +26,15 @@ namespace Systems
 
 		virtual ~GameObject();
 
+		//Called only once before the first Update.
+		virtual void OnStart();
+
+		//Called every frame
 		virtual void Update(float dt);
 		virtual void UpdateTransform();
+
+		//Called before deleting the gameobjet after the last Update.
+		virtual void OnDestroy();
 
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;

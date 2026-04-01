@@ -22,7 +22,10 @@ public:
 	~PlayerComponent();
 
 	void PostLoad() override;
+
+	void OnStart() override;
 	void Update(float dt) override;
+	void OnDestroy() override;
 
 private:
 
@@ -36,5 +39,4 @@ private:
 	END_REFLECTION()
 
 	Rendering::Camera* m_pCamera;
-	bool m_isCameraRegistered;
 };
