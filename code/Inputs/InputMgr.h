@@ -67,7 +67,6 @@ namespace Inputs
 
 		//raw keyboard mouse event
 		std::map<uint64_t, bool> m_keyboardState; //true for down
-		bool m_mouseLeftButton;
 		MouseState m_mouseState;
 	};
 }
