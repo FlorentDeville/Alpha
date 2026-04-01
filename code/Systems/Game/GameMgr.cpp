@@ -128,6 +128,11 @@ namespace Systems
 		m_cameraStack.push(pCamera);
 	}
 
+	void GameMgr::PopCamera()
+	{
+		m_cameraStack.pop();
+	}
+
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pFinalRenderTarget;
