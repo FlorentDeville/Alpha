@@ -159,6 +159,11 @@ namespace Systems
 			}
 
 			m_loadedLevels.PushBack(pLevel);
+
+			const Core::Array<GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+			for (GameObject* pGo : gameObjects)
+				pGo->OnStart();
+
 		}
 
 		m_loadingRequest.Clear();
@@ -177,6 +182,10 @@ namespace Systems
 				assert(false && "Tried to unload a level that doesn't exist");
 				return; //doesn't exist
 			}
+
+			const Core::Array<GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+			for (GameObject* pGo : gameObjects)
+				pGo->OnDestroy();
 
 			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
 

@@ -19,6 +19,7 @@ namespace Rendering
 
 namespace Systems
 {
+	class GameObject;
 	class LevelAsset;
 	class RenderPassBase;
 	class RenderPassShadowMaps;
@@ -45,16 +46,19 @@ namespace Systems
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
 	private:
+		//Loading
 		Core::Array<Systems::LevelAsset*> m_loadedLevels;		//pointers to the currently loaded levels.
 
 		Core::Array<Systems::NewAssetId> m_loadingRequest;
 		Core::Array<Systems::NewAssetId> m_unloadingRequest;
 
+		//Rendering
 		Rendering::RenderTarget* m_pFinalRenderTarget;
 
 		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 
+		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
 		//Stack of camera. The currently active camera is the one at the top. There is always a default camera.
