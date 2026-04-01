@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2022 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -11,10 +11,6 @@ namespace Inputs
 		MoveForward,
 		MoveBackward,
 		MoveLeft,
-		MoveRight,
-		TurnLeft,
-		TurnRight,
-		CameraLookUp,
-		CameraLookDown
+		MoveRight
 	};
 }
