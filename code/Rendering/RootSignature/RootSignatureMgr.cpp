@@ -30,6 +30,7 @@ namespace Rendering
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::SHADOWMAP_DIRLIGHT)] = new RootSignature(binPath + "\\shadowmap_dirlight.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::OBJECTID)] = new RootSignature(binPath + "\\object_ids.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::COPY_RENDER_TARGET)] = new RootSignature(binPath + "\\copy_render_target.rs.cso");
+		m_rootSignatures[static_cast<size_t>(EngineRootSigs::BASE_SHAPE)] = new RootSignature(binPath + "\\base-shape.rs.cso");
 	}
 
 	void RootSignatureMgr::Shutdown()

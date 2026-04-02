@@ -28,6 +28,9 @@ namespace Rendering
 		COPY_RENDER_TARGET_VS,
 		COPY_RENDER_TARGET_PS,
 
+		BASE_SHAPE_VS,
+		BASE_SHAPE_PS,
+
 		COUNT
 	};
 

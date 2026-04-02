@@ -20,6 +20,7 @@ namespace Rendering
 		SHADOWMAP_DIRLIGHT,
 		OBJECTID,
 		COPY_RENDER_TARGET,
+		BASE_SHAPE,
 
 		COUNT
 	};
