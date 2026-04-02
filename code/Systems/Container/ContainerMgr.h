@@ -38,6 +38,8 @@ namespace Systems
 		//Free the memory for all containers with a refcount of 0
 		void GarbageCollect();
 
+		void IncRefCount(ContainerId cid, LoadingDomain domain);
+
 		// Editor functions
 
 		//Create a new container using the provided container id. If a container already exists on disk using the 

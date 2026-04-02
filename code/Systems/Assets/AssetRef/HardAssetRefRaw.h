@@ -16,7 +16,10 @@ namespace Systems
 	public:
 		HardAssetRefRaw();
 		HardAssetRefRaw(NewAssetId id);
+		HardAssetRefRaw(const HardAssetRefRaw& copy);
 		~HardAssetRefRaw();
+
+		HardAssetRefRaw& operator=(const HardAssetRefRaw& other);
 
 		bool IsResolved() const;
 

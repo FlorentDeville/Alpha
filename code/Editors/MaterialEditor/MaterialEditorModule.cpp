@@ -336,9 +336,12 @@ namespace Editors
 
 		existingTextureBindings = std::move(newTextureBindings);
 
-		pMaterial->UpdateRenderingObjects();
-		
-		if (res)
+		res = pMaterial->UpdateRenderingObjects();
+		if (!res)
+		{
+			Core::LogModule::Get().LogError("Failed to create pso.");
+		}
+		else
 		{
 			if (Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id))
 				m_onMaterialCompiled(*pMetadata);

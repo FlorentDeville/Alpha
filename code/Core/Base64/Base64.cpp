@@ -43,6 +43,9 @@ namespace Core
 		uint32_t blockCount =  encodedDataSize / 4;
 		uint32_t byteSize = blockCount * BLOCK_SIZE;
 
+		if (byteSize == 0)
+			return 0;
+
 		if (pData[encodedDataSize - 2] == '=')
 			return byteSize - 2;
 		else if (pData[encodedDataSize - 1] == '=')
@@ -108,6 +111,9 @@ namespace Core
 
 	void Base64::Decode(const char* pData, uint32_t dataSize, uint8_t* pBuffer, uint32_t bufferSize)
 	{
+		if (dataSize == 0)
+			return;
+
 		const int CHAR_PER_BLOCK = 4;
 		const uint32_t fullBlockCount = dataSize / CHAR_PER_BLOCK;
 

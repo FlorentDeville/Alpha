@@ -241,7 +241,7 @@ namespace Rendering
 		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
-	void PipelineState::Init_Generic(const PipelineStateDesc& desc)
+	bool PipelineState::Init_Generic(const PipelineStateDesc& desc)
 	{
 		struct PipelineStateStream
 		{
@@ -281,7 +281,7 @@ namespace Rendering
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};
 		HRESULT res = RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState));
-		ThrowIfFailed(res);
+		return (res == S_OK);
 	}
 
 	void PipelineState::Init_Generic_ShadowMap_SpotLight(RootSignature* pRootSig, Shader* pVS, Shader* pPS)

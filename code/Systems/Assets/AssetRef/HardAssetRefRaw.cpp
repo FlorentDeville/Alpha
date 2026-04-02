@@ -5,6 +5,7 @@
 #include "Systems/Assets/AssetRef/HardAssetRefRaw.h"
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Container/ContainerMgr.h"
 
 namespace Systems
 {
@@ -20,11 +21,28 @@ namespace Systems
 		, m_domain(LoadingDomain::UNKNOWN)
 	{ }
 
+	HardAssetRefRaw::HardAssetRefRaw(const HardAssetRefRaw& copy)
+		: m_id(copy.m_id)
+		, m_pPtr(copy.m_pPtr)
+		, m_domain(copy.m_domain)
+	{
+		if (m_id != NewAssetId::INVALID)
+			ContainerMgr::Get().IncRefCount(m_id.GetContainerId(), m_domain);
+	}
+
 	HardAssetRefRaw::~HardAssetRefRaw()
 	{
-		AssetUtil::UnloadAsset(m_id, m_domain);
+		if(m_id != NewAssetId::INVALID)
+			AssetUtil::UnloadAsset(m_id, m_domain);
+
 		m_id = NewAssetId::INVALID;
 		m_pPtr = nullptr;
+	}
+
+	HardAssetRefRaw& HardAssetRefRaw::operator=(const HardAssetRefRaw& other)
+	{
+		new (this) HardAssetRefRaw(other);
+		return *this;
 	}
 
 	bool HardAssetRefRaw::IsResolved() const
