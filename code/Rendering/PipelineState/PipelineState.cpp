@@ -240,11 +240,6 @@ namespace Rendering
 		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
-	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId)
-	{
-		Init_Generic(rsId, vsId, psId, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-	}
-
 	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format)
 	{
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
