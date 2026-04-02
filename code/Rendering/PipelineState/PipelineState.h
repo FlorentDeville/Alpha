@@ -30,8 +30,9 @@ namespace Rendering
 		void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId);
 		void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT rtvFormat);
 
-		//this is the generic pipeline state for meshes containing every vertex attributes
-		void Init_Generic(const PipelineStateDesc& desc);
+		//This is the generic pipeline state for meshes containing every vertex attributes.
+		//Return true if the pso was created. False otherwise.
+		bool Init_Generic(const PipelineStateDesc& desc);
 
 		void Init_Generic_ShadowMap_SpotLight(RootSignature* pRootSig, Shader* pVS, Shader* pPS);
 		void Init_Generic_ShadowMap_DirLight(RootSignature* pRootSig, Shader* pVS, Shader* pPS);

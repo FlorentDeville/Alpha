@@ -113,7 +113,7 @@ namespace Systems
 		UpdateRenderingObjects();
 	}
 
-	void MaterialAsset::UpdateRenderingObjects()
+	bool MaterialAsset::UpdateRenderingObjects()
 	{
 		bool validVertexShader = false;
 		if (m_vsBlob.GetSize() != 0)
@@ -122,7 +122,7 @@ namespace Systems
 			m_pVs = new Rendering::Shader();
 			bool res = m_pVs->LoadFromMemory(m_vsBlob);
 			if (!res)
-				return;
+				return false;
 
 			validVertexShader = true;
 		}
@@ -134,7 +134,7 @@ namespace Systems
 			m_pPs = new Rendering::Shader();
 			bool res = m_pPs->LoadFromMemory(m_psBlob);
 			if (!res)
-				return;
+				return false;
 
 			validPixelShader = true;
 		}
@@ -146,27 +146,36 @@ namespace Systems
 			m_pRs = new Rendering::RootSignature();
 			bool res = m_pRs->LoadFromMemory(m_rsBlob);
 			if (!res)
-				return;
+				return false;
 
 			validRootSignature = true;
 		}
 
 		bool createPipelineState = validPixelShader && validVertexShader && validRootSignature;
-		if (createPipelineState)
+		if (!createPipelineState)
+			return false;
+	
+		if (m_pPipelineState)
+			delete m_pPipelineState;
+
+		Rendering::PipelineStateDesc desc;
+		desc.m_pRs = m_pRs;
+		desc.m_pVs = m_pVs;
+		desc.m_pPs = m_pPs;
+		desc.m_cullMode = m_cullMode;
+		desc.m_depthFunction = m_depthFunction;
+
+		m_pPipelineState = new Rendering::PipelineState();
+		bool created = m_pPipelineState->Init_Generic(desc);
+		if (!created)
 		{
-			if (m_pPipelineState)
-				delete m_pPipelineState;
+			delete m_pPipelineState;
+			m_pPipelineState = nullptr;
 
-			Rendering::PipelineStateDesc desc;
-			desc.m_pRs = m_pRs;
-			desc.m_pVs = m_pVs;
-			desc.m_pPs = m_pPs;
-			desc.m_cullMode = m_cullMode;
-			desc.m_depthFunction = m_depthFunction;
-
-			m_pPipelineState = new Rendering::PipelineState();
-			m_pPipelineState->Init_Generic(desc);
+			return false;
 		}
+		
+		return true;
 	}
 
 	bool MaterialAsset::IsValidForRendering() const

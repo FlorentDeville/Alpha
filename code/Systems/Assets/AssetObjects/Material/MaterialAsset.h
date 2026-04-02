@@ -56,7 +56,7 @@ namespace Systems
 
 		void PostLoad() override;
 
-		void UpdateRenderingObjects();
+		bool UpdateRenderingObjects();
 
 		bool IsValidForRendering() const;
 
