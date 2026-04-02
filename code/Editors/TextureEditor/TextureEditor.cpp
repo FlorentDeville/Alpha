@@ -23,6 +23,7 @@
 
 #include "Rendering/BaseShape.h"
 #include "Rendering/Mesh/Mesh.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
@@ -68,6 +69,7 @@ namespace Editors
 		, m_viewportState(NONE)
 		, m_cameraDirectionRotationY(0)
 		, m_firstFrameMouseDown(false)
+		, m_pRootSig(nullptr)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -199,11 +201,25 @@ namespace Editors
 		Rendering::Shader* pTextureViewportPs = shaderMgr.GetShader(Rendering::EngineShaders::TEXTURE_EDITOR_VIEWPORT_PS);
 		m_pRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::TEXTURE_EDITOR_VIEWPORT);
 
-		m_pPsoQuad = new Rendering::PipelineState();
-		m_pPsoQuad->Init_Generic(*m_pRootSig, *pTextureViewportVs, *pTextureViewportPs, Rendering::Back);
+		{
+			Rendering::PipelineStateDesc quadPsoDesc;
+			quadPsoDesc.m_pPs = pTextureViewportPs;
+			quadPsoDesc.m_pVs = pTextureViewportVs;
+			quadPsoDesc.m_pRs = m_pRootSig;
+			quadPsoDesc.m_cullMode = Rendering::Back;
+			m_pPsoQuad = new Rendering::PipelineState();
+			m_pPsoQuad->Init_Generic(quadPsoDesc);
+		}
 
-		m_pPsoCubemap = new Rendering::PipelineState();
-		m_pPsoCubemap->Init_Generic(*m_pRootSig, *pTextureViewportVs, *pTextureViewportPs, Rendering::Front);
+		{
+			Rendering::PipelineStateDesc cubemapPsoDesc;
+			cubemapPsoDesc.m_pPs = pTextureViewportPs;
+			cubemapPsoDesc.m_pVs = pTextureViewportVs;
+			cubemapPsoDesc.m_pRs = m_pRootSig;
+			cubemapPsoDesc.m_cullMode = Rendering::Front;
+			m_pPsoCubemap = new Rendering::PipelineState();
+			m_pPsoCubemap->Init_Generic(cubemapPsoDesc);
+		}
 	}
 
 	void TextureEditor::OnClick_Texture_CreateAndImport()
