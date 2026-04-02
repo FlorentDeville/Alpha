@@ -241,16 +241,6 @@ namespace Rendering
 		ThrowIfFailed(RenderModule::Get().GetDx12Device()->CreatePipelineState(&pipelineStateStreamDesc, IID_PPV_ARGS(&m_pPipelineState)));
 	}
 
-	void PipelineState::Init_Generic(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT format)
-	{
-		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
-		ShaderMgr& shaderMgr = ShaderMgr::Get();
-		Shader* pVS = shaderMgr.GetShader(vsId);
-		Shader* pPS = shaderMgr.GetShader(psId);
-
-		Init_Generic(*pRootSignature, *pVS, *pPS);
-	}
-
 	void PipelineState::Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, DXGI_FORMAT format)
 	{
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
