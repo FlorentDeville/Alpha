@@ -106,6 +106,22 @@ namespace Rendering
 		return D3D12_COMPARISON_FUNC_LESS;
 	}
 
+	static DXGI_FORMAT GetDx12ResourceFormat(ResourceFormat format)
+	{
+		switch (format)
+		{
+		case ResourceFormat::R8G8B8A8_UNORM_SRGB:
+			return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+			break;
+
+		case ResourceFormat::R8G8B8A8_UINT:
+			return DXGI_FORMAT_R8G8B8A8_UINT;
+			break;
+		}
+
+		return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	}
+
 	PipelineState::PipelineState()
 		: m_pPipelineState(nullptr)
 		, m_psId()
@@ -348,7 +364,7 @@ namespace Rendering
 
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 		rtvFormats.NumRenderTargets = 1;
-		rtvFormats.RTFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+		rtvFormats.RTFormats[0] = GetDx12ResourceFormat(desc.m_rtvFormat);
 
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = GetDx12CullMode(desc.m_cullMode);
