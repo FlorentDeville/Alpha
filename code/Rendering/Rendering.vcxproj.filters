@@ -129,6 +129,9 @@
     <ClInclude Include="ResourceFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Internal\ResourceFormatToDx12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">
@@ -228,6 +231,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Device.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\ResourceFormatToDx12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

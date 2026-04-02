@@ -25,6 +25,7 @@
     <ClInclude Include="Font\FontId.h" />
     <ClInclude Include="Font\FontMgr.h" />
     <ClInclude Include="InputLayout\InputLayout.h" />
+    <ClInclude Include="Internal\ResourceFormatToDx12.h" />
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
@@ -65,6 +66,7 @@
     <ClCompile Include="Font\FontId.cpp" />
     <ClCompile Include="Font\FontMgr.cpp" />
     <ClCompile Include="InputLayout\InputLayout.cpp" />
+    <ClCompile Include="Internal\ResourceFormatToDx12.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshId.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />
