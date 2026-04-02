@@ -137,6 +137,15 @@ namespace Systems
 		}
 	}
 
+	void ContainerMgr::IncRefCount(ContainerId cid, LoadingDomain domain)
+	{
+		ContainerRefCount* pRefCount = GetContainerRefCount(cid, domain);
+		if (!pRefCount)
+			return;
+
+		++pRefCount->m_count;
+	}
+
 	Container* ContainerMgr::CreateContainer(ContainerId cid)
 	{
 		if (DoesContainerExistsOnDisk(cid))
