@@ -117,6 +117,10 @@ namespace Rendering
 		case ResourceFormat::R8G8B8A8_UINT:
 			return DXGI_FORMAT_R8G8B8A8_UINT;
 			break;
+
+		default:
+			assert(false && "Unknown resource format");
+			break;
 		}
 
 		return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
