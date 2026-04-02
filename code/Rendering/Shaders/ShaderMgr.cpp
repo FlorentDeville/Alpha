@@ -39,6 +39,9 @@ namespace Rendering
 
 		m_shaders[static_cast<size_t>(EngineShaders::BASE_SHAPE_VS)] = new Shader(shaderPath + "\\base-shape.vs.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::BASE_SHAPE_PS)] = new Shader(shaderPath + "\\base-shape.ps.cso");
+
+		m_shaders[static_cast<size_t>(EngineShaders::TEXTURE_EDITOR_VIEWPORT_VS)] = new Shader(shaderPath + "\\texture_editor_viewport.vs.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::TEXTURE_EDITOR_VIEWPORT_PS)] = new Shader(shaderPath + "\\texture_editor_viewport.ps.cso");
 	}
 
 	void ShaderMgr::Shutdown()

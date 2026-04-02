@@ -21,6 +21,7 @@ namespace Rendering
 		OBJECTID,
 		COPY_RENDER_TARGET,
 		BASE_SHAPE,
+		TEXTURE_EDITOR_VIEWPORT,
 
 		COUNT
 	};

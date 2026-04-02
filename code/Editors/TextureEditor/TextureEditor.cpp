@@ -25,7 +25,9 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RootSignature/RootSignature.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Shaders/Shader.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
 #include "Systems/Assets/AssetMgr.h"
@@ -59,9 +61,6 @@ namespace Editors
 		, m_pPopulator(nullptr)
 		, m_objWatcherCid()
 		, m_pQuad(nullptr)
-		, m_pTextureViewportVertexShader(nullptr)
-		, m_pTextureViewportPixelShader(nullptr)
-		, m_pRootSig(nullptr)
 		, m_pPsoQuad(nullptr)
 		, m_pPsoCubemap(nullptr)
 		, m_pCube(nullptr)
@@ -85,12 +84,6 @@ namespace Editors
 		delete m_pQuad;
 		m_pQuad = nullptr;
 
-		delete m_pTextureViewportVertexShader;
-		m_pTextureViewportVertexShader = nullptr;
-		delete m_pTextureViewportPixelShader;
-		m_pTextureViewportPixelShader = nullptr;
-		delete m_pRootSig;
-		m_pRootSig = nullptr;
 		delete m_pPsoQuad;
 		m_pPsoQuad = nullptr;
 		delete m_pPsoCubemap;
@@ -201,15 +194,16 @@ namespace Editors
 		m_pCube = new Rendering::Mesh();
 		Rendering::BaseShape::CreateCube(m_pCube);
 
-		m_pTextureViewportVertexShader = new Rendering::Shader(param.m_shaderPath + "\\texture_editor_viewport.vs.cso");
-		m_pTextureViewportPixelShader = new Rendering::Shader(param.m_shaderPath + "\\texture_editor_viewport.ps.cso");
-		m_pRootSig = new Rendering::RootSignature(param.m_shaderPath + "\\texture_editor_viewport.rs.cso");
+		Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
+		Rendering::Shader* pTextureViewportVs = shaderMgr.GetShader(Rendering::EngineShaders::TEXTURE_EDITOR_VIEWPORT_VS);
+		Rendering::Shader* pTextureViewportPs = shaderMgr.GetShader(Rendering::EngineShaders::TEXTURE_EDITOR_VIEWPORT_PS);
+		m_pRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::TEXTURE_EDITOR_VIEWPORT);
 
 		m_pPsoQuad = new Rendering::PipelineState();
-		m_pPsoQuad->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::Back);
+		m_pPsoQuad->Init_Generic(*m_pRootSig, *pTextureViewportVs, *pTextureViewportPs, Rendering::Back);
 
 		m_pPsoCubemap = new Rendering::PipelineState();
-		m_pPsoCubemap->Init_Generic(*m_pRootSig, *m_pTextureViewportVertexShader, *m_pTextureViewportPixelShader, Rendering::Front);
+		m_pPsoCubemap->Init_Generic(*m_pRootSig, *pTextureViewportVs, *pTextureViewportPs, Rendering::Front);
 	}
 
 	void TextureEditor::OnClick_Texture_CreateAndImport()
