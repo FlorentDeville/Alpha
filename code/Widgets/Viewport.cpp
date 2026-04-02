@@ -29,7 +29,7 @@ namespace Widgets
 		, m_height(height)
 		, m_updateEnabled(false)
 	{
-		m_pRenderTarget = Rendering::RenderModule::Get().CreateRenderTarget(width, height);
+		m_pRenderTarget = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R16G16B16A16_FLOAT);
 		m_aspectRatio = m_width / static_cast<float>(m_height);
 
 		OnFocusGained([this](const Widgets::FocusEvent&) { m_updateEnabled = true; });

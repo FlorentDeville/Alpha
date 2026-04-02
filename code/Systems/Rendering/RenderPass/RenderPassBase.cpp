@@ -32,7 +32,7 @@ namespace Systems
 		, m_shadowRenderTargetsCount(0)
 		, m_pShadowMapSrvHeap(nullptr)
 	{
-		m_pRenderTarget = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R8G8B8A8_UNORM_SRGB);
+		m_pRenderTarget = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R16G16B16A16_FLOAT);
 	}
 
 	RenderPassBase::~RenderPassBase()
