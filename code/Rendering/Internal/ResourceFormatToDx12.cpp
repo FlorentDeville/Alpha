@@ -14,6 +14,10 @@ namespace Rendering
 		{
 			switch (format)
 			{
+			case ResourceFormat::R32_FLOAT:
+				return DXGI_FORMAT_R32_FLOAT;
+				break;
+
 			case ResourceFormat::R8G8B8A8_UNORM_SRGB:
 				return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 				break;
