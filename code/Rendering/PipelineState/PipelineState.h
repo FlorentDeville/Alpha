@@ -31,7 +31,6 @@ namespace Rendering
 		void Init_Icon(RootSignatureId rsId, ShaderId vsId, ShaderId psId, DXGI_FORMAT rtvFormat);
 
 		//this is the generic pipeline state for meshes containing every vertex attributes
-		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps);
 		void Init_Generic(const RootSignature& rs, const Shader& vs, const Shader& ps, CullMode cullMode);
 		void Init_Generic(const PipelineStateDesc& desc);
 

@@ -23,6 +23,7 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignature.h"
@@ -157,9 +158,14 @@ namespace Rendering
 			Shader* pBaseShapeVS = shaderMgr.GetShader(EngineShaders::BASE_SHAPE_VS);
 			Shader* pBaseShapePS = shaderMgr.GetShader(EngineShaders::BASE_SHAPE_PS);
 
+			PipelineStateDesc psoDesc;
+			psoDesc.m_pRs = m_pBaseShapeRootSig;
+			psoDesc.m_pVs = pBaseShapeVS;
+			psoDesc.m_pPs = pBaseShapePS;
+
 			Rendering::PipelineStateId pid;
 			m_pBaseShapePso = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-			m_pBaseShapePso->Init_Generic(*m_pBaseShapeRootSig, *pBaseShapeVS, *pBaseShapePS);
+			m_pBaseShapePso->Init_Generic(psoDesc);
 		}
 
 		m_pNullCubemap = new Texture();
