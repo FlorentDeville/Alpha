@@ -1,9 +1,10 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
+#include "Rendering/ResourceFormat.h"
 #include "Rendering/Texture/TextureId.h"
 
 #include <d3d12.h>
@@ -25,8 +26,8 @@ namespace Rendering
 
 	public:
 		RenderTarget(int width, int height);
-		RenderTarget(int width, int height, DXGI_FORMAT format);
-		RenderTarget(int width, int height, DXGI_FORMAT format, const Core::Vec4f& clearColor);
+		RenderTarget(int width, int height, ResourceFormat format);
+		RenderTarget(int width, int height, ResourceFormat format, const Core::Vec4f& clearColor);
 		~RenderTarget();
 
 		void BeginScene();

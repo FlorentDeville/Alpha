@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Rendering/RenderTargets/RenderTarget.h"
 
@@ -8,6 +8,7 @@
 #include "Core/Helper.h"
 
 #include "Rendering/CommandQueue.h"
+#include "Rendering/Internal/ResourceFormatToDx12.h"
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 #include "Rendering/RenderModule.h"
@@ -19,14 +20,14 @@
 namespace Rendering
 {
 	RenderTarget::RenderTarget(int width, int height)
-		: RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB)
+		: RenderTarget(width, height, ResourceFormat::R8G8B8A8_UNORM_SRGB)
 	{ }
 
-	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format)
+	RenderTarget::RenderTarget(int width, int height, ResourceFormat format)
 		: RenderTarget(width, height, format, Core::Vec4f(0.27f, 0.27f, 0.27f, 1.f))
 	{ }
 
-	RenderTarget::RenderTarget(int width, int height, DXGI_FORMAT format, const Core::Vec4f& clearColor)
+	RenderTarget::RenderTarget(int width, int height, ResourceFormat format, const Core::Vec4f& clearColor)
 		: m_textureId()
 		, m_pTexture(nullptr)
 		, m_rtv()
@@ -48,7 +49,8 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_pTexture, m_textureId);
-		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format);
+		DXGI_FORMAT dxFormat = Internal::GetDx12ResourceFormat(format);
+		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, dxFormat);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_pTexture->GetResource(), nullptr, m_rtv);

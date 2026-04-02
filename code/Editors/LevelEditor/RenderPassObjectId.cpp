@@ -37,7 +37,9 @@ namespace Editors
 	RenderPassObjectId::RenderPassObjectId(int32_t width, int32_t height)
 		: IRenderPass()
 	{
-		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UINT, Core::Vec4f(0, 0, 0, 0));
+		Rendering::ResourceFormat rtvFormat = Rendering::ResourceFormat::R8G8B8A8_UINT;
+
+		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, rtvFormat, Core::Vec4f(0, 0, 0, 0));
 
 		m_pObjectIdRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::OBJECTID);
 		Rendering::Shader* pVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_VS);
@@ -49,7 +51,7 @@ namespace Editors
 		psoDesc.m_pPs = pPS;
 		psoDesc.m_depthFunction = Rendering::DepthComparisonMode::Less;
 		psoDesc.m_cullMode = Rendering::CullMode::Back;
-		psoDesc.m_rtvFormat = Rendering::ResourceFormat::R8G8B8A8_UINT;
+		psoDesc.m_rtvFormat = rtvFormat;
 
 		m_pObjectIdPso = new Rendering::PipelineState();
 		m_pObjectIdPso->Init_Generic(psoDesc);
