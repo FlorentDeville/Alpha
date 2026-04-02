@@ -33,6 +33,7 @@ namespace Widgets
 		, m_pParent(nullptr)
 		, m_padding()
 		, m_visibleRect()
+		, m_isVisibleRectDirty(false)
 	{ }
 
 	Widget::Widget(uint32_t w, uint32_t h, int32_t x, int32_t y)
@@ -195,6 +196,7 @@ namespace Widgets
 		ReComputeSize_PostChildren();
 
 		m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
+		m_isVisibleRectDirty = true;
 
 		//If my children forced me to change my size then I might need to reposition the children.
 		//For example the tab header have a Container with a Label. The Label stretches to contains the entire text

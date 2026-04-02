@@ -56,6 +56,15 @@ namespace Widgets
 
 	void Label::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
+		if (m_isVisibleRectDirty)
+		{
+			m_visibleRect = Rect(m_absPos.x, m_absPos.x + m_size.x, m_absPos.y, m_absPos.y + m_size.y);
+			Rect parent(scissor.left, scissor.right, scissor.top, scissor.bottom);
+
+			m_visibleRect.Intersect(parent);
+			m_isVisibleRectDirty = false;
+		}
+
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x, (float)m_absPos.y, (float)m_absPos.z);
 
 		D3D12_RECT localScissorRect;

@@ -194,6 +194,7 @@ namespace Widgets
 		std::string m_name;
 
 		Rect m_visibleRect;
+		bool m_isVisibleRectDirty;
 
 		void ComputeWVPMatrix(const Core::Float2& windowSize, DirectX::XMMATRIX& wvp) const;
 

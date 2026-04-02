@@ -125,41 +125,50 @@ namespace Editors
 	{
 		bool handled = false;
 
-		if(event.m_id == Widgets::EventType::kMouseDown && !m_pGizmoWidget->IsManipulating() && !m_pGizmoWidget->IsHovering())
+		if(event.m_id == Widgets::EventType::kMouseDown)
 		{
-			const Widgets::MouseEvent& mouseEvent = event.m_param.m_mouseEvent;
-			if (mouseEvent.HasButton(Widgets::MouseButton::LeftButton))
+			CaptureMouse();
+
+			if (!m_pGizmoWidget->IsManipulating() && !m_pGizmoWidget->IsHovering())
 			{
-				handled = true;
-				int widgetPixelX = mouseEvent.GetX() - GetScreenX();
-				int widgetPixelY = mouseEvent.GetY() - GetScreenY();
-
-				uint32_t objectId = GetObjectId(widgetPixelX, widgetPixelY);
-				if (objectId == 0)
-					return handled;
-
-				const Core::Guid* pSelectedGuid = m_pRenderPassObjectId->GetGuid(objectId);
-				if (!pSelectedGuid)
-					return handled;
-				
-				bool toggle = false;
-				if (Os::IsKeyDown(Os::VKeyCodes::Control))
-					toggle = true;
-
-				LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
-				bool isAlreadySelected = levelEditorModule.IsSelected(*pSelectedGuid);
-				if (isAlreadySelected && toggle)
+				const Widgets::MouseEvent& mouseEvent = event.m_param.m_mouseEvent;
+				if (mouseEvent.HasButton(Widgets::MouseButton::LeftButton))
 				{
-					levelEditorModule.RemoveFromSelection(*pSelectedGuid);
-				}
-				else if (!isAlreadySelected)
-				{
-					levelEditorModule.ClearSelection();
-					levelEditorModule.AddToSelection(*pSelectedGuid);
-				}
+					handled = true;
+					int widgetPixelX = mouseEvent.GetX() - GetScreenX();
+					int widgetPixelY = mouseEvent.GetY() - GetScreenY();
 
-				return handled;
+					uint32_t objectId = GetObjectId(widgetPixelX, widgetPixelY);
+					if (objectId == 0)
+						return handled;
+
+					const Core::Guid* pSelectedGuid = m_pRenderPassObjectId->GetGuid(objectId);
+					if (!pSelectedGuid)
+						return handled;
+
+					bool toggle = false;
+					if (Os::IsKeyDown(Os::VKeyCodes::Control))
+						toggle = true;
+
+					LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
+					bool isAlreadySelected = levelEditorModule.IsSelected(*pSelectedGuid);
+					if (isAlreadySelected && toggle)
+					{
+						levelEditorModule.RemoveFromSelection(*pSelectedGuid);
+					}
+					else if (!isAlreadySelected)
+					{
+						levelEditorModule.ClearSelection();
+						levelEditorModule.AddToSelection(*pSelectedGuid);
+					}
+
+					return handled;
+				}
 			}
+		}
+		else if (event.m_id == Widgets::EventType::kMouseUp)
+		{
+			ReleaseMouse();
 		}
 
 		return Viewport::Handle(event);
