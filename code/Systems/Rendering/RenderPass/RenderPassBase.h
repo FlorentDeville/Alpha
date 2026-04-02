@@ -19,10 +19,9 @@ namespace Systems
 	class RenderPassBase : public IRenderPass
 	{
 	public:
-		RenderPassBase();
+		RenderPassBase(uint32_t width, uint32_t height);
 		~RenderPassBase();
 
-		void SetRenderTarget(Rendering::RenderTarget* pRenderTarget);
 		void SetShadowMapRenderTargets(Rendering::RenderTarget** pShadowRenderTargets, uint32_t count, Rendering::DescriptorHeap* pShadowMapSrvHeap);
 
 		void PreRender(const RenderableScene& scene);
@@ -30,6 +29,8 @@ namespace Systems
 		void PostRender(const RenderableScene& scene);
 
 		void ClearDepthBuffer();
+
+		Rendering::RenderTarget* GetRenderTarget();
 
 	private:
 		Rendering::RenderTarget* m_pRenderTarget;

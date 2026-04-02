@@ -23,6 +23,7 @@
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
 #include "Rendering/RootSignature/RootSignature.h"
@@ -152,17 +153,19 @@ namespace Rendering
 			Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
 			Rendering::RootSignatureMgr& rootSigMgr = Rendering::RootSignatureMgr::Get();
 
-			const std::string shaderPath = binPath + "\\";
+			m_pBaseShapeRootSig = rootSigMgr.GetRootSignature(EngineRootSigs::BASE_SHAPE);
 
-			Rendering::RootSignatureId rsId;
-			m_pBaseShapeRootSig = rootSigMgr.CreateRootSignature(shaderPath + "base-shape.rs.cso", rsId);
+			Shader* pBaseShapeVS = shaderMgr.GetShader(EngineShaders::BASE_SHAPE_VS);
+			Shader* pBaseShapePS = shaderMgr.GetShader(EngineShaders::BASE_SHAPE_PS);
 
-			Rendering::ShaderId vsId = shaderMgr.CreateShader(shaderPath + "base-shape.vs.cso");
-			Rendering::ShaderId psId = shaderMgr.CreateShader(shaderPath + "base-shape.ps.cso");
+			PipelineStateDesc psoDesc;
+			psoDesc.m_pRs = m_pBaseShapeRootSig;
+			psoDesc.m_pVs = pBaseShapeVS;
+			psoDesc.m_pPs = pBaseShapePS;
 
 			Rendering::PipelineStateId pid;
 			m_pBaseShapePso = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
-			m_pBaseShapePso->Init_Generic(rsId, vsId, psId);
+			m_pBaseShapePso->Init_Generic(psoDesc);
 		}
 
 		m_pNullCubemap = new Texture();

@@ -6,6 +6,7 @@
 
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
+#include "Rendering/ResourceFormat.h"
 
 namespace Rendering
 {
@@ -23,5 +24,6 @@ namespace Rendering
 		Shader* m_pPs;
 		CullMode m_cullMode;
 		DepthComparisonMode m_depthFunction;
+		ResourceFormat m_rtvFormat;
 	};
 }

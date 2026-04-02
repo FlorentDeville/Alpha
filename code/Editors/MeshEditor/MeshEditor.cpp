@@ -211,7 +211,7 @@ namespace Editors
 		{
 			const int WIDTH = 100;
 			const int HEIGHT = 100;
-			m_pWorldAxisRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT); //make it smaller later
+			m_pWorldAxisRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT, Rendering::ResourceFormat::R16G16B16A16_FLOAT);
 			m_pWorldAxisRTRatio = WIDTH / HEIGHT;
 		}
 

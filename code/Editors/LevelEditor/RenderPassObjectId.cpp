@@ -8,6 +8,7 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Rendering/RenderModule.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
@@ -36,20 +37,30 @@ namespace Editors
 	RenderPassObjectId::RenderPassObjectId(int32_t width, int32_t height)
 		: IRenderPass()
 	{
-		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UINT, Core::Vec4f(0, 0, 0, 0));
+		Rendering::ResourceFormat rtvFormat = Rendering::ResourceFormat::R8G8B8A8_UINT;
+
+		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, rtvFormat, Core::Vec4f(0, 0, 0, 0));
 
 		m_pObjectIdRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::OBJECTID);
 		Rendering::Shader* pVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_VS);
 		Rendering::Shader* pPS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::OBJECTID_PS);
 
-		Rendering::PipelineStateId psoId;
-		m_pObjectIdPso = Rendering::PipelineStateMgr::Get().CreatePipelineState(psoId);
-		m_pObjectIdPso->Init_Generic(*m_pObjectIdRootSig, *pVS, *pPS, DXGI_FORMAT_R8G8B8A8_UINT);
+		Rendering::PipelineStateDesc psoDesc;
+		psoDesc.m_pRs = m_pObjectIdRootSig;
+		psoDesc.m_pVs = pVS;
+		psoDesc.m_pPs = pPS;
+		psoDesc.m_depthFunction = Rendering::DepthComparisonMode::Less;
+		psoDesc.m_cullMode = Rendering::CullMode::Back;
+		psoDesc.m_rtvFormat = rtvFormat;
+
+		m_pObjectIdPso = new Rendering::PipelineState();
+		m_pObjectIdPso->Init_Generic(psoDesc);
 	}
 
 	RenderPassObjectId::~RenderPassObjectId()
 	{
 		delete m_pObjectIdRenderTarget;
+		delete m_pObjectIdPso;
 	}
 
 	void RenderPassObjectId::PreRender(const Systems::RenderableScene& scene)

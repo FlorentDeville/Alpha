@@ -54,8 +54,6 @@ namespace Systems
 		Core::Array<Systems::NewAssetId> m_unloadingRequest;
 
 		//Rendering
-		Rendering::RenderTarget* m_pFinalRenderTarget;
-
 		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 

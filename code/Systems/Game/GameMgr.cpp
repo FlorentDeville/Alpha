@@ -22,7 +22,6 @@ namespace Systems
 		: Core::Singleton<GameMgr>()
 		, m_pRenderPassBase(nullptr)
 		, m_pRenderPassShadowMaps(nullptr)
-		, m_pFinalRenderTarget(nullptr)
 		, m_pDefaultCamera(nullptr)
 	{ }
 
@@ -36,12 +35,9 @@ namespace Systems
 		const int HEIGHT = 1080;
 		constexpr float RATIO = static_cast<float>(WIDTH) / static_cast<float>(HEIGHT);
 
-		m_pFinalRenderTarget = new Rendering::RenderTarget(WIDTH, HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
-
 		m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
 
-		m_pRenderPassBase = new Systems::RenderPassBase();
-		m_pRenderPassBase->SetRenderTarget(m_pFinalRenderTarget);
+		m_pRenderPassBase = new Systems::RenderPassBase(WIDTH, HEIGHT);
 		m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
 
 		m_pDefaultCamera = new Rendering::Camera();
@@ -54,7 +50,6 @@ namespace Systems
 	{
 		delete m_pRenderPassBase;
 		delete m_pRenderPassShadowMaps;
-		delete m_pFinalRenderTarget;
 		delete m_pDefaultCamera;
 	}
 
@@ -135,7 +130,7 @@ namespace Systems
 
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
-		return m_pFinalRenderTarget;
+		return m_pRenderPassBase->GetRenderTarget();
 	}
 
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const

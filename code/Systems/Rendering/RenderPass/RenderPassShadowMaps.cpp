@@ -160,7 +160,8 @@ namespace Systems
 		m_pImpl->m_pShadowHeapSrv = new Rendering::DescriptorHeap();
 		m_pImpl->m_pShadowHeapSrv->Init(pDevice, Rendering::DescriptorHeapFlag::SHADER_VISIBLE, Rendering::DescriptorHeapType::CBV_SRV_UAV, Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 
-		DXGI_FORMAT format = DXGI_FORMAT_R32_FLOAT;
+		DXGI_FORMAT dxFormat = DXGI_FORMAT_R32_FLOAT;
+		Rendering::ResourceFormat format = Rendering::ResourceFormat::R32_FLOAT;
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 		{
 			m_pImpl->m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, format, Core::Vec4f(1, 1, 1, 1));
@@ -168,7 +169,7 @@ namespace Systems
 			//Create the srv descriptor
 			{
 				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-				srvDesc.Format = format;
+				srvDesc.Format = dxFormat;
 				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 				srvDesc.Texture2D.MipLevels = 1;

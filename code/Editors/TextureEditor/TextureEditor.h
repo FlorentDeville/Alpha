@@ -71,10 +71,7 @@ namespace Editors
 		Rendering::Mesh* m_pQuad;
 		Rendering::Mesh* m_pCube;
 
-		Rendering::Shader* m_pTextureViewportVertexShader;
-		Rendering::Shader* m_pTextureViewportPixelShader;
 		Rendering::RootSignature* m_pRootSig;
-
 		Rendering::PipelineState* m_pPsoQuad;
 		Rendering::PipelineState* m_pPsoCubemap;
 
