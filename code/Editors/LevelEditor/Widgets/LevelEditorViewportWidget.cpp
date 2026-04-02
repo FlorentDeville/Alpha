@@ -17,7 +17,12 @@
 #include "OsWin/Input.h"
 
 #include "Rendering/Camera.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
+#include "Rendering/PipelineState/PipelineStateMgr.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/RootSignature/RootSignature.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 
@@ -30,9 +35,6 @@
 
 #include "Widgets/Events/GlobalEvent.h"
 #include "Widgets/WidgetMgr.h"
-
-//needed for the operator* between vectors and floats.
-using namespace DirectX;
 
 //#pragma optimize("", off)
 
@@ -76,9 +78,21 @@ namespace Editors
 		m_pRenderPassShadowMaps = new Systems::RenderPassShadowMaps();
 		m_pRenderPassObjectId = new RenderPassObjectId(width, height);
 
-		m_pRenderPassBase = new Systems::RenderPassBase();
-		m_pRenderPassBase->SetRenderTarget(m_pRenderTarget);
+		m_pRenderPassBase = new Systems::RenderPassBase(width, height);
 		m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
+
+		//pso and rootsig to copy to the viewport
+		m_pCopyRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::COPY_RENDER_TARGET);
+
+		Rendering::PipelineStateDesc desc;
+		desc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		desc.m_cullMode = Rendering::CullMode::None;
+		desc.m_pVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_VS);
+		desc.m_pPs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_PS);
+		desc.m_pRs = m_pCopyRootSig;
+
+		m_pCopyPso = new Rendering::PipelineState();
+		m_pCopyPso->Init_Generic(desc);
 	}
 
 	LevelEditorViewportWidget::~LevelEditorViewportWidget()
@@ -88,6 +102,7 @@ namespace Editors
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassObjectId;
 		delete m_pRenderPassBase;
+		delete m_pCopyPso;
 	}
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
@@ -237,6 +252,29 @@ namespace Editors
 		m_pRenderPassObjectId->PostRender(scene);
 
 		m_pRenderPassObjectId->GetRenderTarget()->CopyToReabackBuffer(m_pReadbackBuffer);
+
+		//copy the final render target to the viewport
+		{
+			Rendering::RenderTarget* pFinalRT = m_pRenderPassBase->GetRenderTarget();
+			Rendering::Texture* pFinalTexture = pFinalRT->GetColorTexture();
+			pFinalTexture->TransitionToShaderResource();
+
+			m_pRenderTarget->BeginScene();
+			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+			renderer.BindMaterial(*m_pCopyPso, *m_pCopyRootSig);
+
+			{
+				ID3D12DescriptorHeap* pSrv = pFinalTexture->GetSRV();
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+				//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+				renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			renderer.RenderNoBufferTriangle();
+			m_pRenderTarget->EndScene();
+		}
 	}
 
 	uint32_t LevelEditorViewportWidget::GetObjectId(int mouseX, int mouseY) const

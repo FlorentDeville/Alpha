@@ -10,7 +10,9 @@ namespace Rendering
 {
 	class DescriptorHeap;
 	class Mesh;
+	class PipelineState;
 	class RenderTarget;
+	class RootSignature;
 	class Texture;
 }
 
@@ -59,6 +61,9 @@ namespace Editors
 		
 		RenderPassObjectId* m_pRenderPassObjectId;
 		Rendering::Texture* m_pReadbackBuffer;
+
+		Rendering::RootSignature* m_pCopyRootSig;
+		Rendering::PipelineState* m_pCopyPso;
 
 		void Internal_Render() override;
 

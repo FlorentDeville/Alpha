@@ -25,20 +25,19 @@ namespace Systems
 {
 	uint32_t min(uint32_t a, uint32_t b) { return a < b ? a : b; }
 
-	RenderPassBase::RenderPassBase()
+	RenderPassBase::RenderPassBase(uint32_t width, uint32_t height)
 		: IRenderPass()
 		, m_pRenderTarget(nullptr)
 		, m_pShadowRenderTargets(nullptr)
 		, m_shadowRenderTargetsCount(0)
 		, m_pShadowMapSrvHeap(nullptr)
-	{ }
+	{
+		m_pRenderTarget = new Rendering::RenderTarget(width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB);
+	}
 
 	RenderPassBase::~RenderPassBase()
-	{ }
-
-	void RenderPassBase::SetRenderTarget(Rendering::RenderTarget* pRenderTarget)
 	{
-		m_pRenderTarget = pRenderTarget;
+		delete m_pRenderTarget;
 	}
 
 	void RenderPassBase::SetShadowMapRenderTargets(Rendering::RenderTarget** pShadowRenderTargets, uint32_t count, Rendering::DescriptorHeap* pShadowMapSrvHeap)
@@ -125,5 +124,10 @@ namespace Systems
 	void RenderPassBase::ClearDepthBuffer()
 	{
 		m_pRenderTarget->ClearDepthBuffer();
+	}
+
+	Rendering::RenderTarget* RenderPassBase::GetRenderTarget()
+	{
+		return m_pRenderTarget;
 	}
 }
