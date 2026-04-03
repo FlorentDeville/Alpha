@@ -132,6 +132,12 @@
     <ClInclude Include="Internal\ResourceFormatToDx12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PipelineState\BlendFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState\BlendOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">

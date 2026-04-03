@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseShape.h" />
+    <ClInclude Include="PipelineState\BlendFactor.h" />
+    <ClInclude Include="PipelineState\BlendOperation.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommandQueue.h" />
     <ClInclude Include="ConstantBuffer\ConstantBufferPool.h" />

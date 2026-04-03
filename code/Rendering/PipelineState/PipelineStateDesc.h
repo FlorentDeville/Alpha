@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Rendering/PipelineState/BlendFactor.h"
+#include "Rendering/PipelineState/BlendOperation.h"
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
 #include "Rendering/ResourceFormat.h"
@@ -12,6 +14,23 @@ namespace Rendering
 {
 	class RootSignature;
 	class Shader;
+
+	//!!Logic operation not implemented
+	class BlendDesc
+	{
+	public:
+		BlendDesc();
+		~BlendDesc() = default;
+
+		bool m_blendEnabled;
+		BlendFactor m_srcBlend; //factor to apply to the pixel shader output
+		BlendFactor m_dstBlend; //factor to apply to the current value in the render target
+		BlendOperation m_blendOperation;
+
+		BlendFactor m_srcBlendAlpha; //factor to apply to the pixel shader alpha channel output
+		BlendFactor m_dstBlendAlpha; //factor to apply to the current render target value alpha channel
+		BlendOperation m_blendOperationAlpha;
+	};
 
 	class PipelineStateDesc
 	{
@@ -25,5 +44,6 @@ namespace Rendering
 		CullMode m_cullMode;
 		DepthComparisonMode m_depthFunction;
 		ResourceFormat m_rtvFormat;
+		BlendDesc m_blendDesc; //only a single render target is supported
 	};
 }
