@@ -35,6 +35,7 @@ namespace Systems
 		m_pEmissiveFilterPso->Init_Generic(bloomEmissiveFilterPsoDesc);
 
 		m_ppMipRenderTarget = new Rendering::RenderTarget* [mipCount];
+		m_mipSizes = new Core::Float2[mipCount];
 
 		uint32_t mipWidth = width;
 		uint32_t mipHeight = height;
@@ -44,8 +45,22 @@ namespace Systems
 			mipWidth = mipWidth / 2;
 			mipHeight = mipHeight / 2;
 
+			m_mipSizes[ii].x = static_cast<float>(mipWidth);
+			m_mipSizes[ii].y = static_cast<float>(mipHeight);
+
 			m_ppMipRenderTarget[ii] = new Rendering::RenderTarget(mipWidth, mipHeight, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
 		}
+
+		m_pDownsamplingRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::BLOOM_DOWNSAMPLE);
+		Rendering::Shader* pDownsamplingVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_DOWNSAMPLE_VS);
+		Rendering::Shader* pDownsamplingPS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_DOWNSAMPLE_PS);
+		Rendering::PipelineStateDesc downsamplingPsoDesc;
+		downsamplingPsoDesc.m_pRs = m_pDownsamplingRootSig;
+		downsamplingPsoDesc.m_pVs = pDownsamplingVS;
+		downsamplingPsoDesc.m_pPs = pDownsamplingPS;
+		downsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		m_pDownsamplingPso = new Rendering::PipelineState();
+		m_pDownsamplingPso->Init_Generic(downsamplingPsoDesc);
 	}
 
 	RenderPassBloom::~RenderPassBloom()
@@ -53,10 +68,13 @@ namespace Systems
 		for (uint32_t ii = 0; ii < m_mipCount; ++ii)
 			delete m_ppMipRenderTarget[ii];
 
-		delete m_ppMipRenderTarget;
+		delete[] m_ppMipRenderTarget;
+		delete[] m_mipSizes;
 
 		delete m_pEmissive;
 		delete m_pEmissiveFilterPso;
+
+		delete m_pDownsamplingPso;
 	}
 
 	void RenderPassBloom::SetFrameBuffer(Rendering::Texture* pFrameBuffer)
@@ -92,12 +110,28 @@ namespace Systems
 		//downsample
 
 		//set the pso, rootsig for downsampling
-
+		renderer.BindMaterial(*m_pDownsamplingPso, *m_pDownsamplingRootSig);
+		Rendering::Texture* pSource = m_pEmissive->GetColorTexture();
 		for (uint32_t ii = 0; ii < m_mipCount; ++ii)
 		{
-			// bind the rtv
-			// bind the texture
-			// render null triangle	
+			pSource->TransitionToShaderResource();
+			Rendering::RenderTarget* pCurrentTarget = m_ppMipRenderTarget[ii];
+			pCurrentTarget->BeginScene();
+
+			renderer.SetConstantBuffer(0, sizeof(Core::Float2), &m_mipSizes[ii], 0);
+			{
+				ID3D12DescriptorHeap* pSrv = pSource->GetSRV();
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+				//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+				renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			renderer.RenderNoBufferTriangle();
+			pCurrentTarget->EndScene();
+
+			pSource = pCurrentTarget->GetColorTexture();
 		}
 
 		//now upsample

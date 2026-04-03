@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Core/Math/Vectors.h"
+
 #include "Systems/Rendering/RenderPass/IRenderPass.h"
 
 #include <cstdint>
@@ -32,12 +34,16 @@ namespace Systems
 
 	private:
 		uint32_t m_mipCount;
-		
+		Core::Float2* m_mipSizes;
+
 		Rendering::RenderTarget* m_pEmissive;
 		Rendering::PipelineState* m_pEmissiveFilterPso;
 		Rendering::RootSignature* m_pEmissiveFilterRootSig;
 
 		Rendering::RenderTarget** m_ppMipRenderTarget;
 		Rendering::Texture* m_pFrameBuffer;
+
+		Rendering::PipelineState* m_pDownsamplingPso;
+		Rendering::RootSignature* m_pDownsamplingRootSig;
 	};
 }
