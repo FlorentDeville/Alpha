@@ -10,7 +10,9 @@
 
 namespace Rendering
 {
+	class PipelineState;
 	class RenderTarget;
+	class RootSignature;
 	class Texture;
 }
 
@@ -30,6 +32,10 @@ namespace Systems
 
 	private:
 		uint32_t m_mipCount;
+		
+		Rendering::RenderTarget* m_pEmissive;
+		Rendering::PipelineState* m_pEmissiveFilterPso;
+		Rendering::RootSignature* m_pEmissiveFilterRootSig;
 
 		Rendering::RenderTarget** m_ppRenderTarget;
 		Rendering::Texture* m_pFrameBuffer;

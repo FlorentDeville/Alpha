@@ -6,7 +6,12 @@
 
 #include "Core/Math/Vec4f.h"
 
+#include "Rendering/PipelineState/PipelineState.h"
+#include "Rendering/PipelineState/PipelineStateDesc.h"
+#include "Rendering/RenderModule.h"
 #include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
 namespace Systems
@@ -16,6 +21,19 @@ namespace Systems
 		, m_mipCount(mipCount)
 		, m_pFrameBuffer(nullptr)
 	{
+		m_pEmissive = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
+
+		m_pEmissiveFilterRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::BLOOM_EMISSIVE_FILTER);
+		Rendering::Shader* pBloomEmissiveFilterVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_EMISSIVE_FILTER_VS);
+		Rendering::Shader* pBloomEmissiveFilterPs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_EMISSIVE_FILTER_PS);
+		Rendering::PipelineStateDesc bloomEmissiveFilterPsoDesc;
+		bloomEmissiveFilterPsoDesc.m_pRs = m_pEmissiveFilterRootSig;
+		bloomEmissiveFilterPsoDesc.m_pVs = pBloomEmissiveFilterVs;
+		bloomEmissiveFilterPsoDesc.m_pPs = pBloomEmissiveFilterPs;
+		bloomEmissiveFilterPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		m_pEmissiveFilterPso = new Rendering::PipelineState();
+		m_pEmissiveFilterPso->Init_Generic(bloomEmissiveFilterPsoDesc);
+
 		m_ppRenderTarget = new Rendering::RenderTarget* [mipCount];
 
 		uint32_t mipWidth = width;
@@ -36,6 +54,9 @@ namespace Systems
 			delete m_ppRenderTarget[ii];
 
 		delete m_ppRenderTarget;
+
+		delete m_pEmissive;
+		delete m_pEmissiveFilterPso;
 	}
 
 	void RenderPassBloom::SetFrameBuffer(Rendering::Texture* pFrameBuffer)
@@ -50,9 +71,25 @@ namespace Systems
 
 	void RenderPassBloom::Render(const RenderableScene& scene)
 	{
-		//I don't need to extract the emissive?
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-		//first downsample
+		//extract emissive
+		m_pEmissive->BeginScene();
+		renderer.BindMaterial(*m_pEmissiveFilterPso, *m_pEmissiveFilterRootSig);
+
+		{
+			ID3D12DescriptorHeap* pSrv = m_pFrameBuffer->GetSRV();
+			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+			//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+			renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+			renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
+		}
+
+		renderer.RenderNoBufferTriangle();
+		m_pEmissive->EndScene();
+
+		//downsample
 
 		//set the pso, rootsig for downsampling
 
@@ -66,7 +103,7 @@ namespace Systems
 		//now upsample
 
 		//set the pso and rootsig for upsampling
-		for (uint32_t ii = m_mipCount - 1; ii >= 0; --ii)
+		for (int32_t ii = m_mipCount - 1; ii >= 0; --ii)
 		{
 			//bind the rtv
 			//bind the texture
