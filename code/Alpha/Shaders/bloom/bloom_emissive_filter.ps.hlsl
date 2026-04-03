@@ -2,8 +2,8 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "bloom_emissive.rs.hlsl"
-#include "bloom_emissive.hlsli"
+#include "bloom_emissive_filter.rs.hlsl"
+#include "bloom_emissive_filter.hlsli"
 
 Texture2D t1 : register(t0);
 SamplerState s1 : register(s0);
