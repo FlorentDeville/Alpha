@@ -73,6 +73,9 @@
     <FxCompile Include="Shaders\copy_render_target.ps.hlsl" />
     <FxCompile Include="Shaders\copy_render_target.rs.hlsl" />
     <FxCompile Include="Shaders\copy_render_target.vs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_emissive.ps.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_emissive.rs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_emissive.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration.h" />
@@ -84,5 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="library_stack.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\bloom\bloom_emissive.hlsli" />
   </ItemGroup>
 </Project>
