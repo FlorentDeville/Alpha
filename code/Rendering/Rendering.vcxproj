@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseShape.h" />
+    <ClInclude Include="Internal\BlendFactorToDx12.h" />
+    <ClInclude Include="Internal\BlendOperationToDx12.h" />
     <ClInclude Include="PipelineState\BlendFactor.h" />
     <ClInclude Include="PipelineState\BlendOperation.h" />
     <ClInclude Include="Camera.h" />
@@ -68,6 +70,8 @@
     <ClCompile Include="Font\FontId.cpp" />
     <ClCompile Include="Font\FontMgr.cpp" />
     <ClCompile Include="InputLayout\InputLayout.cpp" />
+    <ClCompile Include="Internal\BlendFactorToDx12.cpp" />
+    <ClCompile Include="Internal\BlendOperationToDx12.cpp" />
     <ClCompile Include="Internal\ResourceFormatToDx12.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshId.cpp" />
