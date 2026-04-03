@@ -34,6 +34,7 @@ namespace Rendering
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::TEXTURE_EDITOR_VIEWPORT)] = new RootSignature(binPath + "\\texture_editor_viewport.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::BLOOM_EMISSIVE_FILTER)] = new RootSignature(binPath + "\\bloom_emissive_filter.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::BLOOM_DOWNSAMPLE)] = new RootSignature(binPath + "\\bloom_downsample.rs.cso");
+		m_rootSignatures[static_cast<size_t>(EngineRootSigs::BLOOM_UPSAMPLE)] = new RootSignature(binPath + "\\bloom_upsample.rs.cso");
 	}
 
 	void RootSignatureMgr::Shutdown()

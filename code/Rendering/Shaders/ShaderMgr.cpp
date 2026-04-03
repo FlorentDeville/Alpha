@@ -47,6 +47,8 @@ namespace Rendering
 		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_EMISSIVE_FILTER_PS)] = new Shader(shaderPath + "\\bloom_emissive_filter.ps.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_DOWNSAMPLE_VS)] = new Shader(shaderPath + "\\bloom_downsample.vs.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_DOWNSAMPLE_PS)] = new Shader(shaderPath + "\\bloom_downsample.ps.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_UPSAMPLE_VS)] = new Shader(shaderPath + "\\bloom_upsample.vs.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_UPSAMPLE_PS)] = new Shader(shaderPath + "\\bloom_upsample.ps.cso");
 	}
 
 	void ShaderMgr::Shutdown()
