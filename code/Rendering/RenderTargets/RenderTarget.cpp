@@ -77,19 +77,22 @@ namespace Rendering
 		delete m_pDSVHeap;
 	}
 
-	void RenderTarget::BeginScene()
+	void RenderTarget::BeginScene(bool clear)
 	{
 		m_pTexture->TransitionTo(D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 		RenderModule& renderModule = RenderModule::Get();
 		ID3D12GraphicsCommandList2* commandList = renderModule.GetRenderCommandList();
 
-		// Clear the render target.
-		commandList->ClearRenderTargetView(m_rtv, m_clearColor, 0, nullptr);
+		if (clear)
+		{
+			// Clear the render target.
+			commandList->ClearRenderTargetView(m_rtv, m_clearColor, 0, nullptr);
 
-		// Clear the depth buffer
-		float depthValue = 1.f;
-		commandList->ClearDepthStencilView(m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+			// Clear the depth buffer
+			float depthValue = 1.f;
+			commandList->ClearDepthStencilView(m_dsv, D3D12_CLEAR_FLAG_DEPTH, depthValue, 0, 0, nullptr);
+		}
 
 		//Set viewport and scissors
 		commandList->RSSetViewports(1, &m_viewport);

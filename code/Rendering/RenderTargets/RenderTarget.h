@@ -30,7 +30,7 @@ namespace Rendering
 		RenderTarget(int width, int height, ResourceFormat format, const Core::Vec4f& clearColor);
 		~RenderTarget();
 
-		void BeginScene();
+		void BeginScene(bool clear = true);
 		void EndScene();
 
 		void ClearDepthBuffer();
