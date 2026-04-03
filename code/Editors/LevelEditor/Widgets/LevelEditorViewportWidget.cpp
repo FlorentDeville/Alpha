@@ -83,7 +83,8 @@ namespace Editors
 		m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
 
 		m_pRenderPassBloom = new Systems::RenderPassBloom(width, height, 3);
-		m_pRenderPassBloom->SetFrameBuffer(m_pRenderPassBase->GetRenderTarget()->GetColorTexture());
+		m_pRenderPassBloom->SetInput(m_pRenderPassBase->GetRenderTarget()->GetColorTexture());
+		m_pRenderPassBloom->SetOutput(m_pRenderPassBase->GetRenderTarget());
 
 		//pso and rootsig to copy to the viewport
 		m_pCopyRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::COPY_RENDER_TARGET);

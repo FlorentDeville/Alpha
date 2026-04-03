@@ -19,8 +19,11 @@ namespace Systems
 	RenderPassBloom::RenderPassBloom(uint32_t width, uint32_t height, uint32_t mipCount)
 		: IRenderPass()
 		, m_mipCount(mipCount)
-		, m_pFrameBuffer(nullptr)
+		, m_pInputTexture(nullptr)
+		, m_pOutputRenderTarget(nullptr)
+		, m_bloomFilterRadius(0.005f)
 	{
+		//emissive filter
 		m_pEmissive = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
 
 		m_pEmissiveFilterRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::BLOOM_EMISSIVE_FILTER);
@@ -34,6 +37,7 @@ namespace Systems
 		m_pEmissiveFilterPso = new Rendering::PipelineState();
 		m_pEmissiveFilterPso->Init_Generic(bloomEmissiveFilterPsoDesc);
 
+		//mip chain
 		m_ppMipRenderTarget = new Rendering::RenderTarget* [mipCount];
 		m_mipSizes = new Core::Float2[mipCount];
 
@@ -51,6 +55,7 @@ namespace Systems
 			m_ppMipRenderTarget[ii] = new Rendering::RenderTarget(mipWidth, mipHeight, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
 		}
 
+		//downsampling
 		m_pDownsamplingRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::BLOOM_DOWNSAMPLE);
 		Rendering::Shader* pDownsamplingVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_DOWNSAMPLE_VS);
 		Rendering::Shader* pDownsamplingPS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_DOWNSAMPLE_PS);
@@ -61,6 +66,25 @@ namespace Systems
 		downsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
 		m_pDownsamplingPso = new Rendering::PipelineState();
 		m_pDownsamplingPso->Init_Generic(downsamplingPsoDesc);
+
+		//upsampling
+		m_pUpsamplingRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::BLOOM_UPSAMPLE);
+		Rendering::Shader* pUpsamplingVS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_UPSAMPLE_VS);
+		Rendering::Shader* pUpsamplingPS = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_UPSAMPLE_PS);
+		Rendering::PipelineStateDesc upsamplingPsoDesc;
+		upsamplingPsoDesc.m_pRs = m_pUpsamplingRootSig;
+		upsamplingPsoDesc.m_pVs = pUpsamplingVS;
+		upsamplingPsoDesc.m_pPs = pUpsamplingPS;
+		upsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		upsamplingPsoDesc.m_blendDesc.m_blendEnabled = true;
+		upsamplingPsoDesc.m_blendDesc.m_srcBlend = Rendering::BlendFactor::ONE;
+		upsamplingPsoDesc.m_blendDesc.m_dstBlend = Rendering::BlendFactor::ONE;
+		upsamplingPsoDesc.m_blendDesc.m_blendOperation = Rendering::BlendOperation::ADD;
+		upsamplingPsoDesc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ZERO;
+		upsamplingPsoDesc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ONE;
+		upsamplingPsoDesc.m_blendDesc.m_blendOperationAlpha = Rendering::BlendOperation::ADD;
+		m_pUpsamplingPso = new Rendering::PipelineState();
+		m_pUpsamplingPso->Init_Generic(upsamplingPsoDesc);
 	}
 
 	RenderPassBloom::~RenderPassBloom()
@@ -75,16 +99,22 @@ namespace Systems
 		delete m_pEmissiveFilterPso;
 
 		delete m_pDownsamplingPso;
+		delete m_pUpsamplingPso;
 	}
 
-	void RenderPassBloom::SetFrameBuffer(Rendering::Texture* pFrameBuffer)
+	void RenderPassBloom::SetInput(Rendering::Texture* pInput)
 	{
-		m_pFrameBuffer = pFrameBuffer;
+		m_pInputTexture = pInput;
+	}
+
+	void RenderPassBloom::SetOutput(Rendering::RenderTarget* pOutput)
+	{
+		m_pOutputRenderTarget = pOutput;
 	}
 
 	void RenderPassBloom::PreRender(const RenderableScene& scene)
 	{
-		m_pFrameBuffer->TransitionToShaderResource();
+		m_pInputTexture->TransitionToShaderResource();
 	}
 
 	void RenderPassBloom::Render(const RenderableScene& scene)
@@ -96,7 +126,7 @@ namespace Systems
 		renderer.BindMaterial(*m_pEmissiveFilterPso, *m_pEmissiveFilterRootSig);
 
 		{
-			ID3D12DescriptorHeap* pSrv = m_pFrameBuffer->GetSRV();
+			ID3D12DescriptorHeap* pSrv = m_pInputTexture->GetSRV();
 			ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
 
 			//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
@@ -134,18 +164,52 @@ namespace Systems
 			pSource = pCurrentTarget->GetColorTexture();
 		}
 
-		//now upsample
+		//now upsample the mip chain
 
 		//set the pso and rootsig for upsampling
-		for (int32_t ii = m_mipCount - 1; ii >= 0; --ii)
+		renderer.BindMaterial(*m_pUpsamplingPso, *m_pUpsamplingRootSig);
+		renderer.SetConstantBuffer(0, sizeof(float), &m_bloomFilterRadius, 0);
+
+		for (int32_t ii = m_mipCount - 2; ii >= 0; --ii)
 		{
-			//bind the rtv
-			//bind the texture
+			Rendering::RenderTarget* pRenderTarget = m_ppMipRenderTarget[ii];
+			pRenderTarget->BeginScene(false);
+
+			Rendering::Texture* pSource = m_ppMipRenderTarget[ii + 1]->GetColorTexture();
+			pSource->TransitionToShaderResource();
+				
+			{
+				ID3D12DescriptorHeap* pSrv = pSource->GetSRV();
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+				//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+				renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+			}
+
 			//render null triangle
+			renderer.RenderNoBufferTriangle();
+
+			pRenderTarget->EndScene();
 		}
 
-		//composition
-		//add frame buffer and mip0
+		//composition : do a last upsampling between the 1st mip and the output
+		{
+			m_pOutputRenderTarget->BeginScene(false);
+			Rendering::Texture* pSource = m_ppMipRenderTarget[0]->GetColorTexture();
+
+			{
+				ID3D12DescriptorHeap* pSrv = pSource->GetSRV();
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+				//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+				renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(1, pSrv->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			renderer.RenderNoBufferTriangle();
+			m_pOutputRenderTarget->EndScene();
+		}
 	}
 
 	void RenderPassBloom::PostRender(const RenderableScene& scene)

@@ -26,24 +26,32 @@ namespace Systems
 		RenderPassBloom(uint32_t width, uint32_t height, uint32_t mipCount);
 		~RenderPassBloom();
 
-		void SetFrameBuffer(Rendering::Texture* pFrameBuffer);
+		void SetInput(Rendering::Texture* pInput);
+		void SetOutput(Rendering::RenderTarget* pOutput);
 
 		void PreRender(const RenderableScene& scene) override;
 		void Render(const RenderableScene& scene) override;
 		void PostRender(const RenderableScene& scene) override;
 
 	private:
+		float m_bloomFilterRadius; //radius for the upsampling
+
 		uint32_t m_mipCount;
 		Core::Float2* m_mipSizes;
+
+		Rendering::Texture* m_pInputTexture;
+		Rendering::RenderTarget* m_pOutputRenderTarget;
 
 		Rendering::RenderTarget* m_pEmissive;
 		Rendering::PipelineState* m_pEmissiveFilterPso;
 		Rendering::RootSignature* m_pEmissiveFilterRootSig;
 
 		Rendering::RenderTarget** m_ppMipRenderTarget;
-		Rendering::Texture* m_pFrameBuffer;
 
 		Rendering::PipelineState* m_pDownsamplingPso;
 		Rendering::RootSignature* m_pDownsamplingRootSig;
+
+		Rendering::PipelineState* m_pUpsamplingPso;
+		Rendering::RootSignature* m_pUpsamplingRootSig;
 	};
 }
