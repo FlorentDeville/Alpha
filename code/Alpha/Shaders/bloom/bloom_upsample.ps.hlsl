@@ -20,7 +20,6 @@ float4 main(PSInput input) : SV_Target
 {
     //cf https://learnopengl.com/Guest-Articles/2022/Phys.-Based-Bloom
     
-    //the radius of the filter needs to be dependent on the mip resolution, that's why it's not hardcoded in the shader.
     float x = Parameters.filterRadius;
     float y = Parameters.filterRadius;
     
