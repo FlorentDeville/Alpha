@@ -37,7 +37,7 @@ namespace Systems
 		Rendering::PipelineState* m_pEmissiveFilterPso;
 		Rendering::RootSignature* m_pEmissiveFilterRootSig;
 
-		Rendering::RenderTarget** m_ppRenderTarget;
+		Rendering::RenderTarget** m_ppMipRenderTarget;
 		Rendering::Texture* m_pFrameBuffer;
 	};
 }

@@ -34,7 +34,7 @@ namespace Systems
 		m_pEmissiveFilterPso = new Rendering::PipelineState();
 		m_pEmissiveFilterPso->Init_Generic(bloomEmissiveFilterPsoDesc);
 
-		m_ppRenderTarget = new Rendering::RenderTarget* [mipCount];
+		m_ppMipRenderTarget = new Rendering::RenderTarget* [mipCount];
 
 		uint32_t mipWidth = width;
 		uint32_t mipHeight = height;
@@ -44,16 +44,16 @@ namespace Systems
 			mipWidth = mipWidth / 2;
 			mipHeight = mipHeight / 2;
 
-			m_ppRenderTarget[ii] = new Rendering::RenderTarget(mipWidth, mipHeight, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
+			m_ppMipRenderTarget[ii] = new Rendering::RenderTarget(mipWidth, mipHeight, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
 		}
 	}
 
 	RenderPassBloom::~RenderPassBloom()
 	{
 		for (uint32_t ii = 0; ii < m_mipCount; ++ii)
-			delete m_ppRenderTarget[ii];
+			delete m_ppMipRenderTarget[ii];
 
-		delete m_ppRenderTarget;
+		delete m_ppMipRenderTarget;
 
 		delete m_pEmissive;
 		delete m_pEmissiveFilterPso;
