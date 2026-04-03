@@ -42,6 +42,9 @@ namespace Rendering
 
 		m_shaders[static_cast<size_t>(EngineShaders::TEXTURE_EDITOR_VIEWPORT_VS)] = new Shader(shaderPath + "\\texture_editor_viewport.vs.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::TEXTURE_EDITOR_VIEWPORT_PS)] = new Shader(shaderPath + "\\texture_editor_viewport.ps.cso");
+
+		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_EMISSIVE_VS)] = new Shader(shaderPath + "\\bloom\\bloom_emissive.vs.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::BLOOM_EMISSIVE_PS)] = new Shader(shaderPath + "\\bloom\\bloom_emissive.ps.cso");
 	}
 
 	void ShaderMgr::Shutdown()
