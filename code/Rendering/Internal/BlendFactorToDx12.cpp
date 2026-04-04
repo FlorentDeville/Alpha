@@ -22,6 +22,14 @@ namespace Rendering
 				return D3D12_BLEND_ONE;
 				break;
 
+			case BlendFactor::FACTOR:
+				return D3D12_BLEND_BLEND_FACTOR;
+				break;
+
+			case BlendFactor::INV_FACTOR:
+				return D3D12_BLEND_INV_BLEND_FACTOR;
+				break;
+
 			default:
 				assert(false && "Unknown blend factor");
 				break;

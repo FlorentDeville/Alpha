@@ -87,6 +87,8 @@ namespace Rendering
 
 		void SetConstantBuffer(int32_t registerId, int32_t sizeInBytes, const void* pData, int32_t offset);
 
+		void SetBlendFactor(const Core::Float4& blendFactor);
+
 		int GetNumFrames() const;
 		const DirectX::XMUINT2& GetGameResolution() const;
 
