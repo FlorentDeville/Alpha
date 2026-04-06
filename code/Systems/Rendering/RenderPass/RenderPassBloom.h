@@ -53,5 +53,7 @@ namespace Systems
 
 		Rendering::PipelineState* m_pUpsamplingPso;
 		Rendering::RootSignature* m_pUpsamplingRootSig;
+
+		Rendering::PipelineState* m_pCombiningPso;
 	};
 }

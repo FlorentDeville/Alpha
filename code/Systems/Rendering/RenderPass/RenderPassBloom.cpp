@@ -85,6 +85,22 @@ namespace Systems
 		upsamplingPsoDesc.m_blendDesc.m_blendOperationAlpha = Rendering::BlendOperation::ADD;
 		m_pUpsamplingPso = new Rendering::PipelineState();
 		m_pUpsamplingPso->Init_Generic(upsamplingPsoDesc);
+
+		//combining
+		Rendering::PipelineStateDesc combiningPsoDesc;
+		combiningPsoDesc.m_pRs = m_pUpsamplingRootSig;
+		combiningPsoDesc.m_pVs = pUpsamplingVS;
+		combiningPsoDesc.m_pPs = pUpsamplingPS;
+		combiningPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		combiningPsoDesc.m_blendDesc.m_blendEnabled = true;
+		combiningPsoDesc.m_blendDesc.m_srcBlend = Rendering::BlendFactor::FACTOR;
+		combiningPsoDesc.m_blendDesc.m_dstBlend = Rendering::BlendFactor::INV_FACTOR;
+		combiningPsoDesc.m_blendDesc.m_blendOperation = Rendering::BlendOperation::ADD;
+		combiningPsoDesc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ZERO;
+		combiningPsoDesc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ONE;
+		combiningPsoDesc.m_blendDesc.m_blendOperationAlpha = Rendering::BlendOperation::ADD;
+		m_pCombiningPso = new Rendering::PipelineState();
+		m_pCombiningPso->Init_Generic(combiningPsoDesc);
 	}
 
 	RenderPassBloom::~RenderPassBloom()
@@ -100,6 +116,7 @@ namespace Systems
 
 		delete m_pDownsamplingPso;
 		delete m_pUpsamplingPso;
+		delete m_pCombiningPso;
 	}
 
 	void RenderPassBloom::SetInput(Rendering::Texture* pInput)
@@ -169,7 +186,6 @@ namespace Systems
 		//set the pso and rootsig for upsampling
 		renderer.BindMaterial(*m_pUpsamplingPso, *m_pUpsamplingRootSig);
 		renderer.SetConstantBuffer(0, sizeof(float), &m_bloomFilterRadius, 0);
-
 		for (int32_t ii = m_mipCount - 2; ii >= 0; --ii)
 		{
 			Rendering::RenderTarget* pRenderTarget = m_ppMipRenderTarget[ii];
@@ -194,8 +210,12 @@ namespace Systems
 		}
 
 		//composition : do a last upsampling between the 1st mip and the output
+		renderer.BindMaterial(*m_pCombiningPso, *m_pUpsamplingRootSig);
 		{
 			m_pOutputRenderTarget->BeginScene(false);
+			const float blend = 0.04f;
+			renderer.SetBlendFactor(Core::Float4(blend, blend, blend, 1));
+
 			Rendering::Texture* pSource = m_ppMipRenderTarget[0]->GetColorTexture();
 
 			{
