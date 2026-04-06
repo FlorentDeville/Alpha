@@ -650,10 +650,11 @@ namespace Editors
 		DirectX::XMMATRIX dxView = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
-		const float fov = 45.f;
+		constexpr float fov = 45.f;
 		float nearDistance = 0.1f;
-		float fovRad = DirectX::XMConvertToRadians(fov);
-		DirectX::XMMATRIX dxProjection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 10000.0f);
+		float farDistance = 10000.f;
+		constexpr float fovRad = DirectX::XMConvertToRadians(fov);
+		Core::Mat44f proj = Core::Mat44f::CreatePerspective(fovRad, m_aspectRatio, nearDistance, farDistance);
 
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -669,7 +670,6 @@ namespace Editors
 
 			Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
 			Core::Mat44f view(dxView);
-			Core::Mat44f proj(dxProjection);
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 			Rendering::LightsArrayCBuffer lights;
@@ -689,7 +689,6 @@ namespace Editors
 
 			Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
 			Core::Mat44f view(dxView);
-			Core::Mat44f proj(dxProjection);
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 			Rendering::LightsArrayCBuffer lights;
