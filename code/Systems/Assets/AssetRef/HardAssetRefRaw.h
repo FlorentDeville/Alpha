@@ -15,8 +15,8 @@ namespace Systems
 	{
 	public:
 		HardAssetRefRaw();
-		HardAssetRefRaw(NewAssetId id);
-		HardAssetRefRaw(const HardAssetRefRaw& copy);
+		explicit HardAssetRefRaw(NewAssetId id);
+		HardAssetRefRaw(const HardAssetRefRaw& copy) = delete;
 		~HardAssetRefRaw();
 
 		HardAssetRefRaw& operator=(const HardAssetRefRaw& other);

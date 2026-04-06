@@ -29,11 +29,8 @@ namespace Editors
 		void CreateItems(void* pObj, const Core::FieldDescriptor* pField, uint32_t index) override;
 
 	private:
-		Widgets::TextBox* m_pTextbox;
-		Systems::TextureBindingInfo* m_pBindingInfo;
+		static void UpdateTextbox(const Systems::TextureBindingInfo* pBindingInfo, Widgets::TextBox* pTextBox);
 
-		void UpdateTextbox();
-
-		void OpenDialogBox();
+		static void OpenDialogBox(Systems::TextureBindingInfo* pBindingInfo, Widgets::TextBox* pTextBox);
 	};
 }

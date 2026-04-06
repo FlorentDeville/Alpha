@@ -19,7 +19,7 @@ namespace Systems
 	{
 	public:
 		HardAssetRef();
-		HardAssetRef(NewAssetId id);
+		explicit HardAssetRef(NewAssetId id);
 		~HardAssetRef();
 
 		T* operator->();

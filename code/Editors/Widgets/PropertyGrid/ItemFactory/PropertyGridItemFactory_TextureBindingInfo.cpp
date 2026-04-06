@@ -5,6 +5,7 @@
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_TextureBindingInfo.h"
 
 #include "Editors/Widgets/Dialog/AssetDialog.h"
+#include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 
@@ -22,8 +23,6 @@ namespace Editors
 {
 	PropertyGridItemFactory_TextureBindingInfo::PropertyGridItemFactory_TextureBindingInfo()
 		: PropertyGridItemFactory()
-		, m_pTextbox(nullptr)
-		, m_pBindingInfo(nullptr)
 	{ }
 
 	PropertyGridItemFactory_TextureBindingInfo::~PropertyGridItemFactory_TextureBindingInfo()
@@ -31,14 +30,15 @@ namespace Editors
 
 	void PropertyGridItemFactory_TextureBindingInfo::CreateItems(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 	{
+		Systems::TextureBindingInfo* pBindingInfo = nullptr;
 		if (pField->GetType()->IsContainer())
 		{
 			Core::BaseArray* pArray = pField->GetDataPtr<Core::BaseArray>(pObj);
-			m_pBindingInfo = reinterpret_cast<Systems::TextureBindingInfo*>(pArray->GetElement(index));
+			pBindingInfo = reinterpret_cast<Systems::TextureBindingInfo*>(pArray->GetElement(index));
 		}
 		else
 		{
-			m_pBindingInfo = pField->GetDataPtr<Systems::TextureBindingInfo>(pObj);
+			pBindingInfo = pField->GetDataPtr<Systems::TextureBindingInfo>(pObj);
 		}
 
 		Widgets::Layout* pRootLayout = new Widgets::Layout(Widgets::Layout::Vertical, Widgets::STRETCH);
@@ -49,19 +49,18 @@ namespace Editors
 		pLabel->SetSizeStyle(Widgets::FIT);
 		pLabel->SetPositionStyle(Widgets::Widget::HPOSITION_STYLE::CENTER, Widgets::Widget::VPOSITION_STYLE::MIDDLE);
 
+		Widgets::TextBox* pTextbox = new Widgets::TextBox();
+		pTextbox->SetReadOnly(true);
+		UpdateTextbox(pBindingInfo, pTextbox);
+
 		Widgets::Button* pButton = new Widgets::Button(30, 20, 0, 0);
 		pButton->SetSizeStyle(Widgets::DEFAULT);
 		pButton->AddWidget(pLabel);
-		pButton->OnClick([this]() { OpenDialogBox(); });
+		pButton->OnClick([pBindingInfo, pTextbox]() { OpenDialogBox(pBindingInfo, pTextbox); });
 
 		pLayout->AddWidget(pButton);
 
-		m_pTextbox = new Widgets::TextBox();
-		m_pTextbox->SetReadOnly(true);
-		//m_pTextbox->OnMouseDoubleClick([this](const Widgets::MouseEvent& ev) { OpenDialogBox(); });
-		UpdateTextbox();
-
-		pLayout->AddWidget(m_pTextbox);
+		pLayout->AddWidget(pTextbox);
 
 		pRootLayout->AddWidget(pLayout);
 
@@ -69,44 +68,44 @@ namespace Editors
 		std::string itemName;
 		itemName.resize(BUFFER_SIZE);
 
-		if (m_pBindingInfo->m_type == Systems::Texture2D)
-			snprintf(itemName.data(), BUFFER_SIZE, "%s (%s)", m_pBindingInfo->m_name.c_str(), "Texture2D");
-		else if(m_pBindingInfo->m_type == Systems::Cubemap)
-			snprintf(itemName.data(), BUFFER_SIZE, "%s (%s)", m_pBindingInfo->m_name.c_str(), "Cubemap");
+		if (pBindingInfo->m_type == Systems::Texture2D)
+			snprintf(itemName.data(), BUFFER_SIZE, "%s (%s)", pBindingInfo->m_name.c_str(), "Texture2D");
+		else if(pBindingInfo->m_type == Systems::Cubemap)
+			snprintf(itemName.data(), BUFFER_SIZE, "%s (%s)", pBindingInfo->m_name.c_str(), "Cubemap");
 		else
-			snprintf(itemName.data(), BUFFER_SIZE, "%s (%s)", m_pBindingInfo->m_name.c_str(), "Unknown");
+			snprintf(itemName.data(), BUFFER_SIZE, "%s (%s)", pBindingInfo->m_name.c_str(), "Unknown");
 
 		PropertyGridItem* pItem = new PropertyGridItem(itemName, pRootLayout);
 		m_pPopulator->AddPropertyGridItem(pItem);
 	}
 
-	void PropertyGridItemFactory_TextureBindingInfo::UpdateTextbox()
+	void PropertyGridItemFactory_TextureBindingInfo::UpdateTextbox(const Systems::TextureBindingInfo* pBindingInfo, Widgets::TextBox* pTextBox)
 	{
-		Systems::ITextureAsset* pTexture = m_pBindingInfo->m_texture.GetPtr();
+		const Systems::ITextureAsset* pTexture = pBindingInfo->m_texture.GetPtr();
 
 		if (!pTexture)
 		{
-			m_pTextbox->SetText("Unknown");
+			pTextBox->SetText("Unknown");
 			return;
 		}
 
 		Systems::NewAssetId id = pTexture->GetId();
 		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id);
 		if (pMetadata)
-			m_pTextbox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
+			pTextBox->SetText(pMetadata->GetVirtualName() + " (" + pMetadata->GetAssetId().ToString() + ")");
 		else
-			m_pTextbox->SetText("Unknown");
+			pTextBox->SetText("Unknown");
 	}
 
-	void PropertyGridItemFactory_TextureBindingInfo::OpenDialogBox()
+	void PropertyGridItemFactory_TextureBindingInfo::OpenDialogBox(Systems::TextureBindingInfo* pBindingInfo, Widgets::TextBox* pTextBox)
 	{
 		const Systems::NewAssetType* pAssetType = nullptr;
-		if (m_pBindingInfo->m_type == Systems::Texture2D)
+		if (pBindingInfo->m_type == Systems::Texture2D)
 		{
 			Core::Sid sid = Core::TypeResolver<Systems::Texture2DAsset>::GetTypenameSid();
 			pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(sid);
 		}
-		else if (m_pBindingInfo->m_type == Systems::Cubemap)
+		else if (pBindingInfo->m_type == Systems::Cubemap)
 		{
 			Core::Sid sid = Core::TypeResolver<Systems::CubemapAsset>::GetTypenameSid();
 			pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(sid);
@@ -117,15 +116,14 @@ namespace Editors
 
 		AssetDialog* pDialog = new AssetDialog(pAssetType->GetSid());
 		pDialog->Open();
-		pDialog->OnOk([this](Systems::NewAssetId id)
+		pDialog->OnOk([pBindingInfo, pTextBox](Systems::NewAssetId id)
 			{
-				m_pBindingInfo->m_texture = id;
-				m_pBindingInfo->m_texture.Load(Systems::LoadingDomain::EDITOR);
+				Systems::HardAssetRef<Systems::ITextureAsset> hardRef(id);
+				hardRef.Load(Systems::LoadingDomain::EDITOR);
 
-				UpdateTextbox();
+				pBindingInfo->m_texture = hardRef;
 
-				//ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
-				//ObjectWatcher::Get().SendFieldModifiedEvent()
+				UpdateTextbox(pBindingInfo, pTextBox);
 			});
 	}
 }
