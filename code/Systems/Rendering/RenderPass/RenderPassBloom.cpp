@@ -138,7 +138,8 @@ namespace Systems
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-		//extract emissive
+		//extract emissive.
+		//todo : use directly the color buffer since I don't filte anything.
 		m_pEmissive->BeginScene();
 		renderer.BindMaterial(*m_pEmissiveFilterPso, *m_pEmissiveFilterRootSig);
 
