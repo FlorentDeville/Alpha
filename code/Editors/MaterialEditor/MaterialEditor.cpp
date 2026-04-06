@@ -187,8 +187,8 @@ namespace Editors
 		, m_pMeshesMenuItem{}
 		, m_selectedMesh(DisplayMesh::Unknown)
 		, m_pController(nullptr)
+		, m_cameraEuler(0, 0, 0, 1)
 	{
-		m_cameraEuler = DirectX::XMVectorSet(0, 0, 0, 1);
 		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
 	}
 
@@ -638,9 +638,8 @@ namespace Editors
 		Core::Vec4f cameraUp(0, 1, 0, 1);
 
 		//calculate the camera position
-		Core::Vec4f cameraEuler(m_cameraEuler);
-		Core::Mat44f rotationX = Core::Mat44f::CreateRotationX(cameraEuler.GetX());
-		Core::Mat44f rotationY = Core::Mat44f::CreateRotationY(cameraEuler.GetY());
+		Core::Mat44f rotationX = Core::Mat44f::CreateRotationX(m_cameraEuler.GetX());
+		Core::Mat44f rotationY = Core::Mat44f::CreateRotationY(m_cameraEuler.GetY());
 		Core::Mat44f rollPitchYaw = rotationX * rotationY;
 
 		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
@@ -717,9 +716,9 @@ namespace Editors
 			delta.y = m_mousePreviousPos.y - mousePosition.y;
 
 			const float ROTATION_SPEED = 0.01f;
-			DirectX::XMVECTOR offset = DirectX::XMVectorSet(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
+			Core::Vec4f offset(static_cast<float>(delta.y) * ROTATION_SPEED, -static_cast<float>(delta.x) * ROTATION_SPEED, 0, 0);
 
-			m_cameraEuler = DirectX::XMVectorAdd(m_cameraEuler, offset);
+			m_cameraEuler = m_cameraEuler + offset;
 
 			m_mousePreviousPos = mousePosition;
 		}
