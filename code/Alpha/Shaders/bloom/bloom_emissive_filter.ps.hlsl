@@ -12,12 +12,5 @@ SamplerState s1 : register(s0);
 float4 main(PSInput input) : SV_Target
 {
     float4 color = t1.SampleLevel(s1, input.uv, 0);
-    
-    float maxChannel = max(color.r, color.g);
-    maxChannel = max(maxChannel, color.b);
-
-    if (maxChannel > 1)
-        return color;
-    else
-        return float4(0, 0, 0, 1);
+    return color;
 }
