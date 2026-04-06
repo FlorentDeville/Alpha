@@ -34,6 +34,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Clock/Clock.h"
 #include "Systems/Container/Container.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Objects/AssetObject.h"
@@ -668,7 +669,7 @@ namespace Editors
 			perObjectData.m_world = world;
 
 			Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
-			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3, Systems::Clock::Get().GetApplicationTime());
 
 			Rendering::LightsArrayCBuffer lights;
 			lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
@@ -686,7 +687,7 @@ namespace Editors
 			perObjectData.m_world = world;
 
 			Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
-			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
+			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3, Systems::Clock::Get().GetApplicationTime());
 
 			Rendering::LightsArrayCBuffer lights;
 			lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));

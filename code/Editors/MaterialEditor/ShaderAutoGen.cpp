@@ -51,6 +51,7 @@ namespace Editors
 		fileContent += "\tmatrix viewMatrix;" + NEW_LINE;
 		fileContent += "\tmatrix projMatrix;" + NEW_LINE;
 		fileContent += "\tfloat3 cameraPosition;" + NEW_LINE;
+		fileContent += "\tfloat time;" + NEW_LINE;
 		fileContent += "};" + NEW_LINE + NEW_LINE;
 
 		fileContent += "#endif // ifndef CBUFFER_PER_FRAME_HLSL " + NEW_LINE;

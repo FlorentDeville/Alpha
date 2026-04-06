@@ -30,6 +30,7 @@
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Clock/Clock.h"
 #include "Systems/Rendering/MaterialRendering.h"
 
 #include "Widgets/Icon.h"
@@ -410,7 +411,7 @@ namespace Editors
 				perObjectData.m_world = Core::Mat44f(world);
 
 				Core::Float3 cameraPosFloat3(m_cameraPosition.GetX(), m_cameraPosition.GetY(), m_cameraPosition.GetZ());
-				Rendering::PerFrameCBuffer perFrameData(m_cameraView, proj, cameraPosFloat3);
+				Rendering::PerFrameCBuffer perFrameData(m_cameraView, proj, cameraPosFloat3, Systems::Clock::Get().GetApplicationTime());
 
 				Rendering::LightsArrayCBuffer lights;
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
