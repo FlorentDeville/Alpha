@@ -12,9 +12,6 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
-#include <DirectXMath.h>
-
-#include <string>
 #include <vector>
 
 namespace Rendering
