@@ -655,10 +655,6 @@ namespace Editors
 		float fovRad = DirectX::XMConvertToRadians(fov);
 		DirectX::XMMATRIX dxProjection = DirectX::XMMatrixPerspectiveFovLH(fovRad, m_aspectRatio, nearDistance, 10000.0f);
 
-		//RENDER
-		DirectX::XMMATRIX mvpMatrix = DirectX::XMMatrixMultiply(world, dxView);
-		mvpMatrix = DirectX::XMMatrixMultiply(mvpMatrix, dxProjection);
-
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
 		bool isBaseMaterial = Systems::AssetUtil::IsA<Systems::MaterialAsset>(m_selectedMaterialId);
