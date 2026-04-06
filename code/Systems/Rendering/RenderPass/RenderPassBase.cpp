@@ -58,7 +58,7 @@ namespace Systems
 
 		const Core::Vec4f& pos = scene.m_camera.m_position;
 		Core::Float3 cameraPosFloat3(pos.GetX(), pos.GetY(), pos.GetZ());
-		Rendering::PerFrameCBuffer perFrameData(scene.m_camera.m_view, scene.m_camera.m_proj, cameraPosFloat3);
+		Rendering::PerFrameCBuffer perFrameData(scene.m_camera.m_view, scene.m_camera.m_proj, cameraPosFloat3, scene.time);
 
 		//bind the shadow map
 		for (uint32_t ii = 0; ii < m_shadowRenderTargetsCount; ++ii)

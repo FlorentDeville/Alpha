@@ -21,6 +21,8 @@ namespace Systems
 		Core::Array<RenderableLight> m_lights;
 
 		RenderableCamera m_camera;
+
+		float time;
 	};
 
 	void PrepareRenderableCamera(const Core::Mat44f& view, const Core::Mat44f& proj, const Core::Vec4f& position, float fov, RenderableScene& scene);
