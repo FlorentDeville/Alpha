@@ -37,8 +37,10 @@ namespace Systems
 
 		m_id = other.m_id;
 		m_pPtr = other.m_pPtr;
+		m_domain = other.m_domain;
+
 		if (IsResolved())
-			ContainerMgr::Get().IncRefCount(other.m_id.GetContainerId(), m_domain);
+			ContainerMgr::Get().IncRefCount(m_id.GetContainerId(), m_domain);
 
 		return *this;
 	}
