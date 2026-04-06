@@ -631,7 +631,7 @@ namespace Editors
 			return;
 
 		//world
-		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+		Core::Mat44f world = Core::Mat44f::CreateIdentity();
 
 		//view
 		Core::Vec4f cameraUp(0, 1, 0, 1);
@@ -665,7 +665,7 @@ namespace Editors
 				return;
 			
 			Rendering::PerObjectCBuffer perObjectData;
-			perObjectData.m_world = Core::Mat44f(world);
+			perObjectData.m_world = world;
 
 			Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
@@ -683,7 +683,7 @@ namespace Editors
 				return;
 			
 			Rendering::PerObjectCBuffer perObjectData;
-			perObjectData.m_world = Core::Mat44f(world);
+			perObjectData.m_world = world;
 
 			Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
