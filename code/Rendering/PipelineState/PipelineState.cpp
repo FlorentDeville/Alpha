@@ -10,6 +10,8 @@
 #include "Core/Helper.h"
 
 #include "Rendering/InputLayout/InputLayout.h"
+#include "Rendering/Internal/BlendFactorToDx12.h"
+#include "Rendering/Internal/BlendOperationToDx12.h"
 #include "Rendering/Internal/ResourceFormatToDx12.h"
 #include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RenderModule.h"
@@ -254,6 +256,7 @@ namespace Rendering
 			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL DepthStencilState;
 			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
 			CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
+			CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendDesc;
 		};
 
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
@@ -266,6 +269,19 @@ namespace Rendering
 		CD3DX12_DEPTH_STENCIL_DESC depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(CD3DX12_DEFAULT());
 		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthFunction);
 
+		CD3DX12_BLEND_DESC blendDesc = CD3DX12_BLEND_DESC(CD3DX12_DEFAULT());
+		if (desc.m_blendDesc.m_blendEnabled)
+		{
+			D3D12_RENDER_TARGET_BLEND_DESC& dx12RenderTargetBlendDesc = blendDesc.RenderTarget[0];
+			dx12RenderTargetBlendDesc.BlendEnable = desc.m_blendDesc.m_blendEnabled;
+			dx12RenderTargetBlendDesc.SrcBlend = Internal::GetDx12BlendFactor(desc.m_blendDesc.m_srcBlend);
+			dx12RenderTargetBlendDesc.DestBlend = Internal::GetDx12BlendFactor(desc.m_blendDesc.m_dstBlend);
+			dx12RenderTargetBlendDesc.BlendOp = Internal::GetDx12BlendOperation(desc.m_blendDesc.m_blendOperation);
+			dx12RenderTargetBlendDesc.SrcBlendAlpha = Internal::GetDx12BlendFactor(desc.m_blendDesc.m_srcBlendAlpha);
+			dx12RenderTargetBlendDesc.DestBlendAlpha = Internal::GetDx12BlendFactor(desc.m_blendDesc.m_dstBlendAlpha);
+			dx12RenderTargetBlendDesc.BlendOpAlpha = Internal::GetDx12BlendOperation(desc.m_blendDesc.m_blendOperationAlpha);
+		}
+
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.Rasterizer = rasterizerDesc;
 		pipelineStateStream.pRootSignature = desc.m_pRs->GetRootSignature();
@@ -276,7 +292,8 @@ namespace Rendering
 		pipelineStateStream.DepthStencilState = depthStencilState;
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
-
+		pipelineStateStream.BlendDesc = blendDesc;
+		
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
 		};

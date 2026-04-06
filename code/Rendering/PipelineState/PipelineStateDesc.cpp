@@ -6,6 +6,16 @@
 
 namespace Rendering
 {
+	BlendDesc::BlendDesc()
+		: m_blendEnabled(false)
+		, m_srcBlend(BlendFactor::ONE)
+		, m_dstBlend(BlendFactor::ZERO)
+		, m_blendOperation(BlendOperation::ADD)
+		, m_srcBlendAlpha(BlendFactor::ONE)
+		, m_dstBlendAlpha(BlendFactor::ZERO)
+		, m_blendOperationAlpha(BlendOperation::ADD)
+	{ }
+
 	PipelineStateDesc::PipelineStateDesc()
 		: m_pRs(nullptr)
 		, m_pVs(nullptr)
@@ -13,5 +23,6 @@ namespace Rendering
 		, m_cullMode(CullMode::Back)
 		, m_depthFunction(DepthComparisonMode::Less)
 		, m_rtvFormat(ResourceFormat::R16G16B16A16_FLOAT)
+		, m_blendDesc()
 	{ }
 }

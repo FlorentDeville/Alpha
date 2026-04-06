@@ -73,6 +73,15 @@
     <FxCompile Include="Shaders\copy_render_target.ps.hlsl" />
     <FxCompile Include="Shaders\copy_render_target.rs.hlsl" />
     <FxCompile Include="Shaders\copy_render_target.vs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_emissive_filter.ps.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_emissive_filter.rs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_emissive_filter.vs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_downsample.ps.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_downsample.rs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_downsample.vs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_upsample.ps.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_upsample.rs.hlsl" />
+    <FxCompile Include="Shaders\bloom\bloom_upsample.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration.h" />
@@ -84,5 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="library_stack.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\bloom\bloom_emissive_filter.hlsli" />
+    <None Include="Shaders\bloom\bloom_downsample.hlsli" />
+    <None Include="Shaders\bloom\bloom_upsample.hlsli" />
   </ItemGroup>
 </Project>

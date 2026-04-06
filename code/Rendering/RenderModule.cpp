@@ -389,6 +389,11 @@ namespace Rendering
 		m_pRenderCommandList->SetGraphicsRoot32BitConstants(registerId, sizeInBytes / 4, pData, offset);
 	}
 
+	void RenderModule::SetBlendFactor(const Core::Float4& blendFactor)
+	{
+		m_pRenderCommandList->OMSetBlendFactor(reinterpret_cast<const FLOAT*>(&blendFactor));
+	}
+
 	void RenderModule::ResizeSwapChain(uint32_t width, uint32_t height)
 	{
 		m_mainResolution = DirectX::XMUINT2(width, height);

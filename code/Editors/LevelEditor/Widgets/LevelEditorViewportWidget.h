@@ -21,6 +21,7 @@ namespace Systems
 	class GameObject;
 	class RenderableScene;
 	class RenderPassBase;
+	class RenderPassBloom;
 	class RenderPassShadowMaps;
 }
 
@@ -58,7 +59,8 @@ namespace Editors
 
 		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
-		
+		Systems::RenderPassBloom* m_pRenderPassBloom;
+
 		RenderPassObjectId* m_pRenderPassObjectId;
 		Rendering::Texture* m_pReadbackBuffer;
 

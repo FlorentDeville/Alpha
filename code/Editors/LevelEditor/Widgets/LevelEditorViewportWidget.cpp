@@ -31,6 +31,7 @@
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
+#include "Systems/Rendering/RenderPass/RenderPassBloom.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
 
 #include "Widgets/Events/GlobalEvent.h"
@@ -81,6 +82,10 @@ namespace Editors
 		m_pRenderPassBase = new Systems::RenderPassBase(width, height);
 		m_pRenderPassBase->SetShadowMapRenderTargets(m_pRenderPassShadowMaps->GetRenderTargets(), m_pRenderPassShadowMaps->GetRenderTargetsCount(), m_pRenderPassShadowMaps->GetSrvHeap());
 
+		m_pRenderPassBloom = new Systems::RenderPassBloom(width, height, 3);
+		m_pRenderPassBloom->SetInput(m_pRenderPassBase->GetRenderTarget()->GetColorTexture());
+		m_pRenderPassBloom->SetOutput(m_pRenderPassBase->GetRenderTarget());
+
 		//pso and rootsig to copy to the viewport
 		m_pCopyRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::COPY_RENDER_TARGET);
 
@@ -102,6 +107,7 @@ namespace Editors
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassObjectId;
 		delete m_pRenderPassBase;
+		delete m_pRenderPassBloom;
 		delete m_pCopyPso;
 	}
 
@@ -245,6 +251,11 @@ namespace Editors
 		m_pGizmoWidget->Render(viewProj);
 
 		m_pRenderPassBase->PostRender(scene);
+
+		//post process
+		m_pRenderPassBloom->PreRender(scene);
+		m_pRenderPassBloom->Render(scene);
+		m_pRenderPassBloom->PostRender(scene);
 
 		//now render the object ids view
 		m_pRenderPassObjectId->PreRender(scene);
