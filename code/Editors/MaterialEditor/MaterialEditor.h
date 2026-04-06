@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
 #include "Editors/BaseEditor.h"
@@ -11,9 +12,6 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
-#include <DirectXMath.h>
-
-#include <string>
 #include <vector>
 
 namespace Rendering
@@ -73,8 +71,8 @@ namespace Editors
 		//camera
 		float m_cameraDistance;
 		float m_aspectRatio;
-		DirectX::XMVECTOR m_cameraTarget;
-		DirectX::XMVECTOR m_cameraEuler;
+		Core::Vec4f m_cameraTarget;
+		Core::Vec4f m_cameraEuler;
 
 		//viewport inputs (mouse and keyboard)
 		bool m_firstFrameMouseDown;
