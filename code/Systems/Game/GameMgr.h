@@ -22,6 +22,7 @@ namespace Systems
 	class GameObject;
 	class LevelAsset;
 	class RenderPassBase;
+	class RenderPassBloom;
 	class RenderPassShadowMaps;
 
 	class GameMgr : public Core::Singleton<GameMgr>
@@ -56,6 +57,7 @@ namespace Systems
 		//Rendering
 		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
+		Systems::RenderPassBloom* m_pRenderPassBloom;
 
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
