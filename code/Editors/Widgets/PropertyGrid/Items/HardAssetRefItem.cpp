@@ -19,7 +19,7 @@
 
 namespace Editors
 {
-	HardAssetRefItem::HardAssetRefItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
+	HardAssetRefItem::HardAssetRefItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox()
 	{ }
