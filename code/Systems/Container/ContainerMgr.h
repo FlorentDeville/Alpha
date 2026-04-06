@@ -39,7 +39,6 @@ namespace Systems
 		void GarbageCollect();
 
 		void IncRefCount(ContainerId cid, LoadingDomain domain);
-		void DecRefCount(ContainerId cid, LoadingDomain domain);
 
 		// Editor functions
 
