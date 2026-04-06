@@ -5,6 +5,7 @@
 #include "Editors/MaterialEditor/MaterialEditor.h"
 
 #include "Core/Log/LogModule.h"
+#include "Core/Math/Vec4f.h"
 
 #include "Editors/EditorParameter.h"
 #include "Editors/MaterialEditor/MaterialEditorModule.h"
@@ -634,20 +635,21 @@ namespace Editors
 		DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
 		//view
-		DirectX::XMVECTOR cameraUp = DirectX::XMVectorSet(0, 1, 0, 1);
-		DirectX::XMVECTOR cameraLookAt = DirectX::XMVectorSet(0, 0, 0, 1);
+		Core::Vec4f cameraUp(0, 1, 0, 1);
 
 		//calculate the camera position
-		DirectX::XMMATRIX orientation = DirectX::XMMatrixRotationRollPitchYawFromVector(m_cameraEuler);
-		DirectX::XMMATRIX tx = DirectX::XMMatrixTranslationFromVector(DirectX::XMVectorSet(0, 0, m_cameraDistance, 1));
-		DirectX::XMMATRIX txPos = DirectX::XMMatrixMultiply(tx, orientation);
-		DirectX::XMVECTOR cameraPosition = DirectX::XMVector3Transform(m_cameraTarget, txPos);
+		Core::Vec4f cameraEuler(m_cameraEuler);
+		Core::Mat44f rotationX = Core::Mat44f::CreateRotationX(cameraEuler.GetX());
+		Core::Mat44f rotationY = Core::Mat44f::CreateRotationY(cameraEuler.GetY());
+		Core::Mat44f rollPitchYaw = rotationX * rotationY;
 
+		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
 
-		DirectX::XMVECTOR cameraDirection = DirectX::XMVectorSubtract(cameraLookAt, cameraPosition);
-		cameraDirection = DirectX::XMVector4Normalize(cameraDirection);
+		Core::Vec4f cameraTarget(m_cameraTarget);
+		Core::Vec4f cameraPosition = cameraTarget * (tx * rollPitchYaw);
 
-		DirectX::XMMATRIX dxView = DirectX::XMMatrixLookToLH(cameraPosition, cameraDirection, cameraUp);
+		Core::Vec4f cameraDirection = cameraTarget - cameraPosition;
+		Core::Mat44f view = Core::Mat44f::CreateView(cameraPosition, cameraDirection, cameraUp);
 
 		//projection
 		constexpr float fov = 45.f;
@@ -668,8 +670,7 @@ namespace Editors
 			Rendering::PerObjectCBuffer perObjectData;
 			perObjectData.m_world = Core::Mat44f(world);
 
-			Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
-			Core::Mat44f view(dxView);
+			Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 			Rendering::LightsArrayCBuffer lights;
@@ -687,8 +688,7 @@ namespace Editors
 			Rendering::PerObjectCBuffer perObjectData;
 			perObjectData.m_world = Core::Mat44f(world);
 
-			Core::Float3 cameraPosFloat3(DirectX::XMVectorGetX(cameraPosition), DirectX::XMVectorGetY(cameraPosition), DirectX::XMVectorGetZ(cameraPosition));
-			Core::Mat44f view(dxView);
+			Core::Float3 cameraPosFloat3(cameraPosition.GetX(), cameraPosition.GetY(), cameraPosition.GetZ());
 			Rendering::PerFrameCBuffer perFrameData(view, proj, cameraPosFloat3);
 
 			Rendering::LightsArrayCBuffer lights;
