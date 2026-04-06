@@ -188,9 +188,8 @@ namespace Editors
 		, m_selectedMesh(DisplayMesh::Unknown)
 		, m_pController(nullptr)
 		, m_cameraEuler(0, 0, 0, 1)
-	{
-		m_cameraTarget = DirectX::XMVectorSet(0, 0, 0, 1);
-	}
+		, m_cameraTarget(0, 0, 0, 1)
+	{ }
 
 	MaterialEditor::~MaterialEditor()
 	{
@@ -644,10 +643,9 @@ namespace Editors
 
 		Core::Mat44f tx = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0, 0, m_cameraDistance, 1));
 
-		Core::Vec4f cameraTarget(m_cameraTarget);
-		Core::Vec4f cameraPosition = cameraTarget * (tx * rollPitchYaw);
+		Core::Vec4f cameraPosition = m_cameraTarget * (tx * rollPitchYaw);
 
-		Core::Vec4f cameraDirection = cameraTarget - cameraPosition;
+		Core::Vec4f cameraDirection = m_cameraTarget - cameraPosition;
 		Core::Mat44f view = Core::Mat44f::CreateView(cameraPosition, cameraDirection, cameraUp);
 
 		//projection

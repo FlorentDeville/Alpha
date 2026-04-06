@@ -74,7 +74,7 @@ namespace Editors
 		//camera
 		float m_cameraDistance;
 		float m_aspectRatio;
-		DirectX::XMVECTOR m_cameraTarget;
+		Core::Vec4f m_cameraTarget;
 		Core::Vec4f m_cameraEuler;
 
 		//viewport inputs (mouse and keyboard)
