@@ -10,6 +10,7 @@
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+#include "Systems/Clock/Clock.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -41,6 +42,8 @@ namespace Systems
 
 	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene)
 	{
+		scene.m_time = Systems::Clock::Get().GetGameTime(); //by default pass the game time
+
 		const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 
 		for (Systems::GameObject* pGo : gameObjects)
