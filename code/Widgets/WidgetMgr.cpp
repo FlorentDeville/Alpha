@@ -78,10 +78,10 @@ namespace Widgets
 		{
 			Rendering::VertexPosUv vertices[4] =
 			{
-				{ DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f), DirectX::XMFLOAT2(0.f, 0.f) },	// top left
-				{ DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	DirectX::XMFLOAT2(1.f, 0.f) },	// top right
-				{ DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	DirectX::XMFLOAT2(1.f, 1.f) },	// bottom right
-				{ DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f),	DirectX::XMFLOAT2(0.f, 1.f) }	// bottom left
+				{ Core::Float3(-0.5f, 0.5f , 0.f),  Core::Float2(0.f, 0.f) },	// top left
+				{ Core::Float3(0.5f , 0.5f , 0.f),	Core::Float2(1.f, 0.f) },	// top right
+				{ Core::Float3(0.5f , -0.5f, 0.f),	Core::Float2(1.f, 1.f) },	// bottom right
+				{ Core::Float3(-0.5f, -0.5f, 0.f),	Core::Float2(0.f, 1.f) }	// bottom left
 			};
 
 			uint16_t indices[6]

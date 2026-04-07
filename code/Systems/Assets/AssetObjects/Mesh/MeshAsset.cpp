@@ -64,12 +64,12 @@ namespace Systems
 
 			Rendering::VertexGeneric& vertex = vertices[ii];
 
-			vertex.Position = DirectX::XMFLOAT3(m_position[positionIndex], m_position[positionIndex + 1], m_position[positionIndex + 2]);
-			vertex.Color = DirectX::XMFLOAT3(m_color[colorIndex], m_color[colorIndex + 1], m_color[colorIndex + 2]);
-			vertex.Uv = DirectX::XMFLOAT2(m_uv[uvIndex], m_uv[uvIndex + 1]);
+			vertex.Position = Core::Float3(m_position[positionIndex], m_position[positionIndex + 1], m_position[positionIndex + 2]);
+			vertex.Color = Core::Float3(m_color[colorIndex], m_color[colorIndex + 1], m_color[colorIndex + 2]);
+			vertex.Uv = Core::Float2(m_uv[uvIndex], m_uv[uvIndex + 1]);
 
 			if (m_normal.GetSize() > (normalIndex + 2))
-				vertex.Normal = DirectX::XMFLOAT3(m_normal[normalIndex], m_normal[normalIndex + 1], m_normal[normalIndex + 2]);
+				vertex.Normal = Core::Float3(m_normal[normalIndex], m_normal[normalIndex + 1], m_normal[normalIndex + 2]);
 		}
 
 		m_mesh.LoadVertexAndIndexBuffer(vertices.data(), vertexCount, m_indices.GetData(), indexCount);

@@ -578,7 +578,7 @@ namespace Rendering
 			pVertexText.Uv.y = fc->m_v;
 			pVertexText.Uv.z = fc->m_twidth;
 			pVertexText.Uv.w = fc->m_theight;
-			pVertexText.Color = DirectX::XMFLOAT4(1, 1, 1, 1);
+			pVertexText.Color = Core::Float4(1, 1, 1, 1);
 			pVertexText.Z = uiPos.z / (farCameraPlane - nearCameraPlane);
 
 			float advance = static_cast<float>(fc->m_xadvance) / m_mainResolution.x * 2;
