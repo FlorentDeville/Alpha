@@ -1,47 +1,46 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#define NOMINMAX
-#include <DirectXMath.h>
-
 #include <d3d12.h>
 #include <string>
+
+#include "Core/Math/Vectors.h"
 
 namespace Rendering
 {
 	struct VertexPos
 	{
-		DirectX::XMFLOAT3 Position;
+		Core::Float3 Position;
 	};
 
 	struct VertexPosUv
 	{
-		DirectX::XMFLOAT3 Position;
-		DirectX::XMFLOAT2 Uv;
+		Core::Float3 Position;
+		Core::Float2 Uv;
 	};
 
 	struct VertexPosColor
 	{
-		DirectX::XMFLOAT3 Position;
-		DirectX::XMFLOAT3 Color;
+		Core::Float3 Position;
+		Core::Float3 Color;
 	};
 
 	struct VertexGeneric
 	{
-		DirectX::XMFLOAT3 Position;
-		DirectX::XMFLOAT3 Color;
-		DirectX::XMFLOAT2 Uv;
-		DirectX::XMFLOAT3 Normal;
+		Core::Float3 Position;
+		Core::Float3 Color;
+		Core::Float2 Uv;
+		Core::Float3 Normal;
 	};
 
 	struct VertexText
 	{
-		DirectX::XMFLOAT4	Position;		// (x, y) : top left position of the quad, (z, w) : width, height of the quad
-		DirectX::XMFLOAT4	Uv;				// (x, y) uv of the top left of the character in the texture, (z, w) width, height of the character in the texture
-		DirectX::XMFLOAT4	Color;			// color of the character
+		Core::Float4		Position;		// (x, y) : top left position of the quad, (z, w) : width, height of the quad
+		Core::Float4		Uv;				// (x, y) uv of the top left of the character in the texture, (z, w) width, height of the character in the texture
+		Core::Float4		Color;			// color of the character
 		float				Z;				// Depth
 	};
 

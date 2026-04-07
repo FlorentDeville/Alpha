@@ -81,8 +81,8 @@ namespace Rendering
 
             vertices.push_back(Rendering::VertexGeneric());
             Rendering::VertexGeneric& vertex = vertices.back();
-            vertex.Position = DirectX::XMFLOAT3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
-            vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
+            vertex.Position = Core::Float3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
+            vertex.Color = Core::Float3(1, 0, 0);
         }
     }
 
@@ -97,8 +97,8 @@ namespace Rendering
 			float x = std::cos(currentTheta);
 			float z = std::sin(currentTheta);
 
-			pVertices[ii].Position = DirectX::XMFLOAT3(x, 0, z);
-			pVertices[ii].Color = DirectX::XMFLOAT3(1, 0, 0);
+			pVertices[ii].Position = Core::Float3(x, 0, z);
+			pVertices[ii].Color = Core::Float3(1, 0, 0);
 		}
 
 		pMesh->LoadVertexAndIndexBuffer(pVertices, VERTEX_COUNT, nullptr, 0);
@@ -137,8 +137,8 @@ namespace Rendering
                 Rendering::VertexGeneric& vertex = vertices.back();
 
                 DirectX::XMVECTOR pos = DirectX::XMVectorAdd(sideOffset, topOffset);
-                vertex.Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
-                vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
+                vertex.Position = Core::Float3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
+                vertex.Color = Core::Float3(1, 0, 0);
             }
 
             {
@@ -146,8 +146,8 @@ namespace Rendering
                 Rendering::VertexGeneric& vertex = vertices.back();
 
                 DirectX::XMVECTOR pos = DirectX::XMVectorSubtract(sideOffset, topOffset);
-                vertex.Position = DirectX::XMFLOAT3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
-                vertex.Color = DirectX::XMFLOAT3(1, 0, 0);
+                vertex.Position = Core::Float3(pos.m128_f32[0], pos.m128_f32[1], pos.m128_f32[2]);
+                vertex.Color = Core::Float3(1, 0, 0);
             }
 
             indices.push_back(i * 2);
@@ -198,11 +198,11 @@ namespace Rendering
 
             // Duplicate the top vertex for distinct normals
             Rendering::VertexGeneric v1;
-            v1.Position = DirectX::XMFLOAT3(topOffset.m128_f32[0], topOffset.m128_f32[1], topOffset.m128_f32[2]);
+            v1.Position = Core::Float3(topOffset.m128_f32[0], topOffset.m128_f32[1], topOffset.m128_f32[2]);
             vertices.push_back(v1);
 
             Rendering::VertexGeneric v2;
-            v2.Position = DirectX::XMFLOAT3(pt.m128_f32[0], pt.m128_f32[1], pt.m128_f32[2]);
+            v2.Position = Core::Float3(pt.m128_f32[0], pt.m128_f32[1], pt.m128_f32[2]);
             vertices.push_back(v2);
 
             indices.push_back(i * 2);
@@ -253,8 +253,8 @@ namespace Rendering
                 normal = XMVector3TransformNormal(normal, transform);
 
                 VertexGeneric vertex;
-                vertex.Position = DirectX::XMFLOAT3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
-                vertex.Color = DirectX::XMFLOAT3(0, 0, 0);
+                vertex.Position = Core::Float3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]);
+                vertex.Color = Core::Float3(0, 0, 0);
                 vertices.push_back(vertex);
 
                 // And create indices for two triangles.
@@ -282,104 +282,104 @@ namespace Rendering
 
         //top face
         {
-            DirectX::XMFLOAT3 normal(0, 1, 0);
-            vertices[0].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            Core::Float3 normal(0, 1, 0);
+            vertices[0].Position = Core::Float3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[0].Normal = normal;
-            vertices[0].Uv = DirectX::XMFLOAT2(1, 0);
-            vertices[1].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[0].Uv = Core::Float2(1, 0);
+            vertices[1].Position = Core::Float3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[1].Normal = normal;
-            vertices[1].Uv = DirectX::XMFLOAT2(1, 1);
-            vertices[2].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[1].Uv = Core::Float2(1, 1);
+            vertices[2].Position = Core::Float3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[2].Normal = normal;
-            vertices[2].Uv = DirectX::XMFLOAT2(0, 1);
-            vertices[3].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[2].Uv = Core::Float2(0, 1);
+            vertices[3].Position = Core::Float3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[3].Normal = normal;
-            vertices[3].Uv = DirectX::XMFLOAT2(0, 0);
+            vertices[3].Uv = Core::Float2(0, 0);
         }
 
         //bottom face
         {
-            DirectX::XMFLOAT3 normal(0, -1, 0);
-            vertices[4].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            Core::Float3 normal(0, -1, 0);
+            vertices[4].Position = Core::Float3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[4].Normal = normal;
-            vertices[4].Uv = DirectX::XMFLOAT2(1, 1);
-            vertices[5].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[4].Uv = Core::Float2(1, 1);
+            vertices[5].Position = Core::Float3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[5].Normal = normal;
-            vertices[5].Uv = DirectX::XMFLOAT2(1, 0);
-            vertices[6].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[5].Uv = Core::Float2(1, 0);
+            vertices[6].Position = Core::Float3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[6].Normal = normal;
-            vertices[6].Uv = DirectX::XMFLOAT2(0, 0);
-            vertices[7].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[6].Uv = Core::Float2(0, 0);
+            vertices[7].Position = Core::Float3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[7].Normal = normal;
-            vertices[7].Uv = DirectX::XMFLOAT2(0, 1);
+            vertices[7].Uv = Core::Float2(0, 1);
         }
 
         //front face
         {
-            DirectX::XMFLOAT3 normal(0, 0, -1);
-            vertices[8].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            Core::Float3 normal(0, 0, -1);
+            vertices[8].Position = Core::Float3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[8].Normal = normal;
-            vertices[8].Uv = DirectX::XMFLOAT2(1, 0);
-            vertices[9].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[8].Uv = Core::Float2(1, 0);
+            vertices[9].Position = Core::Float3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[9].Normal = normal;
-            vertices[9].Uv = DirectX::XMFLOAT2(1, 1);
-            vertices[10].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[9].Uv = Core::Float2(1, 1);
+            vertices[10].Position = Core::Float3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[10].Normal = normal;
-            vertices[10].Uv = DirectX::XMFLOAT2(0, 1);
-            vertices[11].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[10].Uv = Core::Float2(0, 1);
+            vertices[11].Position = Core::Float3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[11].Normal = normal;
-            vertices[11].Uv = DirectX::XMFLOAT2(0, 0);
+            vertices[11].Uv = Core::Float2(0, 0);
         }
 
         //back face
         {
-            DirectX::XMFLOAT3 normal(0, 0, 1);
-            vertices[12].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            Core::Float3 normal(0, 0, 1);
+            vertices[12].Position = Core::Float3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[12].Normal = normal;
-            vertices[12].Uv = DirectX::XMFLOAT2(1, 0);
-            vertices[13].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[12].Uv = Core::Float2(1, 0);
+            vertices[13].Position = Core::Float3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[13].Normal = normal;
-            vertices[13].Uv = DirectX::XMFLOAT2(1, 1);
-            vertices[14].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[13].Uv = Core::Float2(1, 1);
+            vertices[14].Position = Core::Float3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[14].Normal = normal;
-            vertices[14].Uv = DirectX::XMFLOAT2(0, 1);
-            vertices[15].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            vertices[14].Uv = Core::Float2(0, 1);
+            vertices[15].Position = Core::Float3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[15].Normal = normal;
-            vertices[15].Uv = DirectX::XMFLOAT2(0, 0);
+            vertices[15].Uv = Core::Float2(0, 0);
         }
 
         //left face
         {
-            DirectX::XMFLOAT3 normal(-1, 0, 0);
-            vertices[16].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            Core::Float3 normal(-1, 0, 0);
+            vertices[16].Position = Core::Float3(-HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[16].Normal = normal;
-            vertices[16].Uv = DirectX::XMFLOAT2(0, 0);
-            vertices[17].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[16].Uv = Core::Float2(0, 0);
+            vertices[17].Position = Core::Float3(-HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[17].Normal = normal;
-            vertices[17].Uv = DirectX::XMFLOAT2(0, 1);
-            vertices[18].Position = DirectX::XMFLOAT3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[17].Uv = Core::Float2(0, 1);
+            vertices[18].Position = Core::Float3(-HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[18].Normal = normal;
-            vertices[18].Uv = DirectX::XMFLOAT2(1, 1);
-            vertices[19].Position = DirectX::XMFLOAT3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[18].Uv = Core::Float2(1, 1);
+            vertices[19].Position = Core::Float3(-HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[19].Normal = normal;
-            vertices[19].Uv = DirectX::XMFLOAT2(1, 0);
+            vertices[19].Uv = Core::Float2(1, 0);
         }
 
         //right face
         {
-            DirectX::XMFLOAT3 normal(-1, 0, 0);
-            vertices[20].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
+            Core::Float3 normal(-1, 0, 0);
+            vertices[20].Position = Core::Float3(HALF_SIZE, HALF_SIZE, HALF_SIZE);
             vertices[20].Normal = normal;
-            vertices[20].Uv = DirectX::XMFLOAT2(1, 0);
-            vertices[21].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
+            vertices[20].Uv = Core::Float2(1, 0);
+            vertices[21].Position = Core::Float3(HALF_SIZE, -HALF_SIZE, HALF_SIZE);
             vertices[21].Normal = normal;
-            vertices[21].Uv = DirectX::XMFLOAT2(1, 1);
-            vertices[22].Position = DirectX::XMFLOAT3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
+            vertices[21].Uv = Core::Float2(1, 1);
+            vertices[22].Position = Core::Float3(HALF_SIZE, -HALF_SIZE, -HALF_SIZE);
             vertices[22].Normal = normal;
-            vertices[22].Uv = DirectX::XMFLOAT2(0, 1);
-            vertices[23].Position = DirectX::XMFLOAT3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
+            vertices[22].Uv = Core::Float2(0, 1);
+            vertices[23].Position = Core::Float3(HALF_SIZE, HALF_SIZE, -HALF_SIZE);
             vertices[23].Normal = normal;
-            vertices[23].Uv = DirectX::XMFLOAT2(0, 0);
+            vertices[23].Uv = Core::Float2(0, 0);
         }
 
         const int INDEX_COUNT = 36;
@@ -446,10 +446,10 @@ namespace Rendering
     {
         Rendering::VertexGeneric vertices[4] =
         {
-            { DirectX::XMFLOAT3(-0.5f, 0.5f , 0.f), DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(0.f, 0.f), DirectX::XMFLOAT3(0.f, 0.f, -1) },	// top left
-            { DirectX::XMFLOAT3(0.5f , 0.5f , 0.f),	DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(1.f, 0.f), DirectX::XMFLOAT3(0.f, 0.f, -1) },	// top right
-            { DirectX::XMFLOAT3(0.5f , -0.5f, 0.f),	DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(1.f, 1.f), DirectX::XMFLOAT3(0.f, 0.f, -1) },	// bottom right
-            { DirectX::XMFLOAT3(-0.5f, -0.5f, 0.f),	DirectX::XMFLOAT3(0.f, 0.f , 0.f), DirectX::XMFLOAT2(0.f, 1.f), DirectX::XMFLOAT3(0.f, 0.f, -1) }	// bottom left
+            { Core::Float3(-0.5f, 0.5f , 0.f),  Core::Float3(0.f, 0.f , 0.f), Core::Float2(0.f, 0.f), Core::Float3(0.f, 0.f, -1) },	// top left
+            { Core::Float3(0.5f , 0.5f , 0.f),	Core::Float3(0.f, 0.f , 0.f), Core::Float2(1.f, 0.f), Core::Float3(0.f, 0.f, -1) },	// top right
+            { Core::Float3(0.5f , -0.5f, 0.f),	Core::Float3(0.f, 0.f , 0.f), Core::Float2(1.f, 1.f), Core::Float3(0.f, 0.f, -1) },	// bottom right
+            { Core::Float3(-0.5f, -0.5f, 0.f),	Core::Float3(0.f, 0.f , 0.f), Core::Float2(0.f, 1.f), Core::Float3(0.f, 0.f, -1) }	// bottom left
         };
 
         uint16_t indices[6]
@@ -505,52 +505,52 @@ namespace Rendering
                 vertex1.Position.x = sinTheta1 * cosPhi1;
                 vertex1.Position.z = sinTheta1 * sinPhi1;
                 vertex1.Position.y = cosTheta1;
-                vertex1.Color = DirectX::XMFLOAT3(0, 0, 0);
-                vertex1.Uv = DirectX::XMFLOAT2(phi1 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
+                vertex1.Color = Core::Float3(0, 0, 0);
+                vertex1.Uv = Core::Float2(phi1 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex1.Position.x, vertex1.Position.y, vertex1.Position.z, 0);
                     normal.Normalize();
-                    vertex1.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                    vertex1.Normal = Core::Float3(normal.GetX(), normal.GetY(), normal.GetZ());
                 }
 
                 VertexGeneric vertex2;
                 vertex2.Position.x = sinTheta1 * cosPhi2;
                 vertex2.Position.z = sinTheta1 * sinPhi2;
                 vertex2.Position.y = cosTheta1;
-                vertex2.Color = DirectX::XMFLOAT3(0, 0, 0);
-                vertex2.Uv = DirectX::XMFLOAT2(phi2 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
+                vertex2.Color = Core::Float3(0, 0, 0);
+                vertex2.Uv = Core::Float2(phi2 * Core::ONE_OVER_TWO_PI, theta1 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex2.Position.x, vertex2.Position.y, vertex2.Position.z, 0);
                     normal.Normalize();
-                    vertex2.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                    vertex2.Normal = Core::Float3(normal.GetX(), normal.GetY(), normal.GetZ());
                 }
 
                 VertexGeneric vertex3;
                 vertex3.Position.x = sinTheta2 * cosPhi2;
                 vertex3.Position.z = sinTheta2 * sinPhi2;
                 vertex3.Position.y = cosTheta2;
-                vertex3.Color = DirectX::XMFLOAT3(0, 0, 0);
-                vertex3.Uv = DirectX::XMFLOAT2(phi2 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
+                vertex3.Color = Core::Float3(0, 0, 0);
+                vertex3.Uv = Core::Float2(phi2 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex3.Position.x, vertex3.Position.y, vertex3.Position.z, 0);
                     normal.Normalize();
-                    vertex3.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                    vertex3.Normal = Core::Float3(normal.GetX(), normal.GetY(), normal.GetZ());
                 }
 
                 VertexGeneric vertex4;
                 vertex4.Position.x = sinTheta2 * cosPhi1;
                 vertex4.Position.z = sinTheta2 * sinPhi1;
                 vertex4.Position.y = cosTheta2;
-                vertex4.Color = DirectX::XMFLOAT3(0, 0, 0);
-                vertex4.Uv = DirectX::XMFLOAT2(phi1 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
+                vertex4.Color = Core::Float3(0, 0, 0);
+                vertex4.Uv = Core::Float2(phi1 * Core::ONE_OVER_TWO_PI, theta2 * Core::ONE_OVER_PI);
 
                 {
                     Core::Vec4f normal(vertex4.Position.x, vertex4.Position.y, vertex4.Position.z, 0);
                     normal.Normalize();
-                    vertex4.Normal = DirectX::XMFLOAT3(normal.GetX(), normal.GetY(), normal.GetZ());
+                    vertex4.Normal = Core::Float3(normal.GetX(), normal.GetY(), normal.GetZ());
                 }
 
                 int indexVertex1 = vertices.GetSize();
