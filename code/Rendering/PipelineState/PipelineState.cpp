@@ -135,12 +135,15 @@ namespace Rendering
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
+		const Core::Blob& vsBlob = shaderMgr.GetShader(vsId)->GetBlob();
+		const Core::Blob& psBlob = shaderMgr.GetShader(psId)->GetBlob();
+
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vsBlob.GetData(), vsBlob.GetSize());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(psBlob.GetData(), psBlob.GetSize());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -163,12 +166,15 @@ namespace Rendering
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
+		const Core::Blob& vsBlob = shaderMgr.GetShader(vsId)->GetBlob();
+		const Core::Blob& psBlob = shaderMgr.GetShader(psId)->GetBlob();
+
 		TextPipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_text, _countof(g_inputLayout_text) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vsBlob.GetData(), vsBlob.GetSize());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(psBlob.GetData(), psBlob.GetSize());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -212,12 +218,15 @@ namespace Rendering
 		RootSignature* pRootSignature = Rendering::RootSignatureMgr::Get().GetRootSignature(rsId);
 		ShaderMgr& shaderMgr = ShaderMgr::Get();
 
+		const Core::Blob& vsBlob = shaderMgr.GetShader(vsId)->GetBlob();
+		const Core::Blob& psBlob = shaderMgr.GetShader(psId)->GetBlob();
+
 		TextPipelineStateStream pipelineStateStream;
 		pipelineStateStream.pRootSignature = pRootSignature->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_pos_uv, _countof(g_inputLayout_pos_uv) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(vsId)->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(shaderMgr.GetShader(psId)->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vsBlob.GetData(), vsBlob.GetSize());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(psBlob.GetData(), psBlob.GetSize());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -282,13 +291,16 @@ namespace Rendering
 			dx12RenderTargetBlendDesc.BlendOpAlpha = Internal::GetDx12BlendOperation(desc.m_blendDesc.m_blendOperationAlpha);
 		}
 
+		const Core::Blob& vsBlob = desc.m_pVs->GetBlob();
+		const Core::Blob& psBlob = desc.m_pPs->GetBlob();
+
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.Rasterizer = rasterizerDesc;
 		pipelineStateStream.pRootSignature = desc.m_pRs->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(desc.m_pVs->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(desc.m_pPs->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vsBlob.GetData(), vsBlob.GetSize());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(psBlob.GetData(), psBlob.GetSize());
 		pipelineStateStream.DepthStencilState = depthStencilState;
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
@@ -322,13 +334,16 @@ namespace Rendering
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 
+		const Core::Blob& vsBlob = pVS->GetBlob();
+		const Core::Blob& psBlob = pPS->GetBlob();
+
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.Rasterizer = rasterizerDesc;
 		pipelineStateStream.pRootSignature = pRootSig->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVS->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(pPS->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vsBlob.GetData(), vsBlob.GetSize());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(psBlob.GetData(), psBlob.GetSize());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
@@ -360,13 +375,16 @@ namespace Rendering
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
 
+		const Core::Blob& vsBlob = pVS->GetBlob();
+		const Core::Blob& psBlob = pPS->GetBlob();
+
 		PipelineStateStream pipelineStateStream;
 		pipelineStateStream.Rasterizer = rasterizerDesc;
 		pipelineStateStream.pRootSignature = pRootSig->GetRootSignature();
 		pipelineStateStream.InputLayout = { g_inputLayout_generic, _countof(g_inputLayout_generic) };
 		pipelineStateStream.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(pVS->GetBlob());
-		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(pPS->GetBlob());
+		pipelineStateStream.VS = CD3DX12_SHADER_BYTECODE(vsBlob.GetData(), vsBlob.GetSize());
+		pipelineStateStream.PS = CD3DX12_SHADER_BYTECODE(psBlob.GetData(), psBlob.GetSize());
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 
