@@ -5,14 +5,9 @@
 #pragma once
 
 #include <string>
-#include <d3d12.h>
 
 #include "Core/Collections/Array.h"
-
-namespace Core
-{
-	class Blob;
-}
+#include "Core/Blob/Blob.h"
 
 namespace Rendering
 {
@@ -26,10 +21,10 @@ namespace Rendering
 		bool LoadFromMemory(const Core::Array<char>& blob);
 		bool LoadFromMemory(const Core::Blob& blob);
 
-		ID3DBlob* GetBlob() const;
+		const Core::Blob& GetBlob() const;
 
 	private:
 		std::string m_path;
-		ID3DBlob* m_pBlob;
+		Core::Blob m_blob;
 	};
 }
