@@ -49,7 +49,7 @@ namespace Editors
 		psoDesc.m_pRs = m_pObjectIdRootSig;
 		psoDesc.m_pVs = pVS;
 		psoDesc.m_pPs = pPS;
-		psoDesc.m_depthFunction = Rendering::DepthComparisonMode::Less;
+		psoDesc.m_depthFunction = Rendering::DepthComparisonMode::LESS;
 		psoDesc.m_cullMode = Rendering::CullMode::BACK;
 		psoDesc.m_rtvFormat = rtvFormat;
 
