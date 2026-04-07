@@ -10,16 +10,16 @@ namespace Rendering
 {
 	enum CullMode
 	{
-		None,
-		Front,
-		Back
+		NONE,
+		FRONT,
+		BACK
 	};
 }
 
 ENABLE_ENUM_REFLECTION(Rendering, CullMode)
 
 START_ENUM_REFLECTION(Rendering, CullMode)
-	ADD_ENUM_ENTRY(None)
-	ADD_ENUM_ENTRY(Front)
-	ADD_ENUM_ENTRY(Back)
+	ADD_ENUM_ENTRY(NONE)
+	ADD_ENUM_ENTRY(FRONT)
+	ADD_ENUM_ENTRY(BACK)
 END_ENUM_REFLECTION()

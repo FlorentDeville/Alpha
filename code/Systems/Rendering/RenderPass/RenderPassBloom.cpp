@@ -33,7 +33,7 @@ namespace Systems
 		bloomEmissiveFilterPsoDesc.m_pRs = m_pEmissiveFilterRootSig;
 		bloomEmissiveFilterPsoDesc.m_pVs = pBloomEmissiveFilterVs;
 		bloomEmissiveFilterPsoDesc.m_pPs = pBloomEmissiveFilterPs;
-		bloomEmissiveFilterPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		bloomEmissiveFilterPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
 		m_pEmissiveFilterPso = new Rendering::PipelineState();
 		m_pEmissiveFilterPso->Init_Generic(bloomEmissiveFilterPsoDesc);
 
@@ -63,7 +63,7 @@ namespace Systems
 		downsamplingPsoDesc.m_pRs = m_pDownsamplingRootSig;
 		downsamplingPsoDesc.m_pVs = pDownsamplingVS;
 		downsamplingPsoDesc.m_pPs = pDownsamplingPS;
-		downsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		downsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
 		m_pDownsamplingPso = new Rendering::PipelineState();
 		m_pDownsamplingPso->Init_Generic(downsamplingPsoDesc);
 
@@ -75,7 +75,7 @@ namespace Systems
 		upsamplingPsoDesc.m_pRs = m_pUpsamplingRootSig;
 		upsamplingPsoDesc.m_pVs = pUpsamplingVS;
 		upsamplingPsoDesc.m_pPs = pUpsamplingPS;
-		upsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		upsamplingPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
 		upsamplingPsoDesc.m_blendDesc.m_blendEnabled = true;
 		upsamplingPsoDesc.m_blendDesc.m_srcBlend = Rendering::BlendFactor::ONE;
 		upsamplingPsoDesc.m_blendDesc.m_dstBlend = Rendering::BlendFactor::ONE;
@@ -91,7 +91,7 @@ namespace Systems
 		combiningPsoDesc.m_pRs = m_pUpsamplingRootSig;
 		combiningPsoDesc.m_pVs = pUpsamplingVS;
 		combiningPsoDesc.m_pPs = pUpsamplingPS;
-		combiningPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::Always;
+		combiningPsoDesc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
 		combiningPsoDesc.m_blendDesc.m_blendEnabled = true;
 		combiningPsoDesc.m_blendDesc.m_srcBlend = Rendering::BlendFactor::FACTOR;
 		combiningPsoDesc.m_blendDesc.m_dstBlend = Rendering::BlendFactor::INV_FACTOR;

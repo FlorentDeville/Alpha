@@ -20,8 +20,8 @@ namespace Rendering
 		: m_pRs(nullptr)
 		, m_pVs(nullptr)
 		, m_pPs(nullptr)
-		, m_cullMode(CullMode::Back)
-		, m_depthFunction(DepthComparisonMode::Less)
+		, m_cullMode(CullMode::BACK)
+		, m_depthFunction(DepthComparisonMode::LESS)
 		, m_rtvFormat(ResourceFormat::R16G16B16A16_FLOAT)
 		, m_blendDesc()
 	{ }

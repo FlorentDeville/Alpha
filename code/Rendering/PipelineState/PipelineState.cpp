@@ -49,15 +49,15 @@ namespace Rendering
 	{
 		switch (cullMode)
 		{
-		case None:
+		case NONE:
 			return D3D12_CULL_MODE_NONE;
 			break;
 
-		case Front:
+		case FRONT:
 			return D3D12_CULL_MODE_FRONT;
 			break;
 
-		case Back:
+		case BACK:
 			return D3D12_CULL_MODE_BACK;
 			break;
 		}
@@ -69,35 +69,35 @@ namespace Rendering
 	{
 		switch (mode)
 		{
-		case Never:
+		case NEVER:
 			return D3D12_COMPARISON_FUNC_NEVER;
 			break;
 
-		case Less:
+		case LESS:
 			return D3D12_COMPARISON_FUNC_LESS;
 			break;
 
-		case LessOrEqual:
+		case LESS_OR_EQUAL:
 			return D3D12_COMPARISON_FUNC_LESS_EQUAL;
 			break;
 
-		case Greater:
+		case GREATER:
 			return D3D12_COMPARISON_FUNC_GREATER;
 			break;
 
-		case GreaterOrEqual:
+		case GREATER_OR_EQUAL:
 			return D3D12_COMPARISON_FUNC_GREATER_EQUAL;
 			break;
 
-		case Equal:
+		case EQUAL:
 			return D3D12_COMPARISON_FUNC_EQUAL;
 			break;
 
-		case NotEqual:
+		case NOT_EQUAL:
 			return D3D12_COMPARISON_FUNC_NOT_EQUAL;
 			break;
 				
-		case Always:
+		case ALWAYS:
 			return D3D12_COMPARISON_FUNC_ALWAYS;
 			break;
 

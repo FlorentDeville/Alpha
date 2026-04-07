@@ -206,7 +206,7 @@ namespace Editors
 			quadPsoDesc.m_pPs = pTextureViewportPs;
 			quadPsoDesc.m_pVs = pTextureViewportVs;
 			quadPsoDesc.m_pRs = m_pRootSig;
-			quadPsoDesc.m_cullMode = Rendering::Back;
+			quadPsoDesc.m_cullMode = Rendering::BACK;
 			m_pPsoQuad = new Rendering::PipelineState();
 			m_pPsoQuad->Init_Generic(quadPsoDesc);
 		}
@@ -216,7 +216,7 @@ namespace Editors
 			cubemapPsoDesc.m_pPs = pTextureViewportPs;
 			cubemapPsoDesc.m_pVs = pTextureViewportVs;
 			cubemapPsoDesc.m_pRs = m_pRootSig;
-			cubemapPsoDesc.m_cullMode = Rendering::Front;
+			cubemapPsoDesc.m_cullMode = Rendering::FRONT;
 			m_pPsoCubemap = new Rendering::PipelineState();
 			m_pPsoCubemap->Init_Generic(cubemapPsoDesc);
 		}

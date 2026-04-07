@@ -10,26 +10,26 @@ namespace Rendering
 {
 	enum DepthComparisonMode
 	{
-		Never,
-		Less,
-		LessOrEqual,
-		Greater,
-		GreaterOrEqual,
-		Equal,
-		NotEqual,
-		Always
+		NEVER,
+		LESS,
+		LESS_OR_EQUAL,
+		GREATER,
+		GREATER_OR_EQUAL,
+		EQUAL,
+		NOT_EQUAL,
+		ALWAYS
 	};
 }
 
 ENABLE_ENUM_REFLECTION(Rendering, DepthComparisonMode)
 
 START_ENUM_REFLECTION(Rendering, DepthComparisonMode)
-	ADD_ENUM_ENTRY(Never)
-	ADD_ENUM_ENTRY(Less)
-	ADD_ENUM_ENTRY(LessOrEqual)
-	ADD_ENUM_ENTRY(Greater)
-	ADD_ENUM_ENTRY(GreaterOrEqual)
-	ADD_ENUM_ENTRY(Equal)
-	ADD_ENUM_ENTRY(NotEqual)
-	ADD_ENUM_ENTRY(Always)
+	ADD_ENUM_ENTRY(NEVER)
+	ADD_ENUM_ENTRY(LESS)
+	ADD_ENUM_ENTRY(LESS_OR_EQUAL)
+	ADD_ENUM_ENTRY(GREATER)
+	ADD_ENUM_ENTRY(GREATER_OR_EQUAL)
+	ADD_ENUM_ENTRY(EQUAL)
+	ADD_ENUM_ENTRY(NOT_EQUAL)
+	ADD_ENUM_ENTRY(ALWAYS)
 END_ENUM_REFLECTION()
