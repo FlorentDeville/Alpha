@@ -68,7 +68,7 @@ namespace Editors
 
 		Rendering::PipelineStateDesc desc;
 		desc.m_depthFunction = Rendering::DepthComparisonMode::Always;
-		desc.m_cullMode = Rendering::CullMode::None;
+		desc.m_cullMode = Rendering::CullMode::NONE;
 		desc.m_pVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_VS);
 		desc.m_pPs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_PS);
 		desc.m_pRs = m_pRootSig;

@@ -49,15 +49,15 @@ namespace Rendering
 	{
 		switch (cullMode)
 		{
-		case None:
+		case NONE:
 			return D3D12_CULL_MODE_NONE;
 			break;
 
-		case Front:
+		case FRONT:
 			return D3D12_CULL_MODE_FRONT;
 			break;
 
-		case Back:
+		case BACK:
 			return D3D12_CULL_MODE_BACK;
 			break;
 		}

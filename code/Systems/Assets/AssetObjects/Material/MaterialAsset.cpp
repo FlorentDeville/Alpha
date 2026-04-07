@@ -20,7 +20,7 @@ namespace Systems
 		, m_pRs(nullptr)
 		, m_pPipelineState(nullptr)
 		, m_isDebug(false)
-		, m_cullMode(Rendering::CullMode::Back)
+		, m_cullMode(Rendering::CullMode::BACK)
 		, m_depthFunction(Rendering::DepthComparisonMode::Less)
 		, m_shadowMapsRootSigIndex(-1)
 	{ }
