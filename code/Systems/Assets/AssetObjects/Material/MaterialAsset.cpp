@@ -166,6 +166,17 @@ namespace Systems
 		desc.m_cullMode = m_cullMode;
 		desc.m_depthFunction = m_depthFunction;
 
+		if (m_blendMode == BlendMode::BM_TRANSLUCENT)
+		{
+			desc.m_blendDesc.m_blendEnabled = true;
+			desc.m_blendDesc.m_blendOperation = Rendering::BlendOperation::ADD;
+			desc.m_blendDesc.m_srcBlend = Rendering::BlendFactor::SRC_ALPHA;
+			desc.m_blendDesc.m_dstBlend = Rendering::BlendFactor::INV_SRC_ALPHA;
+			desc.m_blendDesc.m_blendOperationAlpha = Rendering::BlendOperation::ADD;
+			desc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ONE;
+			desc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ZERO;
+		}
+
 		m_pPipelineState = new Rendering::PipelineState();
 		bool created = m_pPipelineState->Init_Generic(desc);
 		if (!created)
