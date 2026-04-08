@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #ifndef TEXTURE_RS_HLSL
 #define TEXTURE_RS_HLSL
@@ -12,7 +12,7 @@
 			"RootConstants(num32BitConstants=16, b0, space=0, visibility=SHADER_VISIBILITY_VERTEX)," \
 			"RootConstants(num32BitConstants=2, b1, space=0, visibility=SHADER_VISIBILITY_VERTEX)," \
 			"RootConstants(num32BitConstants=2, b2, space=0, visibility=SHADER_VISIBILITY_VERTEX)," \
-			"StaticSampler(s0, visibility=SHADER_VISIBILITY_PIXEL), " \
+			"StaticSampler(s0, visibility=SHADER_VISIBILITY_PIXEL, addressU=TEXTURE_ADDRESS_CLAMP, addressV=TEXTURE_ADDRESS_CLAMP, addressW=TEXTURE_ADDRESS_CLAMP), " \
 			"DescriptorTable(SRV(t0, space=0)),"
 
 

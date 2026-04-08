@@ -6,7 +6,7 @@
 #define COPY_RENDER_TARGET_RS_HLSL
 
 #define RS "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT)," \
-			"StaticSampler(s0, visibility=SHADER_VISIBILITY_PIXEL), " \
+			"StaticSampler(s0, visibility=SHADER_VISIBILITY_PIXEL, addressU=TEXTURE_ADDRESS_CLAMP, addressV=TEXTURE_ADDRESS_CLAMP, addressW=TEXTURE_ADDRESS_CLAMP), " \
 			"DescriptorTable(SRV(t0, space=0)),"
 
 #endif // #ifndef COPY_RENDER_TARGET_RS_HLSL
