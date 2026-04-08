@@ -13,6 +13,7 @@ namespace Systems
 		, m_pBaseMaterial(nullptr)
 		, m_perMaterialParameters()
 		, m_texturesBindingInfo()
+		, m_parametersSchemaHash()
 	{ }
 
 	MaterialInstanceAsset::~MaterialInstanceAsset()
@@ -46,7 +47,10 @@ namespace Systems
 		if (!m_pBaseMaterial)
 			return false;
 
-		//coppy parameters
+		if (m_pBaseMaterial->GetParametersSchemaHash() == m_parametersSchemaHash)
+			return false;
+
+		//copy parameters
 		const Core::Array<MaterialParameterDescription>& parameters = m_pBaseMaterial->GetMaterialParameterDescription();
 		Core::Array<MaterialParameterDescription> newParameters;
 		newParameters.Reserve(parameters.GetSize());
@@ -88,6 +92,8 @@ namespace Systems
 
 		m_texturesBindingInfo = std::move(newTextures);
 
+		CalculateParametersSchemaHash();
+
 		return true;
 	}
 
@@ -112,6 +118,16 @@ namespace Systems
 	const Core::Array<TextureBindingInfo>& MaterialInstanceAsset::GetTexturesBindingInfo() const
 	{
 		return m_texturesBindingInfo;
+	}
+
+	Core::Sid MaterialInstanceAsset::GetParametersSchemaHash() const
+	{
+		return m_parametersSchemaHash;
+	}
+
+	void MaterialInstanceAsset::CalculateParametersSchemaHash()
+	{
+		m_parametersSchemaHash = MaterialAsset::CalculateParametersSchemaHash(m_perMaterialParameters, m_texturesBindingInfo);
 	}
 
 	const std::string& MaterialInstanceAsset::GetAssetTypeName()

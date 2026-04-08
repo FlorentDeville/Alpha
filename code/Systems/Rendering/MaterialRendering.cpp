@@ -129,7 +129,16 @@ namespace Systems
 	{
 		const MaterialAsset* pBaseMaterial = materialInstance.GetBaseMaterial();
 
-		Internal_Bind(perObjectCBuffer, perFrameCBuffer, lights, pBaseMaterial->GetBindingInfoArray(), materialInstance.GetMaterialParameterDescription(),
-			materialInstance.GetTexturesBindingInfo(), *pBaseMaterial->GetPipelineState(), *pBaseMaterial->GetRootSignature());
+		if (pBaseMaterial->GetParametersSchemaHash() == materialInstance.GetParametersSchemaHash())
+		{
+			Internal_Bind(perObjectCBuffer, perFrameCBuffer, lights, pBaseMaterial->GetBindingInfoArray(), materialInstance.GetMaterialParameterDescription(),
+				materialInstance.GetTexturesBindingInfo(), *pBaseMaterial->GetPipelineState(), *pBaseMaterial->GetRootSignature());
+		}
+		else
+		{
+			//the material instance needs to be refreshed so use the parameters and textures of the base material
+			Internal_Bind(perObjectCBuffer, perFrameCBuffer, lights, pBaseMaterial->GetBindingInfoArray(), pBaseMaterial->GetMaterialParameterDescription(),
+				pBaseMaterial->GetTexturesBindingInfo(), *pBaseMaterial->GetPipelineState(), *pBaseMaterial->GetRootSignature());
+		}
 	}
 }
