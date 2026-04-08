@@ -8,7 +8,7 @@
 #include "Core/Helper.h"
 
 #include "Rendering/CommandQueue.h"
-#include "Rendering/Internal/ResourceFormatToDx12.h"
+#include "Rendering/Internal/BufferFormatToDx12.h"
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 #include "Rendering/RenderModule.h"

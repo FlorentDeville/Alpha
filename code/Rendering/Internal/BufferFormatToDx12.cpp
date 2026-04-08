@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Rendering/Internal/ResourceFormatToDx12.h"
+#include "Rendering/Internal/BufferFormatToDx12.h"
 
 #include <assert.h>
 

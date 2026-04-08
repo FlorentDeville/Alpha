@@ -20,7 +20,7 @@
 #include "Rendering/Device.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
-#include "Rendering/Internal/ResourceFormatToDx12.h"
+#include "Rendering/Internal/BufferFormatToDx12.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
