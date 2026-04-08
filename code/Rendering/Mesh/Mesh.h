@@ -57,7 +57,11 @@ namespace Rendering
 		void LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 		void LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 
-		const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
+		uint64_t GetVertexBufferStartAddr() const;
+		uint64_t GetVertexBufferOffset() const;
+		uint32_t GetVertexBufferSize() const;
+		uint32_t GetVertexBufferStride() const;
+
 		const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
 
 		int GetIndicesCount() const;
@@ -66,7 +70,11 @@ namespace Rendering
 	private:
 		//Vertex buffer
 		BufferHandle m_vertexBuffer;
-		D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
+		
+		uint64_t m_vertexBufferStartAddr;
+		uint64_t m_vertexBufferOffset;
+		uint32_t m_vertexBufferSize;
+		uint32_t m_vertexBufferStride;
 
 		//Index buffer
 		BufferHandle m_indexBuffer;

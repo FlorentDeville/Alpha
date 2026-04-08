@@ -76,7 +76,12 @@ namespace Widgets
 
 		pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
+		D3D12_VERTEX_BUFFER_VIEW vbv;
+		vbv.BufferLocation = pMesh->GetVertexBufferStartAddr() + pMesh->GetVertexBufferOffset();
+		vbv.SizeInBytes = pMesh->GetVertexBufferSize();
+		vbv.StrideInBytes = pMesh->GetVertexBufferStride();
+
+		pCommandList->IASetVertexBuffers(0, 1, &vbv);
 		pCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
 
 		//Set Constant buffer

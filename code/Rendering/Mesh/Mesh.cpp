@@ -60,7 +60,6 @@ namespace Rendering
 
 	Mesh::Mesh()
 		: m_vertexBuffer()
-		, m_vertexBufferView()
 		, m_indexBuffer()
 		, m_indexBufferView()
 		, m_indicesCount(0)
@@ -89,9 +88,10 @@ namespace Rendering
 		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPos), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexPos) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPos);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexPos) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexPos);
 
 		Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
 		ID3D12Resource* pIntermediateIndexBuffer;
@@ -123,9 +123,10 @@ namespace Rendering
 		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPosColor), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexPosColor) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPosColor);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexPosColor) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexPosColor);
 
 		ID3D12Resource* pIntermediateIndexBuffer = nullptr;
 		if (indicesCount > 0)
@@ -165,9 +166,10 @@ namespace Rendering
 		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPosUv), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexPosUv) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPosUv);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexPosUv) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexPosUv);
 
 		Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
 		ID3D12Resource* pIntermediateIndexBuffer;
@@ -202,9 +204,10 @@ namespace Rendering
 		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexGeneric), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexGeneric) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexGeneric);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexGeneric) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexGeneric);
 
 		Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
 		ID3D12Resource* pIntermediateIndexBuffer;
@@ -223,9 +226,24 @@ namespace Rendering
 		pIntermediateIndexBuffer->Release();
 	}
 
-	const D3D12_VERTEX_BUFFER_VIEW& Mesh::GetVertexBufferView() const
+	uint64_t Mesh::GetVertexBufferStartAddr() const
 	{
-		return m_vertexBufferView;
+		return m_vertexBufferStartAddr;
+	}
+
+	uint64_t Mesh::GetVertexBufferOffset() const
+	{
+		return m_vertexBufferOffset;
+	}
+
+	uint32_t Mesh::GetVertexBufferSize() const
+	{
+		return m_vertexBufferSize;
+	}
+
+	uint32_t Mesh::GetVertexBufferStride() const
+	{
+		return m_vertexBufferStride;
 	}
 
 	const D3D12_INDEX_BUFFER_VIEW& Mesh::GetIndexBufferView() const
