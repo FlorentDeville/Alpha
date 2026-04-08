@@ -10,6 +10,7 @@
 #include "Core/Math/Vectors.h"
 
 #include "Rendering/BufferHandle.h"
+#include "Rendering/ResourceFormat.h"
 
 namespace Rendering
 {
@@ -62,7 +63,10 @@ namespace Rendering
 		uint32_t GetVertexBufferSize() const;
 		uint32_t GetVertexBufferStride() const;
 
-		const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
+		uint64_t GetIndexBufferStartAddr() const;
+		uint64_t GetIndexBufferOffset() const;
+		uint32_t GetIndexBufferSize() const;
+		ResourceFormat GetIndexBufferFormat() const;
 
 		int GetIndicesCount() const;
 		int GetVerticesCount() const;
@@ -78,7 +82,10 @@ namespace Rendering
 
 		//Index buffer
 		BufferHandle m_indexBuffer;
-		D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
+		uint64_t m_indexBufferStartAddr;
+		uint64_t m_indexBufferOffset;
+		uint32_t m_indexBufferSize;
+		ResourceFormat m_indexBufferFormat;
 
 		int m_indicesCount;
 		int m_verticesCount;

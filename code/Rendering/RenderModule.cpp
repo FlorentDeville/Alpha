@@ -20,6 +20,7 @@
 #include "Rendering/Device.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
+#include "Rendering/Internal/ResourceFormatToDx12.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -331,7 +332,12 @@ namespace Rendering
 		vbv.StrideInBytes = mesh.GetVertexBufferStride();
 
 		m_pRenderCommandList->IASetVertexBuffers(0, 1, &vbv);
-		m_pRenderCommandList->IASetIndexBuffer(&mesh.GetIndexBufferView());
+
+		D3D12_INDEX_BUFFER_VIEW ibv;
+		ibv.BufferLocation = mesh.GetIndexBufferStartAddr() + mesh.GetIndexBufferOffset();
+		ibv.Format = Internal::GetDx12ResourceFormat(mesh.GetIndexBufferFormat());
+		ibv.SizeInBytes = mesh.GetIndexBufferSize();
+		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 	}
@@ -851,7 +857,12 @@ namespace Rendering
 		vbv.StrideInBytes = pMesh->GetVertexBufferStride();
 
 		m_pRenderCommandList->IASetVertexBuffers(0, 1, &vbv);
-		m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+
+		D3D12_INDEX_BUFFER_VIEW ibv;
+		ibv.BufferLocation = pMesh->GetIndexBufferStartAddr() + pMesh->GetIndexBufferOffset();
+		ibv.Format = Internal::GetDx12ResourceFormat(pMesh->GetIndexBufferFormat());
+		ibv.SizeInBytes = pMesh->GetIndexBufferSize();
+		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 
 		m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}
