@@ -523,6 +523,9 @@ namespace Widgets
 
 	void WidgetMgr::CaptureMouse(Widget* pWidget)
 	{
+		if (pWidget == m_pCapturedWidget)
+			return;
+
 		if (pWidget)
 		{
 			//You can't have 2 widgets requesting to capture events
