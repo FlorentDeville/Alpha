@@ -22,6 +22,7 @@ namespace Systems
 		, m_isDebug(false)
 		, m_cullMode(Rendering::CullMode::BACK)
 		, m_depthFunction(Rendering::DepthComparisonMode::LESS)
+		, m_blendMode(BlendMode::BM_OPAQUE)
 		, m_shadowMapsRootSigIndex(-1)
 	{ }
 

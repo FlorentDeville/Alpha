@@ -10,6 +10,7 @@
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
 
+#include "Systems/Assets/AssetObjects/Material/BlendMode.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
@@ -86,6 +87,7 @@ namespace Systems
 
 		Rendering::CullMode m_cullMode;
 		Rendering::DepthComparisonMode m_depthFunction;
+		BlendMode m_blendMode;
 
 		int32_t m_shadowMapsRootSigIndex; // if different than -1, then shadow maps should be binded.
 
@@ -101,6 +103,7 @@ namespace Systems
 			ADD_FIELD(m_texturesBindingInfo)
 			ADD_FIELD(m_cullMode)
 			ADD_FIELD(m_depthFunction)
+			ADD_FIELD(m_blendMode)
 			ADD_FIELD_ATTR(m_shadowMapsRootSigIndex, Core::Hidden)
 		END_REFLECTION()
 

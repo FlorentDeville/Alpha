@@ -15,6 +15,7 @@
     <ClInclude Include="Assets\AssetObjects\AssetUtil.h" />
     <ClInclude Include="Assets\AssetObjects\Level\LevelAsset.h" />
     <ClInclude Include="Assets\AssetObjects\MaterialInstance\MaterialInstanceAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\Material\BlendMode.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialAsset.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialCBufferBindingInfo.h" />
     <ClInclude Include="Assets\AssetObjects\Material\MaterialParameterDescription.h" />
