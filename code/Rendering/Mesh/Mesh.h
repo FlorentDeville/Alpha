@@ -9,6 +9,8 @@
 
 #include "Core/Math/Vectors.h"
 
+#include "Rendering/BufferHandle.h"
+
 namespace Rendering
 {
 	struct VertexPos
@@ -63,11 +65,11 @@ namespace Rendering
 
 	private:
 		//Vertex buffer
-		ID3D12Resource* m_pVertexBuffer;
+		BufferHandle m_vertexBuffer;
 		D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
 
 		//Index buffer
-		ID3D12Resource* m_pIndexBuffer;
+		BufferHandle m_indexBuffer;
 		D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
 
 		int m_indicesCount;
