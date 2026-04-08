@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include <d3d12.h>
-#include <string>
-
 #include "Core/Math/Vectors.h"
+
+#include "Rendering/BufferHandle.h"
+#include "Rendering/BufferFormat.h"
 
 namespace Rendering
 {
@@ -55,20 +55,34 @@ namespace Rendering
 		void LoadVertexAndIndexBuffer(const VertexPosUv* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 		void LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount);
 
-		const D3D12_VERTEX_BUFFER_VIEW& GetVertexBufferView() const;
-		const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const;
+		uint64_t GetVertexBufferStartAddr() const;
+		uint64_t GetVertexBufferOffset() const;
+		uint32_t GetVertexBufferSize() const;
+		uint32_t GetVertexBufferStride() const;
+
+		uint64_t GetIndexBufferStartAddr() const;
+		uint64_t GetIndexBufferOffset() const;
+		uint32_t GetIndexBufferSize() const;
+		BufferFormat GetIndexBufferFormat() const;
 
 		int GetIndicesCount() const;
 		int GetVerticesCount() const;
 
 	private:
 		//Vertex buffer
-		ID3D12Resource* m_pVertexBuffer;
-		D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
+		BufferHandle m_vertexBuffer;
+		
+		uint64_t m_vertexBufferStartAddr;
+		uint64_t m_vertexBufferOffset;
+		uint32_t m_vertexBufferSize;
+		uint32_t m_vertexBufferStride;
 
 		//Index buffer
-		ID3D12Resource* m_pIndexBuffer;
-		D3D12_INDEX_BUFFER_VIEW m_indexBufferView;
+		BufferHandle m_indexBuffer;
+		uint64_t m_indexBufferStartAddr;
+		uint64_t m_indexBufferOffset;
+		uint32_t m_indexBufferSize;
+		BufferFormat m_indexBufferFormat;
 
 		int m_indicesCount;
 		int m_verticesCount;

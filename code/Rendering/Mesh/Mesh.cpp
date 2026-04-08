@@ -1,12 +1,16 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Mesh.h"
 
 #include <d3dx12.h>
 
 #include "Rendering/CommandQueue.h"
+
+#include "Rendering/Internal/Buffer/BufferManager.h"
+#include "Rendering/Internal/Buffer/Dx12Buffer.h"
+
 #include "Rendering/RenderModule.h"
 #include "Core/Helper.h"
 
@@ -55,21 +59,16 @@ namespace Rendering
 	}
 
 	Mesh::Mesh()
-		: m_pVertexBuffer(nullptr)
-		, m_vertexBufferView()
-		, m_pIndexBuffer(nullptr)
-		, m_indexBufferView()
+		: m_vertexBuffer()
+		, m_indexBuffer()
 		, m_indicesCount(0)
 		, m_verticesCount(0)
-	{}
+	{ }
 
 	Mesh::~Mesh()
 	{
-		if (m_pVertexBuffer)
-			m_pVertexBuffer->Release();
-
-		if (m_pIndexBuffer)
-			m_pIndexBuffer->Release();
+		Internal::BufferManager::ReleaseBuffer(m_vertexBuffer);
+		Internal::BufferManager::ReleaseBuffer(m_indexBuffer);
 	}
 
 	void Mesh::LoadVertexAndIndexBuffer(const VertexPos* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
@@ -80,21 +79,28 @@ namespace Rendering
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
+		Internal::BufferManager::ReleaseBuffer(m_vertexBuffer);
+		Internal::BufferManager::ReleaseBuffer(m_indexBuffer);
+
+		Internal::Dx12Buffer* pVertexBuffer = Internal::BufferManager::CreateBuffer(m_vertexBuffer);
 		ID3D12Resource* pIntermediateVertexBuffer;
-		UpdateBufferResource(pCommandList, &m_pVertexBuffer, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPos), pVertices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPos), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexPos) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPos);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexPos) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexPos);
 
+		Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
 		ID3D12Resource* pIntermediateIndexBuffer;
-		UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pIndexBuffer->m_pResource, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create index buffer view.
-		m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-		m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+		m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_indexBufferOffset = 0;
+		m_indexBufferFormat = BufferFormat::R16_UINT;
+		m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 
 		//Upload everything to the gpu
 		uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
@@ -109,23 +115,30 @@ namespace Rendering
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
+		Internal::BufferManager::ReleaseBuffer(m_vertexBuffer);
+		Internal::BufferManager::ReleaseBuffer(m_indexBuffer);
+
+		Internal::Dx12Buffer* pVertexBuffer = Internal::BufferManager::CreateBuffer(m_vertexBuffer);
 		ID3D12Resource* pIntermediateVertexBuffer;
-		UpdateBufferResource(pCommandList, &m_pVertexBuffer, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPosColor), pVertices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPosColor), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexPosColor) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPosColor);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexPosColor) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexPosColor);
 
 		ID3D12Resource* pIntermediateIndexBuffer = nullptr;
 		if (indicesCount > 0)
 		{
-			UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+			Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
+			UpdateBufferResource(pCommandList, &pIndexBuffer->m_pResource, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
 
 			// Create index buffer view.
-			m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-			m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-			m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+			m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
+			m_indexBufferOffset = 0;
+			m_indexBufferFormat = BufferFormat::R16_UINT;
+			m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 		}
 
 		//Upload everything to the gpu
@@ -146,21 +159,28 @@ namespace Rendering
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
+		Internal::BufferManager::ReleaseBuffer(m_vertexBuffer);
+		Internal::BufferManager::ReleaseBuffer(m_indexBuffer);
+
+		Internal::Dx12Buffer* pVertexBuffer = Internal::BufferManager::CreateBuffer(m_vertexBuffer);
 		ID3D12Resource* pIntermediateVertexBuffer;
-		UpdateBufferResource(pCommandList, &m_pVertexBuffer, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPosUv), pVertices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexPosUv), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexPosUv) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexPosUv);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexPosUv) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexPosUv);
 
+		Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
 		ID3D12Resource* pIntermediateIndexBuffer;
-		UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pIndexBuffer->m_pResource, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create index buffer view.
-		m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-		m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+		m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_indexBufferOffset = 0;
+		m_indexBufferFormat = BufferFormat::R16_UINT;
+		m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 
 		//Upload everything to the gpu
 		uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
@@ -172,17 +192,8 @@ namespace Rendering
 
 	void Mesh::LoadVertexAndIndexBuffer(const VertexGeneric* pVertices, int verticesCount, const uint16_t* pIndices, int indicesCount)
 	{
-		if (m_pVertexBuffer)
-		{
-			m_pVertexBuffer->Release();
-			m_pVertexBuffer = nullptr;
-		}
-
-		if (m_pIndexBuffer)
-		{
-			m_pIndexBuffer->Release();
-			m_pIndexBuffer = nullptr;
-		}
+		Internal::BufferManager::ReleaseBuffer(m_vertexBuffer);
+		Internal::BufferManager::ReleaseBuffer(m_indexBuffer);
 
 		m_indicesCount = indicesCount;
 		m_verticesCount = verticesCount;
@@ -190,21 +201,25 @@ namespace Rendering
 		CommandQueue* pCopyCommandQueue = RenderModule::Get().GetCopyCommandQueue();
 		ID3D12GraphicsCommandList2* pCommandList = pCopyCommandQueue->GetCommandList();
 
+		Internal::Dx12Buffer* pVertexBuffer = Internal::BufferManager::CreateBuffer(m_vertexBuffer);
 		ID3D12Resource* pIntermediateVertexBuffer;
-		UpdateBufferResource(pCommandList, &m_pVertexBuffer, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexGeneric), pVertices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pVertexBuffer->m_pResource, &pIntermediateVertexBuffer, verticesCount, sizeof(VertexGeneric), pVertices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create the vertex buffer view.
-		m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
-		m_vertexBufferView.SizeInBytes = sizeof(VertexGeneric) * verticesCount;
-		m_vertexBufferView.StrideInBytes = sizeof(VertexGeneric);
+		m_vertexBufferStartAddr = pVertexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_vertexBufferOffset = 0;
+		m_vertexBufferSize = sizeof(VertexGeneric) * verticesCount;
+		m_vertexBufferStride = sizeof(VertexGeneric);
 
+		Internal::Dx12Buffer* pIndexBuffer = Internal::BufferManager::CreateBuffer(m_indexBuffer);
 		ID3D12Resource* pIntermediateIndexBuffer;
-		UpdateBufferResource(pCommandList, &m_pIndexBuffer, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
+		UpdateBufferResource(pCommandList, &pIndexBuffer->m_pResource, &pIntermediateIndexBuffer, indicesCount, sizeof(uint16_t), pIndices, D3D12_RESOURCE_FLAG_NONE);
 
 		// Create index buffer view.
-		m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
-		m_indexBufferView.SizeInBytes = sizeof(uint16_t) * indicesCount;
+		m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
+		m_indexBufferOffset = 0;
+		m_indexBufferFormat = BufferFormat::R16_UINT;
+		m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 
 		//Upload everything to the gpu
 		uint64_t fenceValue = pCopyCommandQueue->ExecuteCommandList(pCommandList);
@@ -214,14 +229,44 @@ namespace Rendering
 		pIntermediateIndexBuffer->Release();
 	}
 
-	const D3D12_VERTEX_BUFFER_VIEW& Mesh::GetVertexBufferView() const
+	uint64_t Mesh::GetVertexBufferStartAddr() const
 	{
-		return m_vertexBufferView;
+		return m_vertexBufferStartAddr;
 	}
 
-	const D3D12_INDEX_BUFFER_VIEW& Mesh::GetIndexBufferView() const
+	uint64_t Mesh::GetVertexBufferOffset() const
 	{
-		return m_indexBufferView;
+		return m_vertexBufferOffset;
+	}
+
+	uint32_t Mesh::GetVertexBufferSize() const
+	{
+		return m_vertexBufferSize;
+	}
+
+	uint32_t Mesh::GetVertexBufferStride() const
+	{
+		return m_vertexBufferStride;
+	}
+
+	uint64_t Mesh::GetIndexBufferStartAddr() const
+	{
+		return m_indexBufferStartAddr;
+	}
+
+	uint64_t Mesh::GetIndexBufferOffset() const
+	{
+		return m_indexBufferOffset;
+	}
+
+	uint32_t Mesh::GetIndexBufferSize() const
+	{
+		return m_indexBufferSize;
+	}
+
+	BufferFormat Mesh::GetIndexBufferFormat() const
+	{
+		return m_indexBufferFormat;
 	}
 
 	int Mesh::GetIndicesCount() const

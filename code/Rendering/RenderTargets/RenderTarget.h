@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Rendering/ResourceFormat.h"
+#include "Rendering/BufferFormat.h"
 #include "Rendering/Texture/TextureId.h"
 
 #include <d3d12.h>
@@ -26,8 +26,8 @@ namespace Rendering
 
 	public:
 		RenderTarget(int width, int height);
-		RenderTarget(int width, int height, ResourceFormat format);
-		RenderTarget(int width, int height, ResourceFormat format, const Core::Vec4f& clearColor);
+		RenderTarget(int width, int height, BufferFormat format);
+		RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor);
 		~RenderTarget();
 
 		void BeginScene(bool clear = true);

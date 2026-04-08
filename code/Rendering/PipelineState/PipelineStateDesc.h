@@ -8,7 +8,7 @@
 #include "Rendering/PipelineState/BlendOperation.h"
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
-#include "Rendering/ResourceFormat.h"
+#include "Rendering/BufferFormat.h"
 
 namespace Rendering
 {
@@ -43,7 +43,7 @@ namespace Rendering
 		Shader* m_pPs;
 		CullMode m_cullMode;
 		DepthComparisonMode m_depthFunction;
-		ResourceFormat m_rtvFormat;
+		BufferFormat m_rtvFormat;
 		BlendDesc m_blendDesc; //only a single render target is supported
 	};
 }

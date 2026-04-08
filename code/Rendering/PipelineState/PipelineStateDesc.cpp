@@ -22,7 +22,7 @@ namespace Rendering
 		, m_pPs(nullptr)
 		, m_cullMode(CullMode::BACK)
 		, m_depthFunction(DepthComparisonMode::LESS)
-		, m_rtvFormat(ResourceFormat::R16G16B16A16_FLOAT)
+		, m_rtvFormat(BufferFormat::R16G16B16A16_FLOAT)
 		, m_blendDesc()
 	{ }
 }

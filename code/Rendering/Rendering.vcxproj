@@ -12,8 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseShape.h" />
+    <ClInclude Include="BufferHandle.h" />
     <ClInclude Include="Internal\BlendFactorToDx12.h" />
     <ClInclude Include="Internal\BlendOperationToDx12.h" />
+    <ClInclude Include="Internal\Buffer\BufferManager.h" />
+    <ClInclude Include="Internal\Buffer\Dx12Buffer.h" />
     <ClInclude Include="PipelineState\BlendFactor.h" />
     <ClInclude Include="PipelineState\BlendOperation.h" />
     <ClInclude Include="Camera.h" />
@@ -29,7 +32,7 @@
     <ClInclude Include="Font\FontId.h" />
     <ClInclude Include="Font\FontMgr.h" />
     <ClInclude Include="InputLayout\InputLayout.h" />
-    <ClInclude Include="Internal\ResourceFormatToDx12.h" />
+    <ClInclude Include="Internal\BufferFormatToDx12.h" />
     <ClInclude Include="Mesh\Mesh.h" />
     <ClInclude Include="Mesh\MeshId.h" />
     <ClInclude Include="Mesh\MeshMgr.h" />
@@ -42,7 +45,7 @@
     <ClInclude Include="Reflection\ReflectionRenderingTypes.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="RenderTargets\RenderTarget.h" />
-    <ClInclude Include="ResourceFormat.h" />
+    <ClInclude Include="BufferFormat.h" />
     <ClInclude Include="RootSignature\RootSignature.h" />
     <ClInclude Include="RootSignature\RootSignatureId.h" />
     <ClInclude Include="RootSignature\RootSignatureMgr.h" />
@@ -72,7 +75,8 @@
     <ClCompile Include="InputLayout\InputLayout.cpp" />
     <ClCompile Include="Internal\BlendFactorToDx12.cpp" />
     <ClCompile Include="Internal\BlendOperationToDx12.cpp" />
-    <ClCompile Include="Internal\ResourceFormatToDx12.cpp" />
+    <ClCompile Include="Internal\Buffer\BufferManager.cpp" />
+    <ClCompile Include="Internal\BufferFormatToDx12.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshId.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />

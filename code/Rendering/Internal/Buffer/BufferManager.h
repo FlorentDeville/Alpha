@@ -4,14 +4,19 @@
 
 #pragma once
 
-#include "Rendering/ResourceFormat.h"
-
-#include<dxgiformat.h>
-
 namespace Rendering
 {
+	class BufferHandle;
+
 	namespace Internal
 	{
-		DXGI_FORMAT GetDx12ResourceFormat(ResourceFormat format);
+		class Dx12Buffer;
+
+		namespace BufferManager
+		{
+			Dx12Buffer* CreateBuffer(BufferHandle& handle);
+			void ReleaseBuffer(const BufferHandle& handle);
+			Dx12Buffer* GetBuffer(const BufferHandle& handle);
+		};
 	}
 }

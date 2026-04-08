@@ -29,7 +29,7 @@ namespace Widgets
 		, m_height(height)
 		, m_updateEnabled(false)
 	{
-		m_pRenderTarget = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R16G16B16A16_FLOAT);
+		m_pRenderTarget = new Rendering::RenderTarget(width, height, Rendering::BufferFormat::R16G16B16A16_FLOAT);
 		m_aspectRatio = m_width / static_cast<float>(m_height);
 
 		OnFocusGained([this](const Widgets::FocusEvent&) { m_updateEnabled = true; });
@@ -69,27 +69,25 @@ namespace Widgets
 		Rendering::Texture* pTexture = Rendering::TextureMgr::Get().GetTexture(renderTargetTextureId);
 		ID3D12DescriptorHeap* pSrv = pTexture->GetSRV();
 
-		ID3D12GraphicsCommandList2* pCommandList = Rendering::RenderModule::Get().GetRenderCommandList();
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-		pCommandList->SetPipelineState(pPipelineState->GetPipelineState());
-		pCommandList->SetGraphicsRootSignature(pRootSignature->GetRootSignature());
-
-		pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		pCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
-		pCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
-
+		renderer.BindMaterial(*pPipelineState, *pRootSignature);
+		renderer.RenderMesh(*pMesh);
+		
 		//Set Constant buffer
 		DirectX::XMMATRIX wvp;
 		ComputeWVPMatrix(windowSize, wvp);
-		pCommandList->SetGraphicsRoot32BitConstants(0, sizeof(wvp) / 4, &wvp, 0);
 
-		pCommandList->SetGraphicsRoot32BitConstants(1, sizeof(m_size) / 4, &m_size, 0);
+		renderer.SetConstantBuffer(0, sizeof(wvp), &wvp, 0);
+
+		renderer.SetConstantBuffer(1, sizeof(m_size), &m_size, 0);
 
 		Core::Float2 textureRect;
 		textureRect.x = (float)pTexture->GetWidth();
 		textureRect.y = (float)pTexture->GetHeight();
-		pCommandList->SetGraphicsRoot32BitConstants(2, sizeof(textureRect) / 4, &textureRect, 0);
+		renderer.SetConstantBuffer(2, sizeof(textureRect), &textureRect, 0);
+
+		ID3D12GraphicsCommandList2* pCommandList = renderer.GetRenderCommandList();
 
 		//Set texture srv
 		ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };

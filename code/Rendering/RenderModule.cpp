@@ -20,6 +20,7 @@
 #include "Rendering/Device.h"
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
+#include "Rendering/Internal/BufferFormatToDx12.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -325,8 +326,18 @@ namespace Rendering
 	{
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		m_pRenderCommandList->IASetVertexBuffers(0, 1, &mesh.GetVertexBufferView());
-		m_pRenderCommandList->IASetIndexBuffer(&mesh.GetIndexBufferView());
+		D3D12_VERTEX_BUFFER_VIEW vbv;
+		vbv.BufferLocation = mesh.GetVertexBufferStartAddr() + mesh.GetVertexBufferOffset();
+		vbv.SizeInBytes = mesh.GetVertexBufferSize();
+		vbv.StrideInBytes = mesh.GetVertexBufferStride();
+
+		m_pRenderCommandList->IASetVertexBuffers(0, 1, &vbv);
+
+		D3D12_INDEX_BUFFER_VIEW ibv;
+		ibv.BufferLocation = mesh.GetIndexBufferStartAddr() + mesh.GetIndexBufferOffset();
+		ibv.Format = Internal::GetDx12BufferFormat(mesh.GetIndexBufferFormat());
+		ibv.SizeInBytes = mesh.GetIndexBufferSize();
+		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 	}
@@ -840,8 +851,18 @@ namespace Rendering
 
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		m_pRenderCommandList->IASetVertexBuffers(0, 1, &pMesh->GetVertexBufferView());
-		m_pRenderCommandList->IASetIndexBuffer(&pMesh->GetIndexBufferView());
+		D3D12_VERTEX_BUFFER_VIEW vbv;
+		vbv.BufferLocation = pMesh->GetVertexBufferStartAddr() + pMesh->GetVertexBufferOffset();
+		vbv.SizeInBytes = pMesh->GetVertexBufferSize();
+		vbv.StrideInBytes = pMesh->GetVertexBufferStride();
+
+		m_pRenderCommandList->IASetVertexBuffers(0, 1, &vbv);
+
+		D3D12_INDEX_BUFFER_VIEW ibv;
+		ibv.BufferLocation = pMesh->GetIndexBufferStartAddr() + pMesh->GetIndexBufferOffset();
+		ibv.Format = Internal::GetDx12BufferFormat(pMesh->GetIndexBufferFormat());
+		ibv.SizeInBytes = pMesh->GetIndexBufferSize();
+		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 
 		m_pRenderCommandList->DrawIndexedInstanced(pMesh->GetIndicesCount(), 1, 0, 0, 0);
 	}

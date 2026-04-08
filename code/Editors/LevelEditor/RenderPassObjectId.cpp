@@ -37,7 +37,7 @@ namespace Editors
 	RenderPassObjectId::RenderPassObjectId(int32_t width, int32_t height)
 		: IRenderPass()
 	{
-		Rendering::ResourceFormat rtvFormat = Rendering::ResourceFormat::R8G8B8A8_UINT;
+		Rendering::BufferFormat rtvFormat = Rendering::BufferFormat::R8G8B8A8_UINT;
 
 		m_pObjectIdRenderTarget = new Rendering::RenderTarget(width, height, rtvFormat, Core::Vec4f(0, 0, 0, 0));
 

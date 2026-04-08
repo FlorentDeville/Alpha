@@ -126,10 +126,10 @@
     <ClInclude Include="Device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceFormat.h">
+    <ClInclude Include="BufferFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Internal\ResourceFormatToDx12.h">
+    <ClInclude Include="Internal\BufferFormatToDx12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState\BlendFactor.h">
@@ -142,6 +142,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Internal\BlendOperationToDx12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Buffer\BufferManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\Buffer\Dx12Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -245,13 +254,16 @@
     <ClCompile Include="Device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Internal\ResourceFormatToDx12.cpp">
+    <ClCompile Include="Internal\BufferFormatToDx12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Internal\BlendFactorToDx12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Internal\BlendOperationToDx12.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\Buffer\BufferManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

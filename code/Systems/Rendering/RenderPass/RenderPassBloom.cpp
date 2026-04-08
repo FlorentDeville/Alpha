@@ -24,7 +24,7 @@ namespace Systems
 		, m_bloomFilterRadius(0.005f)
 	{
 		//emissive filter
-		m_pEmissive = new Rendering::RenderTarget(width, height, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
+		m_pEmissive = new Rendering::RenderTarget(width, height, Rendering::BufferFormat::R16G16B16A16_FLOAT, Core::Vec4f());
 
 		m_pEmissiveFilterRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::BLOOM_EMISSIVE_FILTER);
 		Rendering::Shader* pBloomEmissiveFilterVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::BLOOM_EMISSIVE_FILTER_VS);
@@ -52,7 +52,7 @@ namespace Systems
 			m_mipSizes[ii].x = static_cast<float>(mipWidth);
 			m_mipSizes[ii].y = static_cast<float>(mipHeight);
 
-			m_ppMipRenderTarget[ii] = new Rendering::RenderTarget(mipWidth, mipHeight, Rendering::ResourceFormat::R16G16B16A16_FLOAT, Core::Vec4f());
+			m_ppMipRenderTarget[ii] = new Rendering::RenderTarget(mipWidth, mipHeight, Rendering::BufferFormat::R16G16B16A16_FLOAT, Core::Vec4f());
 		}
 
 		//downsampling
