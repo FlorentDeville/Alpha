@@ -161,7 +161,7 @@ namespace Systems
 		m_pImpl->m_pShadowHeapSrv->Init(pDevice, Rendering::DescriptorHeapFlag::SHADER_VISIBLE, Rendering::DescriptorHeapType::CBV_SRV_UAV, Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
 
 		DXGI_FORMAT dxFormat = DXGI_FORMAT_R32_FLOAT;
-		Rendering::ResourceFormat format = Rendering::ResourceFormat::R32_FLOAT;
+		Rendering::BufferFormat format = Rendering::BufferFormat::R32_FLOAT;
 		for (int ii = 0; ii < Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT; ++ii)
 		{
 			m_pImpl->m_pShadowRenderTarget[ii] = new Rendering::RenderTarget(1024, 1024, format, Core::Vec4f(1, 1, 1, 1));

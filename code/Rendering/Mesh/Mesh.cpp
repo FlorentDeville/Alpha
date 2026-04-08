@@ -99,7 +99,7 @@ namespace Rendering
 		// Create index buffer view.
 		m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
 		m_indexBufferOffset = 0;
-		m_indexBufferFormat = ResourceFormat::R16_UINT;
+		m_indexBufferFormat = BufferFormat::R16_UINT;
 		m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 
 		//Upload everything to the gpu
@@ -137,7 +137,7 @@ namespace Rendering
 			// Create index buffer view.
 			m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
 			m_indexBufferOffset = 0;
-			m_indexBufferFormat = ResourceFormat::R16_UINT;
+			m_indexBufferFormat = BufferFormat::R16_UINT;
 			m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 		}
 
@@ -179,7 +179,7 @@ namespace Rendering
 		// Create index buffer view.
 		m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
 		m_indexBufferOffset = 0;
-		m_indexBufferFormat = ResourceFormat::R16_UINT;
+		m_indexBufferFormat = BufferFormat::R16_UINT;
 		m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 
 		//Upload everything to the gpu
@@ -218,7 +218,7 @@ namespace Rendering
 		// Create index buffer view.
 		m_indexBufferStartAddr = pIndexBuffer->m_pResource->GetGPUVirtualAddress();
 		m_indexBufferOffset = 0;
-		m_indexBufferFormat = ResourceFormat::R16_UINT;
+		m_indexBufferFormat = BufferFormat::R16_UINT;
 		m_indexBufferSize = sizeof(uint16_t) * indicesCount;
 
 		//Upload everything to the gpu
@@ -264,7 +264,7 @@ namespace Rendering
 		return m_indexBufferSize;
 	}
 
-	ResourceFormat Mesh::GetIndexBufferFormat() const
+	BufferFormat Mesh::GetIndexBufferFormat() const
 	{
 		return m_indexBufferFormat;
 	}

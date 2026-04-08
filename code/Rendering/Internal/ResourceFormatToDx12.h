@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Rendering/ResourceFormat.h"
+#include "Rendering/BufferFormat.h"
 
 #include<dxgiformat.h>
 
@@ -12,6 +12,6 @@ namespace Rendering
 {
 	namespace Internal
 	{
-		DXGI_FORMAT GetDx12ResourceFormat(ResourceFormat format);
+		DXGI_FORMAT GetDx12ResourceFormat(BufferFormat format);
 	}
 }

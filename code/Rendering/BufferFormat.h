@@ -6,7 +6,7 @@
 
 namespace Rendering
 {
-	enum ResourceFormat
+	enum BufferFormat
 	{
 		R32_FLOAT,
 		R8G8B8A8_UINT,			

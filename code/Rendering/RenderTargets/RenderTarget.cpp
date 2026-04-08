@@ -20,14 +20,14 @@
 namespace Rendering
 {
 	RenderTarget::RenderTarget(int width, int height)
-		: RenderTarget(width, height, ResourceFormat::R8G8B8A8_UNORM_SRGB)
+		: RenderTarget(width, height, BufferFormat::R8G8B8A8_UNORM_SRGB)
 	{ }
 
-	RenderTarget::RenderTarget(int width, int height, ResourceFormat format)
+	RenderTarget::RenderTarget(int width, int height, BufferFormat format)
 		: RenderTarget(width, height, format, Core::Vec4f(0.27f, 0.27f, 0.27f, 1.f))
 	{ }
 
-	RenderTarget::RenderTarget(int width, int height, ResourceFormat format, const Core::Vec4f& clearColor)
+	RenderTarget::RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor)
 		: m_textureId()
 		, m_pTexture(nullptr)
 		, m_rtv()

@@ -126,7 +126,7 @@
     <ClInclude Include="Device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceFormat.h">
+    <ClInclude Include="BufferFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Internal\ResourceFormatToDx12.h">

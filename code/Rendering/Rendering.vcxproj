@@ -45,7 +45,7 @@
     <ClInclude Include="Reflection\ReflectionRenderingTypes.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="RenderTargets\RenderTarget.h" />
-    <ClInclude Include="ResourceFormat.h" />
+    <ClInclude Include="BufferFormat.h" />
     <ClInclude Include="RootSignature\RootSignature.h" />
     <ClInclude Include="RootSignature\RootSignatureId.h" />
     <ClInclude Include="RootSignature\RootSignatureMgr.h" />

@@ -7,7 +7,7 @@
 #include "Core/Math/Vectors.h"
 
 #include "Rendering/BufferHandle.h"
-#include "Rendering/ResourceFormat.h"
+#include "Rendering/BufferFormat.h"
 
 namespace Rendering
 {
@@ -63,7 +63,7 @@ namespace Rendering
 		uint64_t GetIndexBufferStartAddr() const;
 		uint64_t GetIndexBufferOffset() const;
 		uint32_t GetIndexBufferSize() const;
-		ResourceFormat GetIndexBufferFormat() const;
+		BufferFormat GetIndexBufferFormat() const;
 
 		int GetIndicesCount() const;
 		int GetVerticesCount() const;
@@ -82,7 +82,7 @@ namespace Rendering
 		uint64_t m_indexBufferStartAddr;
 		uint64_t m_indexBufferOffset;
 		uint32_t m_indexBufferSize;
-		ResourceFormat m_indexBufferFormat;
+		BufferFormat m_indexBufferFormat;
 
 		int m_indicesCount;
 		int m_verticesCount;
