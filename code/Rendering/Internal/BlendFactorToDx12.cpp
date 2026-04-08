@@ -30,6 +30,14 @@ namespace Rendering
 				return D3D12_BLEND_INV_BLEND_FACTOR;
 				break;
 
+			case BlendFactor::SRC_ALPHA:
+				return D3D12_BLEND_SRC_ALPHA;
+				break;
+
+			case BlendFactor::INV_SRC_ALPHA:
+				return D3D12_BLEND_INV_SRC_ALPHA;
+				break;
+
 			default:
 				assert(false && "Unknown blend factor");
 				break;
