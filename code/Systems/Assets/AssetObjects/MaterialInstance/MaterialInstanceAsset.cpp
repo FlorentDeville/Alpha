@@ -48,7 +48,7 @@ namespace Systems
 			return false;
 
 		if (m_pBaseMaterial->GetParametersSchemaHash() == m_parametersSchemaHash)
-			return true;
+			return false;
 
 		//copy parameters
 		const Core::Array<MaterialParameterDescription>& parameters = m_pBaseMaterial->GetMaterialParameterDescription();
