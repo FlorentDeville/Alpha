@@ -130,6 +130,15 @@ namespace Systems
 				renderModule.RenderMesh(*renderable.m_pMesh);
 			}
 
+			for (const Systems::RenderableObject& renderable : scene.m_translucentObjects)
+			{
+				if (!(renderable.m_view & Systems::RenderView::ShadowMap))
+					continue;
+
+				renderModule.SetConstantBuffer(0, sizeof(Core::Mat44f), &renderable.m_worldTx, 0);
+				renderModule.RenderMesh(*renderable.m_pMesh);
+			}
+
 			m_pImpl->m_pShadowRenderTarget[ii]->EndScene();
 		}
 	}
