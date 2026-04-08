@@ -4,9 +4,6 @@
 
 #pragma once
 
-#include <d3d12.h>
-#include <string>
-
 #include "Core/Math/Vectors.h"
 
 #include "Rendering/BufferHandle.h"
