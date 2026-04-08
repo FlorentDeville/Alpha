@@ -12,8 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseShape.h" />
+    <ClInclude Include="BufferHandle.h" />
     <ClInclude Include="Internal\BlendFactorToDx12.h" />
     <ClInclude Include="Internal\BlendOperationToDx12.h" />
+    <ClInclude Include="Internal\Buffer\BufferManager.h" />
+    <ClInclude Include="Internal\Buffer\Dx12Buffer.h" />
     <ClInclude Include="PipelineState\BlendFactor.h" />
     <ClInclude Include="PipelineState\BlendOperation.h" />
     <ClInclude Include="Camera.h" />
@@ -72,6 +75,7 @@
     <ClCompile Include="InputLayout\InputLayout.cpp" />
     <ClCompile Include="Internal\BlendFactorToDx12.cpp" />
     <ClCompile Include="Internal\BlendOperationToDx12.cpp" />
+    <ClCompile Include="Internal\Buffer\BufferManager.cpp" />
     <ClCompile Include="Internal\ResourceFormatToDx12.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshId.cpp" />
