@@ -336,6 +336,8 @@ namespace Editors
 
 		existingTextureBindings = std::move(newTextureBindings);
 
+		pMaterial->CalculateParametersSchemaHash();
+
 		res = pMaterial->UpdateRenderingObjects();
 		if (!res)
 		{

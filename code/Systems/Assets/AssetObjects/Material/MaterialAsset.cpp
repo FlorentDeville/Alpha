@@ -24,6 +24,7 @@ namespace Systems
 		, m_depthFunction(Rendering::DepthComparisonMode::LESS)
 		, m_blendMode(BlendMode::BM_OPAQUE)
 		, m_shadowMapsRootSigIndex(-1)
+		, m_parametersSchemaHash()
 	{ }
 
 	MaterialAsset::~MaterialAsset()
@@ -220,6 +221,16 @@ namespace Systems
 		return m_blendMode;
 	}
 
+	Core::Sid MaterialAsset::GetParametersSchemaHash() const
+	{
+		return m_parametersSchemaHash;
+	}
+
+	void MaterialAsset::CalculateParametersSchemaHash()
+	{
+		m_parametersSchemaHash = CalculateParametersSchemaHash(m_perMaterialParameters, m_texturesBindingInfo);
+	}
+
 	const std::string& MaterialAsset::GetAssetTypeName()
 	{
 		static std::string name = "Material";
@@ -230,5 +241,40 @@ namespace Systems
 	{
 		static Core::Sid sid = SID(GetAssetTypeName());
 		return sid;
+	}
+
+	Core::Sid MaterialAsset::CalculateParametersSchemaHash(const Core::Array<MaterialParameterDescription>& param, const Core::Array<TextureBindingInfo>& textures)
+	{
+		std::string schema;
+		for (const MaterialParameterDescription& desc : param)
+		{
+			schema += desc.m_name + desc.m_strType;
+
+			size_t offset = schema.size();
+			const int DATA_SIZE = sizeof(desc.m_offset);
+			schema.resize(schema.size() + DATA_SIZE);
+			memcpy(schema.data() + offset, &desc.m_offset, DATA_SIZE);
+		}
+
+		for (const TextureBindingInfo& texture : textures)
+		{
+			schema += texture.m_name;
+
+			{
+				size_t offset = schema.size();
+				const int DATA_SIZE = sizeof(texture.m_sigRootIndex);
+				schema.resize(schema.size() + DATA_SIZE);
+				memcpy(schema.data() + offset, &texture.m_sigRootIndex, DATA_SIZE);
+			}
+
+			{
+				size_t offset = schema.size();
+				const int DATA_SIZE = sizeof(texture.m_type);
+				schema.resize(schema.size() + DATA_SIZE);
+				memcpy(schema.data() + offset, &texture.m_type, DATA_SIZE);
+			}
+		}
+
+		return Core::MakeSid(schema);
 	}
 }

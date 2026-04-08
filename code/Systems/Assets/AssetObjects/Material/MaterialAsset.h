@@ -69,8 +69,13 @@ namespace Systems
 
 		BlendMode GetBlendMode() const;
 
+		Core::Sid GetParametersSchemaHash() const;
+		void CalculateParametersSchemaHash();
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
+
+		static Core::Sid CalculateParametersSchemaHash(const Core::Array<MaterialParameterDescription>& param, const Core::Array<TextureBindingInfo>& textures);
 
 	private:
 		std::string m_sourceFilePS;
@@ -93,6 +98,9 @@ namespace Systems
 
 		int32_t m_shadowMapsRootSigIndex; // if different than -1, then shadow maps should be binded.
 
+		//Schema Hash for material parameters
+		Core::Sid m_parametersSchemaHash;
+
 		START_REFLECTION(Systems::MaterialAsset)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_sourceFilePS)
@@ -107,6 +115,7 @@ namespace Systems
 			ADD_FIELD(m_depthFunction)
 			ADD_FIELD(m_blendMode)
 			ADD_FIELD_ATTR(m_shadowMapsRootSigIndex, Core::Hidden)
+			ADD_FIELD_ATTR(m_parametersSchemaHash, Core::Hidden)
 		END_REFLECTION()
 
 		//No reflected variables
