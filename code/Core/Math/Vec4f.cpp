@@ -65,6 +65,12 @@ namespace Core
 		return sqrt(squaredLength);
 	}
 
+	float Vec4f::Length2() const
+	{
+		float squareLength = Dot(*this);
+		return squareLength;
+	}
+
 	void Vec4f::Normalize()
 	{
 		m_vector = DirectX::XMVector3Normalize(m_vector);

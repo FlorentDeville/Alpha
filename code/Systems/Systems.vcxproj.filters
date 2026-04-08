@@ -54,6 +54,7 @@
     <ClInclude Include="Clock\Clock.h" />
     <ClInclude Include="Container\LoadingDomain.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassBloom.h" />
+    <ClInclude Include="Assets\AssetObjects\Material\BlendMode.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />

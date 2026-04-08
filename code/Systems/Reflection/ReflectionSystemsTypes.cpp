@@ -5,6 +5,7 @@
 #include "Systems/Reflection/ReflectionSystemsTypes.h"
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+#include "Systems/Assets/AssetObjects/Material/BlendMode.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialAsset.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialCBufferBindingInfo.h"
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
@@ -33,6 +34,7 @@ namespace Systems
 	{
 		REGISTER_TYPE(Systems::NewAssetId);
 
+		BlendMode_RegisterReflection();
 		TextureType_RegisterReflection();
 
 		Systems::Object::RegisterReflection();

@@ -18,6 +18,11 @@ namespace Rendering
 	class RootSignature;
 }
 
+namespace Systems
+{
+	class RenderableObject;
+}
+
 namespace Editors
 {
 	class RenderPassObjectId : public Systems::IRenderPass
@@ -40,5 +45,7 @@ namespace Editors
 		Rendering::RenderTarget* m_pObjectIdRenderTarget;
 
 		std::map<uint32_t, Core::Guid> m_objectIdToGuid;
+
+		void RenderObject(const Systems::RenderableObject& obj, uint32_t& objectIdCounter);
 	};
 }

@@ -82,27 +82,20 @@ namespace Editors
 
 		uint32_t objectIdCounter = 0;
 
-		for (const Systems::RenderableObject& renderable : scene.m_objects)
+		for (const Systems::RenderableObject& renderable : scene.m_opaqueObjects)
 		{
 			if (!(renderable.m_view & Systems::RenderView::ObjectId))
 				continue;
 
-			++objectIdCounter;
+			RenderObject(renderable, objectIdCounter);
+		}
 
-			const Core::Mat44f& world = renderable.m_worldTx;
-			ConstBufferPerObject perObject;
-			perObject.m_world = world;
-			perObject.m_objectId[3] = (objectIdCounter & 0xFF000000) >> 24;
-			perObject.m_objectId[2] = (objectIdCounter & 0x00FF0000) >> 16;
-			perObject.m_objectId[1] = (objectIdCounter & 0x0000FF00) >> 8;
-			perObject.m_objectId[0] = (objectIdCounter & 0x000000FF);
+		for (const Systems::RenderableObject& renderable : scene.m_translucentObjects)
+		{
+			if (!(renderable.m_view & Systems::RenderView::ObjectId))
+				continue;
 
-			m_objectIdToGuid[objectIdCounter] = renderable.m_pOwner->GetGuid();
-
-			renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
-
-			const Rendering::Mesh* pRenderingMesh = renderable.m_pMesh;
-			renderModule.RenderMesh(*pRenderingMesh);
+			RenderObject(renderable, objectIdCounter);
 		}
 	}
 
@@ -123,5 +116,27 @@ namespace Editors
 			return nullptr;
 
 		return &it->second;
+	}
+
+	void RenderPassObjectId::RenderObject(const Systems::RenderableObject& obj, uint32_t& objectIdCounter)
+	{
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+
+		++objectIdCounter;
+
+		const Core::Mat44f& world = obj.m_worldTx;
+		ConstBufferPerObject perObject;
+		perObject.m_world = world;
+		perObject.m_objectId[3] = (objectIdCounter & 0xFF000000) >> 24;
+		perObject.m_objectId[2] = (objectIdCounter & 0x00FF0000) >> 16;
+		perObject.m_objectId[1] = (objectIdCounter & 0x0000FF00) >> 8;
+		perObject.m_objectId[0] = (objectIdCounter & 0x000000FF);
+
+		m_objectIdToGuid[objectIdCounter] = obj.m_pOwner->GetGuid();
+
+		renderModule.SetConstantBuffer(0, sizeof(ConstBufferPerObject), &perObject, 0);
+
+		const Rendering::Mesh* pRenderingMesh = obj.m_pMesh;
+		renderModule.RenderMesh(*pRenderingMesh);
 	}
 }

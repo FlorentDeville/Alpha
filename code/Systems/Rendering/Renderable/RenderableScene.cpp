@@ -20,6 +20,8 @@
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 
+#include <algorithm>
+
 namespace Systems
 {
 	static float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition, const Core::Vec4f& cameraPosition, float fov)
@@ -102,7 +104,7 @@ namespace Systems
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
 						{
-							Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
+							Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
 							renderable.m_pMaterial = nullptr;
@@ -113,7 +115,7 @@ namespace Systems
 						}
 
 						{
-							Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
+							Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
 							float arrowTipScaleValue = 1.f * screenScale;
 
@@ -146,7 +148,7 @@ namespace Systems
 					gfxLight.m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
 					{
-						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
 						const float SIZE = 0.5f;
 						float realSize = ComputeConstantScreenSizeScale(worldPosition, scene.m_camera.m_position, scene.m_camera.m_fov) * SIZE;
@@ -214,7 +216,7 @@ namespace Systems
 
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
-						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 						renderable.m_pMaterial = nullptr;
@@ -236,14 +238,18 @@ namespace Systems
 
 					if (pMesh && pMaterial)
 					{
-						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
+						Systems::RenderableObject* pNewRenderable = nullptr;
+						if(pMaterial->GetBaseMaterial()->GetBlendMode() == BlendMode::BM_TRANSLUCENT)
+							pNewRenderable = &scene.m_translucentObjects.PushBackDefault();
+						else
+							pNewRenderable = &scene.m_opaqueObjects.PushBackDefault();
 
-						renderable.m_pMesh = pMesh;
-						renderable.m_pMaterial = pMaterial;
-						renderable.m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
-						renderable.m_primitiveMesh = false;
-						renderable.m_pOwner = pGo;
-						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
+						pNewRenderable->m_pMesh = pMesh;
+						pNewRenderable->m_pMaterial = pMaterial;
+						pNewRenderable->m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
+						pNewRenderable->m_primitiveMesh = false;
+						pNewRenderable->m_pOwner = pGo;
+						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
 				}
 				else if (const Systems::SkyboxComponent* pSkybox = pComponent->Cast<Systems::SkyboxComponent>())
@@ -257,7 +263,7 @@ namespace Systems
 
 					if (pMesh && pMaterial)
 					{
-						Systems::RenderableObject& renderable = scene.m_objects.PushBackDefault();
+						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
@@ -269,5 +275,15 @@ namespace Systems
 				}
 			}
 		}
+
+		//sort translucent object from the farthest to the closest
+		Core::Vec4f& cameraPosition = scene.m_camera.m_position;
+		std::sort(scene.m_translucentObjects.begin(), scene.m_translucentObjects.end(), [&cameraPosition](const RenderableObject& obj1, const RenderableObject& obj2)
+			{
+				float obj1Distance = (obj1.m_worldTx.GetT() - cameraPosition).Length2();
+				float obj2Distance = (obj2.m_worldTx.GetT() - cameraPosition).Length2();
+
+				return obj1Distance > obj2Distance;
+			});
 	}
 }

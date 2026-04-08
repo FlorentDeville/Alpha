@@ -17,7 +17,8 @@ namespace Systems
 	class RenderableScene
 	{
 	public:
-		Core::Array<RenderableObject> m_objects;
+		Core::Array<RenderableObject> m_opaqueObjects;
+		Core::Array<RenderableObject> m_translucentObjects;
 		Core::Array<RenderableLight> m_lights;
 
 		RenderableCamera m_camera;
