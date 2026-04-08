@@ -121,7 +121,7 @@ namespace Systems
 			m_pImpl->m_pShadowRenderTarget[ii]->BeginScene();
 
 			//loop through renderable
-			for (const Systems::RenderableObject& renderable : scene.m_objects)
+			for (const Systems::RenderableObject& renderable : scene.m_opaqueObjects)
 			{
 				if (!(renderable.m_view & Systems::RenderView::ShadowMap))
 					continue;

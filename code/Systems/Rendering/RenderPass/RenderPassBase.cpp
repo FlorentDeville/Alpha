@@ -23,7 +23,33 @@
 
 namespace Systems
 {
-	uint32_t min(uint32_t a, uint32_t b) { return a < b ? a : b; }
+	static uint32_t min(uint32_t a, uint32_t b) { return a < b ? a : b; }
+
+	static void RenderObject(const RenderableObject& obj, const Core::Mat44f* lightSpace, const Rendering::PerFrameCBuffer& perFrameData, 
+		const Rendering::LightsArrayCBuffer& lightsConstBuffer, Rendering::DescriptorHeap* pShadowMapSrvHeap)
+	{
+		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
+
+		const Systems::MaterialAsset* pMaterial = obj.m_pMaterial->GetBaseMaterial();
+		if (pMaterial && pMaterial->IsValidForRendering())
+		{
+			Rendering::PerObjectCBuffer perObjectData;
+			perObjectData.m_world = Core::Mat44f(obj.m_worldTx.m_matrix);
+			memcpy(perObjectData.m_lightSpaceMatrix, lightSpace, sizeof(Core::Mat44f) * Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
+
+			Systems::MaterialRendering::Bind(*obj.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
+
+			int32_t shadowMapsRootSigIndex = pMaterial->GetShadowMapsRootSigIndex();
+			if (shadowMapsRootSigIndex != -1)
+			{
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pShadowMapSrvHeap->GetHeap() };
+				renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(shadowMapsRootSigIndex, pShadowMapSrvHeap->GetHeap()->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			renderModule.RenderMesh(*obj.m_pMesh);
+		}
+	}
 
 	RenderPassBase::RenderPassBase(uint32_t width, uint32_t height)
 		: IRenderPass()
@@ -82,7 +108,7 @@ namespace Systems
 		Core::Mat44f viewProj = scene.m_camera.m_view * scene.m_camera.m_proj;
 
 		//now render all renderables
-		for (const Systems::RenderableObject& renderable : scene.m_objects)
+		for (const Systems::RenderableObject& renderable : scene.m_opaqueObjects)
 		{
 			if (!(renderable.m_view & Systems::RenderView::Game))
 				continue;
@@ -93,26 +119,14 @@ namespace Systems
 			}
 			else
 			{
-				const Systems::MaterialAsset* pMaterial = renderable.m_pMaterial->GetBaseMaterial();
-				if (pMaterial && pMaterial->IsValidForRendering())
-				{
-					Rendering::PerObjectCBuffer perObjectData;
-					perObjectData.m_world = Core::Mat44f(renderable.m_worldTx.m_matrix);
-					memcpy(perObjectData.m_lightSpaceMatrix, lightSpace, sizeof(Core::Mat44f) * Rendering::LightsArrayCBuffer::MAX_LIGHT_COUNT);
-
-					Systems::MaterialRendering::Bind(*renderable.m_pMaterial, perObjectData, perFrameData, lightsConstBuffer);
-
-					int32_t shadowMapsRootSigIndex = pMaterial->GetShadowMapsRootSigIndex();
-					if (shadowMapsRootSigIndex != -1)
-					{
-						ID3D12DescriptorHeap* pDescriptorHeap[] = { m_pShadowMapSrvHeap->GetHeap() };
-						renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
-						renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(shadowMapsRootSigIndex, m_pShadowMapSrvHeap->GetHeap()->GetGPUDescriptorHandleForHeapStart());
-					}
-
-					renderModule.RenderMesh(*renderable.m_pMesh);
-				}
+				RenderObject(renderable, lightSpace, perFrameData, lightsConstBuffer, m_pShadowMapSrvHeap);
 			}
+		}
+
+		//translucent objects pass
+		for (const RenderableObject& obj : scene.m_translucentObjects)
+		{
+			RenderObject(obj, lightSpace, perFrameData, lightsConstBuffer, m_pShadowMapSrvHeap);
 		}
 	}
 

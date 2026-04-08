@@ -215,6 +215,11 @@ namespace Systems
 		return m_shadowMapsRootSigIndex;
 	}
 
+	BlendMode MaterialAsset::GetBlendMode() const
+	{
+		return m_blendMode;
+	}
+
 	const std::string& MaterialAsset::GetAssetTypeName()
 	{
 		static std::string name = "Material";

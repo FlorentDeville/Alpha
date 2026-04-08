@@ -67,6 +67,8 @@ namespace Systems
 		void SetShadowMapsRootSigIndex(int32_t index);
 		int32_t GetShadowMapsRootSigIndex() const;
 
+		BlendMode GetBlendMode() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 

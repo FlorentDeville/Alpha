@@ -82,7 +82,7 @@ namespace Editors
 
 		uint32_t objectIdCounter = 0;
 
-		for (const Systems::RenderableObject& renderable : scene.m_objects)
+		for (const Systems::RenderableObject& renderable : scene.m_opaqueObjects)
 		{
 			if (!(renderable.m_view & Systems::RenderView::ObjectId))
 				continue;
