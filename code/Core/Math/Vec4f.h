@@ -34,6 +34,7 @@ namespace Core
 		Vec4f Cross(const Vec4f& other) const;
 
 		float Length() const;
+		float Length2() const;
 
 		void Normalize();
 
