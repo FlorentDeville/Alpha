@@ -49,7 +49,7 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_pTexture, m_textureId);
-		DXGI_FORMAT dxFormat = Internal::GetDx12ResourceFormat(format);
+		DXGI_FORMAT dxFormat = Internal::GetDx12BufferFormat(format);
 		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, dxFormat);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();

@@ -335,7 +335,7 @@ namespace Rendering
 
 		D3D12_INDEX_BUFFER_VIEW ibv;
 		ibv.BufferLocation = mesh.GetIndexBufferStartAddr() + mesh.GetIndexBufferOffset();
-		ibv.Format = Internal::GetDx12ResourceFormat(mesh.GetIndexBufferFormat());
+		ibv.Format = Internal::GetDx12BufferFormat(mesh.GetIndexBufferFormat());
 		ibv.SizeInBytes = mesh.GetIndexBufferSize();
 		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 
@@ -860,7 +860,7 @@ namespace Rendering
 
 		D3D12_INDEX_BUFFER_VIEW ibv;
 		ibv.BufferLocation = pMesh->GetIndexBufferStartAddr() + pMesh->GetIndexBufferOffset();
-		ibv.Format = Internal::GetDx12ResourceFormat(pMesh->GetIndexBufferFormat());
+		ibv.Format = Internal::GetDx12BufferFormat(pMesh->GetIndexBufferFormat());
 		ibv.SizeInBytes = pMesh->GetIndexBufferSize();
 		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 

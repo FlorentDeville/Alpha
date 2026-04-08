@@ -270,7 +270,7 @@ namespace Rendering
 
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
 		rtvFormats.NumRenderTargets = 1;
-		rtvFormats.RTFormats[0] = Internal::GetDx12ResourceFormat(desc.m_rtvFormat);
+		rtvFormats.RTFormats[0] = Internal::GetDx12BufferFormat(desc.m_rtvFormat);
 
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = GetDx12CullMode(desc.m_cullMode);

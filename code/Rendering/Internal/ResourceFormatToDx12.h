@@ -12,6 +12,6 @@ namespace Rendering
 {
 	namespace Internal
 	{
-		DXGI_FORMAT GetDx12ResourceFormat(BufferFormat format);
+		DXGI_FORMAT GetDx12BufferFormat(BufferFormat format);
 	}
 }
