@@ -324,6 +324,7 @@ namespace Editors
 
 		MaterialEditorModule::Get().OnMaterialCompiled([this](const Systems::AssetMetadata& metadata)
 			{
+				m_pMaterialListModel->SetShaderModified(metadata.GetAssetId());
 				RefreshPropertyGrid();
 			});
 
