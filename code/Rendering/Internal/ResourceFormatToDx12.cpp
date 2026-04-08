@@ -30,6 +30,10 @@ namespace Rendering
 				return DXGI_FORMAT_R16G16B16A16_FLOAT;
 				break;
 
+			case ResourceFormat::R16_UINT:
+				return DXGI_FORMAT_R16_UINT;
+				break;
+
 			default:
 				assert(false && "Unknown resource format");
 				break;
