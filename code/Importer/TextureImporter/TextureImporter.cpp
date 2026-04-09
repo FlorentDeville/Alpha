@@ -161,6 +161,55 @@ namespace Importer
         return true;
 	}
 
+    TextureImporter::Result TextureImporter::ImportGPU(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture) const
+    {
+        ScopeComInitialize comJanitor;
+        if (FAILED(comJanitor.m_res))
+            return Result(Result::ComError, "Failed to initialize COM (%08X)", static_cast<unsigned int>(comJanitor.m_res));
+
+        if (!InitializeWICFactory())
+            return Result::WicFactoryError;
+
+        std::wstring wideSourceFilename = std::wstring(sourceFilename.begin(), sourceFilename.end());
+        DirectX::ScratchImage image;
+        HRESULT hr = DirectX::LoadFromWICFile(wideSourceFilename.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
+        if (FAILED(hr))
+            return Result(Result::LoadingFailed, "Failed to load texture %s (%08X)", sourceFilename.c_str(), static_cast<unsigned int>(hr));
+
+        DirectX::ScratchImage timage;
+        hr = DirectX::GenerateMipMaps(*image.GetImage(0, 0, 0), DirectX::TEX_FILTER_DEFAULT, 0, timage);
+        if (FAILED(hr))
+            return Result(Result::MipMapFailed, "Failed to generate mip maps (%08X)", static_cast<unsigned int>(hr));
+
+        image.Release();
+
+        hr = DirectX::Compress(timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
+            DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
+            image);
+
+        if (FAILED(hr))
+            return Result(Result::CompressionFailed, "Failed to compress textture (%08X)", static_cast<unsigned int>(hr));
+
+        DirectX::Blob textureBlob;
+        hr = DirectX::SaveToDDSMemory(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, textureBlob);
+        if (FAILED(hr))
+            return Result(Result::WriteDDSFailed, "Failed to write DDS to memory (%08X)", static_cast<unsigned int>(hr));
+
+        uint32_t width = static_cast<uint32_t>(image.GetMetadata().width);
+        uint32_t height = static_cast<uint32_t>(image.GetMetadata().height);
+        uint32_t mipCount = static_cast<uint32_t>(image.GetImageCount());
+
+        image.Release();
+        timage.Release();
+
+        size_t blobSize = textureBlob.GetBufferSize();
+        if (blobSize > UINT32_MAX)
+            return Result(Result::BadSize, "Current size is %lld but maximum size is %lld", blobSize, UINT32_MAX);
+
+        pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount/*, Rendering::TextureFormat::BC7_SRGB*/);
+        return Result::Ok;
+    }
+
     TextureImporter::Result TextureImporter::ImportCubemap(const std::string sourceFilename[6], Systems::CubemapAsset* pCubemap)
     {
         ScopeComInitialize comJanitor;
