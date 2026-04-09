@@ -49,6 +49,8 @@
 #include "Widgets/WidgetMgr.h"
 #include "Widgets/Widgets/TableView.h"
 
+#include <chrono>
+
 //#pragma optimize("", off)
 
 namespace Editors
@@ -229,12 +231,17 @@ namespace Editors
 		if (!res)
 			return;
 
+		std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
 		res = TextureEditorModule::Get().CreateAndImportTexture(filename);
 
+		std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime);
+
 		if (!res)
-			Core::LogModule::Get().LogError("Failed to import texture %s", filename.c_str());
+			Core::LogModule::Get().LogError("Failed to import texture %s in %d s.", filename.c_str(), elapsedTime.count());
 		else
-			Core::LogModule::Get().LogInfo("Texture %s imported.", filename.c_str());
+			Core::LogModule::Get().LogInfo("Texture %s imported in %d s.", filename.c_str(), elapsedTime.count());
 	}
 
 	void TextureEditor::OnClick_Texture_Import()
@@ -246,7 +253,17 @@ namespace Editors
 		if (!Systems::AssetUtil::IsA<Systems::Texture2DAsset>(id))
 			return;
 
-		TextureEditorModule::Get().ImportTexture(id);
+		std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
+		bool res = TextureEditorModule::Get().ImportTexture(id);
+
+		std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime);
+
+		if (!res)
+			Core::LogModule::Get().LogError("Failed to import texture in %d s.", elapsedTime.count());
+		else
+			Core::LogModule::Get().LogInfo("Texture imported in %d s.", elapsedTime.count());
 	}
 
 	void TextureEditor::OnClick_Cubemap_CreateCubemap()
