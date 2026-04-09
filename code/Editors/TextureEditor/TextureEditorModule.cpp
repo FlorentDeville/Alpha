@@ -32,8 +32,8 @@ namespace Editors
 	{
 		Systems::Texture2DAsset* pTexture = Systems::CreateNewAsset<Systems::Texture2DAsset>();
 		Importer::TextureImporter importer;
-		bool res = importer.Import(filename, pTexture);
-		if (!res)
+		Importer::TextureImporter::Result res = importer.Import(filename, pTexture);
+		if (res.IsFailure())
 		{
 			Systems::DeleteObject(pTexture);
 			return false;
@@ -118,8 +118,8 @@ namespace Editors
 			if (Systems::Texture2DAsset* pTexture = Systems::AssetUtil::LoadAsset<Systems::Texture2DAsset>(id, Systems::LoadingDomain::EDITOR))
 			{
 				Importer::TextureImporter importer;
-				bool res = importer.Import(pTexture->GetSourceFilename(), pTexture);
-				return res;
+				Importer::TextureImporter::Result res = importer.Import(pTexture->GetSourceFilename(), pTexture);
+				return res.IsSuccess();
 			}
 
 			return false;

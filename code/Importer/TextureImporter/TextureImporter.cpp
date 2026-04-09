@@ -9,6 +9,9 @@
 
 #include "DirectXTex/DirectXTex.h"
 
+#include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
+
 #include <wincodec.h>
 #include <Windows.h>
 
@@ -46,6 +49,36 @@ namespace Importer
         }
 
         DirectX::SetWICFactory(static_cast<IWICImagingFactory*>(pFactory));
+    }
+
+    ID3D11Device* CreateDx11Device()
+    {
+        UINT createDeviceFlags = 0;
+#ifdef _DEBUG
+        createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif //#ifdef _DEBUG
+
+        D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
+
+        ID3D11Device* pDevice = nullptr;
+        D3D_FEATURE_LEVEL supportedFeatureLevel;
+        HRESULT hr = D3D11CreateDevice(
+            nullptr,
+            D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            createDeviceFlags,
+            featureLevels,
+            1,
+            D3D11_SDK_VERSION,
+            &pDevice,
+            &supportedFeatureLevel,
+            nullptr
+        );
+
+        if (FAILED(hr))
+            return nullptr;
+
+        return pDevice;
     }
 
     struct ScopeComInitialize
@@ -93,56 +126,46 @@ namespace Importer
         return !IsSuccess();
     }
 
-	bool TextureImporter::Import(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture)
-	{
+    TextureImporter::Result TextureImporter::Import(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture) const
+    {
         ScopeComInitialize comJanitor;
         if (FAILED(comJanitor.m_res))
-        {
-            //wprintf(L"Failed to initialize COM (%08X)\n", static_cast<unsigned int>(comJanitor.m_res));
-            return false;
-        }
+            return Result(Result::ComError, "Failed to initialize COM (%08X)", static_cast<unsigned int>(comJanitor.m_res));
 
         if (!InitializeWICFactory())
-        {
-            return false;
-        }
+            return Result::WicFactoryError;
 
         std::wstring wideSourceFilename = std::wstring(sourceFilename.begin(), sourceFilename.end());
         DirectX::ScratchImage image;
         HRESULT hr = DirectX::LoadFromWICFile(wideSourceFilename.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
         if (FAILED(hr))
-        {
-            //wprintf(L"Failed to load texture.png (%08X)\n", static_cast<unsigned int>(hr));
-            return false;
-        }
+            return Result(Result::LoadingFailed, "Failed to load texture %s (%08X)", sourceFilename.c_str(), static_cast<unsigned int>(hr));
 
         DirectX::ScratchImage timage;
         hr = DirectX::GenerateMipMaps(*image.GetImage(0, 0, 0), DirectX::TEX_FILTER_DEFAULT, 0, timage);
         if (FAILED(hr))
-        {
-            //wprintf(L"Failed to generate mipmaps (%08X)\n", static_cast<unsigned int>(hr));
-            return false;
-        }
+            return Result(Result::MipMapFailed, "Failed to generate mip maps (%08X)", static_cast<unsigned int>(hr));
 
         image.Release();
 
-        hr = DirectX::Compress(timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
+        //create dx11 device for compression
+        ID3D11Device* pDx11Device = CreateDx11Device();
+        if(!pDx11Device)
+            return Result(Result::Dx11DeviceFailed, "Failed to initialize dx11 device (%08X)", static_cast<unsigned int>(hr));
+
+        hr = DirectX::Compress(pDx11Device, timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
             DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
             image);
 
+        pDx11Device->Release();
+
         if (FAILED(hr))
-        {
-            //wprintf(L"Failed to compress texture (%08X)\n", static_cast<unsigned int>(hr));
-            return false;
-        }
+            return Result(Result::CompressionFailed, "Failed to compress textture (%08X)", static_cast<unsigned int>(hr));
 
         DirectX::Blob textureBlob;
         hr = DirectX::SaveToDDSMemory(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, textureBlob);
         if (FAILED(hr))
-        {
-            //wprintf(L"Failed to write texture to DDS (%08X)\n", static_cast<unsigned int>(hr));
-            return false;
-        }
+            return Result(Result::WriteDDSFailed, "Failed to write DDS to memory (%08X)", static_cast<unsigned int>(hr));
 
         uint32_t width = static_cast<uint32_t>(image.GetMetadata().width);
         uint32_t height = static_cast<uint32_t>(image.GetMetadata().height);
@@ -153,13 +176,11 @@ namespace Importer
 
         size_t blobSize = textureBlob.GetBufferSize();
         if (blobSize > UINT32_MAX)
-        {
-            return false;
-        }
+            return Result(Result::BadSize, "Current size is %lld but maximum size is %lld", blobSize, UINT32_MAX);
 
         pTexture->Init(sourceFilename, textureBlob.GetConstBufferPointer(), static_cast<uint32_t>(blobSize), width, height, mipCount/*, Rendering::TextureFormat::BC7_SRGB*/);
-        return true;
-	}
+        return Result::Ok;
+    }
 
     TextureImporter::Result TextureImporter::ImportCubemap(const std::string sourceFilename[6], Systems::CubemapAsset* pCubemap)
     {
@@ -194,8 +215,13 @@ namespace Importer
         if (FAILED(hr))
             return Result(Result::MipMapFailed, "Failed to create mipmaps : (%08X)", static_cast<unsigned int>(hr));
 
+        //create dx11 device for compression
+        ID3D11Device* pDx11Device = CreateDx11Device();
+        if (!pDx11Device)
+            return Result(Result::Dx11DeviceFailed, "Failed to initialize dx11 device (%08X)", static_cast<unsigned int>(hr));
+
         DirectX::ScratchImage compressedImage;
-        hr = DirectX::Compress(mipMappedImage.GetImages(), mipMappedImage.GetImageCount(), mipMappedImage.GetMetadata(),
+        hr = DirectX::Compress(pDx11Device, mipMappedImage.GetImages(), mipMappedImage.GetImageCount(), mipMappedImage.GetMetadata(),
             DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
             compressedImage);
 
