@@ -51,6 +51,36 @@ namespace Importer
         DirectX::SetWICFactory(static_cast<IWICImagingFactory*>(pFactory));
     }
 
+    ID3D11Device* CreateDx11Device()
+    {
+        UINT createDeviceFlags = 0;
+#ifdef _DEBUG
+        createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif //#ifdef _DEBUG
+
+        D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
+
+        ID3D11Device* pDevice = nullptr;
+        D3D_FEATURE_LEVEL supportedFeatureLevel;
+        HRESULT hr = D3D11CreateDevice(
+            nullptr,
+            D3D_DRIVER_TYPE_HARDWARE,
+            nullptr,
+            createDeviceFlags,
+            featureLevels,
+            1,
+            D3D11_SDK_VERSION,
+            &pDevice,
+            &supportedFeatureLevel,
+            nullptr
+        );
+
+        if (FAILED(hr))
+            return nullptr;
+
+        return pDevice;
+    }
+
     struct ScopeComInitialize
     {
         ScopeComInitialize()
@@ -119,32 +149,9 @@ namespace Importer
         image.Release();
 
         //create dx11 device for compression
-        ID3D11Device* pDx11Device = nullptr;
-        {
-            UINT createDeviceFlags = 0;
-#ifdef _DEBUG
-            createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif //#ifdef _DEBUG
-
-            D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
-
-            D3D_FEATURE_LEVEL supportedFeatureLevel;
-            HRESULT hr = D3D11CreateDevice(
-                nullptr,
-                D3D_DRIVER_TYPE_HARDWARE,
-                nullptr,
-                createDeviceFlags,
-                featureLevels,
-                1,
-                D3D11_SDK_VERSION,
-                &pDx11Device,
-                &supportedFeatureLevel,
-                nullptr
-            );
-
-            if (FAILED(hr))
-                return Result(Result::Dx11DeviceFailed, "Failed to initialize dx11 device (%08X)", static_cast<unsigned int>(hr));
-        }
+        ID3D11Device* pDx11Device = CreateDx11Device();
+        if(!pDx11Device)
+            return Result(Result::Dx11DeviceFailed, "Failed to initialize dx11 device (%08X)", static_cast<unsigned int>(hr));
 
         hr = DirectX::Compress(pDx11Device, timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
             DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
@@ -208,8 +215,13 @@ namespace Importer
         if (FAILED(hr))
             return Result(Result::MipMapFailed, "Failed to create mipmaps : (%08X)", static_cast<unsigned int>(hr));
 
+        //create dx11 device for compression
+        ID3D11Device* pDx11Device = CreateDx11Device();
+        if (!pDx11Device)
+            return Result(Result::Dx11DeviceFailed, "Failed to initialize dx11 device (%08X)", static_cast<unsigned int>(hr));
+
         DirectX::ScratchImage compressedImage;
-        hr = DirectX::Compress(mipMappedImage.GetImages(), mipMappedImage.GetImageCount(), mipMappedImage.GetMetadata(),
+        hr = DirectX::Compress(pDx11Device, mipMappedImage.GetImages(), mipMappedImage.GetImageCount(), mipMappedImage.GetMetadata(),
             DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
             compressedImage);
 
