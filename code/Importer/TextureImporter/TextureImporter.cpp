@@ -9,6 +9,9 @@
 
 #include "DirectXTex/DirectXTex.h"
 
+#include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
+
 #include <wincodec.h>
 #include <Windows.h>
 
@@ -183,9 +186,39 @@ namespace Importer
 
         image.Release();
 
-        hr = DirectX::Compress(timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
+        //create dx11 device for compression
+        ID3D11Device* pDx11Device = nullptr;
+        {
+            UINT createDeviceFlags = 0;
+#ifdef _DEBUG
+            createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif //#ifdef _DEBUG
+
+            D3D_FEATURE_LEVEL featureLevels[] = { D3D_FEATURE_LEVEL_11_0 };
+
+            D3D_FEATURE_LEVEL supportedFeatureLevel;
+            HRESULT hr = D3D11CreateDevice(
+                nullptr,
+                D3D_DRIVER_TYPE_HARDWARE,
+                nullptr,
+                createDeviceFlags,
+                featureLevels,
+                1,
+                D3D11_SDK_VERSION,
+                &pDx11Device,
+                &supportedFeatureLevel,
+                nullptr
+            );
+
+            if (FAILED(hr))
+                return Result(Result::Dx11DeviceFailed, "Failed to initialize dx11 device (%08X)", static_cast<unsigned int>(hr));
+        }
+
+        hr = DirectX::Compress(pDx11Device, timage.GetImages(), timage.GetImageCount(), timage.GetMetadata(),
             DXGI_FORMAT_BC7_UNORM_SRGB, DirectX::TEX_COMPRESS_PARALLEL, DirectX::TEX_THRESHOLD_DEFAULT,
             image);
+
+        pDx11Device->Release();
 
         if (FAILED(hr))
             return Result(Result::CompressionFailed, "Failed to compress textture (%08X)", static_cast<unsigned int>(hr));
