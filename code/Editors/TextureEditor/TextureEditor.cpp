@@ -236,12 +236,12 @@ namespace Editors
 		res = TextureEditorModule::Get().CreateAndImportTexture(filename);
 
 		std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
-		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime);
+		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
 		if (!res)
-			Core::LogModule::Get().LogError("Failed to import texture %s in %d s.", filename.c_str(), elapsedTime.count());
+			Core::LogModule::Get().LogError("Failed to import texture %s in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
 		else
-			Core::LogModule::Get().LogInfo("Texture %s imported in %d s.", filename.c_str(), elapsedTime.count());
+			Core::LogModule::Get().LogInfo("Texture %s imported in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_Texture_Import()
@@ -258,12 +258,12 @@ namespace Editors
 		bool res = TextureEditorModule::Get().ImportTexture(id);
 
 		std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
-		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime);
+		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
 		if (!res)
-			Core::LogModule::Get().LogError("Failed to import texture in %d s.", elapsedTime.count());
+			Core::LogModule::Get().LogError("Failed to import texture in %f s.", elapsedTime.count() / 1000.f);
 		else
-			Core::LogModule::Get().LogInfo("Texture imported in %d s.", elapsedTime.count());
+			Core::LogModule::Get().LogInfo("Texture imported in %f s.", elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_Cubemap_CreateCubemap()
