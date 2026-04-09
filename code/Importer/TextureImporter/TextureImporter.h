@@ -32,7 +32,8 @@ namespace Importer
 				WriteDDSFailed,
 				BadSize,
 				InitFailed,
-				SaveToFileFailed
+				SaveToFileFailed,
+				Dx11DeviceFailed
 			};
 
 			Code m_code;
@@ -45,9 +46,7 @@ namespace Importer
 			bool IsFailure() const;
 		};
 
-		bool Import(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture);
-
-		TextureImporter::Result ImportGPU(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture) const;
+		TextureImporter::Result Import(const std::string& sourceFilename, Systems::Texture2DAsset* pTexture) const;
 
 		//The source filename must be in the following order : +x -x +y -y +z -z
 		TextureImporter::Result ImportCubemap(const std::string sourceFilename[6], Systems::CubemapAsset* pCubemap);
