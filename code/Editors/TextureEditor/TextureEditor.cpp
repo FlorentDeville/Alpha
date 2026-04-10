@@ -261,9 +261,13 @@ namespace Editors
 		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
 		if (!res)
+		{
 			Core::LogModule::Get().LogError("Failed to import texture in %f s.", elapsedTime.count() / 1000.f);
-		else
-			Core::LogModule::Get().LogInfo("Texture imported in %f s.", elapsedTime.count() / 1000.f);
+			return;
+		}
+		
+		m_pListModel->SetModifiedMark(id);
+		Core::LogModule::Get().LogInfo("Texture imported in %f s.", elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_Cubemap_CreateCubemap()
@@ -298,9 +302,13 @@ namespace Editors
 		assert(pMetadata); //if I don;t have a metadata here, something really wrong is going on.
 
 		if (!res)
+		{
 			Core::LogModule::Get().LogError("Failed to import cubemap %s in %f s.", pMetadata->GetVirtualName().c_str(), elapsedTime.count() / 1000.f);
-		else
-			Core::LogModule::Get().LogInfo("Cubemap %s imported in %f s.", pMetadata->GetVirtualName().c_str(), elapsedTime.count() / 1000.f);
+			return;
+		}
+		
+		m_pListModel->SetModifiedMark(id);
+		Core::LogModule::Get().LogInfo("Cubemap %s imported in %f s.", pMetadata->GetVirtualName().c_str(), elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_File_Save()
