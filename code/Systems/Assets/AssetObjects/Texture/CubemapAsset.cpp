@@ -45,7 +45,13 @@ namespace Systems
 	void CubemapAsset::PostLoad()
 	{
 		if (m_pTexture)
+		{
 			delete m_pTexture;
+			m_pTexture = nullptr;
+		}
+
+		if (m_blob.GetSize() == 0)
+			return;
 
 		m_pTexture = new Rendering::Texture();
 		m_pTexture->InitAsDDS(m_blob.GetData(), m_blob.GetSize());
