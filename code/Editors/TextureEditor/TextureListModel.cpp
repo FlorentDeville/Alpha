@@ -12,6 +12,8 @@
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
 #include "Widgets/Models/ModelIndex.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 
 #include <algorithm>
 
@@ -237,6 +239,18 @@ namespace Editors
 			return Systems::NewAssetId::INVALID;
 
 		return m_cache[row].m_id;
+	}
+
+	void TextureListModel::SetSelection(Systems::NewAssetId id)
+	{
+		Widgets::ModelIndex index = GetIndex(id);
+		if (!index.IsValid())
+			return;
+
+		Widgets::SelectionModel* pSelectionModel = GetSelectionModel();
+
+		Widgets::SelectionRow row(index, index);
+		pSelectionModel->SetSelectionRow(row);
 	}
 
 	Widgets::ModelIndex TextureListModel::GetIndex(Systems::NewAssetId id) const

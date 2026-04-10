@@ -53,6 +53,8 @@ namespace Editors
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
+		void SetSelection(Systems::NewAssetId id);
+
 	private:
 		struct CachedTextureData
 		{
