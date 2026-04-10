@@ -45,8 +45,8 @@ namespace Editors
 		void AddRow(const Systems::AssetMetadata& metadata);
 		void RemoveRow(Systems::NewAssetId id);
 
-		void SetTextureModified(Systems::NewAssetId id);
-		void ClearTextureModified(Systems::NewAssetId id);
+		void SetModifiedMark(Systems::NewAssetId id);
+		void ClearModifiedMark(Systems::NewAssetId id);
 		
 
 		void OnTextureRenamed(const Systems::AssetMetadata& metadata);

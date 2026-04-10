@@ -181,10 +181,10 @@ namespace Editors
 		pHorizontalSplit->AddTopPanel(pViewport);
 
 		TextureEditorModule& textureModule = TextureEditorModule::Get();
-		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
+		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); m_pListModel->SetModifiedMark(metadata.GetAssetId()); });
 		textureModule.OnBeforeTextureDeleted([this](const Systems::AssetMetadata& metadata) { m_pListModel->RemoveRow(metadata.GetAssetId()); });
 		textureModule.OnTextureRenamed([this](const Systems::AssetMetadata& metadata) { m_pListModel->OnTextureRenamed(metadata); });
-		textureModule.OnTextureSaved([this](const Systems::NewAssetId& id) { m_pListModel->ClearTextureModified(id); });
+		textureModule.OnTextureSaved([this](const Systems::NewAssetId& id) { m_pListModel->ClearModifiedMark(id); });
 
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
 		pHorizontalSplit->AddBottomPanel(pPropertyGrid);
@@ -625,6 +625,6 @@ namespace Editors
 
 	void TextureEditor::OnDataChanged()
 	{
-		m_pListModel->SetTextureModified(GetSelectedTextureId());
+		m_pListModel->SetModifiedMark(GetSelectedTextureId());
 	}
 }

@@ -180,7 +180,7 @@ namespace Editors
 		AfterRemoveRows(row, 1, Widgets::ModelIndex());
 	}
 
-	void TextureListModel::SetTextureModified(Systems::NewAssetId id)
+	void TextureListModel::SetModifiedMark(Systems::NewAssetId id)
 	{
 		Widgets::ModelIndex index = GetIndex(id);
 		if (!index.IsValid())
@@ -196,7 +196,7 @@ namespace Editors
 		m_onDataChanged(modifiedIndex);
 	}
 
-	void TextureListModel::ClearTextureModified(Systems::NewAssetId id)
+	void TextureListModel::ClearModifiedMark(Systems::NewAssetId id)
 	{
 		Widgets::ModelIndex index = GetIndex(id);
 		if (!index.IsValid())
