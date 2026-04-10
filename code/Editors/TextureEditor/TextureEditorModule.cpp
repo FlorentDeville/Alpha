@@ -66,6 +66,7 @@ namespace Editors
 			return false;
 
 		if (!pMetadata->IsA<Systems::Texture2DAsset>())
+		if (!pMetadata->IsA<Systems::Texture2DAsset>() && !pMetadata->IsA<Systems::CubemapAsset>())
 			return false;
 
 		Systems::AssetMetadata copyMetadata(*pMetadata);

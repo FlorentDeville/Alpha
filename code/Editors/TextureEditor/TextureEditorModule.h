@@ -14,6 +14,7 @@
 namespace Systems
 {
 	class AssetMetadata;
+	class CubemapAsset;
 	class Texture2DAsset;
 }
 
@@ -32,7 +33,7 @@ namespace Editors
 		bool DeleteTexture(Systems::NewAssetId id);
 		bool RenameTexture(Systems::NewAssetId id, const std::string& newName);
 
-		bool CreateCubemap(const std::string& assetName);
+		bool CreateCubemap(const std::string& assetName, Systems::CubemapAsset** ppCubemap = nullptr);
 
 		bool ImportTexture(const Systems::NewAssetId& id);
 

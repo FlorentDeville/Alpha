@@ -280,9 +280,13 @@ namespace Editors
 		const char* pTitle = "New cubemap name";
 
 		UserInputDialog* pDialog = new UserInputDialog(pTitle);
-		pDialog->OnInputValidated([](const std::string& input)
+		pDialog->OnInputValidated([this](const std::string& input)
 			{
-				TextureEditorModule::Get().CreateCubemap(input);
+				Systems::CubemapAsset* pCubemap = nullptr;
+				bool res = TextureEditorModule::Get().CreateCubemap(input, &pCubemap);
+
+				if (res)
+					m_pListModel->SetSelection(pCubemap->GetId());
 			});
 		pDialog->Open();
 	}
