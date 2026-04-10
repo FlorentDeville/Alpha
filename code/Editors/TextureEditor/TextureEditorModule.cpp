@@ -28,9 +28,14 @@ namespace Editors
 	void TextureEditorModule::Shutdown()
 	{ }
 
-	bool TextureEditorModule::CreateAndImportTexture(const std::string& filename)
+	bool TextureEditorModule::CreateAndImportTexture(const std::string& filename, Systems::Texture2DAsset** ppTexture)
 	{
-		Systems::Texture2DAsset* pTexture = Systems::CreateNewAsset<Systems::Texture2DAsset>();
+		size_t start = filename.find_last_of('\\');
+		std::string assetName = filename.substr(start + 1);
+		size_t end = assetName.find_last_of('.');
+		assetName = assetName.substr(0, end);
+
+		Systems::Texture2DAsset* pTexture = Systems::AssetUtil::CreateAsset<Systems::Texture2DAsset>(assetName);
 		Importer::TextureImporter importer;
 		Importer::TextureImporter::Result res = importer.Import(filename, pTexture);
 		if (res.IsFailure())
@@ -39,25 +44,16 @@ namespace Editors
 			return false;
 		}
 
-		Systems::ContainerMgr& containerMgr = Systems::ContainerMgr::Get();
+		bool saveRes = Systems::ContainerMgr::Get().SaveContainer(pTexture->GetId().GetContainerId());
+		assert(saveRes);
 
-		Systems::AssetMgr& assetMgr = Systems::AssetMgr::Get();
-		Systems::ContainerId cid = assetMgr.GenerateNewContainerId();
-		Systems::Container* pContainer = containerMgr.CreateContainer(cid);
-		pContainer->AddAsset(pTexture);
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(pTexture->GetId());
+		assert(pMetadata);
 
-		size_t start = filename.find_last_of('\\');
-		std::string assetName = filename.substr(start + 1);
-		size_t end = assetName.find_last_of('.');
-		assetName = assetName.substr(0, end);
+		m_onTextureCreated(*pMetadata);
 
-		Systems::AssetMetadata metadata(pTexture->GetId(), assetName, Systems::Texture2DAsset::GetAssetTypeNameSid());
-		assetMgr.RegisterAssetMetadata(metadata);
-
-		containerMgr.SaveContainer(pContainer->GetId());
-		assetMgr.SaveMetadataTable();
-
-		m_onTextureCreated(metadata);
+		if (ppTexture)
+			*ppTexture = pTexture;
 
 		return true;
 	}
@@ -69,7 +65,7 @@ namespace Editors
 		if (!pMetadata)
 			return false;
 
-		if (!pMetadata->IsA<Systems::Texture2DAsset>())
+		if (!pMetadata->IsA<Systems::Texture2DAsset>() && !pMetadata->IsA<Systems::CubemapAsset>())
 			return false;
 
 		Systems::AssetMetadata copyMetadata(*pMetadata);
@@ -97,7 +93,7 @@ namespace Editors
 		return true;
 	}
 
-	bool TextureEditorModule::CreateCubemap(const std::string& assetName)
+	bool TextureEditorModule::CreateCubemap(const std::string& assetName, Systems::CubemapAsset** ppCubemap)
 	{
 		Systems::CubemapAsset* pCubemap = Systems::AssetUtil::CreateAsset<Systems::CubemapAsset>(assetName);
 		if (!pCubemap)
@@ -108,6 +104,10 @@ namespace Editors
 			return false;
 
 		m_onTextureCreated(*pMetadata);
+
+		if (ppCubemap)
+			*ppCubemap = pCubemap;
+
 		return true;
 	}
 

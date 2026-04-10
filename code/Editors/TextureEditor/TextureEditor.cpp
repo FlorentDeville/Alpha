@@ -181,10 +181,10 @@ namespace Editors
 		pHorizontalSplit->AddTopPanel(pViewport);
 
 		TextureEditorModule& textureModule = TextureEditorModule::Get();
-		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
+		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); m_pListModel->SetModifiedMark(metadata.GetAssetId()); });
 		textureModule.OnBeforeTextureDeleted([this](const Systems::AssetMetadata& metadata) { m_pListModel->RemoveRow(metadata.GetAssetId()); });
 		textureModule.OnTextureRenamed([this](const Systems::AssetMetadata& metadata) { m_pListModel->OnTextureRenamed(metadata); });
-		textureModule.OnTextureSaved([this](const Systems::NewAssetId& id) { m_pListModel->ClearTextureModified(id); });
+		textureModule.OnTextureSaved([this](const Systems::NewAssetId& id) { m_pListModel->ClearModifiedMark(id); });
 
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
 		pHorizontalSplit->AddBottomPanel(pPropertyGrid);
@@ -233,15 +233,20 @@ namespace Editors
 
 		std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-		res = TextureEditorModule::Get().CreateAndImportTexture(filename);
+		Systems::Texture2DAsset* pTexture = nullptr;
+		res = TextureEditorModule::Get().CreateAndImportTexture(filename, &pTexture);
 
 		std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
 		if (!res)
+		{
 			Core::LogModule::Get().LogError("Failed to import texture %s in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
-		else
-			Core::LogModule::Get().LogInfo("Texture %s imported in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
+			return;
+		}
+		
+		m_pListModel->SetSelection(pTexture->GetId());
+		Core::LogModule::Get().LogInfo("Texture %s imported in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_Texture_Import()
@@ -261,9 +266,13 @@ namespace Editors
 		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
 		if (!res)
+		{
 			Core::LogModule::Get().LogError("Failed to import texture in %f s.", elapsedTime.count() / 1000.f);
-		else
-			Core::LogModule::Get().LogInfo("Texture imported in %f s.", elapsedTime.count() / 1000.f);
+			return;
+		}
+		
+		m_pListModel->SetModifiedMark(id);
+		Core::LogModule::Get().LogInfo("Texture imported in %f s.", elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_Cubemap_CreateCubemap()
@@ -271,9 +280,13 @@ namespace Editors
 		const char* pTitle = "New cubemap name";
 
 		UserInputDialog* pDialog = new UserInputDialog(pTitle);
-		pDialog->OnInputValidated([](const std::string& input)
+		pDialog->OnInputValidated([this](const std::string& input)
 			{
-				TextureEditorModule::Get().CreateCubemap(input);
+				Systems::CubemapAsset* pCubemap = nullptr;
+				bool res = TextureEditorModule::Get().CreateCubemap(input, &pCubemap);
+
+				if (res)
+					m_pListModel->SetSelection(pCubemap->GetId());
 			});
 		pDialog->Open();
 	}
@@ -298,9 +311,13 @@ namespace Editors
 		assert(pMetadata); //if I don;t have a metadata here, something really wrong is going on.
 
 		if (!res)
+		{
 			Core::LogModule::Get().LogError("Failed to import cubemap %s in %f s.", pMetadata->GetVirtualName().c_str(), elapsedTime.count() / 1000.f);
-		else
-			Core::LogModule::Get().LogInfo("Cubemap %s imported in %f s.", pMetadata->GetVirtualName().c_str(), elapsedTime.count() / 1000.f);
+			return;
+		}
+		
+		m_pListModel->SetModifiedMark(id);
+		Core::LogModule::Get().LogInfo("Cubemap %s imported in %f s.", pMetadata->GetVirtualName().c_str(), elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_File_Save()
@@ -625,6 +642,6 @@ namespace Editors
 
 	void TextureEditor::OnDataChanged()
 	{
-		m_pListModel->SetTextureModified(GetSelectedTextureId());
+		m_pListModel->SetModifiedMark(GetSelectedTextureId());
 	}
 }

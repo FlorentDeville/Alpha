@@ -45,13 +45,15 @@ namespace Editors
 		void AddRow(const Systems::AssetMetadata& metadata);
 		void RemoveRow(Systems::NewAssetId id);
 
-		void SetTextureModified(Systems::NewAssetId id);
-		void ClearTextureModified(Systems::NewAssetId id);
+		void SetModifiedMark(Systems::NewAssetId id);
+		void ClearModifiedMark(Systems::NewAssetId id);
 		
 
 		void OnTextureRenamed(const Systems::AssetMetadata& metadata);
 
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
+
+		void SetSelection(Systems::NewAssetId id);
 
 	private:
 		struct CachedTextureData
@@ -74,5 +76,7 @@ namespace Editors
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 
 		void CreateCachedData(const Systems::AssetMetadata& metadata, CachedTextureData& cache) const;
+
+		void SortCachedData();
 	};
 }

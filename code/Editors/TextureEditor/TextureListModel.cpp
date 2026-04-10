@@ -12,6 +12,10 @@
 #include "Systems/Assets/Metadata/AssetMetadata.h"
 
 #include "Widgets/Models/ModelIndex.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
+
+#include <algorithm>
 
 //#pragma optimize("", off)
 
@@ -36,6 +40,8 @@ namespace Editors
 			CreateCachedData(*pMetadata, cachedData);
 			m_cache.PushBack(cachedData);
 		}
+
+		SortCachedData();
 	}
 
 	TextureListModel::~TextureListModel()
@@ -155,7 +161,9 @@ namespace Editors
 		int row = m_cache.GetSize();
 		m_cache.PushBack(cachedData);
 
-		CommitInsertRows(row, 1, Widgets::ModelIndex());
+		SortCachedData();
+		Widgets::ModelIndex index = GetIndex(cachedData.m_id);
+		CommitInsertRows(index.GetRow(), 1, Widgets::ModelIndex());
 	}
 
 	void TextureListModel::RemoveRow(Systems::NewAssetId id)
@@ -174,7 +182,7 @@ namespace Editors
 		AfterRemoveRows(row, 1, Widgets::ModelIndex());
 	}
 
-	void TextureListModel::SetTextureModified(Systems::NewAssetId id)
+	void TextureListModel::SetModifiedMark(Systems::NewAssetId id)
 	{
 		Widgets::ModelIndex index = GetIndex(id);
 		if (!index.IsValid())
@@ -190,7 +198,7 @@ namespace Editors
 		m_onDataChanged(modifiedIndex);
 	}
 
-	void TextureListModel::ClearTextureModified(Systems::NewAssetId id)
+	void TextureListModel::ClearModifiedMark(Systems::NewAssetId id)
 	{
 		Widgets::ModelIndex index = GetIndex(id);
 		if (!index.IsValid())
@@ -233,6 +241,18 @@ namespace Editors
 		return m_cache[row].m_id;
 	}
 
+	void TextureListModel::SetSelection(Systems::NewAssetId id)
+	{
+		Widgets::ModelIndex index = GetIndex(id);
+		if (!index.IsValid())
+			return;
+
+		Widgets::SelectionModel* pSelectionModel = GetSelectionModel();
+
+		Widgets::SelectionRow row(index, index);
+		pSelectionModel->SetSelectionRow(row);
+	}
+
 	Widgets::ModelIndex TextureListModel::GetIndex(Systems::NewAssetId id) const
 	{
 		int row = -1;
@@ -263,5 +283,10 @@ namespace Editors
 			cache.m_type = CachedTextureData::Cubemap;
 		else
 			cache.m_type = CachedTextureData::Unknown;
+	}
+
+	void TextureListModel::SortCachedData()
+	{
+		std::sort(m_cache.begin(), m_cache.end(), [](const CachedTextureData& data1, const CachedTextureData& data2) { return data1.m_virtualName < data2.m_virtualName; });
 	}
 }
