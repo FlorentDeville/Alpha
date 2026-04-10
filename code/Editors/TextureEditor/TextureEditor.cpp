@@ -233,15 +233,20 @@ namespace Editors
 
 		std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
 
-		res = TextureEditorModule::Get().CreateAndImportTexture(filename);
+		Systems::Texture2DAsset* pTexture = nullptr;
+		res = TextureEditorModule::Get().CreateAndImportTexture(filename, &pTexture);
 
 		std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
 		std::chrono::duration elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
 
 		if (!res)
+		{
 			Core::LogModule::Get().LogError("Failed to import texture %s in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
-		else
-			Core::LogModule::Get().LogInfo("Texture %s imported in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
+			return;
+		}
+		
+		m_pListModel->SetSelection(pTexture->GetId());
+		Core::LogModule::Get().LogInfo("Texture %s imported in %f s.", filename.c_str(), elapsedTime.count() / 1000.f);
 	}
 
 	void TextureEditor::OnClick_Texture_Import()
