@@ -13,6 +13,8 @@
 
 #include "Widgets/Models/ModelIndex.h"
 
+#include <algorithm>
+
 //#pragma optimize("", off)
 
 namespace Editors
@@ -36,6 +38,8 @@ namespace Editors
 			CreateCachedData(*pMetadata, cachedData);
 			m_cache.PushBack(cachedData);
 		}
+
+		SortCachedData();
 	}
 
 	TextureListModel::~TextureListModel()
@@ -155,7 +159,9 @@ namespace Editors
 		int row = m_cache.GetSize();
 		m_cache.PushBack(cachedData);
 
-		CommitInsertRows(row, 1, Widgets::ModelIndex());
+		SortCachedData();
+		Widgets::ModelIndex index = GetIndex(cachedData.m_id);
+		CommitInsertRows(index.GetRow(), 1, Widgets::ModelIndex());
 	}
 
 	void TextureListModel::RemoveRow(Systems::NewAssetId id)
@@ -263,5 +269,10 @@ namespace Editors
 			cache.m_type = CachedTextureData::Cubemap;
 		else
 			cache.m_type = CachedTextureData::Unknown;
+	}
+
+	void TextureListModel::SortCachedData()
+	{
+		std::sort(m_cache.begin(), m_cache.end(), [](const CachedTextureData& data1, const CachedTextureData& data2) { return data1.m_virtualName < data2.m_virtualName; });
 	}
 }

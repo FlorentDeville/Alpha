@@ -74,5 +74,7 @@ namespace Editors
 		Widgets::ModelIndex GetIndex(Systems::NewAssetId id) const;
 
 		void CreateCachedData(const Systems::AssetMetadata& metadata, CachedTextureData& cache) const;
+
+		void SortCachedData();
 	};
 }
