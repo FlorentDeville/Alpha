@@ -107,8 +107,11 @@ namespace Rendering
 
 		//Create the srv descriptor
 		{
+			D3D12_RESOURCE_DESC desc = m_pResource->GetDesc();
+			DXGI_FORMAT format = desc.Format;
+
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-			srvDesc.Format = DXGI_FORMAT_BC7_UNORM;
+			srvDesc.Format = format;
 
 			if (isCubemap)
 			{
