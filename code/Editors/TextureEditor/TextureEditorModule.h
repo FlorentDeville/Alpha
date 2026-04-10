@@ -14,6 +14,7 @@
 namespace Systems
 {
 	class AssetMetadata;
+	class Texture2DAsset;
 }
 
 namespace Editors
@@ -27,7 +28,7 @@ namespace Editors
 		void Init() override;
 		void Shutdown() override;
 
-		bool CreateAndImportTexture(const std::string& filename);
+		bool CreateAndImportTexture(const std::string& filename, Systems::Texture2DAsset** ppTexture = nullptr);
 		bool DeleteTexture(Systems::NewAssetId id);
 		bool RenameTexture(Systems::NewAssetId id, const std::string& newName);
 
