@@ -65,7 +65,6 @@ namespace Editors
 		if (!pMetadata)
 			return false;
 
-		if (!pMetadata->IsA<Systems::Texture2DAsset>())
 		if (!pMetadata->IsA<Systems::Texture2DAsset>() && !pMetadata->IsA<Systems::CubemapAsset>())
 			return false;
 
@@ -94,7 +93,7 @@ namespace Editors
 		return true;
 	}
 
-	bool TextureEditorModule::CreateCubemap(const std::string& assetName)
+	bool TextureEditorModule::CreateCubemap(const std::string& assetName, Systems::CubemapAsset** ppCubemap)
 	{
 		Systems::CubemapAsset* pCubemap = Systems::AssetUtil::CreateAsset<Systems::CubemapAsset>(assetName);
 		if (!pCubemap)
@@ -105,6 +104,10 @@ namespace Editors
 			return false;
 
 		m_onTextureCreated(*pMetadata);
+
+		if (ppCubemap)
+			*ppCubemap = pCubemap;
+
 		return true;
 	}
 
