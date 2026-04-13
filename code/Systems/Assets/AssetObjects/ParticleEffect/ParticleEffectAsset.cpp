@@ -14,6 +14,11 @@ namespace Systems
 			delete pEmitter;
 	}
 
+	const Core::Array<ParticleEmitter*>& ParticleEffectAsset::GetEmitters() const
+	{
+		return m_emitters;
+	}
+
 	const std::string& ParticleEffectAsset::GetAssetTypeName()
 	{
 		static std::string name = "ParticleEffect";

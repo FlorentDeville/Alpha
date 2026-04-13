@@ -21,6 +21,8 @@ namespace Systems
 		ParticleEffectAsset() = default;
 		~ParticleEffectAsset();
 
+		const Core::Array<ParticleEmitter*>& GetEmitters() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
