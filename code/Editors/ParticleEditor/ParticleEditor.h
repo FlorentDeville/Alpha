@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Editors/BaseEditor.h"
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
 #include <vector>
 
@@ -33,11 +34,15 @@ namespace Editors
 
 		ParticleListModel* m_pListModel;
 
+		ObjectWatcherCallbackId m_objWatcherCid;
+
 		void OnMenu_File_Create();
 		void OnMenu_File_Delete();
 		void OnMenu_File_Save();
 		void OnMenu_File_Rename();
 
 		void OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
+
+		void OnParticleEffectModified();
 	};
 }

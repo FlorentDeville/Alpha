@@ -180,6 +180,7 @@ namespace Editors
 	{
 		if (selected.empty())
 		{
+			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
 			m_pPopulator->Populate(nullptr);
 			return;
 		}
@@ -189,6 +190,7 @@ namespace Editors
 
 		if (!id.IsValid())
 		{
+			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
 			m_pPopulator->Populate(nullptr);
 			return;
 		}
@@ -196,10 +198,18 @@ namespace Editors
 		Systems::ParticleEffectAsset* pEffect = Systems::AssetUtil::LoadAsset<Systems::ParticleEffectAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pEffect)
 		{
+			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
 			m_pPopulator->Populate(nullptr);
 			return;
 		}
 
 		m_pPopulator->Populate(pEffect);
+		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pEffect, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
+	}
+
+	void ParticleEditor::OnParticleEffectModified()
+	{
+		Systems::NewAssetId id = m_pListModel->GetSelection();
+		m_pListModel->SetModifiedMark(id);
 	}
 }
