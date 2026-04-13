@@ -59,4 +59,9 @@ namespace Core
 		bool readOnly = m_attribute & Core::FieldAttribute::ReadOnly;
 		return readOnly;
 	}
+
+	bool FieldDescriptor::HasNoClassDialog() const
+	{
+		return m_attribute & Core::FieldAttribute::NoClassDialog;
+	}
 }

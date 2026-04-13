@@ -41,6 +41,7 @@ namespace Core
 		bool IsHidden() const;
 		bool IsSerialized() const;
 		bool IsReadOnly() const;
+		bool HasNoClassDialog() const;
 
 	private:
 		std::string m_name;
