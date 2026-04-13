@@ -7,10 +7,12 @@
 #include "Editors/EditorParameter.h"
 #include "Editors/ParticleEditor/ParticleEditorModule.h"
 #include "Editors/ParticleEditor/ParticleListModel.h"
+#include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
+#include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 
 #include "Widgets/Layout.h"
@@ -97,6 +99,7 @@ namespace Editors
 
 		ParticleEditorModule& module = ParticleEditorModule::Get();
 		module.OnParticleEffectCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
+		module.OnBeforeParticleEffectDeleted([this](Systems::NewAssetId id) { m_pListModel->RemoveRow(id); });
 	}
 
 	void ParticleEditor::OnMenu_File_Create()
@@ -115,20 +118,20 @@ namespace Editors
 
 	void ParticleEditor::OnMenu_File_Delete()
 	{
-		//Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
-		//if (!selectedTextureId.IsValid())
-		//	return;
+		Systems::NewAssetId selectedEffectId = m_pListModel->GetSelection();
+		if (!selectedEffectId.IsValid())
+			return;
 
-		//Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedTextureId);
-		//if (!pMetadata)
-		//	return;
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedEffectId);
+		if (!pMetadata)
+			return;
 
-		//const int BUFFER_SIZE = 256;
-		//char buffer[BUFFER_SIZE] = { '\0' };
-		//snprintf(buffer, BUFFER_SIZE, "Are you sure you want to delete the texture %s?", pMetadata->GetVirtualName().c_str());
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Are you sure you want to delete the effect %s?", pMetadata->GetVirtualName().c_str());
 
-		//OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
-		//pDialog->OnOk([selectedTextureId]() { TextureEditorModule::Get().DeleteTexture(selectedTextureId); });
-		//pDialog->Open();
+		OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
+		pDialog->OnOk([selectedEffectId]() { ParticleEditorModule::Get().DeleteParticleEffect(selectedEffectId); });
+		pDialog->Open();
 	}
 }

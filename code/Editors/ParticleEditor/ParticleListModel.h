@@ -53,6 +53,7 @@ namespace Editors
 		Systems::NewAssetId GetAssetId(const Widgets::ModelIndex& index) const;
 
 		void SetSelection(Systems::NewAssetId id);
+		Systems::NewAssetId GetSelection() const;
 
 	private:
 		struct CachedParticleEffectData

@@ -228,6 +228,17 @@ namespace Editors
 		pSelectionModel->SetSelectionRow(row);
 	}
 
+	Systems::NewAssetId ParticleListModel::GetSelection() const
+	{
+		const Widgets::SelectionModel* pSelectionModel = GetSelectionModel();
+		const std::list<Widgets::SelectionRow>& selectedRows = pSelectionModel->GetSelectedRows();
+		if (selectedRows.empty())
+			return Systems::NewAssetId::INVALID;
+
+		Widgets::ModelIndex index = selectedRows.back().GetStartIndex();
+		return GetAssetId(index);
+	}
+
 	Widgets::ModelIndex ParticleListModel::GetIndex(Systems::NewAssetId id) const
 	{
 		int row = -1;
