@@ -19,7 +19,7 @@ namespace Systems
 	{
 	public:
 		ParticleEffectAsset() = default;
-		~ParticleEffectAsset() = default;
+		~ParticleEffectAsset();
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
@@ -29,7 +29,7 @@ namespace Systems
 
 		START_REFLECTION(Systems::ParticleEffectAsset)
 			ADD_BASETYPE(Systems::AssetObject)
-			ADD_FIELD(m_emitters)
+			ADD_FIELD_ATTR(m_emitters, Core::NoClassDialog)
 		END_REFLECTION()
 	};
 }

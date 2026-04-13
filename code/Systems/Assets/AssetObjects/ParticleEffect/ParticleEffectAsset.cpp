@@ -4,8 +4,16 @@
 
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 
+#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEmitter.h"
+
 namespace Systems
 {
+	ParticleEffectAsset::~ParticleEffectAsset()
+	{
+		for (ParticleEmitter* pEmitter : m_emitters)
+			delete pEmitter;
+	}
+
 	const std::string& ParticleEffectAsset::GetAssetTypeName()
 	{
 		static std::string name = "ParticleEffect";

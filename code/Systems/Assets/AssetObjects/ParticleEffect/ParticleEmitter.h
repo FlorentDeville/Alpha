@@ -8,10 +8,14 @@
 #include "Core/Math/Vectors.h"
 #include "Core/Reflection/ReflectionMacro.h"
 
+#include "Systems/Assets/AssetRef/HardAssetRef.h"
+
 ENABLE_REFLECTION(Systems, ParticleEmitter)
 
 namespace Systems
 {
+	class MaterialInstanceAsset;
+
 	class ParticleEmitter
 	{
 	public:
