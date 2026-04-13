@@ -9,6 +9,7 @@
 #include "Editors/LevelEditor/Widgets/LevelEditor.h"
 #include "Editors/MaterialEditor/MaterialEditor.h"
 #include "Editors/MeshEditor/MeshEditor.h"
+#include "Editors/ParticleEditor/ParticleEditor.h"
 #include "Editors/TextureEditor/TextureEditor.h"
 
 #include "Widgets/TabContainer.h"
@@ -18,6 +19,7 @@ namespace Editors
 	EditorManager::EditorManager()
 		: Singleton<EditorManager>()
 		, m_editors()
+		, m_pTabContainer(nullptr)
 	{ }
 
 	EditorManager::~EditorManager()
@@ -37,6 +39,7 @@ namespace Editors
 		m_editors.PushBack(new MeshEditor());
 		m_editors.PushBack(new MaterialEditor());
 		m_editors.PushBack(new TextureEditor());
+		m_editors.PushBack(new ParticleEditor());
 
 		for (BaseEditor* pEditor : m_editors)
 			pEditor->CreateEditor(param);

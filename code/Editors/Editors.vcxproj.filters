@@ -204,6 +204,9 @@
     <ClInclude Include="LevelEditor\RenderPassObjectId.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleEditor\ParticleEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -381,6 +384,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\RenderPassObjectId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEditor\ParticleEditor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
