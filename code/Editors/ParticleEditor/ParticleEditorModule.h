@@ -31,10 +31,12 @@ namespace Editors
 		Systems::ParticleEffectAsset* CreateParticleEffect(const std::string& name);
 		void DeleteParticleEffect(Systems::NewAssetId id);
 		void RenameParticleEffect(Systems::NewAssetId id, const std::string& newName);
+		void SaveParticleEffect(Systems::NewAssetId id);
 
 		EVENT_DECL(ParticleEffectCreated, void(const Systems::AssetMetadata& metadata))
 		EVENT_DECL(BeforeParticleEffectDeleted, void(Systems::NewAssetId))
 		EVENT_DECL(AfterParticleEffectDeleted, void(Systems::NewAssetId))
 		EVENT_DECL(ParticleEffectRenamed, void(Systems::AssetMetadata& metadata))
+		EVENT_DECL(ParticleEffectSaved, void(Systems::NewAssetId id))
 	};
 }

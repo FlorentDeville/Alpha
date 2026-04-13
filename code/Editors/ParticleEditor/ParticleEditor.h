@@ -28,5 +28,7 @@ namespace Editors
 
 		void OnMenu_File_Create();
 		void OnMenu_File_Delete();
+		void OnMenu_File_Save();
+		void OnMenu_File_Rename();
 	};
 }

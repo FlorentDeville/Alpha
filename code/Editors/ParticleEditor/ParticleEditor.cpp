@@ -51,6 +51,7 @@ namespace Editors
 
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
 			pSaveItem->SetShortcut("Ctrl+S");
+			pSaveItem->OnClick([this]() {OnMenu_File_Save(); });
 
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete");
 			pDeleteItem->SetShortcut("Del");
@@ -58,6 +59,7 @@ namespace Editors
 
 			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
 			pRenameItem->SetShortcut("F2");
+			pRenameItem->OnClick([this]() { OnMenu_File_Rename(); });
 		}
 
 		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
@@ -100,6 +102,8 @@ namespace Editors
 		ParticleEditorModule& module = ParticleEditorModule::Get();
 		module.OnParticleEffectCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
 		module.OnBeforeParticleEffectDeleted([this](Systems::NewAssetId id) { m_pListModel->RemoveRow(id); });
+		module.OnParticleEffectSaved([this](Systems::NewAssetId id) { m_pListModel->ClearModifiedMark(id); });
+		module.OnParticleEffectRenamed([this](Systems::AssetMetadata& metadata) { m_pListModel->OnParticleEffectRenamed(metadata); });
 	}
 
 	void ParticleEditor::OnMenu_File_Create()
@@ -132,6 +136,37 @@ namespace Editors
 
 		OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
 		pDialog->OnOk([selectedEffectId]() { ParticleEditorModule::Get().DeleteParticleEffect(selectedEffectId); });
+		pDialog->Open();
+	}
+
+	void ParticleEditor::OnMenu_File_Save()
+	{
+		Systems::NewAssetId selectedEffectId = m_pListModel->GetSelection();
+		if (!selectedEffectId.IsValid())
+			return;
+
+		ParticleEditorModule::Get().SaveParticleEffect(selectedEffectId);
+	}
+
+	void ParticleEditor::OnMenu_File_Rename()
+	{
+		Systems::NewAssetId selectedEffectId = m_pListModel->GetSelection();
+		if (!selectedEffectId.IsValid())
+			return;
+
+		Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedEffectId);
+		if (!pMetadata)
+			return;
+
+		const int BUFFER_SIZE = 256;
+		char buffer[BUFFER_SIZE] = { '\0' };
+		snprintf(buffer, BUFFER_SIZE, "Rename effect %s?", pMetadata->GetVirtualName().c_str());
+
+		UserInputDialog* pDialog = new UserInputDialog(buffer);
+		pDialog->OnInputValidated([selectedEffectId](const std::string& input)
+			{
+				ParticleEditorModule::Get().RenameParticleEffect(selectedEffectId, input);
+			});
 		pDialog->Open();
 	}
 }

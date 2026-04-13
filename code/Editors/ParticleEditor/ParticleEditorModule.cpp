@@ -60,4 +60,13 @@ namespace Editors
 
 		m_onParticleEffectRenamed(*pMetadata);
 	}
+
+	void ParticleEditorModule::SaveParticleEffect(Systems::NewAssetId id)
+	{
+		bool res = Systems::ContainerMgr::Get().SaveContainer(id.GetContainerId());
+		if (!res)
+			return;
+
+		m_onParticleEffectSaved(id);
+	}
 }
