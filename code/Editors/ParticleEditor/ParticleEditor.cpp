@@ -180,7 +180,7 @@ namespace Editors
 	{
 		if (selected.empty())
 		{
-			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
+			RemoveAllWatchers();
 			m_pPopulator->Populate(nullptr);
 			return;
 		}
@@ -190,7 +190,7 @@ namespace Editors
 
 		if (!id.IsValid())
 		{
-			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
+			RemoveAllWatchers();
 			m_pPopulator->Populate(nullptr);
 			return;
 		}
@@ -198,18 +198,33 @@ namespace Editors
 		Systems::ParticleEffectAsset* pEffect = Systems::AssetUtil::LoadAsset<Systems::ParticleEffectAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pEffect)
 		{
-			ObjectWatcher::Get().RemoveWatcher(m_objWatcherCid);
+			RemoveAllWatchers();
 			m_pPopulator->Populate(nullptr);
 			return;
 		}
 
 		m_pPopulator->Populate(pEffect);
-		m_objWatcherCid = ObjectWatcher::Get().AddWatcher(pEffect, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
+		ObjectWatcherCallbackId cid = ObjectWatcher::Get().AddWatcher(pEffect, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
+		m_objWatcherCid.PushBack(cid);
+
+		for (const Systems::ParticleEmitter* pEmitter : pEffect->GetEmitters())
+		{
+			ObjectWatcherCallbackId id = ObjectWatcher::Get().AddWatcher(pEmitter, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
+			m_objWatcherCid.PushBack(id);
+		}
 	}
 
 	void ParticleEditor::OnParticleEffectModified()
 	{
 		Systems::NewAssetId id = m_pListModel->GetSelection();
 		m_pListModel->SetModifiedMark(id);
+	}
+
+	void ParticleEditor::RemoveAllWatchers()
+	{
+		for(ObjectWatcherCallbackId id : m_objWatcherCid)
+			ObjectWatcher::Get().RemoveWatcher(id);
+
+		m_objWatcherCid.Clear();
 	}
 }
