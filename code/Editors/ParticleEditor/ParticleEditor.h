@@ -9,6 +9,7 @@
 namespace Editors
 {
 	class PropertyGridPopulator;
+	class ParticleListModel;
 
 	class ParticleEditor : public BaseEditor
 	{
@@ -22,5 +23,7 @@ namespace Editors
 
 	private:
 		PropertyGridPopulator* m_pPopulator;
+
+		ParticleListModel* m_pListModel;
 	};
 }

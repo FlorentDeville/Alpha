@@ -207,6 +207,9 @@
     <ClInclude Include="ParticleEditor\ParticleEditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleEditor\ParticleListModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -387,6 +390,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ParticleEditor\ParticleEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEditor\ParticleListModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

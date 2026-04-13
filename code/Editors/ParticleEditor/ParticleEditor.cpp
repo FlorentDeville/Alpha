@@ -5,6 +5,7 @@
 #include "Editors/ParticleEditor/ParticleEditor.h"
 
 #include "Editors/EditorParameter.h"
+#include "Editors/ParticleEditor/ParticleListModel.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -22,6 +23,7 @@ namespace Editors
 	ParticleEditor::ParticleEditor()
 		: BaseEditor()
 		, m_pPopulator(nullptr)
+		, m_pListModel(nullptr)
 	{ }
 
 	ParticleEditor::~ParticleEditor()
@@ -53,17 +55,12 @@ namespace Editors
 
 		m_pInternalLayout->AddWidget(pVerticalSplit);
 
-		Widgets::TableView* pTable = new Widgets::TableView();
-		pVerticalSplit->AddLeftPanel(pTable);
+		m_pListModel = new ParticleListModel();
 
-		/*m_pListModel = new TextureListModel();
+		Widgets::TableView* pTable = new Widgets::TableView();
 		pTable->SetModel(m_pListModel);
-		pTable->SetColumnWidth(TextureListModel::Columns::Name, 200);
-		pTable->SetColumnWidth(TextureListModel::Columns::Modified, 200);
-		m_pListModel->GetSelectionModel()->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
-			{
-				OnSelectionChanged(selected, deselected);
-			});*/
+
+		pVerticalSplit->AddLeftPanel(pTable);
 
 		Widgets::SplitHorizontal* pHorizontalSplit = new Widgets::SplitHorizontal();
 		pHorizontalSplit->SetSizeStyle(Widgets::STRETCH);
