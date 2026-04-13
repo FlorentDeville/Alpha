@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -11,7 +11,7 @@ namespace Editors
 	class ArrayElementHeaderItem : public PropertyGridItem
 	{
 	public:
-		ArrayElementHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
+		ArrayElementHeaderItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~ArrayElementHeaderItem();
 
 		void CreateWidgets() override;

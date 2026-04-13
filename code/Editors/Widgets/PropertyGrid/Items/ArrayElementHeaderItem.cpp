@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 
@@ -17,7 +17,7 @@
 
 namespace Editors
 {
-	ArrayElementHeaderItem::ArrayElementHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
+	ArrayElementHeaderItem::ArrayElementHeaderItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
 	{
 	}
