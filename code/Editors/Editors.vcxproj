@@ -42,6 +42,7 @@
     <ClInclude Include="MaterialEditor\MaterialEditorModule.h" />
     <ClInclude Include="MaterialEditor\MaterialListModel.h" />
     <ClInclude Include="ParticleEditor\ParticleEditor.h" />
+    <ClInclude Include="ParticleEditor\ParticleEditorModule.h" />
     <ClInclude Include="ParticleEditor\ParticleListModel.h" />
     <ClInclude Include="TextureEditor\TextureEditor.h" />
     <ClInclude Include="TextureEditor\TextureEditorModule.h" />
@@ -106,6 +107,7 @@
     <ClCompile Include="MaterialEditor\MaterialEditorModule.cpp" />
     <ClCompile Include="MaterialEditor\MaterialListModel.cpp" />
     <ClCompile Include="ParticleEditor\ParticleEditor.cpp" />
+    <ClCompile Include="ParticleEditor\ParticleEditorModule.cpp" />
     <ClCompile Include="ParticleEditor\ParticleListModel.cpp" />
     <ClCompile Include="TextureEditor\TextureEditor.cpp" />
     <ClCompile Include="TextureEditor\TextureEditorModule.cpp" />

@@ -5,9 +5,13 @@
 #include "Editors/ParticleEditor/ParticleEditor.h"
 
 #include "Editors/EditorParameter.h"
+#include "Editors/ParticleEditor/ParticleEditorModule.h"
 #include "Editors/ParticleEditor/ParticleListModel.h"
+#include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
+
+#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
@@ -39,11 +43,16 @@ namespace Editors
 		{
 			Widgets::Menu* pFileMenu = m_pMenuBar->AddMenu("File");
 
+			Widgets::MenuItem* pCreateItem = pFileMenu->AddMenuItem("Create...");
+			pCreateItem->SetShortcut("Ctrl+N");
+			pCreateItem->OnClick([this]() { OnMenu_File_Create(); });
+
 			Widgets::MenuItem* pSaveItem = pFileMenu->AddMenuItem("Save");
 			pSaveItem->SetShortcut("Ctrl+S");
 
 			Widgets::MenuItem* pDeleteItem = pFileMenu->AddMenuItem("Delete");
 			pDeleteItem->SetShortcut("Del");
+			pDeleteItem->OnClick([this]() { OnMenu_File_Delete(); });
 
 			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
 			pRenameItem->SetShortcut("F2");
@@ -85,5 +94,41 @@ namespace Editors
 
 		m_pPopulator = new PropertyGridPopulator();
 		m_pPopulator->Init(pPropertyGrid);
+
+		ParticleEditorModule& module = ParticleEditorModule::Get();
+		module.OnParticleEffectCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); });
+	}
+
+	void ParticleEditor::OnMenu_File_Create()
+	{
+		const char* pTitle = "New particle effect name";
+
+		UserInputDialog* pDialog = new UserInputDialog(pTitle);
+		pDialog->OnInputValidated([this](const std::string& input)
+			{
+				Systems::ParticleEffectAsset* pEffect = ParticleEditorModule::Get().CreateParticleEffect(input);
+				if (pEffect)
+					m_pListModel->SetSelection(pEffect->GetId());
+			});
+		pDialog->Open();
+	}
+
+	void ParticleEditor::OnMenu_File_Delete()
+	{
+		//Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
+		//if (!selectedTextureId.IsValid())
+		//	return;
+
+		//Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(selectedTextureId);
+		//if (!pMetadata)
+		//	return;
+
+		//const int BUFFER_SIZE = 256;
+		//char buffer[BUFFER_SIZE] = { '\0' };
+		//snprintf(buffer, BUFFER_SIZE, "Are you sure you want to delete the texture %s?", pMetadata->GetVirtualName().c_str());
+
+		//OkCancelDialog* pDialog = new OkCancelDialog("Delete", buffer);
+		//pDialog->OnOk([selectedTextureId]() { TextureEditorModule::Get().DeleteTexture(selectedTextureId); });
+		//pDialog->Open();
 	}
 }

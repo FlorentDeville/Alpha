@@ -25,5 +25,8 @@ namespace Editors
 		PropertyGridPopulator* m_pPopulator;
 
 		ParticleListModel* m_pListModel;
+
+		void OnMenu_File_Create();
+		void OnMenu_File_Delete();
 	};
 }
