@@ -46,6 +46,7 @@
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/CubemapAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
+#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/Clock/Clock.h"
 #include "Systems/Container/ContainerMgr.h"
 #include "Systems/Game/GameMgr.h"
@@ -579,6 +580,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	assetMgr.RegisterAssetType<Systems::LevelAsset>();
 	assetMgr.RegisterAssetType<Systems::Texture2DAsset>();
 	assetMgr.RegisterAssetType<Systems::CubemapAsset>();
+	assetMgr.RegisterAssetType<Systems::ParticleEffectAsset>();
 	assetMgr.LoadMetadataTable();
 	
 

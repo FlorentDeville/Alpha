@@ -55,6 +55,8 @@
     <ClInclude Include="Container\LoadingDomain.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassBloom.h" />
     <ClInclude Include="Assets\AssetObjects\Material\BlendMode.h" />
+    <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEffectAsset.h" />
+    <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -97,6 +99,8 @@
     <ClCompile Include="Game\GameMgr.cpp" />
     <ClCompile Include="Clock\Clock.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassBloom.cpp" />
+    <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEffectAsset.cpp" />
+    <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
