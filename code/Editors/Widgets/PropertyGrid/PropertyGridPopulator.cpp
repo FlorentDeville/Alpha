@@ -189,15 +189,8 @@ namespace Editors
 		}
 		else if (pElementType->IsClass())
 		{
-			ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pElement,
-				[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
-				{ 
-					ObjectWatcherCallback(pObj, pField, op, index); 
-				});
-
-			//assert(false); // only support Object for now
-			PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
-			Internal_AddPropertyGridItem(pItem);
+			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(pObj, pField, index);
+			Internal_AddPropertyGridItem(pItem, index);
 
 			ParentItemContextScope janitor(pItem, this);
 
