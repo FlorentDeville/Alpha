@@ -11,6 +11,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Math/Vectors.h"
 #include "Core/Sid/Sid.h"
 
 #include "Core/Reflection/ReflectionMacro.h"
@@ -18,6 +19,7 @@
 
 DEFINE_TYPE_RESOLVER(Core::Blob)
 DEFINE_TYPE_RESOLVER(Core::Color)
+DEFINE_TYPE_RESOLVER(Core::Float3)
 DEFINE_TYPE_RESOLVER(Core::Guid)
 DEFINE_TYPE_RESOLVER(Core::Vec4f)
 DEFINE_TYPE_RESOLVER(Core::Mat44f)
