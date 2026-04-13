@@ -13,12 +13,15 @@
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
 #include "Systems/Assets/AssetMgr.h"
+#include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
 #include "Widgets/MenuBar.h"
 #include "Widgets/MenuItem.h"
+#include "Widgets/Models/SelectionModel.h"
+#include "Widgets/Models/SelectionRow.h"
 #include "Widgets/SplitHorizontal.h"
 #include "Widgets/SplitVertical.h"
 #include "Widgets/Viewport.h"
@@ -69,7 +72,10 @@ namespace Editors
 		m_pInternalLayout->AddWidget(pVerticalSplit);
 
 		m_pListModel = new ParticleListModel();
-
+		m_pListModel->GetSelectionModel()->OnSelectionChanged([this](const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected) 
+			{
+				OnSelectionChanged(selected, deselected);
+			});
 		Widgets::TableView* pTable = new Widgets::TableView();
 		pTable->SetModel(m_pListModel);
 
@@ -168,5 +174,32 @@ namespace Editors
 				ParticleEditorModule::Get().RenameParticleEffect(selectedEffectId, input);
 			});
 		pDialog->Open();
+	}
+
+	void ParticleEditor::OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
+	{
+		if (selected.empty())
+		{
+			m_pPopulator->Populate(nullptr);
+			return;
+		}
+
+		const Widgets::SelectionRow& row = selected.back();
+		Systems::NewAssetId id = m_pListModel->GetAssetId(row.GetStartIndex());
+
+		if (!id.IsValid())
+		{
+			m_pPopulator->Populate(nullptr);
+			return;
+		}
+
+		Systems::ParticleEffectAsset* pEffect = Systems::AssetUtil::LoadAsset<Systems::ParticleEffectAsset>(id, Systems::LoadingDomain::EDITOR);
+		if (!pEffect)
+		{
+			m_pPopulator->Populate(nullptr);
+			return;
+		}
+
+		m_pPopulator->Populate(pEffect);
 	}
 }

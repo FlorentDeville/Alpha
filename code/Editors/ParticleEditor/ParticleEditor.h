@@ -6,6 +6,13 @@
 
 #include "Editors/BaseEditor.h"
 
+#include <vector>
+
+namespace Widgets
+{
+	class SelectionRow;
+}
+
 namespace Editors
 {
 	class PropertyGridPopulator;
@@ -30,5 +37,7 @@ namespace Editors
 		void OnMenu_File_Delete();
 		void OnMenu_File_Save();
 		void OnMenu_File_Rename();
+
+		void OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 	};
 }
