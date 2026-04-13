@@ -18,6 +18,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/EnumItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
@@ -352,6 +353,13 @@ namespace Editors
 		case SID("Core::Sqt"):
 		{
 			SqtItem* pItem = new SqtItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
+		case SID("Core::Float3"):
+		{
+			Float3Item* pItem = new Float3Item(pObj, pField, indexElement);
 			return pItem;
 		}
 		break;
