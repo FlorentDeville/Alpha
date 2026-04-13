@@ -16,6 +16,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Math/Vectors.h"
 #include "Core/String/BytesToHexa.h"
 
 #include "Systems/Assets/NewAssetId.h"
@@ -62,6 +63,18 @@ namespace Systems
 		pArray->AddElement(data.GetY());
 		pArray->AddElement(data.GetZ());
 		pArray->AddElement(data.GetW());
+
+		value.Set(pArray);
+
+		return true;
+	}
+
+	template<> bool SerializeData<Core::Float3>(const Core::Float3& data, Core::JsonValue& value)
+	{
+		Core::JsonArray* pArray = new Core::JsonArray();
+		pArray->AddElement(data.x);
+		pArray->AddElement(data.y);
+		pArray->AddElement(data.z);
 
 		value.Set(pArray);
 
@@ -286,6 +299,13 @@ namespace Systems
 		{
 			const Core::Sqt* pSqt = reinterpret_cast<const Core::Sqt*>(pFieldPtr);
 			SerializeData(*pSqt, value);
+		}
+		break;
+
+		case SID("Core::Float3"):
+		{
+			const Core::Float3* pFloat3 = reinterpret_cast<const Core::Float3*>(pFieldPtr);
+			SerializeData(*pFloat3, value);
 		}
 		break;
 
