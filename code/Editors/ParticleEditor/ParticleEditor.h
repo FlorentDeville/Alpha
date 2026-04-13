@@ -8,6 +8,8 @@
 
 namespace Editors
 {
+	class PropertyGridPopulator;
+
 	class ParticleEditor : public BaseEditor
 	{
 		using ParentClass = BaseEditor;
@@ -17,5 +19,8 @@ namespace Editors
 		~ParticleEditor();
 
 		void CreateEditor(const EditorParameter& param) override;
+
+	private:
+		PropertyGridPopulator* m_pPopulator;
 	};
 }
