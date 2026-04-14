@@ -14,6 +14,12 @@ namespace Core
 	class Vec4f;
 }
 
+namespace Rendering
+{
+	class PipelineState;
+	class RootSignature;
+}
+
 namespace Systems
 {
 	class ParticleEmitterRuntime
@@ -37,6 +43,7 @@ namespace Systems
 		~ParticleEmitterRuntime();
 
 		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform);
+		void SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig);
 
 		void Update(float dtInSeconds);
 
@@ -51,7 +58,11 @@ namespace Systems
 
 		//rendering
 		Rendering::BufferHandle m_gfxBufferPositions;
-		void* m_gfxBufferPositionPtr;
+		void* m_pGfxBufferPositions;
+
+		//hardcode material for now
+		Rendering::PipelineState* m_pPso;
+		Rendering::RootSignature* m_pRootSig;
 
 		void KillParticle(int index);
 		void SpawnParticle();

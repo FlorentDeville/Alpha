@@ -16,6 +16,10 @@ namespace Systems
 		, m_lifetime()
 		, m_acceleration()
 		, m_particles()
+		, m_pGfxBufferPositions(nullptr)
+		, m_gfxBufferPositions()
+		, m_pPso(nullptr)
+		, m_pRootSig(nullptr)
 	{ }
 
 	ParticleEmitterRuntime::~ParticleEmitterRuntime()
@@ -42,7 +46,13 @@ namespace Systems
 		m_particles.m_timeToDeath = new float[m_particles.m_maxCount];
 
 		m_gfxBufferPositions = Rendering::RenderModule::Get().CreateBufferForParticles(sizeof(Core::Vec4f), m_particles.m_maxCount);
-		m_gfxBufferPositionPtr = Rendering::RenderModule::Get().MapBuffer(m_gfxBufferPositions);
+		m_pGfxBufferPositions = Rendering::RenderModule::Get().MapBuffer(m_gfxBufferPositions);
+	}
+
+	void ParticleEmitterRuntime::SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig)
+	{
+		m_pPso = pPso;
+		m_pRootSig = pRootSig;
 	}
 
 	void ParticleEmitterRuntime::Update(float dtInSeconds)

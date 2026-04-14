@@ -14,10 +14,17 @@ namespace Core
 	class Mat44f;
 }
 
+namespace Rendering
+{
+	class PipelineState;
+	class RootSignature;
+}
+
 namespace Systems
 {
 	class ParticleEffectAsset;
 	class ParticleEmitterRuntime;
+	class RenderableScene;
 
 	class ParticleSystem
 	{
@@ -39,5 +46,9 @@ namespace Systems
 		};
 
 		Core::Array<TrackedEmitter> m_emitters;
+
+		//hardcode material for now
+		Rendering::PipelineState* m_pPso;
+		Rendering::RootSignature* m_pRootSig;
 	};
 }

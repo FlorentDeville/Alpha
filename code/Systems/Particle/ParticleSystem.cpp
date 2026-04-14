@@ -12,6 +12,8 @@ namespace Systems
 {
 	ParticleSystem::ParticleSystem()
 		: m_emitters()
+		, m_pPso(nullptr)
+		, m_pRootSig(nullptr)
 	{ }
 
 	ParticleSystem::~ParticleSystem()
