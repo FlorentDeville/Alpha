@@ -59,6 +59,7 @@
     <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.h" />
     <ClInclude Include="Particle\ParticleSystem.h" />
     <ClInclude Include="Particle\ParticleEmitterRuntime.h" />
+    <ClInclude Include="Rendering\Renderable\RenderableParticles.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
