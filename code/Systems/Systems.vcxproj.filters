@@ -57,6 +57,8 @@
     <ClInclude Include="Assets\AssetObjects\Material\BlendMode.h" />
     <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEffectAsset.h" />
     <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.h" />
+    <ClInclude Include="Particle\ParticleSystem.h" />
+    <ClInclude Include="Particle\ParticleEmitterRuntime.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -101,6 +103,8 @@
     <ClCompile Include="Rendering\RenderPass\RenderPassBloom.cpp" />
     <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEffectAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.cpp" />
+    <ClCompile Include="Particle\ParticleSystem.cpp" />
+    <ClCompile Include="Particle\ParticleEmitterRuntime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
