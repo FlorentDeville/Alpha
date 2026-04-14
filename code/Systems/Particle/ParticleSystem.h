@@ -37,6 +37,8 @@ namespace Systems
 
 		void Update(float dtInSeconds);
 
+		void BuildRenderable(RenderableScene& scene);
+
 	private:
 		class TrackedEmitter
 		{

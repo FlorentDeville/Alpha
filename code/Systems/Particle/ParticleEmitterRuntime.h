@@ -22,6 +22,8 @@ namespace Rendering
 
 namespace Systems
 {
+	class RenderableScene;
+
 	class ParticleEmitterRuntime
 	{
 	public:
@@ -48,6 +50,8 @@ namespace Systems
 		void Update(float dtInSeconds);
 
 		void Upload();
+
+		void BuildRenderable(RenderableScene& scene);
 
 	private:
 		Particles m_particles;

@@ -59,4 +59,10 @@ namespace Systems
 		for (TrackedEmitter& pEmitter : m_emitters)
 			pEmitter.m_pEmitter->Update(dtInSeconds);
 	}
+
+	void ParticleSystem::BuildRenderable(RenderableScene& scene)
+	{
+		for (TrackedEmitter& pEmitter : m_emitters)
+			pEmitter.m_pEmitter->BuildRenderable(scene);
+	}
 }

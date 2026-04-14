@@ -6,6 +6,9 @@
 
 #include "Rendering/RenderModule.h"
 
+#include "Systems/Rendering/Renderable/RenderableParticles.h"
+#include "Systems/Rendering/Renderable/RenderableScene.h"
+
 #include <cmath>
 #include <random>
 
@@ -90,7 +93,16 @@ namespace Systems
 
 	void ParticleEmitterRuntime::Upload()
 	{
-		memcpy(m_gfxBufferPositionPtr, m_particles.m_position, sizeof(m_particles.m_position[0]) * m_particles.m_currentCount);
+		memcpy(m_pGfxBufferPositions, m_particles.m_position, sizeof(m_particles.m_position[0]) * m_particles.m_currentCount);
+	}
+
+	void ParticleEmitterRuntime::BuildRenderable(RenderableScene& scene)
+	{
+		Systems::RenderableParticles& renderable = scene.m_particles.PushBackDefault();
+		renderable.m_buffer = m_gfxBufferPositions;
+		renderable.m_instanceCount = m_particles.m_currentCount;
+		renderable.m_pPso = m_pPso;
+		renderable.m_pRootsig = m_pRootSig;
 	}
 
 	void ParticleEmitterRuntime::KillParticle(int index)
