@@ -9,6 +9,11 @@
 
 #include "Systems/Assets/NewAssetId.h"
 
+namespace Core
+{
+	class Mat44f;
+}
+
 namespace Systems
 {
 	class ParticleEffectAsset;
@@ -20,7 +25,7 @@ namespace Systems
 		ParticleSystem();
 		~ParticleSystem();
 
-		void SpawnEffect(const ParticleEffectAsset* pEffect);
+		void SpawnEffect(const ParticleEffectAsset* pEffect, const Core::Mat44f& world);
 		void KillEffect(const ParticleEffectAsset* pEffect);
 
 		void Update(float dtInSeconds);
