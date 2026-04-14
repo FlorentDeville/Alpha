@@ -4,12 +4,11 @@
 
 #pragma once
 
-#include "Rendering/BufferHandle.h"
-
 namespace Rendering
 {
 	class PipelineState;
 	class RootSignature;
+	class Texture;
 }
 namespace Systems
 {
@@ -18,7 +17,7 @@ namespace Systems
 	class RenderableParticles
 	{
 	public:
-		Rendering::BufferHandle m_buffer;
+		Rendering::Texture* m_pBufferPositions;
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootsig;
 		uint32_t m_instanceCount;

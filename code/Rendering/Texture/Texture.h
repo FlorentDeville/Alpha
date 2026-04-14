@@ -32,6 +32,10 @@ namespace Rendering
 		void InitAsNullCubemap();
 		void InitAsNullTexture2D();
 
+		void InitAsParticlesBuffer(uint32_t elementSize, uint32_t numElement);
+
+		void* Map();
+
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);
 		void TransitionToShaderResource();
 

@@ -5,6 +5,7 @@
 #include "Systems/Particle/ParticleEmitterRuntime.h"
 
 #include "Rendering/RenderModule.h"
+#include "Rendering/Texture/Texture.h"
 
 #include "Systems/Rendering/Renderable/RenderableParticles.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
@@ -20,7 +21,7 @@ namespace Systems
 		, m_acceleration()
 		, m_particles()
 		, m_pGfxBufferPositions(nullptr)
-		, m_gfxBufferPositions()
+		, m_pBufferPositions(nullptr)
 		, m_pPso(nullptr)
 		, m_pRootSig(nullptr)
 	{ }
@@ -31,7 +32,7 @@ namespace Systems
 		delete[] m_particles.m_timeToDeath;
 		delete[] m_particles.m_velocity;
 
-		Rendering::RenderModule::Get().DeleteBuffer(m_gfxBufferPositions);
+		delete m_pBufferPositions;
 	}
 
 	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform)
@@ -48,8 +49,9 @@ namespace Systems
 		m_particles.m_velocity = new Core::Vec4f[m_particles.m_maxCount];
 		m_particles.m_timeToDeath = new float[m_particles.m_maxCount];
 
-		m_gfxBufferPositions = Rendering::RenderModule::Get().CreateBufferForParticles(sizeof(Core::Vec4f), m_particles.m_maxCount);
-		m_pGfxBufferPositions = Rendering::RenderModule::Get().MapBuffer(m_gfxBufferPositions);
+		m_pBufferPositions = new Rendering::Texture();
+		m_pBufferPositions->InitAsParticlesBuffer(sizeof(Core::Vec4f), m_particles.m_maxCount);
+		m_pGfxBufferPositions = m_pBufferPositions->Map();
 	}
 
 	void ParticleEmitterRuntime::SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig)
@@ -99,7 +101,7 @@ namespace Systems
 	void ParticleEmitterRuntime::BuildRenderable(RenderableScene& scene)
 	{
 		Systems::RenderableParticles& renderable = scene.m_particles.PushBackDefault();
-		renderable.m_buffer = m_gfxBufferPositions;
+		renderable.m_pBufferPositions = m_pBufferPositions;
 		renderable.m_instanceCount = m_particles.m_currentCount;
 		renderable.m_pPso = m_pPso;
 		renderable.m_pRootsig = m_pRootSig;

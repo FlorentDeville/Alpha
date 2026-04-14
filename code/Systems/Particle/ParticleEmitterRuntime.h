@@ -7,8 +7,6 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
-#include "Rendering/BufferHandle.h"
-
 namespace Core
 {
 	class Vec4f;
@@ -18,6 +16,7 @@ namespace Rendering
 {
 	class PipelineState;
 	class RootSignature;
+	class Texture;
 }
 
 namespace Systems
@@ -61,7 +60,7 @@ namespace Systems
 		float m_lifetime;
 
 		//rendering
-		Rendering::BufferHandle m_gfxBufferPositions;
+		Rendering::Texture* m_pBufferPositions; //I use a texture as a buffer. Not great but it handles the srv automatically. Good enough for now.
 		void* m_pGfxBufferPositions;
 
 		//hardcode material for now
