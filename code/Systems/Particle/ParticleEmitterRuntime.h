@@ -6,6 +6,8 @@
 
 #include "Core/Math/Sqt.h"
 
+#include "Rendering/BufferHandle.h"
+
 namespace Core
 {
 	class Vec4f;
@@ -37,12 +39,18 @@ namespace Systems
 
 		void Update(float dtInSeconds);
 
+		void Upload();
+
 	private:
 		Particles m_particles;
 		Core::Sqt m_transform;
 		Core::Vec4f m_acceleration;
 		int m_spawnRate;
 		float m_lifetime;
+
+		//rendering
+		Rendering::BufferHandle m_gfxBufferPositions;
+		void* m_gfxBufferPositionPtr;
 
 		void KillParticle(int index);
 		void SpawnParticle();

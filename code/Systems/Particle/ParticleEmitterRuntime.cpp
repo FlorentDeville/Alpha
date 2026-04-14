@@ -7,6 +7,8 @@
 #include <cmath>
 #include <random>
 
+#include "Rendering/RenderModule.h"
+
 namespace Systems
 {
 	ParticleEmitterRuntime::ParticleEmitterRuntime()
@@ -21,6 +23,8 @@ namespace Systems
 		delete[] m_particles.m_position;
 		delete[] m_particles.m_timeToDeath;
 		delete[] m_particles.m_velocity;
+
+		Rendering::RenderModule::Get().DeleteBuffer(m_gfxBufferPositions);
 	}
 
 	void ParticleEmitterRuntime::Init(int spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Sqt& transform)
@@ -36,6 +40,9 @@ namespace Systems
 		m_particles.m_position = new Core::Vec4f[m_particles.m_maxCount];
 		m_particles.m_velocity = new Core::Vec4f[m_particles.m_maxCount];
 		m_particles.m_timeToDeath = new float[m_particles.m_maxCount];
+
+		m_gfxBufferPositions = Rendering::RenderModule::Get().CreateBufferForParticles(sizeof(Core::Vec4f), m_particles.m_maxCount);
+		m_gfxBufferPositionPtr = Rendering::RenderModule::Get().MapBuffer(m_gfxBufferPositions);
 	}
 
 	void ParticleEmitterRuntime::Update(float dtInSeconds)
@@ -69,6 +76,11 @@ namespace Systems
 		//update position
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 			m_particles.m_position[ii] = m_particles.m_position[ii] + (m_particles.m_velocity[ii] * dtInSeconds);
+	}
+
+	void ParticleEmitterRuntime::Upload()
+	{
+		memcpy(m_gfxBufferPositionPtr, m_particles.m_position, sizeof(m_particles.m_position[0]) * m_particles.m_currentCount);
 	}
 
 	void ParticleEmitterRuntime::KillParticle(int index)

@@ -39,6 +39,7 @@ namespace Core
 
 namespace Rendering
 {
+	class BufferHandle;
 	class Camera;
 	class CommandQueue;
 	class Device;
@@ -121,6 +122,12 @@ namespace Rendering
 
 		void BindNullCubemap(uint32_t rootSigIndex);
 		void BindNullTexture2D(uint32_t rootSigIndex);
+
+		BufferHandle CreateBufferForParticles(int particleSize, int particleCount);
+		void DeleteBuffer(const BufferHandle& handle);
+		void* MapBuffer(const BufferHandle& handle);
+
+
 
 	private:
 		DirectX::XMUINT2 m_gameResolution;

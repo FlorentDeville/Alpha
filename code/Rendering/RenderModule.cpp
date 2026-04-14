@@ -21,6 +21,8 @@
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Internal/BufferFormatToDx12.h"
+#include "Rendering/Internal/Buffer/BufferManager.h"
+#include "Rendering/Internal/Buffer/Dx12Buffer.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -742,6 +744,43 @@ namespace Rendering
 
 		pCommandList->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 		pCommandList->SetGraphicsRootDescriptorTable(rootSigIndex, pSrv->GetGPUDescriptorHandleForHeapStart());
+	}
+
+	BufferHandle RenderModule::CreateBufferForParticles(int particleSize, int particleCount)
+	{
+		BufferHandle handle;
+		Internal::Dx12Buffer* pBuffer = Internal::BufferManager::CreateBuffer(handle);
+
+		D3D12_RESOURCE_DESC desc;
+		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		desc.Width = particleSize * particleCount;
+		desc.Height = 1;
+		desc.DepthOrArraySize = 1;
+		desc.MipLevels = 1;
+		desc.SampleDesc.Count = 1;
+		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+
+		GetDx12Device()->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_NONE, &desc,
+			D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&pBuffer->m_pResource));
+
+		return handle;
+	}
+
+	void RenderModule::DeleteBuffer(const BufferHandle& handle)
+	{
+		Internal::BufferManager::ReleaseBuffer(handle);
+	}
+
+	void* RenderModule::MapBuffer(const BufferHandle& handle)
+	{
+		Internal::Dx12Buffer* pBuffer = Internal::BufferManager::GetBuffer(handle);
+		assert(pBuffer);
+
+		void* ptr = nullptr;
+		pBuffer->m_pResource->Map(0, nullptr, &ptr);
+		return ptr;
 	}
 
 	void RenderModule::EnableDebugLayer()
