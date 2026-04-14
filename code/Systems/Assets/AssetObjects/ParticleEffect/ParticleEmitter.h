@@ -22,6 +22,12 @@ namespace Systems
 		ParticleEmitter() = default;
 		~ParticleEmitter() = default;
 
+		const Core::Sqt& GetTransform() const;
+		const Core::Float3& GetSpeed() const;
+		const Core::Float3& GetAcceleration() const;
+		float GetLifetime() const;
+		uint32_t GetSpawnRate() const;
+
 	private:
 		Core::Sqt m_transform;
 
@@ -31,7 +37,7 @@ namespace Systems
 		Core::Float3 m_acceleration;
 
 		float m_lifetime;
-		float m_spawnRate;
+		uint32_t m_spawnRate;
 
 		START_REFLECTION(Systems::ParticleEmitter)
 			ADD_FIELD(m_transform)
