@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "Core/Math/Sqt.h"
+#include "Core/Math/Mat44f.h"
+#include "Core/Math/Vec4f.h"
 
 #include "Rendering/BufferHandle.h"
 
@@ -35,7 +36,7 @@ namespace Systems
 		ParticleEmitterRuntime();
 		~ParticleEmitterRuntime();
 
-		void Init(int spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Sqt& transform);
+		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform);
 
 		void Update(float dtInSeconds);
 
@@ -43,7 +44,7 @@ namespace Systems
 
 	private:
 		Particles m_particles;
-		Core::Sqt m_transform;
+		Core::Mat44f m_transform;
 		Core::Vec4f m_acceleration;
 		int m_spawnRate;
 		float m_lifetime;

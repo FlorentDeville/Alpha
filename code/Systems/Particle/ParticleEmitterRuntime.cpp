@@ -4,10 +4,10 @@
 
 #include "Systems/Particle/ParticleEmitterRuntime.h"
 
+#include "Rendering/RenderModule.h"
+
 #include <cmath>
 #include <random>
-
-#include "Rendering/RenderModule.h"
 
 namespace Systems
 {
@@ -27,7 +27,7 @@ namespace Systems
 		Rendering::RenderModule::Get().DeleteBuffer(m_gfxBufferPositions);
 	}
 
-	void ParticleEmitterRuntime::Init(int spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Sqt& transform)
+	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform)
 	{
 		m_spawnRate = spawnRate;
 		m_lifetime = lifetime;
@@ -103,7 +103,7 @@ namespace Systems
 
 		Core::Vec4f localPosition(dis(gen), dis(gen), dis(gen), 1);
 		m_particles.m_timeToDeath[m_particles.m_currentCount] = m_lifetime;
-		m_particles.m_position[m_particles.m_currentCount] = localPosition * m_transform.GetMatrix();
+		m_particles.m_position[m_particles.m_currentCount] = localPosition * m_transform;
 		m_particles.m_velocity[m_particles.m_currentCount] = Core::Vec4f(); //for now start with no velocity
 		++m_particles.m_currentCount;
 	}
