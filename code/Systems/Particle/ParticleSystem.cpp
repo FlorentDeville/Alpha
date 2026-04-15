@@ -64,6 +64,8 @@ namespace Systems
 		{
 			delete emitter.m_pEmitter;
 		}
+
+		m_emitters.Resize(0);
 	}
 
 	void ParticleSystem::Update(float currentTime, float dtInSeconds)
