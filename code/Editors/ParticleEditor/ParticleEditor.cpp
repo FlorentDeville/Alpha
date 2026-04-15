@@ -4,6 +4,8 @@
 
 #include "Editors/ParticleEditor/ParticleEditor.h"
 
+#include "Core/Math/Mat44f.h"
+
 #include "Editors/EditorParameter.h"
 #include "Editors/ParticleEditor/ParticleEditorModule.h"
 #include "Editors/ParticleEditor/ParticleListModel.h"
@@ -12,9 +14,18 @@
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
+#include "Rendering/PipelineState/PipelineStateDesc.h"
+#include "Rendering/RenderModule.h"
+#include "Rendering/RenderTargets/RenderTarget.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
+#include "Rendering/Texture/Texture.h"
+
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
+#include "Systems/Rendering/Renderable/RenderableScene.h"
+#include "Systems/Rendering/RenderPass/RenderPassBase.h"
 
 #include "Widgets/Layout.h"
 #include "Widgets/Menu.h"
@@ -33,12 +44,15 @@ namespace Editors
 		: BaseEditor()
 		, m_pPopulator(nullptr)
 		, m_pListModel(nullptr)
+		, m_particleSystem()
+		, m_pBasePass(nullptr)
 		, m_pViewport(nullptr)
 	{ }
 
 	ParticleEditor::~ParticleEditor()
 	{
 		delete m_pPopulator;
+		delete m_pBasePass;
 	}
 
 	void ParticleEditor::CreateEditor(const EditorParameter& param)
@@ -108,6 +122,21 @@ namespace Editors
 		module.OnBeforeParticleEffectDeleted([this](Systems::NewAssetId id) { m_pListModel->RemoveRow(id); });
 		module.OnParticleEffectSaved([this](Systems::NewAssetId id) { m_pListModel->ClearModifiedMark(id); });
 		module.OnParticleEffectRenamed([this](Systems::AssetMetadata& metadata) { m_pListModel->OnParticleEffectRenamed(metadata); });
+
+		m_pBasePass = new Systems::RenderPassBase(WIDTH, HEIGHT);
+
+		//pso and rootsig to copy to the viewport
+		m_pCopyRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::COPY_RENDER_TARGET);
+
+		Rendering::PipelineStateDesc desc;
+		desc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
+		desc.m_cullMode = Rendering::CullMode::NONE;
+		desc.m_pVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_VS);
+		desc.m_pPs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_PS);
+		desc.m_pRs = m_pCopyRootSig;
+
+		m_pCopyPso = new Rendering::PipelineState();
+		m_pCopyPso->Init_Generic(desc);
 	}
 
 	void ParticleEditor::OnMenu_File_Create()
@@ -210,12 +239,58 @@ namespace Editors
 			ObjectWatcherCallbackId id = ObjectWatcher::Get().AddWatcher(pEmitter, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
 			m_objWatcherCid.PushBack(id);
 		}
+
+		m_particleSystem.KillAllEffect();
+		m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity());
 	}
 
 	void ParticleEditor::OnParticleEffectModified()
 	{
 		Systems::NewAssetId id = m_pListModel->GetSelection();
 		m_pListModel->SetModifiedMark(id);
+	}
+
+	void ParticleEditor::Viewport_OnUpdate(uint64_t dt)
+	{
+		float dtInSeconds = dt / 1000.f;
+		m_particleSystem.Update(dtInSeconds);
+	}
+
+	void ParticleEditor::Viewport_OnRender()
+	{
+		//first make renderable
+		Systems::RenderableScene scene;
+		m_particleSystem.BuildRenderable(scene);
+			
+		//then render the base pass
+		m_pBasePass->PreRender(scene);
+		m_pBasePass->Render(scene);
+		m_pBasePass->PostRender(scene);
+
+		//finally show it to the viewport
+		m_pViewport->BeginScene();
+
+		{
+			Rendering::RenderTarget* pFinalRT = m_pBasePass->GetRenderTarget();
+			Rendering::Texture* pFinalTexture = pFinalRT->GetColorTexture();
+			pFinalTexture->TransitionToShaderResource();
+
+			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+			renderer.BindMaterial(*m_pCopyPso, *m_pCopyRootSig);
+
+			{
+				ID3D12DescriptorHeap* pSrv = pFinalTexture->GetSRV();
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { pSrv };
+
+				//I should have only 2 giant descriptor heaps, one for cbv,srv,uav and another one for sampler.
+				renderer.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderer.GetRenderCommandList()->SetGraphicsRootDescriptorTable(0, pSrv->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			renderer.RenderNoBufferTriangle();
+		}
+
+		m_pViewport->EndScene();
 	}
 
 	void ParticleEditor::RemoveAllWatchers()

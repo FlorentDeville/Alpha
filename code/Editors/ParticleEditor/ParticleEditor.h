@@ -9,7 +9,20 @@
 #include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
+#include "Systems/Particle/ParticleSystem.h"
+
 #include <vector>
+
+namespace Rendering
+{
+	class PipelineState;
+	class RootSignature;
+}
+
+namespace Systems
+{
+	class RenderPassBase;
+}
 
 namespace Widgets
 {
@@ -39,7 +52,14 @@ namespace Editors
 
 		Core::Array<ObjectWatcherCallbackId> m_objWatcherCid;
 
+		Systems::ParticleSystem m_particleSystem;
+
+		Systems::RenderPassBase* m_pBasePass;
+
 		Widgets::Viewport* m_pViewport;
+
+		Rendering::RootSignature* m_pCopyRootSig;
+		Rendering::PipelineState* m_pCopyPso;
 
 		void OnMenu_File_Create();
 		void OnMenu_File_Delete();
@@ -49,6 +69,9 @@ namespace Editors
 		void OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 
 		void OnParticleEffectModified();
+
+		void Viewport_OnUpdate(uint64_t dt);
+		void Viewport_OnRender();
 
 		void RemoveAllWatchers();
 	};
