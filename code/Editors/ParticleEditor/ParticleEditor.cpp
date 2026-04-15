@@ -10,6 +10,7 @@
 #include "Editors/EditorParameter.h"
 #include "Editors/ParticleEditor/ParticleEditorModule.h"
 #include "Editors/ParticleEditor/ParticleListModel.h"
+#include "Editors/Widgets/Camera/CameraWidget.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
@@ -52,6 +53,7 @@ namespace Editors
 		, m_pCopyPso(nullptr)
 		, m_pCopyRootSig(nullptr)
 		, m_aspectRatio()
+		, m_pCamera(nullptr)
 	{ }
 
 	ParticleEditor::~ParticleEditor()
@@ -59,6 +61,7 @@ namespace Editors
 		delete m_pPopulator;
 		delete m_pBasePass;
 		delete m_pCopyPso;
+		delete m_pCamera;
 	}
 
 	void ParticleEditor::CreateEditor(const EditorParameter& param)
@@ -142,6 +145,11 @@ namespace Editors
 
 		m_pCopyPso = new Rendering::PipelineState();
 		m_pCopyPso->Init_Generic(desc);
+
+		m_pCamera = new CameraWidget();
+		m_pCamera->SetFov(45 * Core::PI_OVER_180);
+		m_pCamera->SetAspectRatio(m_aspectRatio);
+		m_pCamera->SetTransform(Core::Vec4f(0, 0, -20, 1), Core::Vec4f(0, 0, 0, 0));
 	}
 
 	void ParticleEditor::OnMenu_File_Create()
@@ -262,6 +270,8 @@ namespace Editors
 
 		float currentTime = Systems::Clock::Get().GetApplicationTime();
 		float dtInSeconds = dt / 1000.f;
+
+		m_pCamera->Update(dtInSeconds);
 		m_particleSystem.Update(currentTime, dtInSeconds);
 	}
 
@@ -273,9 +283,9 @@ namespace Editors
 			
 		//make a static camera for now
 		scene.m_camera.m_fov = m_aspectRatio;
-		scene.m_camera.m_position = Core::Vec4f(0, 0, -20, 1);
-		scene.m_camera.m_view = Core::Mat44f::CreateView(scene.m_camera.m_position, Core::Vec4f(0, 0, 1, 0), Core::Vec4f(0, 1, 0, 0));
-		scene.m_camera.m_proj = Core::Mat44f::CreatePerspective(45 * Core::PI_OVER_180, m_aspectRatio, 0.1f, 1000);
+		scene.m_camera.m_position = m_pCamera->GetPosition();
+		scene.m_camera.m_view = m_pCamera->GetView();
+		scene.m_camera.m_proj = m_pCamera->GetProjection();
 
 		//then render the base pass
 		m_pBasePass->PreRender(scene);

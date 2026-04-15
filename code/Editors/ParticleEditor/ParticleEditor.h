@@ -32,6 +32,7 @@ namespace Widgets
 
 namespace Editors
 {
+	class CameraWidget;
 	class PropertyGridPopulator;
 	class ParticleListModel;
 
@@ -60,6 +61,8 @@ namespace Editors
 
 		Rendering::RootSignature* m_pCopyRootSig;
 		Rendering::PipelineState* m_pCopyPso;
+
+		CameraWidget* m_pCamera;
 
 		float m_aspectRatio;
 
