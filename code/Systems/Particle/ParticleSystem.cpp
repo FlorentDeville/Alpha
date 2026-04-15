@@ -22,7 +22,7 @@ namespace Systems
 			delete pEmitter.m_pEmitter;
 	}
 
-	void ParticleSystem::SpawnEffect(const ParticleEffectAsset* pEffect, const Core::Mat44f& world)
+	void ParticleSystem::SpawnEffect(const ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime)
 	{
 		//go through the emitters and spawn emitter runtime
 		const Core::Array<ParticleEmitter*>& emitterAssetList = pEffect->GetEmitters();
@@ -39,7 +39,7 @@ namespace Systems
 			Core::Vec4f acceleration(emitterAcceleration.x, emitterAcceleration.y, emitterAcceleration.z, 0);
 			
 			Core::Mat44f finalTransform = pEmitterAsset->GetTransform().GetMatrix() * world;
-			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, finalTransform);
+			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, finalTransform, currentTime);
 		}
 	}
 
@@ -66,11 +66,11 @@ namespace Systems
 		}
 	}
 
-	void ParticleSystem::Update(float dtInSeconds)
+	void ParticleSystem::Update(float currentTime, float dtInSeconds)
 	{
 		for (TrackedEmitter& pEmitter : m_emitters)
 		{
-			pEmitter.m_pEmitter->Update(dtInSeconds);
+			pEmitter.m_pEmitter->Update(currentTime, dtInSeconds);
 			pEmitter.m_pEmitter->Upload();
 		}
 	}

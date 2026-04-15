@@ -25,6 +25,7 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
+#include "Systems/Clock/Clock.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 
@@ -245,7 +246,7 @@ namespace Editors
 		}
 
 		m_particleSystem.KillAllEffect();
-		m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity());
+		m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
 	}
 
 	void ParticleEditor::OnParticleEffectModified()
@@ -259,8 +260,9 @@ namespace Editors
 		if (!m_pViewport->IsEnabled())
 			return;
 
+		float currentTime = Systems::Clock::Get().GetApplicationTime();
 		float dtInSeconds = dt / 1000.f;
-		m_particleSystem.Update(dtInSeconds);
+		m_particleSystem.Update(currentTime, dtInSeconds);
 	}
 
 	void ParticleEditor::Viewport_OnRender()

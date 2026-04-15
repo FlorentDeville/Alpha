@@ -43,10 +43,10 @@ namespace Systems
 		ParticleEmitterRuntime();
 		~ParticleEmitterRuntime();
 
-		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform);
+		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform, float currentTime);
 		void SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig);
 
-		void Update(float dtInSeconds);
+		void Update(float currentTime, float dtInSeconds);
 
 		void Upload();
 
@@ -66,6 +66,8 @@ namespace Systems
 		//hardcode material for now
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootSig;
+
+		float m_lastSpawnTime;
 
 		void KillParticle(int index);
 		void SpawnParticle();

@@ -39,7 +39,7 @@ namespace Systems
 		delete m_pPso;
 	}
 
-	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform)
+	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform, float currentTime)
 	{
 		m_spawnRate = spawnRate;
 		m_lifetime = lifetime;
@@ -68,6 +68,8 @@ namespace Systems
 
 		m_pPso = new Rendering::PipelineState();
 		m_pPso->Init_Generic(desc);
+
+		m_lastSpawnTime = currentTime;
 	}
 
 	void ParticleEmitterRuntime::SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig)
@@ -76,28 +78,34 @@ namespace Systems
 		m_pRootSig = pRootSig;
 	}
 
-	void ParticleEmitterRuntime::Update(float dtInSeconds)
+	void ParticleEmitterRuntime::Update(float currentTime, float dtInSeconds)
 	{
-		//first spawn new particles
-		int particlesToSpawn = static_cast<int>(m_spawnRate * dtInSeconds);
-
-		for (int ii = 0; ii < particlesToSpawn; ++ii)
-		{
-			assert(m_particles.m_currentCount < m_particles.m_maxCount);
-			SpawnParticle();
-		}
-
 		//kill dead particles particles
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 		{
-			m_particles.m_timeToDeath[m_particles.m_currentCount] -= dtInSeconds;
-			if (m_particles.m_timeToDeath[m_particles.m_currentCount] <= 0)
+			m_particles.m_timeToDeath[ii] -= dtInSeconds;
+			if (m_particles.m_timeToDeath[ii] <= 0)
 			{
 				KillParticle(ii);
 
 				// KillParticle will put the last particle in place of the deleted particle. So now index ii points to a particle not checked yet.
 				--ii;
 			}
+		}
+
+		//spawn new particles
+		float accumulatedDt = (currentTime - m_lastSpawnTime) + dtInSeconds;
+
+		int particlesToSpawn = static_cast<int>(m_spawnRate * accumulatedDt);
+		if (particlesToSpawn > 0)
+			m_lastSpawnTime = currentTime;
+
+		for (int ii = 0; ii < particlesToSpawn; ++ii)
+		{
+			if (m_particles.m_currentCount >= m_particles.m_maxCount)
+				break;
+
+			SpawnParticle();
 		}
 
 		//update velocity
