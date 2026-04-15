@@ -249,7 +249,11 @@ namespace Rendering
 		desc.DepthOrArraySize = 1;
 		desc.MipLevels = 1;
 		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
 		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		desc.Format = DXGI_FORMAT_UNKNOWN;
+		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		desc.Alignment = 0;
 
 		m_currentState = D3D12_RESOURCE_STATE_GENERIC_READ;
 
