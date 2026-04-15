@@ -14,6 +14,7 @@
 namespace Widgets
 {
 	class SelectionRow;
+	class Viewport;
 }
 
 namespace Editors
@@ -37,6 +38,8 @@ namespace Editors
 		ParticleListModel* m_pListModel;
 
 		Core::Array<ObjectWatcherCallbackId> m_objWatcherCid;
+
+		Widgets::Viewport* m_pViewport;
 
 		void OnMenu_File_Create();
 		void OnMenu_File_Delete();

@@ -33,6 +33,7 @@ namespace Editors
 		: BaseEditor()
 		, m_pPopulator(nullptr)
 		, m_pListModel(nullptr)
+		, m_pViewport(nullptr)
 	{ }
 
 	ParticleEditor::~ParticleEditor()
@@ -89,15 +90,12 @@ namespace Editors
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
-		/*m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
+		/*m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);*/
 
-		m_renderTargetHalfWidth = WIDTH * 0.5f;
-		m_renderTargetHalfHeight = HEIGHT * 0.5f;*/
-
-		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-		//pViewport->OnRender([this]() { Viewport_OnRender(); });
-		//pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
-		pHorizontalSplit->AddTopPanel(pViewport);
+		m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
+		m_pViewport->OnRender([this]() { Viewport_OnRender(); });
+		m_pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
+		pHorizontalSplit->AddTopPanel(m_pViewport);
 
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
 		pHorizontalSplit->AddBottomPanel(pPropertyGrid);
