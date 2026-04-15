@@ -7,6 +7,7 @@
 #include "Core/Math/Vectors.h"
 
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
+#include "Rendering/ConstantBuffer/LinearConstantBufferPool.h"
 #include "Rendering/ConstantBuffer/PerFrameCBuffer.h"
 #include "Rendering/ConstantBuffer/PerObjectCBuffer.h"
 #include "Rendering/RenderModule.h"
@@ -23,8 +24,6 @@
 
 namespace Systems
 {
-	static uint32_t min(uint32_t a, uint32_t b) { return a < b ? a : b; }
-
 	static void RenderObject(const RenderableObject& obj, const Core::Mat44f* lightSpace, const Rendering::PerFrameCBuffer& perFrameData, 
 		const Rendering::LightsArrayCBuffer& lightsConstBuffer, Rendering::DescriptorHeap* pShadowMapSrvHeap)
 	{
@@ -124,9 +123,21 @@ namespace Systems
 		}
 
 		//render particles
+
+		struct ParticleFrameParametersStruct
+		{
+			Core::Mat44f m_view;
+			Core::Mat44f m_proj;
+		};
+
+		ParticleFrameParametersStruct particleFrameParameters;
+		particleFrameParameters.m_view = scene.m_camera.m_view;
+		particleFrameParameters.m_proj = scene.m_camera.m_proj;
+
 		for (const Systems::RenderableParticles& renderable : scene.m_particles)
 		{
 			renderModule.BindMaterial(*renderable.m_pPso, *renderable.m_pRootsig);
+			renderModule.SetConstantBuffer(1, sizeof(ParticleFrameParametersStruct), &particleFrameParameters, 0);
 			{
 				ID3D12DescriptorHeap* pDescriptorHeap[] = { renderable.m_pBufferPositions->GetSRV() };
 				renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
