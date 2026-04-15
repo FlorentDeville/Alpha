@@ -35,6 +35,8 @@ namespace Systems
 		void SpawnEffect(const ParticleEffectAsset* pEffect, const Core::Mat44f& world);
 		void KillEffect(const ParticleEffectAsset* pEffect);
 
+		void KillAllEffect();
+
 		void Update(float dtInSeconds);
 
 		void BuildRenderable(RenderableScene& scene);

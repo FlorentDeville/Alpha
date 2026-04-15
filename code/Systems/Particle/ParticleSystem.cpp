@@ -28,6 +28,9 @@ namespace Systems
 		const Core::Array<ParticleEmitter*>& emitterAssetList = pEffect->GetEmitters();
 		for (const ParticleEmitter* pEmitterAsset : emitterAssetList)
 		{
+			if (pEmitterAsset->GetSpawnRate() == 0)
+				continue;
+
 			TrackedEmitter& runtimeEmitter = m_emitters.PushBackDefault();
 			runtimeEmitter.m_id = pEffect->GetId();
 			runtimeEmitter.m_pEmitter = new ParticleEmitterRuntime();
@@ -47,6 +50,7 @@ namespace Systems
 			if (m_emitters[ii].m_id != pEffect->GetId())
 				continue;
 
+			delete m_emitters[ii].m_pEmitter;
 			m_emitters[ii] = m_emitters.Back();
 			m_emitters.Resize(m_emitters.GetSize() - 1);
 
@@ -54,10 +58,21 @@ namespace Systems
 		}
 	}
 
+	void ParticleSystem::KillAllEffect()
+	{
+		for(TrackedEmitter& emitter : m_emitters)
+		{
+			delete emitter.m_pEmitter;
+		}
+	}
+
 	void ParticleSystem::Update(float dtInSeconds)
 	{
 		for (TrackedEmitter& pEmitter : m_emitters)
+		{
 			pEmitter.m_pEmitter->Update(dtInSeconds);
+			pEmitter.m_pEmitter->Upload();
+		}
 	}
 
 	void ParticleSystem::BuildRenderable(RenderableScene& scene)
