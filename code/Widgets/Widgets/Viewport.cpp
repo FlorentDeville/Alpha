@@ -158,6 +158,16 @@ namespace Widgets
 		return mousePosition3d;
 	}
 
+	void Viewport::BeginScene(bool clear)
+	{
+		m_pRenderTarget->BeginScene(clear);
+	}
+
+	void Viewport::EndScene()
+	{
+		m_pRenderTarget->EndScene();
+	}
+
 	void Viewport::Internal_Render()
 	{
 		m_onPreRender();

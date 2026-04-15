@@ -33,6 +33,9 @@ namespace Widgets
 
 		Core::Vec4f Compute3dPosition(const Core::UInt2& windowAbsPos, const Core::Mat44f& view, const Core::Mat44f& proj) const;
 
+		void BeginScene(bool clear = true);
+		void EndScene();
+
 		EVENT_DECL(Update, void(uint64_t)) //Real time update called every frame
 		EVENT_DECL(Render, void()) //Do all your rendering inside this event
 		EVENT_DECL(PreRender, void()) //Called before rendering in the final render target
