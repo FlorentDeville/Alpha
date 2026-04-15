@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackList.h"
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
@@ -29,8 +29,7 @@ namespace Editors
 		float GetFov() const;
 
 		//event
-		using OnWsChangedEvent = Core::CallbackList<void(const Core::Mat44f&)>;
-		Core::CallbackId OnWsChanged(const OnWsChangedEvent::Callback& callback);
+		EVENT_DECL(WsChanged, void(const Core::Mat44f& world))
 
 	private:
 		enum CameraState
@@ -59,8 +58,6 @@ namespace Editors
 		Core::Int2 m_mousePreviousPos;
 
 		CameraState m_cameraState;
-
-		OnWsChangedEvent m_onWsChanged;
 
 		bool m_dirtyView;
 		bool m_dirtyProj;

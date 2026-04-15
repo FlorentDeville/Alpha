@@ -120,11 +120,6 @@ namespace Editors
 		return m_fov;
 	}
 
-	Core::CallbackId CameraWidget::OnWsChanged(const OnWsChangedEvent::Callback& callback)
-	{
-		return m_onWsChanged.Connect(callback);
-	}
-
 	void CameraWidget::UpdateCamera_None(float dtInSeconds)
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
