@@ -18,9 +18,6 @@
 
 #include "Widgets/WidgetMgr.h"
 
-#include <DirectXMath.h>
-using namespace DirectX;
-
 namespace Widgets
 {
 	Viewport::Viewport(int width, int height)
