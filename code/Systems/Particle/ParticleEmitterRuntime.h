@@ -43,7 +43,7 @@ namespace Systems
 		ParticleEmitterRuntime();
 		~ParticleEmitterRuntime();
 
-		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform, float currentTime);
+		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime);
 		void SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig);
 
 		void Update(float currentTime, float dtInSeconds);
@@ -56,6 +56,7 @@ namespace Systems
 		Particles m_particles;
 		Core::Mat44f m_transform;
 		Core::Vec4f m_acceleration;
+		Core::Vec4f m_speed;
 		int m_spawnRate;
 		float m_lifetime;
 

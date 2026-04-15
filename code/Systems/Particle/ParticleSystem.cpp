@@ -38,8 +38,11 @@ namespace Systems
 			const Core::Float3& emitterAcceleration = pEmitterAsset->GetAcceleration();
 			Core::Vec4f acceleration(emitterAcceleration.x, emitterAcceleration.y, emitterAcceleration.z, 0);
 			
+			const Core::Float3& emitterSpeed = pEmitterAsset->GetSpeed();
+			Core::Vec4f speed(emitterSpeed.x, emitterSpeed.y, emitterSpeed.z, 0);
+
 			Core::Mat44f finalTransform = pEmitterAsset->GetTransform().GetMatrix() * world;
-			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, finalTransform, currentTime);
+			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, speed, finalTransform, currentTime);
 		}
 	}
 

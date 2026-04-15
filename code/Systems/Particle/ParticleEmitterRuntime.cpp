@@ -39,12 +39,13 @@ namespace Systems
 		delete m_pPso;
 	}
 
-	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform, float currentTime)
+	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime)
 	{
 		m_spawnRate = spawnRate;
 		m_lifetime = lifetime;
 		m_acceleration = acceleration;
 		m_transform = transform;
+		m_speed = speed;
 
 		int iLifetime = static_cast<int>(std::ceil(lifetime));
 		m_particles.m_maxCount = spawnRate * iLifetime;
@@ -152,7 +153,7 @@ namespace Systems
 		Core::Vec4f localPosition(dis(gen), dis(gen), dis(gen), 1);
 		m_particles.m_timeToDeath[m_particles.m_currentCount] = m_lifetime;
 		m_particles.m_position[m_particles.m_currentCount] = localPosition * m_transform;
-		m_particles.m_velocity[m_particles.m_currentCount] = Core::Vec4f(); //for now start with no velocity
+		m_particles.m_velocity[m_particles.m_currentCount] = m_speed; //for now start with no velocity
 		++m_particles.m_currentCount;
 	}
 }
