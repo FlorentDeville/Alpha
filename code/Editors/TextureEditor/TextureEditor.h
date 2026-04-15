@@ -27,6 +27,7 @@ namespace Systems
 namespace Widgets
 {
 	class SelectionRow;
+	class Viewport;
 	class Widget;
 }
 
@@ -76,6 +77,8 @@ namespace Editors
 		Rendering::PipelineState* m_pPsoCubemap;
 
 		float m_aspectRatio;
+
+		Widgets::Viewport* m_pViewport;
 
 		void OnClick_Texture_CreateAndImport();
 		void OnClick_Texture_Import();

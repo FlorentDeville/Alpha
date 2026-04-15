@@ -21,7 +21,7 @@
 
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
-#include "Widgets/Viewport.h"
+#include "Widgets/Widgets/Viewport.h"
 
 namespace Editors
 {
@@ -29,6 +29,7 @@ namespace Editors
 		: BaseEditor()
 		, m_pPso(nullptr)
 		, m_pRootSig(nullptr)
+		, m_pViewport(nullptr)
 	{}
 
 	GamePlayer::~GamePlayer()
@@ -58,11 +59,11 @@ namespace Editors
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
-		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-		pViewport->SetSizeStyle(Widgets::STRETCH);
-		pViewport->OnRender([this]() { Viewport_OnRender(); });
+		m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
+		m_pViewport->SetSizeStyle(Widgets::STRETCH);
+		m_pViewport->OnRender([this]() { Viewport_OnRender(); });
 
-		m_pInternalLayout->AddWidget(pViewport);
+		m_pInternalLayout->AddWidget(m_pViewport);
 
 		m_pRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::COPY_RENDER_TARGET);
 
@@ -79,6 +80,8 @@ namespace Editors
 
 	void GamePlayer::Viewport_OnRender()
 	{
+		m_pViewport->BeginScene();
+
 		Rendering::RenderTarget* pGameRT = Systems::GameMgr::Get().GetFinalRenderTarget();
 		Rendering::Texture* pGameTexture = pGameRT->GetColorTexture();
 		pGameTexture->TransitionToShaderResource();
@@ -96,6 +99,8 @@ namespace Editors
 		}
 
 		renderer.RenderNoBufferTriangle();
+
+		m_pViewport->EndScene();
 	}
 
 	void GamePlayer::OnClick_Play()

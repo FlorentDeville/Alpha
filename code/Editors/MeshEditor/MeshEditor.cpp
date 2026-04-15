@@ -46,8 +46,8 @@
 #include "Widgets/Tab.h"
 #include "Widgets/TabContainer.h"
 #include "Widgets/Text.h"
-#include "Widgets/Viewport.h"
 #include "Widgets/Widgets/TableView.h"
+#include "Widgets/Widgets/Viewport.h"
 
 namespace Editors
 {
@@ -70,6 +70,7 @@ namespace Editors
 		, m_pWorldAxisRenderTarget(nullptr)
 		, m_pWorldAxisRTRatio(0)
 		, m_pWorldAxisIcon(nullptr)
+		, m_pViewport(nullptr)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
@@ -128,12 +129,12 @@ namespace Editors
 		const int VIEWPORT_WIDTH = 1280;
 		const int VIEWPORT_HEIGHT = 720;
 		m_aspectRatio = VIEWPORT_WIDTH / static_cast<float>(VIEWPORT_HEIGHT);
-		Widgets::Viewport* pViewport = new Widgets::Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
-		pViewport->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
-		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
-		pViewport->OnRender([this]() { Viewport_OnRender(); });
-		pViewport->OnPreRender([this]() { Viewport_OnPreRender(); });
-		pRightSideSplit->AddTopPanel(pViewport);
+		m_pViewport = new Widgets::Viewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+		m_pViewport->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
+		m_pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(); });
+		m_pViewport->OnRender([this]() { Viewport_OnRender(); });
+		m_pViewport->OnPreRender([this]() { Viewport_OnPreRender(); });
+		pRightSideSplit->AddTopPanel(m_pViewport);
 
 		//create property grid
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
@@ -219,7 +220,7 @@ namespace Editors
 		m_pWorldAxisIcon = new Widgets::Icon();
 		m_pWorldAxisIcon->SetSize(Core::UInt2(100, 100));
 		m_pWorldAxisIcon->SetTexture(m_pWorldAxisRenderTarget->GetColorTexture());
-		pViewport->AddWidget(m_pWorldAxisIcon);
+		m_pViewport->AddWidget(m_pWorldAxisIcon);
 
 		ComputeCameraPositionAndView();
 
@@ -388,6 +389,8 @@ namespace Editors
 
 	void MeshEditor::Viewport_OnRender()
 	{
+		m_pViewport->BeginScene();
+
 		//world
 		Core::Mat44f world = Core::Mat44f::CreateIdentity();
 
@@ -423,6 +426,7 @@ namespace Editors
 			}
 		}
 
+		m_pViewport->EndScene();
 	}
 
 	void MeshEditor::Viewport_OnPreRender()

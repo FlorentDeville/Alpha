@@ -2,9 +2,11 @@
 /* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Widgets/Viewport.h"
+#include "Widgets/Widgets/Viewport.h"
 
-#include "Rendering/Camera.h"
+#include "Core/Math/Mat44f.h"
+#include "Core/Math/Vec4f.h"
+
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/RenderModule.h"
@@ -13,13 +15,9 @@
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/RootSignature/RootSignatureMgr.h"
 #include "Rendering/Texture/Texture.h"
-#include "Rendering/Texture/TextureId.h"
 #include "Rendering/Texture/TextureMgr.h"
 
 #include "Widgets/WidgetMgr.h"
-
-#include <DirectXMath.h>
-using namespace DirectX;
 
 namespace Widgets
 {
@@ -161,12 +159,19 @@ namespace Widgets
 		return mousePosition3d;
 	}
 
+	void Viewport::BeginScene(bool clear)
+	{
+		m_pRenderTarget->BeginScene(clear);
+	}
+
+	void Viewport::EndScene()
+	{
+		m_pRenderTarget->EndScene();
+	}
+
 	void Viewport::Internal_Render()
 	{
 		m_onPreRender();
-
-		m_pRenderTarget->BeginScene();
 		m_onRender();
-		m_pRenderTarget->EndScene();
 	}
 }

@@ -30,6 +30,7 @@ namespace Widgets
 	class Button;
 	class Icon;
 	class SelectionRow;
+	class Viewport;
 }
 
 namespace Editors
@@ -81,6 +82,8 @@ namespace Editors
 		Systems::MeshAsset* m_pSelectedMesh;
 
 		PropertyGridPopulator* m_pPopulator;
+
+		Widgets::Viewport* m_pViewport;
 
 		bool OnMaterialClicked(int entryIndex);
 

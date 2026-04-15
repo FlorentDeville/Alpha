@@ -12,6 +12,11 @@ namespace Rendering
 	class RootSignature;
 }
 
+namespace Widgets
+{
+	class Viewport;
+}
+
 namespace Editors
 {
 	class GamePlayer : public BaseEditor
@@ -23,6 +28,8 @@ namespace Editors
 		void CreateEditor(const EditorParameter& param) override;
 
 	private:
+		Widgets::Viewport* m_pViewport;
+
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootSig;
 
