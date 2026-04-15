@@ -8,9 +8,9 @@
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/RenderPassObjectId.h"
-#include "Editors/LevelEditor/Widgets/CameraWidget.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
+#include "Editors/Widgets/Camera/CameraWidget.h"
 
 #include "Inputs/InputMgr.h"
 

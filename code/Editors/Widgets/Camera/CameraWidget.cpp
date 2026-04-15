@@ -2,7 +2,7 @@
 /* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/LevelEditor/Widgets/CameraWidget.h"
+#include "Editors/Widgets/Camera/CameraWidget.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 
@@ -29,6 +29,7 @@ namespace Editors
 		, m_fov(0)
 		, m_dirtyView(true)
 		, m_dirtyProj(true)
+		, m_aspectRatio(1.77f)
 	{}
 
 	CameraWidget::~CameraWidget()

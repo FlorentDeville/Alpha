@@ -33,7 +33,7 @@
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\Widgets\CameraWidget.h">
+    <ClInclude Include="Widgets\Camera\CameraWidget.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditor\Widgets\GizmoAxis.h">
@@ -221,7 +221,7 @@
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEditor\Widgets\CameraWidget.cpp">
+    <ClCompile Include="Widgets\Camera\CameraWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditor\Widgets\GizmoAxis.cpp">

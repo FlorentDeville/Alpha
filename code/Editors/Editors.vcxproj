@@ -20,7 +20,7 @@
     <ClInclude Include="LevelEditor\SceneTreeModel.h" />
     <ClInclude Include="LevelEditor\LevelEditorModule.h" />
     <ClInclude Include="LevelEditor\SelectionMgr.h" />
-    <ClInclude Include="LevelEditor\Widgets\CameraWidget.h" />
+    <ClInclude Include="Widgets\Camera\CameraWidget.h" />
     <ClInclude Include="LevelEditor\Widgets\GizmoAxis.h" />
     <ClInclude Include="LevelEditor\Widgets\GizmoModel.h" />
     <ClInclude Include="LevelEditor\Widgets\GizmoWidget.h" />
@@ -84,7 +84,7 @@
     <ClCompile Include="LevelEditor\SceneTreeModel.cpp" />
     <ClCompile Include="LevelEditor\LevelEditorModule.cpp" />
     <ClCompile Include="LevelEditor\SelectionMgr.cpp" />
-    <ClCompile Include="LevelEditor\Widgets\CameraWidget.cpp" />
+    <ClCompile Include="Widgets\Camera\CameraWidget.cpp" />
     <ClCompile Include="LevelEditor\Widgets\GizmoAxis.cpp" />
     <ClCompile Include="LevelEditor\Widgets\GizmoModel.cpp" />
     <ClCompile Include="LevelEditor\Widgets\GizmoWidget.cpp" />
