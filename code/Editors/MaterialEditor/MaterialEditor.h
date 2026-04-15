@@ -30,6 +30,7 @@ namespace Widgets
 	class Layout;
 	class MenuItem;
 	class Text;
+	class Viewport;
 	class Widget;
 }
 
@@ -85,6 +86,8 @@ namespace Editors
 		ObjectWatcherCallbackId m_objWatcherCid;
 
 		WidgetController* m_pController;
+
+		Widgets::Viewport* m_pViewport;
 
 		void CreateFileMenu();
 		void CreateMeshMenu();

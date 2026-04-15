@@ -171,6 +171,24 @@ namespace Editors
 		}
 	};
 
+	class ViewportSceneJanitor
+	{
+	public:
+		ViewportSceneJanitor(Widgets::Viewport* pViewport, bool clear = true)
+		{
+			m_pViewport = pViewport;
+			pViewport->BeginScene(clear);
+		}
+
+		~ViewportSceneJanitor()
+		{
+			m_pViewport->EndScene();
+		}
+
+	private:
+		Widgets::Viewport* m_pViewport;
+	};
+
 	MaterialEditor::MaterialEditor()
 		: BaseEditor()
 		, m_pShaderListLayout(nullptr)
@@ -190,6 +208,7 @@ namespace Editors
 		, m_pController(nullptr)
 		, m_cameraEuler(0, 0, 0, 1)
 		, m_cameraTarget(0, 0, 0, 1)
+		, m_pViewport(nullptr)
 	{ }
 
 	MaterialEditor::~MaterialEditor()
@@ -238,11 +257,11 @@ namespace Editors
 			const int HEIGHT = 789;
 			m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
 
-			Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-			pViewport->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
-			pViewport->OnRender([this]() { Viewport_OnRender(); });
-			pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
-			pHSplit->AddTopPanel(pViewport);
+			m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
+			m_pViewport->SetSizeStyle(Widgets::HSIZE_STRETCH | Widgets::VSIZE_STRETCH);
+			m_pViewport->OnRender([this]() { Viewport_OnRender(); });
+			m_pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
+			pHSplit->AddTopPanel(m_pViewport);
 		}
 
 		//right panel : add option layout
@@ -626,6 +645,8 @@ namespace Editors
 
 	void MaterialEditor::Viewport_OnRender()
 	{
+		ViewportSceneJanitor janitor(m_pViewport);
+
 		if (m_selectedMaterialId == Systems::NewAssetId::INVALID)
 			return;
 

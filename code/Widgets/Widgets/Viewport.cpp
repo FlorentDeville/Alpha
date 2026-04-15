@@ -171,9 +171,6 @@ namespace Widgets
 	void Viewport::Internal_Render()
 	{
 		m_onPreRender();
-
-		m_pRenderTarget->BeginScene();
 		m_onRender();
-		m_pRenderTarget->EndScene();
 	}
 }

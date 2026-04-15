@@ -55,6 +55,24 @@
 
 namespace Editors
 {
+	class ViewportSceneJanitor
+	{
+	public:
+		ViewportSceneJanitor(Widgets::Viewport* pViewport, bool clear = true)
+		{
+			m_pViewport = pViewport;
+			pViewport->BeginScene(clear);
+		}
+
+		~ViewportSceneJanitor()
+		{
+			m_pViewport->EndScene();
+		}
+
+	private:
+		Widgets::Viewport* m_pViewport;
+	};
+
 	TextureEditor::TextureEditor()
 		: BaseEditor()
 		, m_pListModel(nullptr)
@@ -72,6 +90,7 @@ namespace Editors
 		, m_cameraDirectionRotationY(0)
 		, m_firstFrameMouseDown(false)
 		, m_pRootSig(nullptr)
+		, m_pViewport(nullptr)
 	{ }
 
 	TextureEditor::~TextureEditor()
@@ -175,10 +194,10 @@ namespace Editors
 		m_renderTargetHalfWidth = WIDTH * 0.5f;
 		m_renderTargetHalfHeight = HEIGHT * 0.5f;
 
-		Widgets::Viewport* pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
-		pViewport->OnRender([this]() { Viewport_OnRender(); });
-		pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
-		pHorizontalSplit->AddTopPanel(pViewport);
+		m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
+		m_pViewport->OnRender([this]() { Viewport_OnRender(); });
+		m_pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
+		pHorizontalSplit->AddTopPanel(m_pViewport);
 
 		TextureEditorModule& textureModule = TextureEditorModule::Get();
 		textureModule.OnTextureCreated([this](const Systems::AssetMetadata& metadata) { m_pListModel->AddRow(metadata); m_pListModel->SetModifiedMark(metadata.GetAssetId()); });
@@ -421,6 +440,8 @@ namespace Editors
 
 	void TextureEditor::Viewport_OnRender()
 	{
+		ViewportSceneJanitor janitor(m_pViewport);
+
 		Systems::NewAssetId selectedTextureId = GetSelectedTextureId();
 		if (!selectedTextureId.IsValid())
 			return;
