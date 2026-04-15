@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackList.h"
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
@@ -18,10 +18,10 @@ namespace Editors
 		~CameraWidget();
 
 		void Update(float dtInSeconds);
-		void Render(float aspectRatio);
 
 		void SetTransform(const Core::Vec4f& pos, const Core::Vec4f& eulerAngle);
 		void SetFov(float fov);
+		void SetAspectRatio(float aspectRatio);
 
 		const Core::Mat44f& GetView() const;
 		const Core::Mat44f& GetProjection() const;
@@ -29,8 +29,7 @@ namespace Editors
 		float GetFov() const;
 
 		//event
-		using OnWsChangedEvent = Core::CallbackList<void(const Core::Mat44f&)>;
-		Core::CallbackId OnWsChanged(const OnWsChangedEvent::Callback& callback);
+		EVENT_DECL(WsChanged, void(const Core::Mat44f& world))
 
 	private:
 		enum CameraState
@@ -49,6 +48,7 @@ namespace Editors
 		Core::Mat44f m_proj;
 		
 		float m_fov;
+		float m_aspectRatio;
 
 		float m_translationSpeed;
 		float m_rotationSpeed;
@@ -59,7 +59,8 @@ namespace Editors
 
 		CameraState m_cameraState;
 
-		OnWsChangedEvent m_onWsChanged;
+		bool m_dirtyView;
+		bool m_dirtyProj;
 
 		void UpdateCamera_None(float dtInSeconds);
 		void UpdateCamera_FPS(float dtInSeconds);
