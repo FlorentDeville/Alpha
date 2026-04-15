@@ -63,6 +63,7 @@ namespace Editors
 		m_pCamera = new CameraWidget();
 		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditorModule::Get().SetCameraWs(mat); });
 		m_pCamera->SetFov(LevelEditorModule::Get().GetFovRad());
+		m_pCamera->SetAspectRatio(m_aspectRatio);
 
 		Core::Vec4f cameraPosition(0, 10, -10, 1);
 		Core::Vec4f cameraEulerAngle(Core::PI * 0.25f, 0, 0, 0);
@@ -213,9 +214,6 @@ namespace Editors
 
 	void LevelEditorViewportWidget::Internal_Render()
 	{
-		//compute the camera
-		m_pCamera->Render(m_aspectRatio);
-
 		//create the render scene
 		Systems::RenderableScene scene;
 		{

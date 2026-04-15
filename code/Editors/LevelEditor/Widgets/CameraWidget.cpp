@@ -27,6 +27,8 @@ namespace Editors
 		, m_view()
 		, m_proj()
 		, m_fov(0)
+		, m_dirtyView(true)
+		, m_dirtyProj(true)
 	{}
 
 	CameraWidget::~CameraWidget()
@@ -48,20 +50,25 @@ namespace Editors
 			assert(false);
 			break;
 		}
-	}
 
-	void CameraWidget::Render(float aspectRatio)
-	{
-		Core::Vec4f cameraUp(0, 1, 0, 0);
-		Core::Vec4f targetOffset(0, 0, 1, 1);
+		if (m_dirtyView)
+		{
+			m_dirtyView = false;
+			Core::Vec4f cameraUp(0, 1, 0, 0);
+			Core::Vec4f targetOffset(0, 0, 1, 1);
 
-		Core::Vec4f cameraLookAt = targetOffset * m_cameraTransform;
+			Core::Vec4f cameraLookAt = targetOffset * m_cameraTransform;
 
-		m_view = Core::Mat44f::CreateView(m_cameraPosition, cameraLookAt - m_cameraPosition, cameraUp);
+			m_view = Core::Mat44f::CreateView(m_cameraPosition, cameraLookAt - m_cameraPosition, cameraUp);
+		}
 
-		const float nearDistance = 0.1f;
-		const float farDistance = 1000.f;
-		m_proj = Core::Mat44f::CreatePerspective(m_fov, aspectRatio, nearDistance, farDistance);
+		if (m_dirtyProj)
+		{
+			m_dirtyProj = false;
+			const float nearDistance = 0.1f;
+			const float farDistance = 1000.f;
+			m_proj = Core::Mat44f::CreatePerspective(m_fov, m_aspectRatio, nearDistance, farDistance);
+		}
 	}
 
 	void CameraWidget::SetTransform(const Core::Vec4f& pos, const Core::Vec4f& eulerAngle)
@@ -76,6 +83,7 @@ namespace Editors
 		
 		Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
 		m_cameraTransform = m_cameraRotation * translation;
+		m_dirtyView = true;
 
 		m_onWsChanged(m_cameraTransform);
 	}
@@ -83,6 +91,13 @@ namespace Editors
 	void CameraWidget::SetFov(float fov)
 	{
 		m_fov = fov;
+		m_dirtyProj = true;
+	}
+
+	void CameraWidget::SetAspectRatio(float aspectRatio)
+	{
+		m_aspectRatio = aspectRatio;
+		m_dirtyProj = true;
 	}
 
 	const Core::Mat44f& CameraWidget::GetView() const
@@ -210,6 +225,7 @@ namespace Editors
 
 		if (updateCameraTransform)
 		{
+			m_dirtyView = true;
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(m_cameraPosition);
 			m_cameraTransform = m_cameraRotation * translation;
 			m_onWsChanged(m_cameraTransform);
