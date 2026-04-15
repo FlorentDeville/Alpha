@@ -22,7 +22,7 @@ namespace Widgets
 	class Viewport : public Widget
 	{
 	public:
-		Viewport(int width, int height);
+		Viewport(int width, int height, bool updateAlwaysEnabled = false);
 		~Viewport();
 
 		void ClearDepthBuffer();
