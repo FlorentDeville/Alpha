@@ -75,7 +75,7 @@
     <ClInclude Include="ModalWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Viewport.h">
+    <ClInclude Include="Widgets\Viewport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuBar.h">
@@ -227,7 +227,7 @@
     <ClCompile Include="ModalWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Viewport.cpp">
+    <ClCompile Include="Widgets\Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuBar.cpp">
