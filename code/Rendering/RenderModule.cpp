@@ -344,6 +344,12 @@ namespace Rendering
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
 	}
 
+	void RenderModule::RenderInstancedQuad(uint32_t count)
+	{
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		m_pRenderCommandList->DrawInstanced(4, count, 0, 0);
+	}
+
 	void RenderModule::RenderNoBufferTriangle()
 	{
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

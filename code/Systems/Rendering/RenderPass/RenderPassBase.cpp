@@ -123,6 +123,19 @@ namespace Systems
 			}
 		}
 
+		//render particles
+		for (const Systems::RenderableParticles& renderable : scene.m_particles)
+		{
+			renderModule.BindMaterial(*renderable.m_pPso, *renderable.m_pRootsig);
+			{
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { renderable.m_pBufferPositions->GetSRV() };
+				renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(0, renderable.m_pBufferPositions->GetSRV()->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			renderModule.RenderInstancedQuad(renderable.m_instanceCount);
+		}
+
 		//translucent objects pass
 		for (const RenderableObject& obj : scene.m_translucentObjects)
 		{
