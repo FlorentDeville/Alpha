@@ -61,6 +61,8 @@ namespace Editors
 		Rendering::RootSignature* m_pCopyRootSig;
 		Rendering::PipelineState* m_pCopyPso;
 
+		float m_aspectRatio;
+
 		void OnMenu_File_Create();
 		void OnMenu_File_Delete();
 		void OnMenu_File_Save();

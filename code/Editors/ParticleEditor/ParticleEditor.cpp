@@ -4,6 +4,7 @@
 
 #include "Editors/ParticleEditor/ParticleEditor.h"
 
+#include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 
 #include "Editors/EditorParameter.h"
@@ -47,12 +48,16 @@ namespace Editors
 		, m_particleSystem()
 		, m_pBasePass(nullptr)
 		, m_pViewport(nullptr)
+		, m_pCopyPso(nullptr)
+		, m_pCopyRootSig(nullptr)
+		, m_aspectRatio()
 	{ }
 
 	ParticleEditor::~ParticleEditor()
 	{
 		delete m_pPopulator;
 		delete m_pBasePass;
+		delete m_pCopyPso;
 	}
 
 	void ParticleEditor::CreateEditor(const EditorParameter& param)
@@ -103,8 +108,7 @@ namespace Editors
 
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
-
-		/*m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);*/
+		m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
 
 		m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
 		m_pViewport->OnRender([this]() { Viewport_OnRender(); });
@@ -262,6 +266,12 @@ namespace Editors
 		Systems::RenderableScene scene;
 		m_particleSystem.BuildRenderable(scene);
 			
+		//make a static camera for now
+		scene.m_camera.m_fov = m_aspectRatio;
+		scene.m_camera.m_position = Core::Vec4f(0, 0, -20, 1);
+		scene.m_camera.m_view = Core::Mat44f::CreateView(scene.m_camera.m_position, Core::Vec4f(0, 0, 1, 0), Core::Vec4f(0, 1, 0, 0));
+		scene.m_camera.m_proj = Core::Mat44f::CreatePerspective(45 * Core::PI_OVER_180, m_aspectRatio, 0.1f, 1000);
+
 		//then render the base pass
 		m_pBasePass->PreRender(scene);
 		m_pBasePass->Render(scene);
