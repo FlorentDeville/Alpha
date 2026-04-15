@@ -82,6 +82,9 @@
     <FxCompile Include="Shaders\bloom\bloom_upsample.ps.hlsl" />
     <FxCompile Include="Shaders\bloom\bloom_upsample.rs.hlsl" />
     <FxCompile Include="Shaders\bloom\bloom_upsample.vs.hlsl" />
+    <FxCompile Include="Shaders\Particles\particles.ps.hlsl" />
+    <FxCompile Include="Shaders\Particles\particles.rs.hlsl" />
+    <FxCompile Include="Shaders\Particles\particles.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration.h" />
@@ -98,5 +101,6 @@
     <None Include="Shaders\bloom\bloom_emissive_filter.hlsli" />
     <None Include="Shaders\bloom\bloom_downsample.hlsli" />
     <None Include="Shaders\bloom\bloom_upsample.hlsli" />
+    <None Include="Shaders\Particles\particles.hlsli" />
   </ItemGroup>
 </Project>
