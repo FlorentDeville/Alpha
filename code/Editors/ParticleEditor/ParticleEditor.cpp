@@ -110,7 +110,7 @@ namespace Editors
 		const int HEIGHT = 1080;
 		m_aspectRatio = WIDTH / static_cast<float>(HEIGHT);
 
-		m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT);
+		m_pViewport = new Widgets::Viewport(WIDTH, HEIGHT, true);
 		m_pViewport->OnRender([this]() { Viewport_OnRender(); });
 		m_pViewport->OnUpdate([this](uint64_t dt) { Viewport_OnUpdate(dt); });
 		pHorizontalSplit->AddTopPanel(m_pViewport);
@@ -256,6 +256,9 @@ namespace Editors
 
 	void ParticleEditor::Viewport_OnUpdate(uint64_t dt)
 	{
+		if (!m_pViewport->IsEnabled())
+			return;
+
 		float dtInSeconds = dt / 1000.f;
 		m_particleSystem.Update(dtInSeconds);
 	}
