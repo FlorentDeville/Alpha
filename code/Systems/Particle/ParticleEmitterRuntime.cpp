@@ -4,7 +4,10 @@
 
 #include "Systems/Particle/ParticleEmitterRuntime.h"
 
+#include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RenderModule.h"
+#include "Rendering/RootSignature/RootSignatureMgr.h"
+#include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
 #include "Systems/Rendering/Renderable/RenderableParticles.h"
@@ -33,6 +36,7 @@ namespace Systems
 		delete[] m_particles.m_velocity;
 
 		delete m_pBufferPositions;
+		delete m_pPso;
 	}
 
 	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Mat44f& transform)
@@ -52,6 +56,18 @@ namespace Systems
 		m_pBufferPositions = new Rendering::Texture();
 		m_pBufferPositions->InitAsParticlesBuffer(sizeof(Core::Vec4f), m_particles.m_maxCount);
 		m_pGfxBufferPositions = m_pBufferPositions->Map();
+
+		m_pRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::PARTICLES);
+		Rendering::Shader* pVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::PARTICLES_VS);
+		Rendering::Shader* pPs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::PARTICLES_PS);
+
+		Rendering::PipelineStateDesc desc;
+		desc.m_pPs = pPs;
+		desc.m_pRs = m_pRootSig;
+		desc.m_pVs = pVs;
+
+		m_pPso = new Rendering::PipelineState();
+		m_pPso->Init_Generic(desc);
 	}
 
 	void ParticleEmitterRuntime::SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig)
