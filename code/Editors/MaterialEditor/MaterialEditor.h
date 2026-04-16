@@ -55,6 +55,7 @@ namespace Editors
 			Unknown = -1,
 			Sphere = 0,
 			Cube,
+			Particle,
 
 			Count
 		};

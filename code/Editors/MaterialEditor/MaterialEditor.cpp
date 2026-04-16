@@ -399,6 +399,10 @@ namespace Editors
 		Widgets::MenuItem* pCubeItem = pMenu->AddMenuItem("Cube");
 		pCubeItem->OnClick([this]() { MenuMesh_OnClicked(DisplayMesh::Cube); });
 		m_pMeshesMenuItem[DisplayMesh::Cube] = pCubeItem;
+
+		Widgets::MenuItem* pParticleItem = pMenu->AddMenuItem("Particle");
+		pParticleItem->OnClick([this]() { MenuMesh_OnClicked(DisplayMesh::Particle); });
+		m_pMeshesMenuItem[DisplayMesh::Particle] = pParticleItem;
 	}
 
 	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
@@ -717,7 +721,18 @@ namespace Editors
 			Systems::MaterialRendering::Bind(*pMaterialInstance, perObjectData, perFrameData, lights);
 		}
 
-		renderer.RenderMesh(*m_pMeshes[m_selectedMesh]);
+		switch (m_selectedMesh)
+		{
+		case DisplayMesh::Sphere:
+		case DisplayMesh::Cube:
+			renderer.RenderMesh(*m_pMeshes[m_selectedMesh]);
+			break;
+
+		case DisplayMesh::Particle:
+			renderer.RenderInstancedQuad(1);
+			break;
+		}
+
 	}
 
 	void MaterialEditor::Viewport_OnUpdate(uint64_t dt)
