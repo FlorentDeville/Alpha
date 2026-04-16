@@ -27,6 +27,7 @@ namespace Systems
 		const Core::Float3& GetAcceleration() const;
 		float GetLifetime() const;
 		uint32_t GetSpawnRate() const;
+		Systems::Texture2DAsset* GetTexture();
 
 	private:
 		Core::Sqt m_transform;
