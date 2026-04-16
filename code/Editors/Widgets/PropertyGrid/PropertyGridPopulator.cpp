@@ -189,6 +189,12 @@ namespace Editors
 		}
 		else if (pElementType->IsClass())
 		{
+			ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pElement,
+				[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
+				{
+					ObjectWatcherCallback(pObj, pField, op, index);
+				});
+
 			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(pObj, pField, index);
 			Internal_AddPropertyGridItem(pItem, index);
 
