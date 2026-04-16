@@ -26,7 +26,7 @@ namespace Systems
 	{
 		//go through the emitters and spawn emitter runtime
 		const Core::Array<ParticleEmitter*>& emitterAssetList = pEffect->GetEmitters();
-		for (const ParticleEmitter* pEmitterAsset : emitterAssetList)
+		for (ParticleEmitter* pEmitterAsset : emitterAssetList)
 		{
 			if (pEmitterAsset->GetSpawnRate() == 0)
 				continue;
@@ -42,7 +42,8 @@ namespace Systems
 			Core::Vec4f speed(emitterSpeed.x, emitterSpeed.y, emitterSpeed.z, 0);
 
 			Core::Mat44f finalTransform = pEmitterAsset->GetTransform().GetMatrix() * world;
-			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, speed, finalTransform, currentTime);
+
+			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, speed, finalTransform, currentTime, pEmitterAsset->GetTexture());
 		}
 	}
 

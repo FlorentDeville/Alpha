@@ -5,8 +5,15 @@
 #include "particles.rs.hlsl"
 #include "particles.hlsli"
 
+Texture2D particleTexture : register(t1);
+SamplerState particleSample : register(s1);
+
 [RootSignature(RS)]
 float4 main(PSInput input) : SV_Target
 {
-    return float4(1, 1, 1, 1);
+    float4 color = particleTexture.Sample(particleSample, input.uv);
+    if(color.a != 1)
+        discard;
+    
+    return color;
 }

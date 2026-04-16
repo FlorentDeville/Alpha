@@ -22,6 +22,7 @@ namespace Rendering
 namespace Systems
 {
 	class RenderableScene;
+	class Texture2DAsset;
 
 	class ParticleEmitterRuntime
 	{
@@ -43,7 +44,9 @@ namespace Systems
 		ParticleEmitterRuntime();
 		~ParticleEmitterRuntime();
 
-		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime);
+		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime, 
+			Systems::Texture2DAsset* pTexture);
+
 		void SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig);
 
 		void Update(float currentTime, float dtInSeconds);
@@ -67,7 +70,7 @@ namespace Systems
 		//hardcode material for now
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootSig;
-
+		Systems::Texture2DAsset* m_pTexture;
 		float m_lastSpawnTime;
 
 		void KillParticle(int index);

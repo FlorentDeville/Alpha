@@ -10,6 +10,7 @@
 #include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Rendering/Renderable/RenderableParticles.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 
@@ -27,6 +28,8 @@ namespace Systems
 		, m_pBufferPositions(nullptr)
 		, m_pPso(nullptr)
 		, m_pRootSig(nullptr)
+		, m_pTexture(nullptr)
+		, m_lastSpawnTime(0)
 	{ }
 
 	ParticleEmitterRuntime::~ParticleEmitterRuntime()
@@ -39,13 +42,15 @@ namespace Systems
 		delete m_pPso;
 	}
 
-	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime)
+	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime, 
+		Systems::Texture2DAsset* pTexture)
 	{
 		m_spawnRate = spawnRate;
 		m_lifetime = lifetime;
 		m_acceleration = acceleration;
 		m_transform = transform;
 		m_speed = speed;
+		m_pTexture = pTexture;
 
 		int iLifetime = static_cast<int>(std::ceil(lifetime));
 		m_particles.m_maxCount = spawnRate * iLifetime;
@@ -127,6 +132,7 @@ namespace Systems
 	{
 		Systems::RenderableParticles& renderable = scene.m_particles.PushBackDefault();
 		renderable.m_pBufferPositions = m_pBufferPositions;
+		renderable.m_pTexture = m_pTexture ? m_pTexture->GetTexture() : nullptr;
 		renderable.m_instanceCount = m_particles.m_currentCount;
 		renderable.m_pPso = m_pPso;
 		renderable.m_pRootsig = m_pRootSig;

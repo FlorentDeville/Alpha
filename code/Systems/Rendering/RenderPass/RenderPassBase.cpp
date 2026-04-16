@@ -134,7 +134,7 @@ namespace Systems
 		particleFrameParameters.m_view = scene.m_camera.m_view;
 		particleFrameParameters.m_proj = scene.m_camera.m_proj;
 
-		for (const Systems::RenderableParticles& renderable : scene.m_particles)
+		for (Systems::RenderableParticles& renderable : scene.m_particles)
 		{
 			renderModule.BindMaterial(*renderable.m_pPso, *renderable.m_pRootsig);
 			renderModule.SetConstantBuffer(1, sizeof(ParticleFrameParametersStruct), &particleFrameParameters, 0);
@@ -142,6 +142,13 @@ namespace Systems
 				ID3D12DescriptorHeap* pDescriptorHeap[] = { renderable.m_pBufferPositions->GetSRV() };
 				renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
 				renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(0, renderable.m_pBufferPositions->GetSRV()->GetGPUDescriptorHandleForHeapStart());
+			}
+
+			if (renderable.m_pTexture)
+			{
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { renderable.m_pTexture->GetSRV() };
+				renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(2, renderable.m_pTexture->GetSRV()->GetGPUDescriptorHandleForHeapStart());
 			}
 
 			renderModule.RenderInstancedQuad(renderable.m_instanceCount);
