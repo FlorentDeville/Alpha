@@ -25,8 +25,6 @@ namespace Systems
 		virtual void Update(float dt);
 		virtual void OnDestroy();
 
-		virtual void Instanciate();
-
 		void SetGuid(const Core::Guid& guid);
 
 		void SetOwner(GameObject* pOwnerGo);

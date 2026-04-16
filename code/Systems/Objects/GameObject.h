@@ -36,9 +36,6 @@ namespace Systems
 		//Called before deleting the gameobjet after the last Update.
 		virtual void OnDestroy();
 
-		//Called when the game object is added to a world
-		virtual void Instanciate();
-
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;
 

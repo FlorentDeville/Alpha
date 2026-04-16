@@ -24,9 +24,6 @@ namespace Systems
 	void GameComponent::OnDestroy()
 	{ }
 
-	void GameComponent::Instanciate()
-	{ }
-
 	void GameComponent::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;
