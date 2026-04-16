@@ -15,6 +15,11 @@ namespace Rendering
 	class Camera;
 }
 
+namespace Systems
+{
+	class World;
+}
+
 class PlayerComponent : public Systems::GameComponent
 {
 public:
@@ -23,9 +28,9 @@ public:
 
 	void PostLoad() override;
 
-	void OnStart() override;
+	void OnStart(Systems::World* pWorld) override;
 	void Update(float dt) override;
-	void OnDestroy() override;
+	void OnDestroy(Systems::World* pWorld) override;
 
 private:
 

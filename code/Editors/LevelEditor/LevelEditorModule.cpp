@@ -117,6 +117,7 @@ namespace Editors
 			if (!pLevel)
 				return false;
 
+			Systems::InstanciateLevel(pLevel, m_pWorld);
 		}
 
 		CloseLevel();
@@ -136,6 +137,7 @@ namespace Editors
 
 		ClearSelection();
 
+		Systems::DeleteInstanciatedLevel(m_pLevel, m_pWorld);
 
 		Systems::NewAssetId closedLevel = m_loadedLevelAssetId;
 		m_loadedLevelAssetId = Systems::NewAssetId::INVALID;

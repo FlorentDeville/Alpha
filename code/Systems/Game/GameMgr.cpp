@@ -187,7 +187,7 @@ namespace Systems
 
 			m_loadedLevels.PushBack(pLevel);
 
-			InstanciateLevel(pLevel);
+			InstanciateLevel(pLevel, m_pWorld);
 		}
 
 		m_loadingRequest.Clear();
@@ -207,7 +207,7 @@ namespace Systems
 				return; //doesn't exist
 			}
 
-			DeleteInstanciatedLevel(pLevel);
+			DeleteInstanciatedLevel(pLevel, m_pWorld);
 
 			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
 

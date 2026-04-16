@@ -17,6 +17,7 @@ ENABLE_REFLECTION(Systems, GameObject)
 namespace Systems
 {
 	class GameComponent;
+	class World;
 
 	class GameObject : public Object
 	{
@@ -27,14 +28,14 @@ namespace Systems
 		virtual ~GameObject();
 
 		//Called only once before the first Update.
-		virtual void OnStart();
+		virtual void OnStart(World* pWorld);
 
 		//Called every frame
 		virtual void Update(float dt);
 		virtual void UpdateTransform();
 
 		//Called before deleting the gameobjet after the last Update.
-		virtual void OnDestroy();
+		virtual void OnDestroy(World* pWorld);
 
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;

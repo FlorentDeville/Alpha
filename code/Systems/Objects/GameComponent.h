@@ -14,6 +14,7 @@ ENABLE_REFLECTION(Systems, GameComponent)
 namespace Systems
 {
 	class GameObject;
+	class World;
 
 	class GameComponent : public Object
 	{
@@ -21,9 +22,9 @@ namespace Systems
 		GameComponent();
 		~GameComponent();
 
-		virtual void OnStart();
+		virtual void OnStart(World* pWorld);
 		virtual void Update(float dt);
-		virtual void OnDestroy();
+		virtual void OnDestroy(World* pWorld);
 
 		void SetGuid(const Core::Guid& guid);
 
