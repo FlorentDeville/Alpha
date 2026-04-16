@@ -4,16 +4,19 @@
 
 #include "Systems/Game/World.h"
 
+#include "Systems/Game/Subsystems/CameraSubsystem.h"
 #include "Systems/Particle/ParticleSystem.h"
 
 namespace Systems
 {
 	World::World()
 		: m_pParticleSystem(nullptr)
+		, m_pCameraSubsystem(nullptr)
 	{ }
 
 	World::~World()
 	{
 		delete m_pParticleSystem;
+		delete m_pCameraSubsystem;
 	}
 }
