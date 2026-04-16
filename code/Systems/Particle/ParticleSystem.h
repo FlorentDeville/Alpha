@@ -37,7 +37,7 @@ namespace Systems
 
 		void KillAllEffect();
 
-		void Update(float currentTime, float dtInSeconds);
+		void Update(float currentTime);
 
 		void BuildRenderable(RenderableScene& scene);
 
@@ -54,5 +54,7 @@ namespace Systems
 		//hardcode material for now
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootSig;
+
+		float m_lastUpdate;
 	};
 }
