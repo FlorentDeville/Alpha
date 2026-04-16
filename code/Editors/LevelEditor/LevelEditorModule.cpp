@@ -126,6 +126,8 @@ namespace Editors
 
 		ClearSelection();
 
+		Systems::DeleteInstanciatedLevel(m_pLevel);
+
 		Systems::NewAssetId closedLevel = m_loadedLevelAssetId;
 		m_loadedLevelAssetId = Systems::NewAssetId::INVALID;
 		m_pLevel = nullptr;

@@ -173,16 +173,11 @@ namespace Systems
 					assert(false && "Tried to load a level that doesn't exist");
 					return; //doesn't exist
 				}
-
-				InstanciateLevel(pLevel);
 			}
 
 			m_loadedLevels.PushBack(pLevel);
 
-			const Core::Array<GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
-			for (GameObject* pGo : gameObjects)
-				pGo->OnStart();
-
+			InstanciateLevel(pLevel);
 		}
 
 		m_loadingRequest.Clear();
@@ -202,9 +197,7 @@ namespace Systems
 				return; //doesn't exist
 			}
 
-			const Core::Array<GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
-			for (GameObject* pGo : gameObjects)
-				pGo->OnDestroy();
+			DeleteInstanciatedLevel(pLevel);
 
 			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
 
