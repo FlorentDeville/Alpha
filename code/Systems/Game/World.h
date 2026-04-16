@@ -7,6 +7,7 @@
 namespace Systems
 {
 	class CameraSubsystem;
+	class IClockSubsystem;
 	class ParticleSystem;
 
 	//This represent an instance of all the subsystems used by the game. We can have multiple worlds at the same time
@@ -20,5 +21,6 @@ namespace Systems
 
 		CameraSubsystem* m_pCameraSubsystem;
 		ParticleSystem* m_pParticleSystem;
+		IClockSubsystem* m_pClock;
 	};
 }

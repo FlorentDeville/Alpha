@@ -12,14 +12,15 @@
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 #include "Systems/Game/InstanciateLevel.h"
+#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
+#include "Systems/Game/World.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
-#include "Systems/Game/World.h"
 
 namespace Systems
 {
@@ -60,6 +61,7 @@ namespace Systems
 		m_pWorld->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
 
 		m_pWorld->m_pParticleSystem = new ParticleSystem();
+		m_pWorld->m_pClock = new GameClockSubsystem();
 	}
 
 	void GameMgr::Release()
