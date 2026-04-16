@@ -44,9 +44,6 @@ namespace Systems
 
 		void RequestUnloadingAllLevels();
 
-		void PushCamera(Rendering::Camera* pCamera);
-		void PopCamera();
-
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
 	private:

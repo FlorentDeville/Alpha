@@ -141,16 +141,6 @@ namespace Systems
 			m_unloadingRequest.PushBack(pLevel->GetId());
 	}
 
-	void GameMgr::PushCamera(Rendering::Camera* pCamera)
-	{
-		m_pWorld->m_pCameraSubsystem->PushCamera(pCamera);
-	}
-
-	void GameMgr::PopCamera()
-	{
-		m_pWorld->m_pCameraSubsystem->PopCamera();
-	}
-
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pRenderPassBase->GetRenderTarget();
