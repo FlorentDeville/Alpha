@@ -9,4 +9,5 @@ namespace Systems
 	class LevelAsset;
 
 	void InstanciateLevel(LevelAsset* pLevel);
+	void DeleteInstanciatedLevel(LevelAsset* pLevel);
 }
