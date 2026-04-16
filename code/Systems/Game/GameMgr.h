@@ -19,6 +19,7 @@ namespace Rendering
 
 namespace Systems
 {
+	class CameraSubsystem;
 	class GameObject;
 	class LevelAsset;
 	class RenderPassBase;
@@ -62,8 +63,9 @@ namespace Systems
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
+		CameraSubsystem* m_pCameraSubsystem;
 		//Stack of camera. The currently active camera is the one at the top. There is always a default camera.
-		std::stack<Rendering::Camera*> m_cameraStack;
+		//std::stack<Rendering::Camera*> m_cameraStack;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

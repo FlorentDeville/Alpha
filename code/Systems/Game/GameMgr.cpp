@@ -17,6 +17,7 @@
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
+#include "Systems/Game/Subsystems/CameraSubsystem.h"
 
 namespace Systems
 {
@@ -26,6 +27,7 @@ namespace Systems
 		, m_pRenderPassShadowMaps(nullptr)
 		, m_pRenderPassBloom(nullptr)
 		, m_pDefaultCamera(nullptr)
+		, m_pCameraSubsystem(nullptr)
 	{ }
 
 	GameMgr::~GameMgr()
@@ -50,7 +52,9 @@ namespace Systems
 		m_pDefaultCamera = new Rendering::Camera();
 		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
 		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
-		m_cameraStack.push(m_pDefaultCamera);
+
+		m_pCameraSubsystem = new CameraSubsystem();
+		m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
 	}
 
 	void GameMgr::Release()
@@ -59,6 +63,7 @@ namespace Systems
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassBloom;
 		delete m_pDefaultCamera;
+		delete m_pCameraSubsystem;
 	}
 
 	void GameMgr::Update(float dt)
@@ -83,7 +88,7 @@ namespace Systems
 	{
 		Systems::RenderableScene scene;
 
-		const Rendering::Camera* pCamera = m_cameraStack.top();
+		const Rendering::Camera* pCamera = m_pCameraSubsystem->GetTopCamera();
 		Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
@@ -133,12 +138,12 @@ namespace Systems
 
 	void GameMgr::PushCamera(Rendering::Camera* pCamera)
 	{
-		m_cameraStack.push(pCamera);
+		m_pCameraSubsystem->PushCamera(pCamera);
 	}
 
 	void GameMgr::PopCamera()
 	{
-		m_cameraStack.pop();
+		m_pCameraSubsystem->PopCamera();
 	}
 
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
