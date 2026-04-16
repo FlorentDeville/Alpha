@@ -45,6 +45,12 @@ namespace Systems
 			pComponent->OnDestroy();
 	}
 
+	void GameObject::Instanciate()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->Instanciate();
+	}
+
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;
