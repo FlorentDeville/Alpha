@@ -14,7 +14,7 @@ ENABLE_REFLECTION(Systems, ParticleEmitter)
 
 namespace Systems
 {
-	class MaterialInstanceAsset;
+	class Texture2DAsset;
 
 	class ParticleEmitter
 	{
@@ -31,7 +31,7 @@ namespace Systems
 	private:
 		Core::Sqt m_transform;
 
-		HardAssetRef<Systems::MaterialInstanceAsset> m_materialInstance;
+		HardAssetRef<Systems::Texture2DAsset> m_texture;
 
 		Core::Float3 m_speed;
 		Core::Float3 m_acceleration;
@@ -41,7 +41,7 @@ namespace Systems
 
 		START_REFLECTION(Systems::ParticleEmitter)
 			ADD_FIELD(m_transform)
-			ADD_FIELD(m_materialInstance)
+			ADD_FIELD(m_texture)
 			ADD_FIELD(m_speed)
 			ADD_FIELD(m_acceleration)
 			ADD_FIELD(m_lifetime)
