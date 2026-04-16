@@ -41,9 +41,10 @@ PSInput main(uint id : SV_VertexID, uint instanceID : SV_InstanceID)
 {
     PSInput output;
     
-    //render a single quad using the vertex id
-    output.position = pos[id] + ParticlePosition[instanceID].m_pos;
-    output.position = mul(output.position, FrameParameter.m_view);
+    float4 viewLocation = FrameParameter.m_view[3];
+
+    //render a single quad using the vertex id and awlays facing the camera.
+    output.position = pos[id] + ParticlePosition[instanceID].m_pos + viewLocation;
     output.position = mul(output.position, FrameParameter.m_proj);
     
     output.uv = uv[id];
