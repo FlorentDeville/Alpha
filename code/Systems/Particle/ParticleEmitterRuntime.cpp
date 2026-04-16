@@ -134,11 +134,11 @@ namespace Systems
 
 	void ParticleEmitterRuntime::KillParticle(int index)
 	{
+		--m_particles.m_currentCount;
+
 		m_particles.m_position[index] = m_particles.m_position[m_particles.m_currentCount];
 		m_particles.m_velocity[index] = m_particles.m_velocity[m_particles.m_currentCount];
 		m_particles.m_timeToDeath[index] = m_particles.m_timeToDeath[m_particles.m_currentCount];
-
-		--m_particles.m_currentCount;
 	}
 
 	void ParticleEmitterRuntime::SpawnParticle()
