@@ -5,6 +5,7 @@
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 
 #include "Systems/Game/World.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Objects/GameObject.h"
 
@@ -20,12 +21,15 @@ namespace Systems
 
 	void ParticleEffectComponent::OnStart(World* pWorld)
 	{
-		//const Core::Mat44f& worldTx = GetOwner()->GetTransform().GetWorldTx();
-		//pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, )
+		TransformComponent& transform = GetOwner()->GetTransform();
+		transform.ComputeWorldTx();
+
+		const Core::Mat44f& worldTx = transform.GetWorldTx();
+		pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
 	}
 
 	void ParticleEffectComponent::OnDestroy(World* pWorld)
 	{
-
+		pWorld->m_pParticleSystem->KillEffect(m_effect.GetPtr());
 	}
 }
