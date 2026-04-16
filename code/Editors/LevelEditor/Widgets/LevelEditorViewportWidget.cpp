@@ -26,7 +26,8 @@
 #include "Rendering/Texture/Texture.h"
 #include "Rendering/Texture/TextureMgr.h"
 
-#include "Systems/Clock/Clock.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Systems/Game/World.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
@@ -234,7 +235,7 @@ namespace Editors
 			Systems::PrepareRenderableCamera(m_pCamera->GetView(), m_pCamera->GetProjection(), m_pCamera->GetPosition(), m_pCamera->GetFov(), scene);
 			Systems::PrepareRenderableScene(pLevel, scene);
 
-			scene.m_time = Systems::Clock::Get().GetApplicationTime();
+			scene.m_time = LevelEditorModule::Get().GetWorld()->m_pClock->GetTime();
 		}
 
 		//first do the shadow maps
