@@ -29,6 +29,7 @@
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/World.h"
 #include "Systems/Objects/GameObject.h"
+#include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
@@ -43,7 +44,6 @@
 
 namespace Editors
 {
-	
 	struct ConstBufferPerObject
 	{
 		Core::Mat44f m_world;
@@ -57,8 +57,7 @@ namespace Editors
 	};
 
 	LevelEditorViewportWidget::LevelEditorViewportWidget(int width, int height)
-		: Widgets::Viewport(width, height)
-		, m_enableViewportControl(false)
+		: Widgets::Viewport(width, height, true)
 		, m_isPanning(false)
 	{
 		m_pCamera = new CameraWidget();
@@ -116,7 +115,7 @@ namespace Editors
 
 	void LevelEditorViewportWidget::Update(uint64_t dt)
 	{
-		if (!m_enableViewportControl)
+		if (!IsEnabled())
 			return;
 
 		float dtInSeconds = dt / 1000.f;
@@ -143,6 +142,9 @@ namespace Editors
 
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
+
+		const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+		pWorld->m_pParticleSystem->Update(pWorld->m_pClock->GetTime());
 	}
 
 	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)
@@ -198,11 +200,6 @@ namespace Editors
 		return Viewport::Handle(event);
 	}
 
-	void LevelEditorViewportWidget::SetEnableViewportControl(bool enable)
-	{
-		m_enableViewportControl = enable;
-	}
-
 	GizmoWidget* LevelEditorViewportWidget::GetGizmoWidget()
 	{
 		return m_pGizmoWidget;
@@ -236,6 +233,9 @@ namespace Editors
 			Systems::PrepareRenderableScene(pLevel, scene);
 
 			scene.m_time = LevelEditorModule::Get().GetWorld()->m_pClock->GetTime();
+
+			const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+			pWorld->m_pParticleSystem->BuildRenderable(scene);
 		}
 
 		//first do the shadow maps
