@@ -261,6 +261,13 @@ namespace Editors
 	{
 		Systems::NewAssetId id = m_pListModel->GetSelection();
 		m_pListModel->SetModifiedMark(id);
+
+		Systems::ParticleEffectAsset* pEffect = Systems::AssetUtil::LoadAsset<Systems::ParticleEffectAsset>(id, Systems::LoadingDomain::EDITOR);
+		if (pEffect)
+		{
+			m_particleSystem.KillAllEffect();
+			m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
+		}
 	}
 
 	void ParticleEditor::Viewport_OnUpdate(uint64_t dt)
