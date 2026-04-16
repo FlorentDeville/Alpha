@@ -112,17 +112,17 @@ namespace Editors
 		if (m_loadedLevelAssetId == id)
 			return false;
 
+		CloseLevel();
+
 		Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pLevel)
 		{
 			pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
 			if (!pLevel)
 				return false;
-
-			Systems::InstanciateLevel(pLevel, m_pWorld);
 		}
 
-		CloseLevel();
+		Systems::InstanciateLevel(pLevel, m_pWorld);
 
 		m_loadedLevelAssetId = id;
 		m_pLevel = pLevel;
