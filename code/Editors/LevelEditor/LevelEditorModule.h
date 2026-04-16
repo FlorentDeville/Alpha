@@ -29,6 +29,7 @@ namespace Rendering
 namespace Systems
 {
 	class AssetMetadata;
+	class World;
 }
 
 namespace Widgets
@@ -106,6 +107,8 @@ namespace Editors
 		EVENT_DECL(ReparentGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent))
 
 	private:
+		Systems::World* m_pWorld;
+
 		SelectionMgr* m_pSelectionMgr;
 
 		Systems::NewAssetId m_loadedLevelAssetId;

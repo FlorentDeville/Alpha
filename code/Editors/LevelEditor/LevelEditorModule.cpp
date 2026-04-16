@@ -14,8 +14,11 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Game/InstanciateLevel.h"
+#include "Systems/Game/World.h"
+#include "Systems/Game/Subsystems/CameraSubsystem.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
+#include "Systems/Particle/ParticleSystem.h"
 
 //#pragma optimize("", off)
 
@@ -26,6 +29,7 @@ namespace Editors
 		, m_pSelectionMgr(nullptr)
 		, m_loadedLevelAssetId()
 		, m_pLevel(nullptr)
+		, m_pWorld(nullptr)
 	{ }
 
 	LevelEditorModule::~LevelEditorModule()
@@ -34,12 +38,19 @@ namespace Editors
 	void LevelEditorModule::Init()
 	{
 		m_pSelectionMgr = new SelectionMgr();
+
+		m_pWorld = new Systems::World();
+
+		m_pWorld->m_pCameraSubsystem = new Systems::CameraSubsystem();
+		m_pWorld->m_pParticleSystem = new Systems::ParticleSystem();
 	}
 
 	void LevelEditorModule::Shutdown()
 	{
 		delete m_pSelectionMgr;
 		m_pSelectionMgr = nullptr;
+
+		delete m_pWorld;
 	}
 
 	const SelectionMgr* LevelEditorModule::GetConstSelectionMgr() const
@@ -106,7 +117,6 @@ namespace Editors
 			if (!pLevel)
 				return false;
 
-			Systems::InstanciateLevel(pLevel);
 		}
 
 		CloseLevel();
@@ -126,7 +136,6 @@ namespace Editors
 
 		ClearSelection();
 
-		Systems::DeleteInstanciatedLevel(m_pLevel);
 
 		Systems::NewAssetId closedLevel = m_loadedLevelAssetId;
 		m_loadedLevelAssetId = Systems::NewAssetId::INVALID;
