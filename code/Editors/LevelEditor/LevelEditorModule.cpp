@@ -13,6 +13,7 @@
 
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
+#include "Systems/Game/InstanciateLevel.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
 
@@ -98,9 +99,15 @@ namespace Editors
 		if (m_loadedLevelAssetId == id)
 			return false;
 
-		Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
+		Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pLevel)
-			return false;
+		{
+			pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
+			if (!pLevel)
+				return false;
+
+			Systems::InstanciateLevel(pLevel);
+		}
 
 		CloseLevel();
 

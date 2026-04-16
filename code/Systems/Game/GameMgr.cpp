@@ -11,6 +11,7 @@
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+#include "Systems/Game/InstanciateLevel.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
@@ -163,11 +164,17 @@ namespace Systems
 			if (IsLevelAlreadyLoaded(id))
 				continue;
 
-			Systems::LevelAsset* pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
+			Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
 			if (!pLevel)
 			{
-				assert(false && "Tried to load a level that doesn't exist");
-				return; //doesn't exist
+				pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::GAME);
+				if (!pLevel)
+				{
+					assert(false && "Tried to load a level that doesn't exist");
+					return; //doesn't exist
+				}
+
+				InstanciateLevel(pLevel);
 			}
 
 			m_loadedLevels.PushBack(pLevel);
