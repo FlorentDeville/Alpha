@@ -22,10 +22,10 @@ namespace Systems
 		m_components.Clear();
 	}
 
-	void GameObject::OnStart()
+	void GameObject::OnStart(World* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
-			pComponent->OnStart();
+			pComponent->OnStart(pWorld);
 	}
 
 	void GameObject::Update(float dt)
@@ -39,10 +39,10 @@ namespace Systems
 		m_transform.Update(0);
 	}
 
-	void GameObject::OnDestroy()
+	void GameObject::OnDestroy(World* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
-			pComponent->OnDestroy();
+			pComponent->OnDestroy(pWorld);
 	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)

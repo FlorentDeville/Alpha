@@ -43,6 +43,9 @@
     <ClInclude Include="GameComponent\SkyboxComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="Game\GameMgr.h" />
+    <ClInclude Include="Game\InstanciateLevel.h" />
+    <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
+    <ClInclude Include="Game\World.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="Objects\GameObject.h" />
@@ -97,6 +100,9 @@
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Game\GameMgr.cpp" />
+    <ClCompile Include="Game\InstanciateLevel.cpp" />
+    <ClCompile Include="Game\Subsystems\CameraSubsystem.cpp" />
+    <ClCompile Include="Game\World.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />

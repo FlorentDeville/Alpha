@@ -19,11 +19,13 @@ namespace Rendering
 
 namespace Systems
 {
+	class CameraSubsystem;
 	class GameObject;
 	class LevelAsset;
 	class RenderPassBase;
 	class RenderPassBloom;
 	class RenderPassShadowMaps;
+	class World;
 
 	class GameMgr : public Core::Singleton<GameMgr>
 	{
@@ -42,9 +44,6 @@ namespace Systems
 
 		void RequestUnloadingAllLevels();
 
-		void PushCamera(Rendering::Camera* pCamera);
-		void PopCamera();
-
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
 	private:
@@ -62,8 +61,7 @@ namespace Systems
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
-		//Stack of camera. The currently active camera is the one at the top. There is always a default camera.
-		std::stack<Rendering::Camera*> m_cameraStack;
+		World* m_pWorld;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

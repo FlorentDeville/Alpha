@@ -60,6 +60,9 @@
     <ClInclude Include="Particle\ParticleSystem.h" />
     <ClInclude Include="Particle\ParticleEmitterRuntime.h" />
     <ClInclude Include="Rendering\Renderable\RenderableParticles.h" />
+    <ClInclude Include="Game\InstanciateLevel.h" />
+    <ClInclude Include="Game\World.h" />
+    <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -106,6 +109,9 @@
     <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.cpp" />
     <ClCompile Include="Particle\ParticleSystem.cpp" />
     <ClCompile Include="Particle\ParticleEmitterRuntime.cpp" />
+    <ClCompile Include="Game\InstanciateLevel.cpp" />
+    <ClCompile Include="Game\World.cpp" />
+    <ClCompile Include="Game\Subsystems\CameraSubsystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
