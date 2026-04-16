@@ -13,11 +13,13 @@
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 #include "Systems/Game/InstanciateLevel.h"
 #include "Systems/Objects/GameObject.h"
+#include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
 #include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/World.h"
 
 namespace Systems
 {
@@ -27,7 +29,7 @@ namespace Systems
 		, m_pRenderPassShadowMaps(nullptr)
 		, m_pRenderPassBloom(nullptr)
 		, m_pDefaultCamera(nullptr)
-		, m_pCameraSubsystem(nullptr)
+		, m_pWorld(nullptr)
 	{ }
 
 	GameMgr::~GameMgr()
@@ -53,8 +55,11 @@ namespace Systems
 		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
 		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
 
-		m_pCameraSubsystem = new CameraSubsystem();
-		m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
+		m_pWorld = new World();
+		m_pWorld->m_pCameraSubsystem = new CameraSubsystem();
+		m_pWorld->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
+
+		m_pWorld->m_pParticleSystem = new ParticleSystem();
 	}
 
 	void GameMgr::Release()
@@ -63,7 +68,7 @@ namespace Systems
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassBloom;
 		delete m_pDefaultCamera;
-		delete m_pCameraSubsystem;
+		delete m_pWorld;
 	}
 
 	void GameMgr::Update(float dt)
@@ -88,7 +93,7 @@ namespace Systems
 	{
 		Systems::RenderableScene scene;
 
-		const Rendering::Camera* pCamera = m_pCameraSubsystem->GetTopCamera();
+		const Rendering::Camera* pCamera = m_pWorld->m_pCameraSubsystem->GetTopCamera();
 		Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
@@ -138,12 +143,12 @@ namespace Systems
 
 	void GameMgr::PushCamera(Rendering::Camera* pCamera)
 	{
-		m_pCameraSubsystem->PushCamera(pCamera);
+		m_pWorld->m_pCameraSubsystem->PushCamera(pCamera);
 	}
 
 	void GameMgr::PopCamera()
 	{
-		m_pCameraSubsystem->PopCamera();
+		m_pWorld->m_pCameraSubsystem->PopCamera();
 	}
 
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()

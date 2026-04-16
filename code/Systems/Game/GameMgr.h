@@ -25,6 +25,7 @@ namespace Systems
 	class RenderPassBase;
 	class RenderPassBloom;
 	class RenderPassShadowMaps;
+	class World;
 
 	class GameMgr : public Core::Singleton<GameMgr>
 	{
@@ -63,9 +64,7 @@ namespace Systems
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
-		CameraSubsystem* m_pCameraSubsystem;
-		//Stack of camera. The currently active camera is the one at the top. There is always a default camera.
-		//std::stack<Rendering::Camera*> m_cameraStack;
+		World* m_pWorld;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 
