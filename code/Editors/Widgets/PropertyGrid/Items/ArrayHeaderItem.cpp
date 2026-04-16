@@ -15,6 +15,29 @@
 
 namespace Editors
 {
+	static void CreateElement(const Core::TypeDescriptor* pTypeToCreate, const Core::FieldDescriptor* pField, void* pObj)
+	{
+		void* pNewItem = nullptr;
+
+		if (pTypeToCreate->IsGameComponent())
+		{
+			Systems::GameComponent* pComponent = Systems::CreateNewGameComponent(pTypeToCreate);
+			pComponent->SetOwner(static_cast<Systems::GameObject*>(pObj));
+			pNewItem = pComponent;
+		}
+		else if (pTypeToCreate->IsGameObject())
+			pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
+		else if (pTypeToCreate->IsObject())
+			pNewItem = Systems::CreateObject(pTypeToCreate);
+		else
+			pNewItem = pTypeToCreate->Construct();
+
+		if (!pNewItem)
+			return;
+
+		ObjectWatcher::Get().AddArrayElement(pObj, pField, pNewItem);
+	}
+
 	ArrayHeaderItem::ArrayHeaderItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index, bool enableAddElementButton)
 		: PropertyGridItem(pObj, pField, index)
 		, m_enableAddElementButton(enableAddElementButton)
@@ -55,6 +78,12 @@ namespace Editors
 		//here I know it's an array of pointers, so I need to add an element to the array and also to create the object
 		const Core::TypeDescriptor* pElementType = m_pField->GetType()->GetTemplateParamType();
 
+		if (m_pField->HasNoClassDialog())
+		{
+			CreateElement(pElementType, m_pField, m_pObj);
+			return;
+		}
+
 		const Core::TypeDescriptor* pElementBaseType = pElementType;
 		while (pElementBaseType->GetBaseType())
 			pElementBaseType = pElementBaseType->GetBaseType();
@@ -71,25 +100,7 @@ namespace Editors
 				if (!pTypeToCreate)
 					return;
 
-				void* pNewItem = nullptr;
-
-				if (pTypeToCreate->IsGameComponent())
-				{
-					Systems::GameComponent* pComponent = Systems::CreateNewGameComponent(pTypeToCreate);
-					pComponent->SetOwner(static_cast<Systems::GameObject*>(m_pObj));
-					pNewItem = pComponent;
-				}
-				else if (pTypeToCreate->IsGameObject())
-					pNewItem = Systems::CreateNewGameObject(pTypeToCreate);
-				else if (pTypeToCreate->IsObject())
-					pNewItem = Systems::CreateObject(pTypeToCreate);
-				else
-					assert(false); // we can only create Object derived class here
-
-				if (!pNewItem)
-					return;
-
-				ObjectWatcher::Get().AddArrayElement(m_pObj, m_pField, pNewItem);
+				CreateElement(pTypeToCreate, m_pField, m_pObj);
 			});
 	}
 }

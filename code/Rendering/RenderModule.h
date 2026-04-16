@@ -39,6 +39,7 @@ namespace Core
 
 namespace Rendering
 {
+	class BufferHandle;
 	class Camera;
 	class CommandQueue;
 	class Device;
@@ -70,6 +71,9 @@ namespace Rendering
 		void BindCBuffer(uint32_t rootParamIndex, int poolIndex);
 
 		void RenderMesh(const Rendering::Mesh& mesh);
+
+		//Render a single quad without passing any vertex buffer The shader do everything with the vertex id.
+		void RenderInstancedQuad(uint32_t count);
 
 		//Render a single triangle without passing any vertex buffer. The shader has to do everything with the vertexId.
 		//Used to render a single triangle to copy a render target on another one or for post process.

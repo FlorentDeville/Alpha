@@ -12,6 +12,7 @@ namespace Systems
 	{
 		REGISTER_TYPE(Core::Blob);
 		REGISTER_TYPE(Core::Color);
+		REGISTER_TYPE(Core::Float3);
 		REGISTER_TYPE(Core::Guid);
 		REGISTER_TYPE(Core::Vec4f);
 		REGISTER_TYPE(Core::Mat44f);

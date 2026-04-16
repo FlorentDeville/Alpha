@@ -18,6 +18,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/EnumItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
@@ -189,14 +190,13 @@ namespace Editors
 		else if (pElementType->IsClass())
 		{
 			ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pElement,
-				[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) 
-				{ 
-					ObjectWatcherCallback(pObj, pField, op, index); 
+				[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index)
+				{
+					ObjectWatcherCallback(pObj, pField, op, index);
 				});
 
-			//assert(false); // only support Object for now
-			PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
-			Internal_AddPropertyGridItem(pItem);
+			ArrayElementHeaderItem* pItem = new ArrayElementHeaderItem(pObj, pField, index);
+			Internal_AddPropertyGridItem(pItem, index);
 
 			ParentItemContextScope janitor(pItem, this);
 
@@ -352,6 +352,13 @@ namespace Editors
 		case SID("Core::Sqt"):
 		{
 			SqtItem* pItem = new SqtItem(static_cast<Systems::Object*>(pObj), pField, indexElement);
+			return pItem;
+		}
+		break;
+
+		case SID("Core::Float3"):
+		{
+			Float3Item* pItem = new Float3Item(pObj, pField, indexElement);
 			return pItem;
 		}
 		break;

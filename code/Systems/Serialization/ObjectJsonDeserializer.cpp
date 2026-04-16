@@ -14,6 +14,7 @@
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Math/Vectors.h"
 #include "Core/Reflection/ReflectionMgr.h"
 #include "Core/String/BytesToHexa.h"
 
@@ -268,6 +269,17 @@ namespace Systems
 
 			Core::Vec4f s((float)pArray->GetElement(8)->GetValueAsDouble(), (float)pArray->GetElement(9)->GetValueAsDouble(), (float)pArray->GetElement(10)->GetValueAsDouble(), 0);
 			pValue->SetScale(s);
+		}
+		break;
+
+		case SID("Core::Float3"):
+		{
+			Core::Float3* pFloat3 = reinterpret_cast<Core::Float3*>(ptr);
+			const Core::JsonArray* pArray = jsonFieldValue.GetValueAsArray();
+			assert(pArray->GetSize() == 3);
+			pFloat3->x = static_cast<float>(pArray->GetElement(0)->GetValueAsDouble());
+			pFloat3->y = static_cast<float>(pArray->GetElement(1)->GetValueAsDouble());
+			pFloat3->z = static_cast<float>(pArray->GetElement(2)->GetValueAsDouble());
 		}
 		break;
 

@@ -41,6 +41,9 @@ namespace Rendering
 		BLOOM_UPSAMPLE_VS,
 		BLOOM_UPSAMPLE_PS,
 
+		PARTICLES_VS,
+		PARTICLES_PS,
+
 		COUNT
 	};
 

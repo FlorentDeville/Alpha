@@ -1,0 +1,52 @@
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
+
+#pragma once
+
+#include "Core/Math/Sqt.h"
+#include "Core/Math/Vectors.h"
+#include "Core/Reflection/ReflectionMacro.h"
+
+#include "Systems/Assets/AssetRef/HardAssetRef.h"
+
+ENABLE_REFLECTION(Systems, ParticleEmitter)
+
+namespace Systems
+{
+	class Texture2DAsset;
+
+	class ParticleEmitter
+	{
+	public:
+		ParticleEmitter() = default;
+		~ParticleEmitter() = default;
+
+		const Core::Sqt& GetTransform() const;
+		const Core::Float3& GetSpeed() const;
+		const Core::Float3& GetAcceleration() const;
+		float GetLifetime() const;
+		uint32_t GetSpawnRate() const;
+		Systems::Texture2DAsset* GetTexture();
+
+	private:
+		Core::Sqt m_transform;
+
+		HardAssetRef<Systems::Texture2DAsset> m_texture;
+
+		Core::Float3 m_speed;
+		Core::Float3 m_acceleration;
+
+		float m_lifetime;
+		uint32_t m_spawnRate;
+
+		START_REFLECTION(Systems::ParticleEmitter)
+			ADD_FIELD(m_transform)
+			ADD_FIELD(m_texture)
+			ADD_FIELD(m_speed)
+			ADD_FIELD(m_acceleration)
+			ADD_FIELD(m_lifetime)
+			ADD_FIELD(m_spawnRate)
+		END_REFLECTION()
+	};
+}

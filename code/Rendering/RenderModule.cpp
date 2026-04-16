@@ -21,6 +21,8 @@
 #include "Rendering/Font/Font.h"
 #include "Rendering/Font/FontMgr.h"
 #include "Rendering/Internal/BufferFormatToDx12.h"
+#include "Rendering/Internal/Buffer/BufferManager.h"
+#include "Rendering/Internal/Buffer/Dx12Buffer.h"
 #include "Rendering/Mesh/Mesh.h"
 #include "Rendering/Mesh/MeshMgr.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -340,6 +342,12 @@ namespace Rendering
 		m_pRenderCommandList->IASetIndexBuffer(&ibv);
 
 		m_pRenderCommandList->DrawIndexedInstanced(mesh.GetIndicesCount(), 1, 0, 0, 0);
+	}
+
+	void RenderModule::RenderInstancedQuad(uint32_t count)
+	{
+		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		m_pRenderCommandList->DrawInstanced(4, count, 0, 0);
 	}
 
 	void RenderModule::RenderNoBufferTriangle()

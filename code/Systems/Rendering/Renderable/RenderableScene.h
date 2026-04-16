@@ -9,6 +9,7 @@
 #include "Systems/Rendering/Renderable/RenderableCamera.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"	//don't forward declare, I'll have to include it anyway
 #include "Systems/Rendering/Renderable/RenderableObject.h"	//don't forward declare, I'll have to include it anyway
+#include "Systems/Rendering/Renderable/RenderableParticles.h"
 
 namespace Systems
 {
@@ -20,6 +21,7 @@ namespace Systems
 		Core::Array<RenderableObject> m_opaqueObjects;
 		Core::Array<RenderableObject> m_translucentObjects;
 		Core::Array<RenderableLight> m_lights;
+		Core::Array<RenderableParticles> m_particles;
 
 		RenderableCamera m_camera;
 

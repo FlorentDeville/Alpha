@@ -41,6 +41,9 @@
     <ClInclude Include="MaterialEditor\MaterialEditor.h" />
     <ClInclude Include="MaterialEditor\MaterialEditorModule.h" />
     <ClInclude Include="MaterialEditor\MaterialListModel.h" />
+    <ClInclude Include="ParticleEditor\ParticleEditor.h" />
+    <ClInclude Include="ParticleEditor\ParticleEditorModule.h" />
+    <ClInclude Include="ParticleEditor\ParticleListModel.h" />
     <ClInclude Include="TextureEditor\TextureEditor.h" />
     <ClInclude Include="TextureEditor\TextureEditorModule.h" />
     <ClInclude Include="TextureEditor\TextureListModel.h" />
@@ -57,6 +60,7 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\BoolItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ColorItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\EnumItem.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\Float3Item.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\FloatItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\GuidItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.h" />
@@ -103,6 +107,9 @@
     <ClCompile Include="MaterialEditor\MaterialEditor.cpp" />
     <ClCompile Include="MaterialEditor\MaterialEditorModule.cpp" />
     <ClCompile Include="MaterialEditor\MaterialListModel.cpp" />
+    <ClCompile Include="ParticleEditor\ParticleEditor.cpp" />
+    <ClCompile Include="ParticleEditor\ParticleEditorModule.cpp" />
+    <ClCompile Include="ParticleEditor\ParticleListModel.cpp" />
     <ClCompile Include="TextureEditor\TextureEditor.cpp" />
     <ClCompile Include="TextureEditor\TextureEditorModule.cpp" />
     <ClCompile Include="TextureEditor\TextureListModel.cpp" />
@@ -119,6 +126,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\BoolItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ColorItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\EnumItem.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\Float3Item.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\FloatItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\GuidItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\HardAssetRefItem.cpp" />

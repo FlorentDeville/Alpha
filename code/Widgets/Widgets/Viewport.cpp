@@ -21,18 +21,21 @@
 
 namespace Widgets
 {
-	Viewport::Viewport(int width, int height)
+	Viewport::Viewport(int width, int height, bool updateAlwaysEnabled)
 		: Widget()
 		, m_width(width)
 		, m_height(height)
-		, m_updateEnabled(false)
+		, m_updateEnabled(updateAlwaysEnabled)
 	{
 		m_pRenderTarget = new Rendering::RenderTarget(width, height, Rendering::BufferFormat::R16G16B16A16_FLOAT);
 		m_aspectRatio = m_width / static_cast<float>(m_height);
 
-		OnFocusGained([this](const Widgets::FocusEvent&) { m_updateEnabled = true; });
-		OnFocusLost([this](const Widgets::FocusEvent&) { m_updateEnabled = false; });
-		OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { SetFocus(); return true; });
+		if (!updateAlwaysEnabled)
+		{
+			OnFocusGained([this](const Widgets::FocusEvent&) { m_updateEnabled = true; });
+			OnFocusLost([this](const Widgets::FocusEvent&) { m_updateEnabled = false; });
+			OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { SetFocus(); return true; });
+		}
 
 		SetSizeStyle(Widgets::STRETCH);
 	}

@@ -238,6 +238,65 @@ namespace Rendering
 		}
 	}
 
+	void Texture::InitAsParticlesBuffer(uint32_t elementSize, uint32_t numElement)
+	{
+		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
+
+		D3D12_RESOURCE_DESC desc;
+		desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		desc.Width = elementSize * numElement;
+		desc.Height = 1;
+		desc.DepthOrArraySize = 1;
+		desc.MipLevels = 1;
+		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Quality = 0;
+		desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		desc.Format = DXGI_FORMAT_UNKNOWN;
+		desc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		desc.Alignment = 0;
+
+		m_currentState = D3D12_RESOURCE_STATE_GENERIC_READ;
+
+		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+
+		pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_NONE, &desc,
+			D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_pResource));
+
+		//Create the SRV heap
+		{
+			D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+			srvHeapDesc.NumDescriptors = 1;
+			srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+			srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+			HRESULT res = pDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_pSrvDescriptorHeap));
+			ThrowIfFailed(res);
+		}
+
+		//Create the srv descriptor
+		{
+			D3D12_RESOURCE_DESC desc = m_pResource->GetDesc();
+			DXGI_FORMAT format = desc.Format;
+
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = format;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Buffer.FirstElement = 0;
+			srvDesc.Buffer.NumElements = numElement;
+			srvDesc.Buffer.StructureByteStride = elementSize;
+			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+						
+			pDevice->CreateShaderResourceView(m_pResource, &srvDesc, m_pSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		}
+	}
+
+	void* Texture::Map()
+	{
+		void* ptr = nullptr;
+		m_pResource->Map(0, nullptr, &ptr);
+		return ptr;
+	}
+
 	void Texture::TransitionTo(D3D12_RESOURCE_STATES nextState)
 	{
 		if (nextState == m_currentState)
