@@ -145,7 +145,7 @@ namespace Editors
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
 
-		const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+		Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
 	
 		static_cast<LevelEditorClockSubsystem*>(pWorld->m_pClock)->Update(dtInSeconds);
 
@@ -160,7 +160,15 @@ namespace Editors
 				{
 					if (Systems::ParticleEffectComponent* pEffectComponent = pComponent->Cast<Systems::ParticleEffectComponent>())
 					{
-						pWorld->m_pParticleSystem->UpdateEffectParameters(pEffectComponent->GetEffectRutimeHandle(), pEffectComponent->GetEffectAsset(), pObject->GetTransform().GetWorldTx());
+						Systems::ParticleEffectAsset* pAsset = pEffectComponent->GetEffectAsset();
+						if (!pAsset)
+							continue;
+
+						Systems::ParticleEffectHandle handle = pEffectComponent->GetEffectRutimeHandle();
+						if (!handle.IsValid())
+							pEffectComponent->SpawnEffect(pWorld);
+						else
+							pWorld->m_pParticleSystem->UpdateEffectParameters(pEffectComponent->GetEffectRutimeHandle(), pAsset, pObject->GetTransform().GetWorldTx());
 					}
 				}
 			}
