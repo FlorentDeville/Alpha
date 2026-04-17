@@ -25,13 +25,26 @@ namespace Systems
 		TransformComponent& transform = GetOwner()->GetTransform();
 		transform.ComputeWorldTx();
 
-		const Core::Mat44f& worldTx = transform.GetWorldTx();
-		m_effetHandle = pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
+		m_effetHandle = ParticleEffectHandle();
+
+		SpawnEffect(pWorld);
 	}
 
 	void ParticleEffectComponent::OnDestroy(World* pWorld)
 	{
 		pWorld->m_pParticleSystem->KillEffect(m_effetHandle);
+	}
+
+	void ParticleEffectComponent::SpawnEffect(World* pWorld)
+	{
+		//already spawned
+		if (m_effetHandle.IsValid())
+			return;
+
+		TransformComponent& transform = GetOwner()->GetTransform();
+
+		const Core::Mat44f& worldTx = transform.GetWorldTx();
+		m_effetHandle = pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
 	}
 
 	ParticleEffectAsset* ParticleEffectComponent::GetEffectAsset()
