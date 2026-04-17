@@ -42,8 +42,6 @@ namespace Editors
 
 		bool Handle(const Widgets::GlobalEvent& event) override;
 
-		void SetEnableViewportControl(bool enable);
-
 		GizmoWidget* GetGizmoWidget();
 		GizmoModel* GetGizmoModel();
 
@@ -52,8 +50,6 @@ namespace Editors
 		GizmoModel* m_pGizmoModel;
 
 		CameraWidget* m_pCamera;
-		
-		bool m_enableViewportControl;
 		
 		bool m_isPanning; //when the user is panning the camera	
 

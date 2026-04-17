@@ -101,8 +101,6 @@ namespace Editors
 
 		m_pViewport = new LevelEditorViewportWidget(width, height);
 		m_pViewport->SetSizeStyle(Widgets::STRETCH);
-		m_pViewport->OnFocusGained([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(true); });
-		m_pViewport->OnFocusLost([this](const Widgets::FocusEvent&) { m_pViewport->SetEnableViewportControl(false); });
 		m_pViewport->GetGizmoWidget()->SetEnable(false);
 		m_pViewport->OnMouseEnter([this](const Widgets::MouseEvent& ev) -> bool { m_pViewport->SetFocus(); return true; });
 

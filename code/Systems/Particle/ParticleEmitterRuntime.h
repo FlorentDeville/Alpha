@@ -74,6 +74,6 @@ namespace Systems
 		float m_lastSpawnTime;
 
 		void KillParticle(int index);
-		void SpawnParticle();
+		void SpawnParticle(float currentTime);
 	};
 }

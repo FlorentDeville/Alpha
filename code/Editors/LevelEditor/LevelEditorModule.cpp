@@ -112,17 +112,17 @@ namespace Editors
 		if (m_loadedLevelAssetId == id)
 			return false;
 
+		CloseLevel();
+
 		Systems::LevelAsset* pLevel = Systems::AssetUtil::GetAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (!pLevel)
 		{
 			pLevel = Systems::AssetUtil::LoadAsset<Systems::LevelAsset>(id, Systems::LoadingDomain::EDITOR);
 			if (!pLevel)
 				return false;
-
-			Systems::InstanciateLevel(pLevel, m_pWorld);
 		}
 
-		CloseLevel();
+		Systems::InstanciateLevel(pLevel, m_pWorld);
 
 		m_loadedLevelAssetId = id;
 		m_pLevel = pLevel;
@@ -176,6 +176,7 @@ namespace Editors
 		if (res)
 		{
 			newGoGuid = pNewGo->GetGuid();
+			pNewGo->OnStart(m_pWorld);
 			m_onAddGameObject(pNewGo, pGoParent);
 		}
 	}
@@ -188,6 +189,9 @@ namespace Editors
 		m_pSelectionMgr->Remove(guid);
 		
 		m_onBeforeDeleteGameObject(guid);
+
+		if (Systems::GameObject* pObject = m_pLevel->FindGameObject(guid))
+			pObject->OnDestroy(m_pWorld);
 
 		m_pLevel->DeleteGameObject(guid);
 

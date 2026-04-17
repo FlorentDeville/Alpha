@@ -11,7 +11,7 @@ SamplerState particleSample : register(s1);
 [RootSignature(RS)]
 float4 main(PSInput input) : SV_Target
 {
-    float4 color = particleTexture.Sample(particleSample, input.uv);
+    float4 color = particleTexture.SampleLevel(particleSample, input.uv, 0);
     if(color.a != 1)
         discard;
     

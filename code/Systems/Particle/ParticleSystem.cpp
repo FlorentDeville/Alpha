@@ -14,6 +14,7 @@ namespace Systems
 		: m_emitters()
 		, m_pPso(nullptr)
 		, m_pRootSig(nullptr)
+		, m_lastUpdate(0)
 	{ }
 
 	ParticleSystem::~ParticleSystem()
@@ -70,13 +71,19 @@ namespace Systems
 		m_emitters.Resize(0);
 	}
 
-	void ParticleSystem::Update(float currentTime, float dtInSeconds)
+	void ParticleSystem::Update(float currentTime)
 	{
+		float dt = 0;
+		if (m_lastUpdate != 0)
+			dt = currentTime - m_lastUpdate;
+
 		for (TrackedEmitter& pEmitter : m_emitters)
 		{
-			pEmitter.m_pEmitter->Update(currentTime, dtInSeconds);
+			pEmitter.m_pEmitter->Update(currentTime, dt);
 			pEmitter.m_pEmitter->Upload();
 		}
+
+		m_lastUpdate = currentTime;
 	}
 
 	void ParticleSystem::BuildRenderable(RenderableScene& scene)

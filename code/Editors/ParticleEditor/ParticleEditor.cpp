@@ -279,7 +279,7 @@ namespace Editors
 		float dtInSeconds = dt / 1000.f;
 
 		m_pCamera->Update(dtInSeconds);
-		m_particleSystem.Update(currentTime, dtInSeconds);
+		m_particleSystem.Update(currentTime);
 	}
 
 	void ParticleEditor::Viewport_OnRender()
