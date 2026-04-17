@@ -316,6 +316,8 @@ namespace Editors
 			pNewGo->AddComponent(pDstComponent);
 		}
 
+		pNewGo->OnStart(m_pWorld);
+
 		m_onAddGameObject(pNewGo, pParent);
 	}
 
