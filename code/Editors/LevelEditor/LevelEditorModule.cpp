@@ -386,6 +386,11 @@ namespace Editors
 		return m_pWorld;
 	}
 
+	Systems::World* LevelEditorModule::GetWorld()
+	{
+		return m_pWorld;
+	}
+
 	bool LevelEditorModule::Internal_AddGameObject(const Systems::GameObject* pParent, Systems::GameObject** ppObj)
 	{
 		if (!m_pLevel)

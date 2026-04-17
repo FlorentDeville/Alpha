@@ -91,6 +91,7 @@ namespace Editors
 		Systems::LevelAsset* GetCurrentLoadedLevel();
 
 		const Systems::World* GetWorld() const;
+		Systems::World* GetWorld();
 
 		//operation callback
 		EVENT_DECL(NewLevel, void(const Systems::AssetMetadata& metadata))
