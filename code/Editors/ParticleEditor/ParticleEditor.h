@@ -66,6 +66,8 @@ namespace Editors
 
 		float m_aspectRatio;
 
+		float clock;
+
 		void OnMenu_File_Create();
 		void OnMenu_File_Delete();
 		void OnMenu_File_Save();

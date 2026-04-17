@@ -54,6 +54,7 @@ namespace Editors
 		, m_pCopyRootSig(nullptr)
 		, m_aspectRatio()
 		, m_pCamera(nullptr)
+		, clock(0)
 	{ }
 
 	ParticleEditor::~ParticleEditor()
@@ -254,7 +255,7 @@ namespace Editors
 		}
 
 		m_particleSystem.KillAllEffect();
-		m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
+		m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), clock);
 	}
 
 	void ParticleEditor::OnParticleEffectModified()
@@ -275,11 +276,11 @@ namespace Editors
 		if (!m_pViewport->IsEnabled())
 			return;
 
-		float currentTime = Systems::Clock::Get().GetApplicationTime();
 		float dtInSeconds = dt / 1000.f;
+		clock += dtInSeconds;
 
 		m_pCamera->Update(dtInSeconds);
-		m_particleSystem.Update(currentTime);
+		m_particleSystem.Update(clock);
 	}
 
 	void ParticleEditor::Viewport_OnRender()
