@@ -78,6 +78,43 @@ namespace Systems
 		m_lastSpawnTime = currentTime;
 	}
 
+	void ParticleEmitterRuntime::UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, Systems::Texture2DAsset* pTexture)
+	{
+		m_spawnRate = spawnRate;
+		m_lifetime = lifetime;
+		m_acceleration = acceleration;
+		m_transform = transform;
+		m_speed = speed;
+		m_pTexture = pTexture;
+
+		int iLifetime = static_cast<int>(std::ceil(lifetime));
+		int maxCount = spawnRate * iLifetime;
+	
+		if (maxCount != m_particles.m_maxCount)
+		{
+			m_particles.m_currentCount = 0;
+
+			//new max count is bigger than the existing one so I need to resize all the buffers
+			if (maxCount > m_particles.m_maxCount)
+			{
+				delete[] m_particles.m_position;
+				delete[] m_particles.m_timeToDeath;
+				delete[] m_particles.m_velocity;
+				delete m_pBufferPositions;
+
+				m_particles.m_position = new Core::Vec4f[maxCount];
+				m_particles.m_velocity = new Core::Vec4f[maxCount];
+				m_particles.m_timeToDeath = new float[maxCount];
+
+				m_pBufferPositions = new Rendering::Texture();
+				m_pBufferPositions->InitAsParticlesBuffer(sizeof(Core::Vec4f), maxCount);
+				m_pGfxBufferPositions = m_pBufferPositions->Map();
+			}
+
+			m_particles.m_maxCount = maxCount;
+		}
+	}
+
 	void ParticleEmitterRuntime::SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig)
 	{
 		m_pPso = pPso;

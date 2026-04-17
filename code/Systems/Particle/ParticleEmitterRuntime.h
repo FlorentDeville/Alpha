@@ -47,6 +47,8 @@ namespace Systems
 		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime, 
 			Systems::Texture2DAsset* pTexture);
 
+		void UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, Systems::Texture2DAsset* pTexture);
+
 		void SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig);
 
 		void Update(float currentTime, float dtInSeconds);

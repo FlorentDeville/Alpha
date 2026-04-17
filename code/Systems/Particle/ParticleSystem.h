@@ -34,8 +34,11 @@ namespace Systems
 		~ParticleSystem();
 
 		ParticleEffectHandle SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime);
-		void KillEffect(ParticleEffectHandle handle);
 
+		//Update the parameters of a currently running effect
+		void UpdateEffectParameters(ParticleEffectHandle handle, ParticleEffectAsset* pEffect, const Core::Mat44f& world);
+
+		void KillEffect(ParticleEffectHandle handle);
 		void KillAllEffect();
 
 		void Update(float currentTime);

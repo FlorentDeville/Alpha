@@ -19,8 +19,13 @@ namespace Systems
 
 	ParticleSystem::~ParticleSystem()
 	{
-		for (TrackedEmitter& pEmitter : m_emitters)
-			delete pEmitter.m_pEmitter;
+		for (TrackedEmitter& emitter : m_emitters)
+		{
+			if (emitter.m_free)
+				continue;
+
+			delete emitter.m_pEmitter;
+		}
 	}
 
 	ParticleEffectHandle ParticleSystem::SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime)
@@ -51,6 +56,31 @@ namespace Systems
 		handle.m_index = index;
 		handle.m_generation = trackedEmitter.m_generation;
 		return handle;
+	}
+
+	void ParticleSystem::UpdateEffectParameters(ParticleEffectHandle handle, ParticleEffectAsset* pEffect, const Core::Mat44f& world)
+	{
+		//find the emitter
+		if (!m_emitters.IsValidIndex(handle.m_index))
+			return;
+
+		TrackedEmitter& tracker = m_emitters[handle.m_index];
+		if (tracker.m_generation != tracker.m_generation)
+			return;
+
+		ParticleEmitterRuntime* pEmitter = tracker.m_pEmitter;
+
+		//now update the values
+		ParticleEmitter& emitterAsset = pEffect->GetEmitter();
+		const Core::Float3& emitterAcceleration = emitterAsset.GetAcceleration();
+		Core::Vec4f acceleration(emitterAcceleration.x, emitterAcceleration.y, emitterAcceleration.z, 0);
+
+		const Core::Float3& emitterSpeed = emitterAsset.GetSpeed();
+		Core::Vec4f speed(emitterSpeed.x, emitterSpeed.y, emitterSpeed.z, 0);
+
+		Core::Mat44f finalTransform = emitterAsset.GetTransform().GetMatrix() * world;
+
+		pEmitter->UpdateParameters(emitterAsset.GetSpawnRate(), emitterAsset.GetLifetime(), acceleration, speed, finalTransform, emitterAsset.GetTexture());
 	}
 
 	void ParticleSystem::KillEffect(ParticleEffectHandle handle)
