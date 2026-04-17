@@ -316,6 +316,8 @@ namespace Editors
 			pNewGo->AddComponent(pDstComponent);
 		}
 
+		pNewGo->OnStart(m_pWorld);
+
 		m_onAddGameObject(pNewGo, pParent);
 	}
 
@@ -382,6 +384,11 @@ namespace Editors
 	}
 
 	const Systems::World* LevelEditorModule::GetWorld() const
+	{
+		return m_pWorld;
+	}
+
+	Systems::World* LevelEditorModule::GetWorld()
 	{
 		return m_pWorld;
 	}

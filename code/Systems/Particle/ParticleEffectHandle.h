@@ -13,6 +13,8 @@ namespace Systems
 	public:
 		ParticleEffectHandle();
 
+		bool IsValid() const;
+
 		uint32_t m_index;
 		uint32_t m_generation;
 	};
