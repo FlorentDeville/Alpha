@@ -25,6 +25,9 @@ namespace Systems
 		void OnStart(World* pWorld) override;
 		void OnDestroy(World* pWorld) override;
 
+		ParticleEffectAsset* GetEffectAsset();
+		ParticleEffectHandle GetEffectRutimeHandle() const;
+
 	private:
 		HardAssetRef<ParticleEffectAsset> m_effect;
 

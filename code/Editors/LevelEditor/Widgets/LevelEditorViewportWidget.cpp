@@ -28,6 +28,7 @@
 
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/World.h"
+#include "Systems/GameComponent/ParticleEffectComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
@@ -145,6 +146,24 @@ namespace Editors
 
 		const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
 		pWorld->m_pParticleSystem->Update(pWorld->m_pClock->GetTime());
+
+		if (Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel())
+		{
+			const Core::Array<Systems::GameObject*>& objects = pLevel->GetGameObjectsArray();
+			for (const Systems::GameObject* pObject : objects)
+			{
+				const Core::Array<Systems::GameComponent*>& components = pObject->GetComponents();
+
+				for (Systems::GameComponent* pComponent : components)
+				{
+					if (Systems::ParticleEffectComponent* pEffectComponent = pComponent->Cast<Systems::ParticleEffectComponent>())
+					{
+						pWorld->m_pParticleSystem->UpdateEffectParameters(pEffectComponent->GetEffectRutimeHandle(), pEffectComponent->GetEffectAsset(), pObject->GetTransform().GetWorldTx());
+					}
+				}
+			}
+		}
+
 	}
 
 	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)

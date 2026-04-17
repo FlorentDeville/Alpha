@@ -33,4 +33,14 @@ namespace Systems
 	{
 		pWorld->m_pParticleSystem->KillEffect(m_effetHandle);
 	}
+
+	ParticleEffectAsset* ParticleEffectComponent::GetEffectAsset()
+	{
+		return m_effect.GetPtr();
+	}
+
+	ParticleEffectHandle ParticleEffectComponent::GetEffectRutimeHandle() const
+	{
+		return m_effetHandle;
+	}
 }
