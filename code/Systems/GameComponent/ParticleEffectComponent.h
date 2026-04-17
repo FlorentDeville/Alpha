@@ -8,6 +8,7 @@
 
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Objects/GameComponent.h"
+#include "Systems/Particle/ParticleEffectHandle.h"
 
 ENABLE_REFLECTION(Systems, ParticleEffectComponent)
 
@@ -31,5 +32,7 @@ namespace Systems
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_effect)
 		END_REFLECTION()
+
+		ParticleEffectHandle m_effetHandle;
 	};
 }
