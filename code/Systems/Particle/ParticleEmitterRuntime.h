@@ -36,6 +36,7 @@ namespace Systems
 			Core::Vec4f* m_position;
 			Core::Vec4f* m_velocity;
 			float* m_timeToDeath;
+			uint16_t* m_indices;
 
 			int m_maxCount;
 			int m_currentCount;
@@ -67,7 +68,9 @@ namespace Systems
 
 		//rendering
 		Rendering::Texture* m_pBufferPositions; //I use a texture as a buffer. Not great but it handles the srv automatically. Good enough for now.
+		Rendering::Texture* m_pIndexBuffer; //Sorted index buffer by camera distance
 		void* m_pGfxBufferPositions;
+		void* m_pIndexBufferPtr;
 
 		//hardcode material for now
 		Rendering::PipelineState* m_pPso;
@@ -77,5 +80,8 @@ namespace Systems
 
 		void KillParticle(int index);
 		void SpawnParticle(float currentTime);
+
+		void CreateBuffers(int maxCount);
+		void DeleteBuffers();
 	};
 }

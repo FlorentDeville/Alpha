@@ -18,6 +18,7 @@ namespace Systems
 	{
 	public:
 		Rendering::Texture* m_pBufferPositions;
+		Rendering::Texture* m_pIndices;
 		Rendering::Texture* m_pTexture;
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootsig;
