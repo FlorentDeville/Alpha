@@ -32,6 +32,15 @@ namespace Rendering
 		BlendOperation m_blendOperationAlpha;
 	};
 
+	class DepthStencilDesc
+	{
+	public:
+		DepthStencilDesc();
+		~DepthStencilDesc() = default;
+
+		DepthComparisonMode m_depthFunction;
+	};
+
 	class PipelineStateDesc
 	{
 	public:
@@ -42,8 +51,9 @@ namespace Rendering
 		Shader* m_pVs;
 		Shader* m_pPs;
 		CullMode m_cullMode;
-		DepthComparisonMode m_depthFunction;
+		
 		BufferFormat m_rtvFormat;
 		BlendDesc m_blendDesc; //only a single render target is supported
+		DepthStencilDesc m_depthStencilDesc;
 	};
 }

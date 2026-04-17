@@ -94,7 +94,7 @@ namespace Editors
 		m_pCopyRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::COPY_RENDER_TARGET);
 
 		Rendering::PipelineStateDesc desc;
-		desc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
+		desc.m_depthStencilDesc.m_depthFunction = Rendering::DepthComparisonMode::ALWAYS;
 		desc.m_cullMode = Rendering::CullMode::NONE;
 		desc.m_pVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_VS);
 		desc.m_pPs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::COPY_RENDER_TARGET_PS);

@@ -276,7 +276,7 @@ namespace Rendering
 		rasterizerDesc.CullMode = GetDx12CullMode(desc.m_cullMode);
 
 		CD3DX12_DEPTH_STENCIL_DESC depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(CD3DX12_DEFAULT());
-		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthFunction);
+		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthStencilDesc.m_depthFunction);
 
 		CD3DX12_BLEND_DESC blendDesc = CD3DX12_BLEND_DESC(CD3DX12_DEFAULT());
 		if (desc.m_blendDesc.m_blendEnabled)
