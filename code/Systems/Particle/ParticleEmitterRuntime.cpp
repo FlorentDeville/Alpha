@@ -71,6 +71,7 @@ namespace Systems
 		desc.m_blendDesc.m_blendOperationAlpha = Rendering::BlendOperation::ADD;
 		desc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ONE;
 		desc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ZERO;
+		desc.m_depthStencilDesc.m_writeMask = Rendering::DepthWriteMask::ZERO;
 
 		m_pPso = new Rendering::PipelineState();
 		m_pPso->Init_Generic(desc);
@@ -162,15 +163,15 @@ namespace Systems
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 			m_particles.m_indices[ii] = ii;
 
-		const Core::Vec4f& cameraPosition = scene.m_camera.m_position;
-		std::sort(m_particles.m_indices, m_particles.m_indices + m_particles.m_currentCount, [this, &cameraPosition](int a, int b)
-			{
-				//viewForward.dot(particlePos - cameraPos);
-				float distanceA = (m_particles.m_position[a] - cameraPosition).Length2();
-				float distanceB = (m_particles.m_position[b] - cameraPosition).Length2();
+		//const Core::Vec4f& cameraPosition = scene.m_camera.m_position;
+		//std::sort(m_particles.m_indices, m_particles.m_indices + m_particles.m_currentCount, [this, &cameraPosition](int a, int b)
+		//	{
+		//		//viewForward.dot(particlePos - cameraPos);
+		//		float distanceA = (m_particles.m_position[a] - cameraPosition).Length2();
+		//		float distanceB = (m_particles.m_position[b] - cameraPosition).Length2();
 
-				return distanceA > distanceB;
-			});
+		//		return distanceA > distanceB;
+		//	});
 
 		memcpy(m_pIndexBufferPtr, m_particles.m_indices, sizeof(m_particles.m_indices[0]) * m_particles.m_currentCount);
 
