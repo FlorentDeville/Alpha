@@ -165,7 +165,7 @@ namespace Systems
 		desc.m_pVs = m_pVs;
 		desc.m_pPs = m_pPs;
 		desc.m_cullMode = m_cullMode;
-		desc.m_depthFunction = m_depthFunction;
+		desc.m_depthStencilDesc.m_depthFunction = m_depthFunction;
 
 		if (m_blendMode == BlendMode::BM_TRANSLUCENT)
 		{

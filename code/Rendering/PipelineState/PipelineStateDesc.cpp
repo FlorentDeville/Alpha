@@ -16,13 +16,18 @@ namespace Rendering
 		, m_blendOperationAlpha(BlendOperation::ADD)
 	{ }
 
+	DepthStencilDesc::DepthStencilDesc()
+		: m_depthFunction(DepthComparisonMode::LESS)
+		, m_writeMask(DepthWriteMask::ALL)
+	{ }
+
 	PipelineStateDesc::PipelineStateDesc()
 		: m_pRs(nullptr)
 		, m_pVs(nullptr)
 		, m_pPs(nullptr)
 		, m_cullMode(CullMode::BACK)
-		, m_depthFunction(DepthComparisonMode::LESS)
 		, m_rtvFormat(BufferFormat::R16G16B16A16_FLOAT)
 		, m_blendDesc()
+		, m_depthStencilDesc()
 	{ }
 }
