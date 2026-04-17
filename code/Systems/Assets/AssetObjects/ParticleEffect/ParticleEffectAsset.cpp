@@ -4,19 +4,16 @@
 
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 
-#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEmitter.h"
-
 namespace Systems
 {
-	ParticleEffectAsset::~ParticleEffectAsset()
+	const ParticleEmitter& ParticleEffectAsset::GetEmitter() const
 	{
-		for (ParticleEmitter* pEmitter : m_emitters)
-			delete pEmitter;
+		return m_emitter;
 	}
 
-	const Core::Array<ParticleEmitter*>& ParticleEffectAsset::GetEmitters() const
+	ParticleEmitter& ParticleEffectAsset::GetEmitter()
 	{
-		return m_emitters;
+		return m_emitter;
 	}
 
 	const std::string& ParticleEffectAsset::GetAssetTypeName()
