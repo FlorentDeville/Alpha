@@ -285,16 +285,15 @@ namespace Editors
 
 	void ParticleEditor::Viewport_OnRender()
 	{
-		//first make renderable
 		Systems::RenderableScene scene;
-		m_particleSystem.BuildRenderable(scene);
-			
-		//make a static camera for now
 		scene.m_camera.m_fov = m_aspectRatio;
 		scene.m_camera.m_position = m_pCamera->GetPosition();
 		scene.m_camera.m_view = m_pCamera->GetView();
 		scene.m_camera.m_proj = m_pCamera->GetProjection();
 
+		//first make renderable
+		m_particleSystem.BuildRenderable(scene);
+		
 		//then render the base pass
 		m_pBasePass->PreRender(scene);
 		m_pBasePass->Render(scene);

@@ -144,6 +144,12 @@ namespace Systems
 				renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(0, renderable.m_pBufferPositions->GetSRV()->GetGPUDescriptorHandleForHeapStart());
 			}
 
+			{
+				ID3D12DescriptorHeap* pDescriptorHeap[] = { renderable.m_pIndices->GetSRV() };
+				renderModule.GetRenderCommandList()->SetDescriptorHeaps(_countof(pDescriptorHeap), pDescriptorHeap);
+				renderModule.GetRenderCommandList()->SetGraphicsRootDescriptorTable(3, renderable.m_pIndices->GetSRV()->GetGPUDescriptorHandleForHeapStart());
+			}
+
 			if (renderable.m_pTexture)
 			{
 				ID3D12DescriptorHeap* pDescriptorHeap[] = { renderable.m_pTexture->GetSRV() };

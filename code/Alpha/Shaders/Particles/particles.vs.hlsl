@@ -13,6 +13,12 @@ struct ParticlePositionStruct
 };
 StructuredBuffer<ParticlePositionStruct> ParticlePosition : register(t0);
 
+struct ParticleIndicesStruct
+{
+    min16int m_index;
+};
+StructuredBuffer<ParticleIndicesStruct> ParticleIndices : register(t2);
+
 struct FrameParameterStruct
 {
     matrix m_view;
@@ -44,7 +50,8 @@ PSInput main(uint id : SV_VertexID, uint instanceID : SV_InstanceID)
     //render a single quad using the vertex id and awlays facing the camera.
     
     //first transform the quad center to the view space
-    output.position = mul(ParticlePosition[instanceID].m_pos, FrameParameter.m_view);
+    int positionIndex = ParticleIndices[instanceID].m_index;
+    output.position = mul(ParticlePosition[positionIndex].m_pos, FrameParameter.m_view);
     
     //in the view space, add the offset of the vertex
     output.position = output.position + pos[id];

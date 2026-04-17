@@ -30,15 +30,13 @@ namespace Systems
 		, m_pRootSig(nullptr)
 		, m_pTexture(nullptr)
 		, m_lastSpawnTime(0)
+		, m_pIndexBuffer(nullptr)
+		, m_pIndexBufferPtr(nullptr)
 	{ }
 
 	ParticleEmitterRuntime::~ParticleEmitterRuntime()
 	{
-		delete[] m_particles.m_position;
-		delete[] m_particles.m_timeToDeath;
-		delete[] m_particles.m_velocity;
-
-		delete m_pBufferPositions;
+		DeleteBuffers();
 		delete m_pPso;
 	}
 
@@ -56,13 +54,7 @@ namespace Systems
 		m_particles.m_maxCount = spawnRate * iLifetime;
 		m_particles.m_currentCount = 0;
 
-		m_particles.m_position = new Core::Vec4f[m_particles.m_maxCount];
-		m_particles.m_velocity = new Core::Vec4f[m_particles.m_maxCount];
-		m_particles.m_timeToDeath = new float[m_particles.m_maxCount];
-
-		m_pBufferPositions = new Rendering::Texture();
-		m_pBufferPositions->InitAsParticlesBuffer(sizeof(Core::Vec4f), m_particles.m_maxCount);
-		m_pGfxBufferPositions = m_pBufferPositions->Map();
+		CreateBuffers(m_particles.m_maxCount);
 
 		m_pRootSig = Rendering::RootSignatureMgr::Get().GetRootSignature(Rendering::EngineRootSigs::PARTICLES);
 		Rendering::Shader* pVs = Rendering::ShaderMgr::Get().GetShader(Rendering::EngineShaders::PARTICLES_VS);
@@ -72,6 +64,13 @@ namespace Systems
 		desc.m_pPs = pPs;
 		desc.m_pRs = m_pRootSig;
 		desc.m_pVs = pVs;
+		desc.m_blendDesc.m_blendEnabled = true;
+		desc.m_blendDesc.m_blendOperation = Rendering::BlendOperation::ADD;
+		desc.m_blendDesc.m_srcBlend = Rendering::BlendFactor::SRC_ALPHA;
+		desc.m_blendDesc.m_dstBlend = Rendering::BlendFactor::INV_SRC_ALPHA;
+		desc.m_blendDesc.m_blendOperationAlpha = Rendering::BlendOperation::ADD;
+		desc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ONE;
+		desc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ZERO;
 
 		m_pPso = new Rendering::PipelineState();
 		m_pPso->Init_Generic(desc);
@@ -98,18 +97,8 @@ namespace Systems
 			//new max count is bigger than the existing one so I need to resize all the buffers
 			if (maxCount > m_particles.m_maxCount)
 			{
-				delete[] m_particles.m_position;
-				delete[] m_particles.m_timeToDeath;
-				delete[] m_particles.m_velocity;
-				delete m_pBufferPositions;
-
-				m_particles.m_position = new Core::Vec4f[maxCount];
-				m_particles.m_velocity = new Core::Vec4f[maxCount];
-				m_particles.m_timeToDeath = new float[maxCount];
-
-				m_pBufferPositions = new Rendering::Texture();
-				m_pBufferPositions->InitAsParticlesBuffer(sizeof(Core::Vec4f), maxCount);
-				m_pGfxBufferPositions = m_pBufferPositions->Map();
+				DeleteBuffers();
+				CreateBuffers(maxCount);
 			}
 
 			m_particles.m_maxCount = maxCount;
@@ -169,9 +158,27 @@ namespace Systems
 
 	void ParticleEmitterRuntime::BuildRenderable(RenderableScene& scene)
 	{
+		//sort particle by camera distance
+		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
+			m_particles.m_indices[ii] = ii;
+
+		const Core::Vec4f& cameraPosition = scene.m_camera.m_position;
+		std::sort(m_particles.m_indices, m_particles.m_indices + m_particles.m_currentCount, [this, &cameraPosition](int a, int b)
+			{
+				//viewForward.dot(particlePos - cameraPos);
+				float distanceA = (m_particles.m_position[a] - cameraPosition).Length2();
+				float distanceB = (m_particles.m_position[b] - cameraPosition).Length2();
+
+				return distanceA > distanceB;
+			});
+
+		memcpy(m_pIndexBufferPtr, m_particles.m_indices, sizeof(m_particles.m_indices[0]) * m_particles.m_currentCount);
+
+		//createethe renderable
 		Systems::RenderableParticles& renderable = scene.m_particles.PushBackDefault();
 		renderable.m_pBufferPositions = m_pBufferPositions;
 		renderable.m_pTexture = m_pTexture ? m_pTexture->GetTexture() : nullptr;
+		renderable.m_pIndices = m_pIndexBuffer;
 		renderable.m_instanceCount = m_particles.m_currentCount;
 		renderable.m_pPso = m_pPso;
 		renderable.m_pRootsig = m_pRootSig;
@@ -200,5 +207,32 @@ namespace Systems
 		m_particles.m_position[m_particles.m_currentCount] = localPosition * m_transform;
 		m_particles.m_velocity[m_particles.m_currentCount] = m_speed; //for now start with no velocity
 		++m_particles.m_currentCount;
+	}
+
+	void ParticleEmitterRuntime::CreateBuffers(int maxCount)
+	{
+		m_particles.m_position = new Core::Vec4f[maxCount];
+		m_particles.m_velocity = new Core::Vec4f[maxCount];
+		m_particles.m_timeToDeath = new float[maxCount];
+		m_particles.m_indices = new uint16_t[maxCount];
+
+		m_pBufferPositions = new Rendering::Texture();
+		m_pBufferPositions->InitAsParticlesBuffer(sizeof(Core::Vec4f), maxCount);
+		m_pGfxBufferPositions = m_pBufferPositions->Map();
+
+		m_pIndexBuffer = new Rendering::Texture();
+		m_pIndexBuffer->InitAsParticlesBuffer(sizeof(uint16_t), maxCount);
+		m_pIndexBufferPtr = m_pIndexBuffer->Map();
+	}
+
+	void ParticleEmitterRuntime::DeleteBuffers()
+	{
+		delete[] m_particles.m_position;
+		delete[] m_particles.m_timeToDeath;
+		delete[] m_particles.m_velocity;
+		delete[] m_particles.m_indices;
+
+		delete m_pBufferPositions;
+		delete m_pIndexBuffer;
 	}
 }

@@ -9,6 +9,7 @@
             "DescriptorTable(SRV(t0)), " \
             "RootConstants(num32BitConstants=32, b0, visibility=SHADER_VISIBILITY_VERTEX)," \
             "DescriptorTable(SRV(t1))," \
+            "DescriptorTable(SRV(t2))," \
             "StaticSampler(s1, visibility=SHADER_VISIBILITY_PIXEL, addressU=TEXTURE_ADDRESS_CLAMP, addressV=TEXTURE_ADDRESS_CLAMP, addressW=TEXTURE_ADDRESS_CLAMP)"
 
 #endif // #ifndef PARTICLES_RS_HLSL
