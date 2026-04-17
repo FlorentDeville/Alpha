@@ -54,6 +54,7 @@ namespace Systems
 
 		int iLifetime = static_cast<int>(std::ceil(lifetime));
 		m_particles.m_maxCount = spawnRate * iLifetime;
+		m_particles.m_currentCount = 0;
 
 		m_particles.m_position = new Core::Vec4f[m_particles.m_maxCount];
 		m_particles.m_velocity = new Core::Vec4f[m_particles.m_maxCount];
@@ -75,7 +76,7 @@ namespace Systems
 		m_pPso = new Rendering::PipelineState();
 		m_pPso->Init_Generic(desc);
 
-		m_lastSpawnTime = currentTime;
+		m_lastSpawnTime = -1;
 	}
 
 	void ParticleEmitterRuntime::UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, Systems::Texture2DAsset* pTexture)
@@ -136,6 +137,9 @@ namespace Systems
 		}
 
 		//spawn new particles
+		if (m_lastSpawnTime == -1)
+			m_lastSpawnTime = currentTime;
+
 		float accumulatedDt = (currentTime - m_lastSpawnTime);
 		int particlesToSpawn = static_cast<int>(m_spawnRate * accumulatedDt);
 		if (particlesToSpawn > 0)
