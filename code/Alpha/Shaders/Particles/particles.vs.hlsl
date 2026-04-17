@@ -22,10 +22,10 @@ ConstantBuffer<FrameParameterStruct> FrameParameter : register(b0);
 
 static const float4 pos[4] =
 {
-    float4(-0.5, 0.5, 0, 1),
-    float4(0.5, 0.5, 0, 1),
-    float4(-0.5, -0.5, 0, 1),
-    float4(0.5, -0.5, 0, 1)
+    float4(-0.5, 0.5, 0, 0),
+    float4(0.5, 0.5, 0, 0),
+    float4(-0.5, -0.5, 0, 0),
+    float4(0.5, -0.5, 0, 0)
 };
 
 static const float2 uv[4] =
