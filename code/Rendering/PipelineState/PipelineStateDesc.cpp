@@ -18,6 +18,7 @@ namespace Rendering
 
 	DepthStencilDesc::DepthStencilDesc()
 		: m_depthFunction(DepthComparisonMode::LESS)
+		, m_writeMask(DepthWriteMask::ALL)
 	{ }
 
 	PipelineStateDesc::PipelineStateDesc()
