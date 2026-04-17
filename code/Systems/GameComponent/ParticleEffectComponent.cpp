@@ -14,6 +14,7 @@ namespace Systems
 	ParticleEffectComponent::ParticleEffectComponent()
 		: GameComponent()
 		, m_effect()
+		, m_effetHandle()
 	{ }
 
 	ParticleEffectComponent::~ParticleEffectComponent()
@@ -25,11 +26,11 @@ namespace Systems
 		transform.ComputeWorldTx();
 
 		const Core::Mat44f& worldTx = transform.GetWorldTx();
-		pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
+		m_effetHandle = pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
 	}
 
 	void ParticleEffectComponent::OnDestroy(World* pWorld)
 	{
-		pWorld->m_pParticleSystem->KillEffect(m_effect.GetPtr());
+		pWorld->m_pParticleSystem->KillEffect(m_effetHandle);
 	}
 }

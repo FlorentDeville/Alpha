@@ -23,17 +23,19 @@ namespace Systems
 			delete pEmitter.m_pEmitter;
 	}
 
-	void ParticleSystem::SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime)
+	ParticleEffectHandle ParticleSystem::SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime)
 	{
 		//go through the emitters and spawn emitter runtime
 		ParticleEmitter& emitter = pEffect->GetEmitter();
 
 		if (emitter.GetSpawnRate() == 0 || emitter.GetLifetime() == 0)
-			return;
+			return ParticleEffectHandle();
 
-		TrackedEmitter& runtimeEmitter = m_emitters.PushBackDefault();
-		runtimeEmitter.m_id = pEffect->GetId();
-		runtimeEmitter.m_pEmitter = new ParticleEmitterRuntime();
+		uint32_t index = FindFreeSlot();
+		TrackedEmitter& trackedEmitter = m_emitters[index];
+		trackedEmitter.m_free = false;
+		++trackedEmitter.m_generation;
+		trackedEmitter.m_pEmitter = new ParticleEmitterRuntime();
 
 		const Core::Float3& emitterAcceleration = emitter.GetAcceleration();
 		Core::Vec4f acceleration(emitterAcceleration.x, emitterAcceleration.y, emitterAcceleration.z, 0);
@@ -43,32 +45,37 @@ namespace Systems
 
 		Core::Mat44f finalTransform = emitter.GetTransform().GetMatrix() * world;
 
-		runtimeEmitter.m_pEmitter->Init(emitter.GetSpawnRate(), emitter.GetLifetime(), acceleration, speed, finalTransform, currentTime, emitter.GetTexture());
+		trackedEmitter.m_pEmitter->Init(emitter.GetSpawnRate(), emitter.GetLifetime(), acceleration, speed, finalTransform, currentTime, emitter.GetTexture());
+
+		ParticleEffectHandle handle;
+		handle.m_index = index;
+		handle.m_generation = trackedEmitter.m_generation;
+		return handle;
 	}
 
-	void ParticleSystem::KillEffect(const ParticleEffectAsset* pEffect)
+	void ParticleSystem::KillEffect(ParticleEffectHandle handle)
 	{
-		for (uint32_t ii = 0; ii < m_emitters.GetSize(); ++ii)
-		{
-			if (m_emitters[ii].m_id != pEffect->GetId())
-				continue;
+		if (!m_emitters.IsValidIndex(handle.m_index))
+			return;
 
-			delete m_emitters[ii].m_pEmitter;
-			m_emitters[ii] = m_emitters.Back();
-			m_emitters.Resize(m_emitters.GetSize() - 1);
+		TrackedEmitter& emitter = m_emitters[handle.m_index];
+		if (emitter.m_generation != handle.m_generation)
+			return;
 
-			break;
-		}
+		delete emitter.m_pEmitter;
+		emitter.m_free = true;
 	}
 
 	void ParticleSystem::KillAllEffect()
 	{
 		for(TrackedEmitter& emitter : m_emitters)
 		{
-			delete emitter.m_pEmitter;
-		}
+			if (emitter.m_free)
+				continue;
 
-		m_emitters.Resize(0);
+			delete emitter.m_pEmitter;
+			emitter.m_free = true;
+		}
 	}
 
 	void ParticleSystem::Update(float currentTime)
@@ -79,6 +86,9 @@ namespace Systems
 
 		for (TrackedEmitter& pEmitter : m_emitters)
 		{
+			if (pEmitter.m_free)
+				continue;
+
 			pEmitter.m_pEmitter->Update(currentTime, dt);
 			pEmitter.m_pEmitter->Upload();
 		}
@@ -89,6 +99,27 @@ namespace Systems
 	void ParticleSystem::BuildRenderable(RenderableScene& scene)
 	{
 		for (TrackedEmitter& pEmitter : m_emitters)
+		{
+			if (pEmitter.m_free)
+				continue;
+
 			pEmitter.m_pEmitter->BuildRenderable(scene);
+		}
+	}
+
+	uint32_t ParticleSystem::FindFreeSlot()
+	{
+		for(uint32_t ii = 0; ii < m_emitters.GetSize(); ++ii)
+		{
+			if (m_emitters[ii].m_free)
+				return ii;
+		}
+
+		uint32_t id = m_emitters.GetSize();
+		TrackedEmitter& emitter = m_emitters.PushBackDefault();
+		emitter.m_free = true;
+		emitter.m_generation = 0;
+		emitter.m_pEmitter = nullptr;
+		return id;
 	}
 }

@@ -8,6 +8,7 @@
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/NewAssetId.h"
+#include "Systems/Particle/ParticleEffectHandle.h"
 
 namespace Core
 {
@@ -32,8 +33,8 @@ namespace Systems
 		ParticleSystem();
 		~ParticleSystem();
 
-		void SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime);
-		void KillEffect(const ParticleEffectAsset* pEffect);
+		ParticleEffectHandle SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime);
+		void KillEffect(ParticleEffectHandle handle);
 
 		void KillAllEffect();
 
@@ -45,8 +46,9 @@ namespace Systems
 		class TrackedEmitter
 		{
 		public:
-			NewAssetId m_id;
 			ParticleEmitterRuntime* m_pEmitter;
+			uint32_t m_generation;
+			bool m_free;
 		};
 
 		Core::Array<TrackedEmitter> m_emitters;
@@ -56,5 +58,7 @@ namespace Systems
 		Rendering::RootSignature* m_pRootSig;
 
 		float m_lastUpdate;
+
+		uint32_t FindFreeSlot();
 	};
 }

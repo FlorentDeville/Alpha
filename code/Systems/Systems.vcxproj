@@ -54,6 +54,7 @@
     <ClInclude Include="Objects\GameObject.h" />
     <ClInclude Include="Objects\Object.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
+    <ClInclude Include="Particle\ParticleEffectHandle.h" />
     <ClInclude Include="Particle\ParticleEmitterRuntime.h" />
     <ClInclude Include="Particle\ParticleSystem.h" />
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
@@ -112,6 +113,7 @@
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Objects\Object.cpp" />
+    <ClCompile Include="Particle\ParticleEffectHandle.cpp" />
     <ClCompile Include="Particle\ParticleEmitterRuntime.cpp" />
     <ClCompile Include="Particle\ParticleSystem.cpp" />
     <ClCompile Include="Reflection\ReflectionCoreTypes.cpp" />
