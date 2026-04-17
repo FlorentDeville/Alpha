@@ -247,9 +247,9 @@ namespace Editors
 		ObjectWatcherCallbackId cid = ObjectWatcher::Get().AddWatcher(pEffect, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
 		m_objWatcherCid.PushBack(cid);
 
-		for (const Systems::ParticleEmitter* pEmitter : pEffect->GetEmitters())
 		{
-			ObjectWatcherCallbackId id = ObjectWatcher::Get().AddWatcher(pEmitter, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
+			const Systems::ParticleEmitter& emitter = pEffect->GetEmitter();
+			ObjectWatcherCallbackId id = ObjectWatcher::Get().AddWatcher(&emitter, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t) { OnParticleEffectModified(); });
 			m_objWatcherCid.PushBack(id);
 		}
 

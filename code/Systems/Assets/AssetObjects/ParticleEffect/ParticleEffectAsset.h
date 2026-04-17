@@ -7,6 +7,7 @@
 #include "Core/Collections/Array.h"
 #include "Core/Reflection/ReflectionMacro.h"
 
+#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEmitter.h"
 #include "Systems/Objects/AssetObject.h"
 
 ENABLE_REFLECTION(Systems, ParticleEffectAsset)
@@ -19,19 +20,20 @@ namespace Systems
 	{
 	public:
 		ParticleEffectAsset() = default;
-		~ParticleEffectAsset();
+		~ParticleEffectAsset() = default;
 
-		const Core::Array<ParticleEmitter*>& GetEmitters() const;
+		const ParticleEmitter& GetEmitter() const;
+		ParticleEmitter& GetEmitter();
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
 	private:
-		Core::Array<ParticleEmitter*> m_emitters;
+		ParticleEmitter m_emitter;
 
 		START_REFLECTION(Systems::ParticleEffectAsset)
 			ADD_BASETYPE(Systems::AssetObject)
-			ADD_FIELD_ATTR(m_emitters, Core::NoClassDialog)
+			ADD_FIELD(m_emitter)
 		END_REFLECTION()
 	};
 }

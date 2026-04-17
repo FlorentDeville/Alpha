@@ -22,29 +22,27 @@ namespace Systems
 			delete pEmitter.m_pEmitter;
 	}
 
-	void ParticleSystem::SpawnEffect(const ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime)
+	void ParticleSystem::SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime)
 	{
 		//go through the emitters and spawn emitter runtime
-		const Core::Array<ParticleEmitter*>& emitterAssetList = pEffect->GetEmitters();
-		for (ParticleEmitter* pEmitterAsset : emitterAssetList)
-		{
-			if (pEmitterAsset->GetSpawnRate() == 0)
-				continue;
+		ParticleEmitter& emitter = pEffect->GetEmitter();
 
-			TrackedEmitter& runtimeEmitter = m_emitters.PushBackDefault();
-			runtimeEmitter.m_id = pEffect->GetId();
-			runtimeEmitter.m_pEmitter = new ParticleEmitterRuntime();
+		if (emitter.GetSpawnRate() == 0 || emitter.GetLifetime() == 0)
+			return;
 
-			const Core::Float3& emitterAcceleration = pEmitterAsset->GetAcceleration();
-			Core::Vec4f acceleration(emitterAcceleration.x, emitterAcceleration.y, emitterAcceleration.z, 0);
+		TrackedEmitter& runtimeEmitter = m_emitters.PushBackDefault();
+		runtimeEmitter.m_id = pEffect->GetId();
+		runtimeEmitter.m_pEmitter = new ParticleEmitterRuntime();
+
+		const Core::Float3& emitterAcceleration = emitter.GetAcceleration();
+		Core::Vec4f acceleration(emitterAcceleration.x, emitterAcceleration.y, emitterAcceleration.z, 0);
 			
-			const Core::Float3& emitterSpeed = pEmitterAsset->GetSpeed();
-			Core::Vec4f speed(emitterSpeed.x, emitterSpeed.y, emitterSpeed.z, 0);
+		const Core::Float3& emitterSpeed = emitter.GetSpeed();
+		Core::Vec4f speed(emitterSpeed.x, emitterSpeed.y, emitterSpeed.z, 0);
 
-			Core::Mat44f finalTransform = pEmitterAsset->GetTransform().GetMatrix() * world;
+		Core::Mat44f finalTransform = emitter.GetTransform().GetMatrix() * world;
 
-			runtimeEmitter.m_pEmitter->Init(pEmitterAsset->GetSpawnRate(), pEmitterAsset->GetLifetime(), acceleration, speed, finalTransform, currentTime, pEmitterAsset->GetTexture());
-		}
+		runtimeEmitter.m_pEmitter->Init(emitter.GetSpawnRate(), emitter.GetLifetime(), acceleration, speed, finalTransform, currentTime, emitter.GetTexture());
 	}
 
 	void ParticleSystem::KillEffect(const ParticleEffectAsset* pEffect)
@@ -58,7 +56,7 @@ namespace Systems
 			m_emitters[ii] = m_emitters.Back();
 			m_emitters.Resize(m_emitters.GetSize() - 1);
 
-			--ii;
+			break;
 		}
 	}
 

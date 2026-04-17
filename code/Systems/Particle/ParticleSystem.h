@@ -32,7 +32,7 @@ namespace Systems
 		ParticleSystem();
 		~ParticleSystem();
 
-		void SpawnEffect(const ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime);
+		void SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime);
 		void KillEffect(const ParticleEffectAsset* pEffect);
 
 		void KillAllEffect();
