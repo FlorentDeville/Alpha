@@ -89,8 +89,7 @@ namespace Systems
 		//kill dead particles particles
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 		{
-			m_particles.m_timeToDeath[ii] -= dtInSeconds;
-			if (m_particles.m_timeToDeath[ii] <= 0)
+			if (m_particles.m_timeToDeath[ii] <= currentTime)
 			{
 				KillParticle(ii);
 
@@ -100,8 +99,7 @@ namespace Systems
 		}
 
 		//spawn new particles
-		float accumulatedDt = (currentTime - m_lastSpawnTime) + dtInSeconds;
-
+		float accumulatedDt = (currentTime - m_lastSpawnTime);
 		int particlesToSpawn = static_cast<int>(m_spawnRate * accumulatedDt);
 		if (particlesToSpawn > 0)
 			m_lastSpawnTime = currentTime;
@@ -111,7 +109,7 @@ namespace Systems
 			if (m_particles.m_currentCount >= m_particles.m_maxCount)
 				break;
 
-			SpawnParticle();
+			SpawnParticle(currentTime);
 		}
 
 		//update velocity
@@ -147,7 +145,7 @@ namespace Systems
 		m_particles.m_timeToDeath[index] = m_particles.m_timeToDeath[m_particles.m_currentCount];
 	}
 
-	void ParticleEmitterRuntime::SpawnParticle()
+	void ParticleEmitterRuntime::SpawnParticle(float currentTime)
 	{
 		//spawn the particle randomly in a box transformed with sqt. So the center of the box is the position. Orientation
 		//of the box is the rotation, the size of the box is the scale.
@@ -157,7 +155,7 @@ namespace Systems
 		std::uniform_real_distribution<float> dis(-0.5, 0.5);
 
 		Core::Vec4f localPosition(dis(gen), dis(gen), dis(gen), 1);
-		m_particles.m_timeToDeath[m_particles.m_currentCount] = m_lifetime;
+		m_particles.m_timeToDeath[m_particles.m_currentCount] = currentTime + m_lifetime;
 		m_particles.m_position[m_particles.m_currentCount] = localPosition * m_transform;
 		m_particles.m_velocity[m_particles.m_currentCount] = m_speed; //for now start with no velocity
 		++m_particles.m_currentCount;
