@@ -6,6 +6,7 @@
 
 #include "Core/Math/Constants.h"
 
+#include "Editors/LevelEditor/LevelEditorClockSubsystem.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/RenderPassObjectId.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
@@ -145,7 +146,8 @@ namespace Editors
 		m_pGizmoWidget->Update(mouseWs);
 
 		const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
-		pWorld->m_pParticleSystem->Update(pWorld->m_pClock->GetTime());
+	
+		static_cast<LevelEditorClockSubsystem*>(pWorld->m_pClock)->Update(dtInSeconds);
 
 		if (Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel())
 		{
@@ -164,6 +166,7 @@ namespace Editors
 			}
 		}
 
+		pWorld->m_pParticleSystem->Update(pWorld->m_pClock->GetTime());
 	}
 
 	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)

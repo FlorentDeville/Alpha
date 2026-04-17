@@ -15,5 +15,10 @@ namespace Editors
 		~LevelEditorClockSubsystem();
 
 		float GetTime() const override;
+
+		void Update(float dt);
+
+	private:
+		float m_currentTime;
 	};
 }

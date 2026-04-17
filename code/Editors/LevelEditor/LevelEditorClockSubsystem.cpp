@@ -10,6 +10,7 @@ namespace Editors
 {
 	LevelEditorClockSubsystem::LevelEditorClockSubsystem()
 		: IClockSubsystem()
+		, m_currentTime(0)
 	{ }
 
 	LevelEditorClockSubsystem::~LevelEditorClockSubsystem()
@@ -17,6 +18,11 @@ namespace Editors
 
 	float LevelEditorClockSubsystem::GetTime() const
 	{
-		return Systems::Clock::Get().GetApplicationTime();
+		return m_currentTime;
+	}
+
+	void LevelEditorClockSubsystem::Update(float dt)
+	{
+		m_currentTime += dt;
 	}
 }
