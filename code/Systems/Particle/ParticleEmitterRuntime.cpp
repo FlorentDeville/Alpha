@@ -114,6 +114,14 @@ namespace Systems
 
 	void ParticleEmitterRuntime::Update(float currentTime, float dtInSeconds)
 	{
+		//first update, warmup
+		if (m_lastSpawnTime == -1)
+		{
+			Warmup(currentTime, m_lifetime - 0.02f);
+			m_lastSpawnTime = currentTime;
+			return;
+		}
+
 		//kill dead particles particles
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 		{
@@ -127,9 +135,6 @@ namespace Systems
 		}
 
 		//spawn new particles
-		if (m_lastSpawnTime == -1)
-			m_lastSpawnTime = currentTime;
-
 		float accumulatedDt = (currentTime - m_lastSpawnTime);
 		int particlesToSpawn = static_cast<int>(m_spawnRate * accumulatedDt);
 		if (particlesToSpawn > 0)
@@ -185,6 +190,30 @@ namespace Systems
 		renderable.m_pRootsig = m_pRootSig;
 	}
 
+	void ParticleEmitterRuntime::Warmup(float currentTime, float warmupDuration)
+	{
+		int particlesToSpawn = static_cast<int>(m_spawnRate * warmupDuration);
+
+		float singleParticleDt = warmupDuration / particlesToSpawn;
+
+		float startTime = currentTime - warmupDuration;
+		for (int ii = 0; ii < particlesToSpawn; ++ii)
+		{
+			if (m_particles.m_currentCount >= m_particles.m_maxCount)
+				break;
+
+			SpawnParticle(startTime + (singleParticleDt * ii));
+		}
+
+		//update velocity
+		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
+			m_particles.m_velocity[ii] = m_particles.m_velocity[ii] + (m_acceleration * (warmupDuration - static_cast<float>(singleParticleDt * ii)));
+
+		//update position
+		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
+			m_particles.m_position[ii] = m_particles.m_position[ii] + (m_particles.m_velocity[ii] * (warmupDuration - static_cast<float>(singleParticleDt * ii)));
+	}
+
 	void ParticleEmitterRuntime::KillParticle(int index)
 	{
 		--m_particles.m_currentCount;
@@ -206,7 +235,7 @@ namespace Systems
 		Core::Vec4f localPosition(dis(gen), dis(gen), dis(gen), 1);
 		m_particles.m_timeToDeath[m_particles.m_currentCount] = currentTime + m_lifetime;
 		m_particles.m_position[m_particles.m_currentCount] = localPosition * m_transform;
-		m_particles.m_velocity[m_particles.m_currentCount] = m_speed; //for now start with no velocity
+		m_particles.m_velocity[m_particles.m_currentCount] = m_speed;
 		++m_particles.m_currentCount;
 	}
 
