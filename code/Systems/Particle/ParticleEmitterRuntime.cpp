@@ -205,13 +205,18 @@ namespace Systems
 			SpawnParticle(startTime + (singleParticleDt * ii));
 		}
 
+		//update position
+		// I use p = p0 + v0t + 1/2 a t*t. I can't use the same code as in the update because it takes the assumption
+		// the speed is constant over dt. That's ok in the update, over a small dt. But here it gives incorrect result.
+		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
+		{
+			float dt = warmupDuration - static_cast<float>(singleParticleDt * ii);
+			m_particles.m_position[ii] = m_particles.m_position[ii] + m_particles.m_velocity[ii] * dt + m_acceleration * 0.5f * dt * dt;
+		}
+
 		//update velocity
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 			m_particles.m_velocity[ii] = m_particles.m_velocity[ii] + (m_acceleration * (warmupDuration - static_cast<float>(singleParticleDt * ii)));
-
-		//update position
-		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
-			m_particles.m_position[ii] = m_particles.m_position[ii] + (m_particles.m_velocity[ii] * (warmupDuration - static_cast<float>(singleParticleDt * ii)));
 	}
 
 	void ParticleEmitterRuntime::KillParticle(int index)
