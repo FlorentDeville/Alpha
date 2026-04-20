@@ -42,9 +42,9 @@ namespace Systems
 		scene.m_camera.m_fov = fov;
 	}
 
-	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene)
+	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime)
 	{
-		scene.m_time = Systems::Clock::Get().GetGameTime(); //by default pass the game time
+		scene.m_time = currentTime;
 
 		const Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 

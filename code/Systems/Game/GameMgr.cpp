@@ -112,7 +112,7 @@ namespace Systems
 			for (Systems::GameObject* pGo : roots)
 				pGo->UpdateTransform();
 
-			Systems::PrepareRenderableScene(pLevel, scene);
+			Systems::PrepareRenderableScene(pLevel, scene, m_pWorld->m_pClock->GetTime());
 		}
 
 		m_pWorld->m_pParticleSystem->BuildRenderable(scene);

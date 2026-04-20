@@ -25,22 +25,12 @@ namespace Systems
 
 		void Update();
 
-		void StartGameClock();
-		void StopGameClock();
-		void PauseGameClock();
-
 		//Return the elasped time since the application started in seconds.
 		float GetApplicationTime() const;
-
-		//Return the elapsed time since the game started in seconds.
-		float GetGameTime() const;
 
 	private:
 		std::chrono::steady_clock::time_point m_lastUpdate;			// time the last update of the clock happened
 
 		Second m_applicationTime;	// time elapsed since the application started
-		
-		Second m_gameTime;			// time elapsed since the game started
-		bool m_isGameClockRunning;
 	};
 }

@@ -259,7 +259,7 @@ namespace Editors
 				pRoot->UpdateTransform();
 
 			Systems::PrepareRenderableCamera(m_pCamera->GetView(), m_pCamera->GetProjection(), m_pCamera->GetPosition(), m_pCamera->GetFov(), scene);
-			Systems::PrepareRenderableScene(pLevel, scene);
+			Systems::PrepareRenderableScene(pLevel, scene, levelEditorModule.GetWorld()->m_pClock->GetTime());
 
 			scene.m_time = LevelEditorModule::Get().GetWorld()->m_pClock->GetTime();
 
