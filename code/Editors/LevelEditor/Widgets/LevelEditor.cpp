@@ -29,6 +29,8 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Systems/Game/World.h"
 #include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Container.h"
@@ -760,8 +762,10 @@ namespace Editors
 		if (!id.IsValid())
 			return;
 
-		Systems::GameMgr::Get().RequestLoadingLevel(id);
-		Systems::Clock::Get().StartGameClock();
+		Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+		gameMgr.RequestLoadingLevel(id);
+		gameMgr.GetWorld()->m_pClock->Start();
+
 		EditorManager::Get().SwitchTab(TabId::GAME_PLAYER);
 	}
 

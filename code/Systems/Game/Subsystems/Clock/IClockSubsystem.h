@@ -13,6 +13,7 @@ namespace Systems
 		virtual void Update(float dt) = 0;
 
 		virtual float GetTime() const = 0;
+		virtual float GetDeltaTime() const = 0;
 
 		virtual void Start() = 0;
 		virtual void Pause() = 0;

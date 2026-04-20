@@ -17,6 +17,7 @@ namespace Systems
 		void Update(float dt) override;
 
 		float GetTime() const override;
+		float GetDeltaTime() const override;
 
 		void Start() override;
 		void Pause() override;
@@ -24,6 +25,8 @@ namespace Systems
 
 	private:
 		float m_elaspedTime;
-		bool m_isRunning;;
+		float m_deltaTime;
+
+		bool m_isRunning;
 	};
 }

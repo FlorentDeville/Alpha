@@ -11,6 +11,7 @@ namespace Systems
 	GameClockSubsystem::GameClockSubsystem()
 		: IClockSubsystem()
 		, m_elaspedTime(0)
+		, m_deltaTime(0)
 		, m_isRunning(false)
 	{ }
 
@@ -20,12 +21,20 @@ namespace Systems
 	void GameClockSubsystem::Update(float dt)
 	{
 		if (m_isRunning)
+		{
 			m_elaspedTime += dt;
+			m_deltaTime = dt;
+		}
 	}
 
 	float GameClockSubsystem::GetTime() const
 	{
 		return m_elaspedTime;
+	}
+
+	float GameClockSubsystem::GetDeltaTime() const
+	{
+		return m_deltaTime;
 	}
 
 	void GameClockSubsystem::Start()
@@ -36,11 +45,13 @@ namespace Systems
 	void GameClockSubsystem::Pause()
 	{
 		m_isRunning = false;
+		m_deltaTime = 0;
 	}
 
 	void GameClockSubsystem::Stop()
 	{
 		m_isRunning = false;
 		m_elaspedTime = 0;
+		m_deltaTime = 0;
 	}
 }
