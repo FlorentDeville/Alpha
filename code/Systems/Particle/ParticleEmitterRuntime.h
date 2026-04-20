@@ -58,6 +58,8 @@ namespace Systems
 
 		void BuildRenderable(RenderableScene& scene);
 
+		void Warmup(float currentTime, float warmupDuration);
+
 	private:
 		Particles m_particles;
 		Core::Mat44f m_transform;
