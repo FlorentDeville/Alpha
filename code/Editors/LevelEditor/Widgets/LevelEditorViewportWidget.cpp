@@ -6,7 +6,6 @@
 
 #include "Core/Math/Constants.h"
 
-#include "Editors/LevelEditor/LevelEditorClockSubsystem.h"
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/RenderPassObjectId.h"
 #include "Editors/LevelEditor/Widgets/GizmoModel.h"
@@ -147,7 +146,7 @@ namespace Editors
 
 		Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
 	
-		static_cast<LevelEditorClockSubsystem*>(pWorld->m_pClock)->Update(dtInSeconds);
+		pWorld->m_pClock->Update(dtInSeconds);
 
 		if (Systems::LevelAsset* pLevel = LevelEditorModule::Get().GetCurrentLoadedLevel())
 		{

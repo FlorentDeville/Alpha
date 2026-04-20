@@ -6,7 +6,6 @@
 
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/LevelEditorClockSubsystem.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
@@ -17,6 +16,7 @@
 #include "Systems/Game/InstanciateLevel.h"
 #include "Systems/Game/World.h"
 #include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Particle/ParticleSystem.h"
@@ -44,7 +44,8 @@ namespace Editors
 
 		m_pWorld->m_pCameraSubsystem = new Systems::CameraSubsystem();
 		m_pWorld->m_pParticleSystem = new Systems::ParticleSystem();
-		m_pWorld->m_pClock = new LevelEditorClockSubsystem();
+		m_pWorld->m_pClock = new Systems::GameClockSubsystem();
+		m_pWorld->m_pClock->Start();
 	}
 
 	void LevelEditorModule::Shutdown()

@@ -14,6 +14,16 @@ namespace Systems
 		GameClockSubsystem();
 		~GameClockSubsystem();
 
+		void Update(float dt) override;
+
 		float GetTime() const override;
+
+		void Start() override;
+		void Pause() override;
+		void Stop() override;
+
+	private:
+		float m_elaspedTime;
+		bool m_isRunning;;
 	};
 }

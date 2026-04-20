@@ -216,9 +216,6 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\Float3Item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LevelEditor\LevelEditorClockSubsystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -408,9 +405,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\PropertyGrid\Items\Float3Item.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LevelEditor\LevelEditorClockSubsystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
