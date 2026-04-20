@@ -6,6 +6,7 @@
 
 #include "Core/Log/LogModule.h"
 
+#include "Editors/EditorManager.h"
 #include "Editors/EditorParameter.h"
 
 #include "Rendering/PipelineState/PipelineState.h"
@@ -16,8 +17,9 @@
 #include "Rendering/Shaders/ShaderMgr.h"
 #include "Rendering/Texture/Texture.h"
 
-#include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Systems/Game/World.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"
@@ -105,20 +107,21 @@ namespace Editors
 
 	void GamePlayer::OnClick_Play()
 	{
-		Systems::Clock::Get().StartGameClock();
+		Systems::GameMgr::Get().GetWorld()->m_pClock->Start();
 		Core::LogModule::Get().LogInfo("Play");
 	}
 
 	void GamePlayer::OnClick_Pause()
 	{
-		Systems::Clock::Get().PauseGameClock();
+		Systems::GameMgr::Get().GetWorld()->m_pClock->Pause();
 		Core::LogModule::Get().LogInfo("Pause");
 	}
 
 	void GamePlayer::OnClick_Stop()
 	{
-		Systems::Clock::Get().StopGameClock();
+		Systems::GameMgr::Get().GetWorld()->m_pClock->Stop();
 		Systems::GameMgr::Get().RequestUnloadingAllLevels();
+		EditorManager::Get().SwitchTab(TabId::LEVEL_EDITOR);
 		Core::LogModule::Get().LogError("Game stopped.");
 	}
 }
