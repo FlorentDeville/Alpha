@@ -75,9 +75,6 @@ namespace Systems
 
 	void GameMgr::Update(float dt)
 	{
-		ExecuteLoadingRequests();
-		ExecuteUnloadingRequests();
-
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
 			//going through the list of game object of levels will cause problems when game objects
@@ -89,6 +86,12 @@ namespace Systems
 				pGo->Update(dt);
 			}
 		}
+
+		m_pWorld->m_pParticleSystem->Update(m_pWorld->m_pClock->GetTime());
+
+		// Loading/Unloading is synchronous for now. So it blocks the main frame.
+		ExecuteLoadingRequests();
+		ExecuteUnloadingRequests();
 	}
 
 	void GameMgr::Render()
@@ -109,6 +112,8 @@ namespace Systems
 
 			Systems::PrepareRenderableScene(pLevel, scene);
 		}
+
+		m_pWorld->m_pParticleSystem->BuildRenderable(scene);
 
 		//call the render pass and render the scene.
 		m_pRenderPassShadowMaps->PreRender(scene);
