@@ -408,7 +408,6 @@ void Update()
 	const int FPS = 60;
 	constexpr float FRAME_DURATION = 1.f / FPS;
 
-	static float previousGameTick = clock.GetGameTime();
 	static float previousApplicationTick = clock.GetApplicationTime();
 
 	float currentApplicationTick = clock.GetApplicationTime();
@@ -420,13 +419,7 @@ void Update()
 		//start with a garbage collect
 		Systems::ContainerMgr::Get().GarbageCollect();
 
-		//compute game dt and update game
-		float currentGameTick = clock.GetGameTime();
-		float gameDt = currentGameTick - previousGameTick;
-
-		Systems::GameMgr::Get().Update(gameDt);
-
-		previousGameTick = currentGameTick;
+		Systems::GameMgr::Get().Update(applicationDt);
 
 		//update widgets
 		Widgets::WidgetMgr::Get().Update(applicationDtMs);

@@ -75,6 +75,8 @@ namespace Systems
 
 	void GameMgr::Update(float dt)
 	{
+		m_pWorld->m_pClock->Update(dt);
+
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
 			//going through the list of game object of levels will cause problems when game objects
@@ -83,7 +85,7 @@ namespace Systems
 			Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 			for (Systems::GameObject* pGo : gameObjects)
 			{
-				pGo->Update(dt);
+				pGo->Update(m_pWorld->m_pClock->GetDeltaTime());
 			}
 		}
 
@@ -110,7 +112,7 @@ namespace Systems
 			for (Systems::GameObject* pGo : roots)
 				pGo->UpdateTransform();
 
-			Systems::PrepareRenderableScene(pLevel, scene);
+			Systems::PrepareRenderableScene(pLevel, scene, m_pWorld->m_pClock->GetTime());
 		}
 
 		m_pWorld->m_pParticleSystem->BuildRenderable(scene);
@@ -151,6 +153,11 @@ namespace Systems
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pRenderPassBase->GetRenderTarget();
+	}
+
+	World* GameMgr::GetWorld()
+	{
+		return m_pWorld;
 	}
 
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const

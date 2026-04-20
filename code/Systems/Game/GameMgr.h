@@ -46,6 +46,8 @@ namespace Systems
 
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
+		World* GetWorld();
+
 	private:
 		//Loading
 		Core::Array<Systems::LevelAsset*> m_loadedLevels;		//pointers to the currently loaded levels.
