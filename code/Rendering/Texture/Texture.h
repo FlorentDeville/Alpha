@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "Rendering/Texture/TextureFormat.h"
-
 #include <string>
 #include <d3d12.h>
 
