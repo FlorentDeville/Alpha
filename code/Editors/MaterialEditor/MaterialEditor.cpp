@@ -462,8 +462,19 @@ namespace Editors
 		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
 		bool materialSaved = MaterialEditorModule::Get().SaveMaterial(id);
 
-		if(materialSaved)
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		assert(pMetadata);
+
+		if (materialSaved)
+		{
 			m_pMaterialListModel->ClearShaderModified(id);
+			Core::LogModule::Get().LogInfo("Material %s saved.", pMetadata->GetVirtualName().c_str());
+		}
+		else
+		{
+			Core::LogModule::Get().LogError("Failed to save material %s.", pMetadata->GetVirtualName().c_str());
+		}
+
 	}
 
 	void MaterialEditor::MenuFile_Delete_OnClicked()
