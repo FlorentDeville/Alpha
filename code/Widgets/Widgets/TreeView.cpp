@@ -211,6 +211,16 @@ namespace Widgets
 			}
 			break;
 
+			case Os::VKeyCodes::Esc:
+			{
+				if (m_isDragStarted)
+				{
+					m_isDragStarted = false; //cancel dragging
+					Widgets::WidgetMgr::Get().SetCursorId(Os::CursorId::Arrow);
+				}
+			}
+			break;
+
 			}
 		}
 
