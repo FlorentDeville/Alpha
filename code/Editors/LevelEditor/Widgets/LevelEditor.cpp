@@ -564,11 +564,27 @@ namespace Editors
 		if (!m_selectedLevelInLevelList.IsValid())
 			return;
 
+		const Systems::Clock& clock = Systems::Clock::Get();
+		float start = clock.GetRealApplicationTime();
+
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		bool res = levelEditorModule.OpenLevel(m_selectedLevelInLevelList);
+
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedLevelInLevelList);
+		assert(pMetadata);
+
 		if (res)
 		{
 			m_pLeftTabContainer->SetSelectedTab(m_sceneTreeTabId);
+
+			float end = clock.GetRealApplicationTime();
+			float elapsedTime = end - start;
+
+			Core::LogModule::Get().LogInfo("Level %s loaded in %f seconds.", pMetadata->GetVirtualName().c_str(), elapsedTime);
+		}
+		else
+		{
+			Core::LogModule::Get().LogError("Failed to load level %s.", pMetadata->GetVirtualName().c_str());
 		}
 	}
 
