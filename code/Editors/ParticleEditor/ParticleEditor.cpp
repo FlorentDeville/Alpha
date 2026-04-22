@@ -103,6 +103,8 @@ namespace Editors
 			});
 		Widgets::TableView* pTable = new Widgets::TableView();
 		pTable->SetModel(m_pListModel);
+		pTable->SetColumnWidth(ParticleListModel::Columns::Id, 130);
+		pTable->SetColumnWidth(ParticleListModel::Columns::Name, 300);
 
 		pVerticalSplit->AddLeftPanel(pTable);
 
