@@ -54,4 +54,9 @@ namespace Systems
 	{
 		return m_internalRef.GetAssetId().IsValid();
 	}
+
+	template<typename T> NewAssetId HardAssetRef<T>::GetAssetId() const
+	{
+		return m_internalRef.GetAssetId();
+	}
 }

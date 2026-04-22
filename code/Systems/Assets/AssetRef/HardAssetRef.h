@@ -36,6 +36,8 @@ namespace Systems
 
 		bool HasValidAssetId() const;
 
+		NewAssetId GetAssetId() const;
+
 		static void RegisterFields(Core::TypeDescriptor* pType)
 		{
 			Core::FieldDescriptor* pIdField = pType->AddField();
