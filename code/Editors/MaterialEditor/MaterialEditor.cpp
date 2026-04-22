@@ -580,10 +580,13 @@ namespace Editors
 	{
 		bool res = MaterialEditorModule::Get().RefreshMaterialInstance(m_selectedMaterialId);
 
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		assert(pMetadata);
+
 		if (res)
-			Core::LogModule::Get().LogInfo("Material instance refreshed.");
+			Core::LogModule::Get().LogInfo("Material instance %s refreshed.", pMetadata->GetVirtualName().c_str());
 		else
-			Core::LogModule::Get().LogInfo("Failed to refresh material instance.");
+			Core::LogModule::Get().LogError("Failed to refresh material instance %s.", pMetadata->GetVirtualName().c_str());
 
 		return res;
 	}
@@ -789,7 +792,10 @@ namespace Editors
 
 		m_pMaterialListModel->SetShaderModified(id);
 
-		Core::LogModule::Get().LogInfo("Material compiled successfully.");
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		assert(pMetadata);
+
+		Core::LogModule::Get().LogInfo("Material %s compiled successfully.", pMetadata->GetVirtualName().c_str());
 
 		return true;
 	}

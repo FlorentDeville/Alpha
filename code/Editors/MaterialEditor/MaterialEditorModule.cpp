@@ -365,9 +365,9 @@ namespace Editors
 		if (!pMaterial)
 			return false;
 
-		bool res = pMaterial->Refresh();
-		if (!res)
-			return res;
+		Systems::MaterialInstanceAsset::RefreshResult res = pMaterial->Refresh();
+		if (res == Systems::MaterialInstanceAsset::RefreshResult::Failure)
+			return false;
 
 		if (Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(id))
 			m_onMaterialCompiled(*pMetadata);

@@ -24,18 +24,35 @@ namespace Systems
 
 	void Clock::Update()
 	{
-		std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-		std::chrono::steady_clock::duration dt = now - m_lastUpdate;
-		Second dtInSeconds = std::chrono::duration_cast<Second>(dt);
-
-		m_applicationTime += dtInSeconds;
-
+		TimePoint now = GetSystemTime();
+		m_applicationTime = ComputeApplicationTimeFromSystemTime(now);
 		m_lastUpdate = now;
 	}
 
-	//Return the elasped time since the application started in seconds.
 	float Clock::GetApplicationTime() const
 	{
 		return m_applicationTime.count();
+	}
+
+	float Clock::GetRealApplicationTime() const
+	{
+		Second realTime = ComputeApplicationTimeFromSystemTime(GetSystemTime());
+		return realTime.count();
+
+	}
+
+	Clock::TimePoint Clock::GetSystemTime() const
+	{
+		TimePoint now = std::chrono::steady_clock::now();
+		return now;
+	}
+
+	Clock::Second Clock::ComputeApplicationTimeFromSystemTime(TimePoint now) const
+	{
+		std::chrono::steady_clock::duration dt = now - m_lastUpdate;
+		Second dtInSeconds = std::chrono::duration_cast<Second>(dt);
+
+		Second realTime = m_applicationTime + dtInSeconds;
+		return realTime;
 	}
 }
