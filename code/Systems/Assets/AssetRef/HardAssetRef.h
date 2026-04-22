@@ -34,6 +34,8 @@ namespace Systems
 		T* GetPtr();
 		const T* GetPtr() const;
 
+		bool HasValidAssetId() const;
+
 		static void RegisterFields(Core::TypeDescriptor* pType)
 		{
 			Core::FieldDescriptor* pIdField = pType->AddField();
