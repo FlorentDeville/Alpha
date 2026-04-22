@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -43,14 +43,12 @@ namespace Rendering
 		ID3D12DescriptorHeap* GetSRV();
 
 		ID3D12Resource* GetResource();
-		const D3D12_RESOURCE_DESC& GetResourceDesc() const;
 
 		uint64_t GetWidth() const;
 		uint64_t GetHeight() const;
 
 	private:
 		ID3D12Resource* m_pResource;
-		D3D12_RESOURCE_DESC m_resourceDesc;
 		ID3D12DescriptorHeap* m_pSrvDescriptorHeap;
 
 		D3D12_RESOURCE_STATES m_currentState;

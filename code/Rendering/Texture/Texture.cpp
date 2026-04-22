@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Rendering/Texture/Texture.h"
 
@@ -20,7 +20,6 @@ namespace Rendering
 {
 	Texture::Texture()
 		: m_pResource(nullptr)
-		, m_resourceDesc()
 		, m_pSrvDescriptorHeap(nullptr)
 		, m_currentState()
 	{}
@@ -141,7 +140,7 @@ namespace Rendering
 
 		//Create a description
 		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-		m_resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		//Create the texture
 		D3D12_CLEAR_VALUE clear;
@@ -152,7 +151,7 @@ namespace Rendering
 		clear.Color[3] = clearColor[3];
 
 		ID3D12Device* pDevice = RenderModule::Get().GetDx12Device();
-		pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &m_resourceDesc,
+		pDevice->CreateCommittedResource(&heapProperty, D3D12_HEAP_FLAG_ALLOW_ALL_BUFFERS_AND_TEXTURES, &resourceDesc,
 			m_currentState, &clear, IID_PPV_ARGS(&m_pResource));
 
 		//Create the SRV heap
@@ -168,7 +167,7 @@ namespace Rendering
 		//Create the srv descriptor
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-			srvDesc.Format = m_resourceDesc.Format;
+			srvDesc.Format = resourceDesc.Format;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 			srvDesc.Texture2D.MipLevels = 1;
@@ -332,19 +331,14 @@ namespace Rendering
 		return m_pResource;
 	}
 
-	const D3D12_RESOURCE_DESC& Texture::GetResourceDesc() const
-	{
-		return m_resourceDesc;
-	}
-
 	uint64_t Texture::GetWidth() const
 	{
-		return m_resourceDesc.Width;
+		return m_pResource->GetDesc().Width;
 	}
 
 	uint64_t Texture::GetHeight() const
 	{
-		return m_resourceDesc.Height;
+		return m_pResource->GetDesc().Height;
 	}
 
 	void Texture::Internal_Init(const unsigned char* pData, int width, int height, int channel)
@@ -362,22 +356,23 @@ namespace Rendering
 		m_currentState = D3D12_RESOURCE_STATE_COPY_DEST;
 
 		//Create a resource description
-		m_resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		m_resourceDesc.Alignment = 0; //let decide dx12 what alignement to use
-		m_resourceDesc.Width = width;
-		m_resourceDesc.Height = height;
-		m_resourceDesc.DepthOrArraySize = 1;
-		m_resourceDesc.MipLevels = mipCount;
-		m_resourceDesc.Format = format;
-		m_resourceDesc.SampleDesc.Count = 1; //number of sample per pixel
-		m_resourceDesc.SampleDesc.Quality = 0;
-		m_resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		m_resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		D3D12_RESOURCE_DESC resourceDesc;
+		resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		resourceDesc.Alignment = 0; //let decide dx12 what alignement to use
+		resourceDesc.Width = width;
+		resourceDesc.Height = height;
+		resourceDesc.DepthOrArraySize = 1;
+		resourceDesc.MipLevels = mipCount;
+		resourceDesc.Format = format;
+		resourceDesc.SampleDesc.Count = 1; //number of sample per pixel
+		resourceDesc.SampleDesc.Quality = 0;
+		resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 		{
 			//Create the texture resource
 			D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-			HRESULT res = pDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &m_resourceDesc, m_currentState, nullptr, IID_PPV_ARGS(&m_pResource));
+			HRESULT res = pDevice->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, m_currentState, nullptr, IID_PPV_ARGS(&m_pResource));
 			ThrowIfFailed(res);
 		}
 
@@ -385,7 +380,7 @@ namespace Rendering
 		ID3D12Resource* pUploadResource = nullptr;
 		{
 			UINT64 textureUploadBufferSize = 0;
-			pDevice->GetCopyableFootprints(&m_resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &textureUploadBufferSize);
+			pDevice->GetCopyableFootprints(&resourceDesc, 0, 1, 0, nullptr, nullptr, nullptr, &textureUploadBufferSize);
 
 			D3D12_HEAP_PROPERTIES heapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 			D3D12_RESOURCE_DESC uploadResourceDesc = CD3DX12_RESOURCE_DESC::Buffer(textureUploadBufferSize);
@@ -428,7 +423,7 @@ namespace Rendering
 		//Create the srv descriptor
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-			srvDesc.Format = m_resourceDesc.Format;
+			srvDesc.Format = resourceDesc.Format;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 			srvDesc.Texture2D.MipLevels = mipCount;

@@ -129,7 +129,8 @@ namespace Rendering
 		dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
-		renderModule.GetDx12Device()->GetCopyableFootprints(&m_pTexture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
+		D3D12_RESOURCE_DESC desc = m_pTexture->GetResource()->GetDesc();
+		renderModule.GetDx12Device()->GetCopyableFootprints(&desc, 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
 
 		dest.PlacedFootprint = footprint;
 
