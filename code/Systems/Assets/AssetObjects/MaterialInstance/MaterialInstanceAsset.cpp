@@ -11,6 +11,7 @@ namespace Systems
 	MaterialInstanceAsset::MaterialInstanceAsset()
 		: AssetObject()
 		, m_pBaseMaterial(nullptr)
+		, m_baseMaterial()
 		, m_perMaterialParameters()
 		, m_texturesBindingInfo()
 		, m_parametersSchemaHash()
@@ -18,6 +19,15 @@ namespace Systems
 
 	MaterialInstanceAsset::~MaterialInstanceAsset()
 	{ }
+
+	void MaterialInstanceAsset::PostLoad()
+	{
+		if (m_material.IsValid() && !m_baseMaterial.HasValidAssetId())
+		{
+			m_baseMaterial = HardAssetRef<MaterialAsset>(m_material);
+			m_baseMaterial.Load(LoadingDomain::EDITOR); //for the transition, loading in editor domain is enough
+		}
+	}
 
 	bool MaterialInstanceAsset::InitialiseFromBaseMaterial(Systems::MaterialAsset* pBaseMaterial)
 	{
@@ -105,7 +115,7 @@ namespace Systems
 	const Systems::MaterialAsset* MaterialInstanceAsset::GetBaseMaterial() const
 	{
 		if (!m_pBaseMaterial && m_material.IsValid())
-			m_pBaseMaterial = Systems::AssetUtil::LoadAsset<Systems::MaterialAsset>(m_material, Systems::LoadingDomain::EDITOR);
+			m_pBaseMaterial = m_baseMaterial.GetPtr();
 
 		return m_pBaseMaterial;
 	}

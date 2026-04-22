@@ -30,6 +30,8 @@ namespace Systems
 		MaterialInstanceAsset();
 		~MaterialInstanceAsset();
 
+		void PostLoad() override;
+
 		bool InitialiseFromBaseMaterial(MaterialAsset* pBaseMaterial);
 
 		RefreshResult Refresh();
@@ -49,6 +51,8 @@ namespace Systems
 
 	private:
 		NewAssetId m_material;
+		HardAssetRef<MaterialAsset> m_baseMaterial;
+
 		Core::Array<MaterialParameterDescription> m_perMaterialParameters;
 		Core::Array<TextureBindingInfo> m_texturesBindingInfo;
 
@@ -56,17 +60,18 @@ namespace Systems
 		//the parameters and textures of the base material will be used.
 		Core::Sid m_parametersSchemaHash;
 
-		//Non-reflected data
-
-		//Cached pointer to the base material
-		mutable Systems::MaterialAsset* m_pBaseMaterial;
-
 		START_REFLECTION(Systems::MaterialInstanceAsset)
 			ADD_BASETYPE(Systems::AssetObject)
 			ADD_FIELD(m_material)
+			ADD_FIELD_ATTR(m_baseMaterial, Core::FieldAttribute::ReadOnly)
 			ADD_FIELD(m_perMaterialParameters)
 			ADD_FIELD(m_texturesBindingInfo)
 			ADD_FIELD_ATTR(m_parametersSchemaHash, Core::FieldAttribute::Hidden)
 		END_REFLECTION()
+
+		//Non-reflected data
+
+		//Cached pointer to the base material
+		mutable const Systems::MaterialAsset* m_pBaseMaterial;
 	};
 }
