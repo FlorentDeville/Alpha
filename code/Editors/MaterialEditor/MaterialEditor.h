@@ -91,6 +91,7 @@ namespace Editors
 
 		void CreateFileMenu();
 		void CreateMeshMenu();
+		void CreateToolsMenu();
 
 		void MenuFile_NewMaterial_OnClicked();
 		void MenuFile_NewMaterialInstance_OnClicked();
@@ -99,6 +100,8 @@ namespace Editors
 		void MenuFile_Rename_OnClicked();
 
 		void MenuMesh_OnClicked(DisplayMesh mesh);
+
+		void MenuTools_ResaveAllInstances_OnClicked();
 
 		bool OnShaderEntryClicked(Systems::NewAssetId id);
 		bool OnCompileClicked();

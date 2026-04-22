@@ -229,6 +229,7 @@ namespace Editors
 
 		CreateFileMenu();
 		CreateMeshMenu();
+		CreateToolsMenu();
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
@@ -401,6 +402,14 @@ namespace Editors
 		m_pMeshesMenuItem[DisplayMesh::Cube] = pCubeItem;
 	}
 
+	void MaterialEditor::CreateToolsMenu()
+	{
+		Widgets::Menu* pMenu = m_pMenuBar->AddMenu("Tools");
+
+		Widgets::MenuItem* pResaveAllInstances = pMenu->AddMenuItem("Resave All Instances");
+		pResaveAllInstances->OnClick([this]() { MenuTools_ResaveAllInstances_OnClicked(); });
+	}
+
 	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
@@ -513,6 +522,29 @@ namespace Editors
 		m_pMeshesMenuItem[mesh]->SetChecked(true);
 
 		m_selectedMesh = mesh;
+	}
+
+	void MaterialEditor::MenuTools_ResaveAllInstances_OnClicked()
+	{
+		Core::Array<const Systems::AssetMetadata*> assets;
+		Systems::AssetMgr::Get().GetAssets(Systems::MaterialInstanceAsset::GetAssetTypeNameSid(), assets);
+
+		for (const Systems::AssetMetadata* pMetadata : assets)
+		{
+			Systems::AssetUtil::LoadAsset(pMetadata->GetAssetId(), Systems::LoadingDomain::EDITOR);
+
+			bool res = MaterialEditorModule::Get().SaveMaterial(pMetadata->GetAssetId());
+
+			Systems::AssetUtil::UnloadAsset(pMetadata->GetAssetId(), Systems::LoadingDomain::EDITOR);
+
+			if (!res)
+			{
+				Core::LogModule::Get().LogError("Failed to save material instance %s.", pMetadata->GetVirtualName().c_str());
+				return;
+			}
+		}
+
+		Core::LogModule::Get().LogInfo("All material instances have been resaved.");
 	}
 
 	bool MaterialEditor::OnShaderEntryClicked(Systems::NewAssetId id)
