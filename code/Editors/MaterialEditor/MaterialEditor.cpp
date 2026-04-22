@@ -526,6 +526,8 @@ namespace Editors
 
 	void MaterialEditor::MenuTools_ResaveAllInstances_OnClicked()
 	{
+		float startTime = Systems::Clock::Get().GetRealApplicationTime();
+
 		Core::Array<const Systems::AssetMetadata*> assets;
 		Systems::AssetMgr::Get().GetAssets(Systems::MaterialInstanceAsset::GetAssetTypeNameSid(), assets);
 
@@ -544,7 +546,10 @@ namespace Editors
 			}
 		}
 
-		Core::LogModule::Get().LogInfo("All material instances have been resaved.");
+		float endTime = Systems::Clock::Get().GetRealApplicationTime();
+		float elapsedTime = endTime - startTime;
+
+		Core::LogModule::Get().LogInfo("All material instances have been resaved in %f seconds.", elapsedTime);
 	}
 
 	bool MaterialEditor::OnShaderEntryClicked(Systems::NewAssetId id)
