@@ -49,4 +49,14 @@ namespace Systems
 	{
 		return static_cast<const T*>(m_internalRef.m_pPtr);
 	}
+
+	template<typename T> bool HardAssetRef<T>::HasValidAssetId() const
+	{
+		return m_internalRef.GetAssetId().IsValid();
+	}
+
+	template<typename T> NewAssetId HardAssetRef<T>::GetAssetId() const
+	{
+		return m_internalRef.GetAssetId();
+	}
 }

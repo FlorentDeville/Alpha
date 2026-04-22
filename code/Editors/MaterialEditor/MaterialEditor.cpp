@@ -229,6 +229,7 @@ namespace Editors
 
 		CreateFileMenu();
 		CreateMeshMenu();
+		CreateToolsMenu();
 
 		//create the split
 		Widgets::SplitVertical* pSplit = new Widgets::SplitVertical();
@@ -401,6 +402,14 @@ namespace Editors
 		m_pMeshesMenuItem[DisplayMesh::Cube] = pCubeItem;
 	}
 
+	void MaterialEditor::CreateToolsMenu()
+	{
+		Widgets::Menu* pMenu = m_pMenuBar->AddMenu("Tools");
+
+		Widgets::MenuItem* pResaveAllInstances = pMenu->AddMenuItem("Resave All Instances");
+		pResaveAllInstances->OnClick([this]() { MenuTools_ResaveAllInstances_OnClicked(); });
+	}
+
 	void MaterialEditor::MenuFile_NewMaterial_OnClicked()
 	{
 		//modal windows are automatically deleted when closed,so no need to delete the dialog.
@@ -462,8 +471,19 @@ namespace Editors
 		Systems::NewAssetId id = m_pMaterialListModel->GetAssetId(row.GetStartIndex());
 		bool materialSaved = MaterialEditorModule::Get().SaveMaterial(id);
 
-		if(materialSaved)
+		const Systems::AssetMetadata* pMetadata = Systems::AssetMgr::Get().GetMetadata(m_selectedMaterialId);
+		assert(pMetadata);
+
+		if (materialSaved)
+		{
 			m_pMaterialListModel->ClearShaderModified(id);
+			Core::LogModule::Get().LogInfo("Material %s saved.", pMetadata->GetVirtualName().c_str());
+		}
+		else
+		{
+			Core::LogModule::Get().LogError("Failed to save material %s.", pMetadata->GetVirtualName().c_str());
+		}
+
 	}
 
 	void MaterialEditor::MenuFile_Delete_OnClicked()
@@ -502,6 +522,34 @@ namespace Editors
 		m_pMeshesMenuItem[mesh]->SetChecked(true);
 
 		m_selectedMesh = mesh;
+	}
+
+	void MaterialEditor::MenuTools_ResaveAllInstances_OnClicked()
+	{
+		float startTime = Systems::Clock::Get().GetRealApplicationTime();
+
+		Core::Array<const Systems::AssetMetadata*> assets;
+		Systems::AssetMgr::Get().GetAssets(Systems::MaterialInstanceAsset::GetAssetTypeNameSid(), assets);
+
+		for (const Systems::AssetMetadata* pMetadata : assets)
+		{
+			Systems::AssetUtil::LoadAsset(pMetadata->GetAssetId(), Systems::LoadingDomain::EDITOR);
+
+			bool res = MaterialEditorModule::Get().SaveMaterial(pMetadata->GetAssetId());
+
+			Systems::AssetUtil::UnloadAsset(pMetadata->GetAssetId(), Systems::LoadingDomain::EDITOR);
+
+			if (!res)
+			{
+				Core::LogModule::Get().LogError("Failed to save material instance %s.", pMetadata->GetVirtualName().c_str());
+				return;
+			}
+		}
+
+		float endTime = Systems::Clock::Get().GetRealApplicationTime();
+		float elapsedTime = endTime - startTime;
+
+		Core::LogModule::Get().LogInfo("All material instances have been resaved in %f seconds.", elapsedTime);
 	}
 
 	bool MaterialEditor::OnShaderEntryClicked(Systems::NewAssetId id)

@@ -23,7 +23,7 @@ namespace Systems
 
 	HardAssetRefRaw::~HardAssetRefRaw()
 	{
-		if(m_id != NewAssetId::INVALID)
+		if(IsResolved())
 			AssetUtil::UnloadAsset(m_id, m_domain);
 
 		m_id = NewAssetId::INVALID;
