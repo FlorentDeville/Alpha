@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Rendering/BufferFormat.h"
+
 #include <string>
 #include <d3d12.h>
 
@@ -22,8 +24,7 @@ namespace Rendering
 		
 		void InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize);
 
-		void InitAsRenderTarget(int width, int height, float* clearColor);
-		void InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format);
+		void InitAsRenderTarget(int width, int height, float* clearColor, BufferFormat format);
 
 		void InitAsReadbackBuffer(int width, int height, int depth);
 
