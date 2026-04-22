@@ -42,13 +42,13 @@ namespace Systems
 		return true;
 	}
 
-	bool MaterialInstanceAsset::Refresh()
+	MaterialInstanceAsset::RefreshResult MaterialInstanceAsset::Refresh()
 	{
 		if (!m_pBaseMaterial)
-			return false;
+			return RefreshResult::Failure;
 
 		if (m_pBaseMaterial->GetParametersSchemaHash() == m_parametersSchemaHash)
-			return false;
+			return RefreshResult::UpToDate;
 
 		//copy parameters
 		const Core::Array<MaterialParameterDescription>& parameters = m_pBaseMaterial->GetMaterialParameterDescription();
@@ -94,7 +94,7 @@ namespace Systems
 
 		CalculateParametersSchemaHash();
 
-		return true;
+		return RefreshResult::Success;
 	}
 
 	NewAssetId MaterialInstanceAsset::GetBaseMaterialId() const

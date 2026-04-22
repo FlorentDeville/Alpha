@@ -18,12 +18,21 @@ namespace Systems
 	class MaterialInstanceAsset : public AssetObject
 	{
 	public:
+		enum class RefreshResult
+		{
+			Success,
+			Failure,
+			UpToDate,
+
+			Count
+		};
+
 		MaterialInstanceAsset();
 		~MaterialInstanceAsset();
 
 		bool InitialiseFromBaseMaterial(MaterialAsset* pBaseMaterial);
 
-		bool Refresh();
+		RefreshResult Refresh();
 
 		NewAssetId GetBaseMaterialId() const;
 
