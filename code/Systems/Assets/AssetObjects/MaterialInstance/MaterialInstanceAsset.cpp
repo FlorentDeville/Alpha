@@ -10,7 +10,6 @@ namespace Systems
 {
 	MaterialInstanceAsset::MaterialInstanceAsset()
 		: AssetObject()
-		, m_pBaseMaterial(nullptr)
 		, m_baseMaterial()
 		, m_perMaterialParameters()
 		, m_texturesBindingInfo()
@@ -20,21 +19,12 @@ namespace Systems
 	MaterialInstanceAsset::~MaterialInstanceAsset()
 	{ }
 
-	void MaterialInstanceAsset::PostLoad()
-	{
-		if (m_material.IsValid() && !m_baseMaterial.HasValidAssetId())
-		{
-			m_baseMaterial = HardAssetRef<MaterialAsset>(m_material);
-			m_baseMaterial.Load(LoadingDomain::EDITOR); //for the transition, loading in editor domain is enough
-		}
-	}
-
 	bool MaterialInstanceAsset::InitialiseFromBaseMaterial(Systems::MaterialAsset* pBaseMaterial)
 	{
 		if (pBaseMaterial)
 		{
-			m_pBaseMaterial = pBaseMaterial;
-			m_material = pBaseMaterial->GetId();
+			m_baseMaterial = HardAssetRef<MaterialAsset>(pBaseMaterial->GetId());
+			m_baseMaterial.Load(LoadingDomain::EDITOR);
 
 			const Core::Array<MaterialParameterDescription>& parameters = pBaseMaterial->GetMaterialParameterDescription();
 			m_perMaterialParameters = parameters;
@@ -44,8 +34,7 @@ namespace Systems
 		}
 		else
 		{
-			m_pBaseMaterial = nullptr;
-			m_material = Systems::NewAssetId::INVALID;
+			m_baseMaterial = HardAssetRef<MaterialAsset>();
 			m_perMaterialParameters.Clear();
 			m_texturesBindingInfo.Clear();
 		}
@@ -54,14 +43,15 @@ namespace Systems
 
 	MaterialInstanceAsset::RefreshResult MaterialInstanceAsset::Refresh()
 	{
-		if (!m_pBaseMaterial)
+		const Systems::MaterialAsset* pBaseMaterial = GetBaseMaterial();
+		if (!pBaseMaterial)
 			return RefreshResult::Failure;
 
-		if (m_pBaseMaterial->GetParametersSchemaHash() == m_parametersSchemaHash)
+		if (pBaseMaterial->GetParametersSchemaHash() == m_parametersSchemaHash)
 			return RefreshResult::UpToDate;
 
 		//copy parameters
-		const Core::Array<MaterialParameterDescription>& parameters = m_pBaseMaterial->GetMaterialParameterDescription();
+		const Core::Array<MaterialParameterDescription>& parameters = pBaseMaterial->GetMaterialParameterDescription();
 		Core::Array<MaterialParameterDescription> newParameters;
 		newParameters.Reserve(parameters.GetSize());
 		for (const MaterialParameterDescription& param : parameters)
@@ -82,7 +72,7 @@ namespace Systems
 		m_perMaterialParameters = std::move(newParameters);
 
 		//copy textures
-		const Core::Array<TextureBindingInfo>& textures = m_pBaseMaterial->GetTexturesBindingInfo();
+		const Core::Array<TextureBindingInfo>& textures = pBaseMaterial->GetTexturesBindingInfo();
 		Core::Array<TextureBindingInfo> newTextures;
 		newTextures.Reserve(textures.GetSize());
 		for (const TextureBindingInfo& texture : textures)
@@ -109,15 +99,12 @@ namespace Systems
 
 	NewAssetId MaterialInstanceAsset::GetBaseMaterialId() const
 	{
-		return m_material;
+		return m_baseMaterial.GetAssetId();
 	}
 
 	const Systems::MaterialAsset* MaterialInstanceAsset::GetBaseMaterial() const
 	{
-		if (!m_pBaseMaterial && m_material.IsValid())
-			m_pBaseMaterial = m_baseMaterial.GetPtr();
-
-		return m_pBaseMaterial;
+		return m_baseMaterial.GetPtr();
 	}
 
 	const Core::Array<MaterialParameterDescription>& MaterialInstanceAsset::GetMaterialParameterDescription() const
