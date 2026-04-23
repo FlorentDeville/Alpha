@@ -56,7 +56,6 @@
     <ClInclude Include="Shaders\ShaderMgr.h" />
     <ClInclude Include="Texture\DDSTextureLoader12.h" />
     <ClInclude Include="Texture\Texture.h" />
-    <ClInclude Include="Texture\TextureFormat.h" />
     <ClInclude Include="Texture\TextureId.h" />
     <ClInclude Include="Texture\TextureMgr.h" />
   </ItemGroup>

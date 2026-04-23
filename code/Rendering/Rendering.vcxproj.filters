@@ -105,9 +105,6 @@
     <ClInclude Include="ConstantBuffer\LightsCBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Texture\TextureFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture\DDSTextureLoader12.h">
       <Filter>Header Files</Filter>
     </ClInclude>

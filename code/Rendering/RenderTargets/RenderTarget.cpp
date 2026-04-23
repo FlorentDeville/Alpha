@@ -49,8 +49,7 @@ namespace Rendering
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_pTexture, m_textureId);
-		DXGI_FORMAT dxFormat = Internal::GetDx12BufferFormat(format);
-		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, dxFormat);
+		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_pTexture->GetResource(), nullptr, m_rtv);
@@ -129,7 +128,8 @@ namespace Rendering
 		dest.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 
 		D3D12_PLACED_SUBRESOURCE_FOOTPRINT footprint;
-		renderModule.GetDx12Device()->GetCopyableFootprints(&m_pTexture->GetResourceDesc(), 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
+		D3D12_RESOURCE_DESC desc = m_pTexture->GetResource()->GetDesc();
+		renderModule.GetDx12Device()->GetCopyableFootprints(&desc, 0, 1, 0, &footprint, nullptr, nullptr, nullptr);
 
 		dest.PlacedFootprint = footprint;
 

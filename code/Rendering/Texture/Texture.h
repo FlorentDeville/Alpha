@@ -1,10 +1,10 @@
-/********************************************************************/
-/* © 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2021 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
-#include "Rendering/Texture/TextureFormat.h"
+#include "Rendering/BufferFormat.h"
 
 #include <string>
 #include <d3d12.h>
@@ -24,8 +24,7 @@ namespace Rendering
 		
 		void InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize);
 
-		void InitAsRenderTarget(int width, int height, float* clearColor);
-		void InitAsRenderTarget(int width, int height, float* clearColor, DXGI_FORMAT format);
+		void InitAsRenderTarget(int width, int height, float* clearColor, BufferFormat format);
 
 		void InitAsReadbackBuffer(int width, int height, int depth);
 
@@ -43,14 +42,12 @@ namespace Rendering
 		ID3D12DescriptorHeap* GetSRV();
 
 		ID3D12Resource* GetResource();
-		const D3D12_RESOURCE_DESC& GetResourceDesc() const;
 
 		uint64_t GetWidth() const;
 		uint64_t GetHeight() const;
 
 	private:
 		ID3D12Resource* m_pResource;
-		D3D12_RESOURCE_DESC m_resourceDesc;
 		ID3D12DescriptorHeap* m_pSrvDescriptorHeap;
 
 		D3D12_RESOURCE_STATES m_currentState;
