@@ -29,6 +29,9 @@ namespace Systems
 		const Core::Mat44f& GetLocalTx() const;
 		const Core::Mat44f& GetWorldTx() const;
 
+		const Core::Sqt& GetLocalSqt() const;
+		Core::Sqt& GetLocalSqt();
+
 		const Core::Mat44f& GetParentWorldTx() const;
 
 		void SetLocalTx(const Core::Mat44f& localTx);

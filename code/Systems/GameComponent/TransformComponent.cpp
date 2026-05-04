@@ -32,6 +32,16 @@ namespace Systems
 		return m_worldTx;
 	}
 
+	const Core::Sqt& TransformComponent::GetLocalSqt() const
+	{
+		return m_localSqt;
+	}
+
+	Core::Sqt& TransformComponent::GetLocalSqt()
+	{
+		return m_localSqt;
+	}
+
 	const Core::Mat44f& TransformComponent::GetParentWorldTx() const
 	{
 		if (!m_pParentGo)
