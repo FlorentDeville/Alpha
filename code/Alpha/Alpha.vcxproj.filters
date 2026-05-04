@@ -28,6 +28,9 @@
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\BossComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -90,6 +93,7 @@
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
+    <ClInclude Include="Components\BossComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
