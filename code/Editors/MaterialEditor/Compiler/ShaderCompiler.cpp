@@ -130,12 +130,16 @@ namespace Editors
 	
 				memset(&boundResourceSample.m_dx12Parameter, 0, sizeof(D3D12_STATIC_SAMPLER_DESC));
 
+				boundResourceSample.m_dx12Parameter.Filter = D3D12_FILTER_ANISOTROPIC;
+				boundResourceSample.m_dx12Parameter.MaxAnisotropy = 8;
 				boundResourceSample.m_dx12Parameter.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 				boundResourceSample.m_dx12Parameter.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 				boundResourceSample.m_dx12Parameter.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 				boundResourceSample.m_dx12Parameter.RegisterSpace = bind.Space;
 				boundResourceSample.m_dx12Parameter.ShaderRegister = bind.BindPoint;
 				boundResourceSample.m_dx12Parameter.ShaderVisibility = ToDx12ShaderVisibility(shaderType);
+				boundResourceSample.m_dx12Parameter.MinLOD = 0;
+				boundResourceSample.m_dx12Parameter.MaxLOD = D3D12_FLOAT32_MAX;
 
 				boundResources.m_sampleParameters.PushBack(boundResourceSample);
 			}
