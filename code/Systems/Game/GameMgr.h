@@ -21,6 +21,7 @@ namespace Systems
 {
 	class CameraSubsystem;
 	class GameObject;
+	class ISubsystem;
 	class LevelAsset;
 	class RenderPassBase;
 	class RenderPassBloom;
@@ -44,6 +45,8 @@ namespace Systems
 
 		void RequestUnloadingAllLevels();
 
+		uint32_t RegisterGameSubsystem(ISubsystem* pSubsystem);
+
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
 		GameContext* GetWorld();
@@ -64,6 +67,8 @@ namespace Systems
 		Rendering::Camera* m_pDefaultCamera;
 
 		GameContext* m_pGameContext;
+
+		Core::Array<ISubsystem*> m_gameSubsystems;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

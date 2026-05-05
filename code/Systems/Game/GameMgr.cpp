@@ -31,6 +31,7 @@ namespace Systems
 		, m_pRenderPassBloom(nullptr)
 		, m_pDefaultCamera(nullptr)
 		, m_pGameContext(nullptr)
+		, m_gameSubsystems()
 	{ }
 
 	GameMgr::~GameMgr()
@@ -71,6 +72,11 @@ namespace Systems
 		delete m_pRenderPassBloom;
 		delete m_pDefaultCamera;
 		delete m_pGameContext;
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			delete pSubsystem;
+
+		m_gameSubsystems.Clear();
 	}
 
 	void GameMgr::Update(float dt)
@@ -90,6 +96,9 @@ namespace Systems
 		}
 
 		m_pGameContext->m_pParticleSystem->Update(*m_pGameContext);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->Update(*m_pGameContext);
 
 		// Loading/Unloading is synchronous for now. So it blocks the main frame.
 		ExecuteLoadingRequests();
@@ -116,6 +125,9 @@ namespace Systems
 		}
 
 		m_pGameContext->m_pParticleSystem->BuildRenderable(scene);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->BuildRenderable(scene);
 
 		//call the render pass and render the scene.
 		m_pRenderPassShadowMaps->PreRender(scene);
@@ -148,6 +160,13 @@ namespace Systems
 		m_unloadingRequest.Reserve(m_loadedLevels.GetSize());
 		for (const LevelAsset* pLevel : m_loadedLevels)
 			m_unloadingRequest.PushBack(pLevel->GetId());
+	}
+
+	uint32_t GameMgr::RegisterGameSubsystem(ISubsystem* pSubsystem)
+	{
+		uint32_t index = m_gameSubsystems.GetSize();
+		m_gameSubsystems.PushBack(pSubsystem);
+		return index;
 	}
 
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
