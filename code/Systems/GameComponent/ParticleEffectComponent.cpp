@@ -1,12 +1,12 @@
 /********************************************************************************/
-/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 #include "Systems/Objects/GameObject.h"
 
 namespace Systems

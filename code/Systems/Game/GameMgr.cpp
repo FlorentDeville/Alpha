@@ -16,7 +16,7 @@
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"

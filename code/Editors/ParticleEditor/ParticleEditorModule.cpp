@@ -8,7 +8,7 @@
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Game/GameContext.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 namespace Editors
 {

@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Particle/ParticleEmitterRuntime.h"
+#include "Systems/Game/Subsystems/Particle/ParticleEmitterRuntime.h"
 
 #include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RenderModule.h"

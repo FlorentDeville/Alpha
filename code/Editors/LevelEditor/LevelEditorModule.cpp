@@ -19,7 +19,7 @@
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 //#pragma optimize("", off)
 
