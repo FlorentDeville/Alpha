@@ -67,6 +67,7 @@
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
     <ClInclude Include="Particle\ParticleEffectHandle.h" />
+    <ClInclude Include="Game\Subsystems\ISubsystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />

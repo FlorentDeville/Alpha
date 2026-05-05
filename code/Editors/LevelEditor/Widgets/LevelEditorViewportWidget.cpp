@@ -173,7 +173,7 @@ namespace Editors
 			}
 		}
 
-		pWorld->m_pParticleSystem->Update(pWorld->m_pClock->GetTime());
+		pWorld->m_pParticleSystem->Update(*pWorld);
 	}
 
 	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)

@@ -8,6 +8,7 @@
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/NewAssetId.h"
+#include "Systems/Game/Subsystems/ISubsystem.h"
 #include "Systems/Particle/ParticleEffectHandle.h"
 
 namespace Core
@@ -23,11 +24,12 @@ namespace Rendering
 
 namespace Systems
 {
+	class GameContext;
 	class ParticleEffectAsset;
 	class ParticleEmitterRuntime;
 	class RenderableScene;
 
-	class ParticleSystem
+	class ParticleSystem : public ISubsystem
 	{
 	public:
 		ParticleSystem();
@@ -41,9 +43,9 @@ namespace Systems
 		void KillEffect(ParticleEffectHandle handle);
 		void KillAllEffect();
 
-		void Update(float currentTime);
+		void Update(const GameContext& context) override;
 
-		void BuildRenderable(RenderableScene& scene);
+		void BuildRenderable(RenderableScene& scene) override;
 
 	private:
 		class TrackedEmitter
