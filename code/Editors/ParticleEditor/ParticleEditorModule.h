@@ -14,6 +14,7 @@
 namespace Systems
 {
 	class AssetMetadata;
+	class GameContext;
 	class ParticleEffectAsset;
 }
 
@@ -33,10 +34,16 @@ namespace Editors
 		void RenameParticleEffect(Systems::NewAssetId id, const std::string& newName);
 		void SaveParticleEffect(Systems::NewAssetId id);
 
+		const Systems::GameContext* GetGameContext() const;
+		Systems::GameContext* GetGameContext();
+
 		EVENT_DECL(ParticleEffectCreated, void(const Systems::AssetMetadata& metadata))
 		EVENT_DECL(BeforeParticleEffectDeleted, void(Systems::NewAssetId))
 		EVENT_DECL(AfterParticleEffectDeleted, void(Systems::NewAssetId))
 		EVENT_DECL(ParticleEffectRenamed, void(Systems::AssetMetadata& metadata))
 		EVENT_DECL(ParticleEffectSaved, void(Systems::NewAssetId id))
+
+	private:
+		Systems::GameContext* m_pGameContext;
 	};
 }

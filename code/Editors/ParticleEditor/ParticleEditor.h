@@ -53,8 +53,6 @@ namespace Editors
 
 		Core::Array<ObjectWatcherCallbackId> m_objWatcherCid;
 
-		Systems::ParticleSystem m_particleSystem;
-
 		Systems::RenderPassBase* m_pBasePass;
 
 		Widgets::Viewport* m_pViewport;
