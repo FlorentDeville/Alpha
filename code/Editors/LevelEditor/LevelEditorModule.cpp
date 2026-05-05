@@ -40,7 +40,7 @@ namespace Editors
 	{
 		m_pSelectionMgr = new SelectionMgr();
 
-		m_pWorld = new Systems::World();
+		m_pWorld = new Systems::GameContext();
 
 		m_pWorld->m_pCameraSubsystem = new Systems::CameraSubsystem();
 		m_pWorld->m_pParticleSystem = new Systems::ParticleSystem();
@@ -384,12 +384,12 @@ namespace Editors
 		return m_pLevel;
 	}
 
-	const Systems::World* LevelEditorModule::GetWorld() const
+	const Systems::GameContext* LevelEditorModule::GetWorld() const
 	{
 		return m_pWorld;
 	}
 
-	Systems::World* LevelEditorModule::GetWorld()
+	Systems::GameContext* LevelEditorModule::GetWorld()
 	{
 		return m_pWorld;
 	}
