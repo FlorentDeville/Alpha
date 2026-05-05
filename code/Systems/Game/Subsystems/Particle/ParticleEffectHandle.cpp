@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Particle/ParticleEffectHandle.h"
+#include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 
 namespace Systems
 {

@@ -9,7 +9,7 @@
 
 #include "Systems/Assets/NewAssetId.h"
 #include "Systems/Game/Subsystems/ISubsystem.h"
-#include "Systems/Particle/ParticleEffectHandle.h"
+#include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 
 namespace Core
 {
