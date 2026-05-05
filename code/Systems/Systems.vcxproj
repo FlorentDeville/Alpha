@@ -48,7 +48,7 @@
     <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
-    <ClInclude Include="Game\World.h" />
+    <ClInclude Include="Game\GameContext.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="Objects\GameObject.h" />
@@ -108,7 +108,7 @@
     <ClCompile Include="Game\InstanciateLevel.cpp" />
     <ClCompile Include="Game\Subsystems\CameraSubsystem.cpp" />
     <ClCompile Include="Game\Subsystems\Clock\GameClockSubsystem.cpp" />
-    <ClCompile Include="Game\World.cpp" />
+    <ClCompile Include="Game\GameContext.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />

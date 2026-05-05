@@ -12,7 +12,7 @@
 
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/CameraSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 
 PlayerComponent::PlayerComponent()
