@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 
 #include "Systems/Game/Subsystems/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"

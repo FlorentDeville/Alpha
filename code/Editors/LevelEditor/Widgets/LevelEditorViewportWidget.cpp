@@ -27,7 +27,7 @@
 #include "Rendering/Texture/TextureMgr.h"
 
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Particle/ParticleSystem.h"

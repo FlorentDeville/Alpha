@@ -19,7 +19,7 @@
 
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Layout.h"

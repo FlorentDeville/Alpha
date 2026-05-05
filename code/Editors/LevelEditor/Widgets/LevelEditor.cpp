@@ -30,7 +30,7 @@
 #include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Container.h"
