@@ -12,6 +12,7 @@
 
 #include <DirectXMath.h>
 
+#include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Configuration.h"
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 
@@ -633,6 +634,9 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
 	logEditor.Init();
+
+	BulletSubsystem* pBulletSubsystem = new BulletSubsystem();
+	gameMgr.RegisterGameSubsystem(pBulletSubsystem);
 
 	CreateMainWindow(binPath);
 
