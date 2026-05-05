@@ -11,7 +11,7 @@
 #include "Rendering/Camera.h"
 
 #include "Systems/Game/GameMgr.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 

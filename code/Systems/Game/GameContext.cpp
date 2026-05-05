@@ -4,7 +4,7 @@
 
 #include "Systems/Game/GameContext.h"
 
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Particle/ParticleSystem.h"
 
