@@ -89,7 +89,7 @@ namespace Systems
 			}
 		}
 
-		m_pWorld->m_pParticleSystem->Update(m_pWorld->m_pClock->GetTime());
+		m_pWorld->m_pParticleSystem->Update(*m_pWorld);
 
 		// Loading/Unloading is synchronous for now. So it blocks the main frame.
 		ExecuteLoadingRequests();

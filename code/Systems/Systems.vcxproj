@@ -48,6 +48,7 @@
     <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
+    <ClInclude Include="Game\Subsystems\ISubsystem.h" />
     <ClInclude Include="Game\GameContext.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Objects\GameComponent.h" />

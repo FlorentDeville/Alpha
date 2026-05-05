@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Systems/Game/Subsystems/ISubsystem.h"
+
 #include <stack>
 
 namespace Rendering
@@ -13,7 +15,7 @@ namespace Rendering
 
 namespace Systems
 {
-	class CameraSubsystem
+	class CameraSubsystem : public ISubsystem
 	{
 	public:
 		CameraSubsystem();

@@ -28,6 +28,7 @@
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameContext.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 
@@ -287,7 +288,8 @@ namespace Editors
 		m_pCamera->Update(dtInSeconds);
 
 		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
-		pContext->m_pParticleSystem->Update(clock);
+		pContext->m_pClock->Update(dtInSeconds);
+		pContext->m_pParticleSystem->Update(*pContext);
 	}
 
 	void ParticleEditor::Viewport_OnRender()
