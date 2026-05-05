@@ -12,11 +12,11 @@
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 #include "Systems/Game/InstanciateLevel.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"
@@ -30,7 +30,8 @@ namespace Systems
 		, m_pRenderPassShadowMaps(nullptr)
 		, m_pRenderPassBloom(nullptr)
 		, m_pDefaultCamera(nullptr)
-		, m_pWorld(nullptr)
+		, m_pGameContext(nullptr)
+		, m_gameSubsystems()
 	{ }
 
 	GameMgr::~GameMgr()
@@ -56,12 +57,12 @@ namespace Systems
 		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
 		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
 
-		m_pWorld = new World();
-		m_pWorld->m_pCameraSubsystem = new CameraSubsystem();
-		m_pWorld->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
+		m_pGameContext = new GameContext();
+		m_pGameContext->m_pCameraSubsystem = new CameraSubsystem();
+		m_pGameContext->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
 
-		m_pWorld->m_pParticleSystem = new ParticleSystem();
-		m_pWorld->m_pClock = new GameClockSubsystem();
+		m_pGameContext->m_pParticleSystem = new ParticleSystem();
+		m_pGameContext->m_pClock = new GameClockSubsystem();
 	}
 
 	void GameMgr::Release()
@@ -70,12 +71,17 @@ namespace Systems
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassBloom;
 		delete m_pDefaultCamera;
-		delete m_pWorld;
+		delete m_pGameContext;
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			delete pSubsystem;
+
+		m_gameSubsystems.Clear();
 	}
 
 	void GameMgr::Update(float dt)
 	{
-		m_pWorld->m_pClock->Update(dt);
+		m_pGameContext->m_pClock->Update(dt);
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
@@ -85,11 +91,14 @@ namespace Systems
 			Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 			for (Systems::GameObject* pGo : gameObjects)
 			{
-				pGo->Update(m_pWorld->m_pClock->GetDeltaTime());
+				pGo->Update(m_pGameContext->m_pClock->GetDeltaTime());
 			}
 		}
 
-		m_pWorld->m_pParticleSystem->Update(m_pWorld->m_pClock->GetTime());
+		m_pGameContext->m_pParticleSystem->Update(*m_pGameContext);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->Update(*m_pGameContext);
 
 		// Loading/Unloading is synchronous for now. So it blocks the main frame.
 		ExecuteLoadingRequests();
@@ -100,7 +109,7 @@ namespace Systems
 	{
 		Systems::RenderableScene scene;
 
-		const Rendering::Camera* pCamera = m_pWorld->m_pCameraSubsystem->GetTopCamera();
+		const Rendering::Camera* pCamera = m_pGameContext->m_pCameraSubsystem->GetTopCamera();
 		Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
@@ -112,10 +121,13 @@ namespace Systems
 			for (Systems::GameObject* pGo : roots)
 				pGo->UpdateTransform();
 
-			Systems::PrepareRenderableScene(pLevel, scene, m_pWorld->m_pClock->GetTime());
+			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime());
 		}
 
-		m_pWorld->m_pParticleSystem->BuildRenderable(scene);
+		m_pGameContext->m_pParticleSystem->BuildRenderable(scene);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->BuildRenderable(scene);
 
 		//call the render pass and render the scene.
 		m_pRenderPassShadowMaps->PreRender(scene);
@@ -150,14 +162,21 @@ namespace Systems
 			m_unloadingRequest.PushBack(pLevel->GetId());
 	}
 
+	uint32_t GameMgr::RegisterGameSubsystem(ISubsystem* pSubsystem)
+	{
+		uint32_t index = m_gameSubsystems.GetSize();
+		m_gameSubsystems.PushBack(pSubsystem);
+		return index;
+	}
+
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pRenderPassBase->GetRenderTarget();
 	}
 
-	World* GameMgr::GetWorld()
+	GameContext* GameMgr::GetWorld()
 	{
-		return m_pWorld;
+		return m_pGameContext;
 	}
 
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
@@ -191,7 +210,7 @@ namespace Systems
 
 			m_loadedLevels.PushBack(pLevel);
 
-			InstanciateLevel(pLevel, m_pWorld);
+			InstanciateLevel(pLevel, m_pGameContext);
 		}
 
 		m_loadingRequest.Clear();
@@ -211,7 +230,7 @@ namespace Systems
 				return; //doesn't exist
 			}
 
-			DeleteInstanciatedLevel(pLevel, m_pWorld);
+			DeleteInstanciatedLevel(pLevel, m_pGameContext);
 
 			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
 

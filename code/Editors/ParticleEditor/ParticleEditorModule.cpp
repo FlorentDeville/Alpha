@@ -6,21 +6,33 @@
 
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
+#include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 namespace Editors
 {
 	ParticleEditorModule::ParticleEditorModule()
 		: Core::Singleton<ParticleEditorModule>()
+		, m_pGameContext(nullptr)
 	{ }
 
 	ParticleEditorModule::~ParticleEditorModule()
 	{ }
 
 	void ParticleEditorModule::Init()
-	{ }
+	{
+		m_pGameContext = new Systems::GameContext();
+
+		m_pGameContext->m_pParticleSystem = new Systems::ParticleSystem();
+		m_pGameContext->m_pClock = new Systems::GameClockSubsystem();
+		m_pGameContext->m_pClock->Start();
+	}
 
 	void ParticleEditorModule::Shutdown()
-	{ }
+	{
+		delete m_pGameContext;
+	}
 
 	Systems::ParticleEffectAsset* ParticleEditorModule::CreateParticleEffect(const std::string& name)
 	{
@@ -68,5 +80,15 @@ namespace Editors
 			return;
 
 		m_onParticleEffectSaved(id);
+	}
+
+	const Systems::GameContext* ParticleEditorModule::GetGameContext() const
+	{
+		return m_pGameContext;
+	}
+
+	Systems::GameContext* ParticleEditorModule::GetGameContext()
+	{
+		return m_pGameContext;
 	}
 }

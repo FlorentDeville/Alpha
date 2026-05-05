@@ -57,16 +57,17 @@
     <ClInclude Include="Assets\AssetObjects\Material\BlendMode.h" />
     <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEffectAsset.h" />
     <ClInclude Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.h" />
-    <ClInclude Include="Particle\ParticleSystem.h" />
-    <ClInclude Include="Particle\ParticleEmitterRuntime.h" />
+    <ClInclude Include="Game\Subsystems\Particle\ParticleSystem.h" />
+    <ClInclude Include="Game\Subsystems\Particle\ParticleEmitterRuntime.h" />
     <ClInclude Include="Rendering\Renderable\RenderableParticles.h" />
     <ClInclude Include="Game\InstanciateLevel.h" />
-    <ClInclude Include="Game\World.h" />
-    <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
+    <ClInclude Include="Game\GameContext.h" />
+    <ClInclude Include="Game\Subsystems\Camera\CameraSubsystem.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
-    <ClInclude Include="Particle\ParticleEffectHandle.h" />
+    <ClInclude Include="Game\Subsystems\Particle\ParticleEffectHandle.h" />
+    <ClInclude Include="Game\Subsystems\ISubsystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -111,14 +112,14 @@
     <ClCompile Include="Rendering\RenderPass\RenderPassBloom.cpp" />
     <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEffectAsset.cpp" />
     <ClCompile Include="Assets\AssetObjects\ParticleEffect\ParticleEmitter.cpp" />
-    <ClCompile Include="Particle\ParticleSystem.cpp" />
-    <ClCompile Include="Particle\ParticleEmitterRuntime.cpp" />
+    <ClCompile Include="Game\Subsystems\Particle\ParticleSystem.cpp" />
+    <ClCompile Include="Game\Subsystems\Particle\ParticleEmitterRuntime.cpp" />
     <ClCompile Include="Game\InstanciateLevel.cpp" />
-    <ClCompile Include="Game\World.cpp" />
-    <ClCompile Include="Game\Subsystems\CameraSubsystem.cpp" />
+    <ClCompile Include="Game\GameContext.cpp" />
+    <ClCompile Include="Game\Subsystems\Camera\CameraSubsystem.cpp" />
     <ClCompile Include="GameComponent\ParticleEffectComponent.cpp" />
     <ClCompile Include="Game\Subsystems\Clock\GameClockSubsystem.cpp" />
-    <ClCompile Include="Particle\ParticleEffectHandle.cpp" />
+    <ClCompile Include="Game\Subsystems\Particle\ParticleEffectHandle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

@@ -22,7 +22,7 @@ namespace Systems
 		m_components.Clear();
 	}
 
-	void GameObject::OnStart(World* pWorld)
+	void GameObject::OnStart(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
 			pComponent->OnStart(pWorld);
@@ -39,7 +39,7 @@ namespace Systems
 		m_transform.Update(0);
 	}
 
-	void GameObject::OnDestroy(World* pWorld)
+	void GameObject::OnDestroy(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
 			pComponent->OnDestroy(pWorld);

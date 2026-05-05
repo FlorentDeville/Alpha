@@ -2,13 +2,17 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#pragma once
+#include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 
 namespace Systems
 {
-	class LevelAsset;
-	class GameContext;
+	ParticleEffectHandle::ParticleEffectHandle()
+		: m_index(0)
+		, m_generation(0)
+	{ }
 
-	void InstanciateLevel(LevelAsset* pLevel, GameContext* pWorld);
-	void DeleteInstanciatedLevel(LevelAsset* pLevel, GameContext* pWorld);
+	bool ParticleEffectHandle::IsValid() const
+	{
+		return m_generation != 0;
+	}
 }

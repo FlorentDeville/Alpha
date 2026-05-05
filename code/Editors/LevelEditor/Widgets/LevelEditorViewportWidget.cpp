@@ -27,10 +27,10 @@
 #include "Rendering/Texture/TextureMgr.h"
 
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
@@ -144,7 +144,7 @@ namespace Editors
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
 
-		Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+		Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 	
 		pWorld->m_pClock->Update(dtInSeconds);
 
@@ -173,7 +173,7 @@ namespace Editors
 			}
 		}
 
-		pWorld->m_pParticleSystem->Update(pWorld->m_pClock->GetTime());
+		pWorld->m_pParticleSystem->Update(*pWorld);
 	}
 
 	bool LevelEditorViewportWidget::Handle(const Widgets::GlobalEvent& event)
@@ -263,7 +263,7 @@ namespace Editors
 
 			scene.m_time = LevelEditorModule::Get().GetWorld()->m_pClock->GetTime();
 
-			const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+			const Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 			pWorld->m_pParticleSystem->BuildRenderable(scene);
 		}
 

@@ -12,8 +12,7 @@
 #include "Rendering/Camera.h"
 
 #include "Systems/Game/GameMgr.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 
 BossComponent::BossComponent()
@@ -26,7 +25,7 @@ BossComponent::~BossComponent()
 void BossComponent::PostLoad()
 { }
 
-void BossComponent::OnStart(Systems::World* /*pWorld*/)
+void BossComponent::OnStart(Systems::GameContext* /*pWorld*/)
 { }
 
 void BossComponent::Update(float dt)
@@ -43,5 +42,5 @@ void BossComponent::Update(float dt)
 	loc.SetTranslation(newPos);
 }
 
-void BossComponent::OnDestroy(Systems::World* /*pWorld*/)
+void BossComponent::OnDestroy(Systems::GameContext* /*pWorld*/)
 { }

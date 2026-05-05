@@ -11,8 +11,8 @@
 #include "Rendering/Camera.h"
 
 #include "Systems/Game/GameMgr.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 
 PlayerComponent::PlayerComponent()
@@ -31,7 +31,7 @@ PlayerComponent::~PlayerComponent()
 void PlayerComponent::PostLoad()
 { }
 
-void PlayerComponent::OnStart(Systems::World* pWorld)
+void PlayerComponent::OnStart(Systems::GameContext* pWorld)
 {
 	Systems::TransformComponent& transform = GetOwner()->GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
@@ -77,7 +77,7 @@ void PlayerComponent::Update(float dt)
 	}
 }
 
-void PlayerComponent::OnDestroy(Systems::World* pWorld)
+void PlayerComponent::OnDestroy(Systems::GameContext* pWorld)
 {
 	pWorld->m_pCameraSubsystem->PopCamera();
 }

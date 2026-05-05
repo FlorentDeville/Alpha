@@ -21,11 +21,12 @@ namespace Systems
 {
 	class CameraSubsystem;
 	class GameObject;
+	class ISubsystem;
 	class LevelAsset;
 	class RenderPassBase;
 	class RenderPassBloom;
 	class RenderPassShadowMaps;
-	class World;
+	class GameContext;
 
 	class GameMgr : public Core::Singleton<GameMgr>
 	{
@@ -44,9 +45,11 @@ namespace Systems
 
 		void RequestUnloadingAllLevels();
 
+		uint32_t RegisterGameSubsystem(ISubsystem* pSubsystem);
+
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
-		World* GetWorld();
+		GameContext* GetWorld();
 
 	private:
 		//Loading
@@ -63,7 +66,9 @@ namespace Systems
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
-		World* m_pWorld;
+		GameContext* m_pGameContext;
+
+		Core::Array<ISubsystem*> m_gameSubsystems;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

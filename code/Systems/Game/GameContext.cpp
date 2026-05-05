@@ -2,21 +2,21 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 namespace Systems
 {
-	World::World()
+	GameContext::GameContext()
 		: m_pParticleSystem(nullptr)
 		, m_pCameraSubsystem(nullptr)
 		, m_pClock(nullptr)
 	{ }
 
-	World::~World()
+	GameContext::~GameContext()
 	{
 		delete m_pParticleSystem;
 		delete m_pCameraSubsystem;

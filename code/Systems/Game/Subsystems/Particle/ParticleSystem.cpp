@@ -2,11 +2,13 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEmitter.h"
-#include "Systems/Particle/ParticleEmitterRuntime.h"
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleEmitterRuntime.h"
 
 namespace Systems
 {
@@ -108,8 +110,10 @@ namespace Systems
 		}
 	}
 
-	void ParticleSystem::Update(float currentTime)
+	void ParticleSystem::Update(const GameContext& context)
 	{
+		float currentTime = context.m_pClock->GetTime();
+
 		float dt = 0;
 		if (m_lastUpdate != 0)
 			dt = currentTime - m_lastUpdate;

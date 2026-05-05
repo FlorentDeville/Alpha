@@ -9,7 +9,7 @@
 #include "Editors/BaseEditor.h"
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 #include <vector>
 
@@ -52,8 +52,6 @@ namespace Editors
 		ParticleListModel* m_pListModel;
 
 		Core::Array<ObjectWatcherCallbackId> m_objWatcherCid;
-
-		Systems::ParticleSystem m_particleSystem;
 
 		Systems::RenderPassBase* m_pBasePass;
 

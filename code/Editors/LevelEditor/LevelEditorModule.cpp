@@ -14,12 +14,12 @@
 #include "Systems/Assets/AssetMgr.h"
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Game/InstanciateLevel.h"
-#include "Systems/Game/World.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 //#pragma optimize("", off)
 
@@ -40,7 +40,7 @@ namespace Editors
 	{
 		m_pSelectionMgr = new SelectionMgr();
 
-		m_pWorld = new Systems::World();
+		m_pWorld = new Systems::GameContext();
 
 		m_pWorld->m_pCameraSubsystem = new Systems::CameraSubsystem();
 		m_pWorld->m_pParticleSystem = new Systems::ParticleSystem();
@@ -384,12 +384,12 @@ namespace Editors
 		return m_pLevel;
 	}
 
-	const Systems::World* LevelEditorModule::GetWorld() const
+	const Systems::GameContext* LevelEditorModule::GetWorld() const
 	{
 		return m_pWorld;
 	}
 
-	Systems::World* LevelEditorModule::GetWorld()
+	Systems::GameContext* LevelEditorModule::GetWorld()
 	{
 		return m_pWorld;
 	}
