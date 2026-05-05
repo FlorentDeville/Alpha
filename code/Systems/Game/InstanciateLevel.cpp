@@ -9,14 +9,14 @@
 
 namespace Systems
 {
-	void InstanciateLevel(LevelAsset* pLevel, World* pWorld)
+	void InstanciateLevel(LevelAsset* pLevel, GameContext* pWorld)
 	{
 		Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
 		for (GameObject* pObject : objectArray)
 			pObject->OnStart(pWorld);
 	}
 
-	void DeleteInstanciatedLevel(LevelAsset* pLevel, World* pWorld)
+	void DeleteInstanciatedLevel(LevelAsset* pLevel, GameContext* pWorld)
 	{
 		Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
 		for (GameObject* pObject : objectArray)

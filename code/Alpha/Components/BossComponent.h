@@ -10,7 +10,7 @@ ENABLE_GAME_REFLECTION(BossComponent)
 
 namespace Systems
 {
-	class World;
+	class GameContext;
 }
 
 class BossComponent : public Systems::GameComponent
@@ -21,9 +21,9 @@ public:
 
 	void PostLoad() override;
 
-	void OnStart(Systems::World* pWorld) override;
+	void OnStart(Systems::GameContext* pWorld) override;
 	void Update(float dt) override;
-	void OnDestroy(Systems::World* pWorld) override;
+	void OnDestroy(Systems::GameContext* pWorld) override;
 
 private:
 

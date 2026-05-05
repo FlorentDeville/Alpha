@@ -25,7 +25,7 @@ namespace Systems
 	class RenderPassBase;
 	class RenderPassBloom;
 	class RenderPassShadowMaps;
-	class World;
+	class GameContext;
 
 	class GameMgr : public Core::Singleton<GameMgr>
 	{
@@ -46,7 +46,7 @@ namespace Systems
 
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
-		World* GetWorld();
+		GameContext* GetWorld();
 
 	private:
 		//Loading
@@ -63,7 +63,7 @@ namespace Systems
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
-		World* m_pWorld;
+		GameContext* m_pWorld;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

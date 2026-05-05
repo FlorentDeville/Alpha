@@ -4,7 +4,7 @@
 
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Objects/GameObject.h"
@@ -20,7 +20,7 @@ namespace Systems
 	ParticleEffectComponent::~ParticleEffectComponent()
 	{ }
 
-	void ParticleEffectComponent::OnStart(World* pWorld)
+	void ParticleEffectComponent::OnStart(GameContext* pWorld)
 	{
 		TransformComponent& transform = GetOwner()->GetTransform();
 		transform.ComputeWorldTx();
@@ -30,12 +30,12 @@ namespace Systems
 		SpawnEffect(pWorld);
 	}
 
-	void ParticleEffectComponent::OnDestroy(World* pWorld)
+	void ParticleEffectComponent::OnDestroy(GameContext* pWorld)
 	{
 		pWorld->m_pParticleSystem->KillEffect(m_effetHandle);
 	}
 
-	void ParticleEffectComponent::SpawnEffect(World* pWorld)
+	void ParticleEffectComponent::SpawnEffect(GameContext* pWorld)
 	{
 		//already spawned
 		if (m_effetHandle.IsValid())

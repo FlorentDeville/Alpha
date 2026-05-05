@@ -14,7 +14,7 @@
 #include "Systems/Game/InstanciateLevel.h"
 #include "Systems/Game/Subsystems/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
@@ -56,7 +56,7 @@ namespace Systems
 		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
 		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
 
-		m_pWorld = new World();
+		m_pWorld = new GameContext();
 		m_pWorld->m_pCameraSubsystem = new CameraSubsystem();
 		m_pWorld->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
 
@@ -155,7 +155,7 @@ namespace Systems
 		return m_pRenderPassBase->GetRenderTarget();
 	}
 
-	World* GameMgr::GetWorld()
+	GameContext* GameMgr::GetWorld()
 	{
 		return m_pWorld;
 	}

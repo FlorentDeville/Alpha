@@ -7,8 +7,8 @@
 namespace Systems
 {
 	class LevelAsset;
-	class World;
+	class GameContext;
 
-	void InstanciateLevel(LevelAsset* pLevel, World* pWorld);
-	void DeleteInstanciatedLevel(LevelAsset* pLevel, World* pWorld);
+	void InstanciateLevel(LevelAsset* pLevel, GameContext* pWorld);
+	void DeleteInstanciatedLevel(LevelAsset* pLevel, GameContext* pWorld);
 }
