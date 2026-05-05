@@ -45,7 +45,7 @@
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="Game\GameMgr.h" />
     <ClInclude Include="Game\InstanciateLevel.h" />
-    <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
+    <ClInclude Include="Game\Subsystems\Camera\CameraSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\ISubsystem.h" />
@@ -107,7 +107,7 @@
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Game\GameMgr.cpp" />
     <ClCompile Include="Game\InstanciateLevel.cpp" />
-    <ClCompile Include="Game\Subsystems\CameraSubsystem.cpp" />
+    <ClCompile Include="Game\Subsystems\Camera\CameraSubsystem.cpp" />
     <ClCompile Include="Game\Subsystems\Clock\GameClockSubsystem.cpp" />
     <ClCompile Include="Game\GameContext.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />

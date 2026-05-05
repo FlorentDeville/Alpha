@@ -62,7 +62,7 @@
     <ClInclude Include="Rendering\Renderable\RenderableParticles.h" />
     <ClInclude Include="Game\InstanciateLevel.h" />
     <ClInclude Include="Game\GameContext.h" />
-    <ClInclude Include="Game\Subsystems\CameraSubsystem.h" />
+    <ClInclude Include="Game\Subsystems\Camera\CameraSubsystem.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
@@ -116,7 +116,7 @@
     <ClCompile Include="Particle\ParticleEmitterRuntime.cpp" />
     <ClCompile Include="Game\InstanciateLevel.cpp" />
     <ClCompile Include="Game\GameContext.cpp" />
-    <ClCompile Include="Game\Subsystems\CameraSubsystem.cpp" />
+    <ClCompile Include="Game\Subsystems\Camera\CameraSubsystem.cpp" />
     <ClCompile Include="GameComponent\ParticleEffectComponent.cpp" />
     <ClCompile Include="Game\Subsystems\Clock\GameClockSubsystem.cpp" />
     <ClCompile Include="Particle\ParticleEffectHandle.cpp" />
