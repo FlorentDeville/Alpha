@@ -10,13 +10,13 @@
 
 namespace Systems
 {
-	World::World()
+	GameContext::GameContext()
 		: m_pParticleSystem(nullptr)
 		, m_pCameraSubsystem(nullptr)
 		, m_pClock(nullptr)
 	{ }
 
-	World::~World()
+	GameContext::~GameContext()
 	{
 		delete m_pParticleSystem;
 		delete m_pCameraSubsystem;

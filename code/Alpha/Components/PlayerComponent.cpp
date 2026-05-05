@@ -31,7 +31,7 @@ PlayerComponent::~PlayerComponent()
 void PlayerComponent::PostLoad()
 { }
 
-void PlayerComponent::OnStart(Systems::World* pWorld)
+void PlayerComponent::OnStart(Systems::GameContext* pWorld)
 {
 	Systems::TransformComponent& transform = GetOwner()->GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
@@ -77,7 +77,7 @@ void PlayerComponent::Update(float dt)
 	}
 }
 
-void PlayerComponent::OnDestroy(Systems::World* pWorld)
+void PlayerComponent::OnDestroy(Systems::GameContext* pWorld)
 {
 	pWorld->m_pCameraSubsystem->PopCamera();
 }

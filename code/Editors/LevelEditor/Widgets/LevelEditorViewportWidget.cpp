@@ -144,7 +144,7 @@ namespace Editors
 		m_pCamera->Update(dtInSeconds);
 		m_pGizmoWidget->Update(mouseWs);
 
-		Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+		Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 	
 		pWorld->m_pClock->Update(dtInSeconds);
 
@@ -263,7 +263,7 @@ namespace Editors
 
 			scene.m_time = LevelEditorModule::Get().GetWorld()->m_pClock->GetTime();
 
-			const Systems::World* pWorld = LevelEditorModule::Get().GetWorld();
+			const Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 			pWorld->m_pParticleSystem->BuildRenderable(scene);
 		}
 
