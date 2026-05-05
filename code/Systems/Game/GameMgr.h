@@ -63,7 +63,7 @@ namespace Systems
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
-		GameContext* m_pWorld;
+		GameContext* m_pGameContext;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 
