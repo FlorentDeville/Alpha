@@ -27,9 +27,9 @@ public:
 
 	void PostLoad() override;
 
-	void OnStart(Systems::GameContext* pWorld) override;
+	void OnStartGame() override;
 	void Update(float dt) override;
-	void OnDestroy(Systems::GameContext* pWorld) override;
+	void OnDestroyGame() override;
 
 private:
 
@@ -44,5 +44,4 @@ private:
 
 	WaveTest* m_pWave;
 	uint32_t m_waveIndex;
-	bool m_spawnWave;
 };
