@@ -12,5 +12,6 @@ public:
 	WaveTest();
 	~WaveTest();
 
-	void Update(float dt) override;
+	void Spawn(Bullets& bullets, const Core::Vec4f& pos) override;
+	void Update(Bullets& bullets, float dt) override;
 };

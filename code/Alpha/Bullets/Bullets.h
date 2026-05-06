@@ -4,7 +4,12 @@
 
 #pragma once
 
-#include "Core/Math/Vec4f.h"
+#include <cstdint>
+
+namespace Core
+{
+	class Vec4f;
+}
 
 class Bullets
 {
@@ -13,5 +18,13 @@ public:
 	Core::Vec4f* m_speed;
 	Core::Vec4f* m_acceleration;
 	float* m_timeToLive;
-	bool* m_alive;
+	bool* m_free;
+
+	const uint32_t COUNT = 1000;
+
+	void Create();
+	void Delete();
+
+	uint32_t Allocate(uint32_t count);
+	void Free(uint32_t start, uint32_t count);
 };

@@ -6,11 +6,18 @@
 
 #include <cstdint>
 
+namespace Core
+{
+	class Vec4f;
+}
+
 namespace Systems
 {
 	class MaterialInstanceAsset;
 	class MeshAsset;
 }
+
+class Bullets;
 
 class IBulletWave
 {
@@ -18,9 +25,12 @@ public:
 	IBulletWave();
 	virtual ~IBulletWave();
 
-	virtual void Update(float dt) = 0;
+	virtual void Spawn(Bullets& bullets, const Core::Vec4f& pos) = 0;
+	virtual void Update(Bullets& bullets, float dt) = 0;
 
-private:
+protected:
+	uint32_t m_count;
+
 	uint32_t m_startId;
 	uint32_t m_endId;
 

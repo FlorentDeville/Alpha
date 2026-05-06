@@ -13,12 +13,7 @@ BulletSubsystem::BulletSubsystem()
 	: Systems::ISubsystem()
 	, m_waves()
 {
-	const int MAX_BULLETS_COUNT = 1000;
-	m_bullets.m_positions = new Core::Vec4f[MAX_BULLETS_COUNT];
-	m_bullets.m_speed = new Core::Vec4f[MAX_BULLETS_COUNT];
-	m_bullets.m_acceleration = new Core::Vec4f[MAX_BULLETS_COUNT];
-	m_bullets.m_timeToLive = new float[MAX_BULLETS_COUNT];
-	m_bullets.m_alive = new bool[MAX_BULLETS_COUNT];
+	m_bullets.Create();
 }
 
 BulletSubsystem::~BulletSubsystem()
@@ -26,11 +21,7 @@ BulletSubsystem::~BulletSubsystem()
 	for (IBulletWave* pWave : m_waves)
 		delete pWave;
 
-	delete[] m_bullets.m_positions;
-	delete[] m_bullets.m_speed;
-	delete[] m_bullets.m_acceleration;
-	delete[] m_bullets.m_alive;
-	delete[] m_bullets.m_timeToLive;
+	m_bullets.Delete();
 }
 
 void BulletSubsystem::Update(const Systems::GameContext& context)
@@ -38,7 +29,7 @@ void BulletSubsystem::Update(const Systems::GameContext& context)
 	float dt = context.m_pClock->GetDeltaTime();
 
 	for (IBulletWave* pWave : m_waves)
-		pWave->Update(dt);
+		pWave->Update(m_bullets, dt);
 }
 
 void BulletSubsystem::BuildRenderable(Systems::RenderableScene& /*scene*/)
