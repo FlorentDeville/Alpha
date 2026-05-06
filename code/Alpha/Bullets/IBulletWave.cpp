@@ -7,6 +7,7 @@
 IBulletWave::IBulletWave()
 	: m_startId(0)
 	, m_endId(0)
+	, m_count(0)
 	, m_pMesh(nullptr)
 	, m_pMaterial(nullptr)
 { }
