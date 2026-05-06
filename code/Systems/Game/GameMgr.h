@@ -46,6 +46,8 @@ namespace Systems
 		void RequestUnloadingAllLevels();
 
 		uint32_t RegisterGameSubsystem(ISubsystem* pSubsystem);
+		ISubsystem* GetGameSubsystem(uint32_t index);
+		const ISubsystem* GetGameSubsystem(uint32_t index) const;
 
 		Rendering::RenderTarget* GetFinalRenderTarget();
 

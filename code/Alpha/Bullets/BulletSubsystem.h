@@ -27,9 +27,16 @@ public:
 	void BuildRenderable(Systems::RenderableScene& scene) override;
 
 	uint32_t AddWave(IBulletWave* pWave);
+	void RemoveWave(uint32_t index);
+	void SpawnWave(uint32_t index, const Core::Vec4f& pos);
+
+	static uint32_t m_subsystemIndex;
+	static BulletSubsystem* GetSubsystem();
 
 private:
 	Core::Array<IBulletWave*> m_waves;
 
 	Bullets m_bullets;
+
+	uint32_t FindFreeSlot();
 };
