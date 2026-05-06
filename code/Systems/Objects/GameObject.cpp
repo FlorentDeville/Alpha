@@ -28,6 +28,12 @@ namespace Systems
 			pComponent->OnStart(pWorld);
 	}
 
+	void GameObject::OnStartGame()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnStartGame();
+	}
+
 	void GameObject::Update(float dt)
 	{
 		for (GameComponent* pComponent : m_components)
@@ -43,6 +49,12 @@ namespace Systems
 	{
 		for (GameComponent* pComponent : m_components)
 			pComponent->OnDestroy(pWorld);
+	}
+
+	void GameObject::OnDestroyGame()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnDestroyGame();
 	}
 
 	void GameObject::SetGuid(const Core::Guid& guid)

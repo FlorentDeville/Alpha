@@ -221,6 +221,10 @@ namespace Systems
 			m_loadedLevels.PushBack(pLevel);
 
 			InstanciateLevel(pLevel, m_pGameContext);
+
+			Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pObject : objectArray)
+				pObject->OnStartGame();
 		}
 
 		m_loadingRequest.Clear();
@@ -239,6 +243,10 @@ namespace Systems
 				assert(false && "Tried to unload a level that doesn't exist");
 				return; //doesn't exist
 			}
+
+			Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pObject : objectArray)
+				pObject->OnDestroyGame();
 
 			DeleteInstanciatedLevel(pLevel, m_pGameContext);
 

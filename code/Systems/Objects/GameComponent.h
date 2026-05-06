@@ -22,9 +22,16 @@ namespace Systems
 		GameComponent();
 		~GameComponent();
 
+		//Called once in game and editor before the first update
 		virtual void OnStart(GameContext* pWorld);
+
+		//Called once in game only before the first update
+		virtual void OnStartGame();
+
 		virtual void Update(float dt);
+		
 		virtual void OnDestroy(GameContext* pWorld);
+		virtual void OnDestroyGame();
 
 		void SetGuid(const Core::Guid& guid);
 

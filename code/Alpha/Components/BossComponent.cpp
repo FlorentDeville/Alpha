@@ -22,7 +22,6 @@ BossComponent::BossComponent()
 	: GameComponent()
 	, m_pWave(nullptr)
 	, m_waveIndex(0)
-	, m_spawnWave(false)
 { }
 
 BossComponent::~BossComponent()
@@ -31,9 +30,17 @@ BossComponent::~BossComponent()
 void BossComponent::PostLoad()
 { }
 
-void BossComponent::OnStart(Systems::GameContext* /*pWorld*/)
+void BossComponent::OnStartGame()
 {
-	m_spawnWave = false;
+	Systems::GameObject* pObject = GetOwner();
+	Systems::TransformComponent& transform = pObject->GetTransform();
+	transform.ComputeWorldTx();
+
+	m_pWave = new WaveTest(m_mesh.GetPtr(), m_material.GetPtr());
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	m_waveIndex = pSubsystem->AddWave(m_pWave);
+	pSubsystem->SpawnWave(m_waveIndex, transform.GetWorldTx().GetT());
 }
 
 void BossComponent::Update(float dt)
@@ -48,19 +55,9 @@ void BossComponent::Update(float dt)
 	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
 
 	loc.SetTranslation(newPos);
-
-	if (!m_spawnWave)
-	{
-		m_spawnWave = true;
-		m_pWave = new WaveTest(m_mesh.GetPtr(), m_material.GetPtr());
-
-		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-		m_waveIndex = pSubsystem->AddWave(m_pWave);
-		pSubsystem->SpawnWave(m_waveIndex, transform.GetWorldTx().GetT());
-	}
 }
 
-void BossComponent::OnDestroy(Systems::GameContext* /*pWorld*/)
+void BossComponent::OnDestroyGame()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->RemoveWave(m_waveIndex);
