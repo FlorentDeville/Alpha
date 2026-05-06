@@ -4,6 +4,9 @@
 
 #include "Alpha/Components/BossComponent.h"
 
+#include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Bullets/Waves/WaveTest.h"
+
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
 
@@ -17,6 +20,9 @@
 
 BossComponent::BossComponent()
 	: GameComponent()
+	, m_pWave(nullptr)
+	, m_waveIndex(0)
+	, m_spawnWave(false)
 { }
 
 BossComponent::~BossComponent()
@@ -26,7 +32,9 @@ void BossComponent::PostLoad()
 { }
 
 void BossComponent::OnStart(Systems::GameContext* /*pWorld*/)
-{ }
+{
+	m_spawnWave = false;
+}
 
 void BossComponent::Update(float dt)
 { 
@@ -40,7 +48,22 @@ void BossComponent::Update(float dt)
 	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
 
 	loc.SetTranslation(newPos);
+
+	if (!m_spawnWave)
+	{
+		m_spawnWave = true;
+		m_pWave = new WaveTest(m_mesh.GetPtr(), m_material.GetPtr());
+
+		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+		m_waveIndex = pSubsystem->AddWave(m_pWave);
+		pSubsystem->SpawnWave(m_waveIndex, transform.GetWorldTx().GetT());
+	}
 }
 
 void BossComponent::OnDestroy(Systems::GameContext* /*pWorld*/)
-{ }
+{
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->RemoveWave(m_waveIndex);
+
+	delete m_pWave;
+}
