@@ -169,6 +169,16 @@ namespace Systems
 		return index;
 	}
 
+	ISubsystem* GameMgr::GetGameSubsystem(uint32_t index)
+	{
+		return m_gameSubsystems[index];
+	}
+
+	const ISubsystem* GameMgr::GetGameSubsystem(uint32_t index) const
+	{
+		return m_gameSubsystems[index];
+	}
+
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pRenderPassBase->GetRenderTarget();

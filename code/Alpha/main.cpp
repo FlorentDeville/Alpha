@@ -636,7 +636,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	logEditor.Init();
 
 	BulletSubsystem* pBulletSubsystem = new BulletSubsystem();
-	gameMgr.RegisterGameSubsystem(pBulletSubsystem);
+	BulletSubsystem::m_subsystemIndex = gameMgr.RegisterGameSubsystem(pBulletSubsystem);
 
 	CreateMainWindow(binPath);
 

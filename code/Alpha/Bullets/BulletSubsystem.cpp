@@ -8,6 +8,9 @@
 
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/GameContext.h"
+#include "Systems/Game/GameMgr.h"
+
+uint32_t BulletSubsystem::m_subsystemIndex = 0;
 
 BulletSubsystem::BulletSubsystem()
 	: Systems::ISubsystem()
@@ -18,8 +21,8 @@ BulletSubsystem::BulletSubsystem()
 
 BulletSubsystem::~BulletSubsystem()
 {
-	for (IBulletWave* pWave : m_waves)
-		delete pWave;
+	/*for (IBulletWave* pWave : m_waves)
+		delete pWave;*/
 
 	m_bullets.Delete();
 }
@@ -29,18 +32,57 @@ void BulletSubsystem::Update(const Systems::GameContext& context)
 	float dt = context.m_pClock->GetDeltaTime();
 
 	for (IBulletWave* pWave : m_waves)
+	{
+		if (!pWave)
+			continue;
+
 		pWave->Update(m_bullets, dt);
+	}
 }
 
 void BulletSubsystem::BuildRenderable(Systems::RenderableScene& scene)
 {
 	for (IBulletWave* pWave : m_waves)
+	{
+		if (!pWave)
+			continue;
+
 		pWave->BuildRenderable(m_bullets, scene);
+	}
 }
 
 uint32_t BulletSubsystem::AddWave(IBulletWave* pWave)
 {
-	uint32_t index = m_waves.GetSize();
-	m_waves.PushBack(pWave);
+	uint32_t index = FindFreeSlot();
+	m_waves[index] = pWave;
 	return index;
+}
+
+void BulletSubsystem::RemoveWave(uint32_t index)
+{
+	m_waves[index] = nullptr;
+}
+
+void BulletSubsystem::SpawnWave(uint32_t index, const Core::Vec4f& pos)
+{
+	m_waves[index]->Spawn(m_bullets, pos);
+}
+
+BulletSubsystem* BulletSubsystem::GetSubsystem()
+{
+	ISubsystem* pSubsystem = Systems::GameMgr::Get().GetGameSubsystem(m_subsystemIndex);
+	return static_cast<BulletSubsystem*>(pSubsystem);
+}
+
+uint32_t BulletSubsystem::FindFreeSlot()
+{
+	uint32_t slot = m_waves.GetSize();
+	for (uint32_t ii = 0; ii < slot; ++ii)
+	{
+		if (!m_waves[ii])
+			return ii;
+	}
+
+	m_waves.PushBack(nullptr);
+	return slot;
 }
