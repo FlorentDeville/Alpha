@@ -5,16 +5,23 @@
 #include "Alpha/Bullets/Waves/WaveTest.h"
 
 #include "Alpha/Bullets/Bullets.h"
+
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
+
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Rendering/Renderable/RenderableScene.h"
+#include "Systems/Rendering/RenderPass/RenderView.h"
 
 #include <assert.h>
 #include <cmath>
 
-WaveTest::WaveTest()
+WaveTest::WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial)
 	: IBulletWave()
 {
 	m_count = 10;
+	m_pMesh = pMesh;
+	m_pMaterial = pMaterial;
 }
 
 WaveTest::~WaveTest()
@@ -55,4 +62,20 @@ void WaveTest::Update(Bullets& bullets, float dt)
 	//compute new position
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 		bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
+}
+
+void WaveTest::BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene)
+{
+	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+	{
+		if (bullets.m_timeToLive[ii] <= 0)
+			continue;
+
+		Systems::RenderableObject& obj = scene.m_opaqueObjects.PushBackDefault();
+		obj.m_pMesh = m_pMesh->GetRenderingMesh();
+		obj.m_pMaterial = m_pMaterial;
+		obj.m_pOwner = nullptr;
+		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
+		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
+	}
 }

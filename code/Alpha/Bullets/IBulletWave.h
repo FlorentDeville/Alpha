@@ -15,6 +15,7 @@ namespace Systems
 {
 	class MaterialInstanceAsset;
 	class MeshAsset;
+	class RenderableScene;
 }
 
 class Bullets;
@@ -27,6 +28,7 @@ public:
 
 	virtual void Spawn(Bullets& bullets, const Core::Vec4f& pos) = 0;
 	virtual void Update(Bullets& bullets, float dt) = 0;
+	virtual void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) = 0;
 
 protected:
 	uint32_t m_count;
