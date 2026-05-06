@@ -32,8 +32,11 @@ void BulletSubsystem::Update(const Systems::GameContext& context)
 		pWave->Update(m_bullets, dt);
 }
 
-void BulletSubsystem::BuildRenderable(Systems::RenderableScene& /*scene*/)
-{ }
+void BulletSubsystem::BuildRenderable(Systems::RenderableScene& scene)
+{
+	for (IBulletWave* pWave : m_waves)
+		pWave->BuildRenderable(m_bullets, scene);
+}
 
 uint32_t BulletSubsystem::AddWave(IBulletWave* pWave)
 {
