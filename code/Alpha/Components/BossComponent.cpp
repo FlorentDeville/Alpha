@@ -48,19 +48,13 @@ void BossComponent::OnStartGame()
 
 void BossComponent::Update(float dt)
 { 
-	//dummy move to see it working
-	Systems::GameObject* pObject = GetOwner();
-	Systems::TransformComponent& transform = pObject->GetTransform();
-
-	const Core::Vec4f speed(2, 0, 2, 0);
-
-	Core::Sqt& loc = transform.GetLocalSqt();
-	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
-
-	loc.SetTranslation(newPos);
+	Move(dt);
 
 	if (!m_pWave->IsAlive())
 	{
+		Systems::GameObject* pObject = GetOwner();
+		Systems::TransformComponent& transform = pObject->GetTransform();
+
 		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
 	}
@@ -73,4 +67,18 @@ void BossComponent::OnDestroyGame()
 
 	delete m_pWave;
 	m_pWave = nullptr;
+}
+
+void BossComponent::Move(float dt)
+{
+	//dummy move to see it working
+	Systems::GameObject* pObject = GetOwner();
+	Systems::TransformComponent& transform = pObject->GetTransform();
+
+	const Core::Vec4f speed(2, 0, 2, 0);
+
+	Core::Sqt& loc = transform.GetLocalSqt();
+	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
+
+	loc.SetTranslation(newPos);
 }
