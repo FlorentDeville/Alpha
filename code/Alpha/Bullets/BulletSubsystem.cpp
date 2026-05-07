@@ -63,9 +63,14 @@ void BulletSubsystem::RemoveWave(uint32_t index)
 	m_waves[index] = nullptr;
 }
 
-void BulletSubsystem::SpawnWave(uint32_t index, const Core::Vec4f& pos)
+void BulletSubsystem::InitWave(uint32_t index)
 {
-	m_waves[index]->Spawn(m_bullets, pos);
+	m_waves[index]->Init(m_bullets);
+}
+
+void BulletSubsystem::StartWave(uint32_t index, const Core::Vec4f& pos)
+{
+	m_waves[index]->Start(m_bullets, pos);
 }
 
 BulletSubsystem* BulletSubsystem::GetSubsystem()
