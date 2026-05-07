@@ -28,7 +28,7 @@
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\BossComponent.cpp">
+    <ClCompile Include="Components\Boss\BossComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullets\BulletSubsystem.cpp">
@@ -111,7 +111,7 @@
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
-    <ClInclude Include="Components\BossComponent.h" />
+    <ClInclude Include="Components\Boss\BossComponent.h" />
     <ClInclude Include="Bullets\BulletSubsystem.h" />
     <ClInclude Include="Bullets\IBulletWave.h" />
     <ClInclude Include="Bullets\Bullets.h" />
