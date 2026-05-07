@@ -19,6 +19,18 @@ namespace Systems
 	class GameComponent;
 	class GameContext;
 
+	//Event orders :
+	// Loading
+	//		Constructor
+	//		PostLoad
+	//		OnStart (called only once in game and in editor)
+	//		OnStartGame (called only once in game)
+	//		Update (called every frame)
+	// Unloading
+	//		OnDestroyGame (called once only in game )
+	//		OnDestroy (called once in game and in editor)
+	//		Destructor
+	//
 	class GameObject : public Object
 	{
 	public:
@@ -27,8 +39,11 @@ namespace Systems
 
 		virtual ~GameObject();
 
-		//Called only once before the first Update.
+		//Called only once before the first Update in game and in editor.
 		virtual void OnStart(GameContext* pWorld);
+
+		//Called only once before the first Update in game only.
+		virtual void OnStartGame();
 
 		//Called every frame
 		virtual void Update(float dt);
@@ -36,6 +51,9 @@ namespace Systems
 
 		//Called before deleting the gameobjet after the last Update.
 		virtual void OnDestroy(GameContext* pWorld);
+
+		//Called before deleting the gameobjet after the last Update in game only.
+		virtual void OnDestroyGame();
 
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;

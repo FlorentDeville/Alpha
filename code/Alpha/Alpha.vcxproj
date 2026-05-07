@@ -98,6 +98,10 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bullets\Bullets.cpp" />
+    <ClCompile Include="Bullets\BulletSubsystem.cpp" />
+    <ClCompile Include="Bullets\IBulletWave.cpp" />
+    <ClCompile Include="Bullets\Waves\WaveTest.cpp" />
     <ClCompile Include="Components\BossComponent.cpp" />
     <ClCompile Include="Components\PlayerComponent.cpp" />
     <ClCompile Include="Configuration.cpp" />
@@ -406,6 +410,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullets\Bullets.h" />
+    <ClInclude Include="Bullets\BulletSubsystem.h" />
+    <ClInclude Include="Bullets\IBulletWave.h" />
+    <ClInclude Include="Bullets\Waves\WaveTest.h" />
     <ClInclude Include="Components\BossComponent.h" />
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Configuration.h" />

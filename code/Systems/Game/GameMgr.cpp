@@ -169,6 +169,16 @@ namespace Systems
 		return index;
 	}
 
+	ISubsystem* GameMgr::GetGameSubsystem(uint32_t index)
+	{
+		return m_gameSubsystems[index];
+	}
+
+	const ISubsystem* GameMgr::GetGameSubsystem(uint32_t index) const
+	{
+		return m_gameSubsystems[index];
+	}
+
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pRenderPassBase->GetRenderTarget();
@@ -211,6 +221,10 @@ namespace Systems
 			m_loadedLevels.PushBack(pLevel);
 
 			InstanciateLevel(pLevel, m_pGameContext);
+
+			Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pObject : objectArray)
+				pObject->OnStartGame();
 		}
 
 		m_loadingRequest.Clear();
@@ -229,6 +243,10 @@ namespace Systems
 				assert(false && "Tried to unload a level that doesn't exist");
 				return; //doesn't exist
 			}
+
+			Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pObject : objectArray)
+				pObject->OnDestroyGame();
 
 			DeleteInstanciatedLevel(pLevel, m_pGameContext);
 

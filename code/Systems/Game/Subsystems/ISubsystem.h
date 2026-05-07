@@ -12,6 +12,8 @@ namespace Systems
 	class ISubsystem
 	{
 	public:
+		virtual ~ISubsystem() {}
+
 		virtual void Update(const GameContext& /*context*/) {};
 		virtual void BuildRenderable(RenderableScene& /*scene*/) {};
 	};

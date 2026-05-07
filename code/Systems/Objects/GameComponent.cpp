@@ -18,10 +18,16 @@ namespace Systems
 	void GameComponent::OnStart(GameContext* pWorld)
 	{ }
 
+	void GameComponent::OnStartGame()
+	{ }
+
 	void GameComponent::Update(float dt)
 	{ }
 
 	void GameComponent::OnDestroy(GameContext* pWorld)
+	{ }
+
+	void GameComponent::OnDestroyGame()
 	{ }
 
 	void GameComponent::SetGuid(const Core::Guid& guid)

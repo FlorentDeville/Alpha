@@ -31,6 +31,18 @@
     <ClCompile Include="Components\BossComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Bullets\BulletSubsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\IBulletWave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\Waves\WaveTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\Bullets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -94,6 +106,10 @@
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
     <ClInclude Include="Components\BossComponent.h" />
+    <ClInclude Include="Bullets\BulletSubsystem.h" />
+    <ClInclude Include="Bullets\IBulletWave.h" />
+    <ClInclude Include="Bullets\Bullets.h" />
+    <ClInclude Include="Bullets\Waves\WaveTest.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

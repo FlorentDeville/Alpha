@@ -4,6 +4,9 @@
 
 #include "Alpha/Components/BossComponent.h"
 
+#include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Bullets/Waves/WaveTest.h"
+
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
 
@@ -17,19 +20,57 @@
 
 BossComponent::BossComponent()
 	: GameComponent()
+	, m_pWave(nullptr)
+	, m_waveIndex(0)
 { }
 
 BossComponent::~BossComponent()
-{ }
+{
+	delete m_pWave;
+}
 
 void BossComponent::PostLoad()
 { }
 
-void BossComponent::OnStart(Systems::GameContext* /*pWorld*/)
-{ }
+void BossComponent::OnStartGame()
+{
+	Systems::GameObject* pObject = GetOwner();
+	Systems::TransformComponent& transform = pObject->GetTransform();
+	transform.ComputeWorldTx();
+
+	m_pWave = new WaveTest(m_mesh.GetPtr(), m_material.GetPtr());
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	m_waveIndex = pSubsystem->AddWave(m_pWave);
+	pSubsystem->InitWave(m_waveIndex);
+	pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+}
 
 void BossComponent::Update(float dt)
 { 
+	Move(dt);
+
+	if (!m_pWave->IsAlive())
+	{
+		Systems::GameObject* pObject = GetOwner();
+		Systems::TransformComponent& transform = pObject->GetTransform();
+
+		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+	}
+}
+
+void BossComponent::OnDestroyGame()
+{
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->RemoveWave(m_waveIndex);
+
+	delete m_pWave;
+	m_pWave = nullptr;
+}
+
+void BossComponent::Move(float dt)
+{
 	//dummy move to see it working
 	Systems::GameObject* pObject = GetOwner();
 	Systems::TransformComponent& transform = pObject->GetTransform();
@@ -41,6 +82,3 @@ void BossComponent::Update(float dt)
 
 	loc.SetTranslation(newPos);
 }
-
-void BossComponent::OnDestroy(Systems::GameContext* /*pWorld*/)
-{ }
