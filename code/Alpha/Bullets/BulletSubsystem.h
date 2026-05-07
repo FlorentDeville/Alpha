@@ -28,7 +28,8 @@ public:
 
 	uint32_t AddWave(IBulletWave* pWave);
 	void RemoveWave(uint32_t index);
-	void SpawnWave(uint32_t index, const Core::Vec4f& pos);
+	void InitWave(uint32_t index);
+	void StartWave(uint32_t index, const Core::Vec4f& pos);
 
 	static uint32_t m_subsystemIndex;
 	static BulletSubsystem* GetSubsystem();

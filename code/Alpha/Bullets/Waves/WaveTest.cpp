@@ -27,16 +27,17 @@ WaveTest::WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pM
 WaveTest::~WaveTest()
 { }
 
-void WaveTest::Spawn(Bullets& bullets, const Core::Vec4f& pos)
+void WaveTest::Init(Bullets& bullets)
 {
 	//allocate bullets
 	m_startId = bullets.Allocate(m_count);
 	assert(m_startId != UINT32_MAX);
 	m_endId = m_startId + m_count;
+}
 
-	//now spawn them with their initial values
+void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
+{
 	// make a basic pattern where the spawn shape is a circle and bullets go in a straight line
-
 	const float ANGLE_INC = Core::TWO_PI / m_count;
 	const float CIRCLE_RADIUS = 1.f;
 	const float SPEED = 5.f;

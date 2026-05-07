@@ -40,7 +40,8 @@ void BossComponent::OnStartGame()
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->SpawnWave(m_waveIndex, transform.GetWorldTx().GetT());
+	pSubsystem->InitWave(m_waveIndex);
+	pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
 }
 
 void BossComponent::Update(float dt)
