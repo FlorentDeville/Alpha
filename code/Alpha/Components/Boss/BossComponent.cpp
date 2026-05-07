@@ -4,8 +4,6 @@
 
 #include "Alpha/Components/Boss/BossComponent.h"
 
-#include "Alpha/Bullets/BulletSubsystem.h"
-#include "Alpha/Bullets/Waves/WaveTest.h"
 #include "Alpha/StateMachine/StateMachine.h"
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Components/Boss/States/BossStateWait.h"
@@ -24,14 +22,11 @@
 
 BossComponent::BossComponent()
 	: GameComponent()
-	, m_pWave(nullptr)
-	, m_waveIndex(0)
 	, m_pStateMachine(nullptr)
 { }
 
 BossComponent::~BossComponent()
 {
-	delete m_pWave;
 	delete m_pStateMachine;
 }
 
@@ -44,18 +39,12 @@ void BossComponent::OnStartGame()
 	Systems::TransformComponent& transform = pObject->GetTransform();
 	transform.ComputeWorldTx();
 
-	m_pWave = new WaveTest(m_mesh.GetPtr(), m_material.GetPtr());
-
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->InitWave(m_waveIndex);
-	pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
-
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(2);
 
 	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine);
 	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
+	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), this);
 
 	m_pStateMachine->AddState(pStateWait, BossStateEnum::WAIT);
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);
@@ -63,30 +52,15 @@ void BossComponent::OnStartGame()
 	m_pStateMachine->Start(BossStateEnum::WAIT);
 }
 
-void BossComponent::Update(float dt)
+void BossComponent::Update(float /*dt*/)
 {
 	m_pStateMachine->Update();
 
-	Move(dt);
-
-	if (!m_pWave->IsAlive())
-	{
-		Systems::GameObject* pObject = GetOwner();
-		Systems::TransformComponent& transform = pObject->GetTransform();
-
-		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
-	}
+	//Move(dt);
 }
 
 void BossComponent::OnDestroyGame()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->RemoveWave(m_waveIndex);
-
-	delete m_pWave;
-	m_pWave = nullptr;
-
 	delete m_pStateMachine;
 	m_pStateMachine = nullptr;
 }
