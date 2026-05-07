@@ -44,4 +44,6 @@ private:
 
 	WaveTest* m_pWave;
 	uint32_t m_waveIndex;
+
+	void Move(float dt);
 };
