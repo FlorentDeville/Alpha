@@ -6,6 +6,10 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Bullets/Waves/WaveTest.h"
+#include "Alpha/StateMachine/StateMachine.h"
+#include "Alpha/Components/Boss/States/BossStateEnum.h"
+#include "Alpha/Components/Boss/States/BossStateWait.h"
+#include "Alpha/Components/Boss/States/BossStateWaveTest.h"
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
@@ -22,11 +26,13 @@ BossComponent::BossComponent()
 	: GameComponent()
 	, m_pWave(nullptr)
 	, m_waveIndex(0)
+	, m_pStateMachine(nullptr)
 { }
 
 BossComponent::~BossComponent()
 {
 	delete m_pWave;
+	delete m_pStateMachine;
 }
 
 void BossComponent::PostLoad()
@@ -44,10 +50,23 @@ void BossComponent::OnStartGame()
 	m_waveIndex = pSubsystem->AddWave(m_pWave);
 	pSubsystem->InitWave(m_waveIndex);
 	pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+
+	m_pStateMachine = new StateMachine();
+	m_pStateMachine->Init(2);
+
+	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine);
+	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
+
+	m_pStateMachine->AddState(pStateWait, BossStateEnum::WAIT);
+	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);
+
+	m_pStateMachine->Start(BossStateEnum::WAIT);
 }
 
 void BossComponent::Update(float dt)
-{ 
+{
+	m_pStateMachine->Update();
+
 	Move(dt);
 
 	if (!m_pWave->IsAlive())
@@ -67,6 +86,9 @@ void BossComponent::OnDestroyGame()
 
 	delete m_pWave;
 	m_pWave = nullptr;
+
+	delete m_pStateMachine;
+	m_pStateMachine = nullptr;
 }
 
 void BossComponent::Move(float dt)

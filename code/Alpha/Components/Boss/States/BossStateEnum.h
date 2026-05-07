@@ -4,15 +4,10 @@
 
 #pragma once
 
-#include "Alpha/StateMachine/IState.h"
-
-class BossStateWaveTest : public IState
+enum BossStateEnum
 {
-public:
-	BossStateWaveTest(StateMachine* pStateMachine);
-	~BossStateWaveTest();
+	WAIT,
+	WAVE_TEST,
 
-	void OnEnter() override;
-	void OnUpdate() override;
-	void OnExit() override;
+	COUNT
 };

@@ -17,6 +17,7 @@ namespace Systems
 	class MeshAsset;
 }
 
+class StateMachine;
 class WaveTest;
 
 class BossComponent : public Systems::GameComponent
@@ -44,6 +45,8 @@ private:
 
 	WaveTest* m_pWave;
 	uint32_t m_waveIndex;
+
+	StateMachine* m_pStateMachine;
 
 	void Move(float dt);
 };
