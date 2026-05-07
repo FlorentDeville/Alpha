@@ -73,6 +73,11 @@ void BulletSubsystem::StartWave(uint32_t index, const Core::Vec4f& pos)
 	m_waves[index]->Start(m_bullets, pos);
 }
 
+void BulletSubsystem::StopWave(uint32_t index)
+{
+	m_waves[index]->Stop();
+}
+
 BulletSubsystem* BulletSubsystem::GetSubsystem()
 {
 	ISubsystem* pSubsystem = Systems::GameMgr::Get().GetGameSubsystem(m_subsystemIndex);

@@ -10,7 +10,13 @@ IBulletWave::IBulletWave()
 	, m_count(0)
 	, m_pMesh(nullptr)
 	, m_pMaterial(nullptr)
+	, m_isAlive(false)
 { }
 
 IBulletWave::~IBulletWave()
 { }
+
+bool IBulletWave::IsAlive() const
+{
+	return m_isAlive;
+}
