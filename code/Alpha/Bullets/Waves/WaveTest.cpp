@@ -35,6 +35,11 @@ void WaveTest::Init(Bullets& bullets)
 	m_endId = m_startId + m_count;
 }
 
+void WaveTest::Destroy(Bullets& bullets)
+{
+	bullets.Free(m_startId, m_count);
+}
+
 void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 {
 	// make a basic pattern where the spawn shape is a circle and bullets go in a straight line

@@ -27,6 +27,8 @@ public:
 	virtual ~IBulletWave();
 
 	virtual void Init(Bullets& bullets) = 0;
+	virtual void Destroy(Bullets& bullets) = 0;
+
 	virtual void Start(Bullets& bullets, const Core::Vec4f& pos) = 0;
 	virtual void Stop() = 0;
 	virtual void Update(Bullets& bullets, float dt) = 0;
