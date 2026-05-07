@@ -13,6 +13,7 @@ public:
 	~WaveTest();
 
 	void Init(Bullets& bullets) override;
+	void Destroy(Bullets& bullets) override;
 	void Start(Bullets& bullets, const Core::Vec4f& pos) override;
 	void Stop() override;
 	void Update(Bullets& bullets, float dt) override;

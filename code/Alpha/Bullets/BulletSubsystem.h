@@ -28,7 +28,10 @@ public:
 
 	uint32_t AddWave(IBulletWave* pWave);
 	void RemoveWave(uint32_t index);
+	
 	void InitWave(uint32_t index);
+	void DestroyWave(uint32_t index);
+
 	void StartWave(uint32_t index, const Core::Vec4f& pos);
 	void StopWave(uint32_t index);
 
