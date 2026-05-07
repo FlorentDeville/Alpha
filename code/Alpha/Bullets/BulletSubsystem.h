@@ -30,6 +30,7 @@ public:
 	void RemoveWave(uint32_t index);
 	void InitWave(uint32_t index);
 	void StartWave(uint32_t index, const Core::Vec4f& pos);
+	void StopWave(uint32_t index);
 
 	static uint32_t m_subsystemIndex;
 	static BulletSubsystem* GetSubsystem();
