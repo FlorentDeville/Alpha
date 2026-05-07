@@ -67,6 +67,9 @@ namespace Systems
 
 	void GameMgr::Release()
 	{
+		RequestUnloadingAllLevels();
+		ExecuteUnloadingRequests();
+
 		delete m_pRenderPassBase;
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassBloom;
