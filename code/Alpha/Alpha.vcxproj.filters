@@ -52,6 +52,9 @@
     <ClCompile Include="Components\Boss\States\BossStateWait.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\Boss\States\BossStateWaveTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -123,6 +126,7 @@
     <ClInclude Include="StateMachine\StateMachine.h" />
     <ClInclude Include="Components\Boss\States\BossStateWait.h" />
     <ClInclude Include="Components\Boss\States\BossStateWaveTest.h" />
+    <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
