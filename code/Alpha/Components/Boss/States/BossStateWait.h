@@ -15,4 +15,8 @@ public:
 	void OnEnter() override;
 	void OnUpdate() override;
 	void OnExit() override;
+
+private:
+	float m_startTime;
+	float m_waitTime;
 };
