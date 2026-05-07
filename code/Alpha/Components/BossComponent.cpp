@@ -25,7 +25,9 @@ BossComponent::BossComponent()
 { }
 
 BossComponent::~BossComponent()
-{ }
+{
+	delete m_pWave;
+}
 
 void BossComponent::PostLoad()
 { }
@@ -64,4 +66,5 @@ void BossComponent::OnDestroyGame()
 	pSubsystem->RemoveWave(m_waveIndex);
 
 	delete m_pWave;
+	m_pWave = nullptr;
 }
