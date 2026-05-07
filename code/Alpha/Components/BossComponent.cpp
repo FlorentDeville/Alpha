@@ -58,6 +58,12 @@ void BossComponent::Update(float dt)
 	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
 
 	loc.SetTranslation(newPos);
+
+	if (!m_pWave->IsAlive())
+	{
+		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+	}
 }
 
 void BossComponent::OnDestroyGame()
