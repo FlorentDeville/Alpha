@@ -192,6 +192,25 @@ namespace Systems
 		return m_pGameContext;
 	}
 
+	const GameComponent* GameMgr::FindComponent(Core::Sid componentTypeName) const
+	{
+		for (const LevelAsset* pLevel : m_loadedLevels)
+		{
+			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
+			for (const GameObject* pGo : gameObjectArray)
+			{
+				const Core::Array<GameComponent*>& componentsArray = pGo->GetComponents();
+				for (const GameComponent* pComponent : componentsArray)
+				{
+					if (pComponent->GetTypeDescriptor()->GetSid() == componentTypeName)
+						return pComponent;
+				}
+			}
+		}
+
+		return nullptr;
+	}
+
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
 	{
 		for (const LevelAsset* pLevel : m_loadedLevels)

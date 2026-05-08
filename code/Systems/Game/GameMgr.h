@@ -5,6 +5,8 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/TypeResolver.h"
+#include "Core/Sid/Sid.h"
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/NewAssetId.h"
@@ -22,6 +24,7 @@ namespace Systems
 	class CameraSubsystem;
 	class GameObject;
 	class ISubsystem;
+	class GameComponent;
 	class LevelAsset;
 	class RenderPassBase;
 	class RenderPassBloom;
@@ -53,6 +56,9 @@ namespace Systems
 
 		GameContext* GetWorld();
 
+		template<class T> const T* FindComponent() const;
+		const GameComponent* FindComponent(Core::Sid componentTypeName) const;
+
 	private:
 		//Loading
 		Core::Array<Systems::LevelAsset*> m_loadedLevels;		//pointers to the currently loaded levels.
@@ -77,4 +83,9 @@ namespace Systems
 		void ExecuteLoadingRequests();
 		void ExecuteUnloadingRequests();
 	};
+
+	template<class T> const T* GameMgr::FindComponent() const
+	{
+		return static_cast<const T*>(FindComponent(Core::TypeResolver<T>::GetTypenameSid()));
+	}
 }
