@@ -32,7 +32,7 @@ void BossStateWait::OnEnter()
 	//generate a random duration between 1 and 4 seconds
 	std::random_device rd;
 	std::mt19937 gen(rd());
-	std::uniform_real_distribution<float> dis(1, 4);
+	std::uniform_real_distribution<float> dis(1, 2);
 
 	m_waitTime = dis(gen);
 }
