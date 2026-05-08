@@ -17,5 +17,5 @@ public:
 	void Start(Bullets& bullets, const Core::Vec4f& pos) override;
 	void Stop() override;
 	void Update(Bullets& bullets, float dt) override;
-	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene);
+	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
 };
