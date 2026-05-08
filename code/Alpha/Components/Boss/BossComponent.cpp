@@ -8,6 +8,7 @@
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Components/Boss/States/BossStateWait.h"
 #include "Alpha/Components/Boss/States/BossStateWaveTest.h"
+#include "Alpha/Components/PlayerComponent.h"
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
@@ -35,6 +36,9 @@ void BossComponent::PostLoad()
 
 void BossComponent::OnStartGame()
 {
+	const Systems::GameComponent* pPlayerComponent = Systems::GameMgr().Get().FindComponent<PlayerComponent>();
+	const Systems::GameObject* pPlayer = pPlayerComponent->GetOwner();
+
 	Systems::GameObject* pObject = GetOwner();
 	Systems::TransformComponent& transform = pObject->GetTransform();
 	transform.ComputeWorldTx();
@@ -44,7 +48,7 @@ void BossComponent::OnStartGame()
 
 	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine);
 	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
-	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), this);
+	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), this, pPlayer);
 
 	m_pStateMachine->AddState(pStateWait, BossStateEnum::WAIT);
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);
