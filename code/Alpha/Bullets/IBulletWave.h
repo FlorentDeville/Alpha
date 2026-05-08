@@ -40,7 +40,7 @@ protected:
 	uint32_t m_count;
 
 	uint32_t m_startId;
-	uint32_t m_endId;
+	uint32_t m_endId; //id of the last bullet (non inclusive : the bullet at id m_endId is not used by this wave)
 
 	bool m_isAlive;
 
