@@ -53,6 +53,7 @@ void WaveMachineGun::Start(Bullets& /*bullets*/, const Core::Vec4f& /*pos*/)
 {
 	m_isAlive = true;
 	m_lastSpawnTime = 0;
+	m_nextBulletToShot = m_startId;
 }
 
 void WaveMachineGun::Stop()
@@ -74,14 +75,14 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
 
 	//shoot a new bullet
-	const float SHOOT_GAP_TIME = 0.2f;
+	const float SHOOT_GAP_TIME = 0.5f;
 	const Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
 	if (m_lastSpawnTime + SHOOT_GAP_TIME < pClock->GetTime() && m_nextBulletToShot < m_endId)
 	{
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
-		const float SPEED = 5.f;
+		const float SPEED = 25.f;
 		Core::Vec4f velocity = end - start;
 		velocity.Normalize();
 		velocity = velocity * SPEED;
