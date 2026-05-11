@@ -272,6 +272,16 @@ namespace Systems
 		}
 		break;
 
+		case SID("Core::Float2"):
+		{
+			Core::Float2* pFloat2 = reinterpret_cast<Core::Float2*>(ptr);
+			const Core::JsonArray* pArray = jsonFieldValue.GetValueAsArray();
+			assert(pArray->GetSize() == 2);
+			pFloat2->x = static_cast<float>(pArray->GetElement(0)->GetValueAsDouble());
+			pFloat2->y = static_cast<float>(pArray->GetElement(1)->GetValueAsDouble());
+		}
+		break;
+
 		case SID("Core::Float3"):
 		{
 			Core::Float3* pFloat3 = reinterpret_cast<Core::Float3*>(ptr);

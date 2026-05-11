@@ -18,7 +18,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/EnumItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
-#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
+#include "Editors/Widgets/PropertyGrid/Items/FloatXItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
@@ -356,9 +356,16 @@ namespace Editors
 		}
 		break;
 
+		case SID("Core::Float2"):
+		{
+			FloatXItem* pItem = new FloatXItem(pObj, pField, indexElement, 2);
+			return pItem;
+		}
+		break;
+
 		case SID("Core::Float3"):
 		{
-			Float3Item* pItem = new Float3Item(pObj, pField, indexElement);
+			FloatXItem* pItem = new FloatXItem(pObj, pField, indexElement, 3);
 			return pItem;
 		}
 		break;

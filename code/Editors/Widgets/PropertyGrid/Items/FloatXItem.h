@@ -13,16 +13,17 @@ namespace Widgets
 
 namespace Editors
 {
-	class Float3Item : public PropertyGridItem
+	class FloatXItem : public PropertyGridItem
 	{
 	public:
-		Float3Item(void* pObj, const Core::FieldDescriptor* pField, uint32_t index);
-		~Float3Item();
+		FloatXItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index, uint32_t count);
+		~FloatXItem();
 
 		void CreateWidgets() override;
 		void UpdateValue() override;
 
 	private:
-		Widgets::TextBox* m_pTextbox[3];
+		Widgets::TextBox** m_pTextbox;
+		uint32_t m_count;
 	};
 }

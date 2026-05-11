@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
+#include "Editors/Widgets/PropertyGrid/Items/FloatXItem.h"
 
 #include "Core/Math/Vectors.h"
 #include "Core/Reflection/FieldDescriptor.h"
@@ -16,15 +16,20 @@
 
 namespace Editors
 {
-	Float3Item::Float3Item(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
+	FloatXItem::FloatXItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index, uint32_t count)
 		: PropertyGridItem(pObj, pField, index)
 		, m_pTextbox()
-	{ }
+		, m_count(count)
+	{
+		m_pTextbox = new Widgets::TextBox*[count];
+	}
 
-	Float3Item::~Float3Item()
-	{ }
+	FloatXItem::~FloatXItem()
+	{
+		delete[] m_pTextbox;
+	}
 
-	void Float3Item::CreateWidgets()
+	void FloatXItem::CreateWidgets()
 	{
 		Widgets::Layout* pLayout = new Widgets::Layout();
 		pLayout->SetDirection(Widgets::Layout::Direction::Horizontal);
@@ -33,7 +38,7 @@ namespace Editors
 		pLayout->GetDefaultStyle().SetBorderColor(Widgets::Color(255, 0, 0, 255));
 		pLayout->GetDefaultStyle().ShowBorder(true);
 
-		for (int ii = 0; ii < 3; ++ii)
+		for (uint32_t ii = 0; ii < m_count; ++ii)
 		{
 			m_pTextbox[ii] = new Widgets::TextBox();
 			m_pTextbox[ii]->SetSizeStyle(Widgets::DEFAULT);
@@ -61,12 +66,13 @@ namespace Editors
 		m_pEditingWidget = pLayout;
 	}
 
-	void Float3Item::UpdateValue()
+	void FloatXItem::UpdateValue()
 	{
-		const Core::Float3* pValue = GetDataPtr<const Core::Float3>();
-		const float* pFloatPtr = reinterpret_cast<const float*>(pValue);
+		const void* pPtr = GetDataPtr<const void*>();
+		//const Core::Float3* pValue = GetDataPtr<const Core::Float3>();
+		const float* pFloatPtr = reinterpret_cast<const float*>(pPtr);
 
-		for (int ii = 0; ii < 3; ++ii)
+		for (uint32_t ii = 0; ii < m_count; ++ii)
 		{
 			float fValue = pFloatPtr[ii];
 

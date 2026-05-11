@@ -56,6 +56,9 @@ namespace Editors
 		, m_pFieldName(nullptr)
 	{ }
 
+	PropertyGridItem::~PropertyGridItem()
+	{ }
+
 	Widgets::Widget* PropertyGridItem::GetNameWidget() const
 	{
 		return m_pNameWidget;
