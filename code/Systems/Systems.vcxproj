@@ -71,6 +71,7 @@
     <ClInclude Include="Rendering\RenderPass\IRenderPass.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassBase.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassBloom.h" />
+    <ClInclude Include="Rendering\RenderPass\RenderPassUI.h" />
     <ClInclude Include="Rendering\RenderPass\RenderView.h" />
     <ClInclude Include="Rendering\RenderPass\RenderPassShadowMaps.h" />
     <ClInclude Include="Serialization\ContainerJsonDeserializer.h" />
@@ -127,6 +128,7 @@
     <ClCompile Include="Rendering\RenderPass\RenderPassBase.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassBloom.cpp" />
     <ClCompile Include="Rendering\RenderPass\RenderPassShadowMaps.cpp" />
+    <ClCompile Include="Rendering\RenderPass\RenderPassUI.cpp" />
     <ClCompile Include="Serialization\ContainerJsonDeserializer.cpp" />
     <ClCompile Include="Serialization\ContainerJsonSerializer.cpp" />
     <ClCompile Include="Serialization\ObjectJsonDeserializer.cpp" />

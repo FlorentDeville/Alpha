@@ -22,6 +22,7 @@ namespace Systems
 		Core::Array<RenderableObject> m_translucentObjects;
 		Core::Array<RenderableLight> m_lights;
 		Core::Array<RenderableParticles> m_particles;
+		Core::Array<RenderableObject> m_uiObjects;
 
 		RenderableCamera m_camera;
 

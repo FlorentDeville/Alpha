@@ -16,6 +16,7 @@
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/SkyboxComponent.h"
+#include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
@@ -268,6 +269,22 @@ namespace Systems
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
 						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx(); //no need to set the world matrix for a skybox
+						renderable.m_primitiveMesh = false;
+						renderable.m_pOwner = pGo;
+						renderable.m_view = Systems::RenderView::Game;
+					}
+				}
+				else if (const Systems::UIBaseComponent* pUi = pComponent->Cast<Systems::UIBaseComponent>())
+				{
+					if (const Systems::MaterialInstanceAsset* pMaterialAsset = pUi->GetMaterial())
+					{
+
+						Systems::RenderableObject& renderable = scene.m_uiObjects.PushBackDefault();
+
+						renderable.m_pMesh = Rendering::RenderModule::Get().m_pBaseQuadMesh;
+						renderable.m_pMaterial = pMaterialAsset;
+						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx();
+						renderable.m_worldTx.SetIdentity();
 						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game;
