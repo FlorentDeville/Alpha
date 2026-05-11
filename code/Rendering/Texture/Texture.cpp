@@ -318,6 +318,11 @@ namespace Rendering
 		return m_pSrvDescriptorHeap;
 	}
 
+	ID3D12DescriptorHeap* Texture::GetNonConstSRV() const
+	{
+		return m_pSrvDescriptorHeap;
+	}
+
 	ID3D12DescriptorHeap* Texture::GetSRV()
 	{
 		return m_pSrvDescriptorHeap;
