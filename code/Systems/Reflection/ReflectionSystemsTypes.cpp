@@ -25,6 +25,7 @@
 #include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
+#include "Systems/GameComponent/UI/UITextureComponent.h"
 #include "Core/Reflection/ReflectionMacro.h"
 #include "Systems/Objects/AssetObject.h"
 #include "Systems/Objects/GameComponent.h"
@@ -50,6 +51,7 @@ namespace Systems
 		Systems::ParticleEffectComponent::RegisterReflection();
 		Systems::PointLightComponent::RegisterReflection();
 		Systems::SpotLightComponent::RegisterReflection();
+		Systems::UITextureComponent::RegisterReflection();
 
 		Systems::AssetObject::RegisterReflection();
 		Systems::CubemapAsset::RegisterReflection();
