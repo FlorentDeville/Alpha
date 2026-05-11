@@ -281,7 +281,7 @@ namespace Systems
 
 						Systems::RenderableObject& renderable = scene.m_uiObjects.PushBackDefault();
 
-						renderable.m_pMesh = Rendering::RenderModule::Get().m_pBaseQuadMesh;
+						//renderable.m_pMesh = Rendering::RenderModule::Get().m_pBaseQuadMesh;
 						renderable.m_pMaterial = pMaterialAsset;
 						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx();
 						renderable.m_worldTx.SetIdentity();
