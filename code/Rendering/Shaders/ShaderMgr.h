@@ -44,6 +44,9 @@ namespace Rendering
 		PARTICLES_VS,
 		PARTICLES_PS,
 
+		GAME_UI_VS,
+		GAME_UI_PS,
+
 		COUNT
 	};
 

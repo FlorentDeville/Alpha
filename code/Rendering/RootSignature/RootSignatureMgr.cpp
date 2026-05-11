@@ -36,6 +36,7 @@ namespace Rendering
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::BLOOM_DOWNSAMPLE)] = new RootSignature(binPath + "\\bloom_downsample.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::BLOOM_UPSAMPLE)] = new RootSignature(binPath + "\\bloom_upsample.rs.cso");
 		m_rootSignatures[static_cast<size_t>(EngineRootSigs::PARTICLES)] = new RootSignature(binPath + "\\particles.rs.cso");
+		m_rootSignatures[static_cast<size_t>(EngineRootSigs::GAME_UI)] = new RootSignature(binPath + "\\ui.rs.cso");
 	}
 
 	void RootSignatureMgr::Shutdown()
