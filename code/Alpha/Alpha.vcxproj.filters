@@ -28,7 +28,7 @@
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\BossComponent.cpp">
+    <ClCompile Include="Components\Boss\BossComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullets\BulletSubsystem.cpp">
@@ -41,6 +41,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullets\Bullets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine\StateMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine\IState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Boss\States\BossStateWait.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Boss\States\BossStateWaveTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -105,11 +120,17 @@
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
-    <ClInclude Include="Components\BossComponent.h" />
+    <ClInclude Include="Components\Boss\BossComponent.h" />
     <ClInclude Include="Bullets\BulletSubsystem.h" />
     <ClInclude Include="Bullets\IBulletWave.h" />
     <ClInclude Include="Bullets\Bullets.h" />
     <ClInclude Include="Bullets\Waves\WaveTest.h" />
+    <ClInclude Include="StateMachine\IState.h" />
+    <ClInclude Include="StateMachine\StateMachine.h" />
+    <ClInclude Include="Components\Boss\States\BossStateWait.h" />
+    <ClInclude Include="Components\Boss\States\BossStateWaveTest.h" />
+    <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
+    <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

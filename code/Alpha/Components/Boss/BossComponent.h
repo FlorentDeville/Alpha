@@ -17,7 +17,7 @@ namespace Systems
 	class MeshAsset;
 }
 
-class WaveTest;
+class StateMachine;
 
 class BossComponent : public Systems::GameComponent
 {
@@ -42,8 +42,7 @@ private:
 		ADD_FIELD(m_material)
 	END_REFLECTION()
 
-	WaveTest* m_pWave;
-	uint32_t m_waveIndex;
+	StateMachine* m_pStateMachine;
 
 	void Move(float dt);
 };

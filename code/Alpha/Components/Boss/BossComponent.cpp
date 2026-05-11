@@ -2,10 +2,13 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/BossComponent.h"
+#include "Alpha/Components/Boss/BossComponent.h"
 
-#include "Alpha/Bullets/BulletSubsystem.h"
-#include "Alpha/Bullets/Waves/WaveTest.h"
+#include "Alpha/StateMachine/StateMachine.h"
+#include "Alpha/Components/Boss/States/BossStateEnum.h"
+#include "Alpha/Components/Boss/States/BossStateWait.h"
+#include "Alpha/Components/Boss/States/BossStateWaveTest.h"
+#include "Alpha/Components/PlayerComponent.h"
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
@@ -20,13 +23,12 @@
 
 BossComponent::BossComponent()
 	: GameComponent()
-	, m_pWave(nullptr)
-	, m_waveIndex(0)
+	, m_pStateMachine(nullptr)
 { }
 
 BossComponent::~BossComponent()
 {
-	delete m_pWave;
+	delete m_pStateMachine;
 }
 
 void BossComponent::PostLoad()
@@ -34,39 +36,37 @@ void BossComponent::PostLoad()
 
 void BossComponent::OnStartGame()
 {
+	const Systems::GameComponent* pPlayerComponent = Systems::GameMgr().Get().FindComponent<PlayerComponent>();
+	const Systems::GameObject* pPlayer = pPlayerComponent->GetOwner();
+
 	Systems::GameObject* pObject = GetOwner();
 	Systems::TransformComponent& transform = pObject->GetTransform();
 	transform.ComputeWorldTx();
 
-	m_pWave = new WaveTest(m_mesh.GetPtr(), m_material.GetPtr());
+	m_pStateMachine = new StateMachine();
+	m_pStateMachine->Init(2);
 
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->InitWave(m_waveIndex);
-	pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine);
+	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
+	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), this, pPlayer);
+
+	m_pStateMachine->AddState(pStateWait, BossStateEnum::WAIT);
+	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);
+
+	m_pStateMachine->Start(BossStateEnum::WAIT);
 }
 
-void BossComponent::Update(float dt)
-{ 
-	Move(dt);
+void BossComponent::Update(float /*dt*/)
+{
+	m_pStateMachine->Update();
 
-	if (!m_pWave->IsAlive())
-	{
-		Systems::GameObject* pObject = GetOwner();
-		Systems::TransformComponent& transform = pObject->GetTransform();
-
-		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
-	}
+	//Move(dt);
 }
 
 void BossComponent::OnDestroyGame()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->RemoveWave(m_waveIndex);
-
-	delete m_pWave;
-	m_pWave = nullptr;
+	delete m_pStateMachine;
+	m_pStateMachine = nullptr;
 }
 
 void BossComponent::Move(float dt)

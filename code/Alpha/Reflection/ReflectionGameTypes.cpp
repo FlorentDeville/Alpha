@@ -4,7 +4,7 @@
 
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 
-#include "Alpha/Components/BossComponent.h"
+#include "Alpha/Components/Boss/BossComponent.h"
 #include "Alpha/Components/PlayerComponent.h"
 
 void RegisterGameTypesToReflection()

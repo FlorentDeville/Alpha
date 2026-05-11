@@ -6,11 +6,16 @@
 
 #include "Alpha/Bullets/IBulletWave.h"
 
-class WaveTest : public IBulletWave
+namespace Systems
+{
+	class GameObject;
+}
+
+class WaveMachineGun : public IBulletWave
 {
 public:
-	WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial);
-	~WaveTest();
+	WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, const Systems::GameObject* pOwner, const Systems::GameObject* pTarget);
+	~WaveMachineGun();
 
 	void Init(Bullets& bullets) override;
 	void Destroy(Bullets& bullets) override;
@@ -18,4 +23,11 @@ public:
 	void Stop() override;
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
+
+private:
+	const Systems::GameObject* m_pOwner;
+	const Systems::GameObject* m_pTarget;
+
+	uint32_t m_nextBulletToShot;
+	float m_lastSpawnTime;
 };

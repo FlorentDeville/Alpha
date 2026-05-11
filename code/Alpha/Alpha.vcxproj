@@ -101,12 +101,17 @@
     <ClCompile Include="Bullets\Bullets.cpp" />
     <ClCompile Include="Bullets\BulletSubsystem.cpp" />
     <ClCompile Include="Bullets\IBulletWave.cpp" />
+    <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp" />
     <ClCompile Include="Bullets\Waves\WaveTest.cpp" />
-    <ClCompile Include="Components\BossComponent.cpp" />
+    <ClCompile Include="Components\Boss\BossComponent.cpp" />
+    <ClCompile Include="Components\Boss\States\BossStateWait.cpp" />
+    <ClCompile Include="Components\Boss\States\BossStateWaveTest.cpp" />
     <ClCompile Include="Components\PlayerComponent.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp" />
+    <ClCompile Include="StateMachine\IState.cpp" />
+    <ClCompile Include="StateMachine\StateMachine.cpp" />
     <FxCompile Include="Shaders\bloom\bloom_downsample.ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -413,11 +418,17 @@
     <ClInclude Include="Bullets\Bullets.h" />
     <ClInclude Include="Bullets\BulletSubsystem.h" />
     <ClInclude Include="Bullets\IBulletWave.h" />
+    <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
     <ClInclude Include="Bullets\Waves\WaveTest.h" />
-    <ClInclude Include="Components\BossComponent.h" />
+    <ClInclude Include="Components\Boss\BossComponent.h" />
+    <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
+    <ClInclude Include="Components\Boss\States\BossStateWait.h" />
+    <ClInclude Include="Components\Boss\States\BossStateWaveTest.h" />
     <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
+    <ClInclude Include="StateMachine\IState.h" />
+    <ClInclude Include="StateMachine\StateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini">

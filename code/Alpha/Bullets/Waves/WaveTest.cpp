@@ -45,7 +45,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 	// make a basic pattern where the spawn shape is a circle and bullets go in a straight line
 	const float ANGLE_INC = Core::TWO_PI / m_count;
 	const float CIRCLE_RADIUS = 1.f;
-	const float SPEED = 5.f;
+	const float SPEED = 35.f;
 	for (uint32_t ii = 0; ii < m_count; ++ii)
 	{
 		float angle = ii * ANGLE_INC;
