@@ -18,7 +18,7 @@
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/EnumItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
-#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
+#include "Editors/Widgets/PropertyGrid/Items/FloatXItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"

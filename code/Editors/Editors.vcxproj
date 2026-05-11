@@ -60,7 +60,7 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\BoolItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ColorItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\EnumItem.h" />
-    <ClInclude Include="Widgets\PropertyGrid\Items\Float3Item.h" />
+    <ClInclude Include="Widgets\PropertyGrid\Items\FloatXItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\FloatItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\GuidItem.h" />
     <ClInclude Include="Widgets\PropertyGrid\Items\ArrayHeaderItem.h" />
@@ -126,7 +126,7 @@
     <ClCompile Include="Widgets\PropertyGrid\Items\BoolItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\ColorItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\EnumItem.cpp" />
-    <ClCompile Include="Widgets\PropertyGrid\Items\Float3Item.cpp" />
+    <ClCompile Include="Widgets\PropertyGrid\Items\FloatXItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\FloatItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\GuidItem.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\Items\HardAssetRefItem.cpp" />
