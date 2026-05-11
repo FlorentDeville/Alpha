@@ -68,6 +68,7 @@
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Particle\ParticleEffectHandle.h" />
     <ClInclude Include="Game\Subsystems\ISubsystem.h" />
+    <ClInclude Include="GameComponent\UI\UITextureComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -120,6 +121,7 @@
     <ClCompile Include="GameComponent\ParticleEffectComponent.cpp" />
     <ClCompile Include="Game\Subsystems\Clock\GameClockSubsystem.cpp" />
     <ClCompile Include="Game\Subsystems\Particle\ParticleEffectHandle.cpp" />
+    <ClCompile Include="GameComponent\UI\UITextureComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
