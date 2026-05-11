@@ -57,7 +57,7 @@ namespace Systems
 			objCBuffer.m_world = obj.m_worldTx;
 
 			MaterialRendering::Bind(*obj.m_pMaterial, objCBuffer, perFrameData, lights);
-			renderer.RenderMesh(*obj.m_pMesh);
+			renderer.RenderInstancedQuad(1);
 		}
 	}
 
