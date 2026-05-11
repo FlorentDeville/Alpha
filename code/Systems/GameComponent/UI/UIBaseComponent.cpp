@@ -9,17 +9,17 @@ namespace Systems
 	UIBaseComponent::UIBaseComponent()
 		: GameComponent()
 		, m_debugName()
-		, m_material()
-		, m_position()
-		, m_scale(1, 1)
+		, m_texture()
+		, m_position(0, 0)
+		, m_size(10, 10)
 	{ }
 
 	UIBaseComponent::~UIBaseComponent()
 	{ }
 
-	const MaterialInstanceAsset* UIBaseComponent::GetMaterial() const
+	const Texture2DAsset* UIBaseComponent::GetTexture() const
 	{
-		return m_material.GetPtr();
+		return m_texture.GetPtr();
 	}
 
 	const Core::Float2 UIBaseComponent::GetPosition() const
@@ -27,9 +27,9 @@ namespace Systems
 		return m_position;
 	}
 
-	const Core::Float2 UIBaseComponent::GetScale() const
+	const Core::Float2 UIBaseComponent::GetSize() const
 	{
-		return m_scale;
+		return m_size;
 	}
 
 	void UIBaseComponent::SetPosition(const Core::Float2& pos)
@@ -37,8 +37,8 @@ namespace Systems
 		m_position = pos;
 	}
 
-	void UIBaseComponent::SetScale(const Core::Float2& scale)
+	void UIBaseComponent::SetSize(const Core::Float2& size)
 	{
-		m_scale = scale;
+		m_size = size;
 	}
 }

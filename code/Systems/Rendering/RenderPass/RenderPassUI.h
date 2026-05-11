@@ -13,7 +13,9 @@
 
 namespace Rendering
 {
+	class PipelineState;
 	class RenderTarget;
+	class RootSignature;
 }
 
 namespace Systems
@@ -24,7 +26,6 @@ namespace Systems
 		RenderPassUI(uint32_t width, uint32_t height);
 		~RenderPassUI();
 
-		//void SetInput(Rendering::Texture* pInput);
 		void SetOutput(Rendering::RenderTarget* pOutput);
 
 		void PreRender(const RenderableScene& scene) override;
@@ -36,5 +37,8 @@ namespace Systems
 
 		Core::Mat44f m_view;
 		Core::Mat44f m_proj;
+
+		Rendering::PipelineState* m_pPso;
+		Rendering::RootSignature* m_pRootSig;
 	};
 }
