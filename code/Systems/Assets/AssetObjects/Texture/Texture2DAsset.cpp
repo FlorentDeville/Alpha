@@ -64,6 +64,11 @@ namespace Systems
 		return m_pTexture;
 	}
 
+	const Rendering::Texture* Texture2DAsset::GetTexture() const
+	{
+		return m_pTexture;
+	}
+
 	const std::string& Texture2DAsset::GetSourceFilename() const
 	{
 		return m_sourceFilename;
