@@ -10,6 +10,7 @@
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Clock/Clock.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
@@ -276,19 +277,12 @@ namespace Systems
 				}
 				else if (const Systems::UIBaseComponent* pUi = pComponent->Cast<Systems::UIBaseComponent>())
 				{
-					if (const Systems::MaterialInstanceAsset* pMaterialAsset = pUi->GetMaterial())
-					{
-
-						Systems::RenderableObject& renderable = scene.m_uiObjects.PushBackDefault();
-
-						//renderable.m_pMesh = Rendering::RenderModule::Get().m_pBaseQuadMesh;
-						renderable.m_pMaterial = pMaterialAsset;
-						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx();
-						renderable.m_worldTx.SetIdentity();
-						renderable.m_primitiveMesh = false;
-						renderable.m_pOwner = pGo;
-						renderable.m_view = Systems::RenderView::Game;
-					}
+					const Systems::Texture2DAsset* pTexture = pUi->GetTexture();
+					
+					Systems::RenderableUI& renderable = scene.m_uiObjects.PushBackDefault();
+					renderable.m_position = pUi->GetPosition();
+					renderable.m_size = pUi->GetSize();
+					renderable.m_pTexture = pTexture ? pTexture->GetTexture() : nullptr;
 				}
 			}
 		}
