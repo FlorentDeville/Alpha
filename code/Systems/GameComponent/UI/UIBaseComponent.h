@@ -9,28 +9,34 @@
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Objects/GameComponent.h"
 
-ENABLE_REFLECTION(Systems, UITextureComponent)
+ENABLE_REFLECTION(Systems, UIBaseComponent)
 
 namespace Systems
 {
-	class Texture2DAsset;
+	class MaterialInstanceAsset;
 
-	class UITextureComponent : public GameComponent
+	class UIBaseComponent : public GameComponent
 	{
 	public:
-		UITextureComponent();
-		~UITextureComponent();
+		UIBaseComponent();
+		~UIBaseComponent();
+
+		const Core::Float2 GetPosition() const;
+		const Core::Float2 GetScale() const;
+
+		void SetPosition(const Core::Float2& pos);
+		void SetScale(const Core::Float2& scale);
 
 	private:
 		std::string m_debugName;
-		HardAssetRef<Texture2DAsset> m_texture;
+		HardAssetRef<MaterialInstanceAsset> m_material;
 		Core::Float2 m_position;
 		Core::Float2 m_scale;
 
-		START_REFLECTION(Systems::UITextureComponent)
+		START_REFLECTION(Systems::UIBaseComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_debugName)
-			ADD_FIELD(m_texture)
+			ADD_FIELD(m_material)
 			ADD_FIELD(m_position)
 			ADD_FIELD(m_scale)
 		END_REFLECTION()
