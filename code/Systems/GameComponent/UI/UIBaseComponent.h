@@ -21,6 +21,7 @@ namespace Systems
 		UIBaseComponent();
 		~UIBaseComponent();
 
+		const MaterialInstanceAsset* GetMaterial() const;
 		const Core::Float2 GetPosition() const;
 		const Core::Float2 GetScale() const;
 

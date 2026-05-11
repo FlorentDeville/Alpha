@@ -21,6 +21,7 @@
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
+#include "Systems/Rendering/RenderPass/RenderPassUI.h"
 
 namespace Systems
 {
@@ -29,6 +30,7 @@ namespace Systems
 		, m_pRenderPassBase(nullptr)
 		, m_pRenderPassShadowMaps(nullptr)
 		, m_pRenderPassBloom(nullptr)
+		, m_pRenderPassUi(nullptr)
 		, m_pDefaultCamera(nullptr)
 		, m_pGameContext(nullptr)
 		, m_gameSubsystems()
@@ -53,6 +55,9 @@ namespace Systems
 		m_pRenderPassBloom->SetInput(m_pRenderPassBase->GetRenderTarget()->GetColorTexture());
 		m_pRenderPassBloom->SetOutput(m_pRenderPassBase->GetRenderTarget());
 
+		m_pRenderPassUi = new Systems::RenderPassUI(WIDTH, HEIGHT);
+		m_pRenderPassUi->SetOutput(m_pRenderPassBase->GetRenderTarget());
+
 		m_pDefaultCamera = new Rendering::Camera();
 		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
 		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
@@ -73,6 +78,7 @@ namespace Systems
 		delete m_pRenderPassBase;
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassBloom;
+		delete m_pRenderPassUi;
 		delete m_pDefaultCamera;
 		delete m_pGameContext;
 
@@ -146,6 +152,10 @@ namespace Systems
 		m_pRenderPassBloom->PreRender(scene);
 		m_pRenderPassBloom->Render(scene);
 		m_pRenderPassBloom->PostRender(scene);
+
+		m_pRenderPassUi->PreRender(scene);
+		m_pRenderPassUi->Render(scene);
+		m_pRenderPassUi->PostRender(scene);
 	}
 
 	void GameMgr::RequestLoadingLevel(Systems::NewAssetId levelId)

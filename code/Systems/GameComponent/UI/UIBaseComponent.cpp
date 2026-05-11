@@ -17,6 +17,11 @@ namespace Systems
 	UIBaseComponent::~UIBaseComponent()
 	{ }
 
+	const MaterialInstanceAsset* UIBaseComponent::GetMaterial() const
+	{
+		return m_material.GetPtr();
+	}
+
 	const Core::Float2 UIBaseComponent::GetPosition() const
 	{
 		return m_position;
