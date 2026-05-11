@@ -26,6 +26,7 @@ namespace Rendering
 		BLOOM_DOWNSAMPLE,
 		BLOOM_UPSAMPLE,
 		PARTICLES,
+		GAME_UI,
 
 		COUNT
 	};
