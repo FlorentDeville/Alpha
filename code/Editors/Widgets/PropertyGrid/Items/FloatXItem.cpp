@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
+#include "Editors/Widgets/PropertyGrid/Items/FloatXItem.h"
 
 #include "Core/Math/Vectors.h"
 #include "Core/Reflection/FieldDescriptor.h"

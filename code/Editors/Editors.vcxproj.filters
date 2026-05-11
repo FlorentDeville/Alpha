@@ -213,7 +213,7 @@
     <ClInclude Include="ParticleEditor\ParticleEditorModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Widgets\PropertyGrid\Items\Float3Item.h">
+    <ClInclude Include="Widgets\PropertyGrid\Items\FloatXItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -404,7 +404,7 @@
     <ClCompile Include="ParticleEditor\ParticleEditorModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\PropertyGrid\Items\Float3Item.cpp">
+    <ClCompile Include="Widgets\PropertyGrid\Items\FloatXItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
