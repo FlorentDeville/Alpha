@@ -178,8 +178,6 @@ namespace Rendering
 		Mesh* m_pCubeMesh;
 		Mesh* m_pSphereMesh;
 
-		Rendering::Mesh* m_pBaseQuadMesh;
-
 	private:
 
 		PipelineState* m_pBaseShapePso;
