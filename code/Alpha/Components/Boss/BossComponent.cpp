@@ -37,6 +37,8 @@ void BossComponent::PostLoad()
 
 void BossComponent::OnStartGame()
 {
+	m_currentHP = m_maxHP;
+
 	const Systems::GameComponent* pPlayerComponent = Systems::GameMgr().Get().FindComponent<PlayerComponent>();
 	const Systems::GameObject* pPlayer = pPlayerComponent->GetOwner();
 
@@ -57,14 +59,12 @@ void BossComponent::OnStartGame()
 	m_pStateMachine->Start(BossStateEnum::WAIT);
 
 	Systems::CollisionSphereComponent* pCollision = pObject->FindComponent<Systems::CollisionSphereComponent>();
-	pCollision->GetSphere().OnCollision([](const Systems::ICollisionShape* /*pOther*/) {});
+	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });
 }
 
 void BossComponent::Update(float /*dt*/)
 {
 	m_pStateMachine->Update();
-
-	//Move(dt);
 }
 
 void BossComponent::OnDestroyGame()
@@ -85,4 +85,18 @@ void BossComponent::Move(float dt)
 	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
 
 	loc.SetTranslation(newPos);
+}
+
+void BossComponent::OnCollision(const Systems::ICollisionShape* pOther)
+{
+	Systems::GameObject* pOwner = pOther->GetOwner();
+	if (!pOwner)
+		return;
+
+	PlayerComponent* pPlayer = pOwner->FindComponent<PlayerComponent>();
+	if (!pPlayer)
+		return;
+
+	//I collided with the player so reduce hp
+	m_currentHP -= 10;
 }

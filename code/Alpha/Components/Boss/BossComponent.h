@@ -13,6 +13,7 @@ ENABLE_GAME_REFLECTION(BossComponent)
 namespace Systems
 {
 	class GameContext;
+	class ICollisionShape;
 	class MaterialInstanceAsset;
 	class MeshAsset;
 }
@@ -36,13 +37,19 @@ private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_mesh;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_material;
 
+	uint32_t m_maxHP;
+
 	START_REFLECTION(BossComponent)
 		ADD_BASETYPE(Systems::GameComponent)
 		ADD_FIELD(m_mesh)
 		ADD_FIELD(m_material)
+		ADD_FIELD(m_maxHP)
 	END_REFLECTION()
 
 	StateMachine* m_pStateMachine;
+	uint32_t m_currentHP;
 
 	void Move(float dt);
+
+	void OnCollision(const Systems::ICollisionShape* pOther);
 };
