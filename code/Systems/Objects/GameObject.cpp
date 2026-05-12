@@ -40,11 +40,6 @@ namespace Systems
 			pComponent->Update(dt);
 	}
 
-	void GameObject::UpdateTransform()
-	{
-		m_transform.Update(0);
-	}
-
 	void GameObject::OnDestroy(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)

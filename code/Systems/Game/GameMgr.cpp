@@ -128,13 +128,6 @@ namespace Systems
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
-			//going through the list of game object of levels will cause problems when game objects
-			//are created at runtime.
-			//I should make an internal array of all game object pointers in the GameMgr.
-			Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
-			for (Systems::GameObject* pGo : roots)
-				pGo->UpdateTransform();
-
 			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime());
 		}
 
