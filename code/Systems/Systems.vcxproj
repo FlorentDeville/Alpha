@@ -38,6 +38,7 @@
     <ClInclude Include="Container\ContainerMgr.h" />
     <ClInclude Include="Container\LoadingDomain.h" />
     <ClInclude Include="Container\ObjectId.h" />
+    <ClInclude Include="GameComponent\Collisions\CollisionSphereComponent.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
@@ -105,6 +106,7 @@
     <ClCompile Include="Container\ContainerId.cpp" />
     <ClCompile Include="Container\ContainerMgr.cpp" />
     <ClCompile Include="Container\ObjectId.cpp" />
+    <ClCompile Include="GameComponent\Collisions\CollisionSphereComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
