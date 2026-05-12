@@ -27,17 +27,25 @@ namespace Systems
 		for (uint32_t ii = 0; ii < m_shapes.GetSize(); ++ii)
 		{
 			const ICollisionShape* pShape1 = m_shapes[ii];
+			if (!pShape1)
+				continue;
 
 			for (uint32_t jj = ii + 1; jj < m_shapes.GetSize(); ++jj)
 			{
 				const ICollisionShape* pShape2 = m_shapes[jj];
+				if (!pShape2)
+					continue;
 
 				if (pShape1->GetType() == ShapeType::SPHERE && pShape2->GetType() == ShapeType::SPHERE)
 				{
 					bool res = CollisionSphereVsSphere(static_cast<const ShapeSphere*>(pShape1), static_cast<const ShapeSphere*>(pShape2));
-					Core::LogModule::Get().LogInfo("Collision detected");
+					if (res)
+					{
+						Core::LogModule::Get().LogInfo("Collision detected");
 
-					//callback event OnCollision(const ICollisionShape* other)
+						pShape1->m_onCollision(pShape2);
+						pShape2->m_onCollision(pShape1);
+					}
 				}
 			}
 		}
