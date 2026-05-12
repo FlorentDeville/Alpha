@@ -13,7 +13,7 @@ namespace Systems
 		: GameComponent()
 		, m_center()
 		, m_radius(1)
-		, m_sphere(Core::Vec4f(), 1)
+		, m_sphere(Core::Vec4f(), 1, nullptr)
 		, m_index(UINT32_MAX)
 	{ }
 
@@ -25,6 +25,7 @@ namespace Systems
 		const TransformComponent& transform = GetOwner()->GetTransform();
 		m_sphere.SetCenter(transform.GetWorldTx().GetT() + m_center);
 		m_sphere.SetRadius(m_radius);
+		m_sphere.SetOwner(GetOwner());
 
 		CollisionSubsystem* pCollision = CollisionSubsystem::GetSubsystem();
 		m_index = pCollision->AddShape(&m_sphere);

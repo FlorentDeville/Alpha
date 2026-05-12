@@ -10,10 +10,12 @@
 
 namespace Systems
 {
+	class GameObject;
+
 	class ShapeSphere : public ICollisionShape
 	{
 	public:
-		ShapeSphere(const Core::Vec4f& center, float radius);
+		ShapeSphere(const Core::Vec4f& center, float radius, GameObject* pOwner);
 		~ShapeSphere();
 
 		void SetCenter(const Core::Vec4f& center);

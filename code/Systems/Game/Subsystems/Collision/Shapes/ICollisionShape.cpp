@@ -6,8 +6,9 @@
 
 namespace Systems
 {
-	ICollisionShape::ICollisionShape(ShapeType type)
+	ICollisionShape::ICollisionShape(GameObject* pOwner, ShapeType type)
 		: m_type(type)
+		, m_pOwner(pOwner)
 	{ }
 
 	ICollisionShape::~ICollisionShape()
@@ -16,5 +17,15 @@ namespace Systems
 	ShapeType ICollisionShape::GetType() const
 	{
 		return m_type;
+	}
+
+	GameObject* ICollisionShape::GetOwner() const
+	{
+		return m_pOwner;
+	}
+
+	void ICollisionShape::SetOwner(GameObject* pOwner)
+	{
+		m_pOwner = pOwner;
 	}
 }

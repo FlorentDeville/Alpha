@@ -18,14 +18,20 @@ namespace Systems
 		friend class CollisionSubsystem;
 
 	public:
-		ICollisionShape(ShapeType type);
+		ICollisionShape(GameObject* pOwner, ShapeType type);
 		~ICollisionShape();
 
 		ShapeType GetType() const;
+		
+		//What out, it can be null.
+		GameObject* GetOwner() const;
+
+		void SetOwner(GameObject* pOwner);
 
 		EVENT_DECL(Collision, void(const ICollisionShape* pOther))
 
 	private:
+		GameObject* m_pOwner;
 		ShapeType m_type;
 	};
 }

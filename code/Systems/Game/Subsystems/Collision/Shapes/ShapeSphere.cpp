@@ -6,8 +6,8 @@
 
 namespace Systems
 {
-	ShapeSphere::ShapeSphere(const Core::Vec4f& center, float radius)
-		: ICollisionShape(ShapeType::SPHERE)
+	ShapeSphere::ShapeSphere(const Core::Vec4f& center, float radius, GameObject* pOwner)
+		: ICollisionShape(pOwner, ShapeType::SPHERE)
 		, m_center(center)
 		, m_radius(radius)
 	{ }
