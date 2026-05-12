@@ -24,6 +24,8 @@ namespace Systems
 
 		void Update(float dt) override;
 
+		ShapeSphere& GetSphere();
+
 	private:
 		Core::Vec4f m_center;
 		float m_radius;

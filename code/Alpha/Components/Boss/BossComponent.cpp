@@ -19,6 +19,7 @@
 
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/GameContext.h"
+#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/Objects/GameObject.h"
 
 BossComponent::BossComponent()
@@ -54,6 +55,9 @@ void BossComponent::OnStartGame()
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);
 
 	m_pStateMachine->Start(BossStateEnum::WAIT);
+
+	Systems::CollisionSphereComponent* pCollision = pObject->FindComponent<Systems::CollisionSphereComponent>();
+	pCollision->GetSphere().OnCollision([](const Systems::ICollisionShape* /*pOther*/) {});
 }
 
 void BossComponent::Update(float /*dt*/)

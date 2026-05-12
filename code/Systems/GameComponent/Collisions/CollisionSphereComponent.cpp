@@ -41,4 +41,9 @@ namespace Systems
 		const TransformComponent& transform = GetOwner()->GetTransform();
 		m_sphere.SetCenter(transform.GetWorldTx().GetT() + m_center);
 	}
+
+	ShapeSphere& CollisionSphereComponent::GetSphere()
+	{
+		return m_sphere;
+	}
 }
