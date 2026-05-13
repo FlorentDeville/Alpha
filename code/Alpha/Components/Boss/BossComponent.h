@@ -7,7 +7,8 @@
 #include "Systems/Objects/GameComponent.h"
 
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
-#include "Systems/GameComponent/ComponentRef.h"
+#include "Systems/GameComponent/ComponentRef/ComponentRef.h"
+#include "Systems/GameComponent/UI/UIBaseComponent.h"
 
 ENABLE_GAME_REFLECTION(BossComponent)
 
@@ -40,7 +41,7 @@ private:
 
 	uint32_t m_maxHP;
 
-	Systems::ComponentRef m_componentRef;
+	Systems::ComponentRef<Systems::UIBaseComponent> m_componentRef;
 
 	START_REFLECTION(BossComponent)
 		ADD_BASETYPE(Systems::GameComponent)

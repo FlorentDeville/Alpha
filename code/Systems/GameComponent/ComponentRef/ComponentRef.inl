@@ -2,18 +2,16 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/GameComponent/ComponentRef.h"
-
 namespace Systems
 {
-	ComponentRef::ComponentRef()
-		: m_guid()
+	template<typename T> ComponentRef<T>::ComponentRef()
+		: m_internalRef()
 	{ }
 
-	ComponentRef::ComponentRef(const Core::Guid& guid)
-		: m_guid(guid)
+	template<typename T> ComponentRef<T>::ComponentRef(const Core::Guid& guid)
+		: m_internalRef(guid)
 	{ }
 
-	ComponentRef::~ComponentRef()
+	template<typename T> ComponentRef<T>::~ComponentRef()
 	{ }
 }

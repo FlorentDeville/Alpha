@@ -5,24 +5,19 @@
 #pragma once
 
 #include "Core/Guid/Guid.h"
-#include "Core/Reflection/ReflectionMacro.h"
-
-ENABLE_REFLECTION(Systems, ComponentRef)
 
 namespace Systems
 {
-	class ComponentRef
+	class ComponentRefRaw
 	{
 	public:
-		ComponentRef();
-		ComponentRef(const Core::Guid& guid);
-		~ComponentRef();
+		ComponentRefRaw();
+		ComponentRefRaw(const Core::Guid& guid);
+		~ComponentRefRaw();
 
 	private:
 		Core::Guid m_guid;
 
-		START_REFLECTION(Systems::ComponentRef)
-			ADD_FIELD(m_guid)
-		END_REFLECTION()
+		template<class T> friend class ComponentRef;
 	};
 }

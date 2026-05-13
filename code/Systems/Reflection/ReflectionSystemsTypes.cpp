@@ -19,7 +19,6 @@
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureType.h"
 #include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
-#include "Systems/GameComponent/ComponentRef.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -69,7 +68,5 @@ namespace Systems
 		Systems::ParticleEffectAsset::RegisterReflection();
 		Systems::ParticleEmitter::RegisterReflection();
 		Systems::TextureBindingInfo::RegisterReflection();
-
-		Systems::ComponentRef::RegisterReflection();
 	}
 }
