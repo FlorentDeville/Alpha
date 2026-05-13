@@ -666,8 +666,12 @@ namespace Editors
 		TableDialog* pDialog = new TableDialog("Select game object class", pModel);
 		pDialog->SetColumnWidth(0, 498);
 		pDialog->Open();
-		pDialog->OnOk([this](Widgets::ModelIndex index) 
+		pDialog->OnOk([this, pModel](Widgets::ModelIndex index) 
 			{
+				const Core::TypeDescriptor* pSelectedType = pModel->GetType(index);
+				if (!pSelectedType)
+					return;
+
 				LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
 				SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
@@ -677,7 +681,7 @@ namespace Editors
 					parentGuid = pSelectionMgr->GetSelectionList().back();
 
 				Core::Guid newGuid;
-				levelEditorModule.AddGameObject(parentGuid, newGuid);
+				levelEditorModule.AddGameObject(parentGuid, pSelectedType, newGuid);
 
 				if (!newGuid.IsValid())
 					return;

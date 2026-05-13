@@ -167,12 +167,12 @@ namespace Editors
 		return true;;
 	}
 
-	void LevelEditorModule::AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid)
+	void LevelEditorModule::AddGameObject(const Core::Guid& parentGuid, const Core::TypeDescriptor* pType, Core::Guid& newGoGuid)
 	{
 		const Systems::GameObject* pGoParent = m_pLevel->FindGameObject(parentGuid);
 		Systems::GameObject* pNewGo = nullptr;
 		
-		bool res = Internal_AddGameObject(pGoParent, &pNewGo);
+		bool res = Internal_AddGameObject(pGoParent, pType, &pNewGo);
 		
 		if (res)
 		{
@@ -259,7 +259,7 @@ namespace Editors
 
 		const Systems::GameObject* pParent = pSrcObj->GetTransform().GetParent();
 		Systems::GameObject* pNewGo = nullptr;
-		bool res = Internal_AddGameObject(pParent, &pNewGo);
+		bool res = Internal_AddGameObject(pParent, pSrcObj->GetTypeDescriptor(), &pNewGo);
 		if (!res)
 			return;
 
@@ -394,17 +394,25 @@ namespace Editors
 		return m_pWorld;
 	}
 
-	bool LevelEditorModule::Internal_AddGameObject(const Systems::GameObject* pParent, Systems::GameObject** ppObj)
+	bool LevelEditorModule::Internal_AddGameObject(const Systems::GameObject* pParent, const Core::TypeDescriptor* pType, Systems::GameObject** ppObj)
 	{
 		if (!m_pLevel)
 			return false;
 
-		*ppObj = Systems::CreateNewGameObject<Systems::GameObject>("newentity");
+		Core::Sid gameObjectSid = Core::TypeResolver<Systems::GameObject>::GetTypenameSid();
+
+		if (pType->GetSid() != gameObjectSid && !pType->InheritsFrom(gameObjectSid))
+		{
+			return false;
+		}
+
+		*ppObj = Systems::CreateNewGameObject(pType);
 
 		Core::Mat44f localTx;
 		localTx.SetIdentity();
 		(*ppObj)->GetTransform().SetLocalTx(localTx);
 		(*ppObj)->GetTransform().ComputeWorldTx();
+		(*ppObj)->SetName("newentity");
 
 		Core::Guid parentGuid;
 		if (pParent)

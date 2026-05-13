@@ -66,7 +66,7 @@ namespace Editors
 
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
-		void AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid);
+		void AddGameObject(const Core::Guid& parentGuid, const Core::TypeDescriptor* pType, Core::Guid& newGoGuid);
 		void DeleteGameObject(const Core::Guid & nodeGuid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& name);
 
@@ -121,6 +121,6 @@ namespace Editors
 		Core::Mat44f m_cameraWs;
 		float m_fovRad;
 
-		bool Internal_AddGameObject(const Systems::GameObject* pParent, Systems::GameObject** ppObj);
+		bool Internal_AddGameObject(const Systems::GameObject* pParent, const Core::TypeDescriptor* pType, Systems::GameObject** ppObj);
 	};
 }
