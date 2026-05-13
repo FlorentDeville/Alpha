@@ -5,6 +5,7 @@
 #include "Alpha/Bullets/IBulletWave.h"
 
 #include "Alpha/Bullets/Bullets.h"
+#include "Alpha/Components/PlayerComponent.h"
 
 #include "Core/Log/LogModule.h"
 
@@ -43,14 +44,14 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 
 		Systems::GameObject* pGo = pOther->GetOwner();
 		if (!pGo)
+			return;
+
+		if (PlayerComponent* pPlayer = pGo->FindComponent<PlayerComponent>())
 		{
-			Core::LogModule::Get().LogInfo("Bullet collided with unknown game object");
+			bullets.m_timeToLive[ii] = 0;
+			Core::LogModule::Get().LogInfo("Bullet collided with player");
 		}
-		else
-		{
-			Core::LogModule::Get().LogInfo("Bullet collided with game object %s", pGo->GetName().c_str());
-		}
-		
+
 		return;
 	}
 }
