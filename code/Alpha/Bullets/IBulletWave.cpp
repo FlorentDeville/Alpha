@@ -11,6 +11,7 @@
 
 #include "Systems/Game/Subsystems/Collision/CollisionSubsystem.h"
 #include "Systems/Game/Subsystems/Collision/Shapes/ShapeSphere.h"
+#include "Systems/Game/Subsystems/Message/GameMessageSubsystem.h"
 #include "Systems/Objects/GameObject.h"
 
 IBulletWave::IBulletWave()
@@ -49,6 +50,12 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (PlayerComponent* pPlayer = pGo->FindComponent<PlayerComponent>())
 		{
 			bullets.m_timeToLive[ii] = 0;
+
+			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+			Systems::GameMessage msg;
+			msg.m_id = CONSTSID("bullet_collision");
+			pMessage->SendMessage(pGo, msg);
+
 			Core::LogModule::Get().LogInfo("Bullet collided with player");
 		}
 
