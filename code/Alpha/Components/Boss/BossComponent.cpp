@@ -98,5 +98,12 @@ void BossComponent::OnCollision(const Systems::ICollisionShape* pOther)
 		return;
 
 	//I collided with the player so reduce hp
-	m_currentHP -= 10;
+	uint32_t damage = 10;
+	m_currentHP -= damage;
+
+	//now reduce the hp bar
+	Systems::UIBaseComponent* pHp = m_currentHealthComp.FindComponent(GetOwner());
+	Core::Float2 size = pHp->GetSize();
+	size.x -= damage;
+	pHp->SetSize(size);
 }
