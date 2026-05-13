@@ -31,19 +31,19 @@ PlayerComponent::~PlayerComponent()
 void PlayerComponent::PostLoad()
 { }
 
-void PlayerComponent::OnStart(Systems::GameContext* pWorld)
+void PlayerComponent::OnStart(Systems::GameContext* /*pWorld*/)
 {
-	Systems::TransformComponent& transform = GetOwner()->GetTransform();
+	/*Systems::TransformComponent& transform = GetOwner()->GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
 
 	pWorld->m_pCameraSubsystem->PushCamera(m_pCamera);
 	m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
-	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
+	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);*/
 }
 
-void PlayerComponent::Update(float dt)
+void PlayerComponent::Update(float /*dt*/)
 {
-	Systems::TransformComponent& transform = GetOwner()->GetTransform();
+	/*Systems::TransformComponent& transform = GetOwner()->GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
 
 	const Core::Vec4f forward = localTx.GetZ();
@@ -74,10 +74,10 @@ void PlayerComponent::Update(float dt)
 		transform.SetLocalTx(newLocalTx);
 
 		m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
-	}
+	}*/
 }
 
-void PlayerComponent::OnDestroy(Systems::GameContext* pWorld)
+void PlayerComponent::OnDestroy(Systems::GameContext* /*pWorld*/)
 {
-	pWorld->m_pCameraSubsystem->PopCamera();
+	//pWorld->m_pCameraSubsystem->PopCamera();
 }
