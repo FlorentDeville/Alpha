@@ -11,12 +11,16 @@
 
 namespace Systems
 {
+	class GameObject;
+
 	template<typename T> class ComponentRef
 	{
 	public:
 		ComponentRef();
 		ComponentRef(const Core::Guid& guid);
 		~ComponentRef();
+
+		T* FindComponent(GameObject* pObj);
 
 		static void RegisterFields(Core::TypeDescriptor* pType)
 		{

@@ -104,6 +104,17 @@ namespace Systems
 		return nullptr;
 	}
 
+	GameComponent* GameObject::FindComponent(const Core::Guid& guid)
+	{
+		for (GameComponent* pComponent : m_components)
+		{
+			if (pComponent->GetGuid() == guid)
+				return pComponent;
+		}
+
+		return nullptr;
+	}
+
 	void GameObject::PostLoad()
 	{
 		Object::PostLoad();
