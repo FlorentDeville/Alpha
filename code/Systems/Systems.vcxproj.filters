@@ -76,6 +76,7 @@
     <ClInclude Include="Game\Subsystems\Collision\Shapes\ShapeSphere.h" />
     <ClInclude Include="Game\Subsystems\Collision\Shapes\ShapeType.h" />
     <ClInclude Include="GameComponent\Collisions\CollisionSphereComponent.h" />
+    <ClInclude Include="GameComponent\ComponentRef.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="Game\Subsystems\Collision\Shapes\ShapeSphere.cpp" />
     <ClCompile Include="Game\Subsystems\Collision\Shapes\ICollisionShape.cpp" />
     <ClCompile Include="GameComponent\Collisions\CollisionSphereComponent.cpp" />
+    <ClCompile Include="GameComponent\ComponentRef.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

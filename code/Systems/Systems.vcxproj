@@ -39,6 +39,7 @@
     <ClInclude Include="Container\LoadingDomain.h" />
     <ClInclude Include="Container\ObjectId.h" />
     <ClInclude Include="GameComponent\Collisions\CollisionSphereComponent.h" />
+    <ClInclude Include="GameComponent\ComponentRef.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
@@ -159,6 +160,7 @@
     <None Include="Assets\AssetObjects\AssetUtil.inl" />
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
     <ClInclude Include="GameComponent\Lights\DirectionalLightComponent.h" />
+    <ClCompile Include="GameComponent\ComponentRef.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
