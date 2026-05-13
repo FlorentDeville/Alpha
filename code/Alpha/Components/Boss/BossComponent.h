@@ -7,6 +7,7 @@
 #include "Systems/Objects/GameComponent.h"
 
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
+#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 
@@ -41,14 +42,16 @@ private:
 
 	uint32_t m_maxHP;
 
-	Systems::ComponentRef<Systems::UIBaseComponent> m_componentRef;
+	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
+	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
 
 	START_REFLECTION(BossComponent)
 		ADD_BASETYPE(Systems::GameComponent)
 		ADD_FIELD(m_mesh)
 		ADD_FIELD(m_material)
 		ADD_FIELD(m_maxHP)
-		ADD_FIELD(m_componentRef);
+		ADD_FIELD(m_currentHealthComp)
+		ADD_FIELD(m_collComp)
 	END_REFLECTION()
 
 	StateMachine* m_pStateMachine;

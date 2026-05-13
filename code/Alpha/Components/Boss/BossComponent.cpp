@@ -58,7 +58,7 @@ void BossComponent::OnStartGame()
 
 	m_pStateMachine->Start(BossStateEnum::WAIT);
 
-	Systems::CollisionSphereComponent* pCollision = pObject->FindComponent<Systems::CollisionSphereComponent>();
+	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(pObject);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });
 }
 
