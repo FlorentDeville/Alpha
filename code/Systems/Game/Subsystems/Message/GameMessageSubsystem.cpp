@@ -34,6 +34,8 @@ namespace Systems
 		{
 			container.m_pGo->HandleMessage(container.m_message);
 		}
+
+		m_messagesList[listToExecute].Resize(0);
 	}
 
 	void GameMessageSubsystem::SendMessage(GameObject* pGo, GameMessage& msg)
