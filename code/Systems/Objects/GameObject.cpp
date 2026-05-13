@@ -6,6 +6,10 @@
 
 namespace Systems
 {
+	GameObject::GameObject()
+		: GameObject("")
+	{ }
+
 	GameObject::GameObject(const std::string& name)
 		: Object()
 		, m_name(name)

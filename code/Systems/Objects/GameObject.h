@@ -35,7 +35,7 @@ namespace Systems
 	class GameObject : public Object
 	{
 	public:
-		GameObject() = default;
+		GameObject();
 		GameObject(const std::string& name);
 
 		virtual ~GameObject();
