@@ -4,18 +4,24 @@
 
 #pragma once
 
+#include "Core/Sid/Sid.h"
+
 namespace Systems
 {
-	class GameContext;
-	class RenderableScene;
-
-	class ISubsystem
+	class GameMessage
 	{
 	public:
-		virtual ~ISubsystem() {}
+		Core::Sid m_id;
+		uint64_t m_param;
 
-		virtual void BeforeUpdate(const GameContext& /*context*/) {}
-		virtual void Update(const GameContext& /*context*/) {}
-		virtual void BuildRenderable(RenderableScene& /*scene*/) {}
+		template<typename T> void SetParameter(const T& param)
+		{
+			m_param = reinterpret_cast<T>(m_param);
+		}
+
+		template<typename T> const T GetParameter() const
+		{
+			return reinterpret_cast<T>(m_param);
+		}
 	};
 }

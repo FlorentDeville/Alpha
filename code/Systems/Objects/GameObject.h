@@ -18,6 +18,7 @@ namespace Systems
 {
 	class GameComponent;
 	class GameContext;
+	class GameMessage;
 
 	//Event orders :
 	// Loading
@@ -53,6 +54,8 @@ namespace Systems
 
 		//Called before deleting the gameobjet after the last Update in game only.
 		virtual void OnDestroyGame();
+
+		virtual void HandleMessage(const GameMessage& msg);
 
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;
