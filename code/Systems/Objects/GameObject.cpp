@@ -52,6 +52,9 @@ namespace Systems
 			pComponent->OnDestroyGame();
 	}
 
+	void GameObject::HandleMessage(const GameMessage& msg)
+	{ }
+
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;

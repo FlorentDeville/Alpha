@@ -15,6 +15,7 @@
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Game/Subsystems/Collision/CollisionSubsystem.h"
+#include "Systems/Game/Subsystems/Message/GameMessageSubsystem.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
@@ -71,8 +72,10 @@ namespace Systems
 		m_pGameContext->m_pClock = new GameClockSubsystem();
 
 		CollisionSubsystem* pCollision = new CollisionSubsystem();
-		uint32_t collisionSubsystemIndex = RegisterGameSubsystem(pCollision);
-		pCollision->m_subsystemIndex = collisionSubsystemIndex;
+		pCollision->m_subsystemIndex = RegisterGameSubsystem(pCollision);
+
+		GameMessageSubsystem* pMessages = new GameMessageSubsystem();
+		pMessages->m_subsystemIndex = RegisterGameSubsystem(pMessages);
 	}
 
 	void GameMgr::Release()
@@ -96,6 +99,9 @@ namespace Systems
 	void GameMgr::Update(float dt)
 	{
 		m_pGameContext->m_pClock->Update(dt);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->BeforeUpdate(*m_pGameContext);
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
