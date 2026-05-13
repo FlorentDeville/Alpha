@@ -21,9 +21,6 @@ BulletSubsystem::BulletSubsystem()
 
 BulletSubsystem::~BulletSubsystem()
 {
-	/*for (IBulletWave* pWave : m_waves)
-		delete pWave;*/
-
 	m_bullets.Delete();
 }
 
@@ -37,6 +34,7 @@ void BulletSubsystem::Update(const Systems::GameContext& context)
 			continue;
 
 		pWave->Update(m_bullets, dt);
+		pWave->CollisionDetection(m_bullets);
 	}
 }
 

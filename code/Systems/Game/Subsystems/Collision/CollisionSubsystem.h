@@ -25,6 +25,8 @@ namespace Systems
 		uint32_t AddShape(ICollisionShape* pShape);
 		void RemoveShape(uint32_t index);
 
+		bool CollisionDetection(const ICollisionShape* pShape, const ICollisionShape** pOutOther) const;
+
 		static uint32_t m_subsystemIndex;
 		static CollisionSubsystem* GetSubsystem();
 

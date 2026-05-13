@@ -33,6 +33,7 @@ public:
 	virtual void Stop() = 0;
 	virtual void Update(Bullets& bullets, float dt) = 0;
 	virtual void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) = 0;
+	virtual void CollisionDetection(Bullets& bullet);
 
 	bool IsAlive() const;
 
