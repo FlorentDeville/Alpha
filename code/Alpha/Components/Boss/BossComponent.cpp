@@ -106,4 +106,8 @@ void BossComponent::OnCollision(const Systems::ICollisionShape* pOther)
 	Core::Float2 size = pHp->GetSize();
 	size.x -= damage;
 	pHp->SetSize(size);
+
+	Core::Float2 position = pHp->GetPosition();
+	position.x -= (damage / 2);
+	pHp->SetPosition(position);
 }
