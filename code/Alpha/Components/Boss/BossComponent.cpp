@@ -8,7 +8,7 @@
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Components/Boss/States/BossStateWait.h"
 #include "Alpha/Components/Boss/States/BossStateWaveTest.h"
-#include "Alpha/Components/PlayerComponent.h"
+#include "Alpha/Objects/PlayerGameObject.h"
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
@@ -39,8 +39,7 @@ void BossComponent::OnStartGame()
 {
 	m_currentHP = m_maxHP;
 
-	const Systems::GameComponent* pPlayerComponent = Systems::GameMgr().Get().FindComponent<PlayerComponent>();
-	const Systems::GameObject* pPlayer = pPlayerComponent->GetOwner();
+	const PlayerGameObject* pPlayer = Systems::GameMgr().Get().FindGameObject<PlayerGameObject>();
 
 	Systems::GameObject* pObject = GetOwner();
 	Systems::TransformComponent& transform = pObject->GetTransform();
@@ -93,8 +92,7 @@ void BossComponent::OnCollision(const Systems::ICollisionShape* pOther)
 	if (!pOwner)
 		return;
 
-	PlayerComponent* pPlayer = pOwner->FindComponent<PlayerComponent>();
-	if (!pPlayer)
+	if (!pOwner->IsA<PlayerGameObject>())
 		return;
 
 	//I collided with the player so reduce hp

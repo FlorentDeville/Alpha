@@ -57,6 +57,9 @@ namespace Systems
 
 		GameContext* GetWorld();
 
+		template<class T> const T* FindGameObject() const;
+		const GameObject* FindGameObject(Core::Sid gameObjectTypename) const;
+
 		template<class T> const T* FindComponent() const;
 		const GameComponent* FindComponent(Core::Sid componentTypeName) const;
 
@@ -85,6 +88,11 @@ namespace Systems
 		void ExecuteLoadingRequests();
 		void ExecuteUnloadingRequests();
 	};
+
+	template<class T> const T* GameMgr::FindGameObject() const
+	{
+		return static_cast<const T*>(FindGameObject(Core::TypeResolver<T>::GetTypenameSid()));
+	}
 
 	template<class T> const T* GameMgr::FindComponent() const
 	{

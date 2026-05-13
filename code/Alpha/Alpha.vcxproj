@@ -106,7 +106,6 @@
     <ClCompile Include="Components\Boss\BossComponent.cpp" />
     <ClCompile Include="Components\Boss\States\BossStateWait.cpp" />
     <ClCompile Include="Components\Boss\States\BossStateWaveTest.cpp" />
-    <ClCompile Include="Components\PlayerComponent.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\PlayerGameObject.cpp" />
@@ -441,7 +440,6 @@
     <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
     <ClInclude Include="Components\Boss\States\BossStateWait.h" />
     <ClInclude Include="Components\Boss\States\BossStateWaveTest.h" />
-    <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Objects\PlayerGameObject.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />

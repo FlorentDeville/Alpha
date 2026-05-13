@@ -5,7 +5,7 @@
 #include "Alpha/Bullets/IBulletWave.h"
 
 #include "Alpha/Bullets/Bullets.h"
-#include "Alpha/Components/PlayerComponent.h"
+#include "Alpha/Objects/PlayerGameObject.h"
 
 #include "Core/Log/LogModule.h"
 
@@ -47,7 +47,7 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (!pGo)
 			return;
 
-		if (PlayerComponent* pPlayer = pGo->FindComponent<PlayerComponent>())
+		if (pGo->IsA<PlayerGameObject>())
 		{
 			bullets.m_timeToLive[ii] = 0;
 

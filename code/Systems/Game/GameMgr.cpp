@@ -206,6 +206,21 @@ namespace Systems
 		return m_pGameContext;
 	}
 
+	const GameObject* GameMgr::FindGameObject(Core::Sid gameObjectTypename) const
+	{
+		for (const LevelAsset* pLevel : m_loadedLevels)
+		{
+			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
+			for (const GameObject* pGo : gameObjectArray)
+			{
+				if (pGo->GetTypeDescriptor()->GetSid() == gameObjectTypename)
+					return pGo;
+			}
+		}
+
+		return nullptr;
+	}
+
 	const GameComponent* GameMgr::FindComponent(Core::Sid componentTypeName) const
 	{
 		for (const LevelAsset* pLevel : m_loadedLevels)
