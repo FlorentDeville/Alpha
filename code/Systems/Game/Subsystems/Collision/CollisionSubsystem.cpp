@@ -41,8 +41,6 @@ namespace Systems
 					bool res = CollisionSphereVsSphere(static_cast<const ShapeSphere*>(pShape1), static_cast<const ShapeSphere*>(pShape2));
 					if (res)
 					{
-						Core::LogModule::Get().LogInfo("Collision detected");
-
 						pShape1->m_onCollision(pShape2);
 						pShape2->m_onCollision(pShape1);
 					}
@@ -64,6 +62,27 @@ namespace Systems
 			return;
 
 		m_shapes[index] = nullptr;
+	}
+
+	bool CollisionSubsystem::CollisionDetection(const ICollisionShape* pShape, const ICollisionShape** pOutOther) const
+	{
+		for (const ICollisionShape* pOther : m_shapes)
+		{
+			if (!pOther)
+				continue;
+
+			if (pShape->GetType() == ShapeType::SPHERE && pOther->GetType() == ShapeType::SPHERE)
+			{
+				bool res = CollisionSphereVsSphere(static_cast<const ShapeSphere*>(pShape), static_cast<const ShapeSphere*>(pOther));
+				if (res)
+				{
+					*pOutOther = pOther;
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	CollisionSubsystem* CollisionSubsystem::GetSubsystem()
