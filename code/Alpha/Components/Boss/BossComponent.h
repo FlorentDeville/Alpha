@@ -7,6 +7,8 @@
 #include "Systems/Objects/GameComponent.h"
 
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
+#include "Systems/GameComponent/ComponentRef/ComponentRef.h"
+#include "Systems/GameComponent/UI/UIBaseComponent.h"
 
 ENABLE_GAME_REFLECTION(BossComponent)
 
@@ -39,11 +41,14 @@ private:
 
 	uint32_t m_maxHP;
 
+	Systems::ComponentRef<Systems::UIBaseComponent> m_componentRef;
+
 	START_REFLECTION(BossComponent)
 		ADD_BASETYPE(Systems::GameComponent)
 		ADD_FIELD(m_mesh)
 		ADD_FIELD(m_material)
 		ADD_FIELD(m_maxHP)
+		ADD_FIELD(m_componentRef);
 	END_REFLECTION()
 
 	StateMachine* m_pStateMachine;

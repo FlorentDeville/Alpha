@@ -66,6 +66,7 @@ namespace Systems
 		const Core::Array<GameComponent*>& GetComponents() const;
 		void AddComponent(GameComponent* pComponent);
 
+		const GameComponent* FindComponent(const Core::Guid& guid) const;
 		template<typename T> T* FindComponent();
 
 		void PostLoad() override;

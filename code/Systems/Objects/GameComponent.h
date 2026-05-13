@@ -33,6 +33,7 @@ namespace Systems
 		virtual void OnDestroy(GameContext* pWorld);
 		virtual void OnDestroyGame();
 
+		const Core::Guid& GetGuid() const;
 		void SetGuid(const Core::Guid& guid);
 
 		void SetOwner(GameObject* pOwnerGo);
