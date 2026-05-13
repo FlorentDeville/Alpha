@@ -13,6 +13,7 @@
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Message/GameMessage.h"
 
 PlayerGameObject::PlayerGameObject()
 	: Systems::GameObject()
@@ -36,6 +37,8 @@ void PlayerGameObject::OnStartGame()
 	pContext->m_pCameraSubsystem->PushCamera(m_pCamera);
 	m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
 	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
+
+	m_currentHp = m_maxHp;
 }
 
 void PlayerGameObject::Update(float dt)
@@ -76,10 +79,46 @@ void PlayerGameObject::Update(float dt)
 	BaseClass::Update(dt);
 }
 
+void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
+{
+	switch (msg.m_id)
+	{
+	case SID("bullet_collision"):
+	{
+		OnBulletCollision();
+	}
+	break;
+
+	default:
+		break;
+	}
+}
+
 void PlayerGameObject::OnDestroyGame()
 {
 	BaseClass::OnDestroyGame();
 
 	Systems::GameContext* pContext = Systems::GameMgr::Get().GetWorld();
 	pContext->m_pCameraSubsystem->PopCamera();
+}
+
+void PlayerGameObject::OnBulletCollision()
+{
+	const uint32_t DAMAGE = 5;
+	m_currentHp -= DAMAGE;
+	if (m_currentHp > m_maxHp) m_currentHp = 0;
+
+	Systems::UIBaseComponent* pCurrentHpUIComp = m_currentHealthComp.FindComponent(this);
+	Systems::UIBaseComponent* pTotalHpUIComp = m_totalHealthComp.FindComponent(this);
+	
+	float totalWidth = pTotalHpUIComp->GetSize().x;
+	float currentWidth = totalWidth / m_maxHp * m_currentHp;
+
+	Core::Float2 size = pCurrentHpUIComp->GetSize();
+	size.x = currentWidth;
+	pCurrentHpUIComp->SetSize(size);
+
+	Core::Float2 position = pCurrentHpUIComp->GetPosition();
+	position.x = pTotalHpUIComp->GetPosition().x - ((totalWidth - currentWidth) / 2);
+	pCurrentHpUIComp->SetPosition(position);
 }
