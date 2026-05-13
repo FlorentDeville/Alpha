@@ -19,6 +19,9 @@ namespace Editors
 			if (!pComponent)
 				continue;
 
+			if (componentTypeSid != 0 && pComponent->GetTypeDescriptor()->GetSid() != componentTypeSid)
+				continue;
+
 			MetadataCache& cache = m_cache.PushBackDefault();
 			cache.m_id = std::to_string(ii);
 			cache.m_strGuid.resize(37, '\0');

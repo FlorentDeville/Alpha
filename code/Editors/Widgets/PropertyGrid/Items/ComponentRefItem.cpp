@@ -43,7 +43,8 @@ namespace Editors
 		pButton->AddWidget(pLabel);
 		pButton->OnClick([this]()
 			{
-				ComponentSelectionModel* pModel = new ComponentSelectionModel(m_pOwner, Core::Sid());
+				Core::Sid componentType = m_pField->GetType()->GetTemplateParamType()->GetSid();
+				ComponentSelectionModel* pModel = new ComponentSelectionModel(m_pOwner, componentType);
 				TableDialog* pDialog = new TableDialog("Select component", pModel);
 				pDialog->SetColumnWidth(0, 50);
 				pDialog->SetColumnWidth(1, 300);
