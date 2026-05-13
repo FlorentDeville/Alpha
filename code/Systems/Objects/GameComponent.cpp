@@ -30,6 +30,11 @@ namespace Systems
 	void GameComponent::OnDestroyGame()
 	{ }
 
+	const Core::Guid& GameComponent::GetGuid() const
+	{
+		return m_guid;
+	}
+
 	void GameComponent::SetGuid(const Core::Guid& guid)
 	{
 		m_guid = guid;

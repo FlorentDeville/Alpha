@@ -17,6 +17,7 @@ namespace Systems
 		, m_children()
 		, m_pParentGo(nullptr)
 		, m_localSqt()
+		, m_isDirty(true)
 	{ }
 
 	TransformComponent::~TransformComponent()
@@ -29,6 +30,7 @@ namespace Systems
 
 	const Core::Mat44f& TransformComponent::GetWorldTx() const
 	{
+		ComputeWorldTx();
 		return m_worldTx;
 	}
 
@@ -53,6 +55,12 @@ namespace Systems
 	void TransformComponent::SetLocalTx(const Core::Mat44f& localTx)
 	{
 		m_localSqt = Core::Sqt(localTx);
+		m_isDirty = true;
+
+		for (Systems::GameObject* pObj : m_childrenGo)
+		{
+			pObj->GetTransform().m_isDirty = true;
+		}
 	}
 
 	const Core::Guid& TransformComponent::GetParentGuid() const
@@ -68,6 +76,7 @@ namespace Systems
 	void TransformComponent::SetParent(Systems::GameObject* pParentGo)
 	{
 		m_pParentGo = pParentGo;
+		m_isDirty = true;
 
 		if (m_pParentGo)
 			m_parent = m_pParentGo->GetGuid();
@@ -92,6 +101,7 @@ namespace Systems
 
 		m_children.PushBack(pChild->GetGuid());
 		m_childrenGo.PushBack(pChild);
+		pChild->GetTransform().m_isDirty = true;
 	}
 
 	void TransformComponent::RemoveChild(const Core::Guid& child)
@@ -123,16 +133,11 @@ namespace Systems
 		m_childrenGo.PushBack(pGo);
 	}
 
-	void TransformComponent::Update(float dt)
+	void TransformComponent::ComputeWorldTx() const
 	{
-		ComputeWorldTx();
+		if (!m_isDirty)
+			return;
 
-		for (Systems::GameObject* pChildGo : m_childrenGo)
-			pChildGo->UpdateTransform();
-	}
-
-	void TransformComponent::ComputeWorldTx()
-	{
 		if (!m_parent.IsValid())
 		{
 			m_worldTx = m_localSqt.GetMatrix();
@@ -142,5 +147,7 @@ namespace Systems
 			const Core::Mat44f& parentWorld = m_pParentGo->GetTransform().GetWorldTx();
 			m_worldTx = m_localSqt.GetMatrix() * parentWorld;
 		}
+
+		m_isDirty = false;
 	}
 }

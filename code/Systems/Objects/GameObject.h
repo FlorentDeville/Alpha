@@ -47,7 +47,6 @@ namespace Systems
 
 		//Called every frame
 		virtual void Update(float dt);
-		virtual void UpdateTransform();
 
 		//Called before deleting the gameobjet after the last Update.
 		virtual void OnDestroy(GameContext* pWorld);
@@ -66,6 +65,10 @@ namespace Systems
 
 		const Core::Array<GameComponent*>& GetComponents() const;
 		void AddComponent(GameComponent* pComponent);
+
+		const GameComponent* FindComponent(const Core::Guid& guid) const;
+		GameComponent* FindComponent(const Core::Guid& guid);
+		template<typename T> T* FindComponent();
 
 		void PostLoad() override;
 
@@ -88,6 +91,17 @@ namespace Systems
 			ADD_FIELD(m_components)
 		END_REFLECTION()
 	};
+
+	template<typename T> T* GameObject::FindComponent()
+	{
+		for (GameComponent* pComponent : m_components)
+		{
+			if (T* pTypedComponent = pComponent->Cast<T>())
+				return pTypedComponent;
+		}
+
+		return nullptr;
+	}
 
 	GameObject* CreateNewGameObject(const Core::TypeDescriptor* pType);
 

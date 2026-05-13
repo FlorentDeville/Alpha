@@ -50,9 +50,7 @@ namespace Systems
 
 		void AddChildCachedPointer(Systems::GameObject* pGo);
 
-		void Update(float dt) override;
-
-		void ComputeWorldTx();
+		void ComputeWorldTx() const;
 
 	private:
 		Core::Sqt m_localSqt;
@@ -73,7 +71,9 @@ namespace Systems
 		// Cached pointers to the children game objects.
 		Core::Array<Systems::GameObject*> m_childrenGo;
 
-		Core::Mat44f m_worldTx;
+		mutable Core::Mat44f m_worldTx;
+
+		mutable bool m_isDirty; //true if the world transform must be recomputed
 	};
 }
 

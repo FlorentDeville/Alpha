@@ -14,6 +14,7 @@
 #include "Systems/Game/InstanciateLevel.h"
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
+#include "Systems/Game/Subsystems/Collision/CollisionSubsystem.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
@@ -68,6 +69,10 @@ namespace Systems
 
 		m_pGameContext->m_pParticleSystem = new ParticleSystem();
 		m_pGameContext->m_pClock = new GameClockSubsystem();
+
+		CollisionSubsystem* pCollision = new CollisionSubsystem();
+		uint32_t collisionSubsystemIndex = RegisterGameSubsystem(pCollision);
+		pCollision->m_subsystemIndex = collisionSubsystemIndex;
 	}
 
 	void GameMgr::Release()
@@ -123,13 +128,6 @@ namespace Systems
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
-			//going through the list of game object of levels will cause problems when game objects
-			//are created at runtime.
-			//I should make an internal array of all game object pointers in the GameMgr.
-			Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
-			for (Systems::GameObject* pGo : roots)
-				pGo->UpdateTransform();
-
 			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime());
 		}
 

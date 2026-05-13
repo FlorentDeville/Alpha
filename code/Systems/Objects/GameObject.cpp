@@ -40,11 +40,6 @@ namespace Systems
 			pComponent->Update(dt);
 	}
 
-	void GameObject::UpdateTransform()
-	{
-		m_transform.Update(0);
-	}
-
 	void GameObject::OnDestroy(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
@@ -96,6 +91,28 @@ namespace Systems
 	{
 		m_components.PushBack(pComponent);
 		pComponent->SetOwner(this);
+	}
+
+	const GameComponent* GameObject::FindComponent(const Core::Guid& guid) const
+	{
+		for (const GameComponent* pComponent : m_components)
+		{
+			if (pComponent->GetGuid() == guid)
+				return pComponent;
+		}
+
+		return nullptr;
+	}
+
+	GameComponent* GameObject::FindComponent(const Core::Guid& guid)
+	{
+		for (GameComponent* pComponent : m_components)
+		{
+			if (pComponent->GetGuid() == guid)
+				return pComponent;
+		}
+
+		return nullptr;
 	}
 
 	void GameObject::PostLoad()

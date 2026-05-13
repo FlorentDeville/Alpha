@@ -254,10 +254,6 @@ namespace Editors
 				return;
 			}
 
-			const Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
-			for (Systems::GameObject* pRoot : roots)
-				pRoot->UpdateTransform();
-
 			Systems::PrepareRenderableCamera(m_pCamera->GetView(), m_pCamera->GetProjection(), m_pCamera->GetPosition(), m_pCamera->GetFov(), scene);
 			Systems::PrepareRenderableScene(pLevel, scene, levelEditorModule.GetWorld()->m_pClock->GetTime());
 

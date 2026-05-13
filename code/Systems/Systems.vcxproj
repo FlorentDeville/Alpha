@@ -38,6 +38,9 @@
     <ClInclude Include="Container\ContainerMgr.h" />
     <ClInclude Include="Container\LoadingDomain.h" />
     <ClInclude Include="Container\ObjectId.h" />
+    <ClInclude Include="GameComponent\Collisions\CollisionSphereComponent.h" />
+    <ClInclude Include="GameComponent\ComponentRef\ComponentRef.h" />
+    <ClInclude Include="GameComponent\ComponentRef\ComponentRefRaw.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
@@ -49,6 +52,10 @@
     <ClInclude Include="Game\Subsystems\Camera\CameraSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\GameClockSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Clock\IClockSubsystem.h" />
+    <ClInclude Include="Game\Subsystems\Collision\CollisionSubsystem.h" />
+    <ClInclude Include="Game\Subsystems\Collision\Shapes\ShapeSphere.h" />
+    <ClInclude Include="Game\Subsystems\Collision\Shapes\ICollisionShape.h" />
+    <ClInclude Include="Game\Subsystems\Collision\Shapes\ShapeType.h" />
     <ClInclude Include="Game\Subsystems\ISubsystem.h" />
     <ClInclude Include="Game\GameContext.h" />
     <ClInclude Include="Objects\AssetObject.h" />
@@ -101,6 +108,7 @@
     <ClCompile Include="Container\ContainerId.cpp" />
     <ClCompile Include="Container\ContainerMgr.cpp" />
     <ClCompile Include="Container\ObjectId.cpp" />
+    <ClCompile Include="GameComponent\Collisions\CollisionSphereComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
@@ -114,6 +122,9 @@
     <ClCompile Include="Game\Subsystems\Camera\CameraSubsystem.cpp" />
     <ClCompile Include="Game\Subsystems\Clock\GameClockSubsystem.cpp" />
     <ClCompile Include="Game\GameContext.cpp" />
+    <ClCompile Include="Game\Subsystems\Collision\CollisionSubsystem.cpp" />
+    <ClCompile Include="Game\Subsystems\Collision\Shapes\ShapeSphere.cpp" />
+    <ClCompile Include="Game\Subsystems\Collision\Shapes\ICollisionShape.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
@@ -150,6 +161,8 @@
     <None Include="Assets\AssetObjects\AssetUtil.inl" />
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
     <ClInclude Include="GameComponent\Lights\DirectionalLightComponent.h" />
+    <ClCompile Include="GameComponent\ComponentRef\ComponentRefRaw.cpp" />
+    <None Include="GameComponent\ComponentRef\ComponentRef.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

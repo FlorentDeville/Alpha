@@ -55,6 +55,11 @@ namespace Widgets
 		}
 	}
 
+	const AbstractViewModel* TableView::GetModel() const
+	{
+		return m_pModel;
+	}
+
 	void TableView::Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor)
 	{
 		DrawBackground(windowSize, scissor);

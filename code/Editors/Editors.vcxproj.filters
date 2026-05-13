@@ -216,6 +216,15 @@
     <ClInclude Include="Widgets\PropertyGrid\Items\FloatXItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Widgets\PropertyGrid\Items\ComponentRefItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\Dialog\Model\ComponentSelectionModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widgets\Dialog\TableDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GamePlayer\GamePlayer.cpp">
@@ -405,6 +414,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\PropertyGrid\Items\FloatXItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\PropertyGrid\Items\ComponentRefItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Dialog\Model\ComponentSelectionModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widgets\Dialog\TableDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
