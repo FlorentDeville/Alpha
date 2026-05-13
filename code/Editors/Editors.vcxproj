@@ -50,7 +50,9 @@
     <ClInclude Include="Widgets\BaseModel.h" />
     <ClInclude Include="Widgets\Dialog\AssetDialog.h" />
     <ClInclude Include="Widgets\Dialog\ClassSelectionDialog.h" />
+    <ClInclude Include="Widgets\Dialog\Model\ComponentSelectionModel.h" />
     <ClInclude Include="Widgets\Dialog\OkCancelDialog.h" />
+    <ClInclude Include="Widgets\Dialog\TableDialog.h" />
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
@@ -116,7 +118,9 @@
     <ClCompile Include="TextureEditor\TextureListModel.cpp" />
     <ClCompile Include="Widgets\Dialog\AssetDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\ClassSelectionDialog.cpp" />
+    <ClCompile Include="Widgets\Dialog\Model\ComponentSelectionModel.cpp" />
     <ClCompile Include="Widgets\Dialog\OkCancelDialog.cpp" />
+    <ClCompile Include="Widgets\Dialog\TableDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.cpp" />

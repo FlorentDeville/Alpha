@@ -7,6 +7,8 @@
 #include "Core/Reflection/FieldDescriptor.h"
 
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
+#include "Editors/Widgets/Dialog/Model/ComponentSelectionModel.h"
+#include "Editors/Widgets/Dialog/TableDialog.h"
 
 #include "Systems/GameComponent/ComponentRef/ComponentRefRaw.h"
 
@@ -39,6 +41,9 @@ namespace Editors
 		pButton->AddWidget(pLabel);
 		pButton->OnClick([this]()
 			{
+				ComponentSelectionModel* pModel = new ComponentSelectionModel(m_pOwner, Core::Sid());
+				TableDialog* pDialog = new TableDialog("Select component", pModel);
+				pDialog->Open();
 				/*const Core::TypeDescriptor* pTemplateParamType = m_pField->GetType()->GetTemplateParamType();
 				const Systems::NewAssetType* pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(pTemplateParamType->GetSid());
 				if (!pAssetType)
