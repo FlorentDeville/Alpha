@@ -11,6 +11,7 @@
 #include "Editors/Widgets/Dialog/TableDialog.h"
 
 #include "Systems/GameComponent/ComponentRef/ComponentRefRaw.h"
+#include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
@@ -74,9 +75,30 @@ namespace Editors
 	{
 		Systems::ComponentRefRaw* pRaw = m_pField->GetDataPtr<Systems::ComponentRefRaw>(m_pObj);
 
-		std::string guidString;
-		guidString.resize(37, '\0');
-		pRaw->GetGuid().ToString(guidString.data(), static_cast<uint32_t>(guidString.size()));
-		m_pTextbox->SetText(guidString);
+		const Systems::GameComponent* pComponent = m_pOwner->FindComponent(pRaw->GetGuid());
+		if (!pComponent)
+		{
+			m_pTextbox->SetText("Empty");
+		}
+		else
+		{
+			std::string guidString;
+			guidString.resize(37, '\0');
+			pRaw->GetGuid().ToString(guidString.data(), static_cast<uint32_t>(guidString.size()));
+
+			std::string typeName = pComponent->GetTypeDescriptor()->GetName();
+			{
+				
+				size_t pos = typeName.find_last_of(':');
+				if (pos != std::string::npos)
+					typeName = typeName.substr(pos + 1);
+			}
+
+			const uint32_t SIZE = 256;
+			std::string displayText;
+			displayText.resize(SIZE, '\0');
+			snprintf(displayText.data(), SIZE, "%s (%s)", typeName.c_str(), guidString.c_str());
+			m_pTextbox->SetText(displayText);
+		}
 	}
 }
