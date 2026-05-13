@@ -16,4 +16,9 @@ namespace Systems
 
 	ComponentRefRaw::~ComponentRefRaw()
 	{ }
+
+	const Core::Guid& ComponentRefRaw::GetGuid() const
+	{
+		return m_guid;
+	}
 }
