@@ -86,6 +86,11 @@ namespace Editors
 		Widgets::WidgetMgr::Get().CloseModalWindow();
 	}
 
+	void TableDialog::SetColumnWidth(uint32_t columnIndex, uint32_t width)
+	{
+		m_pTable->SetColumnWidth(columnIndex, width);
+	}
+
 	void TableDialog::OnOk()
 	{
 		const Widgets::AbstractViewModel* pModel = m_pTable->GetModel();

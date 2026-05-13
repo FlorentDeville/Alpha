@@ -15,6 +15,7 @@
 #include "Widgets/Button.h"
 #include "Widgets/Label.h"
 #include "Widgets/Layout.h"
+#include "Widgets/Models/ModelIndex.h"
 #include "Widgets/TextBox.h"
 
 namespace Editors
@@ -43,23 +44,18 @@ namespace Editors
 			{
 				ComponentSelectionModel* pModel = new ComponentSelectionModel(m_pOwner, Core::Sid());
 				TableDialog* pDialog = new TableDialog("Select component", pModel);
+				pDialog->SetColumnWidth(0, 50);
+				pDialog->SetColumnWidth(1, 300);
+				pDialog->SetColumnWidth(2, 135);
 				pDialog->Open();
-				/*const Core::TypeDescriptor* pTemplateParamType = m_pField->GetType()->GetTemplateParamType();
-				const Systems::NewAssetType* pAssetType = Systems::AssetMgr::Get().GetAssetTypeFromClassName(pTemplateParamType->GetSid());
-				if (!pAssetType)
-					return;
-
-				AssetDialog* pDialog = new AssetDialog(pAssetType->GetSid());
-				pDialog->Open();
-				pDialog->OnOk([this](Systems::NewAssetId id)
+				pDialog->OnOk([this, pModel](Widgets::ModelIndex index) 
 					{
+						Core::Guid componentGuid = pModel->GetGuid(index);
 						ObjectWatcher::OPERATION op = m_pField->GetType()->IsContainer() ? ObjectWatcher::SET_ELEMENT : ObjectWatcher::SET_FIELD;
 
-						Systems::HardAssetRefRaw hardRef(id);
-						hardRef.Load(Systems::LoadingDomain::EDITOR);
-
-						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &hardRef);
-					});*/
+						Systems::ComponentRefRaw componentRefRaw(componentGuid);
+						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, op, m_index, &componentRefRaw);
+					});
 			});
 
 		pLayout->AddWidget(pButton);

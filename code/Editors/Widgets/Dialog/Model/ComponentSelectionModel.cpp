@@ -21,10 +21,11 @@ namespace Editors
 
 			MetadataCache& cache = m_cache.PushBackDefault();
 			cache.m_id = std::to_string(ii);
-			cache.m_guid.resize(37, '\0');
-			pComponent->GetGuid().ToString(cache.m_guid.data(), static_cast<uint32_t>(cache.m_guid.size()));
+			cache.m_strGuid.resize(37, '\0');
+			pComponent->GetGuid().ToString(cache.m_strGuid.data(), static_cast<uint32_t>(cache.m_strGuid.size()));
 
 			cache.m_name = pComponent->GetTypeDescriptor()->GetName();
+			cache.m_guid = pComponent->GetGuid();
 		}
 	}
 
@@ -103,10 +104,22 @@ namespace Editors
 			break;
 
 		case Columns::Guid:
-			return pMetadata->m_guid;
+			return pMetadata->m_strGuid;
 			break;
 		}
 
 		return "__ERROR__";
+	}
+
+	Core::Guid ComponentSelectionModel::GetGuid(Widgets::ModelIndex index) const
+	{
+		if (!index.IsValid())
+			return Core::Guid();
+
+		uint32_t cacheIndex = index.GetRow();
+		if (!m_cache.IsValidIndex(cacheIndex))
+			return Core::Guid();
+
+		return m_cache[cacheIndex].m_guid;
 	}
 }

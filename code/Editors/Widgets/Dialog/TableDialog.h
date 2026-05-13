@@ -24,6 +24,8 @@ namespace Editors
 		void Open();
 		void Close() const;
 
+		void SetColumnWidth(uint32_t columnIndex, uint32_t width);
+
 		EVENT_DECL(Ok, void(Widgets::ModelIndex))
 
 	private:
