@@ -140,6 +140,7 @@
     <ClCompile Include="GameComponent\Collisions\CollisionSphereComponent.cpp" />
     <ClCompile Include="GameComponent\ComponentRef\ComponentRefRaw.cpp" />
     <ClCompile Include="Game\Subsystems\Message\GameMessageSubsystem.cpp" />
+    <ClCompile Include="Rendering\Renderable\RenderableObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
