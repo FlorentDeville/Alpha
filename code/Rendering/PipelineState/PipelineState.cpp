@@ -14,6 +14,7 @@
 #include "Rendering/Internal/BlendOperationToDx12.h"
 #include "Rendering/Internal/BufferFormatToDx12.h"
 #include "Rendering/Internal/DepthWriteMaskToDx12.h"
+#include "Rendering/Internal/FillModeToDx12.h"
 #include "Rendering/PipelineState/PipelineStateDesc.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/RootSignature/RootSignature.h"
@@ -275,6 +276,7 @@ namespace Rendering
 
 		CD3DX12_RASTERIZER_DESC rasterizerDesc = CD3DX12_RASTERIZER_DESC(CD3DX12_DEFAULT());
 		rasterizerDesc.CullMode = GetDx12CullMode(desc.m_cullMode);
+		rasterizerDesc.FillMode = Internal::GetDx12FillMode(desc.m_fillMode);
 
 		CD3DX12_DEPTH_STENCIL_DESC depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(CD3DX12_DEFAULT());
 		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthStencilDesc.m_depthFunction);
