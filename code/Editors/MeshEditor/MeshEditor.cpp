@@ -453,7 +453,7 @@ namespace Editors
 			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
 
 			Core::Float4 red(1, 0, 0, 1);
-			renderer.RenderPrimitiveCylinder(scale * rotation * translation * viewProj, red);
+			renderer.RenderPrimitiveCylinder(scale * rotation * translation * viewProj, red, false);
 		}
 
 		//y axis
@@ -461,7 +461,7 @@ namespace Editors
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, HALF_SCALE_LENGTH, 0);
 			Core::Float4 green(0, 1, 0, 1);
 
-			renderer.RenderPrimitiveCylinder(scale * translation * viewProj, green);
+			renderer.RenderPrimitiveCylinder(scale * translation * viewProj, green, false);
 		}
 
 		//z axis
@@ -472,7 +472,7 @@ namespace Editors
 			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
 
 			Core::Float4 blue(0, 0, 1, 1);
-			renderer.RenderPrimitiveCylinder(scale * rotation * translation * viewProj, blue);
+			renderer.RenderPrimitiveCylinder(scale * rotation * translation * viewProj, blue, false);
 		}
 
 		m_pWorldAxisRenderTarget->EndScene();

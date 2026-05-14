@@ -114,7 +114,7 @@ namespace Systems
 
 			if (renderable.m_debug)
 			{
-				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx * viewProj, renderable.m_debugColor);
+				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx * viewProj, renderable.m_debugColor, renderable.m_debugWireframe);
 			}
 			else
 			{

@@ -65,6 +65,8 @@ namespace Rendering
 		, m_pLinearCBufferPool(nullptr)
 		, m_pBaseShapePso(nullptr)
 		, m_pBaseShapeRootSig(nullptr)
+		, m_pDebugWireframePso(nullptr)
+		, m_pDebugWireframeRootSig(nullptr)
 		, m_pNullCubemap(nullptr)
 		, m_pNullTexture2D(nullptr)
 	{
@@ -78,7 +80,6 @@ namespace Rendering
 	{
 		delete m_pDevice;
 		m_pDevice = nullptr;
-
 	}
 
 	void RenderModule::Init(HWND hWindow, const DirectX::XMUINT2& gameResolution, const DirectX::XMUINT2& mainResolution, const std::string& binPath)
@@ -153,9 +154,6 @@ namespace Rendering
 
 		//basic shape material (should be an app resources?)
 		{
-			Rendering::ShaderMgr& shaderMgr = Rendering::ShaderMgr::Get();
-			Rendering::RootSignatureMgr& rootSigMgr = Rendering::RootSignatureMgr::Get();
-
 			m_pBaseShapeRootSig = rootSigMgr.GetRootSignature(EngineRootSigs::BASE_SHAPE);
 
 			Shader* pBaseShapeVS = shaderMgr.GetShader(EngineShaders::BASE_SHAPE_VS);
@@ -169,6 +167,20 @@ namespace Rendering
 			Rendering::PipelineStateId pid;
 			m_pBaseShapePso = Rendering::PipelineStateMgr::Get().CreatePipelineState(pid);
 			m_pBaseShapePso->Init_Generic(psoDesc);
+		}
+
+		//debug wireframe material
+		{
+			m_pDebugWireframeRootSig = rootSigMgr.GetRootSignature(EngineRootSigs::DEBUG_WIREFRAME);
+
+			PipelineStateDesc psoDesc;
+			psoDesc.m_pRs = m_pDebugWireframeRootSig;
+			psoDesc.m_pVs = shaderMgr.GetShader(EngineShaders::DEBUG_WIREFRAME_VS);
+			psoDesc.m_pPs = shaderMgr.GetShader(EngineShaders::DEBUG_WIREFRAME_PS);
+			psoDesc.m_fillMode = FillMode::WIREFRAME;
+
+			m_pDebugWireframePso = new PipelineState();
+			m_pDebugWireframePso->Init_Generic(psoDesc);
 		}
 
 		m_pNullCubemap = new Texture();
@@ -213,6 +225,9 @@ namespace Rendering
 
 		delete m_pNullTexture2D;
 		m_pNullTexture2D = nullptr;
+
+		delete m_pDebugWireframePso;
+		m_pDebugWireframePso = nullptr;
 
 #if defined(_DEBUG)
 		m_pDebugInterface->Release();
@@ -361,29 +376,29 @@ namespace Rendering
 		m_pRenderCommandList->RSSetScissorRects(1, &rect);
 	}
 
-	void RenderModule::RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe)
 	{
-		RenderBaseShape(m_pCylinderMesh, wvp, color);
+		RenderBaseShape(m_pCylinderMesh, wvp, color, wireframe);
 	}
 
-	void RenderModule::RenderPrimitiveCone(const Core::Mat44f& wvp, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveCone(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe)
 	{
-		RenderBaseShape(m_pConeMesh, wvp, color);
+		RenderBaseShape(m_pConeMesh, wvp, color, wireframe);
 	}
 
-	void RenderModule::RenderPrimitiveTorus(const Core::Mat44f& wvp, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveTorus(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe)
 	{
-		RenderBaseShape(m_pTorusMesh, wvp, color);
+		RenderBaseShape(m_pTorusMesh, wvp, color, wireframe);
 	}
 
-	void RenderModule::RenderPrimitiveCube(const Core::Mat44f& wvp, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveCube(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe)
 	{
-		RenderBaseShape(m_pCubeMesh, wvp, color);
+		RenderBaseShape(m_pCubeMesh, wvp, color, wireframe);
 	}
 
-	void RenderModule::RenderPrimitiveSphere(const Core::Mat44f& wvp, const Core::Float4& color)
+	void RenderModule::RenderPrimitiveSphere(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe)
 	{
-		RenderBaseShape(m_pSphereMesh, wvp, color);
+		RenderBaseShape(m_pSphereMesh, wvp, color, wireframe);
 	}
 
 	void RenderModule::ExecuteRenderCommand()
@@ -849,13 +864,21 @@ namespace Rendering
 		}
 	}
 
-	void RenderModule::RenderBaseShape(const Mesh* pMesh, const Core::Mat44f& wvp, const Core::Float4& color) const
+	void RenderModule::RenderBaseShape(const Mesh* pMesh, const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe) const
 	{
-		m_pRenderCommandList->SetPipelineState(m_pBaseShapePso->GetPipelineState());
-		m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeRootSig->GetRootSignature());
+		if (!wireframe)
+		{
+			m_pRenderCommandList->SetPipelineState(m_pBaseShapePso->GetPipelineState());
+			m_pRenderCommandList->SetGraphicsRootSignature(m_pBaseShapeRootSig->GetRootSignature());
 
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(Core::Mat44f) / 4, &wvp, 0);
-		m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(Core::Mat44f) / 4);
+			m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(Core::Mat44f) / 4, &wvp, 0);
+			m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DirectX::XMFLOAT4) / 4, &color, sizeof(Core::Mat44f) / 4);
+		}
+		else
+		{
+			m_pRenderCommandList->SetPipelineState(m_pDebugWireframePso->GetPipelineState());
+			m_pRenderCommandList->SetGraphicsRootSignature(m_pDebugWireframeRootSig->GetRootSignature());
+		}
 
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
