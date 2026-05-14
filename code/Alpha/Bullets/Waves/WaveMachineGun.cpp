@@ -139,6 +139,12 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
 
+		if (bullets.m_type[ii] == BulletType::COUNTER)
+		{
+			Systems::RenderableObject& debugObj = scene.m_opaqueObjects.PushBackDefault();
+			debugObj.DebugSphere(bullets.m_positions[ii], 1, Core::Float4(0, 1, 0, 1), true);
+		}
+
 		m_isAlive = true;
 	}
 
