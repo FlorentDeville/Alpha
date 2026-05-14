@@ -50,7 +50,7 @@ void BossComponent::OnStartGame()
 
 	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine);
 	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
-	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), this, pPlayer);
+	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 
 	m_pStateMachine->AddState(pStateWait, BossStateEnum::WAIT);
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);

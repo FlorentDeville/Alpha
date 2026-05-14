@@ -8,6 +8,7 @@
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Random/Random.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Game/GameContext.h"
@@ -20,12 +21,14 @@
 #include <assert.h>
 #include <cmath>
 
-WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, const Systems::GameObject* pOwner, const Systems::GameObject* pTarget)
+WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
+	const Systems::GameObject* pOwner, const Systems::GameObject* pTarget)
 	: IBulletWave()
 	, m_lastSpawnTime(0)
 	, m_pOwner(pOwner)
 	, m_pTarget(pTarget)
 	, m_nextBulletToShot(0)
+	, m_pCounterBulletMaterial(pCounterBulletMaterial)
 {
 	m_count = 100;
 	m_pMesh = pMesh;
@@ -50,11 +53,24 @@ void WaveMachineGun::Destroy(Bullets& bullets)
 	bullets.Free(m_startId, m_count);
 }
 
-void WaveMachineGun::Start(Bullets& /*bullets*/, const Core::Vec4f& /*pos*/)
+void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 {
 	m_isAlive = true;
 	m_lastSpawnTime = 0;
 	m_nextBulletToShot = m_startId;
+
+	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+		bullets.m_type[ii] = BulletType::NORMAL;
+
+	//generate the counter bullets
+	Core::RandomUInt generator(m_startId, m_endId - 1);
+
+	const uint32_t COUNTER_BULLET_COUNT = 5;
+	for (uint32_t ii = 0; ii < COUNTER_BULLET_COUNT; ++ii)
+	{
+		uint32_t index = generator.Generate();
+		bullets.m_type[index] = BulletType::COUNTER;
+	}
 }
 
 void WaveMachineGun::Stop()
@@ -111,7 +127,12 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 
 		Systems::RenderableObject& obj = scene.m_opaqueObjects.PushBackDefault();
 		obj.m_pMesh = m_pMesh->GetRenderingMesh();
-		obj.m_pMaterial = m_pMaterial;
+
+		if(bullets.m_type[ii] == BulletType::NORMAL)
+			obj.m_pMaterial = m_pMaterial;
+		else if(bullets.m_type[ii] == BulletType::COUNTER)
+			obj.m_pMaterial = m_pCounterBulletMaterial;
+
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);

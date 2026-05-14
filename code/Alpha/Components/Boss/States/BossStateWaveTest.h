@@ -23,7 +23,8 @@ public:
 	BossStateWaveTest(StateMachine* pStateMachine);
 	~BossStateWaveTest();
 
-	void Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, BossComponent* pComponent, const Systems::GameObject* pTarget);
+	void Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
+		BossComponent* pComponent, const Systems::GameObject* pTarget);
 
 	void OnEnter() override;
 	void OnUpdate() override;

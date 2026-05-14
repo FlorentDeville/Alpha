@@ -39,6 +39,7 @@ private:
 
 	Systems::HardAssetRef<Systems::MeshAsset> m_mesh;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_material;
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
 
 	uint32_t m_maxHP;
 
@@ -49,6 +50,7 @@ private:
 		ADD_BASETYPE(Systems::GameComponent)
 		ADD_FIELD(m_mesh)
 		ADD_FIELD(m_material)
+		ADD_FIELD(m_counterBulletMaterial)
 		ADD_FIELD(m_maxHP)
 		ADD_FIELD(m_currentHealthComp)
 		ADD_FIELD(m_collComp)

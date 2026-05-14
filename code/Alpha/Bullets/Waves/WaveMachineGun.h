@@ -14,7 +14,8 @@ namespace Systems
 class WaveMachineGun : public IBulletWave
 {
 public:
-	WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, const Systems::GameObject* pOwner, const Systems::GameObject* pTarget);
+	WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
+		const Systems::GameObject* pOwner, const Systems::GameObject* pTarget);
 	~WaveMachineGun();
 
 	void Init(Bullets& bullets) override;
@@ -27,6 +28,8 @@ public:
 private:
 	const Systems::GameObject* m_pOwner;
 	const Systems::GameObject* m_pTarget;
+
+	Systems::MaterialInstanceAsset* m_pCounterBulletMaterial;
 
 	uint32_t m_nextBulletToShot;
 	float m_lastSpawnTime;

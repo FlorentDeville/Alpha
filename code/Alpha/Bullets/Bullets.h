@@ -11,6 +11,14 @@ namespace Core
 	class Vec4f;
 }
 
+enum class BulletType : uint8_t
+{
+	NORMAL,
+	COUNTER,
+
+	COUNT
+};
+
 class Bullets
 {
 public:
@@ -19,6 +27,7 @@ public:
 	Core::Vec4f* m_acceleration;
 	float* m_timeToLive;
 	bool* m_free;
+	BulletType* m_type;
 
 	const uint32_t COUNT = 1000;
 

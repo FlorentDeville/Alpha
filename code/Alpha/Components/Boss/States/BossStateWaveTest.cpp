@@ -34,7 +34,8 @@ BossStateWaveTest::~BossStateWaveTest()
 	delete m_pWaveMachineGun;
 }
 
-void BossStateWaveTest::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, BossComponent* pComponent, const Systems::GameObject* pTarget)
+void BossStateWaveTest::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
+	BossComponent* pComponent, const Systems::GameObject* pTarget)
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
@@ -44,7 +45,7 @@ void BossStateWaveTest::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanc
 	m_waveIndex = pSubsystem->AddWave(m_pWave);
 	pSubsystem->InitWave(m_waveIndex);
 
-	m_pWaveMachineGun = new WaveMachineGun(pMesh, pMaterial, pComponent->GetOwner(), pTarget);
+	m_pWaveMachineGun = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pComponent->GetOwner(), pTarget);
 	m_waveMachineGunIndex = pSubsystem->AddWave(m_pWaveMachineGun);
 	pSubsystem->InitWave(m_waveMachineGunIndex);
 }
