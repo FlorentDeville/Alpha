@@ -30,7 +30,7 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_nextBulletToShot(0)
 	, m_pCounterBulletMaterial(pCounterBulletMaterial)
 {
-	m_count = 100;
+	m_count = 20;
 	m_pMesh = pMesh;
 	m_pMaterial = pMaterial;
 }
@@ -99,7 +99,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
-		const float SPEED = 40.f;
+		const float SPEED = 45.f;
 		Core::Vec4f velocity = end - start;
 		velocity.Normalize();
 		velocity = velocity * SPEED;
@@ -110,6 +110,8 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		bullets.m_timeToLive[m_nextBulletToShot] = 3;
 
 		++m_nextBulletToShot;
+
+		m_lastSpawnTime = pClock->GetTime();
 	}
 }
 
@@ -140,4 +142,7 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 
 		m_isAlive = true;
 	}
+
+	if (m_nextBulletToShot < m_endId)
+		m_isAlive = true;
 }
