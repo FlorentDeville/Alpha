@@ -21,12 +21,19 @@ namespace Systems
 	class RenderableObject
 	{
 	public:
+		RenderableObject()
+			: m_debug(false)
+		{ }
+
+		~RenderableObject() = default;
+
 		const Rendering::Mesh* m_pMesh;
 		const Systems::MaterialInstanceAsset* m_pMaterial;
 		const Systems::GameObject* m_pOwner;
 		Core::Mat44f m_worldTx;
 
 		RenderView m_view;
-		bool m_primitiveMesh; // Call RenderBaseShape and don't use m_pMaterial
+
+		bool m_debug; // Call RenderBaseShape and don't use m_pMaterial
 	};
 }

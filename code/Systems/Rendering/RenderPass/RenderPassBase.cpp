@@ -112,7 +112,7 @@ namespace Systems
 			if (!(renderable.m_view & Systems::RenderView::Game))
 				continue;
 
-			if (renderable.m_primitiveMesh)
+			if (renderable.m_debug)
 			{
 				renderModule.RenderBaseShape(renderable.m_pMesh, renderable.m_worldTx * viewProj, Core::Float4(1, 1, 1, 1));
 			}

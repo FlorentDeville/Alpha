@@ -138,7 +138,6 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
-		obj.m_primitiveMesh = false;
 
 		m_isAlive = true;
 	}
