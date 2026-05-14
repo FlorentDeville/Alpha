@@ -55,7 +55,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 		bullets.m_positions[m_startId + ii] = pos + Core::Vec4f(x, 0, z, 0) * CIRCLE_RADIUS;
 		bullets.m_speed[m_startId + ii] = Core::Vec4f(x, 0, z, 0) * SPEED;
 		bullets.m_acceleration[m_startId + ii] = Core::Vec4f(0, 0, 0, 0);
-		bullets.m_timeToLive[m_startId + ii] = 5;
+		bullets.m_timeToLive[m_startId + ii] = 2;
 	}
 
 	m_isAlive = true;

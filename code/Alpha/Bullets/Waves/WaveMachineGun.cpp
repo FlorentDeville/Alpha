@@ -83,7 +83,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
-		const float SPEED = 35.f;
+		const float SPEED = 40.f;
 		Core::Vec4f velocity = end - start;
 		velocity.Normalize();
 		velocity = velocity * SPEED;
@@ -91,7 +91,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		bullets.m_positions[m_nextBulletToShot] = start;
 		bullets.m_speed[m_nextBulletToShot] = velocity;
 		bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
-		bullets.m_timeToLive[m_nextBulletToShot] = 8;
+		bullets.m_timeToLive[m_nextBulletToShot] = 3;
 
 		++m_nextBulletToShot;
 	}
