@@ -17,9 +17,8 @@ struct VertexInput
 
 struct ObjectParameterStruct
 {
-    matrix m_world;
-    matrix m_view;
-    matrix m_proj;
+    matrix m_wvp;
+    float4 m_color;
 };
 ConstantBuffer<ObjectParameterStruct> ObjectParameter : register(b0);
 
@@ -28,9 +27,8 @@ PSInput main(VertexInput input)
 {
     PSInput output;
     
-    output.position = mul(float4(input.Position, 1), ObjectParameter.m_world);
-    output.position = mul(output.position, ObjectParameter.m_view);
-    output.position = mul(output.position, ObjectParameter.m_proj);
-
+    output.position = mul(float4(input.Position, 1), ObjectParameter.m_wvp);
+    output.color = ObjectParameter.m_color;
+    
 	return output;
 }

@@ -878,6 +878,17 @@ namespace Rendering
 		{
 			m_pRenderCommandList->SetPipelineState(m_pDebugWireframePso->GetPipelineState());
 			m_pRenderCommandList->SetGraphicsRootSignature(m_pDebugWireframeRootSig->GetRootSignature());
+
+			struct DebugObjectParam
+			{
+				Core::Mat44f m_wvp;
+				Core::Float4 m_color;
+			};
+
+			DebugObjectParam param;
+			param.m_wvp = wvp;
+			param.m_color = color;
+			m_pRenderCommandList->SetGraphicsRoot32BitConstants(0, sizeof(DebugObjectParam) / 4, &param, 0);
 		}
 
 		m_pRenderCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

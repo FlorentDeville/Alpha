@@ -5,4 +5,5 @@
 struct PSInput
 {
     float4 position : SV_Position; //screen space
+    float4 color : COLOR0;
 };
