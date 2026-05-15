@@ -94,7 +94,11 @@ namespace Editors
 		m_propertyItemDepth[nullptr] = 0;
 
 		if (pObject)
+		{
+			const std::string& typeName = pObject->GetTypeDescriptor()->GetName();
+			m_pPropertyGridWidget->SetClassName(typeName);
 			CreatePropertiesForObject(pObject);
+		}
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
