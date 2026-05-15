@@ -20,6 +20,14 @@
 
 //#pragma optimize("", off)
 
+#ifdef min
+	#undef min
+#endif
+
+#ifdef max
+	#undef max
+#endif
+
 namespace Editors
 {
 	GizmoWidget::GizmoWidget()
