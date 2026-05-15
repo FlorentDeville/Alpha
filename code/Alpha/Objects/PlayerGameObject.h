@@ -55,5 +55,8 @@ private:
 
 	uint32_t m_currentHp;
 
+	//Index of the counter bullet the player collided with
+	uint32_t m_counterBulletIndex;
+
 	void OnBulletCollision();
 };

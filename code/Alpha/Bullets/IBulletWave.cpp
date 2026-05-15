@@ -4,11 +4,13 @@
 
 #include "Alpha/Bullets/IBulletWave.h"
 
+#include "Alpha/Components/Boss/BossComponent.h"
 #include "Alpha/Bullets/Bullets.h"
 #include "Alpha/Objects/PlayerGameObject.h"
 
 #include "Core/Log/LogModule.h"
 
+#include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Collision/CollisionSubsystem.h"
 #include "Systems/Game/Subsystems/Collision/Shapes/ShapeSphere.h"
 #include "Systems/Game/Subsystems/Message/GameMessageSubsystem.h"
@@ -21,7 +23,7 @@ IBulletWave::IBulletWave()
 	, m_pMesh(nullptr)
 	, m_pMaterial(nullptr)
 	, m_isAlive(false)
-	, m_counterBulletCollisionRadius(1)
+	, m_counterBulletCollisionRadius(5)
 { }
 
 IBulletWave::~IBulletWave()
@@ -34,11 +36,17 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (bullets.m_timeToLive[ii] <= 0)
 			continue;
 
+		if (bullets.m_state[ii] != BulletState::ATTACK)
+			continue;
+
 		bool collided = false;
 		if (bullets.m_type[ii] == BulletType::COUNTER)
 		{
 			if (CollisionTestForBulletCounter(bullets, ii))
 				collided = CollisionTestForBullet(bullets, ii);
+
+			if (collided)
+				Core::LogModule::Get().LogInfo("Collision detected for counter bullet");
 		}
 		else
 		{
@@ -48,6 +56,36 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (collided)
 			return;
 	}
+}
+
+void IBulletWave::CounterBullet(Bullets& bullets, uint32_t index)
+{
+	Core::LogModule::Get().LogInfo("Bullet %d countered", index);
+
+	const BossComponent* pBoss = Systems::GameMgr::Get().FindComponent<BossComponent>();
+	const Systems::GameObject* pTarget = pBoss->GetOwner();
+	Core::Vec4f targetPosition = pTarget->GetTransform().GetWorldTx().GetT();
+
+	//compute new acceleration
+	bullets.m_acceleration[index] = Core::Vec4f(0, 0, 0, 0);
+
+	//compute new velocity
+	const float SPEED = 20;
+	Core::Vec4f velocity = targetPosition - bullets.m_positions[index];
+	velocity.Normalize();
+	velocity = velocity * SPEED;
+	bullets.m_speed[index] = velocity;
+	bullets.m_state[index] = BulletState::COUNTER;
+}
+
+uint32_t IBulletWave::GetStartId() const
+{
+	return m_startId;
+}
+
+uint32_t IBulletWave::GetEndId() const
+{
+	return m_endId;
 }
 
 bool IBulletWave::IsAlive() const
@@ -83,7 +121,7 @@ bool IBulletWave::CollisionTestForBullet(const Bullets& bullets, uint32_t index)
 	msg.m_id = CONSTSID("bullet_collision");
 	pMessage->SendMessage(pGo, msg);
 
-	Core::LogModule::Get().LogInfo("Bullet collided with player");
+	//Core::LogModule::Get().LogInfo("Bullet collided with player");
 
 	return true;
 }
@@ -114,7 +152,7 @@ bool IBulletWave::CollisionTestForBulletCounter(const Bullets& bullets, uint32_t
 	msg.m_param = index;
 	pMessage->SendMessage(pGo, msg);
 
-	Core::LogModule::Get().LogInfo("Counter bullet collided with player");
+	//Core::LogModule::Get().LogInfo("Counter bullet collided with player");
 
 	return true;
 }
