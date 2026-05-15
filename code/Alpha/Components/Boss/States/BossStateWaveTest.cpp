@@ -9,6 +9,7 @@
 #include "Alpha/Bullets/Waves/WaveTest.h"
 #include "Alpha/Components/Boss/BossComponent.h"
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
+#include "Alpha/Objects/BossGameObject.h"
 
 #include "Core/Log/LogModule.h"
 
@@ -18,7 +19,7 @@ BossStateWaveTest::BossStateWaveTest(StateMachine* pStateMachine)
 	: IState(pStateMachine)
 	, m_pWave(nullptr)
 	, m_pWaveMachineGun(nullptr)
-	, m_pBossComponent(nullptr)
+	, m_pBoss(nullptr)
 	, m_waveIndex(0)
 	, m_waveMachineGunIndex(0)
 	, m_runFirstWave(true)
@@ -35,24 +36,24 @@ BossStateWaveTest::~BossStateWaveTest()
 }
 
 void BossStateWaveTest::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
-	BossComponent* pComponent, const Systems::GameObject* pTarget)
+	BossGameObject* pBoss, const Systems::GameObject* pTarget)
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
-	m_pBossComponent = pComponent;
+	m_pBoss = pBoss;
 
 	m_pWave = new WaveTest(pMesh, pMaterial);
 	m_waveIndex = pSubsystem->AddWave(m_pWave);
 	pSubsystem->InitWave(m_waveIndex);
 
-	m_pWaveMachineGun = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pComponent->GetOwner(), pTarget);
+	m_pWaveMachineGun = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);
 	m_waveMachineGunIndex = pSubsystem->AddWave(m_pWaveMachineGun);
 	pSubsystem->InitWave(m_waveMachineGunIndex);
 }
 
 void BossStateWaveTest::OnEnter()
 {
-	const Systems::TransformComponent& transform = m_pBossComponent->GetOwner()->GetTransform();
+	const Systems::TransformComponent& transform = m_pBoss->GetTransform();
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 

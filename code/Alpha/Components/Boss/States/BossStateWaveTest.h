@@ -13,7 +13,7 @@ namespace Systems
 	class MaterialInstanceAsset;
 }
 
-class BossComponent;
+class BossGameObject;
 class WaveMachineGun;
 class WaveTest;
 
@@ -24,7 +24,7 @@ public:
 	~BossStateWaveTest();
 
 	void Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
-		BossComponent* pComponent, const Systems::GameObject* pTarget);
+		BossGameObject* pComponent, const Systems::GameObject* pTarget);
 
 	void OnEnter() override;
 	void OnUpdate() override;
@@ -34,7 +34,7 @@ private:
 	WaveTest* m_pWave;
 	WaveMachineGun* m_pWaveMachineGun;
 
-	BossComponent* m_pBossComponent;
+	BossGameObject* m_pBoss;
 	
 	uint32_t m_waveIndex;
 	uint32_t m_waveMachineGunIndex;
