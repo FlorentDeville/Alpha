@@ -4,8 +4,10 @@
 
 #include "Alpha/Objects/PlayerGameObject.h"
 
+#include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Commands/GameCommands.h"
 
+#include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
 
 #include "Inputs/InputMgr.h"
@@ -22,6 +24,7 @@ PlayerGameObject::PlayerGameObject()
 	, m_currentHp()
 	, m_maxHp()
 	, m_speed()
+	, m_counterBulletIndex(UINT32_MAX)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -79,7 +82,21 @@ void PlayerGameObject::Update(float dt)
 		m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
 	}
 
+	if (GameCommands::Counter())
+	{
+		//Core::LogModule::Get().LogInfo("Command Counter triggered");
+
+		if(m_counterBulletIndex != UINT32_MAX)
+		{
+			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
+			bulletSubsystem->CounterBullet(m_counterBulletIndex);
+		}
+	}
+
 	BaseClass::Update(dt);
+
+	//cleanup
+	m_counterBulletIndex = UINT32_MAX;
 }
 
 void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
@@ -89,6 +106,13 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 	case SID("bullet_collision"):
 	{
 		OnBulletCollision();
+	}
+	break;
+
+	case SID("counter_bullet_collision"):
+	{
+		Core::LogModule::Get().LogInfo("Message counter_bullet_collision received");
+		m_counterBulletIndex = static_cast<uint32_t>(msg.m_param);
 	}
 	break;
 

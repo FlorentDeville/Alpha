@@ -14,6 +14,7 @@ namespace Rendering
 
 namespace Widgets
 {
+	class Button;
 	class Viewport;
 }
 
@@ -33,10 +34,13 @@ namespace Editors
 		Rendering::PipelineState* m_pPso;
 		Rendering::RootSignature* m_pRootSig;
 
+		Widgets::Button* m_pShowCollisionButton;
+
 		void Viewport_OnRender();
 
 		void OnClick_Play();
 		void OnClick_Pause();
 		void OnClick_Stop();
+		void OnClick_ShowCollison();
 	};
 }

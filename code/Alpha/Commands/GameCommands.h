@@ -12,4 +12,5 @@ namespace GameCommands
 	float MoveRight();
 	float MoveUp();
 	float MoveDown();
+	float Counter();
 }

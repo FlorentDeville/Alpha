@@ -60,7 +60,10 @@ void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 	m_nextBulletToShot = m_startId;
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+	{
 		bullets.m_type[ii] = BulletType::NORMAL;
+		bullets.m_state[ii] = BulletState::ATTACK;
+	}
 
 	//generate the counter bullets
 	Core::RandomUInt generator(m_startId, m_endId - 1);
@@ -99,7 +102,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
-		const float SPEED = 45.f;
+		const float SPEED = 25.f;
 		Core::Vec4f velocity = end - start;
 		velocity.Normalize();
 		velocity = velocity * SPEED;
@@ -142,7 +145,7 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 		if (bullets.m_type[ii] == BulletType::COUNTER)
 		{
 			Systems::RenderableObject& debugObj = scene.m_opaqueObjects.PushBackDefault();
-			debugObj.DebugSphere(bullets.m_positions[ii], 1, Core::Float4(0, 1, 0, 1), true);
+			debugObj.DebugSphere(bullets.m_positions[ii], m_counterBulletCollisionRadius, Core::Float4(0, 1, 0, 1), true);
 		}
 
 		m_isAlive = true;

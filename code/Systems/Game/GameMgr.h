@@ -63,6 +63,9 @@ namespace Systems
 		template<class T> const T* FindComponent() const;
 		const GameComponent* FindComponent(Core::Sid componentTypeName) const;
 
+		bool Debug_ShowCollision() const;
+		void Debug_SetShowCollision(bool show);
+
 	private:
 		//Loading
 		Core::Array<Systems::LevelAsset*> m_loadedLevels;		//pointers to the currently loaded levels.
@@ -82,6 +85,8 @@ namespace Systems
 		GameContext* m_pGameContext;
 
 		Core::Array<ISubsystem*> m_gameSubsystems;
+
+		bool m_debugShowCollision;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 

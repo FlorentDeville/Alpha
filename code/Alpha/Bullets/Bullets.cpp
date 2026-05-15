@@ -14,6 +14,7 @@ void Bullets::Create()
 	m_timeToLive = new float[COUNT];
 	m_free = new bool[COUNT] { true };
 	m_type = new BulletType[COUNT];
+	m_state = new BulletState[COUNT];
 }
 
 void Bullets::Delete()
@@ -24,6 +25,7 @@ void Bullets::Delete()
 	delete[] m_free;
 	delete[] m_timeToLive;
 	delete[] m_type;
+	delete[] m_state;
 }
 
 uint32_t Bullets::Allocate(uint32_t count)

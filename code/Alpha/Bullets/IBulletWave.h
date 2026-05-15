@@ -35,6 +35,11 @@ public:
 	virtual void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) = 0;
 	virtual void CollisionDetection(Bullets& bullet);
 
+	virtual void CounterBullet(Bullets& bullet, uint32_t index);
+
+	uint32_t GetStartId() const;
+	uint32_t GetEndId() const;
+
 	bool IsAlive() const;
 
 protected:
@@ -43,8 +48,14 @@ protected:
 	uint32_t m_startId;
 	uint32_t m_endId; //id of the last bullet (non inclusive : the bullet at id m_endId is not used by this wave)
 
+	float m_bulletCollisionRadius; //radius for the collision sphere of bullets
+	float m_counterBulletCollisionRadius; //radius of the collision for counter bullet
+
 	bool m_isAlive;
 
 	Systems::MeshAsset* m_pMesh;
 	Systems::MaterialInstanceAsset* m_pMaterial;
+
+	bool CollisionTestForBullet(const Bullets& bullets, uint32_t index);
+	bool CollisionTestForBulletCounter(const Bullets& bullets, uint32_t index);
 };

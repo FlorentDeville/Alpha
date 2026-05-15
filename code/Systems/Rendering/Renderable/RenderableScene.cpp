@@ -12,6 +12,7 @@
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Clock/Clock.h"
+#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -44,7 +45,7 @@ namespace Systems
 		scene.m_camera.m_fov = fov;
 	}
 
-	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime)
+	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime, bool showCollision)
 	{
 		scene.m_time = currentTime;
 
@@ -281,6 +282,14 @@ namespace Systems
 					renderable.m_position = pUi->GetPosition();
 					renderable.m_size = pUi->GetSize();
 					renderable.m_pTexture = pTexture ? pTexture->GetTexture() : nullptr;
+				}
+				else if (const Systems::CollisionSphereComponent* pSphere = pComponent->Cast<Systems::CollisionSphereComponent>())
+				{
+					if (showCollision)
+					{
+						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
+						renderable.DebugSphere(pSphere->m_sphere.GetCenter(), pSphere->m_sphere.GetRadius(), Core::Float4(1, 0, 0, 1), true);
+					}
 				}
 			}
 		}

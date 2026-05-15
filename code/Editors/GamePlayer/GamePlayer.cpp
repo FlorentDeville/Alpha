@@ -58,6 +58,10 @@ namespace Editors
 		pStopButton->OnClick([this]() { OnClick_Stop(); });
 		pMenu->AddWidget(pStopButton);
 
+		m_pShowCollisionButton = new Widgets::Button("Toggle Collision");
+		m_pShowCollisionButton->OnClick([this]() {OnClick_ShowCollison(); });
+		pMenu->AddWidget(m_pShowCollisionButton);
+
 		const int WIDTH = 1920;
 		const int HEIGHT = 1080;
 
@@ -123,5 +127,13 @@ namespace Editors
 		Systems::GameMgr::Get().RequestUnloadingAllLevels();
 		EditorManager::Get().SwitchTab(TabId::LEVEL_EDITOR);
 		Core::LogModule::Get().LogError("Game stopped.");
+	}
+
+	void GamePlayer::OnClick_ShowCollison()
+	{
+		Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+		bool show = gameMgr.Debug_ShowCollision();
+
+		gameMgr.Debug_SetShowCollision(!show);
 	}
 }

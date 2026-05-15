@@ -17,6 +17,8 @@ namespace GameCommands
 		MOVE_UP,
 		MOVE_DOWN,
 
+		COUNTER,
+
 		COUNT
 	};
 
@@ -34,6 +36,7 @@ namespace GameCommands
 		Inputs::InputKeyCommand commandDown(Os::VKeyCodes::Vk_S, Inputs::InputKeyCommand::DOWN);
 		Inputs::InputKeyCommand commandLeft(Os::VKeyCodes::Vk_A, Inputs::InputKeyCommand::DOWN);
 		Inputs::InputKeyCommand commandRight(Os::VKeyCodes::Vk_D, Inputs::InputKeyCommand::DOWN);
+		Inputs::InputKeyCommand commandCounter(Os::VKeyCodes::Return, Inputs::InputKeyCommand::PRESSED);
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 
@@ -41,6 +44,7 @@ namespace GameCommands
 		s_commandIndex[GameCommandId::MOVE_DOWN] = inputMgr.RegisterCommand(commandDown);
 		s_commandIndex[GameCommandId::MOVE_LEFT] = inputMgr.RegisterCommand(commandLeft);
 		s_commandIndex[GameCommandId::MOVE_RIGHT] = inputMgr.RegisterCommand(commandRight);
+		s_commandIndex[GameCommandId::COUNTER] = inputMgr.RegisterCommand(commandCounter);
 	}
 
 	float MoveLeft()
@@ -61,5 +65,10 @@ namespace GameCommands
 	float MoveDown()
 	{
 		return GetState(GameCommandId::MOVE_DOWN);
+	}
+
+	float Counter()
+	{
+		return GetState(GameCommandId::COUNTER);
 	}
 }
