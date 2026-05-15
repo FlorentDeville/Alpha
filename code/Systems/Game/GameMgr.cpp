@@ -36,6 +36,7 @@ namespace Systems
 		, m_pDefaultCamera(nullptr)
 		, m_pGameContext(nullptr)
 		, m_gameSubsystems()
+		, m_debugShowCollision(false)
 	{ }
 
 	GameMgr::~GameMgr()
@@ -134,7 +135,7 @@ namespace Systems
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
-			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime());
+			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime(), m_debugShowCollision);
 		}
 
 		m_pGameContext->m_pParticleSystem->BuildRenderable(scene);
@@ -238,6 +239,16 @@ namespace Systems
 		}
 
 		return nullptr;
+	}
+
+	bool GameMgr::Debug_ShowCollision() const
+	{
+		return m_debugShowCollision;
+	}
+
+	void GameMgr::Debug_SetShowCollision(bool show)
+	{
+		m_debugShowCollision = show;
 	}
 
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
