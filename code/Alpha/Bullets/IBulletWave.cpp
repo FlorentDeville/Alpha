@@ -21,6 +21,7 @@ IBulletWave::IBulletWave()
 	, m_pMesh(nullptr)
 	, m_pMaterial(nullptr)
 	, m_isAlive(false)
+	, m_counterBulletCollisionRadius(1)
 { }
 
 IBulletWave::~IBulletWave()
@@ -28,42 +29,92 @@ IBulletWave::~IBulletWave()
 
 void IBulletWave::CollisionDetection(Bullets& bullets)
 {
-	Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
-	Systems::ShapeSphere colShape(Core::Vec4f(), 0.5f, nullptr);
-
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
 		if (bullets.m_timeToLive[ii] <= 0)
 			continue;
 
-		colShape.SetCenter(bullets.m_positions[ii]);
-
-		const Systems::ICollisionShape* pOther = nullptr;
-		bool res = pColSubsystem->CollisionDetection(&colShape, &pOther);
-		if (!res)
-			continue;
-
-		Systems::GameObject* pGo = pOther->GetOwner();
-		if (!pGo)
-			return;
-
-		if (pGo->IsA<PlayerGameObject>())
+		bool collided = false;
+		if (bullets.m_type[ii] == BulletType::COUNTER)
 		{
-			bullets.m_timeToLive[ii] = 0;
-
-			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
-			Systems::GameMessage msg;
-			msg.m_id = CONSTSID("bullet_collision");
-			pMessage->SendMessage(pGo, msg);
-
-			Core::LogModule::Get().LogInfo("Bullet collided with player");
+			if (CollisionTestForBulletCounter(bullets, ii))
+				collided = CollisionTestForBullet(bullets, ii);
+		}
+		else
+		{
+			collided = CollisionTestForBullet(bullets, ii);
 		}
 
-		return;
+		if (collided)
+			return;
 	}
 }
 
 bool IBulletWave::IsAlive() const
 {
 	return m_isAlive;
+}
+
+bool IBulletWave::CollisionTestForBullet(const Bullets& bullets, uint32_t index)
+{
+	Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
+	Systems::ShapeSphere colShape(Core::Vec4f(), 0.5f, nullptr);
+
+	colShape.SetCenter(bullets.m_positions[index]);
+
+	const Systems::ICollisionShape* pOther = nullptr;
+	bool res = pColSubsystem->CollisionDetection(&colShape, &pOther);
+	if (!res)
+		return false;
+
+	Systems::GameObject* pGo = pOther->GetOwner();
+	if (!pGo)
+		return false;
+
+	if (!pGo->IsA<PlayerGameObject>())
+		return false;
+
+	//kill bullet
+	bullets.m_timeToLive[index] = 0;
+
+	//send message to player
+	Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+	Systems::GameMessage msg;
+	msg.m_id = CONSTSID("bullet_collision");
+	pMessage->SendMessage(pGo, msg);
+
+	Core::LogModule::Get().LogInfo("Bullet collided with player");
+
+	return true;
+}
+
+bool IBulletWave::CollisionTestForBulletCounter(const Bullets& bullets, uint32_t index)
+{
+	Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
+	Systems::ShapeSphere colShape(Core::Vec4f(), m_counterBulletCollisionRadius, nullptr);
+
+	colShape.SetCenter(bullets.m_positions[index]);
+
+	const Systems::ICollisionShape* pOther = nullptr;
+	bool res = pColSubsystem->CollisionDetection(&colShape, &pOther);
+	if (!res)
+		return false;
+
+	Systems::GameObject* pGo = pOther->GetOwner();
+	if (!pGo)
+		return false;
+
+	if (!pGo->IsA<PlayerGameObject>())
+		return false;
+
+	//send message to player
+	Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+	Systems::GameMessage msg;
+	msg.m_id = CONSTSID("counter_bullet_collision");
+	msg.m_param = index;
+	pMessage->SendMessage(pGo, msg);
+
+	Core::LogModule::Get().LogInfo("Counter bullet collided with player");
+
+	return true;
 }

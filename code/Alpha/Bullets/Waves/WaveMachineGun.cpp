@@ -142,7 +142,7 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 		if (bullets.m_type[ii] == BulletType::COUNTER)
 		{
 			Systems::RenderableObject& debugObj = scene.m_opaqueObjects.PushBackDefault();
-			debugObj.DebugSphere(bullets.m_positions[ii], 1, Core::Float4(0, 1, 0, 1), true);
+			debugObj.DebugSphere(bullets.m_positions[ii], m_counterBulletCollisionRadius, Core::Float4(0, 1, 0, 1), true);
 		}
 
 		m_isAlive = true;

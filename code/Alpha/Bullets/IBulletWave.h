@@ -43,8 +43,13 @@ protected:
 	uint32_t m_startId;
 	uint32_t m_endId; //id of the last bullet (non inclusive : the bullet at id m_endId is not used by this wave)
 
+	float m_counterBulletCollisionRadius; //radius of the collision for counter bullet
+
 	bool m_isAlive;
 
 	Systems::MeshAsset* m_pMesh;
 	Systems::MaterialInstanceAsset* m_pMaterial;
+
+	bool CollisionTestForBullet(const Bullets& bullets, uint32_t index);
+	bool CollisionTestForBulletCounter(const Bullets& bullets, uint32_t index);
 };

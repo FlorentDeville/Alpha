@@ -4,6 +4,7 @@
 
 #include "Alpha/Objects/PlayerGameObject.h"
 
+#include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Commands/GameCommands.h"
 
 #include "Core/Math/Constants.h"
@@ -78,6 +79,12 @@ void PlayerGameObject::Update(float dt)
 
 		m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
 	}
+
+	//if (GameCommands::Counter())
+	//{
+	//	const BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
+
+	//}
 
 	BaseClass::Update(dt);
 }
