@@ -47,6 +47,7 @@ namespace Inputs
 
 		uint32_t RegisterCommand(const InputKeyCommand& command);
 
+		float GetState(uint32_t index) const;
 		bool GetState(InputCommandEnum command) const;
 
 		void ClearAllStates();

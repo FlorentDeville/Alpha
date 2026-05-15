@@ -35,6 +35,8 @@ namespace Inputs
 
 		void Update();
 
+		float GetState() const;
+
 	private:
 		Os::VKeyCode m_key;
 		Behavior m_behavior;

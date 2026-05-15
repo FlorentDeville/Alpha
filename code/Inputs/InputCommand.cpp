@@ -48,4 +48,9 @@ namespace Inputs
 
 		}
 	}
+
+	float InputKeyCommand::GetState() const
+	{
+		return m_state;
+	}
 }

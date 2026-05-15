@@ -47,6 +47,11 @@ namespace Inputs
 		return index;
 	}
 
+	float InputMgr::GetState(uint32_t index) const
+	{
+		return m_commands[index].GetState();
+	}
+
 	bool InputMgr::GetState(InputCommandEnum command) const
 	{
 		Os::VKeyCode vkey;
