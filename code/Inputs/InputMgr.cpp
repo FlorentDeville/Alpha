@@ -34,25 +34,25 @@ namespace Inputs
 		m_mouseState = mouseState;
 	}
 
-	bool InputMgr::GetState(InputCommand command) const
+	bool InputMgr::GetState(InputCommandEnum command) const
 	{
 		Os::VKeyCode vkey;
 
 		switch (command)
 		{
-		case InputCommand::FORWARD:
+		case InputCommandEnum::FORWARD:
 			vkey = Os::VKeyCodes::Vk_W;
 			break;
 
-		case InputCommand::BACKWARD:
+		case InputCommandEnum::BACKWARD:
 			vkey = Os::VKeyCodes::Vk_S;
 			break;
 
-		case InputCommand::LEFT:
+		case InputCommandEnum::LEFT:
 			vkey = Os::VKeyCodes::Vk_A;
 			break;
 
-		case InputCommand::RIGHT:
+		case InputCommandEnum::RIGHT:
 			vkey = Os::VKeyCodes::Vk_D;
 			break;
 		}

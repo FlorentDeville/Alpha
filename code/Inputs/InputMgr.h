@@ -42,7 +42,7 @@ namespace Inputs
 		void UpdateKeyboardState(uint64_t virtualKey, bool down);
 		void UpdateMouseState(const MouseState& mouseState);
 
-		bool GetState(InputCommand command) const;
+		bool GetState(InputCommandEnum command) const;
 
 		void ClearAllStates();
 
