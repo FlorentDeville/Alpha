@@ -24,6 +24,7 @@ IBulletWave::IBulletWave()
 	, m_pMaterial(nullptr)
 	, m_isAlive(false)
 	, m_counterBulletCollisionRadius(5)
+	, m_bulletCollisionRadius(0.5f)
 { }
 
 IBulletWave::~IBulletWave()
@@ -36,25 +37,48 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (bullets.m_timeToLive[ii] <= 0)
 			continue;
 
-		if (bullets.m_state[ii] != BulletState::ATTACK)
-			continue;
-
-		bool collided = false;
-		if (bullets.m_type[ii] == BulletType::COUNTER)
+		if (bullets.m_state[ii] == BulletState::ATTACK)
 		{
-			if (CollisionTestForBulletCounter(bullets, ii))
+			bool collided = false;
+			if (bullets.m_type[ii] == BulletType::COUNTER)
+			{
+				if (CollisionTestForBulletCounter(bullets, ii))
+					collided = CollisionTestForBullet(bullets, ii);
+
+				if (collided)
+					Core::LogModule::Get().LogInfo("Collision detected for counter bullet");
+			}
+			else
+			{
 				collided = CollisionTestForBullet(bullets, ii);
+			}
 
 			if (collided)
-				Core::LogModule::Get().LogInfo("Collision detected for counter bullet");
+				return;
 		}
-		else
+		else if (bullets.m_state[ii] == BulletState::COUNTER)
 		{
-			collided = CollisionTestForBullet(bullets, ii);
-		}
+			Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
+			Systems::ShapeSphere colShape(Core::Vec4f(), m_bulletCollisionRadius, nullptr);
 
-		if (collided)
-			return;
+			colShape.SetCenter(bullets.m_positions[ii]);
+
+			const Systems::ICollisionShape* pOther = nullptr;
+			bool res = pColSubsystem->CollisionDetection(&colShape, &pOther);
+			if (!res)
+				continue;
+
+			Systems::GameObject* pGo = pOther->GetOwner();
+			if (!pGo)
+				continue;
+
+			//apply damage
+			//BossComponent* pBoss = pGo->FindComponent<BossComponent>();
+			//pBoss->m_currentHP -= 5;
+
+			//kill the bullet
+			bullets.m_timeToLive[ii] = 0;
+		}
 	}
 }
 
@@ -96,7 +120,7 @@ bool IBulletWave::IsAlive() const
 bool IBulletWave::CollisionTestForBullet(const Bullets& bullets, uint32_t index)
 {
 	Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
-	Systems::ShapeSphere colShape(Core::Vec4f(), 0.5f, nullptr);
+	Systems::ShapeSphere colShape(Core::Vec4f(), m_bulletCollisionRadius, nullptr);
 
 	colShape.SetCenter(bullets.m_positions[index]);
 

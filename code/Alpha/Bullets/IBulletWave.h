@@ -48,6 +48,7 @@ protected:
 	uint32_t m_startId;
 	uint32_t m_endId; //id of the last bullet (non inclusive : the bullet at id m_endId is not used by this wave)
 
+	float m_bulletCollisionRadius; //radius for the collision sphere of bullets
 	float m_counterBulletCollisionRadius; //radius of the collision for counter bullet
 
 	bool m_isAlive;

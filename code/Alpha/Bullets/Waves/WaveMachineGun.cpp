@@ -102,7 +102,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
-		const float SPEED = 45.f;
+		const float SPEED = 25.f;
 		Core::Vec4f velocity = end - start;
 		velocity.Normalize();
 		velocity = velocity * SPEED;
