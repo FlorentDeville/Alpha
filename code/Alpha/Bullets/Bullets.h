@@ -19,6 +19,14 @@ enum class BulletType : uint8_t
 	COUNT
 };
 
+enum class BulletState : uint8_t
+{
+	ATTACK,
+	COUNTER,
+
+	COUNT
+};
+
 class Bullets
 {
 public:
@@ -28,6 +36,7 @@ public:
 	float* m_timeToLive;
 	bool* m_free;
 	BulletType* m_type;
+	BulletState* m_state;
 
 	const uint32_t COUNT = 1000;
 

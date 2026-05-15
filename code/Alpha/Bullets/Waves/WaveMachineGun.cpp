@@ -60,7 +60,10 @@ void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 	m_nextBulletToShot = m_startId;
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+	{
 		bullets.m_type[ii] = BulletType::NORMAL;
+		bullets.m_state[ii] = BulletState::ATTACK;
+	}
 
 	//generate the counter bullets
 	Core::RandomUInt generator(m_startId, m_endId - 1);
