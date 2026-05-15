@@ -13,6 +13,7 @@
 #include <DirectXMath.h>
 
 #include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Commands/GameCommands.h"
 #include "Alpha/Configuration.h"
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 
@@ -403,6 +404,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Update()
 {
+	Inputs::InputMgr::Get().PreUpdate();
+
 	Systems::Clock& clock = Systems::Clock::Get();
 	clock.Update();
 
@@ -427,7 +430,7 @@ void Update()
 
 		previousApplicationTick = currentApplicationTick;
 
-		Inputs::InputMgr::Get().ClearAllStates();
+		Inputs::InputMgr::Get().PostUpdate();
 	}
 }
 
@@ -610,6 +613,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
 	inputMgr.Init();
+	GameCommands::RegisterGameCommands();
 
 	Editors::ObjectWatcher::InitSingleton();
 	Editors::ObjectWatcher& objectWatcher = Editors::ObjectWatcher::Get();

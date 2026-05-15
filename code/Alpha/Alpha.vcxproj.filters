@@ -58,6 +58,9 @@
     <ClCompile Include="Objects\PlayerGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Commands\GameCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -137,6 +140,7 @@
     <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
     <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
     <ClInclude Include="Objects\PlayerGameObject.h" />
+    <ClInclude Include="Commands\GameCommands.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

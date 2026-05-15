@@ -4,6 +4,8 @@
 
 #include "Alpha/Objects/PlayerGameObject.h"
 
+#include "Alpha/Commands/GameCommands.h"
+
 #include "Core/Math/Constants.h"
 
 #include "Inputs/InputMgr.h"
@@ -17,6 +19,9 @@
 
 PlayerGameObject::PlayerGameObject()
 	: Systems::GameObject()
+	, m_currentHp()
+	, m_maxHp()
+	, m_speed()
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -50,17 +55,15 @@ void PlayerGameObject::Update(float dt)
 	const Core::Vec4f right = localTx.GetX();
 	const Core::Vec4f oldPosition = localTx.GetT();
 
-	Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
-
 	Core::Vec4f direction;
-	if (inputMgr.GetState(Inputs::InputCommand::FORWARD))
+	if (GameCommands::MoveUp())
 		direction = direction + forward;
-	else if (inputMgr.GetState(Inputs::InputCommand::BACKWARD))
+	else if (GameCommands::MoveDown())
 		direction = direction - forward;
 
-	if (inputMgr.GetState(Inputs::InputCommand::LEFT))
+	if (GameCommands::MoveLeft())
 		direction = direction - right;
-	else if (inputMgr.GetState(Inputs::InputCommand::RIGHT))
+	else if (GameCommands::MoveRight())
 		direction = direction + right;
 
 	if (direction.Length() != 0)
