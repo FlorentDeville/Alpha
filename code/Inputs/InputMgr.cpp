@@ -52,32 +52,6 @@ namespace Inputs
 		return m_commands[index].GetState();
 	}
 
-	bool InputMgr::GetState(InputCommandEnum command) const
-	{
-		Os::VKeyCode vkey;
-
-		switch (command)
-		{
-		case InputCommandEnum::FORWARD:
-			vkey = Os::VKeyCodes::Vk_W;
-			break;
-
-		case InputCommandEnum::BACKWARD:
-			vkey = Os::VKeyCodes::Vk_S;
-			break;
-
-		case InputCommandEnum::LEFT:
-			vkey = Os::VKeyCodes::Vk_A;
-			break;
-
-		case InputCommandEnum::RIGHT:
-			vkey = Os::VKeyCodes::Vk_D;
-			break;
-		}
-
-		return IsKeyPressed(vkey);
-	}
-
 	void InputMgr::ClearAllStates()
 	{
 		m_mouseState.m_mouseWheel = 0; //reset the mouse wheel distance
