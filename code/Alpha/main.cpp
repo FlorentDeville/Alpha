@@ -13,6 +13,7 @@
 #include <DirectXMath.h>
 
 #include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Commands/GameCommands.h"
 #include "Alpha/Configuration.h"
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 
@@ -612,6 +613,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
 	inputMgr.Init();
+	GameCommands::RegisterGameCommands();
 
 	Editors::ObjectWatcher::InitSingleton();
 	Editors::ObjectWatcher& objectWatcher = Editors::ObjectWatcher::Get();
