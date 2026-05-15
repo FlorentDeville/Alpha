@@ -18,6 +18,7 @@
     <ClInclude Include="Internal\Buffer\BufferManager.h" />
     <ClInclude Include="Internal\Buffer\Dx12Buffer.h" />
     <ClInclude Include="Internal\DepthWriteMaskToDx12.h" />
+    <ClInclude Include="Internal\FillModeToDx12.h" />
     <ClInclude Include="PipelineState\BlendFactor.h" />
     <ClInclude Include="PipelineState\BlendOperation.h" />
     <ClInclude Include="Camera.h" />
@@ -40,6 +41,7 @@
     <ClInclude Include="PipelineState\CullMode.h" />
     <ClInclude Include="PipelineState\DepthComparisonMode.h" />
     <ClInclude Include="PipelineState\DepthWriteMask.h" />
+    <ClInclude Include="PipelineState\FillMode.h" />
     <ClInclude Include="PipelineState\PipelineState.h" />
     <ClInclude Include="PipelineState\PipelineStateDesc.h" />
     <ClInclude Include="PipelineState\PipelineStateId.h" />
@@ -79,6 +81,7 @@
     <ClCompile Include="Internal\Buffer\BufferManager.cpp" />
     <ClCompile Include="Internal\BufferFormatToDx12.cpp" />
     <ClCompile Include="Internal\DepthWriteMaskToDx12.cpp" />
+    <ClCompile Include="Internal\FillModeToDx12.cpp" />
     <ClCompile Include="Mesh\Mesh.cpp" />
     <ClCompile Include="Mesh\MeshId.cpp" />
     <ClCompile Include="Mesh\MeshMgr.cpp" />

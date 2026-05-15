@@ -111,7 +111,7 @@ namespace Systems
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
 							renderable.m_pMaterial = nullptr;
 							renderable.m_worldTx = proxyWorldTx;
-							renderable.m_primitiveMesh = true;
+							renderable.m_debug = true;
 							renderable.m_pOwner = pGo;
 							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
@@ -128,7 +128,7 @@ namespace Systems
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 							renderable.m_pMaterial = nullptr;
 							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
-							renderable.m_primitiveMesh = true;
+							renderable.m_debug = true;
 							renderable.m_pOwner = pGo;
 							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
@@ -161,7 +161,7 @@ namespace Systems
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pSphereMesh;
 						renderable.m_pMaterial = nullptr;
 						renderable.m_worldTx = proxyWorldTx;
-						renderable.m_primitiveMesh = true;
+						renderable.m_debug = true;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 					}
@@ -223,7 +223,7 @@ namespace Systems
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 						renderable.m_pMaterial = nullptr;
 						renderable.m_worldTx = proxyWorldTx;
-						renderable.m_primitiveMesh = true;
+						renderable.m_debug = true;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 					}
@@ -249,7 +249,6 @@ namespace Systems
 						pNewRenderable->m_pMesh = pMesh;
 						pNewRenderable->m_pMaterial = pMaterial;
 						pNewRenderable->m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
-						pNewRenderable->m_primitiveMesh = false;
 						pNewRenderable->m_pOwner = pGo;
 						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
@@ -270,7 +269,6 @@ namespace Systems
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
 						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx(); //no need to set the world matrix for a skybox
-						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game;
 					}

@@ -29,7 +29,7 @@ IBulletWave::~IBulletWave()
 void IBulletWave::CollisionDetection(Bullets& bullets)
 {
 	Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
-	Systems::ShapeSphere colShape(Core::Vec4f(), 1, nullptr);
+	Systems::ShapeSphere colShape(Core::Vec4f(), 0.5f, nullptr);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{

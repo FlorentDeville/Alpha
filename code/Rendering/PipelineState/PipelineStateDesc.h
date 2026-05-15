@@ -9,6 +9,7 @@
 #include "Rendering/PipelineState/CullMode.h"
 #include "Rendering/PipelineState/DepthComparisonMode.h"
 #include "Rendering/PipelineState/DepthWriteMask.h"
+#include "Rendering/PipelineState/FillMode.h"
 #include "Rendering/BufferFormat.h"
 
 namespace Rendering
@@ -53,7 +54,8 @@ namespace Rendering
 		Shader* m_pVs;
 		Shader* m_pPs;
 		CullMode m_cullMode;
-		
+		FillMode m_fillMode;
+
 		BufferFormat m_rtvFormat;
 		BlendDesc m_blendDesc; //only a single render target is supported
 		DepthStencilDesc m_depthStencilDesc;

@@ -13,6 +13,7 @@ void Bullets::Create()
 	m_acceleration = new Core::Vec4f[COUNT];
 	m_timeToLive = new float[COUNT];
 	m_free = new bool[COUNT] { true };
+	m_type = new BulletType[COUNT];
 }
 
 void Bullets::Delete()
@@ -22,6 +23,7 @@ void Bullets::Delete()
 	delete[] m_acceleration;
 	delete[] m_free;
 	delete[] m_timeToLive;
+	delete[] m_type;
 }
 
 uint32_t Bullets::Allocate(uint32_t count)

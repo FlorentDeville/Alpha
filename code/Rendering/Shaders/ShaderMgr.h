@@ -47,6 +47,9 @@ namespace Rendering
 		GAME_UI_VS,
 		GAME_UI_PS,
 
+		DEBUG_WIREFRAME_VS,
+		DEBUG_WIREFRAME_PS,
+
 		COUNT
 	};
 

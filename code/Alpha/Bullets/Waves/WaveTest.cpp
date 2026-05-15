@@ -56,6 +56,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 		bullets.m_speed[m_startId + ii] = Core::Vec4f(x, 0, z, 0) * SPEED;
 		bullets.m_acceleration[m_startId + ii] = Core::Vec4f(0, 0, 0, 0);
 		bullets.m_timeToLive[m_startId + ii] = 2;
+		bullets.m_type[m_startId + ii] = BulletType::NORMAL;
 	}
 
 	m_isAlive = true;
@@ -98,7 +99,6 @@ void WaveTest::BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
-		obj.m_primitiveMesh = false;
 
 		m_isAlive = true;
 	}
