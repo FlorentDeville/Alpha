@@ -43,13 +43,12 @@ namespace Inputs
 		void UpdateKeyboardState(uint64_t virtualKey, bool down);
 		void UpdateMouseState(const MouseState& mouseState);
 
-		void Update();
+		void PreUpdate();
+		void PostUpdate();
 
 		uint32_t RegisterCommand(const InputKeyCommand& command);
 
 		float GetState(uint32_t index) const;
-
-		void ClearAllStates();
 
 		void Enable();
 		void Disable();

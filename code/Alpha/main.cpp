@@ -404,7 +404,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Update()
 {
-	Inputs::InputMgr::Get().Update();
+	Inputs::InputMgr::Get().PreUpdate();
 
 	Systems::Clock& clock = Systems::Clock::Get();
 	clock.Update();
@@ -430,7 +430,7 @@ void Update()
 
 		previousApplicationTick = currentApplicationTick;
 
-		Inputs::InputMgr::Get().ClearAllStates();
+		Inputs::InputMgr::Get().PostUpdate();
 	}
 }
 

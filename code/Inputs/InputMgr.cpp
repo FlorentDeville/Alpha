@@ -34,10 +34,15 @@ namespace Inputs
 		m_mouseState = mouseState;
 	}
 
-	void InputMgr::Update()
+	void InputMgr::PreUpdate()
 	{
 		for (InputKeyCommand& command : m_commands)
 			command.Update();
+	}
+
+	void InputMgr::PostUpdate()
+	{
+		m_mouseState.m_mouseWheel = 0; //reset the mouse wheel distance
 	}
 
 	uint32_t InputMgr::RegisterCommand(const InputKeyCommand& command)
@@ -50,11 +55,6 @@ namespace Inputs
 	float InputMgr::GetState(uint32_t index) const
 	{
 		return m_commands[index].GetState();
-	}
-
-	void InputMgr::ClearAllStates()
-	{
-		m_mouseState.m_mouseWheel = 0; //reset the mouse wheel distance
 	}
 
 	void InputMgr::Enable()
