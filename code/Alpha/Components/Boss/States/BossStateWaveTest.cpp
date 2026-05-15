@@ -7,7 +7,6 @@
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Bullets/Waves/WaveMachineGun.h"
 #include "Alpha/Bullets/Waves/WaveTest.h"
-#include "Alpha/Components/Boss/BossComponent.h"
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Objects/BossGameObject.h"
 
