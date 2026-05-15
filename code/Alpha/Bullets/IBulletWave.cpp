@@ -4,8 +4,8 @@
 
 #include "Alpha/Bullets/IBulletWave.h"
 
-#include "Alpha/Components/Boss/BossComponent.h"
 #include "Alpha/Bullets/Bullets.h"
+#include "Alpha/Objects/BossGameObject.h"
 #include "Alpha/Objects/PlayerGameObject.h"
 
 #include "Core/Log/LogModule.h"
@@ -86,8 +86,7 @@ void IBulletWave::CounterBullet(Bullets& bullets, uint32_t index)
 {
 	Core::LogModule::Get().LogInfo("Bullet %d countered", index);
 
-	const BossComponent* pBoss = Systems::GameMgr::Get().FindComponent<BossComponent>();
-	const Systems::GameObject* pTarget = pBoss->GetOwner();
+	const BossGameObject* pTarget = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
 	Core::Vec4f targetPosition = pTarget->GetTransform().GetWorldTx().GetT();
 
 	//compute new acceleration

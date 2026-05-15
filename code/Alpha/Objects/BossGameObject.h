@@ -4,39 +4,36 @@
 
 #pragma once
 
-#include "Systems/Objects/GameComponent.h"
+#include "Core/Reflection/ReflectionMacro.h"
 
-#include "Systems/Assets/AssetRef/HardAssetRef.h"
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
-
-ENABLE_GAME_REFLECTION(BossComponent)
-
-namespace Systems
-{
-	class GameContext;
-	class ICollisionShape;
-	class MaterialInstanceAsset;
-	class MeshAsset;
-}
+#include "Systems/Objects/GameObject.h"
 
 class StateMachine;
 
-class BossComponent : public Systems::GameComponent
-{
-public:
-	BossComponent();
-	~BossComponent();
+ENABLE_GAME_REFLECTION(BossGameObject)
 
-	void PostLoad() override;
+class BossGameObject : public Systems::GameObject
+{
+	using BaseClass = Systems::GameObject;
+
+public:
+	BossGameObject();
+	~BossGameObject();
 
 	void OnStartGame() override;
+
 	void Update(float dt) override;
+
+	void HandleMessage(const Systems::GameMessage& msg) override;
+
 	void OnDestroyGame() override;
 
 private:
-
 	Systems::HardAssetRef<Systems::MeshAsset> m_mesh;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_material;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
@@ -46,8 +43,8 @@ private:
 	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
 	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
 
-	START_REFLECTION(BossComponent)
-		ADD_BASETYPE(Systems::GameComponent)
+	START_REFLECTION(BossGameObject)
+		ADD_BASETYPE(Systems::GameObject)
 		ADD_FIELD(m_mesh)
 		ADD_FIELD(m_material)
 		ADD_FIELD(m_counterBulletMaterial)
@@ -58,8 +55,6 @@ private:
 
 	StateMachine* m_pStateMachine;
 	uint32_t m_currentHP;
-
-	void Move(float dt);
 
 	void OnCollision(const Systems::ICollisionShape* pOther);
 };

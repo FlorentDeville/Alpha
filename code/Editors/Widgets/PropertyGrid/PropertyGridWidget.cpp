@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -22,6 +22,9 @@ namespace Editors
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
 		m_pInternalLayout->SetSizeStyle(Widgets::SIZE_STYLE::STRETCH);
 		AddWidget(m_pInternalLayout);
+
+		m_pClassName = new Widgets::Label();
+		m_pInternalLayout->AddWidget(m_pClassName);
 	}
 
 	PropertyGridWidget::~PropertyGridWidget()
@@ -114,6 +117,11 @@ namespace Editors
 		delete pProperty;		
 	}
 
+	void PropertyGridWidget::SetClassName(const std::string& className)
+	{
+		m_pClassName->SetText(className);
+	}
+
 	void PropertyGridWidget::ClearAllItems()
 	{
 		for (PropertyGridItem* pProperty : m_properties)
@@ -121,7 +129,15 @@ namespace Editors
 
 		m_properties.Clear();
 
-		m_pInternalLayout->DeleteAllChildren();
+		uint32_t count = m_pInternalLayout->GetChildrenCount();
+		const std::vector<Widgets::Widget*>& children = m_pInternalLayout->GetChildren();
+		uint32_t ii = 1;
+		while(ii < m_pInternalLayout->GetChildrenCount())
+		{
+			m_pInternalLayout->DeleteChild(children[ii]);
+		}
+
+		m_pClassName->SetText("");
 	}
 
 	Core::Array<PropertyGridItem*>& PropertyGridWidget::GetPropertyGridItems()

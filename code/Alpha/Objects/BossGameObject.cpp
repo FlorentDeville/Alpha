@@ -2,48 +2,38 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/Boss/BossComponent.h"
+#include "Alpha/Objects/BossGameObject.h"
 
-#include "Alpha/StateMachine/StateMachine.h"
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Components/Boss/States/BossStateWait.h"
 #include "Alpha/Components/Boss/States/BossStateWaveTest.h"
 #include "Alpha/Objects/PlayerGameObject.h"
-
-#include "Core/Math/Constants.h"
-#include "Core/Math/Vec4f.h"
-
-#include "Inputs/InputMgr.h"
-
-#include "Rendering/Camera.h"
+#include "Alpha/StateMachine/StateMachine.h"
 
 #include "Systems/Game/GameMgr.h"
-#include "Systems/Game/GameContext.h"
-#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
-#include "Systems/Objects/GameObject.h"
 
-BossComponent::BossComponent()
-	: GameComponent()
+BossGameObject::BossGameObject()
+	: BaseClass()
+	, m_currentHP()
+	, m_maxHP()
 	, m_pStateMachine(nullptr)
 { }
 
-BossComponent::~BossComponent()
+BossGameObject::~BossGameObject()
 {
 	delete m_pStateMachine;
 }
 
-void BossComponent::PostLoad()
-{ }
-
-void BossComponent::OnStartGame()
+void BossGameObject::OnStartGame()
 {
+	BaseClass::OnStartGame();
+
 	m_currentHP = m_maxHP;
 
 	const PlayerGameObject* pPlayer = Systems::GameMgr().Get().FindGameObject<PlayerGameObject>();
 
-	Systems::GameObject* pObject = GetOwner();
-	Systems::TransformComponent& transform = pObject->GetTransform();
-	transform.ComputeWorldTx();
+	//Systems::TransformComponent& transform = GetTransform();
+	//transform.ComputeWorldTx();
 
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(2);
@@ -57,36 +47,31 @@ void BossComponent::OnStartGame()
 
 	m_pStateMachine->Start(BossStateEnum::WAIT);
 
-	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(pObject);
+	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });
 }
 
-void BossComponent::Update(float /*dt*/)
+void BossGameObject::Update(float dt)
 {
+	BaseClass::Update(dt);
+
 	m_pStateMachine->Update();
 }
 
-void BossComponent::OnDestroyGame()
+void BossGameObject::HandleMessage(const Systems::GameMessage& /*msg*/)
 {
+	
+}
+
+void BossGameObject::OnDestroyGame()
+{
+	BaseClass::OnDestroyGame();
+
 	delete m_pStateMachine;
 	m_pStateMachine = nullptr;
 }
 
-void BossComponent::Move(float dt)
-{
-	//dummy move to see it working
-	Systems::GameObject* pObject = GetOwner();
-	Systems::TransformComponent& transform = pObject->GetTransform();
-
-	const Core::Vec4f speed(2, 0, 2, 0);
-
-	Core::Sqt& loc = transform.GetLocalSqt();
-	Core::Vec4f newPos = loc.GetTranslation() + speed * dt;
-
-	loc.SetTranslation(newPos);
-}
-
-void BossComponent::OnCollision(const Systems::ICollisionShape* pOther)
+void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
 {
 	Systems::GameObject* pOwner = pOther->GetOwner();
 	if (!pOwner)
@@ -100,7 +85,7 @@ void BossComponent::OnCollision(const Systems::ICollisionShape* pOther)
 	m_currentHP -= damage;
 
 	//now reduce the hp bar
-	Systems::UIBaseComponent* pHp = m_currentHealthComp.FindComponent(GetOwner());
+	Systems::UIBaseComponent* pHp = m_currentHealthComp.FindComponent(this);
 	Core::Float2 size = pHp->GetSize();
 	size.x -= damage;
 	pHp->SetSize(size);
