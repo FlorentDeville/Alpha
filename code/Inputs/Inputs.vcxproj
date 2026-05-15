@@ -15,6 +15,7 @@
     <ClInclude Include="InputMgr.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="InputCommand.cpp" />
     <ClCompile Include="InputMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
