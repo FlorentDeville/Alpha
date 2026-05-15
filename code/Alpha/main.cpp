@@ -403,6 +403,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Update()
 {
+	Inputs::InputMgr::Get().Update();
+
 	Systems::Clock& clock = Systems::Clock::Get();
 	clock.Update();
 

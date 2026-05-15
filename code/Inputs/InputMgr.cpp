@@ -34,6 +34,19 @@ namespace Inputs
 		m_mouseState = mouseState;
 	}
 
+	void InputMgr::Update()
+	{
+		for (InputKeyCommand& command : m_commands)
+			command.Update();
+	}
+
+	uint32_t InputMgr::RegisterCommand(const InputKeyCommand& command)
+	{
+		uint32_t index = m_commands.GetSize();
+		m_commands.PushBack(command);
+		return index;
+	}
+
 	bool InputMgr::GetState(InputCommandEnum command) const
 	{
 		Os::VKeyCode vkey;

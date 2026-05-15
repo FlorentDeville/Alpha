@@ -29,8 +29,9 @@ namespace Inputs
 			COUNT
 		};
 
+		InputKeyCommand() = default;
 		InputKeyCommand(Os::VKeyCode key, Behavior behavior);
-		~InputKeyCommand() = delete;
+		~InputKeyCommand() = default;
 
 		void Update();
 
