@@ -6,6 +6,7 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Commands/GameCommands.h"
+#include "Alpha/Objects/BossGameObject.h"
 
 #include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
@@ -18,6 +19,8 @@
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Message/GameMessage.h"
+
+#include <cmath>
 
 PlayerGameObject::PlayerGameObject()
 	: Systems::GameObject()
@@ -78,8 +81,6 @@ void PlayerGameObject::Update(float dt)
 		newLocalTx.SetRow(3, newPosition);
 
 		transform.SetLocalTx(newLocalTx);
-
-		UpdateCamera(dt);
 	}
 
 	if (GameCommands::Counter())
@@ -92,6 +93,8 @@ void PlayerGameObject::Update(float dt)
 			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
 		}
 	}
+
+	UpdateCamera(dt);
 
 	BaseClass::Update(dt);
 
@@ -152,6 +155,33 @@ void PlayerGameObject::OnBulletCollision()
 
 void PlayerGameObject::UpdateCamera(float /*dt*/)
 {
-	const Core::Vec4f& pos = GetTransform().GetWorldTx().GetT();
-	m_pCamera->SetLookAt(pos + m_cameraOffset, pos, Core::Vec4f(0, 1, 0, 0));
+	const BossGameObject* pBoss = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
+	Core::Vec4f bossPos = pBoss->GetTransform().GetWorldTx().GetT();
+
+	const Core::Vec4f& playerPos = GetTransform().GetWorldTx().GetT();
+
+	//calculate the midpoint
+	Core::Vec4f targetPos = (bossPos + playerPos) * 0.5f;
+
+	//calculate the distance
+	float halfDistance = (bossPos - playerPos).Length() * 0.5f;
+
+	//calculate distance using the vertical axis
+	float phi = m_pCamera->GetFOV() / m_pCamera->GetAspectRatio();
+	float halfPhi = phi * 0.5f;
+	float cameraDistance = halfDistance / std::tan(halfPhi);
+
+	//clamp
+	const float MIN_DISTANCE = 20;
+	const float MAX_DISTANCE = 100;
+	cameraDistance = cameraDistance < MIN_DISTANCE ? MIN_DISTANCE : (cameraDistance > MAX_DISTANCE ? MAX_DISTANCE : cameraDistance);
+
+	//compute camera position
+	const float MARGIN = 5.f;
+	m_cameraOffset.Normalize();
+	Core::Vec4f cameraPosition = targetPos + m_cameraOffset * (cameraDistance + MARGIN);
+
+	m_pCamera->SetLookAt(cameraPosition, targetPos, Core::Vec4f(0, 1, 0, 0));
+
+	
 }
