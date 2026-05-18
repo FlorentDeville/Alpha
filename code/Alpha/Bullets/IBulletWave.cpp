@@ -59,7 +59,7 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		else if (bullets.m_state[ii] == BulletState::COUNTER)
 		{
 			Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
-			Systems::ShapeSphere colShape(Core::Vec4f(), m_bulletCollisionRadius, nullptr);
+			Systems::ShapeSphere colShape(Core::Vec4f(), 0.25f, nullptr);
 
 			colShape.SetCenter(bullets.m_positions[ii]);
 

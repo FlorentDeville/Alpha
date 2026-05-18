@@ -56,7 +56,7 @@ private:
 	END_REFLECTION()
 
 	StateMachine* m_pStateMachine;
-	uint32_t m_currentHP;
+	int32_t m_currentHP;
 
 	void OnCollision(const Systems::ICollisionShape* pOther);
 
