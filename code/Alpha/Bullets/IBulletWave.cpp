@@ -72,9 +72,15 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 			if (!pGo)
 				continue;
 
-			//apply damage
-			//BossComponent* pBoss = pGo->FindComponent<BossComponent>();
-			//pBoss->m_currentHP -= 5;
+			//send message to the boss
+			BossGameObject* pBoss = pGo->Cast<BossGameObject>();
+			if (!pBoss)
+				continue;
+
+			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+			Systems::GameMessage msg;
+			msg.m_id = CONSTSID("bullet_counter_collision");
+			pMessage->SendMessage(pGo, msg);
 
 			//kill the bullet
 			bullets.m_timeToLive[ii] = 0;
