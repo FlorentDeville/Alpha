@@ -18,4 +18,20 @@ public:
 	void Stop() override;
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
+
+private:
+	enum State
+	{
+		SHOW,	//the bullets appear progressiely
+		FIRE,	//the bullets shoot through the level
+
+		COUNT
+	};
+
+	//show state
+	float m_showDuration;
+	float m_showTime;
+	float m_currentScale;
+
+	State m_currentState;
 };

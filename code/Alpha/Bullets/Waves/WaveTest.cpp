@@ -18,6 +18,10 @@
 
 WaveTest::WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial)
 	: IBulletWave()
+	, m_showDuration(0.5f)
+	, m_showTime(0)
+	, m_currentState(State::SHOW)
+	, m_currentScale(0)
 {
 	m_count = 10;
 	m_pMesh = pMesh;
@@ -44,7 +48,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 {
 	// make a basic pattern where the spawn shape is a circle and bullets go in a straight line
 	const float ANGLE_INC = Core::TWO_PI / m_count;
-	const float CIRCLE_RADIUS = 1.f;
+	const float CIRCLE_RADIUS = 2.f;
 	const float SPEED = 35.f;
 	for (uint32_t ii = 0; ii < m_count; ++ii)
 	{
@@ -60,6 +64,9 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 	}
 
 	m_isAlive = true;
+	m_currentState = State::SHOW;
+	m_showTime = 0;
+	m_currentScale = 0;
 }
 
 void WaveTest::Stop()
@@ -72,13 +79,34 @@ void WaveTest::Update(Bullets& bullets, float dt)
 	if (!m_isAlive)
 		return;
 
-	//reduce ttl
-	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
-		bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
+	switch (m_currentState)
+	{
+	case State::SHOW:
+	{
+		m_showTime += dt;
+		if (m_showTime >= m_showDuration)
+		{
+			m_currentState = State::FIRE;
+			break;
+		}
 
-	//compute new position
-	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
-		bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
+		m_currentScale = m_showTime / m_showDuration;
+	}
+	break;
+
+	case State::FIRE:
+	{
+		//reduce ttl
+		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+			bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
+
+		//compute new position
+		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
+	}
+	break;
+
+	}
 }
 
 void WaveTest::BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene)
@@ -87,6 +115,8 @@ void WaveTest::BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene
 		return;
 
 	m_isAlive = false;
+
+	Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(m_currentScale);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
@@ -98,7 +128,7 @@ void WaveTest::BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene
 		obj.m_pMaterial = m_pMaterial;
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
-		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
+		obj.m_worldTx = scale * Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
 
 		m_isAlive = true;
 	}
