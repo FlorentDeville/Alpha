@@ -79,7 +79,7 @@ void PlayerGameObject::Update(float dt)
 
 		transform.SetLocalTx(newLocalTx);
 
-		m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
+		UpdateCamera(dt);
 	}
 
 	if (GameCommands::Counter())
