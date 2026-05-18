@@ -92,6 +92,8 @@ void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
 	//I collided with the player so reduce hp
 	uint32_t damage = 10;
 	m_currentHP -= damage;
+	if (m_currentHP < 0)
+		m_currentHP = 0;
 
 	UpdateHPBar();
 }
