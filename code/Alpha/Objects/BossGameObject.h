@@ -41,6 +41,7 @@ private:
 	uint32_t m_maxHP;
 
 	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
+	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
 	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
 
 	START_REFLECTION(BossGameObject)
@@ -50,6 +51,7 @@ private:
 		ADD_FIELD(m_counterBulletMaterial)
 		ADD_FIELD(m_maxHP)
 		ADD_FIELD(m_currentHealthComp)
+		ADD_FIELD(m_totalHealthComp)
 		ADD_FIELD(m_collComp)
 	END_REFLECTION()
 
@@ -57,4 +59,6 @@ private:
 	uint32_t m_currentHP;
 
 	void OnCollision(const Systems::ICollisionShape* pOther);
+
+	void UpdateHPBar();
 };

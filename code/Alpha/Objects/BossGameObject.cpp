@@ -11,6 +11,7 @@
 #include "Alpha/StateMachine/StateMachine.h"
 
 #include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Message/GameMessage.h"
 
 BossGameObject::BossGameObject()
 	: BaseClass()
@@ -31,9 +32,6 @@ void BossGameObject::OnStartGame()
 	m_currentHP = m_maxHP;
 
 	const PlayerGameObject* pPlayer = Systems::GameMgr().Get().FindGameObject<PlayerGameObject>();
-
-	//Systems::TransformComponent& transform = GetTransform();
-	//transform.ComputeWorldTx();
 
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(2);
@@ -58,9 +56,20 @@ void BossGameObject::Update(float dt)
 	m_pStateMachine->Update();
 }
 
-void BossGameObject::HandleMessage(const Systems::GameMessage& /*msg*/)
+void BossGameObject::HandleMessage(const Systems::GameMessage& msg)
 {
-	
+	switch (msg.m_id)
+	{
+	case SID("bullet_counter_collision"):
+	{
+		m_currentHP -= 5;
+		UpdateHPBar();
+	}
+	break;
+
+	default:
+		break;
+	}
 }
 
 void BossGameObject::OnDestroyGame()
@@ -84,13 +93,19 @@ void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
 	uint32_t damage = 10;
 	m_currentHP -= damage;
 
-	//now reduce the hp bar
+	UpdateHPBar();
+}
+
+void BossGameObject::UpdateHPBar()
+{
+	Systems::UIBaseComponent* pTotalHp = m_totalHealthComp.FindComponent(this);
 	Systems::UIBaseComponent* pHp = m_currentHealthComp.FindComponent(this);
+
 	Core::Float2 size = pHp->GetSize();
-	size.x -= damage;
+	size.x = pTotalHp->GetSize().x / m_maxHP * m_currentHP;
 	pHp->SetSize(size);
 
 	Core::Float2 position = pHp->GetPosition();
-	position.x -= (damage / 2);
+	position.x = pTotalHp->GetPosition().x - ((pTotalHp->GetSize().x - size.x) * 0.5f);
 	pHp->SetPosition(position);
 }
