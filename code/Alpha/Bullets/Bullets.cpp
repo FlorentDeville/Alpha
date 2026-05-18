@@ -6,15 +6,19 @@
 
 #include "Core/Math/Vec4f.h"
 
+#include <cstring>
+
 void Bullets::Create()
 {
 	m_positions = new Core::Vec4f[COUNT];
 	m_speed = new Core::Vec4f[COUNT];
 	m_acceleration = new Core::Vec4f[COUNT];
 	m_timeToLive = new float[COUNT];
-	m_free = new bool[COUNT] { true };
+	m_free = new bool[COUNT];
 	m_type = new BulletType[COUNT];
 	m_state = new BulletState[COUNT];
+
+	std::memset(m_free, 1, sizeof(bool) * COUNT);
 }
 
 void Bullets::Delete()
@@ -34,15 +38,10 @@ uint32_t Bullets::Allocate(uint32_t count)
 	uint32_t found = 0;
 	for (uint32_t ii = 0; ii < COUNT; ++ii)
 	{
-		if (m_free[ii])
-		{
+		if (!m_free[ii])
 			found = 0;
-			continue;
-		}
 		else
-		{
 			++found;
-		}
 
 		if (found >= count)
 		{
@@ -54,7 +53,7 @@ uint32_t Bullets::Allocate(uint32_t count)
 	if (index < 0)
 		return index;
 
-	for (uint32_t ii = index; ii < count; ++ii)
+	for (uint32_t ii = index; ii < index + count; ++ii)
 		m_free[ii] = false;
 
 	return index;
