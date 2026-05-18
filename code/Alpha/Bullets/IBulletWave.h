@@ -35,7 +35,7 @@ public:
 	virtual void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) = 0;
 	virtual void CollisionDetection(Bullets& bullet);
 
-	virtual void CounterBullet(Bullets& bullet, uint32_t index);
+	virtual void SpawnCounterBullet(Bullets& bullet, uint32_t index);
 
 	uint32_t GetStartId() const;
 	uint32_t GetEndId() const;

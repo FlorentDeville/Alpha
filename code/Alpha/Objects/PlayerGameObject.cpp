@@ -89,7 +89,7 @@ void PlayerGameObject::Update(float dt)
 		if(m_counterBulletIndex != UINT32_MAX)
 		{
 			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-			bulletSubsystem->CounterBullet(m_counterBulletIndex);
+			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
 		}
 	}
 

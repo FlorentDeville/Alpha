@@ -88,7 +88,7 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 	}
 }
 
-void IBulletWave::CounterBullet(Bullets& bullets, uint32_t index)
+void IBulletWave::SpawnCounterBullet(Bullets& bullets, uint32_t index)
 {
 	Core::LogModule::Get().LogInfo("Bullet %d countered", index);
 
@@ -105,6 +105,7 @@ void IBulletWave::CounterBullet(Bullets& bullets, uint32_t index)
 	velocity = velocity * SPEED;
 	bullets.m_speed[index] = velocity;
 	bullets.m_state[index] = BulletState::COUNTER;
+	bullets.m_timeToLive[index] = 0;
 }
 
 uint32_t IBulletWave::GetStartId() const
