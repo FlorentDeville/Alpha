@@ -149,3 +149,9 @@ void PlayerGameObject::OnBulletCollision()
 	position.x = pTotalHpUIComp->GetPosition().x - ((totalWidth - currentWidth) / 2);
 	pCurrentHpUIComp->SetPosition(position);
 }
+
+void PlayerGameObject::UpdateCamera(float /*dt*/)
+{
+	const Core::Vec4f& pos = GetTransform().GetWorldTx().GetT();
+	m_pCamera->SetLookAt(pos + m_cameraOffset, pos, Core::Vec4f(0, 1, 0, 0));
+}

@@ -59,4 +59,6 @@ private:
 	uint32_t m_counterBulletIndex;
 
 	void OnBulletCollision();
+
+	void UpdateCamera(float dt);
 };
