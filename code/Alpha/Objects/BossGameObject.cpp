@@ -62,7 +62,7 @@ void BossGameObject::HandleMessage(const Systems::GameMessage& msg)
 	{
 	case SID("bullet_counter_collision"):
 	{
-		m_currentHP -= 5;
+		m_currentHP -= 50;
 		UpdateHPBar();
 	}
 	break;
