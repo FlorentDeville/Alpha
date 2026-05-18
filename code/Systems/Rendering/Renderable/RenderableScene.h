@@ -28,6 +28,8 @@ namespace Systems
 		RenderableCamera m_camera;
 
 		float m_time;
+
+		bool m_includeLevelRenderable;
 	};
 
 	void PrepareRenderableCamera(const Core::Mat44f& view, const Core::Mat44f& proj, const Core::Vec4f& position, float fov, RenderableScene& scene);

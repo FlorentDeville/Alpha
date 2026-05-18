@@ -133,6 +133,8 @@ namespace Systems
 		const Rendering::Camera* pCamera = m_pGameContext->m_pCameraSubsystem->GetTopCamera();
 		Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
 
+		scene.m_includeLevelRenderable = false;
+
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
 			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime(), m_debugShowCollision);

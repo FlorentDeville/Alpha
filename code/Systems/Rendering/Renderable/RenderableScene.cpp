@@ -106,6 +106,7 @@ namespace Systems
 
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
+						if(scene.m_includeLevelRenderable)
 						{
 							Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
@@ -117,6 +118,7 @@ namespace Systems
 							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
 
+						if (scene.m_includeLevelRenderable)
 						{
 							Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
@@ -150,6 +152,7 @@ namespace Systems
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
 					gfxLight.m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
+					if (scene.m_includeLevelRenderable)
 					{
 						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
@@ -200,6 +203,7 @@ namespace Systems
 						gfxLight.m_lightSpaceTX = lightSpace;
 					}
 
+					if (scene.m_includeLevelRenderable)
 					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
 						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
