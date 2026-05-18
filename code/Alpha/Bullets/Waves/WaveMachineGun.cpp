@@ -242,8 +242,14 @@ void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)
 
 		uint32_t bezierIndex = ii - m_counterBulletStartId;
 
-		const float COUNTERED_BULLET_SPEED = 1;
-		float t = (1 - bullets.m_timeToLive[ii]) * COUNTERED_BULLET_SPEED;
+		const float COUNTERED_BULLET_SPEED_MULT = 2;
+		float t = (1 - bullets.m_timeToLive[ii]) * COUNTERED_BULLET_SPEED_MULT;
+
+		if (t > 1)
+		{
+			bullets.m_timeToLive[ii] = 0;
+			continue;
+		}
 
 		float oneMinusT = 1 - t;
 
