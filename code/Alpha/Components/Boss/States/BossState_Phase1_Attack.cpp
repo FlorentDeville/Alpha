@@ -66,6 +66,12 @@ void BossState_Phase1_Attack::OnEnter()
 
 void BossState_Phase1_Attack::OnUpdate()
 {
+	if (m_pBoss->m_currentHP <= 0)
+	{
+		GoTo(BossStateEnum::PHASE2_TRAVEL);
+		return;
+	}
+
 	if (!m_pWave->IsAlive() && !m_pWaveMachineGun->IsAlive())
 	{
 		Core::LogModule::Get().LogInfo("BossState_Phase1_Attack goto state PHASE1_TRAVEL");
