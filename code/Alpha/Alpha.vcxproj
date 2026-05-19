@@ -104,7 +104,7 @@
     <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp" />
     <ClCompile Include="Bullets\Waves\WaveTest.cpp" />
     <ClCompile Include="Commands\GameCommands.cpp" />
-    <ClCompile Include="Components\Boss\States\BossStateWait.cpp" />
+    <ClCompile Include="Components\Boss\States\BossState_Phase1_Travel.cpp" />
     <ClCompile Include="Components\Boss\States\BossStateWaveTest.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="main.cpp" />
@@ -455,7 +455,7 @@
     <ClInclude Include="Bullets\Waves\WaveTest.h" />
     <ClInclude Include="Commands\GameCommands.h" />
     <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
-    <ClInclude Include="Components\Boss\States\BossStateWait.h" />
+    <ClInclude Include="Components\Boss\States\BossState_Phase1_Travel.h" />
     <ClInclude Include="Components\Boss\States\BossStateWaveTest.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Objects\BossGameObject.h" />

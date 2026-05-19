@@ -68,8 +68,8 @@ void BossStateWaveTest::OnUpdate()
 {
 	if (!m_pWave->IsAlive() && !m_pWaveMachineGun->IsAlive())
 	{
-		Core::LogModule::Get().LogInfo("BossStateWaveTest goto state WAIT");
-		GoTo(BossStateEnum::WAIT);
+		Core::LogModule::Get().LogInfo("BossStateWaveTest goto state PHASE1_TRAVEL");
+		GoTo(BossStateEnum::PHASE1_TRAVEL);
 	}
 }
 

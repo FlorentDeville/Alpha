@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/Boss/States/BossStateWait.h"
+#include "Alpha/Components/Boss/States/BossState_Phase1_Travel.h"
 
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Objects/BossGameObject.h"
@@ -14,24 +14,24 @@
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
 
-BossStateWait::BossStateWait(StateMachine* pStateMachine, BossGameObject* pBoss)
+BossState_Phase1_Travel::BossState_Phase1_Travel(StateMachine* pStateMachine, BossGameObject* pBoss)
 	: IState(pStateMachine)
 	, m_pBoss(pBoss)
 	, m_targetPos()
 { }
 
-BossStateWait::~BossStateWait()
+BossState_Phase1_Travel::~BossState_Phase1_Travel()
 { }
 
-void BossStateWait::OnEnter()
+void BossState_Phase1_Travel::OnEnter()
 {
 	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
 	m_targetPos = pNavmesh->QueryRandomPosition();
 
-	//Core::LogModule::Get().LogInfo("BossStateWait::OnEnter");
+	//Core::LogModule::Get().LogInfo("BossState_Phase1_Travel::OnEnter");
 }
 
-void BossStateWait::OnUpdate()
+void BossState_Phase1_Travel::OnUpdate()
 {
 	Systems::GameMgr& gameMgr = Systems::GameMgr().Get();
 	Systems::GameContext* pContext = gameMgr.GetWorld();
@@ -63,5 +63,5 @@ void BossStateWait::OnUpdate()
 	m_pBoss->GetTransform().SetLocalTx(wsTx);
 }
 
-void BossStateWait::OnExit()
+void BossState_Phase1_Travel::OnExit()
 { }

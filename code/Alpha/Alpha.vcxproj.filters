@@ -43,7 +43,7 @@
     <ClCompile Include="StateMachine\IState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\Boss\States\BossStateWait.cpp">
+    <ClCompile Include="Components\Boss\States\BossState_Phase1_Travel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Components\Boss\States\BossStateWaveTest.cpp">
@@ -134,7 +134,7 @@
     <ClInclude Include="Bullets\Waves\WaveTest.h" />
     <ClInclude Include="StateMachine\IState.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />
-    <ClInclude Include="Components\Boss\States\BossStateWait.h" />
+    <ClInclude Include="Components\Boss\States\BossState_Phase1_Travel.h" />
     <ClInclude Include="Components\Boss\States\BossStateWaveTest.h" />
     <ClInclude Include="Components\Boss\States\BossStateEnum.h" />
     <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />

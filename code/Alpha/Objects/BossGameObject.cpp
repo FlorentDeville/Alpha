@@ -5,7 +5,7 @@
 #include "Alpha/Objects/BossGameObject.h"
 
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
-#include "Alpha/Components/Boss/States/BossStateWait.h"
+#include "Alpha/Components/Boss/States/BossState_Phase1_Travel.h"
 #include "Alpha/Components/Boss/States/BossStateWaveTest.h"
 #include "Alpha/Objects/PlayerGameObject.h"
 #include "Alpha/StateMachine/StateMachine.h"
@@ -37,14 +37,14 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(2);
 
-	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine, this);
+	BossState_Phase1_Travel* pStatePhase1Travel = new BossState_Phase1_Travel(m_pStateMachine, this);
 	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
 	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 
-	m_pStateMachine->AddState(pStateWait, BossStateEnum::WAIT);
+	m_pStateMachine->AddState(pStatePhase1Travel, BossStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::WAVE_TEST);
 
-	m_pStateMachine->Start(BossStateEnum::WAIT);
+	m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
 
 	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });

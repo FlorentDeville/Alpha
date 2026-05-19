@@ -6,7 +6,7 @@
 
 enum BossStateEnum
 {
-	WAIT,
+	PHASE1_TRAVEL,
 	WAVE_TEST,
 
 	COUNT

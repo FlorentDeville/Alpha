@@ -10,11 +10,11 @@
 
 class BossGameObject;
 
-class BossStateWait : public IState
+class BossState_Phase1_Travel : public IState
 {
 public:
-	BossStateWait(StateMachine* pStateMachine, BossGameObject* pBoss);
-	~BossStateWait();
+	BossState_Phase1_Travel(StateMachine* pStateMachine, BossGameObject* pBoss);
+	~BossState_Phase1_Travel();
 
 	void OnEnter() override;
 	void OnUpdate() override;
