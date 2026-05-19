@@ -660,19 +660,18 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 		//update every frame duration
 		if (applicationDt >= FRAME_DURATION)
 		{
+			//Core::LogModule::Get().LogInfo("dt %f", applicationDt);
+			Update(applicationDt);
+
+			++updateFPSCounter;
+
+			if (updateFPSTimer + 1 <= clock.GetRealApplicationTime())
 			{
-				Update(applicationDt);
-
-				++updateFPSCounter;
-
-				if (updateFPSTimer + 1 <= clock.GetRealApplicationTime())
-				{
-					//Core::LogModule::Get().LogInfo("UPDATE FPS %d", updateFPSCounter);
-					updateFPSCounter = 0;
-					updateFPSTimer = clock.GetRealApplicationTime();
-				}
+				//Core::LogModule::Get().LogInfo("UPDATE FPS %d", updateFPSCounter);
+				updateFPSCounter = 0;
+				updateFPSTimer = clock.GetRealApplicationTime();
 			}
-
+		
 			previousApplicationTick = currentApplicationTick;
 		}
 
