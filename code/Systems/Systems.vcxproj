@@ -60,6 +60,7 @@
     <ClInclude Include="Game\GameContext.h" />
     <ClInclude Include="Game\Subsystems\Message\GameMessage.h" />
     <ClInclude Include="Game\Subsystems\Message\GameMessageSubsystem.h" />
+    <ClInclude Include="Game\Subsystems\Navmesh\NavmeshSubsystem.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Objects\GameComponent.h" />
     <ClInclude Include="Objects\GameObject.h" />
@@ -128,6 +129,7 @@
     <ClCompile Include="Game\Subsystems\Collision\Shapes\ShapeSphere.cpp" />
     <ClCompile Include="Game\Subsystems\Collision\Shapes\ICollisionShape.cpp" />
     <ClCompile Include="Game\Subsystems\Message\GameMessageSubsystem.cpp" />
+    <ClCompile Include="Game\Subsystems\Navmesh\NavmeshSubsystem.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Objects\GameComponent.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />

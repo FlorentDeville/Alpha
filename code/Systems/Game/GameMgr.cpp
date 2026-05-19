@@ -16,6 +16,7 @@
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
 #include "Systems/Game/Subsystems/Collision/CollisionSubsystem.h"
 #include "Systems/Game/Subsystems/Message/GameMessageSubsystem.h"
+#include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
@@ -73,10 +74,13 @@ namespace Systems
 		m_pGameContext->m_pClock = new GameClockSubsystem();
 
 		CollisionSubsystem* pCollision = new CollisionSubsystem();
-		pCollision->m_subsystemIndex = RegisterGameSubsystem(pCollision);
+		CollisionSubsystem::m_subsystemIndex = RegisterGameSubsystem(pCollision);
 
 		GameMessageSubsystem* pMessages = new GameMessageSubsystem();
-		pMessages->m_subsystemIndex = RegisterGameSubsystem(pMessages);
+		GameMessageSubsystem::m_subsystemIndex = RegisterGameSubsystem(pMessages);
+
+		NavmeshSubsystem* pNavmesh = new NavmeshSubsystem();
+		NavmeshSubsystem::m_subsystemIndex = RegisterGameSubsystem(pNavmesh);
 	}
 
 	void GameMgr::Release()
