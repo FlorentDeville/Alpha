@@ -94,12 +94,15 @@ void PlayerGameObject::Update(float dt)
 		}
 	}
 
-	UpdateCamera(dt);
-
 	BaseClass::Update(dt);
 
 	//cleanup
 	m_counterBulletIndex = UINT32_MAX;
+}
+
+void PlayerGameObject::PostUpdate()
+{
+	UpdateCamera();
 }
 
 void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
@@ -153,7 +156,7 @@ void PlayerGameObject::OnBulletCollision()
 	pCurrentHpUIComp->SetPosition(position);
 }
 
-void PlayerGameObject::UpdateCamera(float /*dt*/)
+void PlayerGameObject::UpdateCamera()
 {
 	const BossGameObject* pBoss = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
 	Core::Vec4f bossPos = pBoss->GetTransform().GetWorldTx().GetT();
@@ -182,6 +185,4 @@ void PlayerGameObject::UpdateCamera(float /*dt*/)
 	Core::Vec4f cameraPosition = targetPos + m_cameraOffset * (cameraDistance + MARGIN);
 
 	m_pCamera->SetLookAt(cameraPosition, targetPos, Core::Vec4f(0, 1, 0, 0));
-
-	
 }
