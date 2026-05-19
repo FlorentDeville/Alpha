@@ -28,6 +28,7 @@ public:
 	void OnStartGame() override;
 
 	void Update(float dt) override;
+	void PostUpdate() override;
 
 	void HandleMessage(const Systems::GameMessage& msg) override;
 
@@ -60,5 +61,5 @@ private:
 
 	void OnBulletCollision();
 
-	void UpdateCamera(float dt);
+	void UpdateCamera();
 };

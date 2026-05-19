@@ -120,6 +120,18 @@ namespace Systems
 			}
 		}
 
+		for (Systems::LevelAsset* pLevel : m_loadedLevels)
+		{
+			//going through the list of game object of levels will cause problems when game objects
+			//are created at runtime.
+			//I should make an internal array of all game object pointers in the GameMgr.
+			Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+			for (Systems::GameObject* pGo : gameObjects)
+			{
+				pGo->PostUpdate();
+			}
+		}
+
 		m_pGameContext->m_pParticleSystem->Update(*m_pGameContext);
 
 		for (ISubsystem* pSubsystem : m_gameSubsystems)

@@ -44,6 +44,9 @@ namespace Systems
 			pComponent->Update(dt);
 	}
 
+	void GameObject::PostUpdate()
+	{ }
+
 	void GameObject::OnDestroy(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
