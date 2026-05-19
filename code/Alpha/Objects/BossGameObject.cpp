@@ -47,7 +47,8 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::PHASE1_ATTACK);
 	m_pStateMachine->AddState(pStatePhase2Travel, BossStateEnum::PHASE2_TRAVEL);
 
-	m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
+	//m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
+	m_pStateMachine->Start(BossStateEnum::PHASE2_TRAVEL);
 
 	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });

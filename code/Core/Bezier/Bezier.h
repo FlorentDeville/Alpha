@@ -11,6 +11,7 @@ namespace Core
 	class QuadraticBezier
 	{
 	public:
+		QuadraticBezier() = default;
 		QuadraticBezier(const Core::Vec4f& p0, const Core::Vec4f& p1, const Core::Vec4f& p2);
 		~QuadraticBezier() = default;
 

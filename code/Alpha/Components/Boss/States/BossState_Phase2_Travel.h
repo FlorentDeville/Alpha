@@ -6,6 +6,7 @@
 
 #include "Alpha/StateMachine/IState.h"
 
+#include "Core/Bezier/Bezier.h"
 #include "Core/Math/Vec4f.h"
 
 class BossGameObject;
@@ -23,5 +24,6 @@ public:
 private:
 	BossGameObject* m_pBoss;
 
-	Core::Vec4f m_targetPos;
+	Core::QuadraticBezier m_curve;
+	float m_curveParam;
 };

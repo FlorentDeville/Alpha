@@ -17,7 +17,8 @@
 BossState_Phase2_Travel::BossState_Phase2_Travel(StateMachine* pStateMachine, BossGameObject* pBoss)
 	: IState(pStateMachine)
 	, m_pBoss(pBoss)
-	, m_targetPos()
+	, m_curve()
+	, m_curveParam(0)
 {
 }
 
@@ -28,38 +29,28 @@ BossState_Phase2_Travel::~BossState_Phase2_Travel()
 void BossState_Phase2_Travel::OnEnter()
 {
 	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
-	m_targetPos = pNavmesh->QueryRandomPosition();
+	m_curve.m_p0 = m_pBoss->GetTransform().GetWorldTx().GetT();
+	m_curve.m_p1 = pNavmesh->QueryRandomPosition();
+	m_curve.m_p2 = pNavmesh->QueryRandomPosition();
 
-	//Core::LogModule::Get().LogInfo("BossState_Phase1_Travel::OnEnter");
+	m_curveParam = 0;
+	//Core::LogModule::Get().LogInfo("BossState_Phase2_Travel::OnEnter");
 }
 
 void BossState_Phase2_Travel::OnUpdate()
 {
+	if (m_curveParam >= 1)
+		return;
+
 	Systems::GameMgr& gameMgr = Systems::GameMgr().Get();
 	Systems::GameContext* pContext = gameMgr.GetWorld();
 
-	const float SPEED = 20;
-	float dt = pContext->m_pClock->GetDeltaTime();
+	const float SPEED_MULT = 1;
+	m_curveParam += pContext->m_pClock->GetDeltaTime() * SPEED_MULT;
+	if (m_curveParam >= 1)
+		m_curveParam = 1;
 
-	Core::Vec4f oldPosition = m_pBoss->GetTransform().GetWorldTx().GetT();
-	Core::Vec4f dir = m_targetPos - oldPosition;
-
-	Core::Vec4f newPosition = oldPosition;
-
-	float distance = dir.Length();
-	float minDistance = SPEED * dt;
-	if (distance <= minDistance)
-	{
-		newPosition = m_targetPos;
-		//GoTo(BossStateEnum::PHASE1_ATTACK);
-	}
-	else
-	{
-		dir = dir * (1.f / distance); //normalize without recomputing the distance
-		float displacement = SPEED * dt;
-		newPosition = oldPosition + dir * displacement;
-		//Core::LogModule::Get().LogInfo("dt : %f", dt);
-	}
+	Core::Vec4f newPosition = m_curve.Evaluate(m_curveParam);
 
 	Core::Mat44f wsTx = Core::Mat44f::CreateTranslationMatrix(newPosition);
 	m_pBoss->GetTransform().SetLocalTx(wsTx);
