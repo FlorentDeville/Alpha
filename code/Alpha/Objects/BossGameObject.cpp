@@ -12,6 +12,7 @@
 
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Message/GameMessage.h"
+#include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
 
 BossGameObject::BossGameObject()
 	: BaseClass()
@@ -36,7 +37,7 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(2);
 
-	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine);
+	BossStateWait* pStateWait = new BossStateWait(m_pStateMachine, this);
 	BossStateWaveTest* pStateWaveTest = new BossStateWaveTest(m_pStateMachine);
 	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 
@@ -47,6 +48,16 @@ void BossGameObject::OnStartGame()
 
 	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });
+
+	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
+
+	Core::Vec4f quad[4];
+	quad[0] = Core::Vec4f(-48, 1.5, 46, 1);
+	quad[1] = Core::Vec4f(47, 1.5, 46, 1);
+	quad[2] = Core::Vec4f(47, 1.5, -44, 1);
+	quad[3] = Core::Vec4f(-48, 1.5, -44, 1);
+
+	pNavmesh->AddQuad(quad);
 }
 
 void BossGameObject::Update(float dt)
