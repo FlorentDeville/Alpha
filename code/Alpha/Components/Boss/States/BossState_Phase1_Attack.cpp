@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/Boss/States/BossStateWaveTest.h"
+#include "Alpha/Components/Boss/States/BossState_Phase1_Attack.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Bullets/Waves/WaveMachineGun.h"
@@ -14,7 +14,7 @@
 
 #include "Systems/Objects/GameObject.h"
 
-BossStateWaveTest::BossStateWaveTest(StateMachine* pStateMachine)
+BossState_Phase1_Attack::BossState_Phase1_Attack(StateMachine* pStateMachine)
 	: IState(pStateMachine)
 	, m_pWave(nullptr)
 	, m_pWaveMachineGun(nullptr)
@@ -24,7 +24,7 @@ BossStateWaveTest::BossStateWaveTest(StateMachine* pStateMachine)
 	, m_runFirstWave(true)
 { }
 
-BossStateWaveTest::~BossStateWaveTest()
+BossState_Phase1_Attack::~BossState_Phase1_Attack()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->RemoveWave(m_waveIndex);
@@ -34,7 +34,7 @@ BossStateWaveTest::~BossStateWaveTest()
 	delete m_pWaveMachineGun;
 }
 
-void BossStateWaveTest::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
+void BossState_Phase1_Attack::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
 	BossGameObject* pBoss, const Systems::GameObject* pTarget)
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
@@ -50,7 +50,7 @@ void BossStateWaveTest::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanc
 	pSubsystem->InitWave(m_waveMachineGunIndex);
 }
 
-void BossStateWaveTest::OnEnter()
+void BossState_Phase1_Attack::OnEnter()
 {
 	const Systems::TransformComponent& transform = m_pBoss->GetTransform();
 
@@ -64,14 +64,14 @@ void BossStateWaveTest::OnEnter()
 	m_runFirstWave = !m_runFirstWave;
 }
 
-void BossStateWaveTest::OnUpdate()
+void BossState_Phase1_Attack::OnUpdate()
 {
 	if (!m_pWave->IsAlive() && !m_pWaveMachineGun->IsAlive())
 	{
-		Core::LogModule::Get().LogInfo("BossStateWaveTest goto state PHASE1_TRAVEL");
+		Core::LogModule::Get().LogInfo("BossState_Phase1_Attack goto state PHASE1_TRAVEL");
 		GoTo(BossStateEnum::PHASE1_TRAVEL);
 	}
 }
 
-void BossStateWaveTest::OnExit()
+void BossState_Phase1_Attack::OnExit()
 { }

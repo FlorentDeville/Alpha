@@ -49,7 +49,7 @@ void BossState_Phase1_Travel::OnUpdate()
 	if (distance <= minDistance)
 	{
 		newPosition = m_targetPos;
-		GoTo(BossStateEnum::WAVE_TEST);
+		GoTo(BossStateEnum::PHASE1_ATTACK);
 	}
 	else
 	{

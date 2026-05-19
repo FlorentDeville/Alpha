@@ -7,7 +7,7 @@
 enum BossStateEnum
 {
 	PHASE1_TRAVEL,
-	WAVE_TEST,
+	PHASE1_ATTACK,
 
 	COUNT
 };

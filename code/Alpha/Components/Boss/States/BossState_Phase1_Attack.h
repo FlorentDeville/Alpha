@@ -17,11 +17,11 @@ class BossGameObject;
 class WaveMachineGun;
 class WaveTest;
 
-class BossStateWaveTest : public IState
+class BossState_Phase1_Attack : public IState
 {
 public:
-	BossStateWaveTest(StateMachine* pStateMachine);
-	~BossStateWaveTest();
+	BossState_Phase1_Attack(StateMachine* pStateMachine);
+	~BossState_Phase1_Attack();
 
 	void Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
 		BossGameObject* pComponent, const Systems::GameObject* pTarget);
