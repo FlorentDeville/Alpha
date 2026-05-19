@@ -49,6 +49,9 @@ namespace Systems
 		//Called every frame
 		virtual void Update(float dt);
 
+		//Called every frame after Update
+		virtual void PostUpdate();
+
 		//Called before deleting the gameobjet after the last Update.
 		virtual void OnDestroy(GameContext* pWorld);
 
