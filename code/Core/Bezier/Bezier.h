@@ -16,6 +16,7 @@ namespace Core
 		~QuadraticBezier() = default;
 
 		Core::Vec4f Evaluate(float t) const;
+		Core::Vec4f EvaluateFirstDerivative(float t) const;
 
 		Core::Vec4f m_p0;
 		Core::Vec4f m_p1;

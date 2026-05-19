@@ -18,4 +18,9 @@ namespace Core
 
 		return (m_p0 * oneMinusT * oneMinusT) + (m_p1 * 2 * oneMinusT * t) + (m_p2 * t * t);
 	}
+
+	Core::Vec4f QuadraticBezier::EvaluateFirstDerivative(float t) const
+	{
+		return ((m_p1 - m_p0) * 2 * (1 - t)) + ((m_p2 - m_p1) * 2 * t);
+	}
 }

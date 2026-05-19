@@ -40,13 +40,18 @@ void BossState_Phase2_Travel::OnEnter()
 void BossState_Phase2_Travel::OnUpdate()
 {
 	if (m_curveParam >= 1)
+	{
+		//OnEnter();
 		return;
+	}
 
 	Systems::GameMgr& gameMgr = Systems::GameMgr().Get();
 	Systems::GameContext* pContext = gameMgr.GetWorld();
 
-	const float SPEED_MULT = 1;
-	m_curveParam += pContext->m_pClock->GetDeltaTime() * SPEED_MULT;
+	const float SPEED = 25;
+	float ds = SPEED * pContext->m_pClock->GetDeltaTime();
+
+	m_curveParam += ds / m_curve.EvaluateFirstDerivative(m_curveParam).Length();
 	if (m_curveParam >= 1)
 		m_curveParam = 1;
 
