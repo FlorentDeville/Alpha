@@ -47,8 +47,14 @@ namespace Systems
 
 		Core::RandomFloat randomParameter(0, 1);
 		float u = randomParameter.Generate();
-		float v = 1 - u;
+		float v = randomParameter.Generate();
 
+		if (u + v > 1)
+		{
+			u = 1 - u;
+			v = 1 - v;
+		}
+		
 		const Triangle& tri = m_navmesh[triangleIndex];
 		Core::Vec4f p = tri.m_points[0] + (tri.m_points[1] - tri.m_points[0]) * u + (tri.m_points[2] - tri.m_points[0]) * v;
 		return p;
