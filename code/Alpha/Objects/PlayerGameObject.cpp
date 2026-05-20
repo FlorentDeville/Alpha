@@ -175,7 +175,7 @@ void PlayerGameObject::UpdateCamera()
 	float cameraDistance = halfDistance / std::tan(halfPhi);
 
 	//clamp
-	const float MIN_DISTANCE = 20;
+	const float MIN_DISTANCE = 70;
 	const float MAX_DISTANCE = 100;
 	cameraDistance = cameraDistance < MIN_DISTANCE ? MIN_DISTANCE : (cameraDistance > MAX_DISTANCE ? MAX_DISTANCE : cameraDistance);
 
