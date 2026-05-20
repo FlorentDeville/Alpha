@@ -22,7 +22,9 @@ BossState_Phase2_Attack1::BossState_Phase2_Attack1(StateMachine* pStateMachine)
 	, m_pTarget(nullptr)
 	, m_pWave()
 	, m_waveIndex()
-	, m_delayBetweenWave(1.f)
+	, m_delayBetweenWave(0.5f)
+	, m_lastWaveStartTime(0)
+	, m_nextWaveToStart(0)
 { }
 
 BossState_Phase2_Attack1::~BossState_Phase2_Attack1()
@@ -43,10 +45,12 @@ void BossState_Phase2_Attack1::Init(Systems::MeshAsset* pMesh, Systems::Material
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
-	const uint32_t BULLET_COUNT = 17;
+	const float ROTATION_OFFSET_INC = Core::TWO_PI / 360 * 5;
+	const uint32_t BULLET_COUNT = 37;
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
-		float rotationOffset = Core::TWO_PI / WAVE_COUNT * ii;
+		float rotationOffset = ROTATION_OFFSET_INC * ii;
+
 		m_pWave[ii] = new WaveTest(pMesh, pMaterial, BULLET_COUNT, rotationOffset);
 		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
 		pSubsystem->InitWave(m_waveIndex[ii]);
