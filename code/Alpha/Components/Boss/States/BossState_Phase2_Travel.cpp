@@ -41,7 +41,7 @@ void BossState_Phase2_Travel::OnUpdate()
 {
 	if (m_curveParam >= 1)
 	{
-		//OnEnter();
+		GoTo(BossStateEnum::PHASE2_ATTACK1);
 		return;
 	}
 
@@ -62,5 +62,4 @@ void BossState_Phase2_Travel::OnUpdate()
 }
 
 void BossState_Phase2_Travel::OnExit()
-{
-}
+{ }
