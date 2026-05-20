@@ -32,6 +32,8 @@ public:
 	void SpawnCounterBullet(Bullets& bullet, uint32_t index) override;
 
 	void SetSideBulletEnabled(bool enabled);
+	void SetBulletCount(uint32_t count);
+	void SetCounterableBulletCount(uint32_t count);
 
 private:
 	const Systems::GameObject* m_pOwner;
@@ -42,7 +44,7 @@ private:
 	uint32_t m_nextBulletToShot;
 	float m_lastSpawnTime;
 
-	const uint32_t COUNTER_BULLET_COUNT;
+	uint32_t m_counterableBulletCount;
 
 	uint32_t m_counterBulletStartId;
 	uint32_t m_counterBulletEndId;

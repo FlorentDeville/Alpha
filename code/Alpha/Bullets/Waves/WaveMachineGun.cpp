@@ -35,14 +35,14 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_counterBulletStartId(0)
 	, m_counterBulletEndId(0)
 	, m_nextCounterBulletId(0)
-	, COUNTER_BULLET_COUNT(1)
+	, m_counterableBulletCount(15)
 	, m_sideBulletEnabled(false)
 {
 	m_count = 20;
 	m_pMesh = pMesh;
 	m_pMaterial = pMaterial;
 
-	m_pCounterBulletState = new CounterBulletStruct[COUNTER_BULLET_COUNT];
+	m_pCounterBulletState = new CounterBulletStruct[m_counterableBulletCount];
 }
 
 WaveMachineGun::~WaveMachineGun()
@@ -58,16 +58,16 @@ void WaveMachineGun::Init(Bullets& bullets)
 	m_endId = m_startId + m_count;
 	m_nextBulletToShot = m_startId;
 
-	m_counterBulletStartId = bullets.Allocate(COUNTER_BULLET_COUNT);
+	m_counterBulletStartId = bullets.Allocate(m_counterableBulletCount);
 	assert(m_counterBulletStartId != UINT32_MAX);
-	m_counterBulletEndId = m_counterBulletStartId + COUNTER_BULLET_COUNT;
+	m_counterBulletEndId = m_counterBulletStartId + m_counterableBulletCount;
 	m_nextCounterBulletId = m_counterBulletStartId;
 }
 
 void WaveMachineGun::Destroy(Bullets& bullets)
 {
 	bullets.Free(m_startId, m_count);
-	bullets.Free(m_counterBulletStartId, COUNTER_BULLET_COUNT);
+	bullets.Free(m_counterBulletStartId, m_counterableBulletCount);
 }
 
 void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
@@ -91,7 +91,7 @@ void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 	//generate the counter bullets
 	Core::RandomUInt generator(m_startId, m_endId - 1);
 
-	for (uint32_t ii = 0; ii < COUNTER_BULLET_COUNT; ++ii)
+	for (uint32_t ii = 0; ii < m_counterableBulletCount; ++ii)
 	{
 		uint32_t index = generator.Generate();
 		bullets.m_type[index] = BulletType::COUNTERABLE;
@@ -141,12 +141,13 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 			Core::Vec4f dirTangent(dir.GetZ(), dir.GetY(), -dir.GetX(), 0);
 			const float START_OFFSET = 2;
 
+			const float SPEED_OFFSET = 2;
 			if(m_nextBulletToShot < m_endId)
 			{
 				Core::Vec4f sideBulletStart = start + dirTangent * START_OFFSET;
 
 				bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
-				bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent;
+				bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent * SPEED_OFFSET;
 				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
 				bullets.m_timeToLive[m_nextBulletToShot] = 3;
 				++m_nextBulletToShot;
@@ -158,7 +159,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 				Core::Vec4f sideBulletStart = start - dirTangent * START_OFFSET;
 
 				bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
-				bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent;
+				bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent * SPEED_OFFSET;
 				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
 				bullets.m_timeToLive[m_nextBulletToShot] = 3;
 				++m_nextBulletToShot;
@@ -299,6 +300,16 @@ void WaveMachineGun::SpawnCounterBullet(Bullets& bullets, uint32_t index)
 void WaveMachineGun::SetSideBulletEnabled(bool enabled)
 {
 	m_sideBulletEnabled = enabled;
+}
+
+void WaveMachineGun::SetBulletCount(uint32_t count)
+{
+	m_count = count;
+}
+
+void WaveMachineGun::SetCounterableBulletCount(uint32_t count)
+{
+	m_counterableBulletCount = count;
 }
 
 void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)
