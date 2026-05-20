@@ -33,6 +33,11 @@ public:
 
 	void OnDestroyGame() override;
 
+	uint32_t GetMaxHP() const;
+	int32_t GetCurrentHP() const;
+
+	void SetCurrentHP(int32_t hp);
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_mesh;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_material;
@@ -55,6 +60,7 @@ private:
 		ADD_FIELD(m_collComp)
 	END_REFLECTION()
 
+private:
 	StateMachine* m_pStateMachine;
 	int32_t m_currentHP;
 

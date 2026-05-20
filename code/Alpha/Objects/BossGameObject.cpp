@@ -105,6 +105,21 @@ void BossGameObject::OnDestroyGame()
 	m_pStateMachine = nullptr;
 }
 
+uint32_t BossGameObject::GetMaxHP() const
+{
+	return m_maxHP;
+}
+
+int32_t BossGameObject::GetCurrentHP() const
+{
+	return m_currentHP;
+}
+
+void BossGameObject::SetCurrentHP(int32_t hp)
+{
+	m_currentHP = hp;
+}
+
 void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
 {
 	Systems::GameObject* pOwner = pOther->GetOwner();

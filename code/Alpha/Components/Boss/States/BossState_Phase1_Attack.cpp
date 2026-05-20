@@ -66,12 +66,14 @@ void BossState_Phase1_Attack::OnEnter()
 
 void BossState_Phase1_Attack::OnUpdate()
 {
-	if (m_pBoss->m_currentHP <= 0)
+	if (m_pBoss->GetCurrentHP() <= 0)
 	{
 		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 		pSubsystem->StopWave(m_waveIndex);
 		pSubsystem->StopWave(m_waveMachineGunIndex);
-
+		
+		m_pBoss->SetCurrentHP(m_pBoss->GetMaxHP());
+		
 		GoTo(BossStateEnum::PHASE2_TRAVEL);
 		return;
 	}

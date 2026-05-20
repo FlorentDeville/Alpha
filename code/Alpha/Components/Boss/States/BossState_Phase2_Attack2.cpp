@@ -55,6 +55,15 @@ void BossState_Phase2_Attack2::OnEnter()
 
 void BossState_Phase2_Attack2::OnUpdate()
 {
+	if (m_pBoss->GetCurrentHP() <= 0)
+	{
+		GoTo(BossStateEnum::PHASE3_TRAVEL);
+		m_pWave->Stop();
+
+		m_pBoss->SetCurrentHP(m_pBoss->GetMaxHP());
+		return;
+	}
+
 	if (!m_pWave->IsAlive())
 		GoTo(BossStateEnum::PHASE2_TRAVEL);
 }
