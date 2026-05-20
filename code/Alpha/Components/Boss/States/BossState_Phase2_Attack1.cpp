@@ -9,22 +9,30 @@
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Objects/BossGameObject.h"
 
+#include "Core/Math/Constants.h"
+
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Objects/GameObject.h"
 
 BossState_Phase2_Attack1::BossState_Phase2_Attack1(StateMachine* pStateMachine)
 	: IState(pStateMachine)
 	, m_pBoss(nullptr)
 	, m_pTarget(nullptr)
-	, m_pWave(nullptr)
-	, m_waveIndex(UINT32_MAX)
+	, m_pWave()
+	, m_waveIndex()
+	, m_delayBetweenWave(1.f)
 { }
 
 BossState_Phase2_Attack1::~BossState_Phase2_Attack1()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->RemoveWave(m_waveIndex);
-
-	delete m_pWave;
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+		pSubsystem->RemoveWave(m_waveIndex[ii]);
+		delete m_pWave[ii];
+	}
 }
 
 void BossState_Phase2_Attack1::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* /*pCounterBulletMaterial*/,
@@ -34,24 +42,55 @@ void BossState_Phase2_Attack1::Init(Systems::MeshAsset* pMesh, Systems::Material
 	m_pTarget = pTarget;
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	m_pWave = new WaveTest(pMesh, pMaterial);
-	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->InitWave(m_waveIndex);
+
+	const uint32_t BULLET_COUNT = 17;
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		float rotationOffset = Core::TWO_PI / WAVE_COUNT * ii;
+		m_pWave[ii] = new WaveTest(pMesh, pMaterial, BULLET_COUNT, rotationOffset);
+		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
+		pSubsystem->InitWave(m_waveIndex[ii]);
+	}
 }
 
 void BossState_Phase2_Attack1::OnEnter()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->StartWave(m_waveIndex, m_pBoss->GetTransform().GetWorldTx().GetT());
+	pSubsystem->StartWave(m_waveIndex[0], m_pBoss->GetTransform().GetWorldTx().GetT());
+
+	m_lastWaveStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	m_nextWaveToStart = 1;
 }
 
 void BossState_Phase2_Attack1::OnUpdate()
 { 
-	if (!m_pWave->IsAlive())
+	if (m_nextWaveToStart < WAVE_COUNT)
 	{
-		GoTo(BossStateEnum::PHASE2_TRAVEL);
-		return;
+		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		if (currentTime >= m_lastWaveStartTime + m_delayBetweenWave)
+		{
+			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+			pSubsystem->StartWave(m_waveIndex[m_nextWaveToStart], m_pBoss->GetTransform().GetWorldTx().GetT());
+
+			++m_nextWaveToStart;
+			m_lastWaveStartTime = currentTime;
+			return;
+		}
 	}
+
+	bool allWaveDead = true;
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		if (m_pWave[ii]->IsAlive())
+		{
+			allWaveDead = false;
+			return;
+		}
+	}
+
+	//all waves are dead
+	GoTo(BossStateEnum::PHASE2_TRAVEL);
+
 }
 
 void BossState_Phase2_Attack1::OnExit()

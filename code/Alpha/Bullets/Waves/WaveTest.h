@@ -9,7 +9,7 @@
 class WaveTest : public IBulletWave
 {
 public:
-	WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial);
+	WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount = 10, float rotationOffset = 0);
 	~WaveTest();
 
 	void Init(Bullets& bullets) override;
@@ -20,6 +20,9 @@ public:
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
 
 private:
+
+	float m_rotationOffset; //start location rotation offset in radian
+
 	enum State
 	{
 		SHOW,	//the bullets appear progressiely

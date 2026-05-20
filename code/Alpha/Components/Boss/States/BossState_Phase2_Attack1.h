@@ -30,9 +30,15 @@ public:
 	void OnExit() override;
 
 private:
-	WaveTest* m_pWave;
+	static const int WAVE_COUNT = 5;
+	
+	float m_delayBetweenWave;
+	float m_lastWaveStartTime;
+	uint32_t m_nextWaveToStart;
+
+	WaveTest* m_pWave[WAVE_COUNT];
 
 	BossGameObject* m_pBoss;
 	const Systems::GameObject* m_pTarget;
-	uint32_t m_waveIndex;
+	uint32_t m_waveIndex[WAVE_COUNT];
 };

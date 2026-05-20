@@ -16,14 +16,15 @@
 #include <assert.h>
 #include <cmath>
 
-WaveTest::WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial)
+WaveTest::WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount, float rotationOffset)
 	: IBulletWave()
 	, m_showDuration(0.5f)
 	, m_showTime(0)
 	, m_currentState(State::SHOW)
 	, m_currentScale(0)
+	, m_rotationOffset(rotationOffset)
 {
-	m_count = 10;
+	m_count = bulletCount;
 	m_pMesh = pMesh;
 	m_pMaterial = pMaterial;
 }
@@ -52,7 +53,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 	const float SPEED = 35.f;
 	for (uint32_t ii = 0; ii < m_count; ++ii)
 	{
-		float angle = ii * ANGLE_INC;
+		float angle = (ii * ANGLE_INC) + m_rotationOffset;
 		float x = cos(angle);
 		float z = sin(angle);
 
