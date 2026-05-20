@@ -43,9 +43,9 @@ void BossState_Phase3_Travel::OnUpdate()
 	if (m_curveParam >= 1)
 	{
 		if (m_nextAttackIsAttack1)
-			GoTo(BossStateEnum::PHASE2_ATTACK1);
+			GoTo(BossStateEnum::PHASE3_ATTACK1);
 		else
-			GoTo(BossStateEnum::PHASE2_ATTACK2);
+			GoTo(BossStateEnum::PHASE3_ATTACK1);
 
 		m_nextAttackIsAttack1 = !m_nextAttackIsAttack1;
 		return;
@@ -54,7 +54,7 @@ void BossState_Phase3_Travel::OnUpdate()
 	Systems::GameMgr& gameMgr = Systems::GameMgr().Get();
 	Systems::GameContext* pContext = gameMgr.GetWorld();
 
-	const float SPEED = 25;
+	const float SPEED = 35;
 	float ds = SPEED * pContext->m_pClock->GetDeltaTime();
 
 	m_curveParam += ds / m_curve.EvaluateFirstDerivative(m_curveParam).Length();
