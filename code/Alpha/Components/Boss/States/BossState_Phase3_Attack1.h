@@ -30,9 +30,11 @@ public:
 	void OnExit() override;
 
 private:
-	static const int WAVE_COUNT = 5;
+	static const int WAVE_COUNT = 15;
+	static const int PACK_SIZE = 3; //3 consecutive waves called a pack
 
 	float m_delayBetweenWave;
+	float m_delayBetweenPack;
 	float m_lastWaveStartTime;
 	uint32_t m_nextWaveToStart;
 

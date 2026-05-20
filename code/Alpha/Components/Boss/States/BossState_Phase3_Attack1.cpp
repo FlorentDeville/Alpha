@@ -22,7 +22,8 @@ BossState_Phase3_Attack1::BossState_Phase3_Attack1(StateMachine* pStateMachine)
 	, m_pTarget(nullptr)
 	, m_pWave()
 	, m_waveIndex()
-	, m_delayBetweenWave(0.5f)
+	, m_delayBetweenWave(0.05f)
+	, m_delayBetweenPack(0.5f)
 	, m_lastWaveStartTime(0)
 	, m_nextWaveToStart(0)
 {
@@ -33,6 +34,7 @@ BossState_Phase3_Attack1::~BossState_Phase3_Attack1()
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
 		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+		pSubsystem->DestroyWave(m_waveIndex[ii]);
 		pSubsystem->RemoveWave(m_waveIndex[ii]);
 		delete m_pWave[ii];
 	}
@@ -46,11 +48,12 @@ void BossState_Phase3_Attack1::Init(Systems::MeshAsset* pMesh, Systems::Material
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
-	const float ROTATION_OFFSET_INC = Core::TWO_PI / 360 * 5;
-	const uint32_t BULLET_COUNT = 37;
+	const float ROTATION_OFFSET_INC = Core::TWO_PI / 360 * 10;
+	const uint32_t BULLET_COUNT = 57;
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
-		float rotationOffset = ROTATION_OFFSET_INC * ii;
+		uint32_t packIndex = ii % PACK_SIZE;
+		float rotationOffset = ROTATION_OFFSET_INC * packIndex;
 
 		m_pWave[ii] = new WaveTest(pMesh, pMaterial, BULLET_COUNT, rotationOffset);
 		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
@@ -72,7 +75,20 @@ void BossState_Phase3_Attack1::OnUpdate()
 	if (m_nextWaveToStart < WAVE_COUNT)
 	{
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
-		if (currentTime >= m_lastWaveStartTime + m_delayBetweenWave)
+
+		bool spawn = false;
+		if (m_nextWaveToStart % PACK_SIZE == 0) //start of a pack
+		{
+			if (currentTime >= m_lastWaveStartTime + m_delayBetweenPack)
+				spawn = true;
+		}
+		else
+		{
+			if (currentTime >= m_lastWaveStartTime + m_delayBetweenWave)
+				spawn = true;
+		}
+
+		if(spawn)
 		{
 			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 			pSubsystem->StartWave(m_waveIndex[m_nextWaveToStart], m_pBoss->GetTransform().GetWorldTx().GetT());
