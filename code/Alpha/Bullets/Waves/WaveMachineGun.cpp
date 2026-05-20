@@ -36,6 +36,7 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_counterBulletEndId(0)
 	, m_nextCounterBulletId(0)
 	, COUNTER_BULLET_COUNT(15)
+	, m_sideBulletEnabled(false)
 {
 	m_count = 20;
 	m_pMesh = pMesh;
@@ -121,9 +122,9 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
 		const float SPEED = 25.f;
-		Core::Vec4f velocity = end - start;
-		velocity.Normalize();
-		velocity = velocity * SPEED;
+		Core::Vec4f dir = end - start;
+		dir.Normalize();
+		Core::Vec4f velocity = dir * SPEED;
 
 		bullets.m_positions[m_nextBulletToShot] = start;
 		bullets.m_speed[m_nextBulletToShot] = velocity;
@@ -133,6 +134,36 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		++m_nextBulletToShot;
 
 		m_lastSpawnTime = pClock->GetTime();
+
+		if (m_sideBulletEnabled)
+		{
+			//left bullet
+			Core::Vec4f dirTangent(dir.GetZ(), dir.GetY(), -dir.GetX(), 0);
+			const float START_OFFSET = 2;
+
+			{
+				Core::Vec4f sideBulletStart = start + dirTangent * START_OFFSET;
+
+				bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
+				bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent;
+				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
+				bullets.m_timeToLive[m_nextBulletToShot] = 3;
+			}
+
+			++m_nextBulletToShot;
+
+			//right bullet
+			{
+				Core::Vec4f sideBulletStart = start - dirTangent * START_OFFSET;
+
+				bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
+				bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent;
+				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
+				bullets.m_timeToLive[m_nextBulletToShot] = 3;
+			}
+
+			++m_nextBulletToShot;
+		}
 	}
 }
 
@@ -263,6 +294,11 @@ void WaveMachineGun::SpawnCounterBullet(Bullets& bullets, uint32_t index)
 	m_pCounterBulletState[bezierIndex].m_bezierP1 = p1;
 
 	++m_nextCounterBulletId;
+}
+
+void WaveMachineGun::SetSideBulletEnabled(bool enabled)
+{
+	m_sideBulletEnabled = enabled;
 }
 
 void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)

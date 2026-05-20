@@ -31,6 +31,8 @@ public:
 
 	void SpawnCounterBullet(Bullets& bullet, uint32_t index) override;
 
+	void SetSideBulletEnabled(bool enabled);
+
 private:
 	const Systems::GameObject* m_pOwner;
 	const Systems::GameObject* m_pTarget;
@@ -52,6 +54,8 @@ private:
 		Core::Vec4f m_bezierP1;
 	};
 	CounterBulletStruct* m_pCounterBulletState;
+
+	bool m_sideBulletEnabled;
 
 	void UpdateCounteredBullets(Bullets& bullets, float dt);
 };

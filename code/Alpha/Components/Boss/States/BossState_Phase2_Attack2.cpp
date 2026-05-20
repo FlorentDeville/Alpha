@@ -39,6 +39,7 @@ void BossState_Phase2_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	m_pWave = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);
+	m_pWave->SetSideBulletEnabled(true);
 
 	m_waveIndex = pSubsystem->AddWave(m_pWave);
 	pSubsystem->InitWave(m_waveIndex);
