@@ -38,7 +38,7 @@ public:
 	BulletType* m_type;
 	BulletState* m_state;
 
-	const uint32_t COUNT = 1000;
+	const uint32_t COUNT = 2000;
 
 	void Create();
 	void Delete();
