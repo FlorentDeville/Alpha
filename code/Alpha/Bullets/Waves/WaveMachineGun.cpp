@@ -35,7 +35,7 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_counterBulletStartId(0)
 	, m_counterBulletEndId(0)
 	, m_nextCounterBulletId(0)
-	, COUNTER_BULLET_COUNT(15)
+	, COUNTER_BULLET_COUNT(1)
 	, m_sideBulletEnabled(false)
 {
 	m_count = 20;
@@ -141,6 +141,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 			Core::Vec4f dirTangent(dir.GetZ(), dir.GetY(), -dir.GetX(), 0);
 			const float START_OFFSET = 2;
 
+			if(m_nextBulletToShot < m_endId)
 			{
 				Core::Vec4f sideBulletStart = start + dirTangent * START_OFFSET;
 
@@ -148,11 +149,11 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 				bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent;
 				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
 				bullets.m_timeToLive[m_nextBulletToShot] = 3;
+				++m_nextBulletToShot;
 			}
 
-			++m_nextBulletToShot;
-
 			//right bullet
+			if (m_nextBulletToShot < m_endId)
 			{
 				Core::Vec4f sideBulletStart = start - dirTangent * START_OFFSET;
 
@@ -160,9 +161,8 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 				bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent;
 				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
 				bullets.m_timeToLive[m_nextBulletToShot] = 3;
+				++m_nextBulletToShot;
 			}
-
-			++m_nextBulletToShot;
 		}
 	}
 }
