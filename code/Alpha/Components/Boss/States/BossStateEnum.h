@@ -11,6 +11,7 @@ enum BossStateEnum
 
 	PHASE2_TRAVEL,
 	PHASE2_ATTACK1,
+	PHASE2_ATTACK2,
 
 	COUNT
 };

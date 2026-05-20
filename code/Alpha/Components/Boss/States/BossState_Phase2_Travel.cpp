@@ -19,6 +19,7 @@ BossState_Phase2_Travel::BossState_Phase2_Travel(StateMachine* pStateMachine, Bo
 	, m_pBoss(pBoss)
 	, m_curve()
 	, m_curveParam(0)
+	, m_nextAttackIsAttack1(true)
 {
 }
 
@@ -41,7 +42,12 @@ void BossState_Phase2_Travel::OnUpdate()
 {
 	if (m_curveParam >= 1)
 	{
-		GoTo(BossStateEnum::PHASE2_ATTACK1);
+		if(m_nextAttackIsAttack1)
+			GoTo(BossStateEnum::PHASE2_ATTACK1);
+		else
+			GoTo(BossStateEnum::PHASE2_ATTACK2);
+
+		m_nextAttackIsAttack1 = !m_nextAttackIsAttack1;
 		return;
 	}
 

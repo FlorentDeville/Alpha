@@ -26,4 +26,6 @@ private:
 
 	Core::QuadraticBezier m_curve;
 	float m_curveParam;
+
+	bool m_nextAttackIsAttack1;
 };

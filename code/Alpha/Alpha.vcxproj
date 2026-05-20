@@ -107,6 +107,7 @@
     <ClCompile Include="Components\Boss\States\BossState_Phase1_Travel.cpp" />
     <ClCompile Include="Components\Boss\States\BossState_Phase1_Attack.cpp" />
     <ClCompile Include="Components\Boss\States\BossState_Phase2_Attack1.cpp" />
+    <ClCompile Include="Components\Boss\States\BossState_Phase2_Attack2.cpp" />
     <ClCompile Include="Components\Boss\States\BossState_Phase2_Travel.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="main.cpp" />
@@ -460,6 +461,7 @@
     <ClInclude Include="Components\Boss\States\BossState_Phase1_Travel.h" />
     <ClInclude Include="Components\Boss\States\BossState_Phase1_Attack.h" />
     <ClInclude Include="Components\Boss\States\BossState_Phase2_Attack1.h" />
+    <ClInclude Include="Components\Boss\States\BossState_Phase2_Attack2.h" />
     <ClInclude Include="Components\Boss\States\BossState_Phase2_Travel.h" />
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Objects\BossGameObject.h" />
