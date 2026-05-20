@@ -97,11 +97,6 @@ void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 	}
 }
 
-void WaveMachineGun::Stop()
-{
-	m_isAlive = false;
-}
-
 void WaveMachineGun::Update(Bullets& bullets, float dt)
 {
 	if (!m_isAlive)

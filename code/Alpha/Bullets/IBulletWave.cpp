@@ -30,6 +30,11 @@ IBulletWave::IBulletWave()
 IBulletWave::~IBulletWave()
 { }
 
+void IBulletWave::Stop()
+{
+	m_isAlive = false;
+}
+
 void IBulletWave::CollisionDetection(Bullets& bullets)
 {
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)

@@ -71,11 +71,6 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 	m_currentScale = 0;
 }
 
-void WaveTest::Stop()
-{
-	m_isAlive = false;
-}
-
 void WaveTest::Update(Bullets& bullets, float dt)
 {
 	if (!m_isAlive)
