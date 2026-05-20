@@ -70,6 +70,9 @@
     <ClCompile Include="Components\Boss\States\BossState_Phase2_Attack2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Components\Boss\States\BossState_Phase3_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -153,6 +156,7 @@
     <ClInclude Include="Components\Boss\States\BossState_Phase2_Travel.h" />
     <ClInclude Include="Components\Boss\States\BossState_Phase2_Attack1.h" />
     <ClInclude Include="Components\Boss\States\BossState_Phase2_Attack2.h" />
+    <ClInclude Include="Components\Boss\States\BossState_Phase3_Travel.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
