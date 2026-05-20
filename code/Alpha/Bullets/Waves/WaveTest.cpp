@@ -62,6 +62,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 		bullets.m_acceleration[m_startId + ii] = Core::Vec4f(0, 0, 0, 0);
 		bullets.m_timeToLive[m_startId + ii] = 2;
 		bullets.m_type[m_startId + ii] = BulletType::NORMAL;
+		bullets.m_state[m_startId + ii] = BulletState::ATTACK;
 	}
 
 	m_isAlive = true;

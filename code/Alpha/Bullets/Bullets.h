@@ -14,7 +14,7 @@ namespace Core
 enum class BulletType : uint8_t
 {
 	NORMAL,
-	COUNTER,
+	COUNTERABLE,
 
 	COUNT
 };

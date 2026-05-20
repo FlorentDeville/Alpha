@@ -40,7 +40,7 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (bullets.m_state[ii] == BulletState::ATTACK)
 		{
 			bool collided = false;
-			if (bullets.m_type[ii] == BulletType::COUNTER)
+			if (bullets.m_type[ii] == BulletType::COUNTERABLE)
 			{
 				if (CollisionTestForBulletCounter(bullets, ii))
 					collided = CollisionTestForBullet(bullets, ii);
@@ -151,7 +151,7 @@ bool IBulletWave::CollisionTestForBullet(const Bullets& bullets, uint32_t index)
 	msg.m_id = CONSTSID("bullet_collision");
 	pMessage->SendMessage(pGo, msg);
 
-	//Core::LogModule::Get().LogInfo("Bullet collided with player");
+	Core::LogModule::Get().LogInfo("Bullet collided with player");
 
 	return true;
 }

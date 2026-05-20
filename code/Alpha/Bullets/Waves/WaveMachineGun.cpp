@@ -84,7 +84,7 @@ void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 
 	for (uint32_t ii = m_counterBulletStartId; ii < m_counterBulletEndId; ++ii)
 	{
-		bullets.m_type[ii] = BulletType::COUNTER;
+		bullets.m_type[ii] = BulletType::COUNTERABLE;
 	}
 
 	//generate the counter bullets
@@ -93,7 +93,7 @@ void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 	for (uint32_t ii = 0; ii < COUNTER_BULLET_COUNT; ++ii)
 	{
 		uint32_t index = generator.Generate();
-		bullets.m_type[index] = BulletType::COUNTER;
+		bullets.m_type[index] = BulletType::COUNTERABLE;
 	}
 }
 
@@ -158,7 +158,7 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 
 		if(bullets.m_type[ii] == BulletType::NORMAL)
 			obj.m_pMaterial = m_pMaterial;
-		else if(bullets.m_type[ii] == BulletType::COUNTER)
+		else if(bullets.m_type[ii] == BulletType::COUNTERABLE)
 			obj.m_pMaterial = m_pCounterBulletMaterial;
 
 		obj.m_pOwner = nullptr;
