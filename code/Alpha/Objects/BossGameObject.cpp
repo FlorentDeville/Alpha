@@ -10,6 +10,8 @@
 #include "Alpha/Components/Boss/States/BossState_Phase2_Travel.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Attack1.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Attack2.h"
+#include "Alpha/Components/Boss/States/BossState_Phase3_Travel.h"
+#include "Alpha/Components/Boss/States/BossState_Phase3_Attack1.h"
 #include "Alpha/Objects/PlayerGameObject.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
@@ -45,19 +47,24 @@ void BossGameObject::OnStartGame()
 	BossState_Phase2_Travel* pStatePhase2Travel = new BossState_Phase2_Travel(m_pStateMachine, this);
 	BossState_Phase2_Attack1* pStatePhase2Attack1 = new BossState_Phase2_Attack1(m_pStateMachine);
 	BossState_Phase2_Attack2* pStatePhase2Attack2 = new BossState_Phase2_Attack2(m_pStateMachine);
+	BossState_Phase3_Travel* pStatePhase3Travel = new BossState_Phase3_Travel(m_pStateMachine, this);
+	BossState_Phase3_Attack1* pStatePhase3Attack1 = new BossState_Phase3_Attack1(m_pStateMachine);
 
 	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase2Attack1->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase2Attack2->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
+	pStatePhase3Attack1->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 
 	m_pStateMachine->AddState(pStatePhase1Travel, BossStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::PHASE1_ATTACK);
 	m_pStateMachine->AddState(pStatePhase2Travel, BossStateEnum::PHASE2_TRAVEL);
 	m_pStateMachine->AddState(pStatePhase2Attack1, BossStateEnum::PHASE2_ATTACK1);
 	m_pStateMachine->AddState(pStatePhase2Attack2, BossStateEnum::PHASE2_ATTACK2);
+	m_pStateMachine->AddState(pStatePhase3Travel, BossStateEnum::PHASE3_TRAVEL);
+	m_pStateMachine->AddState(pStatePhase3Attack1, BossStateEnum::PHASE3_ATTACK1);
 
 	//m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
-	m_pStateMachine->Start(BossStateEnum::PHASE2_TRAVEL);
+	m_pStateMachine->Start(BossStateEnum::PHASE3_TRAVEL);
 
 	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });
