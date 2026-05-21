@@ -11,6 +11,7 @@
 #include "Alpha/Components/Boss/States/BossState_Phase2_Travel.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Attack1.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Attack2.h"
+#include "Alpha/Components/Boss/States/BossState_Phase2_To_Phase3.h"
 #include "Alpha/Components/Boss/States/BossState_Phase3_Travel.h"
 #include "Alpha/Components/Boss/States/BossState_Phase3_Attack1.h"
 #include "Alpha/Components/Boss/States/BossState_Phase3_Attack2.h"
@@ -52,6 +53,7 @@ void BossGameObject::OnStartGame()
 	BossState_Phase2_Travel* pStatePhase2Travel = new BossState_Phase2_Travel(m_pStateMachine, this);
 	m_pStatePhase2Attack1 = new BossState_Phase2_Attack1(m_pStateMachine);
 	m_pStatePhase2Attack2 = new BossState_Phase2_Attack2(m_pStateMachine);
+	BossState_Phase2_To_Phase3* pStatePhase2ToPhase3 = new BossState_Phase2_To_Phase3(m_pStateMachine, this);
 	BossState_Phase3_Travel* pStatePhase3Travel = new BossState_Phase3_Travel(m_pStateMachine, this);
 	m_pStatePhase3Attack1 = new BossState_Phase3_Attack1(m_pStateMachine);
 	m_pStatePhase3Attack2 = new BossState_Phase3_Attack2(m_pStateMachine);
@@ -69,6 +71,7 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->AddState(pStatePhase2Travel, BossStateEnum::PHASE2_TRAVEL);
 	m_pStateMachine->AddState(m_pStatePhase2Attack1, BossStateEnum::PHASE2_ATTACK1);
 	m_pStateMachine->AddState(m_pStatePhase2Attack2, BossStateEnum::PHASE2_ATTACK2);
+	m_pStateMachine->AddState(pStatePhase2ToPhase3, BossStateEnum::PHASE2_TO_PHASE3);
 	m_pStateMachine->AddState(pStatePhase3Travel, BossStateEnum::PHASE3_TRAVEL);
 	m_pStateMachine->AddState(m_pStatePhase3Attack1, BossStateEnum::PHASE3_ATTACK1);
 	m_pStateMachine->AddState(m_pStatePhase3Attack2, BossStateEnum::PHASE3_ATTACK2);
@@ -154,6 +157,17 @@ void BossGameObject::EnterPhase2()
 {
 	m_pStatePhase2Attack1->InitWaves();
 	m_pStatePhase2Attack2->InitWaves();
+}
+
+void BossGameObject::ExitPhase2()
+{
+	m_pStatePhase2Attack1->DestroyWaves();
+	m_pStatePhase2Attack2->DestroyWaves();
+}
+
+void BossGameObject::EnterPhase3()
+{
+
 }
 
 void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
