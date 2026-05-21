@@ -19,30 +19,30 @@ BossState_Phase1_Attack::BossState_Phase1_Attack(StateMachine* pStateMachine)
 	, m_pWave(nullptr)
 	, m_pWaveMachineGun(nullptr)
 	, m_pBoss(nullptr)
-	, m_waveIndex(0)
-	, m_waveMachineGunIndex(0)
+	, m_waveIndex(UINT32_MAX)
+	, m_waveMachineGunIndex(UINT32_MAX)
 	, m_runFirstWave(true)
 { }
 
 BossState_Phase1_Attack::~BossState_Phase1_Attack()
 {
 	DestroyWaves();
+
+	delete m_pWave;
+	delete m_pWaveMachineGun;
+
+	m_pWave = nullptr;
+	m_pWaveMachineGun = nullptr;
 }
 
 void BossState_Phase1_Attack::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
 	BossGameObject* pBoss, const Systems::GameObject* pTarget)
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-
 	m_pBoss = pBoss;
-
 	m_pWave = new WaveTest(pMesh, pMaterial);
-	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->InitWave(m_waveIndex);
+	m_pWaveMachineGun = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);	
 
-	m_pWaveMachineGun = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);
-	m_waveMachineGunIndex = pSubsystem->AddWave(m_pWaveMachineGun);
-	pSubsystem->InitWave(m_waveMachineGunIndex);
+	pBoss->EnterPhase1();
 }
 
 void BossState_Phase1_Attack::OnEnter()
@@ -68,7 +68,7 @@ void BossState_Phase1_Attack::OnUpdate()
 		pSubsystem->StopWave(m_waveMachineGunIndex);
 		
 		m_pBoss->SetCurrentHP(m_pBoss->GetMaxHP());
-		
+		m_pBoss->ExitPhase1();
 		GoTo(BossStateEnum::PHASE2_TRAVEL);
 		return;
 	}
@@ -82,19 +82,31 @@ void BossState_Phase1_Attack::OnUpdate()
 void BossState_Phase1_Attack::OnExit()
 { }
 
+void BossState_Phase1_Attack::InitWaves()
+{
+	if (m_waveIndex != UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+
+	m_waveIndex = pSubsystem->AddWave(m_pWave);
+	pSubsystem->InitWave(m_waveIndex);
+
+	m_waveMachineGunIndex = pSubsystem->AddWave(m_pWaveMachineGun);
+	pSubsystem->InitWave(m_waveMachineGunIndex);
+}
+
 void BossState_Phase1_Attack::DestroyWaves()
 {
+	if (!m_pWave)
+		return;
+
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->DestroyWave(m_waveIndex);
 	pSubsystem->RemoveWave(m_waveIndex);
 	pSubsystem->DestroyWave(m_waveMachineGunIndex);
 	pSubsystem->RemoveWave(m_waveMachineGunIndex);
 
-	delete m_pWave;
-	delete m_pWaveMachineGun;
-
-	m_pWave = nullptr;
-	m_pWaveMachineGun = nullptr;
 	m_waveIndex = UINT32_MAX;
 	m_waveMachineGunIndex = UINT32_MAX;
 }

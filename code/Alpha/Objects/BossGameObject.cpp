@@ -44,7 +44,7 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->Init(BossStateEnum::COUNT);
 
 	BossState_Phase1_Travel* pStatePhase1Travel = new BossState_Phase1_Travel(m_pStateMachine, this);
-	BossState_Phase1_Attack* pStateWaveTest = new BossState_Phase1_Attack(m_pStateMachine);
+	m_pStatePhase1Attack = new BossState_Phase1_Attack(m_pStateMachine);
 	BossState_Phase2_Travel* pStatePhase2Travel = new BossState_Phase2_Travel(m_pStateMachine, this);
 	BossState_Phase2_Attack1* pStatePhase2Attack1 = new BossState_Phase2_Attack1(m_pStateMachine);
 	BossState_Phase2_Attack2* pStatePhase2Attack2 = new BossState_Phase2_Attack2(m_pStateMachine);
@@ -52,14 +52,14 @@ void BossGameObject::OnStartGame()
 	BossState_Phase3_Attack1* pStatePhase3Attack1 = new BossState_Phase3_Attack1(m_pStateMachine);
 	BossState_Phase3_Attack2* pStatePhase3Attack2 = new BossState_Phase3_Attack2(m_pStateMachine);
 
-	pStateWaveTest->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
+	m_pStatePhase1Attack->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase2Attack1->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase2Attack2->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase3Attack1->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase3Attack2->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 
 	m_pStateMachine->AddState(pStatePhase1Travel, BossStateEnum::PHASE1_TRAVEL);
-	m_pStateMachine->AddState(pStateWaveTest, BossStateEnum::PHASE1_ATTACK);
+	m_pStateMachine->AddState(m_pStatePhase1Attack, BossStateEnum::PHASE1_ATTACK);
 	m_pStateMachine->AddState(pStatePhase2Travel, BossStateEnum::PHASE2_TRAVEL);
 	m_pStateMachine->AddState(pStatePhase2Attack1, BossStateEnum::PHASE2_ATTACK1);
 	m_pStateMachine->AddState(pStatePhase2Attack2, BossStateEnum::PHASE2_ATTACK2);
@@ -67,8 +67,8 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->AddState(pStatePhase3Attack1, BossStateEnum::PHASE3_ATTACK1);
 	m_pStateMachine->AddState(pStatePhase3Attack2, BossStateEnum::PHASE3_ATTACK2);
 
-	//m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
-	m_pStateMachine->Start(BossStateEnum::PHASE3_TRAVEL);
+	m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
+	//m_pStateMachine->Start(BossStateEnum::PHASE3_TRAVEL);
 
 	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);
 	pCollision->GetSphere().OnCollision([this](const Systems::ICollisionShape* pOther) { OnCollision(pOther); });
@@ -130,6 +130,16 @@ void BossGameObject::SetCurrentHP(int32_t hp)
 {
 	m_currentHP = hp;
 	UpdateHPBar();
+}
+
+void BossGameObject::EnterPhase1()
+{
+	m_pStatePhase1Attack->InitWaves();
+}
+
+void BossGameObject::ExitPhase1()
+{
+	m_pStatePhase1Attack->DestroyWaves();
 }
 
 void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
