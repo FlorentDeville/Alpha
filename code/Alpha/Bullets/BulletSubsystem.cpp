@@ -85,6 +85,9 @@ void BulletSubsystem::CounteredBullet(uint32_t index)
 {
 	for (IBulletWave* pWave : m_waves)
 	{
+		if (!pWave)
+			continue;
+
 		if (!pWave->IsAlive())
 			continue;
 
