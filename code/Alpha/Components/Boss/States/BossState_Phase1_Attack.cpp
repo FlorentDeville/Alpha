@@ -67,10 +67,7 @@ void BossState_Phase1_Attack::OnUpdate()
 		pSubsystem->StopWave(m_waveIndex);
 		pSubsystem->StopWave(m_waveMachineGunIndex);
 		
-		m_pBoss->SetCurrentHP(m_pBoss->GetMaxHP());
-		m_pBoss->ExitPhase1();
-		m_pBoss->EnterPhase2();
-		GoTo(BossStateEnum::PHASE2_TRAVEL);
+		GoTo(BossStateEnum::PHASE1_TO_PHASE2);
 		return;
 	}
 

@@ -7,6 +7,7 @@
 #include "Alpha/Components/Boss/States/BossStateEnum.h"
 #include "Alpha/Components/Boss/States/BossState_Phase1_Travel.h"
 #include "Alpha/Components/Boss/States/BossState_Phase1_Attack.h"
+#include "Alpha/Components/Boss/States/BossState_Phase1_To_Phase2.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Travel.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Attack1.h"
 #include "Alpha/Components/Boss/States/BossState_Phase2_Attack2.h"
@@ -47,6 +48,7 @@ void BossGameObject::OnStartGame()
 	BossState_Start* pStateStart = new BossState_Start(m_pStateMachine, this);
 	BossState_Phase1_Travel* pStatePhase1Travel = new BossState_Phase1_Travel(m_pStateMachine, this);
 	m_pStatePhase1Attack = new BossState_Phase1_Attack(m_pStateMachine);
+	BossState_Phase1_To_Phase2* pStatePhase1ToPhase2 = new BossState_Phase1_To_Phase2(m_pStateMachine, this);
 	BossState_Phase2_Travel* pStatePhase2Travel = new BossState_Phase2_Travel(m_pStateMachine, this);
 	m_pStatePhase2Attack1 = new BossState_Phase2_Attack1(m_pStateMachine);
 	m_pStatePhase2Attack2 = new BossState_Phase2_Attack2(m_pStateMachine);
@@ -63,6 +65,7 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->AddState(pStateStart, BossStateEnum::START);
 	m_pStateMachine->AddState(pStatePhase1Travel, BossStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(m_pStatePhase1Attack, BossStateEnum::PHASE1_ATTACK);
+	m_pStateMachine->AddState(pStatePhase1ToPhase2, BossStateEnum::PHASE1_TO_PHASE2);
 	m_pStateMachine->AddState(pStatePhase2Travel, BossStateEnum::PHASE2_TRAVEL);
 	m_pStateMachine->AddState(m_pStatePhase2Attack1, BossStateEnum::PHASE2_ATTACK1);
 	m_pStateMachine->AddState(m_pStatePhase2Attack2, BossStateEnum::PHASE2_ATTACK2);
