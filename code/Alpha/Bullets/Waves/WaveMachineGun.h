@@ -35,6 +35,7 @@ public:
 	void SetBulletCount(uint32_t count);
 	void SetCounterableBulletCount(uint32_t count);
 	void SetGapTime(float gapTime);
+	void SetSpeed(float speed);
 
 private:
 	const Systems::GameObject* m_pOwner;
@@ -60,6 +61,7 @@ private:
 
 	float m_gapTime; 
 	bool m_sideBulletEnabled;
+	float m_speed;
 
 	void UpdateCounteredBullets(Bullets& bullets, float dt);
 };

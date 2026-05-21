@@ -38,6 +38,7 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_counterableBulletCount(15)
 	, m_sideBulletEnabled(false)
 	, m_gapTime(0.5f)
+	, m_speed(25)
 {
 	m_count = 20;
 	m_pMesh = pMesh;
@@ -121,10 +122,9 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
 
-		const float SPEED = 25.f;
 		Core::Vec4f dir = end - start;
 		dir.Normalize();
-		Core::Vec4f velocity = dir * SPEED;
+		Core::Vec4f velocity = dir * m_speed;
 
 		bullets.m_positions[m_nextBulletToShot] = start;
 		bullets.m_speed[m_nextBulletToShot] = velocity;
@@ -315,6 +315,11 @@ void WaveMachineGun::SetCounterableBulletCount(uint32_t count)
 void WaveMachineGun::SetGapTime(float gapTime)
 {
 	m_gapTime = gapTime;
+}
+
+void WaveMachineGun::SetSpeed(float speed)
+{
+	m_speed = speed;
 }
 
 void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)

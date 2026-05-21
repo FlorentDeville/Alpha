@@ -51,6 +51,7 @@ void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 		m_pWave[ii]->SetBulletCount(9);
 		m_pWave[ii]->SetCounterableBulletCount(1);
 		m_pWave[ii]->SetGapTime(0.05f);
+		m_pWave[ii]->SetSpeed(45);
 
 		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
 		pSubsystem->InitWave(m_waveIndex[ii]);
