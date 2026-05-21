@@ -129,6 +129,7 @@ int32_t BossGameObject::GetCurrentHP() const
 void BossGameObject::SetCurrentHP(int32_t hp)
 {
 	m_currentHP = hp;
+	UpdateHPBar();
 }
 
 void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)
