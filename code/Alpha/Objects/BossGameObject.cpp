@@ -139,6 +139,7 @@ void BossGameObject::SetCurrentHP(int32_t hp)
 void BossGameObject::EnterPhase1()
 {
 	m_pStatePhase1Attack->InitWaves();
+	SetCurrentHP(GetMaxHP());
 }
 
 void BossGameObject::ExitPhase1()
