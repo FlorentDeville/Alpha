@@ -30,6 +30,8 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void DestroyWaves();
+
 private:
 	WaveTest* m_pWave;
 	WaveMachineGun* m_pWaveMachineGun;
