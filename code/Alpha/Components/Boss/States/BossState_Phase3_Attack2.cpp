@@ -22,8 +22,9 @@ BossState_Phase3_Attack2::BossState_Phase3_Attack2(StateMachine* pStateMachine)
 	, m_pTarget(nullptr)
 	, m_pWave()
 	, m_waveIndex()
-{
-}
+	, m_lastWaveSpawnTime(0)
+	, m_nextWaveToSpawn(0)
+{ }
 
 BossState_Phase3_Attack2::~BossState_Phase3_Attack2()
 {

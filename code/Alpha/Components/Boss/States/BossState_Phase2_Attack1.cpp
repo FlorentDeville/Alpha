@@ -32,6 +32,7 @@ BossState_Phase2_Attack1::~BossState_Phase2_Attack1()
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
 		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+		pSubsystem->DestroyWave(m_waveIndex[ii]);
 		pSubsystem->RemoveWave(m_waveIndex[ii]);
 		delete m_pWave[ii];
 	}

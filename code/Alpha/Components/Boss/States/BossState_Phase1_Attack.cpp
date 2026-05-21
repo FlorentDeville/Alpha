@@ -27,7 +27,9 @@ BossState_Phase1_Attack::BossState_Phase1_Attack(StateMachine* pStateMachine)
 BossState_Phase1_Attack::~BossState_Phase1_Attack()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->DestroyWave(m_waveIndex);
 	pSubsystem->RemoveWave(m_waveIndex);
+	pSubsystem->DestroyWave(m_waveMachineGunIndex);
 	pSubsystem->RemoveWave(m_waveMachineGunIndex);
 
 	delete m_pWave;
