@@ -153,6 +153,7 @@ void BossGameObject::ExitPhase1()
 void BossGameObject::EnterPhase2()
 {
 	m_pStatePhase2Attack1->InitWaves();
+	m_pStatePhase2Attack2->InitWaves();
 }
 
 void BossGameObject::OnCollision(const Systems::ICollisionShape* pOther)

@@ -21,14 +21,12 @@ BossState_Phase2_Attack2::BossState_Phase2_Attack2(StateMachine* pStateMachine)
 	, m_pBoss(nullptr)
 	, m_pTarget(nullptr)
 	, m_pWave(nullptr)
-	, m_waveIndex()
+	, m_waveIndex(UINT32_MAX)
 { }
 
 BossState_Phase2_Attack2::~BossState_Phase2_Attack2()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->DestroyWave(m_waveIndex);
-	pSubsystem->RemoveWave(m_waveIndex);
+	DestroyWaves();
 	delete m_pWave;
 }
 
@@ -43,9 +41,6 @@ void BossState_Phase2_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 	m_pWave->SetSideBulletEnabled(true);
 	m_pWave->SetBulletCount(30);
 	m_pWave->SetCounterableBulletCount(7);
-
-	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->InitWave(m_waveIndex);
 }
 
 void BossState_Phase2_Attack2::OnEnter()
@@ -71,4 +66,26 @@ void BossState_Phase2_Attack2::OnUpdate()
 
 void BossState_Phase2_Attack2::OnExit()
 {
+}
+
+void BossState_Phase2_Attack2::InitWaves()
+{
+	if (m_waveIndex != UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	m_waveIndex = pSubsystem->AddWave(m_pWave);
+	pSubsystem->InitWave(m_waveIndex);
+}
+
+void BossState_Phase2_Attack2::DestroyWaves()
+{
+	if (m_waveIndex == UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->DestroyWave(m_waveIndex);
+	pSubsystem->RemoveWave(m_waveIndex);
+
+	m_waveIndex = UINT32_MAX;
 }

@@ -29,6 +29,9 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void InitWaves();
+	void DestroyWaves();
+
 private:
 	WaveMachineGun* m_pWave;
 
