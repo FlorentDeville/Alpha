@@ -13,6 +13,7 @@
 #include "Alpha/Components/Boss/States/BossState_Phase3_Travel.h"
 #include "Alpha/Components/Boss/States/BossState_Phase3_Attack1.h"
 #include "Alpha/Components/Boss/States/BossState_Phase3_Attack2.h"
+#include "Alpha/Components/Boss/States/BossState_Start.h"
 #include "Alpha/Objects/PlayerGameObject.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
@@ -43,6 +44,7 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(BossStateEnum::COUNT);
 
+	BossState_Start* pStateStart = new BossState_Start(m_pStateMachine, this);
 	BossState_Phase1_Travel* pStatePhase1Travel = new BossState_Phase1_Travel(m_pStateMachine, this);
 	m_pStatePhase1Attack = new BossState_Phase1_Attack(m_pStateMachine);
 	BossState_Phase2_Travel* pStatePhase2Travel = new BossState_Phase2_Travel(m_pStateMachine, this);
@@ -58,6 +60,7 @@ void BossGameObject::OnStartGame()
 	pStatePhase3Attack1->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 	pStatePhase3Attack2->Init(m_mesh.GetPtr(), m_material.GetPtr(), m_counterBulletMaterial.GetPtr(), this, pPlayer);
 
+	m_pStateMachine->AddState(pStateStart, BossStateEnum::START);
 	m_pStateMachine->AddState(pStatePhase1Travel, BossStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(m_pStatePhase1Attack, BossStateEnum::PHASE1_ATTACK);
 	m_pStateMachine->AddState(pStatePhase2Travel, BossStateEnum::PHASE2_TRAVEL);
@@ -67,7 +70,8 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->AddState(pStatePhase3Attack1, BossStateEnum::PHASE3_ATTACK1);
 	m_pStateMachine->AddState(pStatePhase3Attack2, BossStateEnum::PHASE3_ATTACK2);
 
-	m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
+	m_pStateMachine->Start(BossStateEnum::START);
+	//m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
 	//m_pStateMachine->Start(BossStateEnum::PHASE3_TRAVEL);
 
 	Systems::CollisionSphereComponent* pCollision = m_collComp.FindComponent(this);

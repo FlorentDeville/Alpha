@@ -6,6 +6,8 @@
 
 enum BossStateEnum
 {
+	START,
+
 	PHASE1_TRAVEL,
 	PHASE1_ATTACK,
 
