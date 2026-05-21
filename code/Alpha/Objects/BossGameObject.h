@@ -18,6 +18,8 @@ class StateMachine;
 ENABLE_GAME_REFLECTION(BossGameObject)
 
 class BossState_Phase1_Attack;
+class BossState_Phase2_Attack1;
+class BossState_Phase2_Attack2;
 
 class BossGameObject : public Systems::GameObject
 {
@@ -42,6 +44,8 @@ public:
 
 	void EnterPhase1();
 	void ExitPhase1();
+
+	void EnterPhase2();
 
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_mesh;
@@ -70,6 +74,8 @@ private:
 	int32_t m_currentHP;
 
 	BossState_Phase1_Attack* m_pStatePhase1Attack;
+	BossState_Phase2_Attack1* m_pStatePhase2Attack1;
+	BossState_Phase2_Attack2* m_pStatePhase2Attack2;
 
 	void OnCollision(const Systems::ICollisionShape* pOther);
 

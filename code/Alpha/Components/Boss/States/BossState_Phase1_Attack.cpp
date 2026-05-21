@@ -69,6 +69,7 @@ void BossState_Phase1_Attack::OnUpdate()
 		
 		m_pBoss->SetCurrentHP(m_pBoss->GetMaxHP());
 		m_pBoss->ExitPhase1();
+		m_pBoss->EnterPhase2();
 		GoTo(BossStateEnum::PHASE2_TRAVEL);
 		return;
 	}
@@ -98,7 +99,7 @@ void BossState_Phase1_Attack::InitWaves()
 
 void BossState_Phase1_Attack::DestroyWaves()
 {
-	if (!m_pWave)
+	if (m_waveIndex == UINT32_MAX)
 		return;
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
