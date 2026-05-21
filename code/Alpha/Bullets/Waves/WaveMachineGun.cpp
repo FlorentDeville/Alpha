@@ -140,9 +140,9 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 		{
 			//left bullet
 			Core::Vec4f dirTangent(dir.GetZ(), dir.GetY(), -dir.GetX(), 0);
-			const float START_OFFSET = 2;
+			const float START_OFFSET = 3;
 
-			const float SPEED_OFFSET = 2;
+			const float SPEED_OFFSET = 5;
 
 			for (uint32_t ii = 1; ii <= m_sideBulletCount; ++ii)
 			{
@@ -152,6 +152,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 
 					bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
 					bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent * SPEED_OFFSET * static_cast<float>(ii);
+					bullets.m_speed[m_nextBulletToShot] = velocity +dirTangent * SPEED_OFFSET * static_cast<float>(ii);
 					bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
 					bullets.m_timeToLive[m_nextBulletToShot] = 3;
 					++m_nextBulletToShot;
@@ -164,6 +165,7 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 
 					bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
 					bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent * SPEED_OFFSET * static_cast<float>(ii);
+					bullets.m_speed[m_nextBulletToShot] = velocity -dirTangent * SPEED_OFFSET * static_cast<float>(ii);
 					bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
 					bullets.m_timeToLive[m_nextBulletToShot] = 3;
 					++m_nextBulletToShot;
