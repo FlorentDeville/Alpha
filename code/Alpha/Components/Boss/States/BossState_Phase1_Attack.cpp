@@ -26,14 +26,7 @@ BossState_Phase1_Attack::BossState_Phase1_Attack(StateMachine* pStateMachine)
 
 BossState_Phase1_Attack::~BossState_Phase1_Attack()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->DestroyWave(m_waveIndex);
-	pSubsystem->RemoveWave(m_waveIndex);
-	pSubsystem->DestroyWave(m_waveMachineGunIndex);
-	pSubsystem->RemoveWave(m_waveMachineGunIndex);
-
-	delete m_pWave;
-	delete m_pWaveMachineGun;
+	DestroyWaves();
 }
 
 void BossState_Phase1_Attack::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
@@ -82,10 +75,26 @@ void BossState_Phase1_Attack::OnUpdate()
 
 	if (!m_pWave->IsAlive() && !m_pWaveMachineGun->IsAlive())
 	{
-		Core::LogModule::Get().LogInfo("BossState_Phase1_Attack goto state PHASE1_TRAVEL");
 		GoTo(BossStateEnum::PHASE1_TRAVEL);
 	}
 }
 
 void BossState_Phase1_Attack::OnExit()
 { }
+
+void BossState_Phase1_Attack::DestroyWaves()
+{
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->DestroyWave(m_waveIndex);
+	pSubsystem->RemoveWave(m_waveIndex);
+	pSubsystem->DestroyWave(m_waveMachineGunIndex);
+	pSubsystem->RemoveWave(m_waveMachineGunIndex);
+
+	delete m_pWave;
+	delete m_pWaveMachineGun;
+
+	m_pWave = nullptr;
+	m_pWaveMachineGun = nullptr;
+	m_waveIndex = UINT32_MAX;
+	m_waveMachineGunIndex = UINT32_MAX;
+}
