@@ -46,9 +46,14 @@ void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
+		const uint32_t SIDE_BULLET_COUNT = 5;
+		const uint32_t SINGLE_BULLET_LINE_COUNT = 3;
+		const uint32_t TOTAL_BULLET_COUNT = SINGLE_BULLET_LINE_COUNT + (2 * SIDE_BULLET_COUNT * SINGLE_BULLET_LINE_COUNT);
+
 		m_pWave[ii] = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);
 		m_pWave[ii]->SetSideBulletEnabled(true);
-		m_pWave[ii]->SetBulletCount(9);
+		m_pWave[ii]->SetSideBulletCount(SIDE_BULLET_COUNT);
+		m_pWave[ii]->SetBulletCount(TOTAL_BULLET_COUNT);
 		m_pWave[ii]->SetCounterableBulletCount(1);
 		m_pWave[ii]->SetGapTime(0.05f);
 		m_pWave[ii]->SetSpeed(45);

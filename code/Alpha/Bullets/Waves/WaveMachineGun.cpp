@@ -39,6 +39,7 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_sideBulletEnabled(false)
 	, m_gapTime(0.5f)
 	, m_speed(25)
+	, m_sideBulletCount(1)
 {
 	m_count = 20;
 	m_pMesh = pMesh;
@@ -142,27 +143,31 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 			const float START_OFFSET = 2;
 
 			const float SPEED_OFFSET = 2;
-			if(m_nextBulletToShot < m_endId)
+
+			for (uint32_t ii = 1; ii <= m_sideBulletCount; ++ii)
 			{
-				Core::Vec4f sideBulletStart = start + dirTangent * START_OFFSET;
+				if (m_nextBulletToShot < m_endId)
+				{
+					Core::Vec4f sideBulletStart = start + dirTangent * START_OFFSET * static_cast<float>(ii);
 
-				bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
-				bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent * SPEED_OFFSET;
-				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
-				bullets.m_timeToLive[m_nextBulletToShot] = 3;
-				++m_nextBulletToShot;
-			}
+					bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
+					bullets.m_speed[m_nextBulletToShot] = velocity + dirTangent * SPEED_OFFSET;
+					bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
+					bullets.m_timeToLive[m_nextBulletToShot] = 3;
+					++m_nextBulletToShot;
+				}
 
-			//right bullet
-			if (m_nextBulletToShot < m_endId)
-			{
-				Core::Vec4f sideBulletStart = start - dirTangent * START_OFFSET;
+				//right bullet
+				if (m_nextBulletToShot < m_endId)
+				{
+					Core::Vec4f sideBulletStart = start - dirTangent * START_OFFSET * static_cast<float>(ii);
 
-				bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
-				bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent * SPEED_OFFSET;
-				bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
-				bullets.m_timeToLive[m_nextBulletToShot] = 3;
-				++m_nextBulletToShot;
+					bullets.m_positions[m_nextBulletToShot] = sideBulletStart;
+					bullets.m_speed[m_nextBulletToShot] = velocity - dirTangent * SPEED_OFFSET;
+					bullets.m_acceleration[m_nextBulletToShot] = Core::Vec4f(0, 0, 0, 0);
+					bullets.m_timeToLive[m_nextBulletToShot] = 3;
+					++m_nextBulletToShot;
+				}
 			}
 		}
 	}
@@ -300,6 +305,11 @@ void WaveMachineGun::SpawnCounterBullet(Bullets& bullets, uint32_t index)
 void WaveMachineGun::SetSideBulletEnabled(bool enabled)
 {
 	m_sideBulletEnabled = enabled;
+}
+
+void WaveMachineGun::SetSideBulletCount(uint32_t count)
+{
+	m_sideBulletCount = count;
 }
 
 void WaveMachineGun::SetBulletCount(uint32_t count)

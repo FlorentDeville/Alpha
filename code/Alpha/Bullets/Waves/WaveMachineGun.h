@@ -32,6 +32,7 @@ public:
 	void SpawnCounterBullet(Bullets& bullet, uint32_t index) override;
 
 	void SetSideBulletEnabled(bool enabled);
+	void SetSideBulletCount(uint32_t count);
 	void SetBulletCount(uint32_t count);
 	void SetCounterableBulletCount(uint32_t count);
 	void SetGapTime(float gapTime);
@@ -62,6 +63,7 @@ private:
 	float m_gapTime; 
 	bool m_sideBulletEnabled;
 	float m_speed;
+	uint32_t m_sideBulletCount;
 
 	void UpdateCounteredBullets(Bullets& bullets, float dt);
 };
