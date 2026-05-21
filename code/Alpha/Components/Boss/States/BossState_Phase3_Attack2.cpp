@@ -20,7 +20,7 @@ BossState_Phase3_Attack2::BossState_Phase3_Attack2(StateMachine* pStateMachine)
 	: IState(pStateMachine)
 	, m_pBoss(nullptr)
 	, m_pTarget(nullptr)
-	, m_pWave(nullptr)
+	, m_pWave()
 	, m_waveIndex()
 {
 }
@@ -28,8 +28,12 @@ BossState_Phase3_Attack2::BossState_Phase3_Attack2(StateMachine* pStateMachine)
 BossState_Phase3_Attack2::~BossState_Phase3_Attack2()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->RemoveWave(m_waveIndex);
-	delete m_pWave;
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		pSubsystem->DestroyWave(m_waveIndex[ii]);
+		pSubsystem->RemoveWave(m_waveIndex[ii]);
+		delete m_pWave[ii];
+	}
 }
 
 void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
@@ -39,35 +43,60 @@ void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 	m_pTarget = pTarget;
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	m_pWave = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);
-	m_pWave->SetSideBulletEnabled(true);
-	m_pWave->SetBulletCount(30);
-	m_pWave->SetCounterableBulletCount(7);
 
-	m_waveIndex = pSubsystem->AddWave(m_pWave);
-	pSubsystem->InitWave(m_waveIndex);
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		m_pWave[ii] = new WaveMachineGun(pMesh, pMaterial, pCounterBulletMaterial, pBoss, pTarget);
+		m_pWave[ii]->SetSideBulletEnabled(true);
+		m_pWave[ii]->SetBulletCount(9);
+		m_pWave[ii]->SetCounterableBulletCount(1);
+		m_pWave[ii]->SetGapTime(0.05f);
+
+		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
+		pSubsystem->InitWave(m_waveIndex[ii]);
+	}
 }
 
 void BossState_Phase3_Attack2::OnEnter()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->StartWave(m_waveIndex, m_pBoss->GetTransform().GetWorldTx().GetT());
+	pSubsystem->StartWave(m_waveIndex[0], m_pBoss->GetTransform().GetWorldTx().GetT());
+
+	m_lastWaveSpawnTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	m_nextWaveToSpawn = 1;
 }
 
 void BossState_Phase3_Attack2::OnUpdate()
 {
+	const float DELAY = 0.75f;
+
+	if (m_nextWaveToSpawn < WAVE_COUNT)
+	{
+		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		if (currentTime >= m_lastWaveSpawnTime + DELAY)
+		{
+			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+			pSubsystem->StartWave(m_waveIndex[m_nextWaveToSpawn], m_pBoss->GetTransform().GetWorldTx().GetT());
+
+			++m_nextWaveToSpawn;
+			m_lastWaveSpawnTime = currentTime;
+		}
+	}
+
 	if (m_pBoss->GetCurrentHP() <= 0)
 	{
-		/*GoTo(BossStateEnum::PHASE3_TRAVEL);
-		m_pWave->Stop();
-
-		m_pBoss->SetCurrentHP(m_pBoss->GetMaxHP());*/
-
 		//winning state
 		return;
 	}
 
-	if (!m_pWave->IsAlive())
+	bool allWaveDead = true;
+	for(uint32_t ii = 0; ii < m_nextWaveToSpawn; ++ii)
+	{
+		if (m_pWave[ii]->IsAlive())
+			allWaveDead = false;
+	}
+
+	if(m_nextWaveToSpawn >= WAVE_COUNT && allWaveDead)
 		GoTo(BossStateEnum::PHASE3_TRAVEL);
 }
 

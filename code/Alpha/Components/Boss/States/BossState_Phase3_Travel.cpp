@@ -45,7 +45,7 @@ void BossState_Phase3_Travel::OnUpdate()
 		if (m_nextAttackIsAttack1)
 			GoTo(BossStateEnum::PHASE3_ATTACK1);
 		else
-			GoTo(BossStateEnum::PHASE3_ATTACK1);
+			GoTo(BossStateEnum::PHASE3_ATTACK2);
 
 		m_nextAttackIsAttack1 = !m_nextAttackIsAttack1;
 		return;

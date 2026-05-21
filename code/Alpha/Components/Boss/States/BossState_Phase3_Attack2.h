@@ -30,10 +30,13 @@ public:
 	void OnExit() override;
 
 private:
-	WaveMachineGun* m_pWave;
+	static const uint32_t WAVE_COUNT = 10;
+	WaveMachineGun* m_pWave[WAVE_COUNT];
 
 	BossGameObject* m_pBoss;
 	const Systems::GameObject* m_pTarget;
 
-	uint32_t m_waveIndex;
+	uint32_t m_waveIndex[WAVE_COUNT];
+	uint32_t m_nextWaveToSpawn;
+	float m_lastWaveSpawnTime;
 };

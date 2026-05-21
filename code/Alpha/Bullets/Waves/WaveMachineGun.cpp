@@ -37,6 +37,7 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_nextCounterBulletId(0)
 	, m_counterableBulletCount(15)
 	, m_sideBulletEnabled(false)
+	, m_gapTime(0.5f)
 {
 	m_count = 20;
 	m_pMesh = pMesh;
@@ -114,9 +115,8 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 	UpdateCounteredBullets(bullets, dt);
 
 	//shoot a new bullet
-	const float SHOOT_GAP_TIME = 0.5f;
 	const Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
-	if (m_lastSpawnTime + SHOOT_GAP_TIME < pClock->GetTime() && m_nextBulletToShot < m_endId)
+	if (m_lastSpawnTime + m_gapTime < pClock->GetTime() && m_nextBulletToShot < m_endId)
 	{
 		Core::Vec4f start = m_pOwner->GetTransform().GetWorldTx().GetT();
 		Core::Vec4f end = m_pTarget->GetTransform().GetWorldTx().GetT();
@@ -310,6 +310,11 @@ void WaveMachineGun::SetBulletCount(uint32_t count)
 void WaveMachineGun::SetCounterableBulletCount(uint32_t count)
 {
 	m_counterableBulletCount = count;
+}
+
+void WaveMachineGun::SetGapTime(float gapTime)
+{
+	m_gapTime = gapTime;
 }
 
 void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)

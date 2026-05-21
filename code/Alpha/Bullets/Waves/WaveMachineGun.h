@@ -34,6 +34,7 @@ public:
 	void SetSideBulletEnabled(bool enabled);
 	void SetBulletCount(uint32_t count);
 	void SetCounterableBulletCount(uint32_t count);
+	void SetGapTime(float gapTime);
 
 private:
 	const Systems::GameObject* m_pOwner;
@@ -57,6 +58,7 @@ private:
 	};
 	CounterBulletStruct* m_pCounterBulletState;
 
+	float m_gapTime; 
 	bool m_sideBulletEnabled;
 
 	void UpdateCounteredBullets(Bullets& bullets, float dt);
