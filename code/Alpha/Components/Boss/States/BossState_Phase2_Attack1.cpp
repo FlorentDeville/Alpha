@@ -25,7 +25,9 @@ BossState_Phase2_Attack1::BossState_Phase2_Attack1(StateMachine* pStateMachine)
 	, m_delayBetweenWave(0.5f)
 	, m_lastWaveStartTime(0)
 	, m_nextWaveToStart(0)
-{ }
+{
+	m_waveIndex[0] = UINT32_MAX;
+}
 
 BossState_Phase2_Attack1::~BossState_Phase2_Attack1()
 {
@@ -96,6 +98,9 @@ void BossState_Phase2_Attack1::OnExit()
 
 void BossState_Phase2_Attack1::InitWaves()
 {
+	if (m_waveIndex[0] != UINT32_MAX)
+		return;
+
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
@@ -107,6 +112,9 @@ void BossState_Phase2_Attack1::InitWaves()
 
 void BossState_Phase2_Attack1::DestroyWaves()
 {
+	if (m_waveIndex[0] == UINT32_MAX)
+		return;
+
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{

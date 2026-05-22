@@ -24,17 +24,16 @@ BossState_Phase3_Attack2::BossState_Phase3_Attack2(StateMachine* pStateMachine)
 	, m_waveIndex()
 	, m_lastWaveSpawnTime(0)
 	, m_nextWaveToSpawn(0)
-{ }
+{
+	m_waveIndex[0] = UINT32_MAX;
+}
 
 BossState_Phase3_Attack2::~BossState_Phase3_Attack2()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	DestroyWaves();
+
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
-	{
-		pSubsystem->DestroyWave(m_waveIndex[ii]);
-		pSubsystem->RemoveWave(m_waveIndex[ii]);
 		delete m_pWave[ii];
-	}
 }
 
 void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
@@ -42,8 +41,6 @@ void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 {
 	m_pBoss = pBoss;
 	m_pTarget = pTarget;
-
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
@@ -58,9 +55,6 @@ void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 		m_pWave[ii]->SetCounterableBulletCount(1);
 		m_pWave[ii]->SetGapTime(0.05f);
 		m_pWave[ii]->SetSpeed(45);
-
-		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
-		pSubsystem->InitWave(m_waveIndex[ii]);
 	}
 }
 
@@ -109,4 +103,33 @@ void BossState_Phase3_Attack2::OnUpdate()
 
 void BossState_Phase3_Attack2::OnExit()
 {
+}
+
+void BossState_Phase3_Attack2::InitWaves()
+{
+	if (m_waveIndex[0] != UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
+		pSubsystem->InitWave(m_waveIndex[ii]);
+	}
+}
+
+void BossState_Phase3_Attack2::DestroyWaves()
+{
+	if (m_waveIndex[0] == UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		pSubsystem->DestroyWave(m_waveIndex[ii]);
+		pSubsystem->RemoveWave(m_waveIndex[ii]);
+	}
+
+	m_waveIndex[0] = UINT32_MAX;
 }

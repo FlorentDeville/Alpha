@@ -29,6 +29,9 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void InitWaves();
+	void DestroyWaves();
+
 private:
 	static const uint32_t WAVE_COUNT = 10;
 	WaveMachineGun* m_pWave[WAVE_COUNT];

@@ -27,15 +27,15 @@ BossState_Phase3_Attack1::BossState_Phase3_Attack1(StateMachine* pStateMachine)
 	, m_lastWaveStartTime(0)
 	, m_nextWaveToStart(0)
 {
+	m_waveIndex[0] = UINT32_MAX;
 }
 
 BossState_Phase3_Attack1::~BossState_Phase3_Attack1()
 {
+	DestroyWaves();
+
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
-		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-		pSubsystem->DestroyWave(m_waveIndex[ii]);
-		pSubsystem->RemoveWave(m_waveIndex[ii]);
 		delete m_pWave[ii];
 	}
 }
@@ -46,8 +46,6 @@ void BossState_Phase3_Attack1::Init(Systems::MeshAsset* pMesh, Systems::Material
 	m_pBoss = pBoss;
 	m_pTarget = pTarget;
 
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-
 	const float ROTATION_OFFSET_INC = Core::TWO_PI / 360 * 10;
 	const uint32_t BULLET_COUNT = 57;
 	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
@@ -56,8 +54,6 @@ void BossState_Phase3_Attack1::Init(Systems::MeshAsset* pMesh, Systems::Material
 		float rotationOffset = ROTATION_OFFSET_INC * packIndex;
 
 		m_pWave[ii] = new WaveTest(pMesh, pMaterial, BULLET_COUNT, rotationOffset);
-		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
-		pSubsystem->InitWave(m_waveIndex[ii]);
 	}
 }
 
@@ -116,4 +112,32 @@ void BossState_Phase3_Attack1::OnUpdate()
 
 void BossState_Phase3_Attack1::OnExit()
 {
+}
+
+void BossState_Phase3_Attack1::InitWaves()
+{
+	if (m_waveIndex[0] != UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
+		pSubsystem->InitWave(m_waveIndex[ii]);
+	}
+}
+
+void BossState_Phase3_Attack1::DestroyWaves()
+{
+	if (m_waveIndex[0] == UINT32_MAX)
+		return;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	for (uint32_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		pSubsystem->DestroyWave(m_waveIndex[ii]);
+		pSubsystem->RemoveWave(m_waveIndex[ii]);
+	}
+
+	m_waveIndex[0] = UINT32_MAX;
 }

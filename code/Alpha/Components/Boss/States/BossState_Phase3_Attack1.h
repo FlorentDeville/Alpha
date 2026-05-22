@@ -29,6 +29,9 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void InitWaves();
+	void DestroyWaves();
+
 private:
 	static const int WAVE_COUNT = 15;
 	static const int PACK_SIZE = 3; //3 consecutive waves called a pack
