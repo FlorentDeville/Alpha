@@ -55,7 +55,7 @@
     <ClCompile Include="Objects\Player\PlayerGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Commands\GameCommands.cpp">
+    <ClCompile Include="Inputs\GameCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Boss\BossGameObject.cpp">
@@ -86,6 +86,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Boss\States\BossState_Phase2_To_Phase3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -166,7 +172,7 @@
     <ClInclude Include="Objects\Boss\States\BossStateEnum.h" />
     <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
     <ClInclude Include="Objects\Player\PlayerGameObject.h" />
-    <ClInclude Include="Commands\GameCommands.h" />
+    <ClInclude Include="Inputs\GameCommands.h" />
     <ClInclude Include="Objects\Boss\BossGameObject.h" />
     <ClInclude Include="Objects\Boss\States\BossState_Phase2_Travel.h" />
     <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack1.h" />
@@ -177,6 +183,9 @@
     <ClInclude Include="Objects\Boss\States\BossState_Start.h" />
     <ClInclude Include="Objects\Boss\States\BossState_Phase1_To_Phase2.h" />
     <ClInclude Include="Objects\Boss\States\BossState_Phase2_To_Phase3.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

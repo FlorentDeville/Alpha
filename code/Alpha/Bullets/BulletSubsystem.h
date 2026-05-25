@@ -36,6 +36,7 @@ public:
 	void StopWave(uint32_t index);
 
 	void CounteredBullet(uint32_t index);
+	void KillBullet(uint32_t index);
 
 	static uint32_t m_subsystemIndex;
 	static BulletSubsystem* GetSubsystem();

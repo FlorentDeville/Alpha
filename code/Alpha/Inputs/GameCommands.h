@@ -13,4 +13,5 @@ namespace GameCommands
 	float MoveUp();
 	float MoveDown();
 	float Counter();
+	float Dash();
 }

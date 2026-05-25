@@ -54,3 +54,8 @@ void StateMachine::GoTo(uint32_t newState)
 {
 	m_nextState = newState;
 }
+
+uint32_t StateMachine::GetCurrentState() const
+{
+	return m_currentState;
+}

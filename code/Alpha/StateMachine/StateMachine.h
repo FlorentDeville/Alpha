@@ -22,6 +22,8 @@ public:
 
 	void GoTo(uint32_t newState);
 
+	uint32_t GetCurrentState() const;
+
 private:
 	Core::Array<IState*> m_states;
 

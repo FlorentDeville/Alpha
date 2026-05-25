@@ -15,6 +15,9 @@ namespace Rendering
 	class Camera;
 }
 
+class PlayerState_Move;
+class StateMachine;
+
 ENABLE_GAME_REFLECTION(PlayerGameObject)
 
 class PlayerGameObject : public Systems::GameObject
@@ -33,6 +36,8 @@ public:
 	void HandleMessage(const Systems::GameMessage& msg) override;
 
 	void OnDestroyGame() override;
+
+	float GetSpeed() const;
 
 private:
 	float m_speed;
@@ -56,10 +61,10 @@ private:
 
 	uint32_t m_currentHp;
 
-	//Index of the counter bullet the player collided with
-	uint32_t m_counterBulletIndex;
+	StateMachine* m_pStateMachine;
+	PlayerState_Move* m_pStateMove;
 
-	void OnBulletCollision();
+	void OnBulletCollision(uint32_t index);
 
 	void UpdateCamera();
 };

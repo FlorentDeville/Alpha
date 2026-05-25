@@ -13,7 +13,7 @@
 #include <DirectXMath.h>
 
 #include "Alpha/Bullets/BulletSubsystem.h"
-#include "Alpha/Commands/GameCommands.h"
+#include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Configuration.h"
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 

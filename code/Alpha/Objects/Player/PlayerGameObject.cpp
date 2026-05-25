@@ -5,8 +5,12 @@
 #include "Alpha/Objects/Player/PlayerGameObject.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
-#include "Alpha/Commands/GameCommands.h"
+#include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Boss/BossGameObject.h"
+#include "Alpha/Objects/Player/States/PlayerStateEnum.h"
+#include "Alpha/Objects/Player/States/PlayerState_Dash.h"
+#include "Alpha/Objects/Player/States/PlayerState_Move.h"
+#include "Alpha/StateMachine/StateMachine.h"
 
 #include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
@@ -27,7 +31,8 @@ PlayerGameObject::PlayerGameObject()
 	, m_currentHp()
 	, m_maxHp()
 	, m_speed()
-	, m_counterBulletIndex(UINT32_MAX)
+	, m_pStateMachine(nullptr)
+	, m_pStateMove(nullptr)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -50,54 +55,22 @@ void PlayerGameObject::OnStartGame()
 	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
 
 	m_currentHp = m_maxHp;
+
+	m_pStateMachine = new StateMachine();
+	m_pStateMachine->Init(PlayerStateEnum::COUNT);
+
+	m_pStateMove = new PlayerState_Move(m_pStateMachine, this);
+	m_pStateMachine->AddState(m_pStateMove, PlayerStateEnum::MOVE);
+
+	PlayerState_Dash* pStateDash = new PlayerState_Dash(m_pStateMachine, this);
+	m_pStateMachine->AddState(pStateDash, PlayerStateEnum::DASH);
 }
 
 void PlayerGameObject::Update(float dt)
 {
-	Systems::TransformComponent& transform = GetTransform();
-	const Core::Mat44f& localTx = transform.GetLocalTx();
-
-	const Core::Vec4f forward = localTx.GetZ();
-	const Core::Vec4f right = localTx.GetX();
-	const Core::Vec4f oldPosition = localTx.GetT();
-
-	Core::Vec4f direction;
-	if (GameCommands::MoveUp())
-		direction = direction + forward;
-	else if (GameCommands::MoveDown())
-		direction = direction - forward;
-
-	if (GameCommands::MoveLeft())
-		direction = direction - right;
-	else if (GameCommands::MoveRight())
-		direction = direction + right;
-
-	if (direction.Length() != 0)
-	{
-		direction.Normalize();
-		Core::Vec4f newPosition = oldPosition + direction * m_speed * dt;
-
-		Core::Mat44f newLocalTx = localTx;
-		newLocalTx.SetRow(3, newPosition);
-
-		transform.SetLocalTx(newLocalTx);
-	}
-
-	if (GameCommands::Counter())
-	{
-		//Core::LogModule::Get().LogInfo("Command Counter triggered");
-
-		if(m_counterBulletIndex != UINT32_MAX)
-		{
-			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
-		}
-	}
-
 	BaseClass::Update(dt);
 
-	//cleanup
-	m_counterBulletIndex = UINT32_MAX;
+	m_pStateMachine->Update();
 }
 
 void PlayerGameObject::PostUpdate()
@@ -111,14 +84,14 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 	{
 	case SID("bullet_collision"):
 	{
-		OnBulletCollision();
+		OnBulletCollision(static_cast<uint32_t>(msg.m_param));
 	}
 	break;
 
 	case SID("counter_bullet_collision"):
 	{
 		Core::LogModule::Get().LogInfo("Message counter_bullet_collision received");
-		m_counterBulletIndex = static_cast<uint32_t>(msg.m_param);
+		m_pStateMove->SetCounterBulletIndex(static_cast<uint32_t>(msg.m_param));
 	}
 	break;
 
@@ -133,10 +106,24 @@ void PlayerGameObject::OnDestroyGame()
 
 	Systems::GameContext* pContext = Systems::GameMgr::Get().GetWorld();
 	pContext->m_pCameraSubsystem->PopCamera();
+
+	delete m_pStateMachine;
+	m_pStateMachine = nullptr;
 }
 
-void PlayerGameObject::OnBulletCollision()
+float PlayerGameObject::GetSpeed() const
 {
+	return m_speed;
+}
+
+void PlayerGameObject::OnBulletCollision(uint32_t index)
+{
+	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
+		return;
+
+	BulletSubsystem* pBullets = BulletSubsystem::GetSubsystem();
+	pBullets->KillBullet(index);
+
 	const uint32_t DAMAGE = 5;
 	m_currentHp -= DAMAGE;
 	if (m_currentHp > m_maxHp) m_currentHp = 0;

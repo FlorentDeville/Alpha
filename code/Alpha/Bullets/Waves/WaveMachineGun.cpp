@@ -25,7 +25,7 @@
 #include <cmath>
 
 WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
-	const Systems::GameObject* pOwner, const Systems::GameObject* pTarget)
+	Systems::GameObject* pOwner, const Systems::GameObject* pTarget)
 	: IBulletWave()
 	, m_lastSpawnTime(0)
 	, m_pOwner(pOwner)
@@ -239,39 +239,6 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 void WaveMachineGun::CollisionDetection(Bullets& bullets)
 {
 	BaseClass::CollisionDetection(bullets);
-
-	for (uint32_t ii = m_counterBulletStartId; ii < m_nextCounterBulletId; ++ii)
-	{
-		if (bullets.m_timeToLive[ii] <= 0)
-			continue;
-
-		Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
-		Systems::ShapeSphere colShape(Core::Vec4f(), m_bulletCollisionRadius, nullptr);
-
-		colShape.SetCenter(bullets.m_positions[ii]);
-
-		const Systems::ICollisionShape* pOther = nullptr;
-		bool res = pColSubsystem->CollisionDetection(&colShape, &pOther);
-		if (!res)
-			continue;
-
-		Systems::GameObject* pGo = pOther->GetOwner();
-		if (!pGo)
-			continue;
-
-		//send message to the boss
-		BossGameObject* pBoss = pGo->Cast<BossGameObject>();
-		if (!pBoss)
-			continue;
-
-		Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
-		Systems::GameMessage msg;
-		msg.m_id = CONSTSID("bullet_counter_collision");
-		pMessage->SendMessage(pGo, msg);
-
-		//kill the bullet
-		bullets.m_timeToLive[ii] = 0;
-	}
 }
 
 void WaveMachineGun::SpawnCounterBullet(Bullets& bullets, uint32_t index)
@@ -350,6 +317,11 @@ void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)
 		if (t > 1)
 		{
 			bullets.m_timeToLive[ii] = 0;
+
+			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+			Systems::GameMessage msg;
+			msg.m_id = CONSTSID("bullet_counter_collision");
+			pMessage->SendMessage(m_pOwner, msg);
 			continue;
 		}
 
@@ -363,5 +335,18 @@ void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)
 	}
 
 	for (uint32_t ii = m_counterBulletStartId; ii < m_nextCounterBulletId; ++ii)
+	{
+		if (bullets.m_timeToLive[ii] <= 0)
+			continue;
+
 		bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
+
+		if (bullets.m_timeToLive[ii] <= 0)
+		{
+			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+			Systems::GameMessage msg;
+			msg.m_id = CONSTSID("bullet_counter_collision");
+			pMessage->SendMessage(m_pOwner, msg);
+		}
+	}
 }
