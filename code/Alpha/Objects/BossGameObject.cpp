@@ -76,8 +76,8 @@ void BossGameObject::OnStartGame()
 	m_pStateMachine->AddState(m_pStatePhase3Attack1, BossStateEnum::PHASE3_ATTACK1);
 	m_pStateMachine->AddState(m_pStatePhase3Attack2, BossStateEnum::PHASE3_ATTACK2);
 
-	//m_pStateMachine->Start(BossStateEnum::START);
-	m_pStateMachine->Start(BossStateEnum::PHASE1_TO_PHASE2);
+	m_pStateMachine->Start(BossStateEnum::START);
+	//m_pStateMachine->Start(BossStateEnum::PHASE1_TO_PHASE2);
 	//m_pStateMachine->Start(BossStateEnum::PHASE1_TRAVEL);
 	//m_pStateMachine->Start(BossStateEnum::PHASE3_TRAVEL);
 
