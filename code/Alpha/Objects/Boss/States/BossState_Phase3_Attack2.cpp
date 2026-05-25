@@ -2,12 +2,12 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/Boss/States/BossState_Phase3_Attack2.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase3_Attack2.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Bullets/Waves/WaveMachineGun.h"
-#include "Alpha/Components/Boss/States/BossStateEnum.h"
-#include "Alpha/Objects/BossGameObject.h"
+#include "Alpha/Objects/Boss/States/BossStateEnum.h"
+#include "Alpha/Objects/Boss/BossGameObject.h"
 
 #include "Core/Math/Constants.h"
 

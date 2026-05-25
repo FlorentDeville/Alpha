@@ -2,10 +2,10 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/Boss/States/BossState_Phase2_Travel.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase3_Travel.h"
 
-#include "Alpha/Components/Boss/States/BossStateEnum.h"
-#include "Alpha/Objects/BossGameObject.h"
+#include "Alpha/Objects/Boss/States/BossStateEnum.h"
+#include "Alpha/Objects/Boss/BossGameObject.h"
 
 #include "Core/Log/LogModule.h"
 
@@ -14,7 +14,7 @@
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
 
-BossState_Phase2_Travel::BossState_Phase2_Travel(StateMachine* pStateMachine, BossGameObject* pBoss)
+BossState_Phase3_Travel::BossState_Phase3_Travel(StateMachine* pStateMachine, BossGameObject* pBoss)
 	: IState(pStateMachine)
 	, m_pBoss(pBoss)
 	, m_curve()
@@ -23,11 +23,11 @@ BossState_Phase2_Travel::BossState_Phase2_Travel(StateMachine* pStateMachine, Bo
 {
 }
 
-BossState_Phase2_Travel::~BossState_Phase2_Travel()
+BossState_Phase3_Travel::~BossState_Phase3_Travel()
 {
 }
 
-void BossState_Phase2_Travel::OnEnter()
+void BossState_Phase3_Travel::OnEnter()
 {
 	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
 	m_curve.m_p0 = m_pBoss->GetTransform().GetWorldTx().GetT();
@@ -38,14 +38,14 @@ void BossState_Phase2_Travel::OnEnter()
 	//Core::LogModule::Get().LogInfo("BossState_Phase2_Travel::OnEnter");
 }
 
-void BossState_Phase2_Travel::OnUpdate()
+void BossState_Phase3_Travel::OnUpdate()
 {
 	if (m_curveParam >= 1)
 	{
-		if(m_nextAttackIsAttack1)
-			GoTo(BossStateEnum::PHASE2_ATTACK1);
+		if (m_nextAttackIsAttack1)
+			GoTo(BossStateEnum::PHASE3_ATTACK1);
 		else
-			GoTo(BossStateEnum::PHASE2_ATTACK2);
+			GoTo(BossStateEnum::PHASE3_ATTACK2);
 
 		m_nextAttackIsAttack1 = !m_nextAttackIsAttack1;
 		return;
@@ -54,7 +54,7 @@ void BossState_Phase2_Travel::OnUpdate()
 	Systems::GameMgr& gameMgr = Systems::GameMgr().Get();
 	Systems::GameContext* pContext = gameMgr.GetWorld();
 
-	const float SPEED = 25;
+	const float SPEED = 35;
 	float ds = SPEED * pContext->m_pClock->GetDeltaTime();
 
 	m_curveParam += ds / m_curve.EvaluateFirstDerivative(m_curveParam).Length();
@@ -67,5 +67,6 @@ void BossState_Phase2_Travel::OnUpdate()
 	m_pBoss->GetTransform().SetLocalTx(wsTx);
 }
 
-void BossState_Phase2_Travel::OnExit()
-{ }
+void BossState_Phase3_Travel::OnExit()
+{
+}

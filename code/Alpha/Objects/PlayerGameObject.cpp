@@ -6,7 +6,7 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Commands/GameCommands.h"
-#include "Alpha/Objects/BossGameObject.h"
+#include "Alpha/Objects/Boss/BossGameObject.h"
 
 #include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"

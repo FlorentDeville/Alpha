@@ -2,10 +2,10 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Components/Boss/States/BossState_Phase1_To_Phase2.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase1_To_Phase2.h"
 
-#include "Alpha/Components/Boss/States/BossStateEnum.h"
-#include "Alpha/Objects/BossGameObject.h"
+#include "Alpha/Objects/Boss/States/BossStateEnum.h"
+#include "Alpha/Objects/Boss/BossGameObject.h"
 
 BossState_Phase1_To_Phase2::BossState_Phase1_To_Phase2(StateMachine* pStateMachine, BossGameObject* pBoss)
 	: IState(pStateMachine)

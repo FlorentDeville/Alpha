@@ -2,20 +2,20 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Objects/BossGameObject.h"
+#include "Alpha/Objects/Boss/BossGameObject.h"
 
-#include "Alpha/Components/Boss/States/BossStateEnum.h"
-#include "Alpha/Components/Boss/States/BossState_Phase1_Travel.h"
-#include "Alpha/Components/Boss/States/BossState_Phase1_Attack.h"
-#include "Alpha/Components/Boss/States/BossState_Phase1_To_Phase2.h"
-#include "Alpha/Components/Boss/States/BossState_Phase2_Travel.h"
-#include "Alpha/Components/Boss/States/BossState_Phase2_Attack1.h"
-#include "Alpha/Components/Boss/States/BossState_Phase2_Attack2.h"
-#include "Alpha/Components/Boss/States/BossState_Phase2_To_Phase3.h"
-#include "Alpha/Components/Boss/States/BossState_Phase3_Travel.h"
-#include "Alpha/Components/Boss/States/BossState_Phase3_Attack1.h"
-#include "Alpha/Components/Boss/States/BossState_Phase3_Attack2.h"
-#include "Alpha/Components/Boss/States/BossState_Start.h"
+#include "Alpha/Objects/Boss/States/BossStateEnum.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase1_Travel.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase1_Attack.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase1_To_Phase2.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase2_Travel.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase2_Attack1.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase2_Attack2.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase2_To_Phase3.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase3_Travel.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase3_Attack1.h"
+#include "Alpha/Objects/Boss/States/BossState_Phase3_Attack2.h"
+#include "Alpha/Objects/Boss/States/BossState_Start.h"
 #include "Alpha/Objects/PlayerGameObject.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
