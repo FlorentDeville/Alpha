@@ -28,7 +28,7 @@ void PlayerState_Dash::OnUpdate()
 {
 	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	m_elapsedTime += dt;
-	const float DASH_DURATION = 0.25;
+	const float DASH_DURATION = 0.2f;
 	if (m_elapsedTime >= DASH_DURATION)
 	{
 		GoTo(PlayerStateEnum::MOVE);
