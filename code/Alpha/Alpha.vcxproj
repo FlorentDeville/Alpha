@@ -119,6 +119,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Boss\BossGameObject.cpp" />
     <ClCompile Include="Objects\Player\PlayerGameObject.cpp" />
+    <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp" />
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp" />
     <ClCompile Include="StateMachine\IState.cpp" />
     <ClCompile Include="StateMachine\StateMachine.cpp" />
@@ -478,6 +479,8 @@
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Objects\Boss\BossGameObject.h" />
     <ClInclude Include="Objects\Player\PlayerGameObject.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
     <ClInclude Include="StateMachine\IState.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />

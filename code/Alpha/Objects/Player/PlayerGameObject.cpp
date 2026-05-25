@@ -7,6 +7,9 @@
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Boss/BossGameObject.h"
+#include "Alpha/Objects/Player/States/PlayerStateEnum.h"
+#include "Alpha/Objects/Player/States/PlayerState_Move.h"
+#include "Alpha/StateMachine/StateMachine.h"
 
 #include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
@@ -27,10 +30,12 @@ PlayerGameObject::PlayerGameObject()
 	, m_currentHp()
 	, m_maxHp()
 	, m_speed()
-	, m_counterBulletIndex(UINT32_MAX)
+	//, m_counterBulletIndex(UINT32_MAX)
 	, m_dash(false)
 	, m_dashDuration(0.25)
 	, m_dashStart(0)
+	, m_pStateMachine(nullptr)
+	, m_pStateMove(nullptr)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -53,83 +58,93 @@ void PlayerGameObject::OnStartGame()
 	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
 
 	m_currentHp = m_maxHp;
+
+	m_pStateMachine = new StateMachine();
+	m_pStateMachine->Init(PlayerStateEnum::COUNT);
+
+	m_pStateMove = new PlayerState_Move(m_pStateMachine, this);
+	m_pStateMachine->AddState(m_pStateMove, PlayerStateEnum::MOVE);
+
+	m_pStateMachine->AddState(nullptr, PlayerStateEnum::DASH);
 }
 
 void PlayerGameObject::Update(float dt)
 {
-	Systems::TransformComponent& transform = GetTransform();
-	const Core::Mat44f& localTx = transform.GetLocalTx();
+	//Systems::TransformComponent& transform = GetTransform();
+	//const Core::Mat44f& localTx = transform.GetLocalTx();
 
-	const Core::Vec4f forward = localTx.GetZ();
-	const Core::Vec4f right = localTx.GetX();
-	const Core::Vec4f oldPosition = localTx.GetT();
+	//const Core::Vec4f forward = localTx.GetZ();
+	//const Core::Vec4f right = localTx.GetX();
+	//const Core::Vec4f oldPosition = localTx.GetT();
 
-	Core::Vec4f direction;
-	if (GameCommands::MoveUp())
-		direction = direction + forward;
-	else if (GameCommands::MoveDown())
-		direction = direction - forward;
+	//Core::Vec4f direction;
+	//if (GameCommands::MoveUp())
+	//	direction = direction + forward;
+	//else if (GameCommands::MoveDown())
+	//	direction = direction - forward;
 
-	if (GameCommands::MoveLeft())
-		direction = direction - right;
-	else if (GameCommands::MoveRight())
-		direction = direction + right;
+	//if (GameCommands::MoveLeft())
+	//	direction = direction - right;
+	//else if (GameCommands::MoveRight())
+	//	direction = direction + right;
 
-	if (direction.Length2() != 0 && !m_dash)
-	{
-		direction.Normalize();
-		Core::Vec4f newPosition = oldPosition + direction * m_speed * dt;
+	//if (direction.Length2() != 0 && !m_dash)
+	//{
+	//	direction.Normalize();
+	//	Core::Vec4f newPosition = oldPosition + direction * m_speed * dt;
 
-		Core::Mat44f newLocalTx = localTx;
-		newLocalTx.SetRow(3, newPosition);
+	//	Core::Mat44f newLocalTx = localTx;
+	//	newLocalTx.SetRow(3, newPosition);
 
-		transform.SetLocalTx(newLocalTx);
-	}
+	//	transform.SetLocalTx(newLocalTx);
+	//}
 
-	if (GameCommands::Counter())
-	{
-		//Core::LogModule::Get().LogInfo("Command Counter triggered");
+	//if (GameCommands::Counter())
+	//{
+	//	//Core::LogModule::Get().LogInfo("Command Counter triggered");
 
-		if(m_counterBulletIndex != UINT32_MAX)
-		{
-			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
-		}
-	}
-	else if (GameCommands::Dash())
-	{
-		if (direction.Length2() != 0)
-		{
-			Core::LogModule::Get().LogInfo("Dash!!!");
-			m_dash = true;
-			m_dashStart = 0;
-		}		
-	}
-	
-	if (m_dash)
-	{
-		m_dashStart += dt;
-		if (m_dashStart >= m_dashDuration)
-		{
-			m_dash = false;
-		}
-		else
-		{
-			const float DASH_SPEED = 50;
-			direction.Normalize();
-			Core::Vec4f newPosition = oldPosition + direction * DASH_SPEED * dt;
+	//	if(m_counterBulletIndex != UINT32_MAX)
+	//	{
+	//		BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
+	//		bulletSubsystem->CounteredBullet(m_counterBulletIndex);
+	//	}
+	//}
+	//else if (GameCommands::Dash())
+	//{
+	//	if (direction.Length2() != 0)
+	//	{
+	//		Core::LogModule::Get().LogInfo("Dash!!!");
+	//		m_dash = true;
+	//		m_dashStart = 0;
+	//	}		
+	//}
+	//
+	//if (m_dash)
+	//{
+	//	m_dashStart += dt;
+	//	if (m_dashStart >= m_dashDuration)
+	//	{
+	//		m_dash = false;
+	//	}
+	//	else
+	//	{
+	//		const float DASH_SPEED = 50;
+	//		direction.Normalize();
+	//		Core::Vec4f newPosition = oldPosition + direction * DASH_SPEED * dt;
 
-			Core::Mat44f newLocalTx = localTx;
-			newLocalTx.SetRow(3, newPosition);
+	//		Core::Mat44f newLocalTx = localTx;
+	//		newLocalTx.SetRow(3, newPosition);
 
-			transform.SetLocalTx(newLocalTx);
-		}
-	}
+	//		transform.SetLocalTx(newLocalTx);
+	//	}
+	//}
 
 	BaseClass::Update(dt);
 
+	m_pStateMachine->Update();
+
 	//cleanup
-	m_counterBulletIndex = UINT32_MAX;
+	//m_counterBulletIndex = UINT32_MAX;
 }
 
 void PlayerGameObject::PostUpdate()
@@ -150,7 +165,8 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 	case SID("counter_bullet_collision"):
 	{
 		Core::LogModule::Get().LogInfo("Message counter_bullet_collision received");
-		m_counterBulletIndex = static_cast<uint32_t>(msg.m_param);
+		//m_counterBulletIndex = static_cast<uint32_t>(msg.m_param);
+		m_pStateMove->SetCounterBulletIndex(static_cast<uint32_t>(msg.m_param));
 	}
 	break;
 
@@ -165,6 +181,14 @@ void PlayerGameObject::OnDestroyGame()
 
 	Systems::GameContext* pContext = Systems::GameMgr::Get().GetWorld();
 	pContext->m_pCameraSubsystem->PopCamera();
+
+	delete m_pStateMachine;
+	m_pStateMachine = nullptr;
+}
+
+float PlayerGameObject::GetSpeed() const
+{
+	return m_speed;
 }
 
 void PlayerGameObject::OnBulletCollision()
