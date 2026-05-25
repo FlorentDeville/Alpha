@@ -28,6 +28,9 @@ PlayerGameObject::PlayerGameObject()
 	, m_maxHp()
 	, m_speed()
 	, m_counterBulletIndex(UINT32_MAX)
+	, m_dash(false)
+	, m_dashDuration(0.25)
+	, m_dashStart(0)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -72,7 +75,7 @@ void PlayerGameObject::Update(float dt)
 	else if (GameCommands::MoveRight())
 		direction = direction + right;
 
-	if (direction.Length() != 0)
+	if (direction.Length2() != 0 && !m_dash)
 	{
 		direction.Normalize();
 		Core::Vec4f newPosition = oldPosition + direction * m_speed * dt;
@@ -95,7 +98,32 @@ void PlayerGameObject::Update(float dt)
 	}
 	else if (GameCommands::Dash())
 	{
-		Core::LogModule::Get().LogInfo("Dash!!!");
+		if (direction.Length2() != 0)
+		{
+			Core::LogModule::Get().LogInfo("Dash!!!");
+			m_dash = true;
+			m_dashStart = 0;
+		}		
+	}
+	
+	if (m_dash)
+	{
+		m_dashStart += dt;
+		if (m_dashStart >= m_dashDuration)
+		{
+			m_dash = false;
+		}
+		else
+		{
+			const float DASH_SPEED = 50;
+			direction.Normalize();
+			Core::Vec4f newPosition = oldPosition + direction * DASH_SPEED * dt;
+
+			Core::Mat44f newLocalTx = localTx;
+			newLocalTx.SetRow(3, newPosition);
+
+			transform.SetLocalTx(newLocalTx);
+		}
 	}
 
 	BaseClass::Update(dt);

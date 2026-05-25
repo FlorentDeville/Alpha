@@ -59,6 +59,10 @@ private:
 	//Index of the counter bullet the player collided with
 	uint32_t m_counterBulletIndex;
 
+	bool m_dash;
+	float m_dashDuration;
+	float m_dashStart;
+
 	void OnBulletCollision();
 
 	void UpdateCamera();
