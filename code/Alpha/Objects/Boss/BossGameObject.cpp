@@ -16,7 +16,7 @@
 #include "Alpha/Objects/Boss/States/BossState_Phase3_Attack1.h"
 #include "Alpha/Objects/Boss/States/BossState_Phase3_Attack2.h"
 #include "Alpha/Objects/Boss/States/BossState_Start.h"
-#include "Alpha/Objects/PlayerGameObject.h"
+#include "Alpha/Objects/Player/PlayerGameObject.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
 #include "Systems/Game/GameMgr.h"

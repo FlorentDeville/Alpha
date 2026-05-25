@@ -52,7 +52,7 @@
     <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\PlayerGameObject.cpp">
+    <ClCompile Include="Objects\Player\PlayerGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Commands\GameCommands.cpp">
@@ -165,7 +165,7 @@
     <ClInclude Include="Objects\Boss\States\BossState_Phase1_Attack.h" />
     <ClInclude Include="Objects\Boss\States\BossStateEnum.h" />
     <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
-    <ClInclude Include="Objects\PlayerGameObject.h" />
+    <ClInclude Include="Objects\Player\PlayerGameObject.h" />
     <ClInclude Include="Commands\GameCommands.h" />
     <ClInclude Include="Objects\Boss\BossGameObject.h" />
     <ClInclude Include="Objects\Boss\States\BossState_Phase2_Travel.h" />

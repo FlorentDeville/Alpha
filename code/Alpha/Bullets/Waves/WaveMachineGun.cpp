@@ -6,7 +6,7 @@
 
 #include "Alpha/Bullets/Bullets.h"
 #include "Alpha/Objects/Boss/BossGameObject.h"
-#include "Alpha/Objects/PlayerGameObject.h"
+#include "Alpha/Objects/Player/PlayerGameObject.h"
 
 #include "Core/Math/Constants.h"
 #include "Core/Random/Random.h"
