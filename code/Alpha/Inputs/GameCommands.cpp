@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Commands/GameCommands.h"
+#include "Alpha/Inputs/GameCommands.h"
 
 #include "Inputs/InputMgr.h"
 
