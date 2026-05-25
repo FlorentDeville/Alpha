@@ -8,6 +8,7 @@
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Boss/BossGameObject.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
+#include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
@@ -65,7 +66,8 @@ void PlayerGameObject::OnStartGame()
 	m_pStateMove = new PlayerState_Move(m_pStateMachine, this);
 	m_pStateMachine->AddState(m_pStateMove, PlayerStateEnum::MOVE);
 
-	m_pStateMachine->AddState(nullptr, PlayerStateEnum::DASH);
+	PlayerState_Dash* pStateDash = new PlayerState_Dash(m_pStateMachine, this);
+	m_pStateMachine->AddState(pStateDash, PlayerStateEnum::DASH);
 }
 
 void PlayerGameObject::Update(float dt)

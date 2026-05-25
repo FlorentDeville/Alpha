@@ -2,30 +2,39 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Objects/Player/States/PlayerState_Move.h"
+#include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 
-#include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Player/PlayerGameObject.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
+
+#include "Core/Math/Vec4f.h"
 
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 
-PlayerState_Move::PlayerState_Move(StateMachine* pMachine, PlayerGameObject* pPlayer)
+PlayerState_Dash::PlayerState_Dash(StateMachine* pMachine, PlayerGameObject* pPlayer)
 	: IState(pMachine)
 	, m_pPlayer(pPlayer)
-	, m_counterBulletIndex(UINT32_MAX)
 { }
 
-void PlayerState_Move::OnEnter()
-{ }
+void PlayerState_Dash::OnEnter()
+{
+	m_elapsedTime = 0;
+}
 
-void PlayerState_Move::OnUpdate()
+void PlayerState_Dash::OnUpdate()
 {
 	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
-
+	m_elapsedTime += dt;
+	const float DASH_DURATION = 0.25;
+	if (m_elapsedTime >= DASH_DURATION)
+	{
+		GoTo(PlayerStateEnum::MOVE);
+		return;
+	}
+	
 	Systems::TransformComponent& transform = m_pPlayer->GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
 
@@ -44,42 +53,15 @@ void PlayerState_Move::OnUpdate()
 	else if (GameCommands::MoveRight())
 		direction = direction + right;
 
-	if (direction.Length2() != 0)
-	{
-		direction.Normalize();
-		Core::Vec4f newPosition = oldPosition + direction * m_pPlayer->GetSpeed() * dt;
+	const float DASH_SPEED = 50;
+	direction.Normalize();
+	Core::Vec4f newPosition = oldPosition + direction * DASH_SPEED * dt;
 
-		Core::Mat44f newLocalTx = localTx;
-		newLocalTx.SetRow(3, newPosition);
+	Core::Mat44f newLocalTx = localTx;
+	newLocalTx.SetRow(3, newPosition);
 
-		transform.SetLocalTx(newLocalTx);
-	}
-
-	if (GameCommands::Counter())
-	{
-		//Core::LogModule::Get().LogInfo("Command Counter triggered");
-
-		if (m_counterBulletIndex != UINT32_MAX)
-		{
-			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
-		}
-	}
-
-	if (GameCommands::Dash())
-	{
-		if (direction.Length2() != 0)
-		{
-			GoTo(PlayerStateEnum::DASH);
-		}		
-	}
-	m_counterBulletIndex = UINT32_MAX;
+	transform.SetLocalTx(newLocalTx);	
 }
 
-void PlayerState_Move::OnExit()
+void PlayerState_Dash::OnExit()
 { }
-
-void PlayerState_Move::SetCounterBulletIndex(uint32_t index)
-{
-	m_counterBulletIndex = index;
-}
