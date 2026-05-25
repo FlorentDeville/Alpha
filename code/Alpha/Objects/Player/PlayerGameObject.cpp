@@ -93,6 +93,10 @@ void PlayerGameObject::Update(float dt)
 			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
 		}
 	}
+	else if (GameCommands::Dash())
+	{
+		Core::LogModule::Get().LogInfo("Dash!!!");
+	}
 
 	BaseClass::Update(dt);
 
