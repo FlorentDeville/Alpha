@@ -98,6 +98,23 @@ void BulletSubsystem::CounteredBullet(uint32_t index)
 	}
 }
 
+void BulletSubsystem::KillBullet(uint32_t index)
+{
+	for (IBulletWave* pWave : m_waves)
+	{
+		if (!pWave)
+			continue;
+
+		if (!pWave->IsAlive())
+			continue;
+
+		if (index < pWave->GetStartId() || index >= pWave->GetEndId())
+			continue;
+
+		pWave->KillBullet(m_bullets, index);
+	}
+}
+
 BulletSubsystem* BulletSubsystem::GetSubsystem()
 {
 	ISubsystem* pSubsystem = Systems::GameMgr::Get().GetGameSubsystem(m_subsystemIndex);

@@ -113,6 +113,11 @@ void IBulletWave::SpawnCounterBullet(Bullets& bullets, uint32_t index)
 	bullets.m_timeToLive[index] = 0;
 }
 
+void IBulletWave::KillBullet(Bullets& bullets, uint32_t index)
+{
+	bullets.m_timeToLive[index] = 0;
+}
+
 uint32_t IBulletWave::GetStartId() const
 {
 	return m_startId;
