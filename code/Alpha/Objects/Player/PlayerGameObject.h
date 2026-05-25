@@ -61,13 +61,6 @@ private:
 
 	uint32_t m_currentHp;
 
-	//Index of the counter bullet the player collided with
-	//uint32_t m_counterBulletIndex;
-
-	bool m_dash;
-	float m_dashDuration;
-	float m_dashStart;
-
 	StateMachine* m_pStateMachine;
 	PlayerState_Move* m_pStateMove;
 

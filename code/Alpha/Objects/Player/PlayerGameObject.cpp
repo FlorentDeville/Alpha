@@ -31,10 +31,6 @@ PlayerGameObject::PlayerGameObject()
 	, m_currentHp()
 	, m_maxHp()
 	, m_speed()
-	//, m_counterBulletIndex(UINT32_MAX)
-	, m_dash(false)
-	, m_dashDuration(0.25)
-	, m_dashStart(0)
 	, m_pStateMachine(nullptr)
 	, m_pStateMove(nullptr)
 {
@@ -72,81 +68,9 @@ void PlayerGameObject::OnStartGame()
 
 void PlayerGameObject::Update(float dt)
 {
-	//Systems::TransformComponent& transform = GetTransform();
-	//const Core::Mat44f& localTx = transform.GetLocalTx();
-
-	//const Core::Vec4f forward = localTx.GetZ();
-	//const Core::Vec4f right = localTx.GetX();
-	//const Core::Vec4f oldPosition = localTx.GetT();
-
-	//Core::Vec4f direction;
-	//if (GameCommands::MoveUp())
-	//	direction = direction + forward;
-	//else if (GameCommands::MoveDown())
-	//	direction = direction - forward;
-
-	//if (GameCommands::MoveLeft())
-	//	direction = direction - right;
-	//else if (GameCommands::MoveRight())
-	//	direction = direction + right;
-
-	//if (direction.Length2() != 0 && !m_dash)
-	//{
-	//	direction.Normalize();
-	//	Core::Vec4f newPosition = oldPosition + direction * m_speed * dt;
-
-	//	Core::Mat44f newLocalTx = localTx;
-	//	newLocalTx.SetRow(3, newPosition);
-
-	//	transform.SetLocalTx(newLocalTx);
-	//}
-
-	//if (GameCommands::Counter())
-	//{
-	//	//Core::LogModule::Get().LogInfo("Command Counter triggered");
-
-	//	if(m_counterBulletIndex != UINT32_MAX)
-	//	{
-	//		BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-	//		bulletSubsystem->CounteredBullet(m_counterBulletIndex);
-	//	}
-	//}
-	//else if (GameCommands::Dash())
-	//{
-	//	if (direction.Length2() != 0)
-	//	{
-	//		Core::LogModule::Get().LogInfo("Dash!!!");
-	//		m_dash = true;
-	//		m_dashStart = 0;
-	//	}		
-	//}
-	//
-	//if (m_dash)
-	//{
-	//	m_dashStart += dt;
-	//	if (m_dashStart >= m_dashDuration)
-	//	{
-	//		m_dash = false;
-	//	}
-	//	else
-	//	{
-	//		const float DASH_SPEED = 50;
-	//		direction.Normalize();
-	//		Core::Vec4f newPosition = oldPosition + direction * DASH_SPEED * dt;
-
-	//		Core::Mat44f newLocalTx = localTx;
-	//		newLocalTx.SetRow(3, newPosition);
-
-	//		transform.SetLocalTx(newLocalTx);
-	//	}
-	//}
-
 	BaseClass::Update(dt);
 
 	m_pStateMachine->Update();
-
-	//cleanup
-	//m_counterBulletIndex = UINT32_MAX;
 }
 
 void PlayerGameObject::PostUpdate()
@@ -167,7 +91,6 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 	case SID("counter_bullet_collision"):
 	{
 		Core::LogModule::Get().LogInfo("Message counter_bullet_collision received");
-		//m_counterBulletIndex = static_cast<uint32_t>(msg.m_param);
 		m_pStateMove->SetCounterBulletIndex(static_cast<uint32_t>(msg.m_param));
 	}
 	break;
