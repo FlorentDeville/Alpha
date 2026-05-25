@@ -18,8 +18,8 @@ class WaveMachineGun : public IBulletWave
 	using BaseClass = IBulletWave;
 
 public:
-	WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial, 
-		const Systems::GameObject* pOwner, const Systems::GameObject* pTarget);
+	WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterBulletMaterial,
+		Systems::GameObject* pOwner, const Systems::GameObject* pTarget);
 	~WaveMachineGun();
 
 	void Init(Bullets& bullets) override;
@@ -39,7 +39,7 @@ public:
 	void SetSpeed(float speed);
 
 private:
-	const Systems::GameObject* m_pOwner;
+	Systems::GameObject* m_pOwner;
 	const Systems::GameObject* m_pTarget;
 
 	Systems::MaterialInstanceAsset* m_pCounterBulletMaterial;
