@@ -152,13 +152,11 @@ bool IBulletWave::CollisionTestForBullet(const Bullets& bullets, uint32_t index)
 	if (!pGo->IsA<PlayerGameObject>())
 		return false;
 
-	//kill bullet
-	bullets.m_timeToLive[index] = 0;
-
 	//send message to player
 	Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
 	Systems::GameMessage msg;
 	msg.m_id = CONSTSID("bullet_collision");
+	msg.m_param = index;
 	pMessage->SendMessage(pGo, msg);
 
 	Core::LogModule::Get().LogInfo("Bullet collided with player");

@@ -64,7 +64,7 @@ private:
 	StateMachine* m_pStateMachine;
 	PlayerState_Move* m_pStateMove;
 
-	void OnBulletCollision();
+	void OnBulletCollision(uint32_t index);
 
 	void UpdateCamera();
 };

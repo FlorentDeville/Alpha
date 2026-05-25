@@ -84,7 +84,7 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 	{
 	case SID("bullet_collision"):
 	{
-		OnBulletCollision();
+		OnBulletCollision(static_cast<uint32_t>(msg.m_param));
 	}
 	break;
 
@@ -116,8 +116,14 @@ float PlayerGameObject::GetSpeed() const
 	return m_speed;
 }
 
-void PlayerGameObject::OnBulletCollision()
+void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
+	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
+		return;
+
+	BulletSubsystem* pBullets = BulletSubsystem::GetSubsystem();
+	pBullets->KillBullet(index);
+
 	const uint32_t DAMAGE = 5;
 	m_currentHp -= DAMAGE;
 	if (m_currentHp > m_maxHp) m_currentHp = 0;
