@@ -104,6 +104,11 @@ namespace Systems
 		return m_pTexture;
 	}
 
+	const Rendering::Texture* CubemapAsset::GetTexture() const
+	{
+		return m_pTexture;
+	}
+
 	const Core::Blob& CubemapAsset::GetBlob() const
 	{
 		return m_blob;

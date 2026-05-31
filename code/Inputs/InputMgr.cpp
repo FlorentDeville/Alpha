@@ -34,35 +34,27 @@ namespace Inputs
 		m_mouseState = mouseState;
 	}
 
-	bool InputMgr::GetState(InputCommand command) const
+	void InputMgr::PreUpdate()
 	{
-		Os::VKeyCode vkey;
-
-		switch (command)
-		{
-		case InputCommand::FORWARD:
-			vkey = Os::VKeyCodes::Vk_W;
-			break;
-
-		case InputCommand::BACKWARD:
-			vkey = Os::VKeyCodes::Vk_S;
-			break;
-
-		case InputCommand::LEFT:
-			vkey = Os::VKeyCodes::Vk_A;
-			break;
-
-		case InputCommand::RIGHT:
-			vkey = Os::VKeyCodes::Vk_D;
-			break;
-		}
-
-		return IsKeyPressed(vkey);
+		for (InputKeyCommand& command : m_commands)
+			command.Update();
 	}
 
-	void InputMgr::ClearAllStates()
+	void InputMgr::PostUpdate()
 	{
 		m_mouseState.m_mouseWheel = 0; //reset the mouse wheel distance
+	}
+
+	uint32_t InputMgr::RegisterCommand(const InputKeyCommand& command)
+	{
+		uint32_t index = m_commands.GetSize();
+		m_commands.PushBack(command);
+		return index;
+	}
+
+	float InputMgr::GetState(uint32_t index) const
+	{
+		return m_commands[index].GetState();
 	}
 
 	void InputMgr::Enable()

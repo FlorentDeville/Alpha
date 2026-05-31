@@ -29,5 +29,6 @@ namespace Rendering
 		, m_rtvFormat(BufferFormat::R16G16B16A16_FLOAT)
 		, m_blendDesc()
 		, m_depthStencilDesc()
+		, m_fillMode(FillMode::SOLID)
 	{ }
 }

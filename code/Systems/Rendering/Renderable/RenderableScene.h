@@ -10,6 +10,7 @@
 #include "Systems/Rendering/Renderable/RenderableLight.h"	//don't forward declare, I'll have to include it anyway
 #include "Systems/Rendering/Renderable/RenderableObject.h"	//don't forward declare, I'll have to include it anyway
 #include "Systems/Rendering/Renderable/RenderableParticles.h"
+#include "Systems/Rendering/Renderable/RenderableUI.h"
 
 namespace Systems
 {
@@ -22,12 +23,15 @@ namespace Systems
 		Core::Array<RenderableObject> m_translucentObjects;
 		Core::Array<RenderableLight> m_lights;
 		Core::Array<RenderableParticles> m_particles;
+		Core::Array<RenderableUI> m_uiObjects;
 
 		RenderableCamera m_camera;
 
 		float m_time;
+
+		bool m_includeLevelRenderable;
 	};
 
 	void PrepareRenderableCamera(const Core::Mat44f& view, const Core::Mat44f& proj, const Core::Vec4f& position, float fov, RenderableScene& scene);
-	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime);
+	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime, bool showCollision);
 }

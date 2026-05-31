@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
 #include "Core/Math/Vectors.h"
 #include "Core/Singleton.h"
 
@@ -42,9 +43,12 @@ namespace Inputs
 		void UpdateKeyboardState(uint64_t virtualKey, bool down);
 		void UpdateMouseState(const MouseState& mouseState);
 
-		bool GetState(InputCommand command) const;
+		void PreUpdate();
+		void PostUpdate();
 
-		void ClearAllStates();
+		uint32_t RegisterCommand(const InputKeyCommand& command);
+
+		float GetState(uint32_t index) const;
 
 		void Enable();
 		void Disable();
@@ -64,5 +68,7 @@ namespace Inputs
 		//raw keyboard mouse event
 		std::map<uint64_t, bool> m_keyboardState; //true for down
 		MouseState m_mouseState;
+
+		Core::Array<InputKeyCommand> m_commands;
 	};
 }

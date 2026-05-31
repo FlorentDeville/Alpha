@@ -28,6 +28,8 @@ namespace Widgets
 		TableView();
 		~TableView();
 
+		const AbstractViewModel* GetModel() const;
+
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor);
 
 		void SetModel(AbstractViewModel* pModel);

@@ -10,12 +10,15 @@
 #include "Rendering/RenderModule.h"
 
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
+#include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Clock/Clock.h"
+#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/SkyboxComponent.h"
+#include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
@@ -42,7 +45,7 @@ namespace Systems
 		scene.m_camera.m_fov = fov;
 	}
 
-	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime)
+	void PrepareRenderableScene(const LevelAsset* pLevel, RenderableScene& scene, float currentTime, bool showCollision)
 	{
 		scene.m_time = currentTime;
 
@@ -103,17 +106,19 @@ namespace Systems
 
 						Core::Mat44f proxyWorldTx = scale * localTx * worldTx;
 
+						if(scene.m_includeLevelRenderable)
 						{
 							Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pCylinderMesh;
 							renderable.m_pMaterial = nullptr;
 							renderable.m_worldTx = proxyWorldTx;
-							renderable.m_primitiveMesh = true;
+							renderable.m_debug = true;
 							renderable.m_pOwner = pGo;
 							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
 
+						if (scene.m_includeLevelRenderable)
 						{
 							Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
@@ -126,7 +131,7 @@ namespace Systems
 							renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 							renderable.m_pMaterial = nullptr;
 							renderable.m_worldTx = arrowTipScale * arrowTipRotation * arrowTipOffset * localTx * worldTx;
-							renderable.m_primitiveMesh = true;
+							renderable.m_debug = true;
 							renderable.m_pOwner = pGo;
 							renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 						}
@@ -147,6 +152,7 @@ namespace Systems
 					Core::Float3 specular(pLight->GetSpecular().GetRed(), pLight->GetSpecular().GetGreen(), pLight->GetSpecular().GetBlue());
 					gfxLight.m_cbuffer.MakePointLight(position, ambient, diffuse, specular, pLight->GetConstant(), pLight->GetLinear(), pLight->GetQuadratic());
 
+					if (scene.m_includeLevelRenderable)
 					{
 						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 
@@ -159,7 +165,7 @@ namespace Systems
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pSphereMesh;
 						renderable.m_pMaterial = nullptr;
 						renderable.m_worldTx = proxyWorldTx;
-						renderable.m_primitiveMesh = true;
+						renderable.m_debug = true;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 					}
@@ -197,6 +203,7 @@ namespace Systems
 						gfxLight.m_lightSpaceTX = lightSpace;
 					}
 
+					if (scene.m_includeLevelRenderable)
 					{
 						Core::Mat44f localTx = Core::Mat44f::CreateLookAt(lightPosition, localDirection, Core::Vec4f(0, 1, 0, 0));
 						Core::Mat44f rot = Core::Mat44f::CreateRotationMatrix(Core::Vec4f(1, 0, 0, 0), -Core::PI_OVER_TWO);
@@ -221,7 +228,7 @@ namespace Systems
 						renderable.m_pMesh = Rendering::RenderModule::Get().m_pConeMesh;
 						renderable.m_pMaterial = nullptr;
 						renderable.m_worldTx = proxyWorldTx;
-						renderable.m_primitiveMesh = true;
+						renderable.m_debug = true;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game | Systems::RenderView::ObjectId;
 					}
@@ -247,7 +254,6 @@ namespace Systems
 						pNewRenderable->m_pMesh = pMesh;
 						pNewRenderable->m_pMaterial = pMaterial;
 						pNewRenderable->m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
-						pNewRenderable->m_primitiveMesh = false;
 						pNewRenderable->m_pOwner = pGo;
 						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
@@ -268,9 +274,25 @@ namespace Systems
 						renderable.m_pMesh = pMesh;
 						renderable.m_pMaterial = pMaterial;
 						//renderable.m_worldTx = pSkybox->GetOwner()->GetTransform().GetWorldTx(); //no need to set the world matrix for a skybox
-						renderable.m_primitiveMesh = false;
 						renderable.m_pOwner = pGo;
 						renderable.m_view = Systems::RenderView::Game;
+					}
+				}
+				else if (const Systems::UIBaseComponent* pUi = pComponent->Cast<Systems::UIBaseComponent>())
+				{
+					const Systems::Texture2DAsset* pTexture = pUi->GetTexture();
+					
+					Systems::RenderableUI& renderable = scene.m_uiObjects.PushBackDefault();
+					renderable.m_position = pUi->GetPosition();
+					renderable.m_size = pUi->GetSize();
+					renderable.m_pTexture = pTexture ? pTexture->GetTexture() : nullptr;
+				}
+				else if (const Systems::CollisionSphereComponent* pSphere = pComponent->Cast<Systems::CollisionSphereComponent>())
+				{
+					if (showCollision)
+					{
+						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
+						renderable.DebugSphere(pSphere->m_sphere.GetCenter(), pSphere->m_sphere.GetRadius(), Core::Float4(1, 0, 0, 1), true);
 					}
 				}
 			}

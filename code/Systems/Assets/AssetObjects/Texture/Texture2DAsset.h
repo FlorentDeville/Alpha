@@ -32,6 +32,7 @@ namespace Systems
 
 		//ITextureAsset interface
 		Rendering::Texture* GetTexture() override;
+		const Rendering::Texture* GetTexture() const override;
 		const Core::Blob& GetBlob() const override;
 
 		const std::string& GetSourceFilename() const;

@@ -10,9 +10,9 @@ namespace Systems
 {
 	enum class RenderView : uint8_t
 	{
-		Game = 0x1,
-		ShadowMap = 0x2,
-		ObjectId = 0x4
+		Game =		1 << 1,
+		ShadowMap = 1 << 2,
+		ObjectId =	1 << 3
 	};
 
 	inline RenderView operator|(RenderView a, RenderView b)

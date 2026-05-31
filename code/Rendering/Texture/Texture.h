@@ -39,6 +39,7 @@ namespace Rendering
 		void TransitionToShaderResource();
 
 		const ID3D12DescriptorHeap* GetSRV() const;
+		ID3D12DescriptorHeap* GetNonConstSRV() const; //Delete this function when I have a proper systm of srv
 		ID3D12DescriptorHeap* GetSRV();
 
 		ID3D12Resource* GetResource();

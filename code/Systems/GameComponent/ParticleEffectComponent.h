@@ -8,7 +8,7 @@
 
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Objects/GameComponent.h"
-#include "Systems/Particle/ParticleEffectHandle.h"
+#include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 
 ENABLE_REFLECTION(Systems, ParticleEffectComponent)
 
@@ -22,10 +22,10 @@ namespace Systems
 		ParticleEffectComponent();
 		~ParticleEffectComponent();
 
-		void OnStart(World* pWorld) override;
-		void OnDestroy(World* pWorld) override;
+		void OnStart(GameContext* pWorld) override;
+		void OnDestroy(GameContext* pWorld) override;
 
-		void SpawnEffect(World* pWorld);
+		void SpawnEffect(GameContext* pWorld);
 
 		ParticleEffectAsset* GetEffectAsset();
 		ParticleEffectHandle GetEffectRutimeHandle() const;

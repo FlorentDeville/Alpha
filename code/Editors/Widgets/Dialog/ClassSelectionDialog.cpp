@@ -123,7 +123,7 @@ namespace Editors
 
 			//split the words
 			size_t start = 0;
-			for (int ii = 1; ii < cleanedName.size(); ++ii)
+			for (int ii = 0; ii < cleanedName.size(); ++ii)
 			{
 				if (!std::isupper(cleanedName[ii]))
 					continue;

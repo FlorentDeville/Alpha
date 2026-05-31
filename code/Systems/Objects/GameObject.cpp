@@ -6,6 +6,10 @@
 
 namespace Systems
 {
+	GameObject::GameObject()
+		: GameObject("")
+	{ }
+
 	GameObject::GameObject(const std::string& name)
 		: Object()
 		, m_name(name)
@@ -22,10 +26,16 @@ namespace Systems
 		m_components.Clear();
 	}
 
-	void GameObject::OnStart(World* pWorld)
+	void GameObject::OnStart(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
 			pComponent->OnStart(pWorld);
+	}
+
+	void GameObject::OnStartGame()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnStartGame();
 	}
 
 	void GameObject::Update(float dt)
@@ -34,16 +44,23 @@ namespace Systems
 			pComponent->Update(dt);
 	}
 
-	void GameObject::UpdateTransform()
-	{
-		m_transform.Update(0);
-	}
+	void GameObject::PostUpdate()
+	{ }
 
-	void GameObject::OnDestroy(World* pWorld)
+	void GameObject::OnDestroy(GameContext* pWorld)
 	{
 		for (GameComponent* pComponent : m_components)
 			pComponent->OnDestroy(pWorld);
 	}
+
+	void GameObject::OnDestroyGame()
+	{
+		for (GameComponent* pComponent : m_components)
+			pComponent->OnDestroyGame();
+	}
+
+	void GameObject::HandleMessage(const GameMessage& msg)
+	{ }
 
 	void GameObject::SetGuid(const Core::Guid& guid)
 	{
@@ -84,6 +101,28 @@ namespace Systems
 	{
 		m_components.PushBack(pComponent);
 		pComponent->SetOwner(this);
+	}
+
+	const GameComponent* GameObject::FindComponent(const Core::Guid& guid) const
+	{
+		for (const GameComponent* pComponent : m_components)
+		{
+			if (pComponent->GetGuid() == guid)
+				return pComponent;
+		}
+
+		return nullptr;
+	}
+
+	GameComponent* GameObject::FindComponent(const Core::Guid& guid)
+	{
+		for (GameComponent* pComponent : m_components)
+		{
+			if (pComponent->GetGuid() == guid)
+				return pComponent;
+		}
+
+		return nullptr;
 	}
 
 	void GameObject::PostLoad()

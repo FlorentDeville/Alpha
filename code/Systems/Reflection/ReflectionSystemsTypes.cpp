@@ -18,6 +18,7 @@
 #include "Systems/Assets/AssetObjects/Texture/ITextureAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Assets/AssetObjects/Texture/TextureType.h"
+#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
@@ -25,6 +26,7 @@
 #include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
+#include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Core/Reflection/ReflectionMacro.h"
 #include "Systems/Objects/AssetObject.h"
 #include "Systems/Objects/GameComponent.h"
@@ -43,6 +45,7 @@ namespace Systems
 		Systems::Object::RegisterReflection();
 		Systems::GameObject::RegisterReflection();
 		Systems::GameComponent::RegisterReflection();
+		Systems::CollisionSphereComponent::RegisterReflection();
 		Systems::SkyboxComponent::RegisterReflection();
 		Systems::StaticMeshComponent::RegisterReflection();
 		Systems::TransformComponent::RegisterReflection();
@@ -50,6 +53,7 @@ namespace Systems
 		Systems::ParticleEffectComponent::RegisterReflection();
 		Systems::PointLightComponent::RegisterReflection();
 		Systems::SpotLightComponent::RegisterReflection();
+		Systems::UIBaseComponent::RegisterReflection();
 
 		Systems::AssetObject::RegisterReflection();
 		Systems::CubemapAsset::RegisterReflection();

@@ -27,6 +27,8 @@
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/Clock/Clock.h"
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 
@@ -47,7 +49,6 @@ namespace Editors
 		: BaseEditor()
 		, m_pPopulator(nullptr)
 		, m_pListModel(nullptr)
-		, m_particleSystem()
 		, m_pBasePass(nullptr)
 		, m_pViewport(nullptr)
 		, m_pCopyPso(nullptr)
@@ -256,8 +257,9 @@ namespace Editors
 			m_objWatcherCid.PushBack(id);
 		}
 
-		m_particleSystem.KillAllEffect();
-		m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), clock);
+		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+		pContext->m_pParticleSystem->KillAllEffect();
+		pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), clock);
 	}
 
 	void ParticleEditor::OnParticleEffectModified()
@@ -268,8 +270,10 @@ namespace Editors
 		Systems::ParticleEffectAsset* pEffect = Systems::AssetUtil::LoadAsset<Systems::ParticleEffectAsset>(id, Systems::LoadingDomain::EDITOR);
 		if (pEffect)
 		{
-			m_particleSystem.KillAllEffect();
-			m_particleSystem.SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
+			Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+
+			pContext->m_pParticleSystem->KillAllEffect();
+			pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
 		}
 	}
 
@@ -282,7 +286,10 @@ namespace Editors
 		clock += dtInSeconds;
 
 		m_pCamera->Update(dtInSeconds);
-		m_particleSystem.Update(clock);
+
+		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+		pContext->m_pClock->Update(dtInSeconds);
+		pContext->m_pParticleSystem->Update(*pContext);
 	}
 
 	void ParticleEditor::Viewport_OnRender()
@@ -294,7 +301,8 @@ namespace Editors
 		scene.m_camera.m_proj = m_pCamera->GetProjection();
 
 		//first make renderable
-		m_particleSystem.BuildRenderable(scene);
+		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+		pContext->m_pParticleSystem->BuildRenderable(scene);
 		
 		//then render the base pass
 		m_pBasePass->PreRender(scene);

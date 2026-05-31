@@ -98,11 +98,32 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Components\BossComponent.cpp" />
-    <ClCompile Include="Components\PlayerComponent.cpp" />
+    <ClCompile Include="Bullets\Bullets.cpp" />
+    <ClCompile Include="Bullets\BulletSubsystem.cpp" />
+    <ClCompile Include="Bullets\IBulletWave.cpp" />
+    <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp" />
+    <ClCompile Include="Bullets\Waves\WaveTest.cpp" />
+    <ClCompile Include="Inputs\GameCommands.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase1_To_Phase2.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase1_Travel.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase1_Attack.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Attack1.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Attack2.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_To_Phase3.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Travel.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Attack1.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Attack2.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Travel.cpp" />
+    <ClCompile Include="Objects\Boss\States\BossState_Start.cpp" />
     <ClCompile Include="Configuration.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Objects\Boss\BossGameObject.cpp" />
+    <ClCompile Include="Objects\Player\PlayerGameObject.cpp" />
+    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp" />
+    <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp" />
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp" />
+    <ClCompile Include="StateMachine\IState.cpp" />
+    <ClCompile Include="StateMachine\StateMachine.cpp" />
     <FxCompile Include="Shaders\bloom\bloom_downsample.ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -168,6 +189,22 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RS</EntryPointName>
     </FxCompile>
     <FxCompile Include="Shaders\copy_render_target.vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\Debug\wireframe.ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\Debug\wireframe.rs.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RootSignature</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rootsig_1.1</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RootSignature</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rootsig_1.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\Debug\wireframe.vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
@@ -340,6 +377,22 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="Shaders\UI\ui.ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\UI\ui.rs.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">RootSignature</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">rootsig_1.1</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">RootSignature</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">rootsig_1.1</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shaders\UI\ui.vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shaders\widget.ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -406,10 +459,33 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Components\BossComponent.h" />
-    <ClInclude Include="Components\PlayerComponent.h" />
+    <ClInclude Include="Bullets\Bullets.h" />
+    <ClInclude Include="Bullets\BulletSubsystem.h" />
+    <ClInclude Include="Bullets\IBulletWave.h" />
+    <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
+    <ClInclude Include="Bullets\Waves\WaveTest.h" />
+    <ClInclude Include="Inputs\GameCommands.h" />
+    <ClInclude Include="Objects\Boss\States\BossStateEnum.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase1_To_Phase2.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase1_Travel.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase1_Attack.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack1.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack2.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_To_Phase3.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Travel.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Attack1.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Attack2.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Travel.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Start.h" />
     <ClInclude Include="Configuration.h" />
+    <ClInclude Include="Objects\Boss\BossGameObject.h" />
+    <ClInclude Include="Objects\Player\PlayerGameObject.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
+    <ClInclude Include="StateMachine\IState.h" />
+    <ClInclude Include="StateMachine\StateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini">
@@ -426,7 +502,9 @@
     <None Include="Shaders\bloom\bloom_downsample.hlsli" />
     <None Include="Shaders\bloom\bloom_emissive_filter.hlsli" />
     <None Include="Shaders\bloom\bloom_upsample.hlsli" />
+    <None Include="Shaders\Debug\wireframe.hlsli" />
     <None Include="Shaders\Particles\particles.hlsli" />
+    <None Include="Shaders\UI\ui.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

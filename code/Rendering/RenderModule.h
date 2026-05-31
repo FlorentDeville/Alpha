@@ -81,11 +81,11 @@ namespace Rendering
 
 		void SetScissorRectangle(const D3D12_RECT& rect);
 
-		void RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color);
-		void RenderPrimitiveCone(const Core::Mat44f& wvp, const Core::Float4& color);
-		void RenderPrimitiveTorus(const Core::Mat44f& wvp, const Core::Float4& color);
-		void RenderPrimitiveCube(const Core::Mat44f& wvp, const Core::Float4& color);
-		void RenderPrimitiveSphere(const Core::Mat44f& wvp, const Core::Float4& color);
+		void RenderPrimitiveCylinder(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe);
+		void RenderPrimitiveCone(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe);
+		void RenderPrimitiveTorus(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe);
+		void RenderPrimitiveCube(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe);
+		void RenderPrimitiveSphere(const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe);
 
 		void ExecuteRenderCommand();
 
@@ -178,12 +178,13 @@ namespace Rendering
 		Mesh* m_pCubeMesh;
 		Mesh* m_pSphereMesh;
 
-		Rendering::Mesh* m_pBaseQuadMesh;
-
 	private:
 
 		PipelineState* m_pBaseShapePso;
 		RootSignature* m_pBaseShapeRootSig;
+
+		PipelineState* m_pDebugWireframePso;
+		RootSignature* m_pDebugWireframeRootSig;
 
 		ID3D12Resource* m_pBackBuffers[m_numFrames];
 		ID3D12Resource* m_pMainDepthBuffer;
@@ -205,6 +206,6 @@ namespace Rendering
 		void ResizeDepthBuffer(uint32_t width, uint32_t height, ID3D12Resource** pResource, D3D12_CPU_DESCRIPTOR_HANDLE dsv);
 
 	public:
-		void RenderBaseShape(const Mesh* pMesh, const Core::Mat44f& wvp, const Core::Float4& color) const;
+		void RenderBaseShape(const Mesh* pMesh, const Core::Mat44f& wvp, const Core::Float4& color, bool wireframe) const;
 	};
 }

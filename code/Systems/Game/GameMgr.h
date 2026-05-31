@@ -5,6 +5,8 @@
 #pragma once
 
 #include "Core/Collections/Array.h"
+#include "Core/Reflection/TypeResolver.h"
+#include "Core/Sid/Sid.h"
 #include "Core/Singleton.h"
 
 #include "Systems/Assets/NewAssetId.h"
@@ -21,11 +23,14 @@ namespace Systems
 {
 	class CameraSubsystem;
 	class GameObject;
+	class ISubsystem;
+	class GameComponent;
 	class LevelAsset;
 	class RenderPassBase;
 	class RenderPassBloom;
 	class RenderPassShadowMaps;
-	class World;
+	class RenderPassUI;
+	class GameContext;
 
 	class GameMgr : public Core::Singleton<GameMgr>
 	{
@@ -44,9 +49,25 @@ namespace Systems
 
 		void RequestUnloadingAllLevels();
 
+		uint32_t RegisterGameSubsystem(ISubsystem* pSubsystem);
+		ISubsystem* GetGameSubsystem(uint32_t index);
+		const ISubsystem* GetGameSubsystem(uint32_t index) const;
+
 		Rendering::RenderTarget* GetFinalRenderTarget();
 
-		World* GetWorld();
+		GameContext* GetWorld();
+
+		template<class T> const T* FindGameObject() const;
+		const GameObject* FindGameObject(Core::Sid gameObjectTypename) const;
+
+		template<class T> T* FindGameObject();
+		GameObject* FindGameObject(Core::Sid gameObjectTypename);
+
+		template<class T> const T* FindComponent() const;
+		const GameComponent* FindComponent(Core::Sid componentTypeName) const;
+
+		bool Debug_ShowCollision() const;
+		void Debug_SetShowCollision(bool show);
 
 	private:
 		//Loading
@@ -59,15 +80,35 @@ namespace Systems
 		Systems::RenderPassBase* m_pRenderPassBase;
 		Systems::RenderPassShadowMaps* m_pRenderPassShadowMaps;
 		Systems::RenderPassBloom* m_pRenderPassBloom;
+		Systems::RenderPassUI* m_pRenderPassUi;
 
 		//Camera
 		Rendering::Camera* m_pDefaultCamera;
 
-		World* m_pWorld;
+		GameContext* m_pGameContext;
+
+		Core::Array<ISubsystem*> m_gameSubsystems;
+
+		bool m_debugShowCollision;
 
 		bool IsLevelAlreadyLoaded(Systems::NewAssetId id) const;
 
 		void ExecuteLoadingRequests();
 		void ExecuteUnloadingRequests();
 	};
+
+	template<class T> const T* GameMgr::FindGameObject() const
+	{
+		return static_cast<const T*>(FindGameObject(Core::TypeResolver<T>::GetTypenameSid()));
+	}
+
+	template<class T> T* GameMgr::FindGameObject()
+	{
+		return static_cast<T*>(FindGameObject(Core::TypeResolver<T>::GetTypenameSid()));
+	}
+
+	template<class T> const T* GameMgr::FindComponent() const
+	{
+		return static_cast<const T*>(FindComponent(Core::TypeResolver<T>::GetTypenameSid()));
+	}
 }

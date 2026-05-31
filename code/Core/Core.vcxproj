@@ -95,6 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base64\Base64.cpp" />
+    <ClCompile Include="Bezier\Bezier.cpp" />
     <ClCompile Include="Blob\Blob.cpp" />
     <ClCompile Include="Callbacks\CallbackId.cpp" />
     <None Include="Collections\HashSet.inl">
@@ -118,6 +119,7 @@
     <ClCompile Include="Math\Ray.cpp" />
     <ClCompile Include="Math\Sqt.cpp" />
     <ClCompile Include="Math\Vec4f.cpp" />
+    <ClCompile Include="Random\Random.cpp" />
     <ClCompile Include="Reflection\EnumEntry.cpp" />
     <ClCompile Include="Reflection\FieldDescriptor.cpp" />
     <ClCompile Include="Reflection\ReflectionMgr.cpp" />
@@ -127,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base64\Base64.h" />
+    <ClInclude Include="Bezier\Bezier.h" />
     <ClInclude Include="Blob\Blob.h" />
     <ClInclude Include="Callbacks\CallbackId.h" />
     <ClInclude Include="Callbacks\CallbackList.h" />
@@ -155,6 +158,7 @@
     <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Sqt.h" />
     <ClInclude Include="Math\Vec4f.h" />
+    <ClInclude Include="Random\Random.h" />
     <ClInclude Include="Reflection\EnumEntry.h" />
     <ClInclude Include="Reflection\FieldAttribute.h" />
     <ClInclude Include="Reflection\FieldDescriptor.h" />

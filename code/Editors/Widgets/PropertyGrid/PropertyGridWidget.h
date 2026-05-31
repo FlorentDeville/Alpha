@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -12,6 +12,7 @@
 
 namespace Widgets
 {
+	class Label;
 	class Layout;
 }
 
@@ -30,6 +31,8 @@ namespace Editors
 
 		void RemoveProperty(PropertyGridItem* pProperty);
 
+		void SetClassName(const std::string& className);
+
 		void ClearAllItems();
 
 		Core::Array<PropertyGridItem*>& GetPropertyGridItems();
@@ -38,6 +41,8 @@ namespace Editors
 		Core::Array<PropertyGridItem*> m_properties;
 
 		Widgets::Layout* m_pInternalLayout;
+
+		Widgets::Label* m_pClassName;
 
 		//Width of the name column
 		uint32_t m_nameColumnWidth;

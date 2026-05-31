@@ -29,7 +29,7 @@ namespace Rendering
 namespace Systems
 {
 	class AssetMetadata;
-	class World;
+	class GameContext;
 }
 
 namespace Widgets
@@ -66,7 +66,7 @@ namespace Editors
 
 		bool RenameLevel(Systems::NewAssetId id, const std::string& newName);
 
-		void AddGameObject(const Core::Guid& parentGuid, Core::Guid& newGoGuid);
+		void AddGameObject(const Core::Guid& parentGuid, const Core::TypeDescriptor* pType, Core::Guid& newGoGuid);
 		void DeleteGameObject(const Core::Guid & nodeGuid);
 		void RenameGameObject(const Core::Guid& guid, const std::string& name);
 
@@ -90,8 +90,8 @@ namespace Editors
 		const Systems::LevelAsset* GetCurrentLoadedLevel() const;
 		Systems::LevelAsset* GetCurrentLoadedLevel();
 
-		const Systems::World* GetWorld() const;
-		Systems::World* GetWorld();
+		const Systems::GameContext* GetWorld() const;
+		Systems::GameContext* GetWorld();
 
 		//operation callback
 		EVENT_DECL(NewLevel, void(const Systems::AssetMetadata& metadata))
@@ -110,7 +110,7 @@ namespace Editors
 		EVENT_DECL(ReparentGameObject, void(const Systems::GameObject* pGo, const Systems::GameObject* pOldParent, const Systems::GameObject* pNewParent))
 
 	private:
-		Systems::World* m_pWorld;
+		Systems::GameContext* m_pWorld;
 
 		SelectionMgr* m_pSelectionMgr;
 
@@ -121,6 +121,6 @@ namespace Editors
 		Core::Mat44f m_cameraWs;
 		float m_fovRad;
 
-		bool Internal_AddGameObject(const Systems::GameObject* pParent, Systems::GameObject** ppObj);
+		bool Internal_AddGameObject(const Systems::GameObject* pParent, const Core::TypeDescriptor* pType, Systems::GameObject** ppObj);
 	};
 }

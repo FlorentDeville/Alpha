@@ -69,6 +69,17 @@ namespace Systems
 		return true;
 	}
 
+	template<> bool SerializeData<Core::Float2>(const Core::Float2& data, Core::JsonValue& value)
+	{
+		Core::JsonArray* pArray = new Core::JsonArray();
+		pArray->AddElement(data.x);
+		pArray->AddElement(data.y);
+
+		value.Set(pArray);
+
+		return true;
+	}
+
 	template<> bool SerializeData<Core::Float3>(const Core::Float3& data, Core::JsonValue& value)
 	{
 		Core::JsonArray* pArray = new Core::JsonArray();
@@ -299,6 +310,13 @@ namespace Systems
 		{
 			const Core::Sqt* pSqt = reinterpret_cast<const Core::Sqt*>(pFieldPtr);
 			SerializeData(*pSqt, value);
+		}
+		break;
+
+		case SID("Core::Float2"):
+		{
+			const Core::Float2* pFloat2 = reinterpret_cast<const Core::Float2*>(pFieldPtr);
+			SerializeData(*pFloat2, value);
 		}
 		break;
 

@@ -52,6 +52,12 @@ namespace Rendering
 
 		m_shaders[static_cast<size_t>(EngineShaders::PARTICLES_VS)] = new Shader(shaderPath + "\\particles.vs.cso");
 		m_shaders[static_cast<size_t>(EngineShaders::PARTICLES_PS)] = new Shader(shaderPath + "\\particles.ps.cso");
+
+		m_shaders[static_cast<size_t>(EngineShaders::GAME_UI_PS)] = new Shader(shaderPath + "\\ui.ps.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::GAME_UI_VS)] = new Shader(shaderPath + "\\ui.vs.cso");
+		
+		m_shaders[static_cast<size_t>(EngineShaders::DEBUG_WIREFRAME_VS)] = new Shader(shaderPath + "\\wireframe.vs.cso");
+		m_shaders[static_cast<size_t>(EngineShaders::DEBUG_WIREFRAME_PS)] = new Shader(shaderPath + "\\wireframe.ps.cso");
 	}
 
 	void ShaderMgr::Shutdown()

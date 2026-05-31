@@ -12,15 +12,19 @@
 #include "Systems/Assets/AssetObjects/AssetUtil.h"
 #include "Systems/Assets/AssetObjects/Level/LevelAsset.h"
 #include "Systems/Game/InstanciateLevel.h"
-#include "Systems/Game/Subsystems/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
 #include "Systems/Game/Subsystems/Clock/GameClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/Subsystems/Collision/CollisionSubsystem.h"
+#include "Systems/Game/Subsystems/Message/GameMessageSubsystem.h"
+#include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
-#include "Systems/Particle/ParticleSystem.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderPassBase.h"
 #include "Systems/Rendering/RenderPass/RenderPassBloom.h"
 #include "Systems/Rendering/RenderPass/RenderPassShadowMaps.h"
+#include "Systems/Rendering/RenderPass/RenderPassUI.h"
 
 namespace Systems
 {
@@ -29,8 +33,11 @@ namespace Systems
 		, m_pRenderPassBase(nullptr)
 		, m_pRenderPassShadowMaps(nullptr)
 		, m_pRenderPassBloom(nullptr)
+		, m_pRenderPassUi(nullptr)
 		, m_pDefaultCamera(nullptr)
-		, m_pWorld(nullptr)
+		, m_pGameContext(nullptr)
+		, m_gameSubsystems()
+		, m_debugShowCollision(false)
 	{ }
 
 	GameMgr::~GameMgr()
@@ -52,30 +59,54 @@ namespace Systems
 		m_pRenderPassBloom->SetInput(m_pRenderPassBase->GetRenderTarget()->GetColorTexture());
 		m_pRenderPassBloom->SetOutput(m_pRenderPassBase->GetRenderTarget());
 
+		m_pRenderPassUi = new Systems::RenderPassUI(WIDTH, HEIGHT);
+		m_pRenderPassUi->SetOutput(m_pRenderPassBase->GetRenderTarget());
+
 		m_pDefaultCamera = new Rendering::Camera();
 		m_pDefaultCamera->SetLookAt(Core::Vec4f(0, 10, -10, 1), Core::Vec4f(0, 0, 0, 1), Core::Vec4f(0, 1, 0, 0));
 		m_pDefaultCamera->SetProjection(45 * Core::PI_OVER_180, RATIO, 0.1f, 1000);
 
-		m_pWorld = new World();
-		m_pWorld->m_pCameraSubsystem = new CameraSubsystem();
-		m_pWorld->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
+		m_pGameContext = new GameContext();
+		m_pGameContext->m_pCameraSubsystem = new CameraSubsystem();
+		m_pGameContext->m_pCameraSubsystem->PushCamera(m_pDefaultCamera);
 
-		m_pWorld->m_pParticleSystem = new ParticleSystem();
-		m_pWorld->m_pClock = new GameClockSubsystem();
+		m_pGameContext->m_pParticleSystem = new ParticleSystem();
+		m_pGameContext->m_pClock = new GameClockSubsystem();
+
+		CollisionSubsystem* pCollision = new CollisionSubsystem();
+		CollisionSubsystem::m_subsystemIndex = RegisterGameSubsystem(pCollision);
+
+		GameMessageSubsystem* pMessages = new GameMessageSubsystem();
+		GameMessageSubsystem::m_subsystemIndex = RegisterGameSubsystem(pMessages);
+
+		NavmeshSubsystem* pNavmesh = new NavmeshSubsystem();
+		NavmeshSubsystem::m_subsystemIndex = RegisterGameSubsystem(pNavmesh);
 	}
 
 	void GameMgr::Release()
 	{
+		RequestUnloadingAllLevels();
+		ExecuteUnloadingRequests();
+
 		delete m_pRenderPassBase;
 		delete m_pRenderPassShadowMaps;
 		delete m_pRenderPassBloom;
+		delete m_pRenderPassUi;
 		delete m_pDefaultCamera;
-		delete m_pWorld;
+		delete m_pGameContext;
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			delete pSubsystem;
+
+		m_gameSubsystems.Clear();
 	}
 
 	void GameMgr::Update(float dt)
 	{
-		m_pWorld->m_pClock->Update(dt);
+		m_pGameContext->m_pClock->Update(dt);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->BeforeUpdate(*m_pGameContext);
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
@@ -85,11 +116,26 @@ namespace Systems
 			Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
 			for (Systems::GameObject* pGo : gameObjects)
 			{
-				pGo->Update(m_pWorld->m_pClock->GetDeltaTime());
+				pGo->Update(m_pGameContext->m_pClock->GetDeltaTime());
 			}
 		}
 
-		m_pWorld->m_pParticleSystem->Update(m_pWorld->m_pClock->GetTime());
+		for (Systems::LevelAsset* pLevel : m_loadedLevels)
+		{
+			//going through the list of game object of levels will cause problems when game objects
+			//are created at runtime.
+			//I should make an internal array of all game object pointers in the GameMgr.
+			Core::Array<Systems::GameObject*>& gameObjects = pLevel->GetGameObjectsArray();
+			for (Systems::GameObject* pGo : gameObjects)
+			{
+				pGo->PostUpdate();
+			}
+		}
+
+		m_pGameContext->m_pParticleSystem->Update(*m_pGameContext);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->Update(*m_pGameContext);
 
 		// Loading/Unloading is synchronous for now. So it blocks the main frame.
 		ExecuteLoadingRequests();
@@ -100,22 +146,20 @@ namespace Systems
 	{
 		Systems::RenderableScene scene;
 
-		const Rendering::Camera* pCamera = m_pWorld->m_pCameraSubsystem->GetTopCamera();
+		const Rendering::Camera* pCamera = m_pGameContext->m_pCameraSubsystem->GetTopCamera();
 		Systems::PrepareRenderableCamera(pCamera->GetViewMatrix(), pCamera->GetProjectionMatrix(), pCamera->GetPosition(), pCamera->GetFOV(), scene);
+
+		scene.m_includeLevelRenderable = false;
 
 		for (Systems::LevelAsset* pLevel : m_loadedLevels)
 		{
-			//going through the list of game object of levels will cause problems when game objects
-			//are created at runtime.
-			//I should make an internal array of all game object pointers in the GameMgr.
-			Core::Array<Systems::GameObject*>& roots = pLevel->GetRootGameObjects();
-			for (Systems::GameObject* pGo : roots)
-				pGo->UpdateTransform();
-
-			Systems::PrepareRenderableScene(pLevel, scene, m_pWorld->m_pClock->GetTime());
+			Systems::PrepareRenderableScene(pLevel, scene, m_pGameContext->m_pClock->GetTime(), m_debugShowCollision);
 		}
 
-		m_pWorld->m_pParticleSystem->BuildRenderable(scene);
+		m_pGameContext->m_pParticleSystem->BuildRenderable(scene);
+
+		for (ISubsystem* pSubsystem : m_gameSubsystems)
+			pSubsystem->BuildRenderable(scene);
 
 		//call the render pass and render the scene.
 		m_pRenderPassShadowMaps->PreRender(scene);
@@ -131,6 +175,10 @@ namespace Systems
 		m_pRenderPassBloom->PreRender(scene);
 		m_pRenderPassBloom->Render(scene);
 		m_pRenderPassBloom->PostRender(scene);
+
+		m_pRenderPassUi->PreRender(scene);
+		m_pRenderPassUi->Render(scene);
+		m_pRenderPassUi->PostRender(scene);
 	}
 
 	void GameMgr::RequestLoadingLevel(Systems::NewAssetId levelId)
@@ -150,14 +198,90 @@ namespace Systems
 			m_unloadingRequest.PushBack(pLevel->GetId());
 	}
 
+	uint32_t GameMgr::RegisterGameSubsystem(ISubsystem* pSubsystem)
+	{
+		uint32_t index = m_gameSubsystems.GetSize();
+		m_gameSubsystems.PushBack(pSubsystem);
+		return index;
+	}
+
+	ISubsystem* GameMgr::GetGameSubsystem(uint32_t index)
+	{
+		return m_gameSubsystems[index];
+	}
+
+	const ISubsystem* GameMgr::GetGameSubsystem(uint32_t index) const
+	{
+		return m_gameSubsystems[index];
+	}
+
 	Rendering::RenderTarget* GameMgr::GetFinalRenderTarget()
 	{
 		return m_pRenderPassBase->GetRenderTarget();
 	}
 
-	World* GameMgr::GetWorld()
+	GameContext* GameMgr::GetWorld()
 	{
-		return m_pWorld;
+		return m_pGameContext;
+	}
+
+	const GameObject* GameMgr::FindGameObject(Core::Sid gameObjectTypename) const
+	{
+		for (const LevelAsset* pLevel : m_loadedLevels)
+		{
+			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
+			for (const GameObject* pGo : gameObjectArray)
+			{
+				if (pGo->GetTypeDescriptor()->GetSid() == gameObjectTypename)
+					return pGo;
+			}
+		}
+
+		return nullptr;
+	}
+
+	GameObject* GameMgr::FindGameObject(Core::Sid gameObjectTypename)
+	{
+		for (const LevelAsset* pLevel : m_loadedLevels)
+		{
+			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pGo : gameObjectArray)
+			{
+				if (pGo->GetTypeDescriptor()->GetSid() == gameObjectTypename)
+					return pGo;
+			}
+		}
+
+		return nullptr;
+	}
+
+	const GameComponent* GameMgr::FindComponent(Core::Sid componentTypeName) const
+	{
+		for (const LevelAsset* pLevel : m_loadedLevels)
+		{
+			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
+			for (const GameObject* pGo : gameObjectArray)
+			{
+				const Core::Array<GameComponent*>& componentsArray = pGo->GetComponents();
+				for (const GameComponent* pComponent : componentsArray)
+				{
+					if (pComponent->GetTypeDescriptor()->GetSid() == componentTypeName)
+						return pComponent;
+				}
+			}
+		}
+
+		return nullptr;
+	}
+
+	bool GameMgr::Debug_ShowCollision() const
+	{
+		return m_debugShowCollision;
+	}
+
+	void GameMgr::Debug_SetShowCollision(bool show)
+	{
+		m_debugShowCollision = show;
 	}
 
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
@@ -191,7 +315,11 @@ namespace Systems
 
 			m_loadedLevels.PushBack(pLevel);
 
-			InstanciateLevel(pLevel, m_pWorld);
+			InstanciateLevel(pLevel, m_pGameContext);
+
+			Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pObject : objectArray)
+				pObject->OnStartGame();
 		}
 
 		m_loadingRequest.Clear();
@@ -211,7 +339,11 @@ namespace Systems
 				return; //doesn't exist
 			}
 
-			DeleteInstanciatedLevel(pLevel, m_pWorld);
+			Core::Array<GameObject*>& objectArray = pLevel->GetGameObjectsArray();
+			for (GameObject* pObject : objectArray)
+				pObject->OnDestroyGame();
+
+			DeleteInstanciatedLevel(pLevel, m_pGameContext);
 
 			Systems::AssetUtil::UnloadAsset(id, Systems::LoadingDomain::GAME);
 

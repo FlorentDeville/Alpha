@@ -4,9 +4,11 @@
 
 #pragma once
 
+#include "Systems/Game/Subsystems/ISubsystem.h"
+
 namespace Systems
 {
-	class IClockSubsystem
+	class IClockSubsystem : public ISubsystem
 	{
 	public:
 

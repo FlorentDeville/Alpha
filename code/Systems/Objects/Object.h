@@ -37,7 +37,8 @@ namespace Systems
 
 	template<class T> bool Object::IsA() const
 	{
-		return m_pTypeDescriptor->GetSid() == Core::TypeResolver<T>::GetTypenameSid();
+		Core::Sid targetType = Core::TypeResolver<T>::GetTypenameSid();
+		return m_pTypeDescriptor->GetSid() == targetType || m_pTypeDescriptor->InheritsFrom(targetType);
 	}
 
 	template<class T> T* Object::Cast()

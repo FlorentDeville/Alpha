@@ -20,6 +20,14 @@
 
 //#pragma optimize("", off)
 
+#ifdef min
+	#undef min
+#endif
+
+#ifdef max
+	#undef max
+#endif
+
 namespace Editors
 {
 	GizmoWidget::GizmoWidget()
@@ -638,7 +646,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				red = m_hoverColor;
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, red);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, red, false);
 		}
 
 		//rotation y axis
@@ -648,7 +656,7 @@ namespace Editors
 				green = m_hoverColor;
 
 			Core::Mat44f transform = scale * txWs * viewProj;
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, green);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, green, false);
 		}
 
 		//rotation z axis
@@ -661,7 +669,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				blue = m_hoverColor;
 
-			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, blue);
+			Rendering::RenderModule::Get().RenderPrimitiveTorus(transform, blue, false);
 		}
 	}
 
@@ -781,7 +789,7 @@ namespace Editors
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength * 0.5f, 0, 0));
 			Core::Mat44f txLs = scale * translation;
 			Core::Mat44f ws = txLs * txWs * viewProj;
-			renderingMgr.RenderPrimitiveCylinder(ws, color);
+			renderingMgr.RenderPrimitiveCylinder(ws, color, false);
 		}
 
 		{		
@@ -792,7 +800,7 @@ namespace Editors
 			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(Core::Vec4f(0.f, realLength, 0, 0));
 			Core::Mat44f txLs = localScale * localTranslation;
 			Core::Mat44f ws = txLs * txWs * viewProj;
-			renderingMgr.RenderPrimitiveCone(ws, color);
+			renderingMgr.RenderPrimitiveCone(ws, color, false);
 		}
 	}
 
@@ -810,7 +818,7 @@ namespace Editors
 			Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(realDiameter, realLength, realDiameter);
 			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0.f, realLength * 0.5f, 0);
 			Core::Mat44f ws = scale * translation * txWs * viewProj;
-			renderingMgr.RenderPrimitiveCylinder(ws, color);
+			renderingMgr.RenderPrimitiveCylinder(ws, color, false);
 		}
 
 		{
@@ -820,7 +828,7 @@ namespace Editors
 			Core::Mat44f localScale = Core::Mat44f::CreateScaleMatrix(coneLength);
 			Core::Mat44f localTranslation = Core::Mat44f::CreateTranslationMatrix(0, realLength, 0);
 			Core::Mat44f ws = localScale * localTranslation * txWs * viewProj;
-			renderingMgr.RenderPrimitiveCube(ws, color);
+			renderingMgr.RenderPrimitiveCube(ws, color, false);
 		}
 	}
 

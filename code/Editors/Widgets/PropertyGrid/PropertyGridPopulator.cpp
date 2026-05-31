@@ -16,9 +16,10 @@
 #include "Editors/Widgets/PropertyGrid/Items/AssetIdItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/BoolItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/ColorItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/ComponentRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/EnumItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/FloatItem.h"
-#include "Editors/Widgets/PropertyGrid/Items/Float3Item.h"
+#include "Editors/Widgets/PropertyGrid/Items/FloatXItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/GuidItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/HardAssetRefItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/Mat44fItem.h"
@@ -93,7 +94,11 @@ namespace Editors
 		m_propertyItemDepth[nullptr] = 0;
 
 		if (pObject)
+		{
+			const std::string& typeName = pObject->GetTypeDescriptor()->GetName();
+			m_pPropertyGridWidget->SetClassName(typeName);
 			CreatePropertiesForObject(pObject);
+		}
 
 		Widgets::WidgetMgr::Get().RequestResize();
 	}
@@ -247,12 +252,24 @@ namespace Editors
 			}
 			else if (memberType->IsClass())
 			{
-				if (memberType->GetSidWithoutTemplateParam() == CONSTSID("Systems::HardAssetRef"))
+				switch (memberType->GetSidWithoutTemplateParam())
 				{
-					HardAssetRefItem* pItem = new HardAssetRefItem(static_cast<Systems::Object*>(pData), pField, 0);
+				case CONSTSID("Systems::HardAssetRef"):
+				{
+					HardAssetRefItem* pItem = new HardAssetRefItem(pData, pField, 0);
 					Internal_AddPropertyGridItem(pItem);
 				}
-				else
+				break;
+
+				case CONSTSID("Systems::ComponentRef"):
+				{
+					const Systems::GameObject* pGo = m_pObject->Cast<Systems::GameObject>();
+					ComponentRefItem* pItem = new ComponentRefItem(pData, pField, 0, pGo);
+					Internal_AddPropertyGridItem(pItem);
+				}
+				break;
+
+				default:
 				{
 					PropertyGridItem* pItem = new PropertyGridItem(pField->GetName(), nullptr);
 					Internal_AddPropertyGridItem(pItem);
@@ -260,6 +277,9 @@ namespace Editors
 					ParentItemContextScope janitor(pItem, this);
 
 					CreatePropertiesForTypeMembers(memberType, pMemberPtr);
+				}
+				break;
+
 				}
 			}
 			else //pod
@@ -356,9 +376,16 @@ namespace Editors
 		}
 		break;
 
+		case SID("Core::Float2"):
+		{
+			FloatXItem* pItem = new FloatXItem(pObj, pField, indexElement, 2);
+			return pItem;
+		}
+		break;
+
 		case SID("Core::Float3"):
 		{
-			Float3Item* pItem = new Float3Item(pObj, pField, indexElement);
+			FloatXItem* pItem = new FloatXItem(pObj, pField, indexElement, 3);
 			return pItem;
 		}
 		break;

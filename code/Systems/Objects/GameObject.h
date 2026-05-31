@@ -17,25 +17,48 @@ ENABLE_REFLECTION(Systems, GameObject)
 namespace Systems
 {
 	class GameComponent;
-	class World;
+	class GameContext;
+	class GameMessage;
 
+	//Event orders :
+	// Loading
+	//		Constructor
+	//		PostLoad
+	//		OnStart (called only once in game and in editor)
+	//		OnStartGame (called only once in game)
+	//		Update (called every frame)
+	// Unloading
+	//		OnDestroyGame (called once only in game )
+	//		OnDestroy (called once in game and in editor)
+	//		Destructor
+	//
 	class GameObject : public Object
 	{
 	public:
-		GameObject() = default;
+		GameObject();
 		GameObject(const std::string& name);
 
 		virtual ~GameObject();
 
-		//Called only once before the first Update.
-		virtual void OnStart(World* pWorld);
+		//Called only once before the first Update in game and in editor.
+		virtual void OnStart(GameContext* pWorld);
+
+		//Called only once before the first Update in game only.
+		virtual void OnStartGame();
 
 		//Called every frame
 		virtual void Update(float dt);
-		virtual void UpdateTransform();
+
+		//Called every frame after Update
+		virtual void PostUpdate();
 
 		//Called before deleting the gameobjet after the last Update.
-		virtual void OnDestroy(World* pWorld);
+		virtual void OnDestroy(GameContext* pWorld);
+
+		//Called before deleting the gameobjet after the last Update in game only.
+		virtual void OnDestroyGame();
+
+		virtual void HandleMessage(const GameMessage& msg);
 
 		void SetGuid(const Core::Guid& guid);
 		const Core::Guid& GetGuid() const;
@@ -48,6 +71,10 @@ namespace Systems
 
 		const Core::Array<GameComponent*>& GetComponents() const;
 		void AddComponent(GameComponent* pComponent);
+
+		const GameComponent* FindComponent(const Core::Guid& guid) const;
+		GameComponent* FindComponent(const Core::Guid& guid);
+		template<typename T> T* FindComponent();
 
 		void PostLoad() override;
 
@@ -70,6 +97,17 @@ namespace Systems
 			ADD_FIELD(m_components)
 		END_REFLECTION()
 	};
+
+	template<typename T> T* GameObject::FindComponent()
+	{
+		for (GameComponent* pComponent : m_components)
+		{
+			if (T* pTypedComponent = pComponent->Cast<T>())
+				return pTypedComponent;
+		}
+
+		return nullptr;
+	}
 
 	GameObject* CreateNewGameObject(const Core::TypeDescriptor* pType);
 

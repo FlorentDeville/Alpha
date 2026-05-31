@@ -32,6 +32,7 @@ namespace Systems
 		~ITextureAsset() = default;
 
 		virtual Rendering::Texture* GetTexture() = 0;
+		virtual const Rendering::Texture* GetTexture() const = 0;
 		virtual const Core::Blob& GetBlob() const = 0;
 
 		START_REFLECTION_ABSTRACT(Systems::ITextureAsset)

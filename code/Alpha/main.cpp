@@ -12,6 +12,8 @@
 
 #include <DirectXMath.h>
 
+#include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Configuration.h"
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 
@@ -400,34 +402,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-void Update()
+void Update(float dt)
 {
-	Systems::Clock& clock = Systems::Clock::Get();
-	clock.Update();
+	Inputs::InputMgr::Get().PreUpdate();
 
-	const int FPS = 60;
-	constexpr float FRAME_DURATION = 1.f / FPS;
+	//start with a garbage collect
+	Systems::ContainerMgr::Get().GarbageCollect();
 
-	static float previousApplicationTick = clock.GetApplicationTime();
+	Systems::GameMgr::Get().Update(dt);
 
-	float currentApplicationTick = clock.GetApplicationTime();
-	float applicationDt = currentApplicationTick - previousApplicationTick;
-	uint64_t applicationDtMs = static_cast<uint64_t>(applicationDt * 1000);
+	//update widgets
+	uint64_t dtMs = static_cast<uint64_t>(dt * 1000);
+	Widgets::WidgetMgr::Get().Update(dtMs);
 
-	if (applicationDt >= FRAME_DURATION)
-	{
-		//start with a garbage collect
-		Systems::ContainerMgr::Get().GarbageCollect();
-
-		Systems::GameMgr::Get().Update(applicationDt);
-
-		//update widgets
-		Widgets::WidgetMgr::Get().Update(applicationDtMs);
-
-		previousApplicationTick = currentApplicationTick;
-
-		Inputs::InputMgr::Get().ClearAllStates();
-	}
+	Inputs::InputMgr::Get().PostUpdate();
 }
 
 void Render()
@@ -609,6 +597,7 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 
 	Inputs::InputMgr& inputMgr = Inputs::InputMgr::InitSingleton();
 	inputMgr.Init();
+	GameCommands::RegisterGameCommands();
 
 	Editors::ObjectWatcher::InitSingleton();
 	Editors::ObjectWatcher& objectWatcher = Editors::ObjectWatcher::Get();
@@ -634,21 +623,68 @@ int CALLBACK WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE /*hPrevInstanc
 	Editors::LogEditor& logEditor = Editors::LogEditor::InitSingleton();
 	logEditor.Init();
 
+	BulletSubsystem* pBulletSubsystem = new BulletSubsystem();
+	BulletSubsystem::m_subsystemIndex = gameMgr.RegisterGameSubsystem(pBulletSubsystem);
+
 	CreateMainWindow(binPath);
 
 	g_pWindow->ShowMaximized();
 
+	const int FPS = 60;
+	constexpr float FRAME_DURATION = 1.f / FPS;
+
+	float previousApplicationTick = clock.GetApplicationTime();
+
+	uint32_t updateFPSCounter = 0;
+	float updateFPSTimer = clock.GetRealApplicationTime();
+
+	uint32_t renderFPSCounter = 0;
+	float renderFPSTimer = clock.GetRealApplicationTime();
+
 	MSG msg = { 0 };
 	while (msg.message != WM_QUIT)
 	{
+		//always peek so I don't miss any message
 		if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			::TranslateMessage(&msg);
 			::DispatchMessage(&msg);
 		}
+	
+		//now compute elapsed time
+		clock.Update();
 
-		Update();
-		Render();
+		float currentApplicationTick = clock.GetApplicationTime();
+		float applicationDt = currentApplicationTick - previousApplicationTick;
+
+		//update every frame duration
+		if (applicationDt >= FRAME_DURATION)
+		{
+			//Core::LogModule::Get().LogInfo("dt %f", applicationDt);
+			Update(applicationDt);
+
+			++updateFPSCounter;
+
+			if (updateFPSTimer + 1 <= clock.GetRealApplicationTime())
+			{
+				//Core::LogModule::Get().LogInfo("UPDATE FPS %d", updateFPSCounter);
+				updateFPSCounter = 0;
+				updateFPSTimer = clock.GetRealApplicationTime();
+			}
+		
+			previousApplicationTick = currentApplicationTick;
+		}
+
+		{
+			Render();
+			++renderFPSCounter;
+			if (renderFPSTimer + 1 <= clock.GetRealApplicationTime())
+			{
+				//Core::LogModule::Get().LogInfo("RENDER FPS %d", renderFPSCounter);
+				renderFPSCounter = 0;
+				renderFPSTimer = clock.GetRealApplicationTime();
+			}
+		}	
 	}
 
 	logEditor.Shutdown();

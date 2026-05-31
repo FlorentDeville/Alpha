@@ -22,13 +22,76 @@
     <ClCompile Include="Configuration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\PlayerComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Components\BossComponent.cpp">
+    <ClCompile Include="Bullets\BulletSubsystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\IBulletWave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\Waves\WaveTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\Bullets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine\StateMachine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine\IState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase1_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase1_Attack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player\PlayerGameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Inputs\GameCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\BossGameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Attack1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Attack2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Attack1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Attack2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Start.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase1_To_Phase2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\States\BossState_Phase2_To_Phase3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -88,12 +151,41 @@
     <FxCompile Include="Shaders\Particles\particles.ps.hlsl" />
     <FxCompile Include="Shaders\Particles\particles.rs.hlsl" />
     <FxCompile Include="Shaders\Particles\particles.vs.hlsl" />
+    <FxCompile Include="Shaders\UI\ui.ps.hlsl" />
+    <FxCompile Include="Shaders\UI\ui.rs.hlsl" />
+    <FxCompile Include="Shaders\UI\ui.vs.hlsl" />
+    <FxCompile Include="Shaders\Debug\wireframe.ps.hlsl" />
+    <FxCompile Include="Shaders\Debug\wireframe.rs.hlsl" />
+    <FxCompile Include="Shaders\Debug\wireframe.vs.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Configuration.h" />
-    <ClInclude Include="Components\PlayerComponent.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
-    <ClInclude Include="Components\BossComponent.h" />
+    <ClInclude Include="Bullets\BulletSubsystem.h" />
+    <ClInclude Include="Bullets\IBulletWave.h" />
+    <ClInclude Include="Bullets\Bullets.h" />
+    <ClInclude Include="Bullets\Waves\WaveTest.h" />
+    <ClInclude Include="StateMachine\IState.h" />
+    <ClInclude Include="StateMachine\StateMachine.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase1_Travel.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase1_Attack.h" />
+    <ClInclude Include="Objects\Boss\States\BossStateEnum.h" />
+    <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
+    <ClInclude Include="Objects\Player\PlayerGameObject.h" />
+    <ClInclude Include="Inputs\GameCommands.h" />
+    <ClInclude Include="Objects\Boss\BossGameObject.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Travel.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack1.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack2.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Travel.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Attack1.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Attack2.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Start.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase1_To_Phase2.h" />
+    <ClInclude Include="Objects\Boss\States\BossState_Phase2_To_Phase3.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
@@ -106,5 +198,7 @@
     <None Include="Shaders\bloom\bloom_downsample.hlsli" />
     <None Include="Shaders\bloom\bloom_upsample.hlsli" />
     <None Include="Shaders\Particles\particles.hlsli" />
+    <None Include="Shaders\UI\ui.hlsli" />
+    <None Include="Shaders\Debug\wireframe.hlsli" />
   </ItemGroup>
 </Project>

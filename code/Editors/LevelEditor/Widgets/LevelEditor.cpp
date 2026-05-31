@@ -17,7 +17,9 @@
 #include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/EditorManager.h"
+#include "Editors/Widgets/Dialog/Model/ClassListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
+#include "Editors/Widgets/Dialog/TableDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -30,7 +32,7 @@
 #include "Systems/Clock/Clock.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
-#include "Systems/Game/World.h"
+#include "Systems/Game/GameContext.h"
 #include "Systems/Objects/GameObject.h"
 
 #include "Widgets/Container.h"
@@ -179,7 +181,7 @@ namespace Editors
 	{
 		Widgets::Menu* pEditMenu = pMenuBar->AddMenu("Edit");
 
-		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add Game Object");
+		Widgets::MenuItem* pAddItem = pEditMenu->AddMenuItem("Add Game Object...");
 		pAddItem->SetShortcut("Ctrl+N");
 		pAddItem->OnClick([this]() { OnClickEditMenu_AddGameObject(); });
 
@@ -660,22 +662,33 @@ namespace Editors
 		if (!IsSceneTreeEnabled())
 			return;
 
-		LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
+		ClassListModel* pModel = new ClassListModel(Core::TypeResolver<Systems::GameObject>::GetTypenameSid(), true);
+		TableDialog* pDialog = new TableDialog("Select game object class", pModel);
+		pDialog->SetColumnWidth(0, 498);
+		pDialog->Open();
+		pDialog->OnOk([this, pModel](Widgets::ModelIndex index) 
+			{
+				const Core::TypeDescriptor* pSelectedType = pModel->GetType(index);
+				if (!pSelectedType)
+					return;
 
-		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
+				LevelEditorModule& levelEditorModule = Editors::LevelEditorModule::Get();
 
-		Core::Guid parentGuid;
-		if (!pSelectionMgr->GetSelectionList().empty())
-			parentGuid = pSelectionMgr->GetSelectionList().back();
+				SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
 
-		Core::Guid newGuid;
-		levelEditorModule.AddGameObject(parentGuid, newGuid);
+				Core::Guid parentGuid;
+				if (!pSelectionMgr->GetSelectionList().empty())
+					parentGuid = pSelectionMgr->GetSelectionList().back();
 
-		if (!newGuid.IsValid())
-			return;
+				Core::Guid newGuid;
+				levelEditorModule.AddGameObject(parentGuid, pSelectedType, newGuid);
 
-		m_pSceneTreeModel->ClearSelection();
-		m_pSceneTreeModel->SelectGameObject(newGuid);
+				if (!newGuid.IsValid())
+					return;
+
+				m_pSceneTreeModel->ClearSelection();
+				m_pSceneTreeModel->SelectGameObject(newGuid);
+			});
 	}
 
 	void LevelEditor::OnClickEditMenu_DeleteGameObject()
