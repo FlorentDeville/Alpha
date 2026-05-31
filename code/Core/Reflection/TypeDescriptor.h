@@ -56,6 +56,8 @@ namespace Core
 		Core::Sid GetUpgradeType() const;
 		uint64_t GetSize() const;
 
+		const FieldDescriptor* FindField(const std::string& name) const;
+
 		bool IsContainer() const;
 		bool IsTemplate() const;
 		bool IsTemplateParamTypePointer() const;

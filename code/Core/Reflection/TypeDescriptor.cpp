@@ -173,6 +173,21 @@ namespace Core
 		return m_size;
 	}
 
+	const FieldDescriptor* TypeDescriptor::FindField(const std::string& name) const
+	{
+		std::vector<Core::FieldDescriptor*>::const_iterator it = std::find_if(m_fields.begin(), m_fields.end(),
+			[&name](const Core::FieldDescriptor* pField) { return pField->GetName() == name; });
+
+
+		if (it != m_fields.cend())
+			return *it;
+
+		if (m_pBaseType)
+			return m_pBaseType->FindField(name);
+		
+		return nullptr;
+	}
+
 	bool TypeDescriptor::InheritsFrom(Core::Sid baseClassSid) const
 	{
 		const TypeDescriptor* pType = m_pBaseType;
