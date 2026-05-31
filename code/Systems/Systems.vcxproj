@@ -69,6 +69,7 @@
     <ClInclude Include="Game\Subsystems\Particle\ParticleEffectHandle.h" />
     <ClInclude Include="Game\Subsystems\Particle\ParticleEmitterRuntime.h" />
     <ClInclude Include="Game\Subsystems\Particle\ParticleSystem.h" />
+    <ClInclude Include="Objects\StaticMesh.h" />
     <ClInclude Include="Reflection\ReflectionCoreTypes.h" />
     <ClInclude Include="Reflection\ReflectionStandardTypes.h" />
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
@@ -137,6 +138,7 @@
     <ClCompile Include="Game\Subsystems\Particle\ParticleEffectHandle.cpp" />
     <ClCompile Include="Game\Subsystems\Particle\ParticleEmitterRuntime.cpp" />
     <ClCompile Include="Game\Subsystems\Particle\ParticleSystem.cpp" />
+    <ClCompile Include="Objects\StaticMesh.cpp" />
     <ClCompile Include="Reflection\ReflectionCoreTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionStandardTypes.cpp" />
     <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />

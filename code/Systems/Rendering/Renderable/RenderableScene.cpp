@@ -20,6 +20,7 @@
 #include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
+#include "Systems/Objects/StaticMesh.h"
 #include "Systems/Rendering/Renderable/RenderableLight.h"
 #include "Systems/Rendering/Renderable/RenderableObject.h"
 
@@ -53,6 +54,32 @@ namespace Systems
 
 		for (Systems::GameObject* pGo : gameObjects)
 		{
+			if (const Systems::StaticMesh* pStaticMesh = pGo->Cast<Systems::StaticMesh>())
+			{
+				const Rendering::Mesh* pMesh = nullptr;
+				const Systems::MaterialInstanceAsset* pMaterial = nullptr;
+				if (pStaticMesh->GetMesh() && pStaticMesh->GetMesh()->GetRenderingMesh())
+					pMesh = pStaticMesh->GetMesh()->GetRenderingMesh();
+
+				pMaterial = pStaticMesh->GetMaterialInstance();
+
+				if (pMesh && pMaterial)
+				{
+					Systems::RenderableObject* pNewRenderable = nullptr;
+					if (pMaterial->GetBaseMaterial()->GetBlendMode() == BlendMode::BM_TRANSLUCENT)
+						pNewRenderable = &scene.m_translucentObjects.PushBackDefault();
+					else
+						pNewRenderable = &scene.m_opaqueObjects.PushBackDefault();
+
+					pNewRenderable->m_pMesh = pMesh;
+					pNewRenderable->m_pMaterial = pMaterial;
+					pNewRenderable->m_worldTx = pStaticMesh->GetTransform().GetWorldTx();
+					pNewRenderable->m_pOwner = pGo;
+					pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
+				}
+				continue;
+			}
+
 			const Core::Array<Systems::GameComponent*>& components = pGo->GetComponents();
 			for (const Systems::GameComponent* pComponent : components)
 			{
