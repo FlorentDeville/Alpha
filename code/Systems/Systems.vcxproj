@@ -46,7 +46,6 @@
     <ClInclude Include="GameComponent\MeshComponent.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
     <ClInclude Include="GameComponent\SkyboxComponent.h" />
-    <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\UI\UIBaseComponent.h" />
     <ClInclude Include="Game\GameMgr.h" />
     <ClInclude Include="Game\InstanciateLevel.h" />
@@ -120,7 +119,6 @@
     <ClCompile Include="GameComponent\MeshComponent.cpp" />
     <ClCompile Include="GameComponent\ParticleEffectComponent.cpp" />
     <ClCompile Include="GameComponent\SkyboxComponent.cpp" />
-    <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="GameComponent\UI\UIBaseComponent.cpp" />
     <ClCompile Include="Game\GameMgr.cpp" />

@@ -8,7 +8,6 @@
     <ClInclude Include="Reflection\ReflectionSystemsTypes.h" />
     <ClInclude Include="Objects\GameObject.h" />
     <ClInclude Include="Objects\GameComponent.h" />
-    <ClInclude Include="GameComponent\StaticMeshComponent.h" />
     <ClInclude Include="GameComponent\TransformComponent.h" />
     <ClInclude Include="Objects\AssetObject.h" />
     <ClInclude Include="Serialization\ObjectJsonSerializer.h" />
@@ -92,7 +91,6 @@
     <ClCompile Include="Reflection\ReflectionSystemsTypes.cpp" />
     <ClCompile Include="Objects\GameObject.cpp" />
     <ClCompile Include="Objects\GameComponent.cpp" />
-    <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
     <ClCompile Include="GameComponent\TransformComponent.cpp" />
     <ClCompile Include="Objects\AssetObject.cpp" />
     <ClCompile Include="Serialization\ObjectJsonSerializer.cpp" />

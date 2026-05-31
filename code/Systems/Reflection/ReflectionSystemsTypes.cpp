@@ -25,7 +25,6 @@
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 #include "Systems/GameComponent/MeshComponent.h"
 #include "Systems/GameComponent/SkyboxComponent.h"
-#include "Systems/GameComponent/StaticMeshComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Core/Reflection/ReflectionMacro.h"
@@ -53,7 +52,6 @@ namespace Systems
 		Systems::CollisionSphereComponent::RegisterReflection();
 		Systems::MeshComponent::RegisterReflection();
 		Systems::SkyboxComponent::RegisterReflection();
-		Systems::StaticMeshComponent::RegisterReflection();
 		Systems::TransformComponent::RegisterReflection();
 		Systems::DirectionalLightComponent::RegisterReflection();
 		Systems::ParticleEffectComponent::RegisterReflection();
