@@ -43,6 +43,7 @@
     <ClInclude Include="GameComponent\ComponentRef\ComponentRefRaw.h" />
     <ClInclude Include="GameComponent\Lights\PointLightComponent.h" />
     <ClInclude Include="GameComponent\Lights\SpotLightComponent.h" />
+    <ClInclude Include="GameComponent\MeshComponent.h" />
     <ClInclude Include="GameComponent\ParticleEffectComponent.h" />
     <ClInclude Include="GameComponent\SkyboxComponent.h" />
     <ClInclude Include="GameComponent\StaticMeshComponent.h" />
@@ -116,6 +117,7 @@
     <ClCompile Include="GameComponent\Lights\DirectionalLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\PointLightComponent.cpp" />
     <ClCompile Include="GameComponent\Lights\SpotLightComponent.cpp" />
+    <ClCompile Include="GameComponent\MeshComponent.cpp" />
     <ClCompile Include="GameComponent\ParticleEffectComponent.cpp" />
     <ClCompile Include="GameComponent\SkyboxComponent.cpp" />
     <ClCompile Include="GameComponent\StaticMeshComponent.cpp" />
