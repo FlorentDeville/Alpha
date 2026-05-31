@@ -32,6 +32,7 @@
 #include "Systems/Objects/GameComponent.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Objects/Object.h"
+#include "Systems/Objects/StaticMesh.h"
 
 namespace Systems
 {
@@ -45,6 +46,9 @@ namespace Systems
 		Systems::Object::RegisterReflection();
 		Systems::GameObject::RegisterReflection();
 		Systems::GameComponent::RegisterReflection();
+
+		Systems::StaticMesh::RegisterReflection();
+
 		Systems::CollisionSphereComponent::RegisterReflection();
 		Systems::SkyboxComponent::RegisterReflection();
 		Systems::StaticMeshComponent::RegisterReflection();

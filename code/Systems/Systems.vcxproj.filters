@@ -81,6 +81,7 @@
     <ClInclude Include="Game\Subsystems\Message\GameMessage.h" />
     <ClInclude Include="Game\Subsystems\Message\GameMessageSubsystem.h" />
     <ClInclude Include="Game\Subsystems\Navmesh\NavmeshSubsystem.h" />
+    <ClInclude Include="Objects\StaticMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Game\Subsystems\Message\GameMessageSubsystem.cpp" />
     <ClCompile Include="Rendering\Renderable\RenderableObject.cpp" />
     <ClCompile Include="Game\Subsystems\Navmesh\NavmeshSubsystem.cpp" />
+    <ClCompile Include="Objects\StaticMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
