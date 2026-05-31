@@ -1,8 +1,8 @@
 /********************************************************************************/
-/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Systems/GameComponent/StaticMeshComponent.h"
+#include "Systems/GameComponent/MeshComponent.h"
 
 #include "Rendering/Camera.h"
 #include "Rendering/ConstantBuffer/LightsCBuffer.h"
@@ -15,21 +15,21 @@
 
 namespace Systems
 {
-	StaticMeshComponent::StaticMeshComponent()
+	MeshComponent::MeshComponent()
 		: GameComponent()
 		, m_mesh()
 		, m_material()
 	{ }
 
-	StaticMeshComponent::~StaticMeshComponent()
+	MeshComponent::~MeshComponent()
 	{ }
 
-	const MeshAsset* StaticMeshComponent::GetMesh() const
+	const MeshAsset* MeshComponent::GetMesh() const
 	{
 		return m_mesh.GetPtr();
 	}
 
-	const MaterialInstanceAsset* StaticMeshComponent::GetMaterialInstance() const
+	const MaterialInstanceAsset* MeshComponent::GetMaterialInstance() const
 	{
 		return m_material.GetPtr();
 	}

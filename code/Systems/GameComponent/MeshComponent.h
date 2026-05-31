@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -10,15 +10,15 @@
 #include "Systems/Assets/AssetRef/HardAssetRef.h"
 #include "Systems/Objects/GameComponent.h"
 
-ENABLE_REFLECTION(Systems, StaticMeshComponent)
+ENABLE_REFLECTION(Systems, MeshComponent)
 
 namespace Systems
 {
-	class StaticMeshComponent : public GameComponent
+	class MeshComponent : public GameComponent
 	{
 	public:
-		StaticMeshComponent();
-		~StaticMeshComponent();
+		MeshComponent();
+		~MeshComponent();
 
 		const MeshAsset* GetMesh() const;
 		const MaterialInstanceAsset* GetMaterialInstance() const;
@@ -27,7 +27,7 @@ namespace Systems
 		HardAssetRef<MeshAsset> m_mesh;
 		HardAssetRef<MaterialInstanceAsset> m_material;
 
-		START_REFLECTION(Systems::StaticMeshComponent)
+		START_REFLECTION(Systems::MeshComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_mesh)
 			ADD_FIELD(m_material)

@@ -16,7 +16,7 @@
 #include "Systems/GameComponent/Lights/DirectionalLightComponent.h"
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
-#include "Systems/GameComponent/StaticMeshComponent.h"
+#include "Systems/GameComponent/MeshComponent.h"
 #include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
@@ -261,30 +261,30 @@ namespace Systems
 					}
 
 				}
-				else if (const Systems::StaticMeshComponent* pStaticMesh = pComponent->Cast<Systems::StaticMeshComponent>())
+				else if (const Systems::MeshComponent* pMeshComponent = pComponent->Cast<Systems::MeshComponent>())
 				{
 					const Rendering::Mesh* pMesh = nullptr;
 					const Systems::MaterialInstanceAsset* pMaterial = nullptr;
-					if (pStaticMesh->GetMesh() && pStaticMesh->GetMesh()->GetRenderingMesh())
-						pMesh = pStaticMesh->GetMesh()->GetRenderingMesh();
+					if (pMeshComponent->GetMesh() && pMeshComponent->GetMesh()->GetRenderingMesh())
+						pMesh = pMeshComponent->GetMesh()->GetRenderingMesh();
 
-					pMaterial = pStaticMesh->GetMaterialInstance();
+					pMaterial = pMeshComponent->GetMaterialInstance();
 
 					if (pMesh && pMaterial)
 					{
 						Systems::RenderableObject* pNewRenderable = nullptr;
-						if(pMaterial->GetBaseMaterial()->GetBlendMode() == BlendMode::BM_TRANSLUCENT)
+						if (pMaterial->GetBaseMaterial()->GetBlendMode() == BlendMode::BM_TRANSLUCENT)
 							pNewRenderable = &scene.m_translucentObjects.PushBackDefault();
 						else
 							pNewRenderable = &scene.m_opaqueObjects.PushBackDefault();
 
 						pNewRenderable->m_pMesh = pMesh;
 						pNewRenderable->m_pMaterial = pMaterial;
-						pNewRenderable->m_worldTx = pStaticMesh->GetOwner()->GetTransform().GetWorldTx();
+						pNewRenderable->m_worldTx = pMeshComponent->GetOwner()->GetTransform().GetWorldTx();
 						pNewRenderable->m_pOwner = pGo;
 						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
-				}
+					}
 				else if (const Systems::SkyboxComponent* pSkybox = pComponent->Cast<Systems::SkyboxComponent>())
 				{
 					const Rendering::Mesh* pMesh = nullptr;
