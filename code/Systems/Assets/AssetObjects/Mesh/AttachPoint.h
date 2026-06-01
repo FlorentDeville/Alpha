@@ -20,13 +20,15 @@ namespace Systems
 		AttachPoint() = default;
 		~AttachPoint() = default;
 
+		const std::string& GetName() const;
+
 	private:
-		Core::Sqt m_location;
+		Core::Sqt m_locator;
 		std::string m_name;
 		Core::Sid m_nameSid;
 
 		START_REFLECTION(Systems::AttachPoint)
-			ADD_FIELD(m_location)
+			ADD_FIELD(m_locator)
 			ADD_FIELD(m_name)
 			ADD_FIELD_ATTR(m_nameSid, Core::ReadOnly)
 		END_REFLECTION()

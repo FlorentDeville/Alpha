@@ -6,4 +6,8 @@
 
 namespace Systems
 {
+	const std::string& AttachPoint::GetName() const
+	{
+		return m_name;
+	}
 }
