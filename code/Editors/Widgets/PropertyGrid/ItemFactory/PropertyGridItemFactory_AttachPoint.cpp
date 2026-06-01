@@ -4,6 +4,7 @@
 
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_AttachPoint.h"
 
+#include "Editors/Widgets/PropertyGrid/Items/ArrayElementHeaderItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/SqtItem.h"
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
@@ -40,6 +41,17 @@ namespace Editors
 		if (!pAttachPoint)
 			return;
 
+		//add array item header
+		PropertyGridPopulator::ParentItemContextScope* pJanitor = nullptr;
+		if (pField->GetType()->IsContainer())
+		{
+			ArrayElementHeaderItem* pHeader = new ArrayElementHeaderItem(pObj, pField, index);
+			m_pPopulator->AddPropertyGridItem(pHeader);
+
+			//not great but it works
+			pJanitor = new PropertyGridPopulator::ParentItemContextScope(pHeader, m_pPopulator);
+		}
+
 		//add item for the locator
 		SqtItem* pSqtItem = new SqtItem(pAttachPoint, pAttachPointType->FindField("m_locator"), 0);
 		m_pPopulator->AddPropertyGridItem(pSqtItem);
@@ -52,5 +64,8 @@ namespace Editors
 			});
 
 		m_pPopulator->AddPropertyGridItem(pStringItem);
+
+		if (pJanitor)
+			delete pJanitor;
 	}
 }
