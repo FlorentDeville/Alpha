@@ -10,4 +10,9 @@ namespace Systems
 	{
 		return m_name;
 	}
+
+	void AttachPoint::UpdateNameSid()
+	{
+		m_nameSid = Core::MakeSid(m_name);
+	}
 }

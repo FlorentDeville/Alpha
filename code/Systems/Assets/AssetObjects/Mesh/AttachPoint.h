@@ -22,6 +22,8 @@ namespace Systems
 
 		const std::string& GetName() const;
 
+		void UpdateNameSid();
+
 	private:
 		Core::Sqt m_locator;
 		std::string m_name;
