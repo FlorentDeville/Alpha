@@ -46,6 +46,11 @@ namespace Editors
 		
 		//add item for the name with logic to change the name sid
 		StringItem* pStringItem = new StringItem(pAttachPoint, pAttachPointType->FindField("m_name"), 0);
+		pStringItem->OnValueUpdated([pAttachPoint](const void* pValue)
+			{
+				pAttachPoint->UpdateNameSid();
+			});
+
 		m_pPopulator->AddPropertyGridItem(pStringItem);
 	}
 }
