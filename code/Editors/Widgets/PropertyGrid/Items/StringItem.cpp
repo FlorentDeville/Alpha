@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 
@@ -12,8 +12,9 @@
 
 namespace Editors
 {
-	StringItem::StringItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index)
+	StringItem::StringItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index)
 		: PropertyGridItem(pObj, pField, index)
+		, m_pTextbox(nullptr)
 	{ }
 
 	StringItem::~StringItem()

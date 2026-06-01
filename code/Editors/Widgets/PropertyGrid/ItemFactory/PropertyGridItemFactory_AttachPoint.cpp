@@ -5,12 +5,11 @@
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_AttachPoint.h"
 
 #include "Editors/Widgets/PropertyGrid/Items/SqtItem.h"
+#include "Editors/Widgets/PropertyGrid/Items/StringItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridItem.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/AttachPoint.h"
-
-#include "Widgets/TextBox.h"
 
 namespace Editors
 {
@@ -46,9 +45,7 @@ namespace Editors
 		m_pPopulator->AddPropertyGridItem(pSqtItem);
 		
 		//add item for the name with logic to change the name sid
-		Widgets::TextBox* pNameTextbox = new Widgets::TextBox();
-		pNameTextbox->SetText(pAttachPoint->GetName());
-		PropertyGridItem* pNameItem = new PropertyGridItem("name", pNameTextbox);
-		m_pPopulator->AddPropertyGridItem(pNameItem);
+		StringItem* pStringItem = new StringItem(pAttachPoint, pAttachPointType->FindField("m_name"), 0);
+		m_pPopulator->AddPropertyGridItem(pStringItem);
 	}
 }
