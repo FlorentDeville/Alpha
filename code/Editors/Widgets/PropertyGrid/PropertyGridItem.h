@@ -1,9 +1,10 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
+#include "Core/Callbacks/CallbackMacro.h"
 #include "Core/Reflection/FieldDescriptor.h"
 
 #include <string>
@@ -50,6 +51,8 @@ namespace Editors
 		template<typename T> const T* GetDataPtr() const;
 
 		uint32_t GetIndex() const;
+
+		EVENT_DECL(ValueUpdated, void(const void*))
 
 	protected:
 
