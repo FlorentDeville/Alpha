@@ -58,39 +58,34 @@ namespace Editors
 
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
-		constexpr float SCALE_LENGTH = 2;
-		constexpr float SCALE_DIAMETER = 0.5;
+		constexpr float SCALE_LENGTH = 1;
+		constexpr float SCALE_DIAMETER = 0.15f;
 		constexpr float HALF_SCALE_LENGTH = SCALE_LENGTH * 0.5f;
 		Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(SCALE_DIAMETER, SCALE_LENGTH, SCALE_DIAMETER);
 
 		//x axis
 		{
-			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(HALF_SCALE_LENGTH, 0, 0);
-
 			//rotate everything 90 degres around z axis
 			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
 
 			Core::Float4 red(1, 0, 0, 1);
-			renderer.RenderPrimitiveCylinder(scale * rotation * translation * wvp, red, false);
+			renderer.RenderPrimitiveCylinder(scale * rotation * wvp, red, false);
 		}
 
 		//y axis
 		{
-			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, HALF_SCALE_LENGTH, 0);
 			Core::Float4 green(0, 1, 0, 1);
 
-			renderer.RenderPrimitiveCylinder(scale * translation * wvp, green, false);
+			renderer.RenderPrimitiveCylinder(scale * wvp, green, false);
 		}
 
 		//z axis
 		{
-			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, 0, HALF_SCALE_LENGTH);
-
 			//rotate everything 90 degres around z axis
 			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
 
 			Core::Float4 blue(0, 0, 1, 1);
-			renderer.RenderPrimitiveCylinder(scale * rotation * translation * wvp, blue, false);
+			renderer.RenderPrimitiveCylinder(scale * rotation * wvp, blue, false);
 		}
 	}
 
