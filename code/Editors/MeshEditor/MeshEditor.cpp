@@ -12,6 +12,7 @@
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_AttachPoint.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -139,9 +140,10 @@ namespace Editors
 		//create property grid
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
 		pRightSideSplit->AddBottomPanel(pPropertyGrid);
-
+		
 		m_pPopulator = new PropertyGridPopulator();
 		m_pPopulator->Init(pPropertyGrid);
+		m_pPopulator->RegisterItemFactory(Core::TypeResolver<Systems::AttachPoint>::GetTypenameSid(), new PropertyGridItemFactory_AttachPoint());
 
 		//split the left panel to, top for the list of meshes, bottom for the logs and materials
 		Widgets::SplitHorizontal* pLeftPanelSplit = new Widgets::SplitHorizontal();
