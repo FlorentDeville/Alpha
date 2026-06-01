@@ -434,7 +434,10 @@ namespace Editors
 	void MeshEditor::Viewport_OnPreRender()
 	{
 		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
-		Core::Mat44f view = Core::Mat44f::CreateView(m_cameraPosition, m_cameraTarget - m_cameraPosition, Core::Vec4f(0, 1, 0, 0));
+		Core::Vec4f dir = m_cameraTarget - m_cameraPosition;
+		dir.Normalize();
+		const float CAMERA_DISTANCE = 10;
+		Core::Mat44f view = Core::Mat44f::CreateView(dir * -CAMERA_DISTANCE, dir, Core::Vec4f(0, 1, 0, 0));
 		Core::Mat44f proj = Core::Mat44f::CreatePerspective(45 * Core::PI_OVER_180, m_pWorldAxisRTRatio, 0.1f, 1000);
 		Core::Mat44f viewProj = view * proj;
 
