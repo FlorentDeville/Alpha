@@ -11,6 +11,11 @@ namespace Systems
 		return m_name;
 	}
 
+	const Core::Sqt& AttachPoint::GetLocator() const
+	{
+		return m_locator;
+	}
+
 	void AttachPoint::UpdateNameSid()
 	{
 		m_nameSid = Core::MakeSid(m_name);

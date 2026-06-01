@@ -21,6 +21,7 @@ namespace Systems
 		~AttachPoint() = default;
 
 		const std::string& GetName() const;
+		const Core::Sqt& GetLocator() const;
 
 		void UpdateNameSid();
 

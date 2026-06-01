@@ -33,6 +33,8 @@ namespace Systems
 		//Invert V coordinate in uv during mesh import.
 		bool ImportUvMirrorVertical() const;
 
+		const Core::Array<AttachPoint>& GetAttachPoints() const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
