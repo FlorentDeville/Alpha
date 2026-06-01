@@ -52,6 +52,48 @@
 
 namespace Editors
 {
+	static void RenderAttachPoint(const Core::Mat44f& tx, const Core::Mat44f& viewProj)
+	{
+		Core::Mat44f wvp = tx * viewProj;
+
+		Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
+
+		constexpr float SCALE_LENGTH = 2;
+		constexpr float SCALE_DIAMETER = 0.5;
+		constexpr float HALF_SCALE_LENGTH = SCALE_LENGTH * 0.5f;
+		Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(SCALE_DIAMETER, SCALE_LENGTH, SCALE_DIAMETER);
+
+		//x axis
+		{
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(HALF_SCALE_LENGTH, 0, 0);
+
+			//rotate everything 90 degres around z axis
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationZ(-Core::PI_OVER_TWO);
+
+			Core::Float4 red(1, 0, 0, 1);
+			renderer.RenderPrimitiveCylinder(scale * rotation * translation * wvp, red, false);
+		}
+
+		//y axis
+		{
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, HALF_SCALE_LENGTH, 0);
+			Core::Float4 green(0, 1, 0, 1);
+
+			renderer.RenderPrimitiveCylinder(scale * translation * wvp, green, false);
+		}
+
+		//z axis
+		{
+			Core::Mat44f translation = Core::Mat44f::CreateTranslationMatrix(0, 0, HALF_SCALE_LENGTH);
+
+			//rotate everything 90 degres around z axis
+			Core::Mat44f rotation = Core::Mat44f::CreateRotationX(Core::PI_OVER_TWO);
+
+			Core::Float4 blue(0, 0, 1, 1);
+			renderer.RenderPrimitiveCylinder(scale * rotation * translation * wvp, blue, false);
+		}
+	}
+
 	MaterialEntry::MaterialEntry()
 		: m_Id()
 	{}
@@ -405,7 +447,8 @@ namespace Editors
 
 		if (m_pSelectedMesh)
 		{
-			Core::Mat44f mvpMatrix = world * m_cameraView * proj;
+			Core::Mat44f viewProj = m_cameraView * proj;
+			Core::Mat44f mvpMatrix = world * viewProj;
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
 
@@ -425,6 +468,13 @@ namespace Editors
 
 				const Rendering::Mesh* pMesh = m_pSelectedMesh->GetRenderingMesh();
 				renderer.RenderMesh(*pMesh);
+			}
+
+			//render the attach points
+			for (const Systems::AttachPoint& attachPoint : m_pSelectedMesh->GetAttachPoints())
+			{
+				const Core::Sqt& sqt = attachPoint.GetLocator();
+				RenderAttachPoint(sqt.GetMatrix(), viewProj);
 			}
 		}
 
