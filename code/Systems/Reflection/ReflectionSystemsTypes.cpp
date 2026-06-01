@@ -11,6 +11,7 @@
 #include "Systems/Assets/AssetObjects/Material/MaterialParameterDescription.h"
 #include "Systems/Assets/AssetObjects/Material/TextureBindingInfo.h"
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/AttachPoint.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEmitter.h"
@@ -65,6 +66,7 @@ namespace Systems
 		Systems::Texture2DAsset::RegisterReflection();
 		Systems::LevelAsset::RegisterReflection();
 		Systems::MaterialAsset::RegisterReflection();
+		Systems::AttachPoint::RegisterReflection();
 		Systems::MeshAsset::RegisterReflection();
 		Systems::MaterialParameterDescription::RegisterReflection();
 		Systems::MaterialCBufferBindingInfo::RegisterReflection();
