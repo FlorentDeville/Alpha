@@ -150,4 +150,9 @@ namespace Systems
 
 		m_isDirty = false;
 	}
+
+	void TransformComponent::SetIsDirty()
+	{
+		m_isDirty = true;
+	}
 }

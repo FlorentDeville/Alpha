@@ -52,7 +52,8 @@ namespace Editors
 
 		uint32_t GetIndex() const;
 
-		EVENT_DECL(ValueUpdated, void(const void*))
+		EVENT_DECL(BeforeValueUpdated, void(const void*))
+		EVENT_DECL(AfterValueUpdated, void(const void*))
 
 	protected:
 
