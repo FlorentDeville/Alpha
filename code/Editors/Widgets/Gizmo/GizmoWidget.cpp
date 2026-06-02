@@ -11,7 +11,7 @@
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
-#include "Editors/Widgets/Gizmo/GizmoModel.h"
+#include "Editors/Widgets/Gizmo/IGizmoModel.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -121,7 +121,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::SetModel(GizmoModel* pModel)
+	void GizmoWidget::SetModel(IGizmoModel* pModel)
 	{
 		if (m_pModel == pModel)
 			return;
@@ -134,7 +134,7 @@ namespace Editors
 		if (!pModel)
 			return;
 
-		pModel->OnNodeChanged([this](const Core::Guid& nodeGuid) { OnNodeChanged_Model(); });
+		pModel->OnTargetChanged([this]() { OnNodeChanged_Model(); });
 		m_sqt = pModel->GetTransform();
 	}
 

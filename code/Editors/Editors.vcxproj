@@ -53,8 +53,9 @@
     <ClInclude Include="Widgets\Dialog\TableDialog.h" />
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoAxis.h" />
-    <ClInclude Include="Widgets\Gizmo\GizmoModel.h" />
+    <ClInclude Include="Widgets\Gizmo\GizmoModelGameObject.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoWidget.h" />
+    <ClInclude Include="Widgets\Gizmo\IGizmoModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_AttachPoint.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
@@ -124,7 +125,7 @@
     <ClCompile Include="Widgets\Dialog\TableDialog.cpp" />
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp" />
     <ClCompile Include="Widgets\Gizmo\GizmoAxis.cpp" />
-    <ClCompile Include="Widgets\Gizmo\GizmoModel.cpp" />
+    <ClCompile Include="Widgets\Gizmo\GizmoModelGameObject.cpp" />
     <ClCompile Include="Widgets\Gizmo\GizmoWidget.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_AttachPoint.cpp" />

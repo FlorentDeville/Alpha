@@ -2,7 +2,7 @@
 /* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/Widgets/Gizmo/GizmoModel.h"
+#include "Editors/Widgets/Gizmo/GizmoModelGameObject.h"
 
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
@@ -14,19 +14,19 @@
 
 namespace Editors
 {
-	GizmoModel::GizmoModel()
-		: m_pGo(nullptr)
-		, m_onNodeChangedEvent()
+	GizmoModelGameObject::GizmoModelGameObject()
+		: IGizmoModel()
+		, m_pGo(nullptr)
 		, m_cidOnTransformChanged()
 	{ }
 
-	GizmoModel::~GizmoModel()
+	GizmoModelGameObject::~GizmoModelGameObject()
 	{
 		if (m_cidOnTransformChanged.IsValid())
 			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
 	}
 
-	void GizmoModel::SetGameObject(Systems::GameObject* pGo)
+	void GizmoModelGameObject::SetGameObject(Systems::GameObject* pGo)
 	{
 		if (m_pGo == pGo)
 			return;
@@ -42,26 +42,19 @@ namespace Editors
 			guid = pGo->GetGuid();
 			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
 				{
-					//I need to compute manually the world transform here cause the Update didn't run yet.
-					m_pGo->GetTransform().ComputeWorldTx();
-					m_onNodeChangedEvent(m_pGo->GetGuid());
+					m_onTargetChanged();
 				});
 		}
 
-		m_onNodeChangedEvent(guid);
+		m_onTargetChanged();
 	}
 
-	bool GizmoModel::ShouldRender()
+	bool GizmoModelGameObject::ShouldRender()
 	{
 		return m_pGo != nullptr;
 	}
 
-	Core::CallbackId GizmoModel::OnNodeChanged(const OnNodeChangedEvent::Callback& callback)
-	{
-		return m_onNodeChangedEvent.Connect(callback);
-	}
-
-	const Core::Mat44f GizmoModel::GetTransform() const
+	const Core::Mat44f GizmoModelGameObject::GetTransform() const
 	{
 		if (!m_pGo)
 			return Core::Mat44f::s_identity;
@@ -79,7 +72,7 @@ namespace Editors
 		return txWs;
 	}
 
-	void GizmoModel::Translate(const Core::Vec4f& worldPos)
+	void GizmoModelGameObject::Translate(const Core::Vec4f& worldPos)
 	{
 		if (!m_pGo)
 			return;
@@ -98,7 +91,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::Rotate(const Core::Mat44f& rotation)
+	void GizmoModelGameObject::Rotate(const Core::Mat44f& rotation)
 	{
 		if (!m_pGo)
 			return;
@@ -122,7 +115,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::IncrementScale(const Core::Vec4f& scale)
+	void GizmoModelGameObject::IncrementScale(const Core::Vec4f& scale)
 	{
 		if (!m_pGo)
 			return;
@@ -146,7 +139,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::SendSignalToObjectWatcher()
+	void GizmoModelGameObject::SendSignalToObjectWatcher()
 	{
 		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
 		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
