@@ -42,7 +42,7 @@ namespace Editors
 
 		//add item for the locator
 		SqtItem* pSqtItem = new SqtItem(pTransform, pType->FindField("m_localSqt"), 0);
-		pSqtItem->OnValueUpdated([pTransform](const void*) { pTransform->SetIsDirty(); });
+		pSqtItem->OnBeforeValueUpdated([pTransform](const void*) { pTransform->SetIsDirty(); });
 		m_pPopulator->AddPropertyGridItem(pSqtItem);
 	}
 }
