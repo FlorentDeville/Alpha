@@ -52,6 +52,8 @@ namespace Systems
 
 		void ComputeWorldTx() const;
 
+		void SetIsDirty();
+
 	private:
 		Core::Sqt m_localSqt;
 

@@ -65,6 +65,7 @@ namespace Editors
 						t.Set(ii, newValue);
 						copy.SetTranslation(t);
 
+						m_onValueUpdated(&copy);
 						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, ObjectWatcher::SET_FIELD, m_index, &copy);
 					});
 				pRowLayout->AddWidget(m_pTranslationTextbox[ii]);
@@ -106,6 +107,7 @@ namespace Editors
 						eulerAngles.Set(ii, radian);
 						copy.SetRotationQuaternion(Core::Quaternion::FromEulerAngles(eulerAngles));
 
+						m_onValueUpdated(&copy);
 						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, ObjectWatcher::SET_FIELD, m_index, &copy);
 					});
 				pRowLayout->AddWidget(m_pRotationTextbox[ii]);
@@ -139,6 +141,7 @@ namespace Editors
 						s.Set(ii, newValue);
 						copy.SetScale(s);
 
+						m_onValueUpdated(&copy);
 						ObjectWatcher::Get().ModifyField(m_pObj, m_pField, ObjectWatcher::SET_FIELD, m_index, &copy);
 					});
 				pRowLayout->AddWidget(m_pScaleTextbox[ii]);
