@@ -14,19 +14,19 @@
 
 namespace Editors
 {
-	GizmoModel::GizmoModel()
+	GizmoModelGameObject::GizmoModelGameObject()
 		: IGizmoModel()
 		, m_pGo(nullptr)
 		, m_cidOnTransformChanged()
 	{ }
 
-	GizmoModel::~GizmoModel()
+	GizmoModelGameObject::~GizmoModelGameObject()
 	{
 		if (m_cidOnTransformChanged.IsValid())
 			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
 	}
 
-	void GizmoModel::SetGameObject(Systems::GameObject* pGo)
+	void GizmoModelGameObject::SetGameObject(Systems::GameObject* pGo)
 	{
 		if (m_pGo == pGo)
 			return;
@@ -49,12 +49,12 @@ namespace Editors
 		m_onTargetChanged();
 	}
 
-	bool GizmoModel::ShouldRender()
+	bool GizmoModelGameObject::ShouldRender()
 	{
 		return m_pGo != nullptr;
 	}
 
-	const Core::Mat44f GizmoModel::GetTransform() const
+	const Core::Mat44f GizmoModelGameObject::GetTransform() const
 	{
 		if (!m_pGo)
 			return Core::Mat44f::s_identity;
@@ -72,7 +72,7 @@ namespace Editors
 		return txWs;
 	}
 
-	void GizmoModel::Translate(const Core::Vec4f& worldPos)
+	void GizmoModelGameObject::Translate(const Core::Vec4f& worldPos)
 	{
 		if (!m_pGo)
 			return;
@@ -91,7 +91,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::Rotate(const Core::Mat44f& rotation)
+	void GizmoModelGameObject::Rotate(const Core::Mat44f& rotation)
 	{
 		if (!m_pGo)
 			return;
@@ -115,7 +115,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::IncrementScale(const Core::Vec4f& scale)
+	void GizmoModelGameObject::IncrementScale(const Core::Vec4f& scale)
 	{
 		if (!m_pGo)
 			return;
@@ -139,7 +139,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModel::SendSignalToObjectWatcher()
+	void GizmoModelGameObject::SendSignalToObjectWatcher()
 	{
 		Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
 		Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];

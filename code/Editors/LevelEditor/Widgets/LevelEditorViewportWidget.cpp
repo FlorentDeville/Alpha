@@ -70,7 +70,7 @@ namespace Editors
 		Core::Vec4f cameraEulerAngle(Core::PI * 0.25f, 0, 0, 0);
 		m_pCamera->SetTransform(cameraPosition, cameraEulerAngle);
 
-		m_pGizmoModel = new GizmoModel();
+		m_pGizmoModel = new GizmoModelGameObject();
 		m_pGizmoWidget = new GizmoWidget();
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
@@ -234,7 +234,7 @@ namespace Editors
 		return m_pGizmoWidget;
 	}
 
-	GizmoModel* LevelEditorViewportWidget::GetGizmoModel()
+	GizmoModelGameObject* LevelEditorViewportWidget::GetGizmoModel()
 	{
 		return m_pGizmoModel;
 	}

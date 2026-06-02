@@ -21,11 +21,11 @@ namespace Systems
 
 namespace Editors
 {
-	class GizmoModel : public IGizmoModel
+	class GizmoModelGameObject : public IGizmoModel
 	{
 	public:
-		GizmoModel();
-		~GizmoModel();
+		GizmoModelGameObject();
+		~GizmoModelGameObject();
 
 		void SetGameObject(Systems::GameObject* pGo);
 
