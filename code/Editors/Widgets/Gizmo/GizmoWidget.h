@@ -22,7 +22,7 @@ namespace Core
 
 namespace Editors
 {
-	class GizmoModel;
+	class IGizmoModel;
 	class Node;
 
 	class GizmoWidget
@@ -52,7 +52,7 @@ namespace Editors
 		void Update(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
 		void Render(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov);
 
-		void SetModel(GizmoModel* pModel);
+		void SetModel(IGizmoModel* pModel);
 
 		void SetManipulatorMode(ManipulatorMode mode);
 
@@ -102,7 +102,7 @@ namespace Editors
 
 		InternalState m_internalState;
 
-		GizmoModel* m_pModel;
+		IGizmoModel* m_pModel;
 
 		Core::Sqt m_sqt;
 

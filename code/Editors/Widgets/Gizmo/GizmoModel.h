@@ -4,9 +4,8 @@
 
 #pragma once
 
-#include "Core/Callbacks/CallbackList.h"
-
 #include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
+#include "Editors/Widgets/Gizmo/IGizmoModel.h"
 
 namespace Core
 {
@@ -22,7 +21,7 @@ namespace Systems
 
 namespace Editors
 {
-	class GizmoModel
+	class GizmoModel : public IGizmoModel
 	{
 	public:
 		GizmoModel();
@@ -30,29 +29,15 @@ namespace Editors
 
 		void SetGameObject(Systems::GameObject* pGo);
 
-		bool ShouldRender();
-
-		using OnNodeChangedEvent = Core::CallbackList<void(const Core::Guid& nodeGuid)>;
-
-		Core::CallbackId OnNodeChanged(const OnNodeChangedEvent::Callback& callback);
-
-		//Function called by the gizmo to be placed in the correct location/orientation. Typically doesn't contain the scale.
-		virtual const Core::Mat44f GetTransform() const;
-
-		//The gizmo sends the new world position
-		virtual void Translate(const Core::Vec4f& worldPos);
-
-		//The gizmo sends the new rotation to apply
-		virtual void Rotate(const Core::Mat44f& rotation);
-
-		//Increment the local transform scale by the value passed in parameter
-		virtual void IncrementScale(const Core::Vec4f& scale);
+		//Base function 
+		bool ShouldRender() override;
+		const Core::Mat44f GetTransform() const override;
+		void Translate(const Core::Vec4f& worldPos) override;
+		virtual void Rotate(const Core::Mat44f& rotation) override;
+		virtual void IncrementScale(const Core::Vec4f& scale) override;
 
 	private:
 		Systems::GameObject* m_pGo;
-
-		//Event called when the game object tracked by the gizmo has changed. Typically when the selected game object has changed.
-		OnNodeChangedEvent m_onNodeChangedEvent;
 
 		//Callback attached to the object watcher transform
 		ObjectWatcherCallbackId m_cidOnTransformChanged;

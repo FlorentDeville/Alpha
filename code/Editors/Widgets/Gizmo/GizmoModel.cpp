@@ -15,8 +15,8 @@
 namespace Editors
 {
 	GizmoModel::GizmoModel()
-		: m_pGo(nullptr)
-		, m_onNodeChangedEvent()
+		: IGizmoModel()
+		, m_pGo(nullptr)
 		, m_cidOnTransformChanged()
 	{ }
 
@@ -44,21 +44,16 @@ namespace Editors
 				{
 					//I need to compute manually the world transform here cause the Update didn't run yet.
 					m_pGo->GetTransform().ComputeWorldTx();
-					m_onNodeChangedEvent(m_pGo->GetGuid());
+					m_onTargetChanged();
 				});
 		}
 
-		m_onNodeChangedEvent(guid);
+		m_onTargetChanged();
 	}
 
 	bool GizmoModel::ShouldRender()
 	{
 		return m_pGo != nullptr;
-	}
-
-	Core::CallbackId GizmoModel::OnNodeChanged(const OnNodeChangedEvent::Callback& callback)
-	{
-		return m_onNodeChangedEvent.Connect(callback);
 	}
 
 	const Core::Mat44f GizmoModel::GetTransform() const
