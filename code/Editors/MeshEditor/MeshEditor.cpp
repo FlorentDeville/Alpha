@@ -473,13 +473,15 @@ namespace Editors
 
 			if (m_pSelectedMesh && inputs.IsMouseLeftButtonDown())
 			{
+				m_selectedAttachPoint = UINT32_MAX;
+				m_pGizmoModel->SetSqt(nullptr);
+
 				Core::Vec4f rayDirection = mouse3dPosition - m_cameraPosition;
 				rayDirection.Normalize();
 				Core::Ray ray(m_cameraPosition, rayDirection);
 
 				Core::Array<Systems::AttachPoint>& attachPointList = m_pSelectedMesh->GetAttachPoints();
 				for(uint32_t ii = 0; ii < attachPointList.GetSize(); ++ii)
-				//for (const Systems::AttachPoint& attachPoint : m_pSelectedMesh->GetAttachPoints())
 				{
 					Systems::AttachPoint& attachPoint = attachPointList[ii];
 
