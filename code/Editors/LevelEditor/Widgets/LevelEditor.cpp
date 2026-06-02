@@ -13,14 +13,14 @@
 #include "Editors/LevelEditor/SceneTreeModel.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
-#include "Editors/LevelEditor/Widgets/GizmoModel.h"
-#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/EditorManager.h"
 #include "Editors/Widgets/Dialog/Model/ClassListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/TableDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/Gizmo/GizmoModel.h"
+#include "Editors/Widgets/Gizmo/GizmoWidget.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 

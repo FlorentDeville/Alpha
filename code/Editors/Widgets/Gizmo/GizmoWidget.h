@@ -7,7 +7,7 @@
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vectors.h"
 
-#include "Editors/LevelEditor/Widgets/GizmoAxis.h"
+#include "Editors/Widgets/Gizmo/GizmoAxis.h"
 
 #if defined(_DEBUG)
 //#define DEBUG_RAY
