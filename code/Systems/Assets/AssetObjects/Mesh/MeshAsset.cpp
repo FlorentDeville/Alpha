@@ -85,6 +85,11 @@ namespace Systems
 		return m_attachPoints;
 	}
 
+	Core::Array<AttachPoint>& MeshAsset::GetAttachPoints()
+	{
+		return m_attachPoints;
+	}
+
 	const std::string& MeshAsset::GetAssetTypeName()
 	{
 		static std::string name = "Mesh";

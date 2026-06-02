@@ -34,6 +34,7 @@ namespace Systems
 		bool ImportUvMirrorVertical() const;
 
 		const Core::Array<AttachPoint>& GetAttachPoints() const;
+		Core::Array<AttachPoint>& GetAttachPoints();
 
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
