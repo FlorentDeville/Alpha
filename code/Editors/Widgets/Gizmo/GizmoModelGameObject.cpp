@@ -2,7 +2,7 @@
 /* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/Widgets/Gizmo/GizmoModel.h"
+#include "Editors/Widgets/Gizmo/GizmoModelGameObject.h"
 
 #include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"

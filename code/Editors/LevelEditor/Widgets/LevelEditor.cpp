@@ -19,7 +19,7 @@
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/TableDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
-#include "Editors/Widgets/Gizmo/GizmoModel.h"
+#include "Editors/Widgets/Gizmo/GizmoModelGameObject.h"
 #include "Editors/Widgets/Gizmo/GizmoWidget.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_Transform.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"

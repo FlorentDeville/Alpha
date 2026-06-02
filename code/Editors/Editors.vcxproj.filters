@@ -225,7 +225,7 @@
     <ClInclude Include="Widgets\Gizmo\GizmoAxis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Widgets\Gizmo\GizmoModel.h">
+    <ClInclude Include="Widgets\Gizmo\GizmoModelGameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Widgets\Gizmo\GizmoWidget.h">
@@ -437,7 +437,7 @@
     <ClCompile Include="Widgets\Gizmo\GizmoAxis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\Gizmo\GizmoModel.cpp">
+    <ClCompile Include="Widgets\Gizmo\GizmoModelGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Widgets\Gizmo\GizmoWidget.cpp">
