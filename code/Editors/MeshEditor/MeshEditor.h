@@ -95,6 +95,8 @@ namespace Editors
 		static constexpr float FOV = 45.f;
 		static constexpr float FOV_RAD = FOV * Core::PI_OVER_180;
 
+		uint32_t m_selectedAttachPoint;
+
 		bool OnMaterialClicked(int entryIndex);
 
 		void OnClicked_File_Save();

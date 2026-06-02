@@ -5,7 +5,10 @@
 #include "Editors/MeshEditor/MeshEditor.h"
 
 #include "Core/Log/LogModule.h"
+#include "Core/Math/Aabb.h"
 #include "Core/Math/Constants.h"
+#include "Core/Math/Intersection.h"
+#include "Core/Math/Ray.h"
 
 #include "Editors/EditorParameter.h"
 #include "Editors/MeshEditor/MeshEditorModule.h"
@@ -113,6 +116,7 @@ namespace Editors
 		, m_pViewport(nullptr)
 		, m_pGizmo(nullptr)
 		, m_pGizmoModel(nullptr)
+		, m_selectedAttachPoint(UINT32_MAX)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
@@ -407,7 +411,7 @@ namespace Editors
 	void MeshEditor::Viewport_OnUpdate()
 	{
 		Inputs::InputMgr& inputs = Inputs::InputMgr::Get();
-		if (inputs.IsMouseLeftButtonDown())
+		if (inputs.IsMouseRightButtonDown())
 		{
 			Core::Int2 mousePosition = inputs.GetMousePosition();
 			if (m_firstFrameMouseDown)
@@ -463,7 +467,34 @@ namespace Editors
 				clampedMousePos.y = mouseAbsPos.y;
 
 			Core::Vec4f mouse3dPosition = m_pViewport->Compute3dPosition(clampedMousePos, m_cameraView, m_cameraProj);
+			
 			m_pGizmo->Update(mouse3dPosition, m_cameraPosition, FOV_RAD);
+
+
+			if (m_pSelectedMesh && inputs.IsMouseLeftButtonDown())
+			{
+				Core::Vec4f rayDirection = mouse3dPosition - m_cameraPosition;
+				rayDirection.Normalize();
+				Core::Ray ray(m_cameraPosition, rayDirection);
+
+				Core::Array<Systems::AttachPoint>& attachPointList = m_pSelectedMesh->GetAttachPoints();
+				for(uint32_t ii = 0; ii < attachPointList.GetSize(); ++ii)
+				//for (const Systems::AttachPoint& attachPoint : m_pSelectedMesh->GetAttachPoints())
+				{
+					Systems::AttachPoint& attachPoint = attachPointList[ii];
+
+					Core::Aabb box(attachPoint.GetLocator().GetTranslation() - Core::Vec4f(1, 1, 1, 0),
+						attachPoint.GetLocator().GetTranslation() + Core::Vec4f(1, 1, 1, 0));
+					bool res = Core::Intersection::RayVsAabb(ray, box);
+					if (res && m_selectedAttachPoint != ii)
+					{
+						m_selectedAttachPoint = ii;
+						m_pGizmoModel->SetSqt(&attachPoint.GetLocator());
+						break;
+					}
+				}
+			}
+			
 		}
 	}
 
@@ -506,7 +537,7 @@ namespace Editors
 				RenderAttachPoint(sqt.GetMatrix(), viewProj);
 			}
 
-			//m_pGizmo->Render(viewProj, m_cameraPosition, FOV_RAD);
+			m_pGizmo->Render(viewProj, m_cameraPosition, FOV_RAD);
 		}
 
 		m_pViewport->EndScene();
@@ -568,6 +599,9 @@ namespace Editors
 
 	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 	{
+		m_selectedAttachPoint = UINT32_MAX;
+		m_pGizmoModel->SetSqt(nullptr);
+
 		if (selected.empty())
 		{
 			m_pPopulator->Populate(nullptr);
