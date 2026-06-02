@@ -231,7 +231,14 @@ namespace Editors
 				pMemberPtr = reinterpret_cast<char*>(*pCharPtr);
 			}
 
-			if (memberType->IsContainer())
+			if (PropertyGridItemFactory* pFactory = GetFactory(memberType->GetSid()))
+			{
+				ObjectWatcherCallbackId callbackId = ObjectWatcher::Get().AddWatcher(pMemberPtr,
+					[this](void* pObj, const Core::FieldDescriptor* pField, ObjectWatcher::OPERATION op, uint32_t index) { ObjectWatcherCallback(pObj, pField, op, index); });
+
+				pFactory->CreateItems(pData, pField, 0);
+			}
+			else if (memberType->IsContainer())
 			{
 				ArrayHeaderItem* pItem = new ArrayHeaderItem(reinterpret_cast<Systems::Object*>(pData), pField, -1, m_canAddElementToArray);
 				Internal_AddPropertyGridItem(pItem);
