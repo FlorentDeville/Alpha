@@ -21,6 +21,7 @@
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
 #include "Editors/Widgets/Gizmo/GizmoModel.h"
 #include "Editors/Widgets/Gizmo/GizmoWidget.h"
+#include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_Transform.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -266,6 +267,7 @@ namespace Editors
 
 		m_pPropertyGridPopulator = new PropertyGridPopulator();
 		m_pPropertyGridPopulator->Init(m_pPropertyGridWidget);
+		m_pPropertyGridPopulator->RegisterItemFactory(Core::TypeResolver<Systems::TransformComponent>::GetTypenameSid(), new PropertyGridItemFactory_Transform());
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
