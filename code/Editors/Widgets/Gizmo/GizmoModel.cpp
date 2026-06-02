@@ -42,8 +42,6 @@ namespace Editors
 			guid = pGo->GetGuid();
 			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
 				{
-					//I need to compute manually the world transform here cause the Update didn't run yet.
-					m_pGo->GetTransform().ComputeWorldTx();
 					m_onTargetChanged();
 				});
 		}
