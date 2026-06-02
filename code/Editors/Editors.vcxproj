@@ -55,6 +55,7 @@
     <ClInclude Include="Widgets\Gizmo\GizmoAxis.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoModel.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoWidget.h" />
+    <ClInclude Include="Widgets\Gizmo\IGizmoModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_AttachPoint.h" />
     <ClInclude Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_MaterialParameterDescription.h" />
