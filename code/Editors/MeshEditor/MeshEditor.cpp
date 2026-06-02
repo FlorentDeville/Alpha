@@ -12,6 +12,8 @@
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/Gizmo/GizmoModelSqt.h"
+#include "Editors/Widgets/Gizmo/GizmoWidget.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_AttachPoint.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
@@ -109,6 +111,8 @@ namespace Editors
 		, m_pWorldAxisRTRatio(0)
 		, m_pWorldAxisIcon(nullptr)
 		, m_pViewport(nullptr)
+		, m_pGizmo(nullptr)
+		, m_pGizmoModel(nullptr)
 	{
 		m_cameraEuler = Core::Vec4f(0, 0, 0, 1);
 		m_cameraTarget = Core::Vec4f(0, 0, 0, 1);
@@ -121,6 +125,9 @@ namespace Editors
 
 		delete m_pWorldAxisRenderTarget;
 		m_pWorldAxisRenderTarget = nullptr;
+
+		delete m_pGizmo;
+		m_pGizmo = nullptr;
 	}
 
 	void MeshEditor::CreateEditor(const EditorParameter& param)
@@ -261,7 +268,18 @@ namespace Editors
 		m_pWorldAxisIcon->SetTexture(m_pWorldAxisRenderTarget->GetColorTexture());
 		m_pViewport->AddWidget(m_pWorldAxisIcon);
 
+		//projection
+		float nearDistance = 0.1f;
+		m_cameraProj = Core::Mat44f::CreatePerspective(FOV_RAD, m_aspectRatio, nearDistance, 1000.f);
+
 		ComputeCameraPositionAndView();
+
+		//gizmo
+		m_pGizmoModel = new GizmoModelSqt();
+
+		m_pGizmo = new GizmoWidget();
+		m_pGizmo->SetEnable(true);
+		m_pGizmo->SetModel(m_pGizmoModel);
 
 		MeshEditorModule& meshModule = MeshEditorModule::Get();
 		meshModule.OnMeshCreated([this](const Systems::AssetMetadata& metadata) { Module_OnMeshCreated(metadata); });
@@ -424,6 +442,29 @@ namespace Editors
 			m_cameraDistance = MIN_DISTANCE;
 
 		ComputeCameraPositionAndView();
+
+		{
+			Core::Int2 mouseAbsPos = Inputs::InputMgr::Get().GetMousePosition();
+
+			//clamp mouse abs position to the viewport
+			Core::UInt2 clampedMousePos;
+			if (mouseAbsPos.x < m_pViewport->GetScreenX())
+				clampedMousePos.x = m_pViewport->GetScreenX();
+			else if (mouseAbsPos.x > static_cast<int32_t>(m_pViewport->GetScreenX() + m_pViewport->GetWidth()))
+				clampedMousePos.x = m_pViewport->GetScreenX() + m_pViewport->GetWidth();
+			else
+				clampedMousePos.x = mouseAbsPos.x;
+
+			if (mouseAbsPos.y < m_pViewport->GetScreenY())
+				clampedMousePos.y = m_pViewport->GetScreenY();
+			else if (mouseAbsPos.y > static_cast<int32_t>(m_pViewport->GetScreenY() + m_pViewport->GetHeight()))
+				clampedMousePos.y = m_pViewport->GetScreenY() + m_pViewport->GetHeight();
+			else
+				clampedMousePos.y = mouseAbsPos.y;
+
+			Core::Vec4f mouse3dPosition = m_pViewport->Compute3dPosition(clampedMousePos, m_cameraView, m_cameraProj);
+			m_pGizmo->Update(mouse3dPosition, m_cameraPosition, FOV_RAD);
+		}
 	}
 
 	void MeshEditor::Viewport_OnRender()
@@ -433,16 +474,9 @@ namespace Editors
 		//world
 		Core::Mat44f world = Core::Mat44f::CreateIdentity();
 
-		//projection
-		constexpr float fov = 45.f;
-		constexpr float fovRad = fov * Core::PI_OVER_180;
-		float nearDistance = 0.1f;
-
-		Core::Mat44f proj = Core::Mat44f::CreatePerspective(fovRad, m_aspectRatio, nearDistance, 1000.f);
-
 		if (m_pSelectedMesh)
 		{
-			Core::Mat44f viewProj = m_cameraView * proj;
+			Core::Mat44f viewProj = m_cameraView * m_cameraProj;
 			Core::Mat44f mvpMatrix = world * viewProj;
 
 			Rendering::RenderModule& renderer = Rendering::RenderModule::Get();
@@ -454,7 +488,7 @@ namespace Editors
 				perObjectData.m_world = Core::Mat44f(world);
 
 				Core::Float3 cameraPosFloat3(m_cameraPosition.GetX(), m_cameraPosition.GetY(), m_cameraPosition.GetZ());
-				Rendering::PerFrameCBuffer perFrameData(m_cameraView, proj, cameraPosFloat3, Systems::Clock::Get().GetApplicationTime());
+				Rendering::PerFrameCBuffer perFrameData(m_cameraView, m_cameraProj, cameraPosFloat3, Systems::Clock::Get().GetApplicationTime());
 
 				Rendering::LightsArrayCBuffer lights;
 				lights.AddLight()->MakeDirectionalLight(Core::Float3(0, -1, 0), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1), Core::Float3(1, 1, 1));
@@ -471,6 +505,8 @@ namespace Editors
 				const Core::Sqt& sqt = attachPoint.GetLocator();
 				RenderAttachPoint(sqt.GetMatrix(), viewProj);
 			}
+
+			//m_pGizmo->Render(viewProj, m_cameraPosition, FOV_RAD);
 		}
 
 		m_pViewport->EndScene();
