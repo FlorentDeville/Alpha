@@ -142,7 +142,7 @@ namespace Editors
 		Core::Vec4f mouseWs = Compute3dPosition(clampedMousePos, m_pCamera->GetView(), m_pCamera->GetProjection());
 
 		m_pCamera->Update(dtInSeconds);
-		m_pGizmoWidget->Update(mouseWs);
+		m_pGizmoWidget->Update(mouseWs, m_pCamera->GetPosition(), m_pCamera->GetFov());
 
 		Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 	
@@ -275,7 +275,7 @@ namespace Editors
 		m_pRenderPassBase->ClearDepthBuffer();
 
 		Core::Mat44f viewProj = m_pCamera->GetView() * m_pCamera->GetProjection();
-		m_pGizmoWidget->Render(viewProj);
+		m_pGizmoWidget->Render(viewProj, m_pCamera->GetPosition(), m_pCamera->GetFov());
 
 		m_pRenderPassBase->PostRender(scene);
 

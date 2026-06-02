@@ -49,8 +49,8 @@ namespace Editors
 		GizmoWidget();
 		~GizmoWidget();
 
-		void Update(const Core::Vec4f& mouse3dPosition);
-		void Render(const Core::Mat44f& viewProj);
+		void Update(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
+		void Render(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov);
 
 		void SetModel(GizmoModel* pModel);
 
@@ -75,26 +75,26 @@ namespace Editors
 		void SetSnapDistanceScale(float distance);
 
 	private:
-		void UpdateState_Idle(const Core::Vec4f& mouse3dPosition);
-		void UpdateState_Moving(const Core::Vec4f& mouse3dPosition);
+		void UpdateState_Idle(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
+		void UpdateState_Moving(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition);
 
-		void UpdateMouseHover(const Core::Vec4f& mouse3dPosition);
-		void UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition);
-		void UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition);
-		void UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition);
+		void UpdateMouseHover(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
+		void UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
+		void UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
+		void UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov);
 
-		void UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition);
-		void UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition);
-		void UpdateState_Moving_Scale(const Core::Vec4f& mouse3dPosition);
+		void UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition);
+		void UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition);
+		void UpdateState_Moving_Scale(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition);
 
-		void RenderRotationManipulator(const Core::Mat44f& viewProj);
-		void RenderTranslationManipulator(const Core::Mat44f& viewProj);
-		void RenderScaleManipulator(const Core::Mat44f& viewProj);
+		void RenderRotationManipulator(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov);
+		void RenderTranslationManipulator(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov);
+		void RenderScaleManipulator(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov);
 
-		void RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color);
-		void RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color) const;
+		void RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color, const Core::Vec4f& cameraPosition, float fov);
+		void RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color, const Core::Vec4f& cameraPosition, float fov) const;
 
-		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const;
+		float ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition, const Core::Vec4f& cameraPosition, float fov) const;
 
 		void OnNodeChanged_Model();
 
