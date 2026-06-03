@@ -36,6 +36,8 @@ namespace Systems
 		const Core::Array<AttachPoint>& GetAttachPoints() const;
 		Core::Array<AttachPoint>& GetAttachPoints();
 
+		const AttachPoint* FindAttachPoint(Core::Sid name) const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 

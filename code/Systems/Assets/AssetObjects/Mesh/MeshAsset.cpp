@@ -90,6 +90,17 @@ namespace Systems
 		return m_attachPoints;
 	}
 
+	const AttachPoint* MeshAsset::FindAttachPoint(Core::Sid name) const
+	{
+		for (const AttachPoint& ap : m_attachPoints)
+		{
+			if (ap.GetNameSid() == name)
+				return &ap;
+		}
+
+		return nullptr;
+	}
+
 	const std::string& MeshAsset::GetAssetTypeName()
 	{
 		static std::string name = "Mesh";
