@@ -10,7 +10,6 @@
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
-//#include "Systems/Objects/GameObject.h"
 #include "Systems/Assets/AssetObjects/Mesh/AttachPoint.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 
@@ -20,12 +19,13 @@ namespace Editors
 		: IGizmoModel()
 		, m_pMesh(nullptr)
 		, m_attachPointIndex(UINT32_MAX)
+		, m_callbackId()
 	{ }
 
 	GizmoModelSqt::~GizmoModelSqt()
 	{
-		/*if (m_cidOnTransformChanged.IsValid())
-			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);*/
+		if (m_callbackId.IsValid())
+			ObjectWatcher::Get().RemoveWatcher(m_callbackId);
 	}
 
 	void GizmoModelSqt::SetAttachPoint(Systems::MeshAsset* pMesh, uint32_t index)
@@ -33,21 +33,20 @@ namespace Editors
 		if (pMesh == m_pMesh && m_attachPointIndex == index)
 			return;
 
-		//if (m_cidOnTransformChanged.IsValid())
-		//	ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
+		if (m_callbackId.IsValid())
+			ObjectWatcher::Get().RemoveWatcher(m_callbackId);
 
 		m_pMesh = pMesh;
 		m_attachPointIndex = index;
 
-		/*Core::Guid guid;
-		if (pGo)
+		if (IsValid())
 		{
-			guid = pGo->GetGuid();
-			m_cidOnTransformChanged = ObjectWatcher::Get().AddWatcher(&pGo->GetTransform(), [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
+			Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
+			m_callbackId = ObjectWatcher::Get().AddWatcher(&ap, [this](void*, const Core::FieldDescriptor*, ObjectWatcher::OPERATION, uint32_t)
 				{
 					m_onTargetChanged();
 				});
-		}*/
+		}
 
 		m_onTargetChanged();
 	}

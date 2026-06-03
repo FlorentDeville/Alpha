@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "Editors/ObjectWatcher/ObjectWatcherCallbackId.h"
 #include "Editors/Widgets/Gizmo/IGizmoModel.h"
 
 namespace Core
@@ -37,6 +38,8 @@ namespace Editors
 	private:
 		Systems::MeshAsset* m_pMesh;
 		uint32_t m_attachPointIndex;
+
+		ObjectWatcherCallbackId m_callbackId;
 
 		void SendSignalToObjectWatcher();
 		bool IsValid() const;
