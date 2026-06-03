@@ -469,12 +469,13 @@ namespace Editors
 			Core::Vec4f mouse3dPosition = m_pViewport->Compute3dPosition(clampedMousePos, m_cameraView, m_cameraProj);
 			
 			m_pGizmo->Update(mouse3dPosition, m_cameraPosition, FOV_RAD);
+			
+			bool selectAttachPoint = !m_pGizmo->IsHovering() && !m_pGizmo->IsManipulating();
 
-
-			if (m_pSelectedMesh && inputs.IsMouseLeftButtonDown())
+			if (m_pSelectedMesh && inputs.IsMouseLeftButtonDown() && selectAttachPoint)
 			{
 				m_selectedAttachPoint = UINT32_MAX;
-				m_pGizmoModel->SetSqt(nullptr);
+				m_pGizmoModel->SetAttachPoint(nullptr);
 
 				Core::Vec4f rayDirection = mouse3dPosition - m_cameraPosition;
 				rayDirection.Normalize();
@@ -491,7 +492,7 @@ namespace Editors
 					if (res && m_selectedAttachPoint != ii)
 					{
 						m_selectedAttachPoint = ii;
-						m_pGizmoModel->SetSqt(&attachPoint.GetLocator());
+						m_pGizmoModel->SetAttachPoint(&attachPoint);
 						break;
 					}
 				}
@@ -602,7 +603,7 @@ namespace Editors
 	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 	{
 		m_selectedAttachPoint = UINT32_MAX;
-		m_pGizmoModel->SetSqt(nullptr);
+		m_pGizmoModel->SetAttachPoint(nullptr);
 
 		if (selected.empty())
 		{

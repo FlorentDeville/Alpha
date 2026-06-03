@@ -13,6 +13,11 @@ namespace Core
 	class Vec4f;
 }
 
+namespace Systems
+{
+	class AttachPoint;
+
+}
 namespace Editors
 {
 	class GizmoModelSqt : public IGizmoModel
@@ -21,7 +26,7 @@ namespace Editors
 		GizmoModelSqt();
 		~GizmoModelSqt();
 
-		void SetSqt(Core::Sqt* pSqt);
+		void SetAttachPoint(Systems::AttachPoint* pAttachPoint);
 
 		//Base function 
 		bool ShouldRender() override;
@@ -31,6 +36,6 @@ namespace Editors
 		virtual void IncrementScale(const Core::Vec4f& scale) override;
 
 	private:
-		Core::Sqt* m_pSqt;
+		Systems::AttachPoint* m_pAttachPoint;
 	};
 }
