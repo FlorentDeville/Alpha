@@ -237,7 +237,7 @@
     <ClInclude Include="Widgets\Gizmo\IGizmoModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Widgets\Gizmo\GizmoModelSqt.h">
+    <ClInclude Include="Widgets\Gizmo\GizmoModelAttachPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -449,7 +449,7 @@
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Widgets\Gizmo\GizmoModelSqt.cpp">
+    <ClCompile Include="Widgets\Gizmo\GizmoModelAttachPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

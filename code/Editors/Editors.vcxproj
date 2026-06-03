@@ -54,7 +54,7 @@
     <ClInclude Include="Widgets\Dialog\UserInputDialog.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoAxis.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoModelGameObject.h" />
-    <ClInclude Include="Widgets\Gizmo\GizmoModelSqt.h" />
+    <ClInclude Include="Widgets\Gizmo\GizmoModelAttachPoint.h" />
     <ClInclude Include="Widgets\Gizmo\GizmoWidget.h" />
     <ClInclude Include="Widgets\Gizmo\IGizmoModel.h" />
     <ClInclude Include="Widgets\Matrix\MatrixWidget.h" />
@@ -127,7 +127,7 @@
     <ClCompile Include="Widgets\Dialog\UserInputDialog.cpp" />
     <ClCompile Include="Widgets\Gizmo\GizmoAxis.cpp" />
     <ClCompile Include="Widgets\Gizmo\GizmoModelGameObject.cpp" />
-    <ClCompile Include="Widgets\Gizmo\GizmoModelSqt.cpp" />
+    <ClCompile Include="Widgets\Gizmo\GizmoModelAttachPoint.cpp" />
     <ClCompile Include="Widgets\Gizmo\GizmoWidget.cpp" />
     <ClCompile Include="Widgets\Matrix\MatrixWidget.cpp" />
     <ClCompile Include="Widgets\PropertyGrid\ItemFactory\PropertyGridItemFactory_AttachPoint.cpp" />

@@ -15,7 +15,7 @@
 #include "Editors/MeshEditor/MeshListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
-#include "Editors/Widgets/Gizmo/GizmoModelSqt.h"
+#include "Editors/Widgets/Gizmo/GizmoModelAttachPoint.h"
 #include "Editors/Widgets/Gizmo/GizmoWidget.h"
 #include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_AttachPoint.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"

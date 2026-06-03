@@ -2,9 +2,8 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/Widgets/Gizmo/GizmoModelSqt.h"
+#include "Editors/Widgets/Gizmo/GizmoModelAttachPoint.h"
 
-//#include "Core/Math/Sqt.h"
 #include "Core/Math/Vec4f.h"
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
@@ -82,18 +81,7 @@ namespace Editors
 
 		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
 		ap.GetLocator().SetTranslation(worldPos);
-		//new world transform
-		/*Core::Mat44f newWorldTx = m_pSqt->SetTranslation(worldPos)
-		newWorldTx.SetRow(3, worldPos);
 
-		Core::Mat44f parentTx = m_pGo->GetTransform().GetParentWorldTx();
-		Core::Mat44f invParentTx = parentTx.Inverse();
-
-		Core::Mat44f newLocalTx = newWorldTx * invParentTx;
-
-		m_pGo->GetTransform().SetLocalTx(newLocalTx);
-
-		SendSignalToObjectWatcher();*/
 		SendSignalToObjectWatcher();
 	}
 
@@ -105,21 +93,6 @@ namespace Editors
 		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
 		Core::Mat44f wsTx = rotation * ap.GetLocator().GetMatrix();
 		ap.GetLocator() = Core::Sqt(wsTx);
-		//Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
-
-		//Core::Sqt sqtWs(oldTxWs);
-		//Core::Mat44f baseScale = Core::Mat44f::CreateScaleMatrix(sqtWs.GetScale());
-
-		//sqtWs.SetScale(Core::Vec4f(1, 1, 1, 0)); //translation and rotation, remove the scale
-		//Core::Mat44f baseTransformation = sqtWs.GetMatrix();
-
-		//Core::Mat44f txWs = baseScale * rotation * baseTransformation;
-
-		//Core::Mat44f txPs = m_pGo->GetTransform().GetParentWorldTx();
-		//Core::Mat44f invTxPs = txPs.Inverse();			//should be cached
-
-		//Core::Mat44f txLs = txWs * invTxPs;
-		//m_pGo->GetTransform().SetLocalTx(txLs);
 
 		SendSignalToObjectWatcher();
 	}
@@ -129,11 +102,6 @@ namespace Editors
 		if (!IsValid())
 			return;
 
-		//const Core::Mat44f localTx = m_pSqt->GetScale()
-		//float scaleX = localTx.GetX().Length();
-		//float scaleY = localTx.GetY().Length();
-		//float scaleZ = localTx.GetZ().Length();
-
 		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
 		Core::Vec4f localScale = ap.GetLocator().GetScale();
 		Core::Vec4f newLocalScale = localScale + scale;
@@ -142,25 +110,15 @@ namespace Editors
 		Core::Vec4f newScale = ap.GetLocator().GetTranslation() * oneOverScale * newLocalScale;
 
 		ap.GetLocator().SetScale(newScale);
-		/*Core::Mat44f newLocalTx;
-		newLocalTx.SetRow(0, localTx.GetX() * (1.f / scaleX * newLocalScale.GetX()));
-		newLocalTx.SetRow(1, localTx.GetY() * (1.f / scaleY * newLocalScale.GetY()));
-		newLocalTx.SetRow(2, localTx.GetZ() * (1.f / scaleZ * newLocalScale.GetZ()));
-		newLocalTx.SetRow(3, localTx.GetT());
 
-		m_pGo->GetTransform().SetLocalTx(newLocalTx);
-
-		SendSignalToObjectWatcher();*/
 		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModelSqt::SendSignalToObjectWatcher()
 	{
-		//Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
 		const Core::TypeDescriptor* pType = Core::TypeResolver<Systems::AttachPoint>::GetConstType();
 		const Core::FieldDescriptor* pField = pType->FindField("m_locator");
 
-		//Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
 		ObjectWatcher::Get().SendFieldModifiedEvent(&m_pMesh->GetAttachPoints()[m_attachPointIndex], pField, ObjectWatcher::SET_FIELD, 0);
 	}
 
