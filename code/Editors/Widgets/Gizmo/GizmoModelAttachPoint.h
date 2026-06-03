@@ -20,11 +20,11 @@ namespace Systems
 
 namespace Editors
 {
-	class GizmoModelSqt : public IGizmoModel
+	class GizmoModelAttachPoint : public IGizmoModel
 	{
 	public:
-		GizmoModelSqt();
-		~GizmoModelSqt();
+		GizmoModelAttachPoint();
+		~GizmoModelAttachPoint();
 
 		void SetAttachPoint(Systems::MeshAsset* pMesh, uint32_t index);
 

@@ -36,7 +36,7 @@ namespace Widgets
 
 namespace Editors
 {
-	class GizmoModelSqt;
+	class GizmoModelAttachPoint;
 	class GizmoWidget;
 	class MeshListModel;
 	class PropertyGridPopulator;
@@ -89,7 +89,7 @@ namespace Editors
 
 		Widgets::Viewport* m_pViewport;
 
-		GizmoModelSqt* m_pGizmoModel;
+		GizmoModelAttachPoint* m_pGizmoModel;
 		GizmoWidget* m_pGizmo;
 
 		static constexpr float FOV = 45.f;

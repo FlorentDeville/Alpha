@@ -279,7 +279,7 @@ namespace Editors
 		ComputeCameraPositionAndView();
 
 		//gizmo
-		m_pGizmoModel = new GizmoModelSqt();
+		m_pGizmoModel = new GizmoModelAttachPoint();
 
 		m_pGizmo = new GizmoWidget();
 		m_pGizmo->SetEnable(true);

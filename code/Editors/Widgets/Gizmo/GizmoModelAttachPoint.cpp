@@ -6,7 +6,6 @@
 
 #include "Core/Math/Vec4f.h"
 
-#include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/ObjectWatcher/ObjectWatcher.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/AttachPoint.h"
@@ -14,20 +13,20 @@
 
 namespace Editors
 {
-	GizmoModelSqt::GizmoModelSqt()
+	GizmoModelAttachPoint::GizmoModelAttachPoint()
 		: IGizmoModel()
 		, m_pMesh(nullptr)
 		, m_attachPointIndex(UINT32_MAX)
 		, m_callbackId()
 	{ }
 
-	GizmoModelSqt::~GizmoModelSqt()
+	GizmoModelAttachPoint::~GizmoModelAttachPoint()
 	{
 		if (m_callbackId.IsValid())
 			ObjectWatcher::Get().RemoveWatcher(m_callbackId);
 	}
 
-	void GizmoModelSqt::SetAttachPoint(Systems::MeshAsset* pMesh, uint32_t index)
+	void GizmoModelAttachPoint::SetAttachPoint(Systems::MeshAsset* pMesh, uint32_t index)
 	{
 		if (pMesh == m_pMesh && m_attachPointIndex == index)
 			return;
@@ -50,12 +49,12 @@ namespace Editors
 		m_onTargetChanged();
 	}
 
-	bool GizmoModelSqt::ShouldRender()
+	bool GizmoModelAttachPoint::ShouldRender()
 	{
 		return m_pMesh != nullptr && m_pMesh->GetAttachPoints().IsValidIndex(m_attachPointIndex);
 	}
 
-	const Core::Mat44f GizmoModelSqt::GetTransform() const
+	const Core::Mat44f GizmoModelAttachPoint::GetTransform() const
 	{
 		if (!IsValid())
 			return Core::Mat44f::s_identity;
@@ -74,7 +73,7 @@ namespace Editors
 		return txWs;
 	}
 
-	void GizmoModelSqt::Translate(const Core::Vec4f& worldPos)
+	void GizmoModelAttachPoint::Translate(const Core::Vec4f& worldPos)
 	{
 		if (!IsValid())
 			return;
@@ -85,7 +84,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModelSqt::Rotate(const Core::Mat44f& rotation)
+	void GizmoModelAttachPoint::Rotate(const Core::Mat44f& rotation)
 	{
 		if (!IsValid())
 			return;
@@ -97,7 +96,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModelSqt::IncrementScale(const Core::Vec4f& scale)
+	void GizmoModelAttachPoint::IncrementScale(const Core::Vec4f& scale)
 	{
 		if (!IsValid())
 			return;
@@ -114,7 +113,7 @@ namespace Editors
 		SendSignalToObjectWatcher();
 	}
 
-	void GizmoModelSqt::SendSignalToObjectWatcher()
+	void GizmoModelAttachPoint::SendSignalToObjectWatcher()
 	{
 		const Core::TypeDescriptor* pType = Core::TypeResolver<Systems::AttachPoint>::GetConstType();
 		const Core::FieldDescriptor* pField = pType->FindField("m_locator");
@@ -122,7 +121,7 @@ namespace Editors
 		ObjectWatcher::Get().SendFieldModifiedEvent(&m_pMesh->GetAttachPoints()[m_attachPointIndex], pField, ObjectWatcher::SET_FIELD, 0);
 	}
 
-	bool GizmoModelSqt::IsValid() const
+	bool GizmoModelAttachPoint::IsValid() const
 	{
 		return m_pMesh != nullptr && m_pMesh->GetAttachPoints().IsValidIndex(m_attachPointIndex);
 	}
