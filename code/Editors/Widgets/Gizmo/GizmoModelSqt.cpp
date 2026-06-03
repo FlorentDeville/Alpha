@@ -12,12 +12,14 @@
 
 //#include "Systems/Objects/GameObject.h"
 #include "Systems/Assets/AssetObjects/Mesh/AttachPoint.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 
 namespace Editors
 {
 	GizmoModelSqt::GizmoModelSqt()
 		: IGizmoModel()
-		, m_pAttachPoint(nullptr)
+		, m_pMesh(nullptr)
+		, m_attachPointIndex(UINT32_MAX)
 	{ }
 
 	GizmoModelSqt::~GizmoModelSqt()
@@ -26,15 +28,16 @@ namespace Editors
 			ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);*/
 	}
 
-	void GizmoModelSqt::SetAttachPoint(Systems::AttachPoint* pAttachPoint)
+	void GizmoModelSqt::SetAttachPoint(Systems::MeshAsset* pMesh, uint32_t index)
 	{
-		if (m_pAttachPoint == pAttachPoint)
+		if (pMesh == m_pMesh && m_attachPointIndex == index)
 			return;
 
 		//if (m_cidOnTransformChanged.IsValid())
 		//	ObjectWatcher::Get().RemoveWatcher(m_cidOnTransformChanged);
 
-		m_pAttachPoint = pAttachPoint;
+		m_pMesh = pMesh;
+		m_attachPointIndex = index;
 
 		/*Core::Guid guid;
 		if (pGo)
@@ -51,15 +54,16 @@ namespace Editors
 
 	bool GizmoModelSqt::ShouldRender()
 	{
-		return m_pAttachPoint != nullptr;
+		return m_pMesh != nullptr && m_pMesh->GetAttachPoints().IsValidIndex(m_attachPointIndex);
 	}
 
 	const Core::Mat44f GizmoModelSqt::GetTransform() const
 	{
-		if (!m_pAttachPoint)
+		if (!IsValid())
 			return Core::Mat44f::s_identity;
 
-		Core::Mat44f txWs = m_pAttachPoint->GetLocator().GetMatrix();
+		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
+		Core::Mat44f txWs = ap.GetLocator().GetMatrix();
 
 		//remove the scale
 		for (int ii = 0; ii < 3; ++ii)
@@ -74,10 +78,11 @@ namespace Editors
 
 	void GizmoModelSqt::Translate(const Core::Vec4f& worldPos)
 	{
-		if (!m_pAttachPoint)
+		if (!IsValid())
 			return;
 
-		m_pAttachPoint->GetLocator().SetTranslation(worldPos);
+		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
+		ap.GetLocator().SetTranslation(worldPos);
 		//new world transform
 		/*Core::Mat44f newWorldTx = m_pSqt->SetTranslation(worldPos)
 		newWorldTx.SetRow(3, worldPos);
@@ -94,11 +99,12 @@ namespace Editors
 
 	void GizmoModelSqt::Rotate(const Core::Mat44f& rotation)
 	{
-		if (!m_pAttachPoint)
+		if (!IsValid())
 			return;
 
-		Core::Mat44f wsTx = rotation * m_pAttachPoint->GetLocator().GetMatrix();
-		m_pAttachPoint->GetLocator() = Core::Sqt(wsTx);
+		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
+		Core::Mat44f wsTx = rotation * ap.GetLocator().GetMatrix();
+		ap.GetLocator() = Core::Sqt(wsTx);
 		//Core::Mat44f oldTxWs = m_pGo->GetTransform().GetWorldTx();
 
 		//Core::Sqt sqtWs(oldTxWs);
@@ -120,7 +126,7 @@ namespace Editors
 
 	void GizmoModelSqt::IncrementScale(const Core::Vec4f& scale)
 	{
-		if (!m_pAttachPoint)
+		if (!IsValid())
 			return;
 
 		//const Core::Mat44f localTx = m_pSqt->GetScale()
@@ -128,13 +134,14 @@ namespace Editors
 		//float scaleY = localTx.GetY().Length();
 		//float scaleZ = localTx.GetZ().Length();
 
-		Core::Vec4f localScale = m_pAttachPoint->GetLocator().GetScale();
+		Systems::AttachPoint& ap = m_pMesh->GetAttachPoints()[m_attachPointIndex];
+		Core::Vec4f localScale = ap.GetLocator().GetScale();
 		Core::Vec4f newLocalScale = localScale + scale;
 
 		Core::Vec4f oneOverScale(1.f / localScale.GetX(), 1.f / localScale.GetY(), 1.f / localScale.GetZ(), 0);
-		Core::Vec4f newScale = m_pAttachPoint->GetLocator().GetTranslation() * oneOverScale * newLocalScale;
+		Core::Vec4f newScale = ap.GetLocator().GetTranslation() * oneOverScale * newLocalScale;
 
-		m_pAttachPoint->GetLocator().SetScale(newScale);
+		ap.GetLocator().SetScale(newScale);
 		/*Core::Mat44f newLocalTx;
 		newLocalTx.SetRow(0, localTx.GetX() * (1.f / scaleX * newLocalScale.GetX()));
 		newLocalTx.SetRow(1, localTx.GetY() * (1.f / scaleY * newLocalScale.GetY()));
@@ -152,4 +159,9 @@ namespace Editors
 	//	Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
 	//	ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
 	//}
+
+	bool GizmoModelSqt::IsValid() const
+	{
+		return m_pMesh != nullptr && m_pMesh->GetAttachPoints().IsValidIndex(m_attachPointIndex);
+	}
 }

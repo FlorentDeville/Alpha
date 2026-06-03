@@ -475,7 +475,7 @@ namespace Editors
 			if (m_pSelectedMesh && inputs.IsMouseLeftButtonDown() && selectAttachPoint)
 			{
 				m_selectedAttachPoint = UINT32_MAX;
-				m_pGizmoModel->SetAttachPoint(nullptr);
+				m_pGizmoModel->SetAttachPoint(m_pSelectedMesh, UINT32_MAX);
 
 				Core::Vec4f rayDirection = mouse3dPosition - m_cameraPosition;
 				rayDirection.Normalize();
@@ -492,7 +492,7 @@ namespace Editors
 					if (res && m_selectedAttachPoint != ii)
 					{
 						m_selectedAttachPoint = ii;
-						m_pGizmoModel->SetAttachPoint(&attachPoint);
+						m_pGizmoModel->SetAttachPoint(m_pSelectedMesh, m_selectedAttachPoint);
 						break;
 					}
 				}
@@ -603,7 +603,7 @@ namespace Editors
 	void MeshEditor::MeshTableView_OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 	{
 		m_selectedAttachPoint = UINT32_MAX;
-		m_pGizmoModel->SetAttachPoint(nullptr);
+		m_pGizmoModel->SetAttachPoint(nullptr, UINT32_MAX);
 
 		if (selected.empty())
 		{

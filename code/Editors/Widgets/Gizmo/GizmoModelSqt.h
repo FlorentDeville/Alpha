@@ -8,16 +8,15 @@
 
 namespace Core
 {
-	class Sqt;
 	class Mat44f;
 	class Vec4f;
 }
 
 namespace Systems
 {
-	class AttachPoint;
-
+	class MeshAsset;
 }
+
 namespace Editors
 {
 	class GizmoModelSqt : public IGizmoModel
@@ -26,7 +25,7 @@ namespace Editors
 		GizmoModelSqt();
 		~GizmoModelSqt();
 
-		void SetAttachPoint(Systems::AttachPoint* pAttachPoint);
+		void SetAttachPoint(Systems::MeshAsset* pMesh, uint32_t index);
 
 		//Base function 
 		bool ShouldRender() override;
@@ -36,6 +35,9 @@ namespace Editors
 		virtual void IncrementScale(const Core::Vec4f& scale) override;
 
 	private:
-		Systems::AttachPoint* m_pAttachPoint;
+		Systems::MeshAsset* m_pMesh;
+		uint32_t m_attachPointIndex;
+
+		bool IsValid() const;
 	};
 }
