@@ -51,6 +51,23 @@ namespace Editors
 
 		void AddPropertyGridItem(PropertyGridItem* pItem);
 
+		struct ParentItemContext
+		{
+			PropertyGridItem* m_pParent;
+			int depth;
+		};
+
+		class ParentItemContextScope
+		{
+		public:
+			ParentItemContextScope(PropertyGridItem* m_pParent, PropertyGridPopulator* pPopulator);
+			~ParentItemContextScope();
+
+		private:
+			PropertyGridPopulator* m_pPopulator;
+			ParentItemContext m_previous;
+		};
+
 	private:
 		// Create properties for an instance of a class deriving from Object.
 		void CreatePropertiesForObject(Systems::Object* pObject);
@@ -99,23 +116,6 @@ namespace Editors
 		Systems::Object* m_pObject;
 
 		bool m_canAddElementToArray;
-
-		struct ParentItemContext
-		{
-			PropertyGridItem* m_pParent;
-			int depth;
-		};
-
-		class ParentItemContextScope
-		{
-		public:
-			ParentItemContextScope(PropertyGridItem* m_pParent, PropertyGridPopulator* pPopulator);
-			~ParentItemContextScope();
-
-		private:
-			PropertyGridPopulator* m_pPopulator;
-			ParentItemContext m_previous;
-		};
 
 		ParentItemContext m_parentItemContext;
 	};

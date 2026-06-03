@@ -1,6 +1,6 @@
-/********************************************************************/
-/* © 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2025 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
 #pragma once
 
@@ -16,7 +16,7 @@ namespace Editors
 	class StringItem : public PropertyGridItem
 	{
 	public:
-		StringItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
+		StringItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~StringItem();
 
 		void CreateWidgets() override;

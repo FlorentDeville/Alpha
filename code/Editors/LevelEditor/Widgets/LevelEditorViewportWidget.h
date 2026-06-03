@@ -28,7 +28,7 @@ namespace Systems
 namespace Editors
 {
 	class CameraWidget;
-	class GizmoModel;
+	class GizmoModelGameObject;
 	class GizmoWidget;
 	class RenderPassObjectId;
 
@@ -43,11 +43,11 @@ namespace Editors
 		bool Handle(const Widgets::GlobalEvent& event) override;
 
 		GizmoWidget* GetGizmoWidget();
-		GizmoModel* GetGizmoModel();
+		GizmoModelGameObject* GetGizmoModel();
 
 	private:
 		GizmoWidget* m_pGizmoWidget;
-		GizmoModel* m_pGizmoModel;
+		GizmoModelGameObject* m_pGizmoModel;
 
 		CameraWidget* m_pCamera;
 		

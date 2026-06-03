@@ -98,6 +98,11 @@ namespace Core
 		return Vec4f(f * m_vector);
 	}
 
+	Vec4f Vec4f::operator*(const Vec4f& other) const
+	{
+		return Vec4f(DirectX::XMVectorMultiply(m_vector, other.m_vector));
+	}
+
 	bool Vec4f::operator==(const Vec4f& other) const
 	{
 		return DirectX::XMVector4Equal(m_vector, other.m_vector);

@@ -2,7 +2,7 @@
 /* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
+#include "Editors/Widgets/Gizmo/GizmoWidget.h"
 
 #include "Core/Math/Aabb.h"
 #include "Core/Math/Constants.h"
@@ -11,8 +11,7 @@
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
 
-#include "Editors/LevelEditor/LevelEditorModule.h"
-#include "Editors/LevelEditor/Widgets/GizmoModel.h"
+#include "Editors/Widgets/Gizmo/IGizmoModel.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -65,7 +64,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::Update(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::Update(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov)
 	{
 		if (!m_enabled)
 			return;
@@ -73,11 +72,11 @@ namespace Editors
 		switch (m_internalState)
 		{
 		case InternalState::kIdle:
-			UpdateState_Idle(mouse3dPosition);
+			UpdateState_Idle(mouse3dPosition, cameraPosition, fov);
 			break;
 
 		case InternalState::kMoving:
-			UpdateState_Moving(mouse3dPosition);
+			UpdateState_Moving(mouse3dPosition, cameraPosition);
 			break;
 
 		default:
@@ -85,7 +84,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::Render(const Core::Mat44f& viewProj)
+	void GizmoWidget::Render(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov)
 	{
 		if (!m_enabled || !m_pModel->ShouldRender())
 			return;
@@ -106,15 +105,15 @@ namespace Editors
 		switch (m_manipulatorMode)
 		{
 		case kTranslation:
-			RenderTranslationManipulator(viewProj);
+			RenderTranslationManipulator(viewProj, cameraPosition, fov);
 			break;
 
 		case kRotation:
-			RenderRotationManipulator(viewProj);
+			RenderRotationManipulator(viewProj, cameraPosition, fov);
 			break;
 
 		case kScale:
-			RenderScaleManipulator(viewProj);
+			RenderScaleManipulator(viewProj, cameraPosition, fov);
 			break;
 
 		default:
@@ -122,7 +121,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::SetModel(GizmoModel* pModel)
+	void GizmoWidget::SetModel(IGizmoModel* pModel)
 	{
 		if (m_pModel == pModel)
 			return;
@@ -135,7 +134,7 @@ namespace Editors
 		if (!pModel)
 			return;
 
-		pModel->OnNodeChanged([this](const Core::Guid& nodeGuid) { OnNodeChanged_Model(); });
+		pModel->OnTargetChanged([this]() { OnNodeChanged_Model(); });
 		m_sqt = pModel->GetTransform();
 	}
 
@@ -204,9 +203,9 @@ namespace Editors
 		m_scaleSnapDistance = distance;
 	}
 
-	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateState_Idle(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov)
 	{
-		UpdateMouseHover(mouse3dPosition);
+		UpdateMouseHover(mouse3dPosition, cameraPosition, fov);
 
 		if (!m_hoverAxis.IsEmpty())
 		{
@@ -223,7 +222,7 @@ namespace Editors
 					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
 
 					{
-						const Core::Vec4f& A = LevelEditorModule::Get().GetCameraWs().GetT();
+						const Core::Vec4f& A = cameraPosition;
 						Core::Vec4f aDir = mouse3dPosition - A;
 						aDir.Normalize();
 
@@ -247,7 +246,7 @@ namespace Editors
 					const Core::Mat44f& txWs = m_sqt.GetMatrix();
 					const Core::Vec4f& axis = txWs.GetRow(axisIndex);
 
-					const Core::Vec4f& cameraRayOrigin = LevelEditorModule::Get().GetCameraWs().GetT();
+					const Core::Vec4f& cameraRayOrigin = cameraPosition;
 					Core::Vec4f aDir = mouse3dPosition - cameraRayOrigin;
 					aDir.Normalize();
 
@@ -264,41 +263,41 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateState_Moving(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition)
 	{
 		if (!Inputs::InputMgr::Get().IsMouseLeftButtonDown())
 			m_internalState = InternalState::kIdle;
 
 		if (m_manipulatorMode == kTranslation)
 		{
-			UpdateState_Moving_Translation(mouse3dPosition);
+			UpdateState_Moving_Translation(mouse3dPosition, cameraPosition);
 		}
 		else if (m_manipulatorMode == kRotation)
 		{
-			UpdateState_Moving_Rotation(mouse3dPosition);
+			UpdateState_Moving_Rotation(mouse3dPosition, cameraPosition);
 		}
 		else if (m_manipulatorMode == kScale)
 		{
-			UpdateState_Moving_Scale(mouse3dPosition);
+			UpdateState_Moving_Scale(mouse3dPosition, cameraPosition);
 		}
 	}
 
-	void GizmoWidget::UpdateMouseHover(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHover(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov)
 	{
 		m_hoverAxis = GizmoAxis::GizmoAxisEnum::kEmpty;
 
 		switch (m_manipulatorMode)
 		{
 		case kTranslation:
-			UpdateMouseHoverTranslation(mouse3dPosition);
+			UpdateMouseHoverTranslation(mouse3dPosition, cameraPosition, fov);
 			break;
 
 		case kRotation:
-			UpdateMouseHoverRotation(mouse3dPosition);
+			UpdateMouseHoverRotation(mouse3dPosition, cameraPosition, fov);
 			break;
 
 		case kScale:
-			UpdateMouseHoverScale(mouse3dPosition);
+			UpdateMouseHoverScale(mouse3dPosition, cameraPosition, fov);
 			break;
 
 		default:
@@ -306,12 +305,10 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHoverTranslation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov)
 	{
-		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditorModule::Get().GetCameraWs();
-
-		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		//create ray
+		const Core::Vec4f& rayOrigin = cameraPosition;
 		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
 		rayDirection.Set(3, 0);
 		rayDirection.Normalize();
@@ -333,7 +330,7 @@ namespace Editors
 
 		//compute aabb size
 		Core::Vec4f objectPosition = txWs.GetT();
-		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float size = ComputeConstantScreenSizeScale(objectPosition, cameraPosition, fov);
 		float realLength = LENGTH * size;
 		const float BOX_HALF_SIZE = 0.5f * size;
 
@@ -386,12 +383,10 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHoverRotation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov)
 	{
 		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditorModule::Get().GetCameraWs();
-
-		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		const Core::Vec4f& rayOrigin = cameraPosition;
 		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
 		rayDirection.Set(3, 0);
 		rayDirection.Normalize();
@@ -401,7 +396,7 @@ namespace Editors
 		const Core::Vec4f& diskCenter = m_sqt.GetTranslation();
 
 		//disk inner and outer radius
-		float size = ComputeConstantScreenSizeScale(diskCenter);
+		float size = ComputeConstantScreenSizeScale(diskCenter, cameraPosition, fov);
 
 		float torusRadius = ROTATION_DIAMATER * size;
 		float smallRadius = 1.f * size;
@@ -434,12 +429,10 @@ namespace Editors
 
 	}
 
-	void GizmoWidget::UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateMouseHoverScale(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition, float fov)
 	{
-		//create ray 
-		const Core::Mat44f& cameraWs = LevelEditorModule::Get().GetCameraWs();
-
-		const Core::Vec4f& rayOrigin = cameraWs.GetT();
+		//create ray
+		const Core::Vec4f& rayOrigin = cameraPosition;
 		Core::Vec4f rayDirection = mouse3dPosition - rayOrigin;
 		rayDirection.Set(3, 0);
 		rayDirection.Normalize();
@@ -454,7 +447,7 @@ namespace Editors
 
 		//compute aabb size
 		Core::Vec4f objectPosition = txWs.GetT();
-		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float size = ComputeConstantScreenSizeScale(objectPosition, cameraPosition, fov);
 		float realLength = LENGTH * size;
 		const float BOX_HALF_SIZE = 0.5f * size;
 
@@ -479,7 +472,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving_Translation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition)
 	{
 		//project the axis in screen space
 		int axisIndex = m_hoverAxis.GetAxisIndex();
@@ -487,7 +480,7 @@ namespace Editors
 		const Core::Vec4f& axis = m_sqt.GetMatrix().GetRow(axisIndex);
 
 		{
-			const Core::Vec4f& A = LevelEditorModule::Get().GetCameraWs().GetT();
+			const Core::Vec4f& A = cameraPosition;
 			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
@@ -513,10 +506,10 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving_Rotation(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition)
 	{
 		//get the closest point from the ray to the disk
-		const Core::Vec4f& rayOrigin = LevelEditorModule::Get().GetCameraWs().GetT();
+		const Core::Vec4f& rayOrigin = cameraPosition;
 		Core::Vec4f rayDir = mouse3dPosition - rayOrigin;
 		rayDir.Normalize();
 
@@ -586,7 +579,7 @@ namespace Editors
 		m_sqt = m_pModel->GetTransform();
 	}
 
-	void GizmoWidget::UpdateState_Moving_Scale(const Core::Vec4f& mouse3dPosition)
+	void GizmoWidget::UpdateState_Moving_Scale(const Core::Vec4f& mouse3dPosition, const Core::Vec4f& cameraPosition)
 	{
 		//project the axis in screen space
 		int axisIndex = m_hoverAxis.GetAxisIndex();
@@ -594,7 +587,7 @@ namespace Editors
 		const Core::Vec4f& axis = m_sqt.GetMatrix().GetRow(axisIndex);
 
 		{
-			const Core::Vec4f& A = LevelEditorModule::Get().GetCameraWs().GetT();
+			const Core::Vec4f& A = cameraPosition;
 			Core::Vec4f aDir = mouse3dPosition - A;
 			aDir.Normalize();
 
@@ -626,12 +619,12 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderRotationManipulator(const Core::Mat44f& viewProj)
+	void GizmoWidget::RenderRotationManipulator(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 
 		Core::Vec4f objectPosition = txWs.GetT();
-		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float size = ComputeConstantScreenSizeScale(objectPosition, cameraPosition, fov);
 
 		float realRotationDiameter = ROTATION_DIAMATER * size;
 		Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(Core::Vec4f(realRotationDiameter, realRotationDiameter, realRotationDiameter, 0));
@@ -673,7 +666,7 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderTranslationManipulator(const Core::Mat44f& viewProj)
+	void GizmoWidget::RenderTranslationManipulator(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 
@@ -688,7 +681,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(transform, viewProj, appliedColor);
+			RenderTranslationSingleAxis(transform, viewProj, appliedColor, cameraPosition, fov);
 		}
 
 		//y axis
@@ -698,7 +691,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(txWs, viewProj, appliedColor);
+			RenderTranslationSingleAxis(txWs, viewProj, appliedColor, cameraPosition, fov);
 		}
 
 		//z axis
@@ -712,11 +705,11 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				appliedColor = m_hoverColor;
 
-			RenderTranslationSingleAxis(transform, viewProj, appliedColor);
+			RenderTranslationSingleAxis(transform, viewProj, appliedColor, cameraPosition, fov);
 		}
 	}
 
-	void GizmoWidget::RenderScaleManipulator(const Core::Mat44f& viewProj)
+	void GizmoWidget::RenderScaleManipulator(const Core::Mat44f& viewProj, const Core::Vec4f& cameraPosition, float fov)
 	{
 		const Core::Mat44f& txWs = m_sqt.GetMatrix();
 
@@ -730,7 +723,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kXAxis))
 				red = m_hoverColor;
 
-			RenderScaleSingleAxis(transform, viewProj, red);
+			RenderScaleSingleAxis(transform, viewProj, red, cameraPosition, fov);
 		}
 
 		//y axis
@@ -739,7 +732,7 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kYAxis))
 				green = m_hoverColor;
 
-			RenderScaleSingleAxis(txWs, viewProj, green);
+			RenderScaleSingleAxis(txWs, viewProj, green, cameraPosition, fov);
 		}
 
 		//z axis
@@ -752,16 +745,16 @@ namespace Editors
 			if (m_hoverAxis.Contains(GizmoAxis::GizmoAxisEnum::kZAxis))
 				blue = m_hoverColor;
 
-			RenderScaleSingleAxis(transform, viewProj, blue);
+			RenderScaleSingleAxis(transform, viewProj, blue, cameraPosition, fov);
 		}
 	}
 
-	void GizmoWidget::RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color)
+	void GizmoWidget::RenderTranslationSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color, const Core::Vec4f& cameraPosition, float fov)
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 		
 		Core::Vec4f objectPosition = txWs.GetT();
-		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float size = ComputeConstantScreenSizeScale(objectPosition, cameraPosition, fov);
 
 		float realDiameter = BASE_DIAMETER * size;
 		float realLength = LENGTH * size;
@@ -804,12 +797,12 @@ namespace Editors
 		}
 	}
 
-	void GizmoWidget::RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color) const
+	void GizmoWidget::RenderScaleSingleAxis(const Core::Mat44f& txWs, const Core::Mat44f& viewProj, const Core::Float4& color, const Core::Vec4f& cameraPosition, float fov) const
 	{
 		Rendering::RenderModule& renderingMgr = Rendering::RenderModule::Get();
 
 		Core::Vec4f objectPosition = txWs.GetT();
-		float size = ComputeConstantScreenSizeScale(objectPosition);
+		float size = ComputeConstantScreenSizeScale(objectPosition, cameraPosition, fov);
 
 		float realDiameter = BASE_DIAMETER * size;
 		float realLength = LENGTH * size;
@@ -832,13 +825,9 @@ namespace Editors
 		}
 	}
 
-	float GizmoWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition) const
+	float GizmoWidget::ComputeConstantScreenSizeScale(const Core::Vec4f& objectPosition, const Core::Vec4f& cameraPosition, float fov) const
 	{
-		const LevelEditorModule& levelEditor = LevelEditorModule::Get();
-		const Core::Mat44f& camera = levelEditor.GetCameraWs();
-		float fov = levelEditor.GetFovRad();
-
-		Core::Vec4f dt = camera.GetT() - objectPosition;
+		Core::Vec4f dt = cameraPosition - objectPosition;
 		float distance = dt.Length();
 		float worldSize = (2 * tanf(fov * 0.5f)) * distance;
 		const float SCREEN_RATIO = 0.025f;

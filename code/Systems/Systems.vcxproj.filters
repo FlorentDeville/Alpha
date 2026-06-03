@@ -82,6 +82,7 @@
     <ClInclude Include="Game\Subsystems\Navmesh\NavmeshSubsystem.h" />
     <ClInclude Include="Objects\StaticMesh.h" />
     <ClInclude Include="GameComponent\MeshComponent.h" />
+    <ClInclude Include="Assets\AssetObjects\Mesh\AttachPoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="Game\Subsystems\Navmesh\NavmeshSubsystem.cpp" />
     <ClCompile Include="Objects\StaticMesh.cpp" />
     <ClCompile Include="GameComponent\MeshComponent.cpp" />
+    <ClCompile Include="Assets\AssetObjects\Mesh\AttachPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />

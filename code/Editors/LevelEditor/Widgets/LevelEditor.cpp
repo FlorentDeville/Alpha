@@ -13,14 +13,15 @@
 #include "Editors/LevelEditor/SceneTreeModel.h"
 #include "Editors/LevelEditor/SelectionMgr.h"
 #include "Editors/LevelEditor/Widgets/LevelEditorViewportWidget.h"
-#include "Editors/LevelEditor/Widgets/GizmoModel.h"
-#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 
 #include "Editors/EditorManager.h"
 #include "Editors/Widgets/Dialog/Model/ClassListModel.h"
 #include "Editors/Widgets/Dialog/OkCancelDialog.h"
 #include "Editors/Widgets/Dialog/TableDialog.h"
 #include "Editors/Widgets/Dialog/UserInputDialog.h"
+#include "Editors/Widgets/Gizmo/GizmoModelGameObject.h"
+#include "Editors/Widgets/Gizmo/GizmoWidget.h"
+#include "Editors/Widgets/PropertyGrid/ItemFactory/PropertyGridItemFactory_Transform.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridPopulator.h"
 #include "Editors/Widgets/PropertyGrid/PropertyGridWidget.h"
 
@@ -266,6 +267,7 @@ namespace Editors
 
 		m_pPropertyGridPopulator = new PropertyGridPopulator();
 		m_pPropertyGridPopulator->Init(m_pPropertyGridWidget);
+		m_pPropertyGridPopulator->RegisterItemFactory(Core::TypeResolver<Systems::TransformComponent>::GetTypenameSid(), new PropertyGridItemFactory_Transform());
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		SelectionMgr* pSelectionMgr = levelEditorModule.GetSelectionMgr();
@@ -482,13 +484,13 @@ namespace Editors
 
 	void LevelEditor::OnSelectionCleared_Gizmo()
 	{
-		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+		GizmoModelGameObject* pGizmoModel = m_pViewport->GetGizmoModel();
 		pGizmoModel->SetGameObject(nullptr);
 	}
 
 	void LevelEditor::OnAddedToSelection_Gizmo(const Core::Guid& nodeGuid)
 	{
-		GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+		GizmoModelGameObject* pGizmoModel = m_pViewport->GetGizmoModel();
 
 		LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 		Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
@@ -503,13 +505,13 @@ namespace Editors
 		const std::list<Core::Guid>& selectionList = pSelectionMgr->GetSelectionList();
 		if (selectionList.empty())
 		{
-			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+			GizmoModelGameObject* pGizmoModel = m_pViewport->GetGizmoModel();
 			pGizmoModel->SetGameObject(nullptr);
 
 		}
 		else
 		{
-			GizmoModel* pGizmoModel = m_pViewport->GetGizmoModel();
+			GizmoModelGameObject* pGizmoModel = m_pViewport->GetGizmoModel();
 			LevelEditorModule& levelEditorModule = LevelEditorModule::Get();
 			Systems::GameObject* pSelectedGo = levelEditorModule.GetCurrentLoadedLevel()->FindGameObject(nodeGuid);
 			pGizmoModel->SetGameObject(pSelectedGo);

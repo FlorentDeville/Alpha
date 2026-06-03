@@ -6,6 +6,7 @@
 
 #include "Editors/BaseEditor.h"
 
+#include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 #include "Core/Math/Vectors.h"
@@ -35,6 +36,8 @@ namespace Widgets
 
 namespace Editors
 {
+	class GizmoModelAttachPoint;
+	class GizmoWidget;
 	class MeshListModel;
 	class PropertyGridPopulator;
 
@@ -60,6 +63,7 @@ namespace Editors
 		Core::Vec4f m_cameraEuler;
 		Core::Vec4f m_cameraPosition;
 		Core::Mat44f m_cameraView;
+		Core::Mat44f m_cameraProj;
 
 		float m_cameraDistance;
 		float m_aspectRatio;
@@ -84,6 +88,14 @@ namespace Editors
 		PropertyGridPopulator* m_pPopulator;
 
 		Widgets::Viewport* m_pViewport;
+
+		GizmoModelAttachPoint* m_pGizmoModel;
+		GizmoWidget* m_pGizmo;
+
+		static constexpr float FOV = 45.f;
+		static constexpr float FOV_RAD = FOV * Core::PI_OVER_180;
+
+		uint32_t m_selectedAttachPoint;
 
 		bool OnMaterialClicked(int entryIndex);
 

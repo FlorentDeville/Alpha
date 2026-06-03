@@ -16,7 +16,7 @@ namespace Editors
 	class SqtItem : public PropertyGridItem
 	{
 	public:
-		SqtItem(Systems::Object* pObj, const Core::FieldDescriptor* pField, uint32_t index);
+		SqtItem(void* pObj, const Core::FieldDescriptor* pField, uint32_t index);
 		~SqtItem();
 
 		void CreateWidgets() override;

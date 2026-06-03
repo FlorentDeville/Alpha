@@ -8,9 +8,9 @@
 
 #include "Editors/LevelEditor/LevelEditorModule.h"
 #include "Editors/LevelEditor/RenderPassObjectId.h"
-#include "Editors/LevelEditor/Widgets/GizmoModel.h"
-#include "Editors/LevelEditor/Widgets/GizmoWidget.h"
 #include "Editors/Widgets/Camera/CameraWidget.h"
+#include "Editors/Widgets/Gizmo/GizmoModelGameObject.h"
+#include "Editors/Widgets/Gizmo/GizmoWidget.h"
 
 #include "Inputs/InputMgr.h"
 
@@ -70,7 +70,7 @@ namespace Editors
 		Core::Vec4f cameraEulerAngle(Core::PI * 0.25f, 0, 0, 0);
 		m_pCamera->SetTransform(cameraPosition, cameraEulerAngle);
 
-		m_pGizmoModel = new GizmoModel();
+		m_pGizmoModel = new GizmoModelGameObject();
 		m_pGizmoWidget = new GizmoWidget();
 
 		m_pGizmoWidget->SetModel(m_pGizmoModel);
@@ -142,7 +142,7 @@ namespace Editors
 		Core::Vec4f mouseWs = Compute3dPosition(clampedMousePos, m_pCamera->GetView(), m_pCamera->GetProjection());
 
 		m_pCamera->Update(dtInSeconds);
-		m_pGizmoWidget->Update(mouseWs);
+		m_pGizmoWidget->Update(mouseWs, m_pCamera->GetPosition(), m_pCamera->GetFov());
 
 		Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 	
@@ -234,7 +234,7 @@ namespace Editors
 		return m_pGizmoWidget;
 	}
 
-	GizmoModel* LevelEditorViewportWidget::GetGizmoModel()
+	GizmoModelGameObject* LevelEditorViewportWidget::GetGizmoModel()
 	{
 		return m_pGizmoModel;
 	}
@@ -275,7 +275,7 @@ namespace Editors
 		m_pRenderPassBase->ClearDepthBuffer();
 
 		Core::Mat44f viewProj = m_pCamera->GetView() * m_pCamera->GetProjection();
-		m_pGizmoWidget->Render(viewProj);
+		m_pGizmoWidget->Render(viewProj, m_pCamera->GetPosition(), m_pCamera->GetFov());
 
 		m_pRenderPassBase->PostRender(scene);
 

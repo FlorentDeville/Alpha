@@ -80,6 +80,27 @@ namespace Systems
 		return m_importUvMirrorVertical;
 	}
 
+	const Core::Array<AttachPoint>& MeshAsset::GetAttachPoints() const
+	{
+		return m_attachPoints;
+	}
+
+	Core::Array<AttachPoint>& MeshAsset::GetAttachPoints()
+	{
+		return m_attachPoints;
+	}
+
+	const AttachPoint* MeshAsset::FindAttachPoint(Core::Sid name) const
+	{
+		for (const AttachPoint& ap : m_attachPoints)
+		{
+			if (ap.GetNameSid() == name)
+				return &ap;
+		}
+
+		return nullptr;
+	}
+
 	const std::string& MeshAsset::GetAssetTypeName()
 	{
 		static std::string name = "Mesh";

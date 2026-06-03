@@ -4,10 +4,13 @@
 
 #pragma once
 
+#include "Core/Collections/Array.h"
+#include "Core/Reflection/ReflectionMacro.h"
+
 #include "Rendering/Mesh/Mesh.h"
 
+#include "Systems/Assets/AssetObjects/Mesh/AttachPoint.h"
 #include "Systems/Objects/AssetObject.h"
-#include "Core/Reflection/ReflectionMacro.h"
 
 ENABLE_REFLECTION(Systems, MeshAsset)
 
@@ -30,6 +33,11 @@ namespace Systems
 		//Invert V coordinate in uv during mesh import.
 		bool ImportUvMirrorVertical() const;
 
+		const Core::Array<AttachPoint>& GetAttachPoints() const;
+		Core::Array<AttachPoint>& GetAttachPoints();
+
+		const AttachPoint* FindAttachPoint(Core::Sid name) const;
+
 		static const std::string& GetAssetTypeName();
 		static Core::Sid GetAssetTypeNameSid();
 
@@ -46,6 +54,8 @@ namespace Systems
 		//Each 3 consecutive indices makes a triangle
 		Core::Array<uint16_t> m_indices;
 
+		Core::Array<AttachPoint> m_attachPoints;
+
 		//Invert the v coordinates in the uv when importing mesh.
 		bool m_importUvMirrorVertical;
 
@@ -57,6 +67,7 @@ namespace Systems
 			ADD_FIELD_ATTR(m_color, Core::Hidden)
 			ADD_FIELD_ATTR(m_normal, Core::Hidden)
 			ADD_FIELD_ATTR(m_indices, Core::Hidden)
+			ADD_FIELD(m_attachPoints)
 			ADD_FIELD(m_importUvMirrorVertical)
 		END_REFLECTION()
 

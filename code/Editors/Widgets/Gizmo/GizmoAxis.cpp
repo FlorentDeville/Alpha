@@ -1,8 +1,8 @@
-/********************************************************************/
-/* © 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
-/********************************************************************/
+/********************************************************************************/
+/* Copyright (C) 2023 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
 
-#include "Editors/LevelEditor/Widgets/GizmoAxis.h"
+#include "Editors/Widgets/Gizmo/GizmoAxis.h"
 
 namespace Editors
 {
