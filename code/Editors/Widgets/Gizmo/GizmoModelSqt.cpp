@@ -95,6 +95,7 @@ namespace Editors
 		m_pGo->GetTransform().SetLocalTx(newLocalTx);
 
 		SendSignalToObjectWatcher();*/
+		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModelSqt::Rotate(const Core::Mat44f& rotation)
@@ -121,7 +122,7 @@ namespace Editors
 		//Core::Mat44f txLs = txWs * invTxPs;
 		//m_pGo->GetTransform().SetLocalTx(txLs);
 
-		//SendSignalToObjectWatcher();
+		SendSignalToObjectWatcher();
 	}
 
 	void GizmoModelSqt::IncrementScale(const Core::Vec4f& scale)
@@ -151,14 +152,18 @@ namespace Editors
 		m_pGo->GetTransform().SetLocalTx(newLocalTx);
 
 		SendSignalToObjectWatcher();*/
+		SendSignalToObjectWatcher();
 	}
 
-	//void GizmoModelSqt::SendSignalToObjectWatcher()
-	//{
-	//	Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
-	//	Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
-	//	ObjectWatcher::Get().SendFieldModifiedEvent(pTransform, pField, ObjectWatcher::SET_FIELD, 0);
-	//}
+	void GizmoModelSqt::SendSignalToObjectWatcher()
+	{
+		//Systems::TransformComponent* pTransform = &m_pGo->GetTransform();
+		const Core::TypeDescriptor* pType = Core::TypeResolver<Systems::AttachPoint>::GetConstType();
+		const Core::FieldDescriptor* pField = pType->FindField("m_locator");
+
+		//Core::FieldDescriptor* pField = pTransform->GetTypeDescriptor()->GetFields()[0];
+		ObjectWatcher::Get().SendFieldModifiedEvent(&m_pMesh->GetAttachPoints()[m_attachPointIndex], pField, ObjectWatcher::SET_FIELD, 0);
+	}
 
 	bool GizmoModelSqt::IsValid() const
 	{

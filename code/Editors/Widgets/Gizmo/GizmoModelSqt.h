@@ -38,6 +38,7 @@ namespace Editors
 		Systems::MeshAsset* m_pMesh;
 		uint32_t m_attachPointIndex;
 
+		void SendSignalToObjectWatcher();
 		bool IsValid() const;
 	};
 }
