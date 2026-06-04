@@ -25,6 +25,7 @@
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
 #include "Systems/GameComponent/ParticleEffectComponent.h"
 #include "Systems/GameComponent/MeshComponent.h"
+#include "Systems/GameComponent/RenderableComponent.h"
 #include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/TransformComponent.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
@@ -57,6 +58,7 @@ namespace Systems
 		Systems::DirectionalLightComponent::RegisterReflection();
 		Systems::ParticleEffectComponent::RegisterReflection();
 		Systems::PointLightComponent::RegisterReflection();
+		Systems::RenderableComponent::RegisterReflection();
 		Systems::SpotLightComponent::RegisterReflection();
 		Systems::UIBaseComponent::RegisterReflection();
 
