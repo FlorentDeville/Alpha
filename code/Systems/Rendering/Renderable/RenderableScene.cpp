@@ -17,6 +17,7 @@
 #include "Systems/GameComponent/Lights/PointLightComponent.h"
 #include "Systems/GameComponent/Lights/SpotLightComponent.h"
 #include "Systems/GameComponent/MeshComponent.h"
+#include "Systems/GameComponent/RenderableComponent.h"
 #include "Systems/GameComponent/SkyboxComponent.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
@@ -281,6 +282,30 @@ namespace Systems
 						pNewRenderable->m_pMesh = pMesh;
 						pNewRenderable->m_pMaterial = pMaterial;
 						pNewRenderable->m_worldTx = pMeshComponent->GetOwner()->GetTransform().GetWorldTx();
+						pNewRenderable->m_pOwner = pGo;
+						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
+					}
+				}
+				else if (const Systems::RenderableComponent* pRenderableComponent = pComponent->Cast<Systems::RenderableComponent>())
+				{
+					const Rendering::Mesh* pMesh = nullptr;
+					const Systems::MaterialInstanceAsset* pMaterial = nullptr;
+					if (pRenderableComponent->GetMesh() && pRenderableComponent->GetMesh()->GetRenderingMesh())
+						pMesh = pRenderableComponent->GetMesh()->GetRenderingMesh();
+
+					pMaterial = pRenderableComponent->GetMaterialInstance();
+
+					if (pMesh && pMaterial)
+					{
+						Systems::RenderableObject* pNewRenderable = nullptr;
+						if (pMaterial->GetBaseMaterial()->GetBlendMode() == BlendMode::BM_TRANSLUCENT)
+							pNewRenderable = &scene.m_translucentObjects.PushBackDefault();
+						else
+							pNewRenderable = &scene.m_opaqueObjects.PushBackDefault();
+
+						pNewRenderable->m_pMesh = pMesh;
+						pNewRenderable->m_pMaterial = pMaterial;
+						pNewRenderable->m_worldTx = pRenderableComponent->GetOwner()->GetTransform().GetWorldTx();
 						pNewRenderable->m_pOwner = pGo;
 						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
