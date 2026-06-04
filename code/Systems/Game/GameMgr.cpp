@@ -232,7 +232,7 @@ namespace Systems
 			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
 			for (const GameObject* pGo : gameObjectArray)
 			{
-				if (pGo->GetTypeDescriptor()->GetSid() == gameObjectTypename)
+				if (pGo->IsA(gameObjectTypename))
 					return pGo;
 			}
 		}
@@ -247,7 +247,7 @@ namespace Systems
 			const Core::Array<GameObject*>& gameObjectArray = pLevel->GetGameObjectsArray();
 			for (GameObject* pGo : gameObjectArray)
 			{
-				if (pGo->GetTypeDescriptor()->GetSid() == gameObjectTypename)
+				if (pGo->IsA(gameObjectTypename))
 					return pGo;
 			}
 		}

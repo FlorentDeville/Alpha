@@ -23,6 +23,7 @@ namespace Systems
 
 		virtual void PostLoad();
 
+		bool IsA(Core::Sid type) const;
 		template<class T> bool IsA() const;
 
 		template<class T> T* Cast();
@@ -38,7 +39,7 @@ namespace Systems
 	template<class T> bool Object::IsA() const
 	{
 		Core::Sid targetType = Core::TypeResolver<T>::GetTypenameSid();
-		return m_pTypeDescriptor->GetSid() == targetType || m_pTypeDescriptor->InheritsFrom(targetType);
+		return IsA(targetType);
 	}
 
 	template<class T> T* Object::Cast()

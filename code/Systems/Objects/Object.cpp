@@ -23,6 +23,11 @@ namespace Systems
 	void Object::PostLoad()
 	{ }
 
+	bool Object::IsA(Core::Sid type) const
+	{
+		return m_pTypeDescriptor->GetSid() == type || m_pTypeDescriptor->InheritsFrom(type);
+	}
+
 	Object* CreateObject(const Core::TypeDescriptor* pType)
 	{
 		Object* pObject = static_cast<Object*>(pType->Construct());
