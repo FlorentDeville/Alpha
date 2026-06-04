@@ -486,8 +486,9 @@ namespace Editors
 				{
 					Systems::AttachPoint& attachPoint = attachPointList[ii];
 
-					Core::Aabb box(attachPoint.GetLocator().GetTranslation() - Core::Vec4f(1, 1, 1, 0),
-						attachPoint.GetLocator().GetTranslation() + Core::Vec4f(1, 1, 1, 0));
+					const float BOX_SIZE = 0.5f;
+					Core::Aabb box(attachPoint.GetLocator().GetTranslation() - Core::Vec4f(BOX_SIZE, BOX_SIZE, BOX_SIZE, 0),
+						attachPoint.GetLocator().GetTranslation() + Core::Vec4f(BOX_SIZE, BOX_SIZE, BOX_SIZE, 0));
 					bool res = Core::Intersection::RayVsAabb(ray, box);
 					if (res && m_selectedAttachPoint != ii)
 					{
