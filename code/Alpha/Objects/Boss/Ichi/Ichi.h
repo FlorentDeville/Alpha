@@ -10,6 +10,7 @@
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
 #include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
@@ -54,6 +55,8 @@ private:
 
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
 
+	Systems::HardAssetRef<Systems::ParticleEffectAsset> m_engineEffect;
+
 	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
 	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
 	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
@@ -66,6 +69,7 @@ private:
 		ADD_FIELD(m_materialPhase2)
 		ADD_FIELD(m_meshPhase3)
 		ADD_FIELD(m_materialPhase3)
+		ADD_FIELD(m_engineEffect)
 		ADD_FIELD(m_counterBulletMaterial)
 		ADD_FIELD(m_currentHealthComp)
 		ADD_FIELD(m_totalHealthComp)
