@@ -20,7 +20,7 @@ StateMachine::~StateMachine()
 
 void StateMachine::Init(uint32_t stateCount)
 {
-	m_states.Resize(stateCount);
+	m_states.Resize(stateCount, nullptr);
 }
 
 void StateMachine::AddState(IState* pState, uint32_t index)
