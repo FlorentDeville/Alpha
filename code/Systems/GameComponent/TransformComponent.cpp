@@ -39,11 +39,6 @@ namespace Systems
 		return m_localSqt;
 	}
 
-	Core::Sqt& TransformComponent::GetLocalSqt()
-	{
-		return m_localSqt;
-	}
-
 	const Core::Mat44f& TransformComponent::GetParentWorldTx() const
 	{
 		if (!m_pParentGo)
@@ -55,12 +50,13 @@ namespace Systems
 	void TransformComponent::SetLocalTx(const Core::Mat44f& localTx)
 	{
 		m_localSqt = Core::Sqt(localTx);
-		m_isDirty = true;
+		SetIsDirty();
+	}
 
-		for (Systems::GameObject* pObj : m_childrenGo)
-		{
-			pObj->GetTransform().m_isDirty = true;
-		}
+	void TransformComponent::SetLocalTranslation(const Core::Vec4f& translation)
+	{
+		m_localSqt.SetTranslation(translation);
+		SetIsDirty();
 	}
 
 	const Core::Guid& TransformComponent::GetParentGuid() const
@@ -154,5 +150,8 @@ namespace Systems
 	void TransformComponent::SetIsDirty()
 	{
 		m_isDirty = true;
+
+		for (Systems::GameObject* pObj : m_childrenGo)
+			pObj->GetTransform().m_isDirty = true;
 	}
 }
