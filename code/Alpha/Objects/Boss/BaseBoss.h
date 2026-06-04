@@ -42,7 +42,7 @@ public:
 	uint32_t GetMaxHP() const;
 	int32_t GetCurrentHP() const;
 
-	void SetCurrentHP(int32_t hp);
+	virtual void SetCurrentHP(int32_t hp);
 
 protected:
 	uint32_t m_maxHP;

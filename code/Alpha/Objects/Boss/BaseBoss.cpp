@@ -53,5 +53,5 @@ int32_t BaseBoss::GetCurrentHP() const
 
 void BaseBoss::SetCurrentHP(int32_t hp)
 {
-	m_maxHP = hp;
+	m_currentHP = hp;
 }
