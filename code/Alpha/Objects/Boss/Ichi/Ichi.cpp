@@ -22,9 +22,9 @@ void Ichi::OnStartGame()
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(IchiStateEnum::COUNT);
 
-	m_pStateMachine->AddState(new Ichi_Start(m_pStateMachine), IchiStateEnum::START);
+	m_pStateMachine->AddState(new Ichi_Start(m_pStateMachine, this), IchiStateEnum::START);
 
-	m_pStateMachine->GoTo(IchiStateEnum::START);
+	m_pStateMachine->Start(IchiStateEnum::START);
 }
 
 void Ichi::Update(float dt)
