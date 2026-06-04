@@ -4,11 +4,13 @@
 
 #include "Alpha/Reflection/ReflectionGameTypes.h"
 
+#include "Alpha/Objects/Boss/BaseBoss.h"
 #include "Alpha/Objects/Boss/Proto/BossGameObject.h"
 #include "Alpha/Objects/Player/PlayerGameObject.h"
 
 void RegisterGameTypesToReflection()
 {
+	BaseBoss::RegisterReflection();
 	BossGameObject::RegisterReflection();
 	PlayerGameObject::RegisterReflection();
 }
