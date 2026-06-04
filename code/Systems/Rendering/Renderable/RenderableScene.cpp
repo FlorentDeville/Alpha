@@ -309,7 +309,7 @@ namespace Systems
 						pNewRenderable->m_pOwner = pGo;
 						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}
-					}
+				}
 				else if (const Systems::SkyboxComponent* pSkybox = pComponent->Cast<Systems::SkyboxComponent>())
 				{
 					const Rendering::Mesh* pMesh = nullptr;
