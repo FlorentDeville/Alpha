@@ -25,21 +25,14 @@
 
 BossGameObject::BossGameObject()
 	: BaseClass()
-	, m_currentHP()
-	, m_maxHP()
-	, m_pStateMachine(nullptr)
 { }
 
 BossGameObject::~BossGameObject()
-{
-	delete m_pStateMachine;
-}
+{ }
 
 void BossGameObject::OnStartGame()
 {
 	BaseClass::OnStartGame();
-
-	m_currentHP = m_maxHP;
 
 	const PlayerGameObject* pPlayer = Systems::GameMgr().Get().FindGameObject<PlayerGameObject>();
 
@@ -115,6 +108,7 @@ void BossGameObject::HandleMessage(const Systems::GameMessage& msg)
 	break;
 
 	default:
+		BaseClass::HandleMessage(msg);
 		break;
 	}
 }
@@ -127,19 +121,9 @@ void BossGameObject::OnDestroyGame()
 	m_pStateMachine = nullptr;
 }
 
-uint32_t BossGameObject::GetMaxHP() const
-{
-	return m_maxHP;
-}
-
-int32_t BossGameObject::GetCurrentHP() const
-{
-	return m_currentHP;
-}
-
 void BossGameObject::SetCurrentHP(int32_t hp)
 {
-	m_currentHP = hp;
+	BaseClass::SetCurrentHP(hp);
 	UpdateHPBar();
 }
 

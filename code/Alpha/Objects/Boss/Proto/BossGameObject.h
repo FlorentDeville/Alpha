@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "Alpha/Objects/Boss/BaseBoss.h"
+
 #include "Core/Reflection/ReflectionMacro.h"
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
@@ -11,7 +13,6 @@
 #include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
-#include "Systems/Objects/GameObject.h"
 
 class StateMachine;
 
@@ -23,9 +24,9 @@ class BossState_Phase2_Attack2;
 class BossState_Phase3_Attack1;
 class BossState_Phase3_Attack2;
 
-class BossGameObject : public Systems::GameObject
+class BossGameObject : public BaseBoss
 {
-	using BaseClass = Systems::GameObject;
+	using BaseClass = BaseBoss;
 
 public:
 	BossGameObject();
@@ -39,10 +40,7 @@ public:
 
 	void OnDestroyGame() override;
 
-	uint32_t GetMaxHP() const;
-	int32_t GetCurrentHP() const;
-
-	void SetCurrentHP(int32_t hp);
+	void SetCurrentHP(int32_t hp) override;
 
 	void EnterPhase1();
 	void ExitPhase1();
@@ -57,27 +55,21 @@ private:
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_material;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
 
-	uint32_t m_maxHP;
-
 	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
 	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
 	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
 
 	START_REFLECTION(BossGameObject)
-		ADD_BASETYPE(Systems::GameObject)
+		ADD_BASETYPE(BaseBoss)
 		ADD_FIELD(m_mesh)
 		ADD_FIELD(m_material)
 		ADD_FIELD(m_counterBulletMaterial)
-		ADD_FIELD(m_maxHP)
 		ADD_FIELD(m_currentHealthComp)
 		ADD_FIELD(m_totalHealthComp)
 		ADD_FIELD(m_collComp)
 	END_REFLECTION()
 
 private:
-	StateMachine* m_pStateMachine;
-	int32_t m_currentHP;
-
 	BossState_Phase1_Attack* m_pStatePhase1Attack;
 	BossState_Phase2_Attack1* m_pStatePhase2Attack1;
 	BossState_Phase2_Attack2* m_pStatePhase2Attack2;
