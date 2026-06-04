@@ -6,7 +6,7 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
-#include "Alpha/Objects/Boss/Proto/BossGameObject.h"
+#include "Alpha/Objects/Boss/BaseBoss.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 #include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"
@@ -145,7 +145,7 @@ void PlayerGameObject::OnBulletCollision(uint32_t index)
 
 void PlayerGameObject::UpdateCamera()
 {
-	const BossGameObject* pBoss = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
+	const BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
 	Core::Vec4f bossPos = pBoss->GetTransform().GetWorldTx().GetT();
 
 	const Core::Vec4f& playerPos = GetTransform().GetWorldTx().GetT();
