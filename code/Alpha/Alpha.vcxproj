@@ -105,6 +105,7 @@
     <ClCompile Include="Bullets\Waves\WaveTest.cpp" />
     <ClCompile Include="Inputs\GameCommands.cpp" />
     <ClCompile Include="Objects\Boss\BaseBoss.cpp" />
+    <ClCompile Include="Objects\Boss\Ichi\Ichi.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Attack.cpp" />
@@ -467,6 +468,7 @@
     <ClInclude Include="Bullets\Waves\WaveTest.h" />
     <ClInclude Include="Inputs\GameCommands.h" />
     <ClInclude Include="Objects\Boss\BaseBoss.h" />
+    <ClInclude Include="Objects\Boss\Ichi\Ichi.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossStateEnum.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.h" />

@@ -1,0 +1,80 @@
+/********************************************************************************/
+/* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
+/********************************************************************************/
+
+#pragma once
+
+#include "Alpha/Objects/Boss/BaseBoss.h"
+
+#include "Core/Reflection/ReflectionMacro.h"
+
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
+#include "Systems/GameComponent/ComponentRef/ComponentRef.h"
+#include "Systems/GameComponent/UI/UIBaseComponent.h"
+
+ENABLE_GAME_REFLECTION(Ichi)
+
+class Ichi : public BaseBoss
+{
+	using BaseClass = BaseBoss;
+
+public:
+	Ichi();
+	~Ichi();
+
+	void OnStartGame() override;
+
+	void Update(float dt) override;
+
+	void HandleMessage(const Systems::GameMessage& msg) override;
+
+	void OnDestroyGame() override;
+
+	void SetCurrentHP(int32_t hp) override;
+
+	/*void EnterPhase1();
+	void ExitPhase1();
+
+	void EnterPhase2();
+	void ExitPhase2();
+
+	void EnterPhase3();*/
+
+private:
+	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase1;
+
+	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase2;
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase2;
+
+	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase3;
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase3;
+
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
+
+	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
+	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
+	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
+
+	START_REFLECTION(Ichi)
+		ADD_BASETYPE(BaseBoss)
+		ADD_FIELD(m_meshPhase1)
+		ADD_FIELD(m_materialPhase1)
+		ADD_FIELD(m_meshPhase2)
+		ADD_FIELD(m_materialPhase2)
+		ADD_FIELD(m_meshPhase3)
+		ADD_FIELD(m_materialPhase3)
+		ADD_FIELD(m_counterBulletMaterial)
+		ADD_FIELD(m_currentHealthComp)
+		ADD_FIELD(m_totalHealthComp)
+		ADD_FIELD(m_collComp)
+	END_REFLECTION()
+
+private:
+
+	//void OnCollision(const Systems::ICollisionShape* pOther);
+
+	//void UpdateHPBar();
+};
