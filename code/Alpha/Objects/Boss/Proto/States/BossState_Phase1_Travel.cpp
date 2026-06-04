@@ -2,10 +2,10 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Objects/Boss/States/BossState_Phase1_Travel.h"
+#include "Alpha/Objects/Boss/Proto/States/BossState_Phase1_Travel.h"
 
-#include "Alpha/Objects/Boss/States/BossStateEnum.h"
-#include "Alpha/Objects/Boss/BossGameObject.h"
+#include "Alpha/Objects/Boss/Proto/States/BossStateEnum.h"
+#include "Alpha/Objects/Boss/Proto/BossGameObject.h"
 
 #include "Core/Log/LogModule.h"
 

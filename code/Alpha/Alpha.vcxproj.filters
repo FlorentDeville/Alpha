@@ -43,10 +43,10 @@
     <ClCompile Include="StateMachine\IState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase1_Travel.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase1_Attack.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Attack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp">
@@ -58,34 +58,34 @@
     <ClCompile Include="Inputs\GameCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\BossGameObject.cpp">
+    <ClCompile Include="Objects\Boss\Proto\BossGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Travel.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase2_Travel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Attack1.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase2_Attack1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase2_Attack2.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase2_Attack2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Travel.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase3_Travel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Attack1.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase3_Attack1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase3_Attack2.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase3_Attack2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Start.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Start.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase1_To_Phase2.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Boss\States\BossState_Phase2_To_Phase3.cpp">
+    <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase2_To_Phase3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp">
@@ -167,22 +167,22 @@
     <ClInclude Include="Bullets\Waves\WaveTest.h" />
     <ClInclude Include="StateMachine\IState.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase1_Travel.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase1_Attack.h" />
-    <ClInclude Include="Objects\Boss\States\BossStateEnum.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_Attack.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossStateEnum.h" />
     <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
     <ClInclude Include="Objects\Player\PlayerGameObject.h" />
     <ClInclude Include="Inputs\GameCommands.h" />
-    <ClInclude Include="Objects\Boss\BossGameObject.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Travel.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack1.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase2_Attack2.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Travel.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Attack1.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase3_Attack2.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Start.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase1_To_Phase2.h" />
-    <ClInclude Include="Objects\Boss\States\BossState_Phase2_To_Phase3.h" />
+    <ClInclude Include="Objects\Boss\Proto\BossGameObject.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase2_Travel.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase2_Attack1.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase2_Attack2.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase3_Travel.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase3_Attack1.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase3_Attack2.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Start.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.h" />
+    <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase2_To_Phase3.h" />
     <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />

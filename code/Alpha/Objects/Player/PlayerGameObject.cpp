@@ -6,7 +6,7 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
-#include "Alpha/Objects/Boss/BossGameObject.h"
+#include "Alpha/Objects/Boss/Proto/BossGameObject.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 #include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"

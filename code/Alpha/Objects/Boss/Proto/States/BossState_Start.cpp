@@ -2,10 +2,10 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Objects/Boss/States/BossState_Start.h"
+#include "Alpha/Objects/Boss/Proto/States/BossState_Start.h"
 
-#include "Alpha/Objects/Boss/States/BossStateEnum.h"
-#include "Alpha/Objects/Boss/BossGameObject.h"
+#include "Alpha/Objects/Boss/Proto/States/BossStateEnum.h"
+#include "Alpha/Objects/Boss/Proto/BossGameObject.h"
 
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"

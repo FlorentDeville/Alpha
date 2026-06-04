@@ -5,7 +5,7 @@
 #include "Alpha/Bullets/Waves/WaveMachineGun.h"
 
 #include "Alpha/Bullets/Bullets.h"
-#include "Alpha/Objects/Boss/BossGameObject.h"
+#include "Alpha/Objects/Boss/Proto/BossGameObject.h"
 #include "Alpha/Objects/Player/PlayerGameObject.h"
 
 #include "Core/Math/Constants.h"
