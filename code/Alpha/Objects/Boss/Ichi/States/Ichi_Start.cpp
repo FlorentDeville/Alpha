@@ -20,8 +20,8 @@ Ichi_Start::Ichi_Start(StateMachine* pStateMachine, Ichi* pIchi)
 	m_stateWaitParam.m_duration = 2;
 
 	m_stateRumbleParam.m_duration = 5;
-	m_stateRumbleParam.m_intensity = 10.f;
-	m_stateRumbleParam.m_frequency = 15;
+	m_stateRumbleParam.m_intensity = 0.05f;
+	m_stateRumbleParam.m_frequency = 40;
 
 	m_stateLiftoffParam.m_duration = 0.2f;
 	m_stateLiftoffParam.m_distance = 1.5f;
@@ -84,12 +84,11 @@ void Ichi_Start::Update_Rumble()
 	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 	if (m_stateStartTime + m_stateRumbleParam.m_duration <= currentTime)
 	{
-		Core::LogModule::Get().LogInfo("Liftoff");
-		m_pIchi->GetTransform().SetLocalTranslation(m_stateRumbleParam.m_initialPosition);
-		m_stateLiftoffParam.m_initialPosition = m_stateRumbleParam.m_initialPosition;
-
 		m_state = LIFTOFF;
 		m_stateStartTime = currentTime;
+
+		Enter_Liftoff();
+
 		return;
 	}
 
@@ -100,6 +99,16 @@ void Ichi_Start::Update_Rumble()
 	Core::Vec4f offsetVector(offset, 0, 0, 0);
 
 	m_pIchi->GetTransform().SetLocalTranslation(m_stateRumbleParam.m_initialPosition + offsetVector);
+}
+
+void Ichi_Start::Enter_Liftoff()
+{
+	Core::LogModule::Get().LogInfo("Liftoff");
+	m_pIchi->GetTransform().SetLocalTranslation(m_stateRumbleParam.m_initialPosition);
+	m_stateLiftoffParam.m_initialPosition = m_stateRumbleParam.m_initialPosition;
+
+	//spawn the effects
+	m_pIchi->SpawnEngineEffects();
 }
 
 void Ichi_Start::Update_Liftoff()

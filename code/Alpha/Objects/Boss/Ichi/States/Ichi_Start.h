@@ -71,6 +71,9 @@ private:
 
 	void Update_Wait();
 	void Update_Rumble();
+
+	void Enter_Liftoff();
 	void Update_Liftoff();
+	
 	void Update_Over();
 };

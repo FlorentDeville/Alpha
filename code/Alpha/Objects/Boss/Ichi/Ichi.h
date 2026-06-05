@@ -11,15 +11,20 @@
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
+#include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 #include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 
 ENABLE_GAME_REFLECTION(Ichi)
 
+class Ichi_Start;
+
 class Ichi : public BaseBoss
 {
 	using BaseClass = BaseBoss;
+
+	friend class Ichi_Start;
 
 public:
 	Ichi();
@@ -42,6 +47,9 @@ public:
 	void ExitPhase2();
 
 	void EnterPhase3();*/
+
+	void SpawnEngineEffects();
+	void KillEngineEffects();
 
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
@@ -77,6 +85,8 @@ private:
 	END_REFLECTION()
 
 private:
+	static const uint8_t ENGINE_EFFECT_COUNT = 4;
+	Systems::ParticleEffectHandle m_engineEffectHandle[ENGINE_EFFECT_COUNT];
 
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
