@@ -27,6 +27,12 @@ void Ichi_Phase1_Travel::OnEnter()
 
 void Ichi_Phase1_Travel::OnUpdate()
 { 
+	if (!m_pIchi->IsInMotionState(IchiMotionState::STOP))
+		return;
+
+	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
+	Core::Vec4f target = currentPosition - Core::Vec4f(20, 0, 0, 0);
+	m_pIchi->GoToMotionStateTravel(target);
 }
 
 void Ichi_Phase1_Travel::OnExit()
