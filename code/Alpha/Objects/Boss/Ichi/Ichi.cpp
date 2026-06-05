@@ -5,6 +5,9 @@
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
 #include "Alpha/StateMachine/StateMachine.h"
+#include "Alpha/Objects/Boss/Ichi/Motion/IchiMotionState.h"
+#include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Idle.h"
+#include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Stop.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Travel.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Start.h"
@@ -24,7 +27,10 @@ Ichi::Ichi()
 }
 
 Ichi::~Ichi()
-{ }
+{
+	delete m_pMotionStateMachine;
+	m_pMotionStateMachine = nullptr;
+}
 
 void Ichi::OnStartGame()
 {
@@ -37,6 +43,14 @@ void Ichi::OnStartGame()
 	m_pStateMachine->AddState(new Ichi_Phase1_Travel(m_pStateMachine, this), IchiStateEnum::PHASE1_TRAVEL);
 
 	m_pStateMachine->Start(IchiStateEnum::START);
+
+	m_pMotionStateMachine = new StateMachine();
+	m_pMotionStateMachine->Init(IchiMotionState::COUNT);
+
+	m_pMotionStateMachine->AddState(new IchiMotionStop(m_pMotionStateMachine, this), IchiMotionState::STOP);
+	m_pMotionStateMachine->AddState(new IchiMotionIdle(m_pMotionStateMachine, this), IchiMotionState::IDLE);
+
+	m_pMotionStateMachine->Start(IchiMotionState::STOP);
 }
 
 void Ichi::Update(float dt)
@@ -44,6 +58,7 @@ void Ichi::Update(float dt)
 	BaseClass::Update(dt);
 
 	m_pStateMachine->Update();
+	m_pMotionStateMachine->Update();
 }
 
 void Ichi::HandleMessage(const Systems::GameMessage& msg)
@@ -59,6 +74,9 @@ void Ichi::OnDestroyGame()
 
 	delete m_pStateMachine;
 	m_pStateMachine = nullptr;
+
+	delete m_pMotionStateMachine;
+	m_pMotionStateMachine = nullptr;
 }
 
 void Ichi::SetCurrentHP(int32_t hp)

@@ -99,6 +99,8 @@ private:
 		Core::Vec4f ComputeOffset() const;
 	};
 
+	StateMachine* m_pMotionStateMachine;
+
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
 	//void UpdateHPBar();
