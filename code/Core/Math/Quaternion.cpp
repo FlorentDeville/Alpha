@@ -74,6 +74,22 @@ namespace Core
 		return Quaternion(x, y, z, w);
 	}
 
+	Quaternion Quaternion::FromAxisAngle(const Core::Vec4f& axis, float angle)
+	{
+		float halfAngle = angle * 0.5f;
+
+		float cosAngle = cos(halfAngle);
+		float sinAngle = sin(halfAngle);
+
+		Core::Vec4f tempAxis = axis;
+		tempAxis.Set(3, 1);
+
+		Core::Vec4f cossin(sinAngle, sinAngle, sinAngle, cosAngle);
+
+		Core::Vec4f result = tempAxis * cossin;
+		return Quaternion(result.GetX(), result.GetY(), result.GetZ(), result.GetW());
+	}
+
 	bool Quaternion::operator==(const Quaternion& other) const
 	{
 		__m128 res = _mm_cmpeq_ps(m_data, other.m_data);
