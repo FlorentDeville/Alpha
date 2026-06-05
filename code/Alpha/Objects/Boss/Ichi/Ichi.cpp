@@ -6,6 +6,7 @@
 
 #include "Alpha/StateMachine/StateMachine.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Travel.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Start.h"
 
 #include "Core/Log/LogModule.h"
@@ -33,6 +34,7 @@ void Ichi::OnStartGame()
 	m_pStateMachine->Init(IchiStateEnum::COUNT);
 
 	m_pStateMachine->AddState(new Ichi_Start(m_pStateMachine, this), IchiStateEnum::START);
+	m_pStateMachine->AddState(new Ichi_Phase1_Travel(m_pStateMachine, this), IchiStateEnum::PHASE1_TRAVEL);
 
 	m_pStateMachine->Start(IchiStateEnum::START);
 }

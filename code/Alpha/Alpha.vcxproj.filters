@@ -103,6 +103,9 @@
     <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Start.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase1_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -199,6 +202,7 @@
     <ClInclude Include="Objects\Boss\Ichi\Ichi.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\IchiStateEnum.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Start.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_Travel.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
