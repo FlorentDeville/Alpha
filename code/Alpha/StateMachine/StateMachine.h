@@ -26,6 +26,8 @@ public:
 
 	template<typename T> T* GetState(uint32_t stateIndex);
 
+	bool IsInState(uint32_t stateIndex) const;
+
 private:
 	Core::Array<IState*> m_states;
 

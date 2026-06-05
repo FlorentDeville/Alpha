@@ -59,3 +59,8 @@ uint32_t StateMachine::GetCurrentState() const
 {
 	return m_currentState;
 }
+
+bool StateMachine::IsInState(uint32_t stateIndex) const
+{
+	return m_currentState == stateIndex;
+}

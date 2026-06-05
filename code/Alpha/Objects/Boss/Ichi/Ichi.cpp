@@ -138,3 +138,8 @@ void Ichi::GoToMotionStateTravel(const Core::Vec4f& target)
 
 	m_pMotionStateMachine->GoTo(IchiMotionState::TRAVEL);
 }
+
+bool Ichi::IsInMotionState(IchiMotionState::Type state) const
+{
+	return m_pMotionStateMachine->IsInState(state);
+}

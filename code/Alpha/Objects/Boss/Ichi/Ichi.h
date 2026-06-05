@@ -55,6 +55,8 @@ public:
 	void GoToMotionState(IchiMotionState::Type newState);
 	void GoToMotionStateTravel(const Core::Vec4f& target);
 
+	bool IsInMotionState(IchiMotionState::Type state) const;
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase1;
