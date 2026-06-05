@@ -4,6 +4,8 @@
 
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Start.h"
 
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
+
 #include "Core/Log/LogModule.h"
 
 #include "Systems/Game/GameContext.h"
@@ -26,7 +28,7 @@ Ichi_Start::Ichi_Start(StateMachine* pStateMachine, Ichi* pIchi)
 	m_stateLiftoffParam.m_duration = 0.2f;
 	m_stateLiftoffParam.m_distance = 1.5f;
 
-	m_stateOverParam.m_duration = 0.5;
+	m_stateOverParam.m_duration = 3;
 
 	m_stateStartTime = 0;
 }
@@ -144,6 +146,13 @@ void Ichi_Start::Enter_Over()
 
 void Ichi_Start::Update_Over()
 {
+	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
+	if (m_stateStartTime + m_stateOverParam.m_duration <= currentTime)
+	{
+		GoTo(IchiStateEnum::PHASE1_TRAVEL);
+		return;
+	}
+
 	Core::Vec4f offset = m_idleParam.ComputeOffset();
 	m_pIchi->GetTransform().SetLocalTranslation(m_idleParam.m_initialPosition + offset);
 }
