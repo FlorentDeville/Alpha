@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Alpha/Objects/Boss/BaseBoss.h"
+#include "Alpha/Objects/Boss/Ichi/Motion/IchiMotionState.h"
 
 #include "Core/Reflection/ReflectionMacro.h"
 
@@ -51,6 +52,8 @@ public:
 	void SpawnEngineEffects();
 	void KillEngineEffects();
 
+	void GoToMotionState(IchiMotionState::Type newState);
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase1;
@@ -87,17 +90,6 @@ private:
 private:
 	static const uint8_t ENGINE_EFFECT_COUNT = 4;
 	Systems::ParticleEffectHandle m_engineEffectHandle[ENGINE_EFFECT_COUNT];
-
-	class IdleBouncingMotion
-	{
-	public:
-		Core::Vec4f m_initialPosition;
-		float m_amplitude;
-		float m_frequency;
-		float m_startTime;
-
-		Core::Vec4f ComputeOffset() const;
-	};
 
 	StateMachine* m_pMotionStateMachine;
 

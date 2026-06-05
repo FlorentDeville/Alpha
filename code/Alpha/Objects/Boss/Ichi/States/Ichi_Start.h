@@ -66,8 +66,6 @@ private:
 	ParameterStateLiftoff m_stateLiftoffParam;
 	ParameterStateOver m_stateOverParam;
 
-	Ichi::IdleBouncingMotion m_idleParam;
-
 	float m_stateStartTime;
 
 	void Update_Wait();
