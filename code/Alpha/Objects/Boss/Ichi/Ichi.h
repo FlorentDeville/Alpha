@@ -88,6 +88,17 @@ private:
 	static const uint8_t ENGINE_EFFECT_COUNT = 4;
 	Systems::ParticleEffectHandle m_engineEffectHandle[ENGINE_EFFECT_COUNT];
 
+	class IdleBouncingMotion
+	{
+	public:
+		Core::Vec4f m_initialPosition;
+		float m_amplitude;
+		float m_frequency;
+		float m_startTime;
+
+		Core::Vec4f ComputeOffset() const;
+	};
+
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
 	//void UpdateHPBar();

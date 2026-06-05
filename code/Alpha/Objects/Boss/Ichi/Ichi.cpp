@@ -102,3 +102,11 @@ void Ichi::KillEngineEffects()
 		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
 	}
 }
+
+Core::Vec4f Ichi::IdleBouncingMotion::ComputeOffset() const
+{
+	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
+
+	float value = sinf((pClock->GetTime() - m_startTime) * m_frequency) * m_amplitude;
+	return Core::Vec4f(0, value, 0, 0);
+}

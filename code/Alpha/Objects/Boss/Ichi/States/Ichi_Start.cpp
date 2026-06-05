@@ -116,9 +116,11 @@ void Ichi_Start::Update_Liftoff()
 	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 	if (m_stateStartTime + m_stateLiftoffParam.m_duration <= currentTime)
 	{
-		Core::LogModule::Get().LogInfo("Over");
+		
 		m_state = OVER;
 		m_stateStartTime = currentTime;
+
+		Enter_Over();
 		return;
 	}
 
@@ -130,7 +132,18 @@ void Ichi_Start::Update_Liftoff()
 	m_pIchi->GetTransform().SetLocalTranslation(m_stateRumbleParam.m_initialPosition + offsetVector);
 }
 
+void Ichi_Start::Enter_Over()
+{
+	Core::LogModule::Get().LogInfo("Over");
+
+	m_idleParam.m_initialPosition = m_pIchi->GetTransform().GetLocalSqt().GetTranslation();
+	m_idleParam.m_startTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
+	m_idleParam.m_amplitude = 0.5f;
+	m_idleParam.m_frequency = 2;
+}
+
 void Ichi_Start::Update_Over()
 {
-
+	Core::Vec4f offset = m_idleParam.ComputeOffset();
+	m_pIchi->GetTransform().SetLocalTranslation(m_idleParam.m_initialPosition + offset);
 }
