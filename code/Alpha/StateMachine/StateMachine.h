@@ -24,9 +24,16 @@ public:
 
 	uint32_t GetCurrentState() const;
 
+	template<typename T> T* GetState(uint32_t stateIndex);
+
 private:
 	Core::Array<IState*> m_states;
 
 	uint32_t m_currentState;
 	uint32_t m_nextState;
 };
+
+template<typename T> T* StateMachine::GetState(uint32_t stateIndex)
+{
+	return static_cast<T*>(m_states[stateIndex]);
+}

@@ -21,14 +21,4 @@ public:
 
 private:
 	Ichi* m_pIchi;
-
-	Core::Vec4f m_target;
-	float m_distanceAcc;
-	float m_distanceMaxSpeed;
-	float m_distanceDec;
-
-	float m_startTime;
-	float m_speed;
-	float m_length2;
-	float m_halfLength2;
 };

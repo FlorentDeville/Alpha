@@ -53,6 +53,7 @@ public:
 	void KillEngineEffects();
 
 	void GoToMotionState(IchiMotionState::Type newState);
+	void GoToMotionStateTravel(const Core::Vec4f& target);
 
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;

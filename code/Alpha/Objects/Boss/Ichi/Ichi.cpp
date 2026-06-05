@@ -8,6 +8,7 @@
 #include "Alpha/Objects/Boss/Ichi/Motion/IchiMotionState.h"
 #include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Idle.h"
 #include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Stop.h"
+#include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Travel.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Travel.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Start.h"
@@ -21,6 +22,7 @@
 
 Ichi::Ichi()
 	: BaseClass()
+	, m_pMotionStateMachine(nullptr)
 {
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
@@ -49,6 +51,7 @@ void Ichi::OnStartGame()
 
 	m_pMotionStateMachine->AddState(new IchiMotionStop(m_pMotionStateMachine, this), IchiMotionState::STOP);
 	m_pMotionStateMachine->AddState(new IchiMotionIdle(m_pMotionStateMachine, this), IchiMotionState::IDLE);
+	m_pMotionStateMachine->AddState(new IchiMotionTravel(m_pMotionStateMachine, this), IchiMotionState::TRAVEL);
 
 	m_pMotionStateMachine->Start(IchiMotionState::STOP);
 }
@@ -126,4 +129,12 @@ void Ichi::KillEngineEffects()
 void Ichi::GoToMotionState(IchiMotionState::Type newState)
 {
 	m_pMotionStateMachine->GoTo(newState);
+}
+
+void Ichi::GoToMotionStateTravel(const Core::Vec4f& target)
+{
+	IchiMotionTravel* pState = m_pMotionStateMachine->GetState<IchiMotionTravel>(IchiMotionState::TRAVEL);
+	pState->SetTarget(target);
+
+	m_pMotionStateMachine->GoTo(IchiMotionState::TRAVEL);
 }
