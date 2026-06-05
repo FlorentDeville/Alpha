@@ -19,7 +19,7 @@ namespace Core
 
 		void SetTranslation(const Vec4f& translation);
 		void SetRotationQuaternion(const Vec4f& eulerAngles);
-		void SetRotationQuaternion(const Quaternion& eulerAngles);
+		void SetRotationQuaternion(const Quaternion& quat);
 		void SetScale(const Vec4f& scale);
 
 		const Vec4f& GetTranslation() const;
