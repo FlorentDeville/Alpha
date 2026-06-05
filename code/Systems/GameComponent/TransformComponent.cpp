@@ -59,6 +59,12 @@ namespace Systems
 		SetIsDirty();
 	}
 
+	void TransformComponent::SetLocalRotation(const Core::Quaternion& rotation)
+	{
+		m_localSqt.SetRotationQuaternion(rotation);
+		SetIsDirty();
+	}
+
 	const Core::Guid& TransformComponent::GetParentGuid() const
 	{
 		return m_parent;

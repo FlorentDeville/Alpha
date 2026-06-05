@@ -35,6 +35,7 @@ namespace Systems
 
 		void SetLocalTx(const Core::Mat44f& localTx);
 		void SetLocalTranslation(const Core::Vec4f& translation);
+		void SetLocalRotation(const Core::Quaternion& rotation);
 
 		const Core::Guid& GetParentGuid() const;
 		const Systems::GameObject* GetParent() const;
