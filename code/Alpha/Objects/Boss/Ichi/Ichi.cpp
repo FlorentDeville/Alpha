@@ -170,3 +170,13 @@ bool Ichi::IsInMotionState(IchiMotionState::Type state) const
 {
 	return m_pMotionStateMachine->IsInState(state);
 }
+
+Systems::MeshAsset* Ichi::GetBulletMesh()
+{
+	return m_bulletMesh.GetPtr();
+}
+
+Systems::MaterialInstanceAsset* Ichi::GetBulletMaterial()
+{
+	return m_bulletMaterial.GetPtr();
+}

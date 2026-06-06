@@ -19,14 +19,9 @@
 
 ENABLE_GAME_REFLECTION(Ichi)
 
-class Ichi_Start;
-
 class Ichi : public BaseBoss
 {
 	using BaseClass = BaseBoss;
-
-	friend class Ichi_Start;
-	friend class Ichi_Phase1_Travel;
 
 public:
 	Ichi();
@@ -58,6 +53,9 @@ public:
 
 	bool IsInMotionState(IchiMotionState::Type state) const;
 
+	Systems::MeshAsset* GetBulletMesh();
+	Systems::MaterialInstanceAsset* GetBulletMaterial();
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase1;
@@ -68,6 +66,8 @@ private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase3;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase3;
 
+	Systems::HardAssetRef<Systems::MeshAsset> m_bulletMesh;
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_bulletMaterial;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
 
 	Systems::HardAssetRef<Systems::ParticleEffectAsset> m_engineEffect;
@@ -85,6 +85,8 @@ private:
 		ADD_FIELD(m_meshPhase3)
 		ADD_FIELD(m_materialPhase3)
 		ADD_FIELD(m_engineEffect)
+		ADD_FIELD(m_bulletMesh)
+		ADD_FIELD(m_bulletMaterial)
 		ADD_FIELD(m_counterBulletMaterial)
 		ADD_FIELD(m_currentHealthComp)
 		ADD_FIELD(m_totalHealthComp)

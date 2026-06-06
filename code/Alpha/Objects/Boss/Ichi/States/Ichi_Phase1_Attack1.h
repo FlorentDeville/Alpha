@@ -8,12 +8,13 @@
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
 class Ichi;
+class WaveTest;
 
 class Ichi_Phase1_Attack1 : public IState
 {
 public:
 	Ichi_Phase1_Attack1(StateMachine* pStateMachine, Ichi* pIchi);
-	~Ichi_Phase1_Attack1() = default;
+	~Ichi_Phase1_Attack1();
 
 	void OnEnter() override;
 	void OnUpdate() override;
@@ -22,6 +23,8 @@ public:
 private:
 	Ichi* m_pIchi;
 
-	float m_currentRotation;
+	WaveTest* m_pWave;
+
 	float m_rotationSpeed;
+	uint32_t m_waveIndex;
 };

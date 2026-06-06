@@ -4,6 +4,9 @@
 
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack1.h"
 
+#include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Bullets/Waves/WaveTest.h"
+
 #include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
 
@@ -14,13 +17,31 @@
 Ichi_Phase1_Attack1::Ichi_Phase1_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
+	, m_rotationSpeed(0)
 {
+	const uint32_t BULLET_COUNT = 50;
+	m_pWave = new WaveTest(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
+	m_waveIndex = BulletSubsystem::GetSubsystem()->AddWave(m_pWave);
+
+	BulletSubsystem::GetSubsystem()->InitWave(m_waveIndex);
+}
+
+Ichi_Phase1_Attack1::~Ichi_Phase1_Attack1()
+{
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->DestroyWave(m_waveIndex);
+	pSubsystem->RemoveWave(m_waveIndex);
+
+	delete m_pWave;
+	m_pWave = nullptr;
+	m_waveIndex = UINT32_MAX;
 }
 
 void Ichi_Phase1_Attack1::OnEnter()
 {
-	m_currentRotation = 0;
 	m_rotationSpeed = 0.5f;
+
+	BulletSubsystem::GetSubsystem()->StartWave(m_waveIndex, m_pIchi->GetTransform().GetWorldTx().GetT());
 }
 
 void Ichi_Phase1_Attack1::OnUpdate()
