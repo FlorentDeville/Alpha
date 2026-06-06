@@ -18,9 +18,9 @@
 
 IchiWaveP1A1::IchiWaveP1A1(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount, float rotationOffset)
 	: IBulletWave()
-	, m_showDuration(0.5f)
-	, m_showTime(0)
-	, m_currentState(State::SHOW)
+	, m_warmupDuration(1.5f)
+	, m_warmupElapsedTime(0)
+	, m_currentState(State::WARMUP)
 	, m_currentScale(0)
 	, m_rotationOffset(rotationOffset)
 {
@@ -67,8 +67,8 @@ void IchiWaveP1A1::Start(Bullets& bullets, const Core::Vec4f& pos)
 	}
 
 	m_isAlive = true;
-	m_currentState = State::SHOW;
-	m_showTime = 0;
+	m_currentState = State::WARMUP;
+	m_warmupElapsedTime = 0;
 	m_currentScale = 0;
 }
 
@@ -79,16 +79,16 @@ void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 
 	switch (m_currentState)
 	{
-	case State::SHOW:
+	case State::WARMUP:
 	{
-		m_showTime += dt;
-		if (m_showTime >= m_showDuration)
+		m_warmupElapsedTime += dt;
+		if (m_warmupElapsedTime >= m_warmupDuration)
 		{
 			m_currentState = State::FIRE;
 			break;
 		}
 
-		m_currentScale = m_showTime / m_showDuration;
+		m_currentScale = m_warmupElapsedTime / m_warmupDuration;
 	}
 	break;
 

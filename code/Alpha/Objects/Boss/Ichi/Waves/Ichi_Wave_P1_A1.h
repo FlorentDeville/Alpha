@@ -24,15 +24,16 @@ private:
 
 	enum State
 	{
-		SHOW,	//the bullets appear progressiely
+		WARMUP,	//the bullets appear progressiely
 		FIRE,	//the bullets shoot through the level
 
 		COUNT
 	};
 
-	//show state
-	float m_showDuration;
-	float m_showTime;
+	//warmup state
+	float m_warmupDuration;
+	float m_warmupElapsedTime;
+
 	float m_currentScale;
 
 	State m_currentState;
