@@ -29,6 +29,14 @@ Core::Sid Ichi::ATTACH_POINTS_NAME[Ichi::ENGINE_EFFECT_COUNT] =
 	Core::MakeSid("engine3")
 };
 
+Core::Sid Ichi::ATTACH_POINT_PHASE1_GUN_NAME[Ichi::GUN_PHASE1_COUNT] =
+{
+	Core::MakeSid("gun0"),
+	Core::MakeSid("gun1"),
+	Core::MakeSid("gun2"),
+	Core::MakeSid("gun3")
+};
+
 Ichi::Ichi()
 	: BaseClass()
 	, m_pMotionStateMachine(nullptr)
@@ -69,13 +77,18 @@ void Ichi::OnStartGame()
 	{
 		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
 		if (pAp)
-		{
 			m_engineAttachPoints[ii] = pAp->GetLocator().GetMatrix();
-		}
 		else
-		{
-			Core::LogModule::Get().LogInfo("Can't find attach point for engine effect");
-		}
+			Core::LogModule::Get().LogInfo("Can't find attach point for engine");
+	}
+
+	for (uint8_t ii = 0; ii < GUN_PHASE1_COUNT; ++ii)
+	{
+		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINT_PHASE1_GUN_NAME[ii]);
+		if (pAp)
+			m_phase1GunsAttachPoints[ii] = pAp->GetLocator().GetMatrix();
+		else
+			Core::LogModule::Get().LogInfo("Can't find attach point for phase1 gun");
 	}
 }
 

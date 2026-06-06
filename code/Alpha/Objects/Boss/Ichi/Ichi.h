@@ -26,6 +26,7 @@ class Ichi : public BaseBoss
 	using BaseClass = BaseBoss;
 
 	friend class Ichi_Start;
+	friend class Ichi_Phase1_Travel;
 
 public:
 	Ichi();
@@ -93,6 +94,10 @@ private:
 private:
 	static const uint8_t ENGINE_EFFECT_COUNT = 4;
 	Systems::ParticleEffectHandle m_engineEffectHandle[ENGINE_EFFECT_COUNT];
+
+	static const uint8_t GUN_PHASE1_COUNT = 4;
+	static Core::Sid ATTACH_POINT_PHASE1_GUN_NAME[GUN_PHASE1_COUNT];
+	Core::Mat44f m_phase1GunsAttachPoints[GUN_PHASE1_COUNT];
 
 	StateMachine* m_pMotionStateMachine;
 
