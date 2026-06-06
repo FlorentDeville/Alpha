@@ -22,9 +22,11 @@ namespace Core
 		Core::Vec4f ToEulerAngles() const;
 
 		static Quaternion FromEulerAngles(const Core::Vec4f& eulerAngles);
+		static Quaternion FromEulerAngles(float x, float y, float z);
 		static Quaternion FromAxisAngle(const Core::Vec4f& axis, float angle);
 
 		bool operator==(const Quaternion& other) const;
+		Quaternion operator*(const Quaternion& other) const;
 
 		float GetX() const;
 		float GetY() const;

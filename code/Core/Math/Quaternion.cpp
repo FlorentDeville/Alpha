@@ -74,6 +74,11 @@ namespace Core
 		return Quaternion(x, y, z, w);
 	}
 
+	Quaternion Quaternion::FromEulerAngles(float x, float y, float z)
+	{
+		return FromEulerAngles(Core::Vec4f(x, y, z, 0));
+	}
+
 	Quaternion Quaternion::FromAxisAngle(const Core::Vec4f& axis, float angle)
 	{
 		float halfAngle = angle * 0.5f;
@@ -99,6 +104,20 @@ namespace Core
 
 		// Check if all bits in the mask are set (i.e., equal to 0xF or 15)
 		return mask == 0xF;
+	}
+
+	Quaternion Quaternion::operator*(const Quaternion& other) const
+	{
+		//for quaternion expressed as a scalar and a vector : q1 = (s1, v1) and q2 = (s2, v2)
+		// q1 * q2 = (s1 * s2 - v1 . v2, s1v2 + s2v1 + v1 X v2)
+
+		Core::Vec4f v1(m_data);
+		Core::Vec4f v2(other.m_data);
+		
+		float scalarPart = (GetW() * other.GetW()) - (v1.Dot(v2));
+		Core::Vec4f vectorPart = v2 * GetW() + v1 * other.GetW() + v1.Cross(v2);
+
+		return Quaternion(vectorPart.GetX(), vectorPart.GetY(), vectorPart.GetZ(), scalarPart);
 	}
 
 	float Quaternion::GetX() const
