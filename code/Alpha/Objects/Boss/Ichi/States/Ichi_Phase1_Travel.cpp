@@ -18,21 +18,25 @@ Ichi_Phase1_Travel::Ichi_Phase1_Travel(StateMachine* pStateMachine, Ichi* pIchi)
 
 void Ichi_Phase1_Travel::OnEnter()
 {
+	m_currentTarget = 0;
+
 	//compute final point
 	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
-	Core::Vec4f target = currentPosition + Core::Vec4f(20, 0, 0, 0);
-
-	m_pIchi->GoToMotionStateTravel(target);
+	m_target[0] = currentPosition + Core::Vec4f(20, 0, 0, 0);
+	m_target[1] = currentPosition;// -Core::Vec4f(20, 0, 0, 0);
 }
 
 void Ichi_Phase1_Travel::OnUpdate()
-{ 
+{
+	if (m_currentTarget >= TARGET_COUNT)
+		return;
+
 	if (!m_pIchi->IsInMotionState(IchiMotionState::STOP))
 		return;
 
-	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
-	Core::Vec4f target = currentPosition - Core::Vec4f(20, 0, 0, 0);
-	m_pIchi->GoToMotionStateTravel(target);
+	m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
+
+	++m_currentTarget;
 }
 
 void Ichi_Phase1_Travel::OnExit()
