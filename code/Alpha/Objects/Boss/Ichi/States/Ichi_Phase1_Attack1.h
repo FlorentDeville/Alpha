@@ -8,7 +8,7 @@
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
 class Ichi;
-class WaveTest;
+class IchiWaveP1A1;
 
 class Ichi_Phase1_Attack1 : public IState
 {
@@ -23,7 +23,7 @@ public:
 private:
 	Ichi* m_pIchi;
 
-	WaveTest* m_pWave;
+	IchiWaveP1A1* m_pWave;
 
 	float m_rotationSpeed;
 	uint32_t m_waveIndex;

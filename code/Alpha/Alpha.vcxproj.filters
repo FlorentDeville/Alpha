@@ -118,6 +118,9 @@
     <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -220,6 +223,7 @@
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Stop.h" />
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Travel.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack1.h" />
+    <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A1.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

@@ -5,7 +5,7 @@
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack1.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
-#include "Alpha/Bullets/Waves/WaveTest.h"
+#include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 
 #include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
@@ -20,7 +20,7 @@ Ichi_Phase1_Attack1::Ichi_Phase1_Attack1(StateMachine* pStateMachine, Ichi* pIch
 	, m_rotationSpeed(0)
 {
 	const uint32_t BULLET_COUNT = 50;
-	m_pWave = new WaveTest(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
+	m_pWave = new IchiWaveP1A1(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
 	m_waveIndex = BulletSubsystem::GetSubsystem()->AddWave(m_pWave);
 
 	BulletSubsystem::GetSubsystem()->InitWave(m_waveIndex);
