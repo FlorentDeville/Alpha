@@ -45,11 +45,12 @@ namespace Systems
 		ParticleEmitterRuntime();
 		~ParticleEmitterRuntime();
 
-		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime, 
-			Systems::Texture2DAsset* pTexture);
+		void Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& lsTx,
+			const Core::Mat44f& wsTx, float currentTime, Systems::Texture2DAsset* pTexture);
 
 		void UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, Systems::Texture2DAsset* pTexture);
 
+		void SetWsTransform(const Core::Mat44f& wsTx);
 		void SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig);
 
 		void Update(float currentTime, float dtInSeconds);
@@ -62,7 +63,8 @@ namespace Systems
 
 	private:
 		Particles m_particles;
-		Core::Mat44f m_transform;
+		Core::Mat44f m_lsTx;			// local space transform coming from the effect asset
+		Core::Mat44f m_transform;		// world space transform, m_lsTx * parentSpace
 		Core::Vec4f m_acceleration;
 		Core::Vec4f m_speed;
 		int m_spawnRate;

@@ -50,9 +50,10 @@ namespace Systems
 		const Core::Float3& emitterSpeed = emitter.GetSpeed();
 		Core::Vec4f speed(emitterSpeed.x, emitterSpeed.y, emitterSpeed.z, 0);
 
-		Core::Mat44f finalTransform = emitter.GetTransform().GetMatrix() * world;
+		Core::Mat44f lsTx = emitter.GetTransform().GetMatrix();
+		Core::Mat44f finalTransform = lsTx * world;
 
-		trackedEmitter.m_pEmitter->Init(emitter.GetSpawnRate(), emitter.GetLifetime(), acceleration, speed, finalTransform, currentTime, emitter.GetTexture());
+		trackedEmitter.m_pEmitter->Init(emitter.GetSpawnRate(), emitter.GetLifetime(), acceleration, speed, lsTx, finalTransform, currentTime, emitter.GetTexture());
 
 		ParticleEffectHandle handle;
 		handle.m_index = index;
@@ -62,15 +63,9 @@ namespace Systems
 
 	void ParticleSystem::UpdateEffectParameters(ParticleEffectHandle handle, ParticleEffectAsset* pEffect, const Core::Mat44f& world)
 	{
-		//find the emitter
-		if (!m_emitters.IsValidIndex(handle.m_index))
+		ParticleEmitterRuntime* pEmitter = FindEffect(handle);
+		if (!pEmitter)
 			return;
-
-		TrackedEmitter& tracker = m_emitters[handle.m_index];
-		if (tracker.m_generation != tracker.m_generation)
-			return;
-
-		ParticleEmitterRuntime* pEmitter = tracker.m_pEmitter;
 
 		//now update the values
 		ParticleEmitter& emitterAsset = pEffect->GetEmitter();
@@ -83,6 +78,15 @@ namespace Systems
 		Core::Mat44f finalTransform = emitterAsset.GetTransform().GetMatrix() * world;
 
 		pEmitter->UpdateParameters(emitterAsset.GetSpawnRate(), emitterAsset.GetLifetime(), acceleration, speed, finalTransform, emitterAsset.GetTexture());
+	}
+
+	void ParticleSystem::UpdateTransform(ParticleEffectHandle handle, const Core::Mat44f& world)
+	{
+		ParticleEmitterRuntime* pEmitter = FindEffect(handle);
+		if (!pEmitter)
+			return;
+
+		pEmitter->SetWsTransform(world);
 	}
 
 	void ParticleSystem::KillEffect(ParticleEffectHandle handle)
@@ -155,5 +159,18 @@ namespace Systems
 		emitter.m_generation = 0;
 		emitter.m_pEmitter = nullptr;
 		return id;
+	}
+
+	ParticleEmitterRuntime* ParticleSystem::FindEffect(ParticleEffectHandle handle)
+	{
+		if (!m_emitters.IsValidIndex(handle.m_index))
+			return nullptr;
+
+		TrackedEmitter& tracker = m_emitters[handle.m_index];
+		if (tracker.m_generation != tracker.m_generation)
+			return nullptr;
+
+		ParticleEmitterRuntime* pEmitter = tracker.m_pEmitter;
+		return pEmitter;
 	}
 }

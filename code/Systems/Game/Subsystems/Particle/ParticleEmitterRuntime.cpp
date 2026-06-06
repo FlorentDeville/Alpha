@@ -32,6 +32,8 @@ namespace Systems
 		, m_lastSpawnTime(0)
 		, m_pIndexBuffer(nullptr)
 		, m_pIndexBufferPtr(nullptr)
+		, m_lsTx()
+		, m_transform()
 	{ }
 
 	ParticleEmitterRuntime::~ParticleEmitterRuntime()
@@ -40,13 +42,14 @@ namespace Systems
 		delete m_pPso;
 	}
 
-	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, float currentTime, 
-		Systems::Texture2DAsset* pTexture)
+	void ParticleEmitterRuntime::Init(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& lsTx, 
+		const Core::Mat44f& wsTx, float currentTime, Systems::Texture2DAsset* pTexture)
 	{
 		m_spawnRate = spawnRate;
 		m_lifetime = lifetime;
 		m_acceleration = acceleration;
-		m_transform = transform;
+		m_transform = wsTx;
+		m_lsTx = lsTx;
 		m_speed = speed;
 		m_pTexture = pTexture;
 
@@ -79,7 +82,8 @@ namespace Systems
 		m_lastSpawnTime = -1;
 	}
 
-	void ParticleEmitterRuntime::UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, const Core::Mat44f& transform, Systems::Texture2DAsset* pTexture)
+	void ParticleEmitterRuntime::UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, 
+		const Core::Mat44f& transform, Systems::Texture2DAsset* pTexture)
 	{
 		m_spawnRate = spawnRate;
 		m_lifetime = lifetime;
@@ -104,6 +108,11 @@ namespace Systems
 
 			m_particles.m_maxCount = maxCount;
 		}
+	}
+
+	void ParticleEmitterRuntime::SetWsTransform(const Core::Mat44f& wsTx)
+	{
+		m_transform = m_lsTx * wsTx;
 	}
 
 	void ParticleEmitterRuntime::SetMaterial(Rendering::PipelineState* pPso, Rendering::RootSignature* pRootSig)

@@ -40,6 +40,8 @@ namespace Systems
 		//Update the parameters of a currently running effect
 		void UpdateEffectParameters(ParticleEffectHandle handle, ParticleEffectAsset* pEffect, const Core::Mat44f& world);
 
+		void UpdateTransform(ParticleEffectHandle handle, const Core::Mat44f& world);
+
 		void KillEffect(ParticleEffectHandle handle);
 		void KillAllEffect();
 
@@ -65,5 +67,7 @@ namespace Systems
 		float m_lastUpdate;
 
 		uint32_t FindFreeSlot();
+
+		ParticleEmitterRuntime* FindEffect(ParticleEffectHandle handle);
 	};
 }
