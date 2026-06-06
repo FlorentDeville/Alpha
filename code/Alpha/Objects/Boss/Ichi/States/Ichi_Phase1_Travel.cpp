@@ -4,12 +4,7 @@
 
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Travel.h"
 
-#include "Core/Log/LogModule.h"
-#include "Core/Math/Constants.h"
-
-#include "Systems/Game/GameContext.h"
-#include "Systems/Game/GameMgr.h"
-#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 
 Ichi_Phase1_Travel::Ichi_Phase1_Travel(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
@@ -28,15 +23,17 @@ void Ichi_Phase1_Travel::OnEnter()
 
 void Ichi_Phase1_Travel::OnUpdate()
 {
-	if (m_currentTarget >= TARGET_COUNT)
-		return;
+	if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
+	{
+		if (m_currentTarget >= TARGET_COUNT)
+		{
+			GoTo(IchiStateEnum::PHASE1_ATTACK1);
+			return;
+		}
 
-	if (!m_pIchi->IsInMotionState(IchiMotionState::STOP))
-		return;
-
-	m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
-
-	++m_currentTarget;
+		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
+		++m_currentTarget;
+	}
 }
 
 void Ichi_Phase1_Travel::OnExit()

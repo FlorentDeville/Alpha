@@ -109,6 +109,7 @@
     <ClCompile Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Idle.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Stop.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Travel.cpp" />
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack1.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase1_Travel.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Start.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.cpp" />
@@ -479,6 +480,7 @@
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Stop.h" />
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Travel.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\IchiStateEnum.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack1.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_Travel.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Start.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossStateEnum.h" />
