@@ -20,6 +20,14 @@
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
+Core::Sid Ichi::ATTACH_POINTS_NAME[Ichi::ENGINE_EFFECT_COUNT] =
+{
+	Core::MakeSid("engine0"),
+	Core::MakeSid("engine1"),
+	Core::MakeSid("engine2"),
+	Core::MakeSid("engine3")
+};
+
 Ichi::Ichi()
 	: BaseClass()
 	, m_pMotionStateMachine(nullptr)
@@ -62,6 +70,21 @@ void Ichi::Update(float dt)
 
 	m_pStateMachine->Update();
 	m_pMotionStateMachine->Update();
+
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
+	{
+		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
+		if (pAp)
+		{
+			Core::Mat44f wsTx = pAp->GetLocator().GetMatrix() * GetTransform().GetWorldTx();
+			pParticleSystem->UpdateTransform(m_engineEffectHandle[ii], wsTx);
+		}
+		else
+		{
+			Core::LogModule::Get().LogInfo("Can't find attach point for engine effect");
+		}
+	}
 }
 
 void Ichi::HandleMessage(const Systems::GameMessage& msg)
@@ -91,14 +114,6 @@ void Ichi::SpawnEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
 	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
-
-	const Core::Sid ATTACH_POINTS_NAME[ENGINE_EFFECT_COUNT] =
-	{
-		CONSTSID("engine0"),
-		CONSTSID("engine1"),
-		CONSTSID("engine2"),
-		CONSTSID("engine3")
-	};
 
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 	{

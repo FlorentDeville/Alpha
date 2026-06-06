@@ -96,6 +96,8 @@ private:
 
 	StateMachine* m_pMotionStateMachine;
 
+	static Core::Sid ATTACH_POINTS_NAME[ENGINE_EFFECT_COUNT];
+
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
 	//void UpdateHPBar();
