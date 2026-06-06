@@ -62,6 +62,19 @@ void Ichi::OnStartGame()
 	m_pMotionStateMachine->AddState(new IchiMotionTravel(m_pMotionStateMachine, this), IchiMotionState::TRAVEL);
 
 	m_pMotionStateMachine->Start(IchiMotionState::STOP);
+
+	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
+	{
+		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
+		if (pAp)
+		{
+			m_engineAttachPoints[ii] = pAp->GetLocator().GetMatrix();
+		}
+		else
+		{
+			Core::LogModule::Get().LogInfo("Can't find attach point for engine effect");
+		}
+	}
 }
 
 void Ichi::Update(float dt)
@@ -74,16 +87,8 @@ void Ichi::Update(float dt)
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 	{
-		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
-		if (pAp)
-		{
-			Core::Mat44f wsTx = pAp->GetLocator().GetMatrix() * GetTransform().GetWorldTx();
-			pParticleSystem->UpdateTransform(m_engineEffectHandle[ii], wsTx);
-		}
-		else
-		{
-			Core::LogModule::Get().LogInfo("Can't find attach point for engine effect");
-		}
+		Core::Mat44f wsTx = m_engineAttachPoints[ii] * GetTransform().GetWorldTx();
+		pParticleSystem->UpdateTransform(m_engineEffectHandle[ii], wsTx);
 	}
 }
 
@@ -117,16 +122,8 @@ void Ichi::SpawnEngineEffects()
 
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 	{
-		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
-		if (pAp)
-		{
-			Core::Mat44f wsTx = pAp->GetLocator().GetMatrix() * GetTransform().GetWorldTx();
-			m_engineEffectHandle[ii] = pParticleSystem->SpawnEffect(m_engineEffect.GetPtr(), wsTx, pClock->GetTime());
-		}
-		else
-		{
-			Core::LogModule::Get().LogInfo("Can't find attach point for engine effect");
-		}
+		Core::Mat44f wsTx = m_engineAttachPoints[ii] * GetTransform().GetWorldTx();
+		m_engineEffectHandle[ii] = pParticleSystem->SpawnEffect(m_engineEffect.GetPtr(), wsTx, pClock->GetTime());
 	}
 }
 
