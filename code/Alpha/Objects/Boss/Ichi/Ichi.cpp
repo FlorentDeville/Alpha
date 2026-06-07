@@ -11,7 +11,19 @@
 #include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Travel.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack1.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack2.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Travel.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase2_Attack1.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase2_Attack2.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase2_Travel.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase3_Attack1.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase3_Attack2.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase3_Travel.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_To_Phase2.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase2_To_Phase3.h"
+#include "Alpha/Objects/Boss/Ichi/States/Ichi_Dying.h"
+
+
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Start.h"
 
 #include "Core/Log/LogModule.h"
@@ -61,6 +73,16 @@ void Ichi::OnStartGame()
 	m_pStateMachine->AddState(new Ichi_Start(m_pStateMachine, this), IchiStateEnum::START);
 	m_pStateMachine->AddState(new Ichi_Phase1_Travel(m_pStateMachine, this), IchiStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(new Ichi_Phase1_Attack1(m_pStateMachine, this), IchiStateEnum::PHASE1_ATTACK1);
+	m_pStateMachine->AddState(new Ichi_Phase1_Attack2(m_pStateMachine, this), IchiStateEnum::PHASE1_ATTACK2);
+	m_pStateMachine->AddState(new Ichi_Phase2_Travel(m_pStateMachine, this), IchiStateEnum::PHASE2_TRAVEL);
+	m_pStateMachine->AddState(new Ichi_Phase2_Attack1(m_pStateMachine, this), IchiStateEnum::PHASE2_ATTACK1);
+	m_pStateMachine->AddState(new Ichi_Phase2_Attack2(m_pStateMachine, this), IchiStateEnum::PHASE2_ATTACK2);
+	m_pStateMachine->AddState(new Ichi_Phase3_Travel(m_pStateMachine, this), IchiStateEnum::PHASE3_TRAVEL);
+	m_pStateMachine->AddState(new Ichi_Phase3_Attack1(m_pStateMachine, this), IchiStateEnum::PHASE3_ATTACK1);
+	m_pStateMachine->AddState(new Ichi_Phase3_Attack2(m_pStateMachine, this), IchiStateEnum::PHASE3_ATTACK2);
+	m_pStateMachine->AddState(new Ichi_Phase1_To_Phase2(m_pStateMachine, this), IchiStateEnum::PHASE1_TO_PHASE2);
+	m_pStateMachine->AddState(new Ichi_Phase2_To_Phase3(m_pStateMachine, this), IchiStateEnum::PHASE2_TO_PHASE3);
+	m_pStateMachine->AddState(new Ichi_Dying(m_pStateMachine, this), IchiStateEnum::DYING);
 
 	m_pStateMachine->Start(IchiStateEnum::START);
 	//m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK1);
