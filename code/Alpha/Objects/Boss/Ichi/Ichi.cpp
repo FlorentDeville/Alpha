@@ -62,8 +62,8 @@ void Ichi::OnStartGame()
 	m_pStateMachine->AddState(new Ichi_Phase1_Travel(m_pStateMachine, this), IchiStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(new Ichi_Phase1_Attack1(m_pStateMachine, this), IchiStateEnum::PHASE1_ATTACK1);
 
-	//m_pStateMachine->Start(IchiStateEnum::START);
-	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK1);
+	m_pStateMachine->Start(IchiStateEnum::START);
+	//m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK1);
 
 	m_pMotionStateMachine = new StateMachine();
 	m_pMotionStateMachine->Init(IchiMotionState::COUNT);

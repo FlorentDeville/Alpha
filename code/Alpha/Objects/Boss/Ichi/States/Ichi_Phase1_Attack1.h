@@ -32,6 +32,8 @@ private:
 	float m_warmupDuration; //time to wait before turning
 	float m_warmupStartTime;
 
+	static const float STATE_DURATION;
+
 	void UpdateWaves();
 	
 };

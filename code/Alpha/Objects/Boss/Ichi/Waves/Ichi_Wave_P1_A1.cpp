@@ -52,6 +52,8 @@ void IchiWaveP1A1::Destroy(Bullets& bullets)
 
 void IchiWaveP1A1::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 {
+	m_enableSpawn = true;
+
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
 		bullets.m_timeToLive[ii] = -1;
@@ -155,9 +157,16 @@ void IchiWaveP1A1::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
 	m_spawnSpeed = spawnSpeed;
 }
 
+void IchiWaveP1A1::DisableSpawn()
+{
+	m_enableSpawn = false;
+}
+
 void IchiWaveP1A1::SpawnBullet(Bullets& bullets)
 {
 	//assert(m_nextBulletToSpawn < m_endId);
+	if (!m_enableSpawn)
+		return;
 
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;

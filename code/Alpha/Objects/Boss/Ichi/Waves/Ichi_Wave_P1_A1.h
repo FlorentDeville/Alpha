@@ -23,6 +23,8 @@ public:
 	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
 	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
 
+	void DisableSpawn();
+
 private:
 
 	//parameters that can be modified at runtime
@@ -52,6 +54,8 @@ private:
 	uint32_t m_nextBulletToSpawn;
 
 	float m_lastBulletSpawnedTime;
+
+	bool m_enableSpawn;
 
 	void SpawnBullet(Bullets& bullets);
 };

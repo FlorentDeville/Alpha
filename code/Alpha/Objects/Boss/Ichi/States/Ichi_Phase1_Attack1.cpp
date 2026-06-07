@@ -5,6 +5,7 @@
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack1.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 
 #include "Core/Log/LogModule.h"
@@ -13,6 +14,8 @@
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+
+const float Ichi_Phase1_Attack1::STATE_DURATION = 15;
 
 Ichi_Phase1_Attack1::Ichi_Phase1_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
@@ -78,10 +81,19 @@ void Ichi_Phase1_Attack1::OnUpdate()
 
 		UpdateWaves();
 	}
+
+	if (m_warmupStartTime + STATE_DURATION <= currentTime)
+	{
+		GoTo(IchiStateEnum::PHASE1_TRAVEL);
+	}
 }
 
 void Ichi_Phase1_Attack1::OnExit()
 {
+	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		m_pWave[ii]->DisableSpawn();
+	}
 }
 
 void Ichi_Phase1_Attack1::UpdateWaves()
