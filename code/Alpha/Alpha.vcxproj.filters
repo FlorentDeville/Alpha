@@ -121,6 +121,36 @@
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Dying.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase1_To_Phase2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase2_Attack1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase2_Attack2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase2_To_Phase3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase2_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase3_Attack1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase3_Attack2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase3_Travel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -224,6 +254,16 @@
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Travel.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack1.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A1.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_Attack2.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Dying.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase1_To_Phase2.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase2_Attack1.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase2_Attack2.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase2_To_Phase3.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase2_Travel.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase3_Attack1.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase3_Attack2.h" />
+    <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase3_Travel.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
