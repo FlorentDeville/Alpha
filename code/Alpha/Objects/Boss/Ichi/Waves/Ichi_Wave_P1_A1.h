@@ -6,6 +6,8 @@
 
 #include "Alpha/Bullets/IBulletWave.h"
 
+#include "Core/Math/Vec4f.h"
+
 class IchiWaveP1A1 : public IBulletWave
 {
 public:
@@ -18,9 +20,18 @@ public:
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
 
+	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
+	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
+
 private:
 
+	//parameters that can be modified at runtime
+	Core::Vec4f m_spawnPosition;
+	Core::Vec4f m_spawnSpeed;
+	
 	float m_rotationOffset; //start location rotation offset in radian
+
+	//internal variables
 
 	enum State
 	{
@@ -37,4 +48,8 @@ private:
 	float m_currentScale;
 
 	State m_currentState;
+
+	uint32_t m_nextBulletToSpawn;
+
+	float m_lastBulletSpawnedTime;
 };

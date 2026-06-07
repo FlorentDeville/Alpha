@@ -23,8 +23,15 @@ public:
 private:
 	Ichi* m_pIchi;
 
-	IchiWaveP1A1* m_pWave;
+	static const uint8_t WAVE_COUNT = 4;
+	IchiWaveP1A1* m_pWave[WAVE_COUNT];
+	uint32_t m_waveIndex[WAVE_COUNT];
 
 	float m_rotationSpeed;
-	uint32_t m_waveIndex;
+
+	float m_warmupDuration; //time to wait before turning
+	float m_warmupStartTime;
+
+	void UpdateWaves();
+	
 };

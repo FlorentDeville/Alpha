@@ -62,7 +62,8 @@ void Ichi::OnStartGame()
 	m_pStateMachine->AddState(new Ichi_Phase1_Travel(m_pStateMachine, this), IchiStateEnum::PHASE1_TRAVEL);
 	m_pStateMachine->AddState(new Ichi_Phase1_Attack1(m_pStateMachine, this), IchiStateEnum::PHASE1_ATTACK1);
 
-	m_pStateMachine->Start(IchiStateEnum::START);
+	//m_pStateMachine->Start(IchiStateEnum::START);
+	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK1);
 
 	m_pMotionStateMachine = new StateMachine();
 	m_pMotionStateMachine->Init(IchiMotionState::COUNT);
@@ -179,4 +180,14 @@ Systems::MeshAsset* Ichi::GetBulletMesh()
 Systems::MaterialInstanceAsset* Ichi::GetBulletMaterial()
 {
 	return m_bulletMaterial.GetPtr();
+}
+
+const uint8_t Ichi::GetPhase1GunsAttachPointsCount() const
+{
+	return GUN_PHASE1_COUNT;
+}
+
+const Core::Mat44f* Ichi::GetPhase1GunsAttachPoints() const
+{
+	return m_phase1GunsAttachPoints;
 }

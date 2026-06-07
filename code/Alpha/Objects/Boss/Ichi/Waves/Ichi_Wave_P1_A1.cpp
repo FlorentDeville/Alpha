@@ -10,6 +10,9 @@
 #include "Core/Math/Vec4f.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 #include "Systems/Rendering/RenderPass/RenderView.h"
 
@@ -46,34 +49,33 @@ void IchiWaveP1A1::Destroy(Bullets& bullets)
 	bullets.Free(m_startId, m_count);
 }
 
-void IchiWaveP1A1::Start(Bullets& bullets, const Core::Vec4f& pos)
+void IchiWaveP1A1::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 {
-	// make a basic pattern where the spawn shape is a circle and bullets go in a straight line
-	const float ANGLE_INC = Core::TWO_PI / m_count;
-	const float CIRCLE_RADIUS = 2.f;
-	const float SPEED = 35.f;
-	for (uint32_t ii = 0; ii < m_count; ++ii)
+	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
-		float angle = (ii * ANGLE_INC) + m_rotationOffset;
-		float x = cos(angle);
-		float z = sin(angle);
-
-		bullets.m_positions[m_startId + ii] = pos + Core::Vec4f(x, 0, z, 0) * CIRCLE_RADIUS;
-		bullets.m_speed[m_startId + ii] = Core::Vec4f(x, 0, z, 0) * SPEED;
-		bullets.m_acceleration[m_startId + ii] = Core::Vec4f(0, 0, 0, 0);
-		bullets.m_timeToLive[m_startId + ii] = 2;
-		bullets.m_type[m_startId + ii] = BulletType::NORMAL;
-		bullets.m_state[m_startId + ii] = BulletState::ATTACK;
+		bullets.m_timeToLive[ii] = -1;
 	}
 
+	m_nextBulletToSpawn = m_startId;
 	m_isAlive = true;
 	m_currentState = State::WARMUP;
 	m_warmupElapsedTime = 0;
 	m_currentScale = 0;
+
+	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
+	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
+	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
+	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
+	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 }
 
 void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 {
+	const float LIFETIME = 10;
+	const float SPAWN_RATE = 10; //in bullet per second
+	const float ELAPSED_TIME_PER_BULLET = 1.f / SPAWN_RATE; //time between each bullet spawn
+
 	if (!m_isAlive)
 		return;
 
@@ -84,6 +86,9 @@ void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 		m_warmupElapsedTime += dt;
 		if (m_warmupElapsedTime >= m_warmupDuration)
 		{
+			bullets.m_timeToLive[m_nextBulletToSpawn] = LIFETIME;
+			++m_nextBulletToSpawn;
+			m_lastBulletSpawnedTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 			m_currentState = State::FIRE;
 			break;
 		}
@@ -95,12 +100,28 @@ void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 	case State::FIRE:
 	{
 		//reduce ttl
-		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+		for (uint32_t ii = m_startId; ii < m_nextBulletToSpawn; ++ii)
 			bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
 
 		//compute new position
-		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+		for (uint32_t ii = m_startId; ii < m_nextBulletToSpawn; ++ii)
 			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
+
+		//check if I have to spawn a new bullet
+		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		if (m_lastBulletSpawnedTime + ELAPSED_TIME_PER_BULLET <= currentTime)
+		{
+			bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
+			bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
+			bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
+			bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
+			bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
+			bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
+
+			++m_nextBulletToSpawn;
+
+			m_lastBulletSpawnedTime = currentTime;
+		}
 	}
 	break;
 
@@ -130,4 +151,14 @@ void IchiWaveP1A1::BuildRenderable(Bullets& bullets, Systems::RenderableScene& s
 
 		m_isAlive = true;
 	}
+}
+
+void IchiWaveP1A1::SetSpawnPosition(const Core::Vec4f& spawnPosition)
+{
+	m_spawnPosition = spawnPosition;
+}
+
+void IchiWaveP1A1::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
+{
+	m_spawnSpeed = spawnSpeed;
 }
