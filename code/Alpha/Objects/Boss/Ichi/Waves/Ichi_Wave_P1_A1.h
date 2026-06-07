@@ -52,4 +52,6 @@ private:
 	uint32_t m_nextBulletToSpawn;
 
 	float m_lastBulletSpawnedTime;
+
+	void SpawnBullet(Bullets& bullets);
 };

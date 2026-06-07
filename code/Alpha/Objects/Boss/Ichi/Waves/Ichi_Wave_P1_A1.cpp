@@ -26,6 +26,7 @@ IchiWaveP1A1::IchiWaveP1A1(Systems::MeshAsset* pMesh, Systems::MaterialInstanceA
 	, m_currentState(State::WARMUP)
 	, m_currentScale(0)
 	, m_rotationOffset(rotationOffset)
+	, m_nextBulletToSpawn(0)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -100,27 +101,18 @@ void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 	case State::FIRE:
 	{
 		//reduce ttl
-		for (uint32_t ii = m_startId; ii < m_nextBulletToSpawn; ++ii)
+		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 			bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
 
 		//compute new position
-		for (uint32_t ii = m_startId; ii < m_nextBulletToSpawn; ++ii)
+		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
 
 		//check if I have to spawn a new bullet
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 		if (m_lastBulletSpawnedTime + ELAPSED_TIME_PER_BULLET <= currentTime)
 		{
-			bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
-			bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
-			bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
-			bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
-			bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
-			bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
-
-			++m_nextBulletToSpawn;
-
-			m_lastBulletSpawnedTime = currentTime;
+			SpawnBullet(bullets);
 		}
 	}
 	break;
@@ -161,4 +153,23 @@ void IchiWaveP1A1::SetSpawnPosition(const Core::Vec4f& spawnPosition)
 void IchiWaveP1A1::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
 {
 	m_spawnSpeed = spawnSpeed;
+}
+
+void IchiWaveP1A1::SpawnBullet(Bullets& bullets)
+{
+	//assert(m_nextBulletToSpawn < m_endId);
+
+	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
+	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
+	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
+	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
+	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
+
+	++m_nextBulletToSpawn;
+	if (m_nextBulletToSpawn >= m_endId)
+		m_nextBulletToSpawn = m_startId;
+
+	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	m_lastBulletSpawnedTime = currentTime;
 }
