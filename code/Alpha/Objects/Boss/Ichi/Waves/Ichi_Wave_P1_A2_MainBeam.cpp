@@ -76,7 +76,7 @@ void IchiWaveP1A2MainBeam::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 void IchiWaveP1A2MainBeam::Update(Bullets& bullets, float dt)
 {
 	const float LIFETIME = 10;
-	const float SPAWN_RATE = 10; //in bullet per second
+	const float SPAWN_RATE = 20; //in bullet per second
 	const float ELAPSED_TIME_PER_BULLET = 1.f / SPAWN_RATE; //time between each bullet spawn
 
 	if (!m_isAlive)

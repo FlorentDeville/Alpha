@@ -5,6 +5,7 @@
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack2.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_MainBeam.h"
 
 Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIchi)
@@ -25,13 +26,49 @@ Ichi_Phase1_Attack2::~Ichi_Phase1_Attack2()
 }
 
 void Ichi_Phase1_Attack2::OnEnter()
-{ }
+{
+	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
+	Core::Mat44f wsTx = pGunAttachPoints[0] * m_pIchi->GetTransform().GetWorldTx();
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->StartWave(m_mainBeamIndex, wsTx.GetT());
+
+	m_pMainBeam->SetSpawnPosition(wsTx.GetT());
+	m_pMainBeam->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+
+	m_waypoints[0] = m_pIchi->GetTransform().GetLocalTx().GetT() + Core::Vec4f(20, 0, 0, 0);
+	m_waypoints[1] = m_pIchi->GetTransform().GetLocalTx().GetT() - Core::Vec4f(20, 0, 0, 0);
+
+	m_currentWaypointIndex = 0;
+
+	m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex]);
+}
 
 void Ichi_Phase1_Attack2::OnUpdate()
-{ }
+{
+	if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
+	{
+		++m_currentWaypointIndex;
+		if (m_currentWaypointIndex >= 2)
+		{
+			GoTo(IchiStateEnum::PHASE1_TRAVEL);
+			return;
+		}
+
+		m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex]);
+	}
+
+	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
+	Core::Mat44f wsTx = pGunAttachPoints[0] * m_pIchi->GetTransform().GetWorldTx();
+	m_pMainBeam->SetSpawnPosition(wsTx.GetT());
+}
 
 void Ichi_Phase1_Attack2::OnExit()
-{ }
+{
+	m_pMainBeam->DisableSpawn();
+	//BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	//pSubsystem->StopWave(m_mainBeamIndex);
+}
 
 void Ichi_Phase1_Attack2::InitWaves()
 {

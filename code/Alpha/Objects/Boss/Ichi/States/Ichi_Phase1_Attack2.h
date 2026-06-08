@@ -28,4 +28,7 @@ private:
 
 	IchiWaveP1A2MainBeam* m_pMainBeam;
 	uint32_t m_mainBeamIndex;
+
+	Core::Vec4f m_waypoints[2];
+	uint8_t m_currentWaypointIndex;
 };
