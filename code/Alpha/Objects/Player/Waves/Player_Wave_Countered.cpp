@@ -57,7 +57,7 @@ void PlayerWaveCountered::Start(Bullets& bullets)
 
 void PlayerWaveCountered::Update(Bullets& bullets, float /*dt*/)
 {
-	const float LIFETIME = 2;
+	const float LIFETIME = 0.5f;
 
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 	Core::Vec4f targetPosition = m_pTarget->GetTransform().GetWorldTx().GetT();
