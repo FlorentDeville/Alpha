@@ -6,6 +6,8 @@
 
 #include "Core/Reflection/ReflectionMacro.h"
 
+#include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
+#include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
@@ -16,6 +18,7 @@ namespace Rendering
 }
 
 class PlayerState_Move;
+class PlayerWaveCountered;
 class StateMachine;
 
 ENABLE_GAME_REFLECTION(PlayerGameObject)
@@ -39,6 +42,8 @@ public:
 
 	float GetSpeed() const;
 
+	void SpawnCounteredBullet(const Core::Vec4f& startPosition);
+
 private:
 	float m_speed;
 	Core::Vec4f m_cameraOffset;
@@ -48,6 +53,9 @@ private:
 	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
 	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
 
+	Systems::HardAssetRef<Systems::MeshAsset> m_counteredBulletMesh;
+	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counteredBulletMaterial;
+
 	START_REFLECTION(PlayerGameObject)
 		ADD_BASETYPE(Systems::GameObject)
 		ADD_FIELD(m_speed)
@@ -55,6 +63,8 @@ private:
 		ADD_FIELD(m_maxHp)
 		ADD_FIELD(m_currentHealthComp)
 		ADD_FIELD(m_totalHealthComp)
+		ADD_FIELD(m_counteredBulletMesh)
+		ADD_FIELD(m_counteredBulletMaterial)
 	END_REFLECTION()
 
 	Rendering::Camera* m_pCamera;
@@ -63,6 +73,9 @@ private:
 
 	StateMachine* m_pStateMachine;
 	PlayerState_Move* m_pStateMove;
+
+	PlayerWaveCountered* m_pCounteredBulletWave;
+	uint32_t m_counteredBulletWaveIndex;
 
 	void OnBulletCollision(uint32_t index);
 

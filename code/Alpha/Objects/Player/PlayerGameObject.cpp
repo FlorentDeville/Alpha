@@ -10,6 +10,7 @@
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 #include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"
+#include "Alpha/Objects/Player/Waves/Player_Wave_Countered.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
 #include "Core/Log/LogModule.h"
@@ -33,6 +34,8 @@ PlayerGameObject::PlayerGameObject()
 	, m_speed()
 	, m_pStateMachine(nullptr)
 	, m_pStateMove(nullptr)
+	, m_pCounteredBulletWave(nullptr)
+	, m_counteredBulletWaveIndex(UINT32_MAX)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -64,6 +67,13 @@ void PlayerGameObject::OnStartGame()
 
 	PlayerState_Dash* pStateDash = new PlayerState_Dash(m_pStateMachine, this);
 	m_pStateMachine->AddState(pStateDash, PlayerStateEnum::DASH);
+
+	BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
+	m_pCounteredBulletWave = new PlayerWaveCountered(m_counteredBulletMesh.GetPtr(), m_counteredBulletMaterial.GetPtr(), this, pBoss);
+
+	BulletSubsystem* pBulletSubsystem = BulletSubsystem::GetSubsystem();
+	m_counteredBulletWaveIndex = pBulletSubsystem->AddWave(m_pCounteredBulletWave);
+	pBulletSubsystem->InitWave(m_counteredBulletWaveIndex);
 }
 
 void PlayerGameObject::Update(float dt)
@@ -109,11 +119,24 @@ void PlayerGameObject::OnDestroyGame()
 
 	delete m_pStateMachine;
 	m_pStateMachine = nullptr;
+
+	BulletSubsystem* pBulletSubsystem = BulletSubsystem::GetSubsystem();
+	pBulletSubsystem->DestroyWave(m_counteredBulletWaveIndex);
+	pBulletSubsystem->RemoveWave(m_counteredBulletWaveIndex);
+	m_counteredBulletWaveIndex = UINT32_MAX;
+
+	delete m_pCounteredBulletWave;
+	m_pCounteredBulletWave = nullptr;
 }
 
 float PlayerGameObject::GetSpeed() const
 {
 	return m_speed;
+}
+
+void PlayerGameObject::SpawnCounteredBullet(const Core::Vec4f& startPosition)
+{
+	m_pCounteredBulletWave->SpawnSingleBullet(startPosition);
 }
 
 void PlayerGameObject::OnBulletCollision(uint32_t index)

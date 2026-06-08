@@ -35,8 +35,9 @@ public:
 	void StartWave(uint32_t index);
 	void StopWave(uint32_t index);
 
-	void CounteredBullet(uint32_t index);
 	void KillBullet(uint32_t index);
+
+	const Core::Vec4f& GetBulletPosition(uint32_t index) const;
 
 	static uint32_t m_subsystemIndex;
 	static BulletSubsystem* GetSubsystem();
