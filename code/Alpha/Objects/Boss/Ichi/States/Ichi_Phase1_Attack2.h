@@ -30,8 +30,9 @@ private:
 	IchiWaveP1A2MainBeam* m_pMainBeam;
 	uint32_t m_mainBeamIndex;
 
-	IchiWaveP1A2SideBeam* m_pSideBeam[2];
-	uint32_t m_sideBeamIndex[2];
+	static const uint8_t SIDE_BEAM_COUNT = 2;
+	IchiWaveP1A2SideBeam* m_pSideBeam[SIDE_BEAM_COUNT];
+	uint32_t m_sideBeamIndex[SIDE_BEAM_COUNT];
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;

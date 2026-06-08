@@ -17,7 +17,7 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	m_pMainBeam = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
 	m_mainBeamIndex = UINT32_MAX;
 
-	for (uint32_t ii = 0; ii < 2; ++ii)
+	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
 	{
 		m_pSideBeam[ii] = new IchiWaveP1A2SideBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
 		m_sideBeamIndex[ii] = UINT32_MAX;
@@ -32,6 +32,12 @@ Ichi_Phase1_Attack2::~Ichi_Phase1_Attack2()
 
 	delete m_pMainBeam;
 	m_pMainBeam = nullptr;
+
+	for (uint8_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
+	{
+		delete m_pSideBeam[ii];
+		m_pSideBeam[ii] = nullptr;
+	}
 }
 
 void Ichi_Phase1_Attack2::OnEnter()
