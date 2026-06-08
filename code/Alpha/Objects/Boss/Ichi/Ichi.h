@@ -113,4 +113,6 @@ private:
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
 	//void UpdateHPBar();
+
+	void SkipStart();
 };

@@ -84,9 +84,6 @@ void Ichi::OnStartGame()
 	m_pStateMachine->AddState(new Ichi_Phase2_To_Phase3(m_pStateMachine, this), IchiStateEnum::PHASE2_TO_PHASE3);
 	m_pStateMachine->AddState(new Ichi_Dying(m_pStateMachine, this), IchiStateEnum::DYING);
 
-	m_pStateMachine->Start(IchiStateEnum::START);
-	//m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK1);
-
 	m_pMotionStateMachine = new StateMachine();
 	m_pMotionStateMachine->Init(IchiMotionState::COUNT);
 
@@ -95,6 +92,11 @@ void Ichi::OnStartGame()
 	m_pMotionStateMachine->AddState(new IchiMotionTravel(m_pMotionStateMachine, this), IchiMotionState::TRAVEL);
 
 	m_pMotionStateMachine->Start(IchiMotionState::STOP);
+
+	//m_pStateMachine->Start(IchiStateEnum::START);
+	SkipStart();
+	EnterPhase1();
+	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
 
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 	{
@@ -221,4 +223,10 @@ const uint8_t Ichi::GetPhase1GunsAttachPointsCount() const
 const Core::Mat44f* Ichi::GetPhase1GunsAttachPoints() const
 {
 	return m_phase1GunsAttachPoints;
+}
+
+void Ichi::SkipStart()
+{
+	Ichi_Start* pStart = m_pStateMachine->GetState<Ichi_Start>(IchiStateEnum::START);
+	pStart->Skip();
 }

@@ -71,6 +71,15 @@ void Ichi_Start::OnExit()
 	m_pIchi->EnterPhase1();
 }
 
+void Ichi_Start::Skip()
+{
+	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
+	Core::Vec4f offsetVector(0, m_stateLiftoffParam.m_distance, 0, 0);
+	m_pIchi->GetTransform().SetLocalTranslation(currentPosition + offsetVector);
+	m_pIchi->SpawnEngineEffects();
+	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
+}
+
 void Ichi_Start::Update_Wait()
 {
 	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();

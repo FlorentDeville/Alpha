@@ -17,6 +17,8 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void Skip();
+
 private:
 	enum State
 	{
