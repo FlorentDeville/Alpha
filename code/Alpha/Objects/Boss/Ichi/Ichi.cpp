@@ -31,6 +31,7 @@
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Systems/Game/Subsystems/Message/GameMessage.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 Core::Sid Ichi::ATTACH_POINTS_NAME[Ichi::ENGINE_EFFECT_COUNT] =
@@ -134,7 +135,20 @@ void Ichi::Update(float dt)
 
 void Ichi::HandleMessage(const Systems::GameMessage& msg)
 {
-	BaseClass::HandleMessage(msg);
+	switch (msg.m_id)
+	{
+	case SID("bullet_counter_collision"):
+	{
+		m_currentHP -= 100;
+		UpdateHPBar();
+	}
+	break;
+
+	default:
+		BaseClass::HandleMessage(msg);
+		break;
+	}
+
 }
 
 void Ichi::OnDestroyGame()
@@ -228,6 +242,20 @@ const uint8_t Ichi::GetPhase1GunsAttachPointsCount() const
 const Core::Mat44f* Ichi::GetPhase1GunsAttachPoints() const
 {
 	return m_phase1GunsAttachPoints;
+}
+
+void Ichi::UpdateHPBar()
+{
+	Systems::UIBaseComponent* pTotalHp = m_totalHealthComp.FindComponent(this);
+	Systems::UIBaseComponent* pHp = m_currentHealthComp.FindComponent(this);
+
+	Core::Float2 size = pHp->GetSize();
+	size.x = pTotalHp->GetSize().x / m_maxHP * m_currentHP;
+	pHp->SetSize(size);
+
+	Core::Float2 position = pHp->GetPosition();
+	position.x = pTotalHp->GetPosition().x - ((pTotalHp->GetSize().x - size.x) * 0.5f);
+	pHp->SetPosition(position);
 }
 
 void Ichi::SkipStart()

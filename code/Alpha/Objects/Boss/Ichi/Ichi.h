@@ -113,7 +113,7 @@ private:
 	Core::Mat44f m_engineAttachPoints[ENGINE_EFFECT_COUNT];
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
-	//void UpdateHPBar();
+	void UpdateHPBar();
 
 	void SkipStart();
 };
