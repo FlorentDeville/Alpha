@@ -9,6 +9,7 @@
 
 class Ichi;
 class IchiWaveP1A2MainBeam;
+class IchiWaveP1A2SideBeam;
 
 class Ichi_Phase1_Attack2 : public IState
 {
@@ -28,6 +29,9 @@ private:
 
 	IchiWaveP1A2MainBeam* m_pMainBeam;
 	uint32_t m_mainBeamIndex;
+
+	IchiWaveP1A2SideBeam* m_pSideBeam[2];
+	uint32_t m_sideBeamIndex[2];
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
