@@ -241,34 +241,6 @@ void WaveMachineGun::CollisionDetection(Bullets& bullets)
 	BaseClass::CollisionDetection(bullets);
 }
 
-void WaveMachineGun::SpawnCounteredBullet(Bullets& bullets, uint32_t index)
-{
-	//kill the current bullet
-	bullets.m_timeToLive[index] = 0;
-
-	//spawn a new counter bullet
-	bullets.m_timeToLive[m_nextCounterBulletId] = 1;
-	
-	Core::Vec4f startPosition = bullets.m_positions[index];
-
-	const BossGameObject* pTarget = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
-	Core::Vec4f targetPosition = pTarget->GetTransform().GetWorldTx().GetT();
-
-	uint32_t bezierIndex = m_nextCounterBulletId - m_counterBulletStartId;
-	m_pCounterBulletState[bezierIndex].m_bezierP0 = startPosition;
-
-	Core::RandomUInt random(0, 1);
-	int32_t side = (random.Generate() * 2) - 1;
-
-	Core::Vec4f startToTarget = targetPosition - startPosition;
-	Core::Vec4f orthogonal(startToTarget.GetZ(), 0, -startToTarget.GetX(), 0);
-	orthogonal = orthogonal * static_cast<float>(side);
-	Core::Vec4f p1 = startPosition + (startToTarget * 0.5) + (orthogonal * 0.5);
-	m_pCounterBulletState[bezierIndex].m_bezierP1 = p1;
-
-	++m_nextCounterBulletId;
-}
-
 void WaveMachineGun::SetSideBulletEnabled(bool enabled)
 {
 	m_sideBulletEnabled = enabled;

@@ -19,7 +19,6 @@ public:
 	void Start(Bullets& bullets) override;
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
-	void SpawnCounteredBullet(Bullets& bullet, uint32_t index) override;
 
 	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
 	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);

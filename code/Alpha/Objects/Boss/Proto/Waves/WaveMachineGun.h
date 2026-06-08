@@ -29,8 +29,6 @@ public:
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
 	void CollisionDetection(Bullets& bullet) override;
 
-	void SpawnCounteredBullet(Bullets& bullet, uint32_t index) override;
-
 	void SetSideBulletEnabled(bool enabled);
 	void SetSideBulletCount(uint32_t count);
 	void SetBulletCount(uint32_t count);

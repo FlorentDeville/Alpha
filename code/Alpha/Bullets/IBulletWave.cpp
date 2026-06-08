@@ -93,26 +93,6 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 	}
 }
 
-void IBulletWave::SpawnCounteredBullet(Bullets& bullets, uint32_t index)
-{
-	Core::LogModule::Get().LogInfo("Bullet %d countered", index);
-
-	const BossGameObject* pTarget = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
-	Core::Vec4f targetPosition = pTarget->GetTransform().GetWorldTx().GetT();
-
-	//compute new acceleration
-	bullets.m_acceleration[index] = Core::Vec4f(0, 0, 0, 0);
-
-	//compute new velocity
-	const float SPEED = 20;
-	Core::Vec4f velocity = targetPosition - bullets.m_positions[index];
-	velocity.Normalize();
-	velocity = velocity * SPEED;
-	bullets.m_speed[index] = velocity;
-	bullets.m_state[index] = BulletState::COUNTER;
-	bullets.m_timeToLive[index] = 0;
-}
-
 void IBulletWave::KillBullet(Bullets& bullets, uint32_t index)
 {
 	bullets.m_timeToLive[index] = 0;

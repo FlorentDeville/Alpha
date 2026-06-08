@@ -84,23 +84,6 @@ void BulletSubsystem::StopWave(uint32_t index)
 	m_waves[index]->Stop();
 }
 
-void BulletSubsystem::CounteredBullet(uint32_t index)
-{
-	for (IBulletWave* pWave : m_waves)
-	{
-		if (!pWave)
-			continue;
-
-		if (!pWave->IsAlive())
-			continue;
-
-		if (index < pWave->GetStartId() || index >= pWave->GetEndId())
-			continue;
-
-		pWave->SpawnCounteredBullet(m_bullets, index);
-	}
-}
-
 void BulletSubsystem::KillBullet(uint32_t index)
 {
 	for (IBulletWave* pWave : m_waves)

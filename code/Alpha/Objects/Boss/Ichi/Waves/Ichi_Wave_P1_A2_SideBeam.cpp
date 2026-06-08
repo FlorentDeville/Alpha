@@ -151,35 +151,6 @@ void IchiWaveP1A2SideBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 	}
 }
 
-void IchiWaveP1A2SideBeam::SpawnCounteredBullet(Bullets& bullets, uint32_t index)
-{
-	//kill the current bullet
-	bullets.m_timeToLive[index] = 20;
-	bullets.m_speed[index] = Core::Vec4f(0, 0, 10, 0);
-	bullets.m_acceleration[index] = Core::Vec4f(0, 0, 0, 0);
-	//spawn a new counter bullet
-	//bullets.m_timeToLive[m_nextCounterBulletId] = 1;
-
-	//Core::Vec4f startPosition = bullets.m_positions[index];
-
-	//const BossGameObject* pTarget = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
-	//Core::Vec4f targetPosition = m_pIc->GetTransform().GetWorldTx().GetT();
-
-	//uint32_t bezierIndex = m_nextCounterBulletId - m_counterBulletStartId;
-	//m_pCounterBulletState[bezierIndex].m_bezierP0 = startPosition;
-
-	//Core::RandomUInt random(0, 1);
-	//int32_t side = (random.Generate() * 2) - 1;
-
-	//Core::Vec4f startToTarget = targetPosition - startPosition;
-	//Core::Vec4f orthogonal(startToTarget.GetZ(), 0, -startToTarget.GetX(), 0);
-	//orthogonal = orthogonal * static_cast<float>(side);
-	//Core::Vec4f p1 = startPosition + (startToTarget * 0.5) + (orthogonal * 0.5);
-	//m_pCounterBulletState[bezierIndex].m_bezierP1 = p1;
-
-	//++m_nextCounterBulletId;
-}
-
 void IchiWaveP1A2SideBeam::SetSpawnPosition(const Core::Vec4f& spawnPosition)
 {
 	m_spawnPosition = spawnPosition;
