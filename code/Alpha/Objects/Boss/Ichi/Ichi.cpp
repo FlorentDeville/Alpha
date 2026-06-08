@@ -192,6 +192,8 @@ void Ichi::EnterPhase1()
 	pP1Renderable->SetEnabled(true);
 	pP2Renderable->SetEnabled(false);
 	pP3Renderable->SetEnabled(false);
+
+	m_currentHP = GetMaxHP();
 }
 
 void Ichi::ExitPhase1()
@@ -212,6 +214,8 @@ void Ichi::EnterPhase2()
 	pP1Renderable->SetEnabled(true);
 	pP2Renderable->SetEnabled(true);
 	pP3Renderable->SetEnabled(false);
+
+	m_currentHP = GetMaxHP();
 }
 
 void Ichi::SpawnEngineEffects()
