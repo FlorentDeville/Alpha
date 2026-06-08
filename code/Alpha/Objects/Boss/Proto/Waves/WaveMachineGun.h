@@ -47,22 +47,9 @@ private:
 
 	uint32_t m_counterableBulletCount;
 
-	uint32_t m_counterBulletStartId;
-	uint32_t m_counterBulletEndId;
-	uint32_t m_nextCounterBulletId;
-
-	struct CounterBulletStruct
-	{
-		Core::Vec4f m_bezierP0;
-		Core::Vec4f m_bezierP1;
-	};
-	CounterBulletStruct* m_pCounterBulletState;
-
 	float m_gapTime; 
 	bool m_sideBulletEnabled;
 	float m_speed;
 	uint32_t m_sideBulletCount;
-
-	void UpdateCounteredBullets(Bullets& bullets, float dt);
 };
 

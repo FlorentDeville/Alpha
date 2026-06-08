@@ -32,9 +32,6 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	, m_pTarget(pTarget)
 	, m_nextBulletToShot(0)
 	, m_pCounterBulletMaterial(pCounterBulletMaterial)
-	, m_counterBulletStartId(0)
-	, m_counterBulletEndId(0)
-	, m_nextCounterBulletId(0)
 	, m_counterableBulletCount(15)
 	, m_sideBulletEnabled(false)
 	, m_gapTime(0.5f)
@@ -45,12 +42,10 @@ WaveMachineGun::WaveMachineGun(Systems::MeshAsset* pMesh, Systems::MaterialInsta
 	m_pMesh = pMesh;
 	m_pMaterial = pMaterial;
 
-	m_pCounterBulletState = new CounterBulletStruct[m_counterableBulletCount];
 }
 
 WaveMachineGun::~WaveMachineGun()
 {
-	delete[] m_pCounterBulletState;
 }
 
 void WaveMachineGun::Init(Bullets& bullets)
@@ -60,17 +55,11 @@ void WaveMachineGun::Init(Bullets& bullets)
 	assert(m_startId != UINT32_MAX);
 	m_endId = m_startId + m_count;
 	m_nextBulletToShot = m_startId;
-
-	m_counterBulletStartId = bullets.Allocate(m_counterableBulletCount);
-	assert(m_counterBulletStartId != UINT32_MAX);
-	m_counterBulletEndId = m_counterBulletStartId + m_counterableBulletCount;
-	m_nextCounterBulletId = m_counterBulletStartId;
 }
 
 void WaveMachineGun::Destroy(Bullets& bullets)
 {
 	bullets.Free(m_startId, m_count);
-	bullets.Free(m_counterBulletStartId, m_counterableBulletCount);
 }
 
 void WaveMachineGun::Start(Bullets& bullets)
@@ -78,7 +67,6 @@ void WaveMachineGun::Start(Bullets& bullets)
 	m_isAlive = true;
 	m_lastSpawnTime = 0;
 	m_nextBulletToShot = m_startId;
-	m_nextCounterBulletId = m_counterBulletStartId;
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
@@ -86,12 +74,7 @@ void WaveMachineGun::Start(Bullets& bullets)
 		bullets.m_state[ii] = BulletState::ATTACK;
 	}
 
-	for (uint32_t ii = m_counterBulletStartId; ii < m_counterBulletEndId; ++ii)
-	{
-		bullets.m_type[ii] = BulletType::COUNTERABLE;
-	}
-
-	//generate the counter bullets
+	//generate the counterable bullets
 	Core::RandomUInt generator(m_startId, m_endId - 1);
 
 	for (uint32_t ii = 0; ii < m_counterableBulletCount; ++ii)
@@ -113,8 +96,6 @@ void WaveMachineGun::Update(Bullets& bullets, float dt)
 	//compute new position
 	for (uint32_t ii = m_startId; ii < m_nextBulletToShot; ++ii)
 		bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
-
-	UpdateCounteredBullets(bullets, dt);
 
 	//shoot a new bullet
 	const Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
@@ -206,32 +187,6 @@ void WaveMachineGun::BuildRenderable(Bullets& bullets, Systems::RenderableScene&
 		m_isAlive = true;
 	}
 
-	for (uint32_t ii = m_counterBulletStartId; ii < m_nextCounterBulletId; ++ii)
-	{
-		if (bullets.m_timeToLive[ii] <= 0)
-			continue;
-
-		Systems::RenderableObject& obj = scene.m_opaqueObjects.PushBackDefault();
-		obj.m_pMesh = m_pMesh->GetRenderingMesh();
-		obj.m_pMaterial = m_pCounterBulletMaterial;
-
-		obj.m_pOwner = nullptr;
-		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
-		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
-
-		m_isAlive = true;
-
-		/*{
-			CounterBulletStruct& state = m_pCounterBulletState[ii - m_counterBulletStartId];
-
-			Systems::RenderableObject& debugObj = scene.m_opaqueObjects.PushBackDefault();
-			debugObj.DebugSphere(state.m_bezierP0, 1, Core::Float4(1, 0, 0, 1), true);
-			
-			Systems::RenderableObject& debugObj2 = scene.m_opaqueObjects.PushBackDefault();
-			debugObj2.DebugSphere(state.m_bezierP1, 1, Core::Float4(0, 1, 0, 1), true);
-		}*/
-	}
-
 	if (m_nextBulletToShot < m_endId)
 		m_isAlive = true;
 }
@@ -271,54 +226,3 @@ void WaveMachineGun::SetSpeed(float speed)
 	m_speed = speed;
 }
 
-void WaveMachineGun::UpdateCounteredBullets(Bullets& bullets, float dt)
-{
-	const BossGameObject* pTarget = Systems::GameMgr::Get().FindGameObject<BossGameObject>();
-	Core::Vec4f targetPosition = pTarget->GetTransform().GetWorldTx().GetT();
-
-	for (uint32_t ii = m_counterBulletStartId; ii < m_nextCounterBulletId; ++ii)
-	{
-		if (bullets.m_timeToLive[ii] <= 0)
-			continue;
-
-		uint32_t bezierIndex = ii - m_counterBulletStartId;
-
-		const float COUNTERED_BULLET_SPEED_MULT = 2;
-		float t = (1 - bullets.m_timeToLive[ii]) * COUNTERED_BULLET_SPEED_MULT;
-
-		if (t > 1)
-		{
-			bullets.m_timeToLive[ii] = 0;
-
-			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
-			Systems::GameMessage msg;
-			msg.m_id = CONSTSID("bullet_counter_collision");
-			pMessage->SendMessage(m_pOwner, msg);
-			continue;
-		}
-
-		float oneMinusT = 1 - t;
-
-		Core::Vec4f newPosition = (m_pCounterBulletState[bezierIndex].m_bezierP0 * oneMinusT * oneMinusT) +
-			(m_pCounterBulletState[bezierIndex].m_bezierP1 * 2 * oneMinusT * t) +
-			(targetPosition * t * t);
-
-		bullets.m_positions[ii] = newPosition;
-	}
-
-	for (uint32_t ii = m_counterBulletStartId; ii < m_nextCounterBulletId; ++ii)
-	{
-		if (bullets.m_timeToLive[ii] <= 0)
-			continue;
-
-		bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
-
-		if (bullets.m_timeToLive[ii] <= 0)
-		{
-			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
-			Systems::GameMessage msg;
-			msg.m_id = CONSTSID("bullet_counter_collision");
-			pMessage->SendMessage(m_pOwner, msg);
-		}
-	}
-}
