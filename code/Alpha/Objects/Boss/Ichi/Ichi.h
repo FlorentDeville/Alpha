@@ -66,6 +66,9 @@ public:
 	const uint8_t GetPhase1GunsAttachPointsCount() const;
 	const Core::Mat44f* GetPhase1GunsAttachPoints() const;
 
+	const uint8_t GetPhase2GunsAttachPointsCount() const;
+	const Core::Mat44f* GetPhase2GunsAttachPoints() const;
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase2;
@@ -109,6 +112,10 @@ private:
 	static const uint8_t GUN_PHASE1_COUNT = 4;
 	static Core::Sid ATTACH_POINT_PHASE1_GUN_NAME[GUN_PHASE1_COUNT];
 	Core::Mat44f m_phase1GunsAttachPoints[GUN_PHASE1_COUNT];
+
+	static const uint8_t GUN_PHASE2_COUNT = 8;
+	static Core::Sid ATTACH_POINT_PHASE2_GUN_NAME[GUN_PHASE2_COUNT];
+	Core::Mat44f m_phase2GunsAttachPoints[GUN_PHASE2_COUNT];
 
 	StateMachine* m_pMotionStateMachine;
 
