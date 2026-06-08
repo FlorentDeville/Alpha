@@ -57,6 +57,7 @@ public:
 
 	Systems::MeshAsset* GetBulletMesh();
 	Systems::MaterialInstanceAsset* GetBulletMaterial();
+	Systems::MaterialInstanceAsset* GetCounterableBulletMaterial();
 
 	const uint8_t GetPhase1GunsAttachPointsCount() const;
 	const Core::Mat44f* GetPhase1GunsAttachPoints() const;

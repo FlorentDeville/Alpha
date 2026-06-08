@@ -14,12 +14,14 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	, m_pIchi(pIchi)
 {
 	const int BULLET_COUNT = 50;
+	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
+
 	m_pMainBeam = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
 	m_mainBeamIndex = UINT32_MAX;
 
 	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
 	{
-		m_pSideBeam[ii] = new IchiWaveP1A2SideBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
+		m_pSideBeam[ii] = new IchiWaveP1A2SideBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
 		m_sideBeamIndex[ii] = UINT32_MAX;
 	}
 	

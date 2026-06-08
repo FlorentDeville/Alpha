@@ -215,6 +215,11 @@ Systems::MaterialInstanceAsset* Ichi::GetBulletMaterial()
 	return m_bulletMaterial.GetPtr();
 }
 
+Systems::MaterialInstanceAsset* Ichi::GetCounterableBulletMaterial()
+{
+	return m_counterBulletMaterial.GetPtr();
+}
+
 const uint8_t Ichi::GetPhase1GunsAttachPointsCount() const
 {
 	return GUN_PHASE1_COUNT;

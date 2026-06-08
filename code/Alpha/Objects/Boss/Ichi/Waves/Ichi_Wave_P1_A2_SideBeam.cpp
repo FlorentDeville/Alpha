@@ -8,6 +8,7 @@
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Random/Random.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Game/GameContext.h"
@@ -19,7 +20,8 @@
 #include <assert.h>
 #include <cmath>
 
-IchiWaveP1A2SideBeam::IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount)
+IchiWaveP1A2SideBeam::IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterableMaterial, 
+	uint32_t bulletCount, uint32_t counterableBulletCount)
 	: IBulletWave()
 	, m_warmupDuration(1.5f)
 	, m_warmupElapsedTime(0)
@@ -32,6 +34,9 @@ IchiWaveP1A2SideBeam::IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::M
 	m_count = bulletCount;
 	m_pMesh = pMesh;
 	m_pMaterial = pMaterial;
+
+	m_pCounterableMaterial = pCounterableMaterial;
+	m_counterableBulletCount = counterableBulletCount;
 }
 
 IchiWaveP1A2SideBeam::~IchiWaveP1A2SideBeam()
@@ -70,8 +75,18 @@ void IchiWaveP1A2SideBeam::Start(Bullets& bullets)
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -10, 0);
-	bullets.m_type[m_nextBulletToSpawn] = BulletType::COUNTERABLE;
+	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
 	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
+
+	for(uint32_t ii = m_startId; ii < m_endId; ++ii)
+		bullets.m_type[ii] = BulletType::NORMAL;
+
+	Core::RandomUInt generator(m_startId, m_endId - 1);
+	for (uint32_t ii = 0; ii < m_counterableBulletCount; ++ii)
+	{
+		uint32_t index = generator.Generate();
+		bullets.m_type[index] = BulletType::COUNTERABLE;
+	}
 }
 
 void IchiWaveP1A2SideBeam::Update(Bullets& bullets, float dt)
@@ -142,7 +157,12 @@ void IchiWaveP1A2SideBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 
 		Systems::RenderableObject& obj = scene.m_opaqueObjects.PushBackDefault();
 		obj.m_pMesh = m_pMesh->GetRenderingMesh();
-		obj.m_pMaterial = m_pMaterial;
+
+		if (bullets.m_type[ii] == BulletType::NORMAL)
+			obj.m_pMaterial = m_pMaterial;
+		else
+			obj.m_pMaterial = m_pCounterableMaterial;
+
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = scale * Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
@@ -176,7 +196,7 @@ void IchiWaveP1A2SideBeam::SpawnBullet(Bullets& bullets)
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -20, 0);
-	bullets.m_type[m_nextBulletToSpawn] = BulletType::COUNTERABLE;
+	//bullets.m_type[m_nextBulletToSpawn] = BulletType::COUNTERABLE;
 	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 
 	++m_nextBulletToSpawn;

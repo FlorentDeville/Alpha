@@ -11,7 +11,8 @@
 class IchiWaveP1A2SideBeam : public IBulletWave
 {
 public:
-	IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount = 10);
+	IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterableMaterial, 
+		uint32_t bulletCount, uint32_t counterableBulletCount);
 	~IchiWaveP1A2SideBeam();
 
 	void Init(Bullets& bullets) override;
@@ -54,6 +55,10 @@ private:
 	float m_lastBulletSpawnedTime;
 
 	bool m_enableSpawn;
+
+	Systems::MaterialInstanceAsset* m_pCounterableMaterial;
+
+	uint32_t m_counterableBulletCount;
 
 	void SpawnBullet(Bullets& bullets);
 };
