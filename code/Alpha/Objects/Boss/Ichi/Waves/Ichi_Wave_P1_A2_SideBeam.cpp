@@ -50,7 +50,7 @@ void IchiWaveP1A2SideBeam::Destroy(Bullets& bullets)
 	bullets.Free(m_startId, m_count);
 }
 
-void IchiWaveP1A2SideBeam::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
+void IchiWaveP1A2SideBeam::Start(Bullets& bullets)
 {
 	m_enableSpawn = true;
 

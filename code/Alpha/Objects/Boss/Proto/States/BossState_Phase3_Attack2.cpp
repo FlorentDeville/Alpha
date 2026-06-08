@@ -61,7 +61,7 @@ void BossState_Phase3_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 void BossState_Phase3_Attack2::OnEnter()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->StartWave(m_waveIndex[0], m_pBoss->GetTransform().GetWorldTx().GetT());
+	pSubsystem->StartWave(m_waveIndex[0]);
 
 	m_lastWaveSpawnTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 	m_nextWaveToSpawn = 1;
@@ -77,7 +77,7 @@ void BossState_Phase3_Attack2::OnUpdate()
 		if (currentTime >= m_lastWaveSpawnTime + DELAY)
 		{
 			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-			pSubsystem->StartWave(m_waveIndex[m_nextWaveToSpawn], m_pBoss->GetTransform().GetWorldTx().GetT());
+			pSubsystem->StartWave(m_waveIndex[m_nextWaveToSpawn]);
 
 			++m_nextWaveToSpawn;
 			m_lastWaveSpawnTime = currentTime;

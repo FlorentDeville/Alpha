@@ -53,8 +53,7 @@ void Ichi_Phase1_Attack1::OnEnter()
 
 	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
-		const Core::Mat44f& ichiWsTx = m_pIchi->GetTransform().GetWorldTx();
-		BulletSubsystem::GetSubsystem()->StartWave(m_waveIndex[ii], ichiWsTx.GetT());
+		BulletSubsystem::GetSubsystem()->StartWave(m_waveIndex[ii]);
 	}
 
 	m_warmupStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();

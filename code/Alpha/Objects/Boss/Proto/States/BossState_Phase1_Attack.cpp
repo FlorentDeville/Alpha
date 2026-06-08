@@ -54,10 +54,10 @@ void BossState_Phase1_Attack::OnEnter()
 	if (m_runFirstWave)
 	{
 		m_pWave->SetStartPosition(transform.GetWorldTx().GetT());
-		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+		pSubsystem->StartWave(m_waveIndex);
 	}
 	else
-		pSubsystem->StartWave(m_waveMachineGunIndex, transform.GetWorldTx().GetT());
+		pSubsystem->StartWave(m_waveMachineGunIndex);
 
 	m_runFirstWave = !m_runFirstWave;
 }

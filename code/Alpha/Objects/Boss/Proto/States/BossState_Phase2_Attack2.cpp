@@ -45,7 +45,7 @@ void BossState_Phase2_Attack2::Init(Systems::MeshAsset* pMesh, Systems::Material
 void BossState_Phase2_Attack2::OnEnter()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->StartWave(m_waveIndex, m_pBoss->GetTransform().GetWorldTx().GetT());
+	pSubsystem->StartWave(m_waveIndex);
 }
 
 void BossState_Phase2_Attack2::OnUpdate()

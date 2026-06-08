@@ -71,9 +71,9 @@ void BulletSubsystem::DestroyWave(uint32_t index)
 	m_waves[index]->Destroy(m_bullets);
 }
 
-void BulletSubsystem::StartWave(uint32_t index, const Core::Vec4f& pos)
+void BulletSubsystem::StartWave(uint32_t index)
 {
-	m_waves[index]->Start(m_bullets, pos);
+	m_waves[index]->Start(m_bullets);
 }
 
 void BulletSubsystem::StopWave(uint32_t index)

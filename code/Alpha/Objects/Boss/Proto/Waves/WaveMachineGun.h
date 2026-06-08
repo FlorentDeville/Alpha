@@ -24,7 +24,7 @@ public:
 
 	void Init(Bullets& bullets) override;
 	void Destroy(Bullets& bullets) override;
-	void Start(Bullets& bullets, const Core::Vec4f& pos) override;
+	void Start(Bullets& bullets) override;
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
 	void CollisionDetection(Bullets& bullet) override;

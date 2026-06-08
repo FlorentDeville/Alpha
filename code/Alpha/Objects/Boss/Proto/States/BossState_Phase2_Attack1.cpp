@@ -57,7 +57,7 @@ void BossState_Phase2_Attack1::OnEnter()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	m_pWave[0]->SetStartPosition(m_pBoss->GetTransform().GetWorldTx().GetT());
-	pSubsystem->StartWave(m_waveIndex[0], m_pBoss->GetTransform().GetWorldTx().GetT());
+	pSubsystem->StartWave(m_waveIndex[0]);
 
 	m_lastWaveStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 	m_nextWaveToStart = 1;
@@ -72,7 +72,7 @@ void BossState_Phase2_Attack1::OnUpdate()
 		{
 			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 			m_pWave[m_nextWaveToStart]->SetStartPosition(m_pBoss->GetTransform().GetWorldTx().GetT());
-			pSubsystem->StartWave(m_waveIndex[m_nextWaveToStart], m_pBoss->GetTransform().GetWorldTx().GetT());
+			pSubsystem->StartWave(m_waveIndex[m_nextWaveToStart]);
 
 			++m_nextWaveToStart;
 			m_lastWaveStartTime = currentTime;

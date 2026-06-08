@@ -73,7 +73,7 @@ void WaveMachineGun::Destroy(Bullets& bullets)
 	bullets.Free(m_counterBulletStartId, m_counterableBulletCount);
 }
 
-void WaveMachineGun::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
+void WaveMachineGun::Start(Bullets& bullets)
 {
 	m_isAlive = true;
 	m_lastSpawnTime = 0;
