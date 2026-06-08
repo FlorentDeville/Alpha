@@ -15,6 +15,7 @@
 #include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 #include "Systems/GameComponent/Collisions/CollisionSphereComponent.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
+#include "Systems/GameComponent/RenderableComponent.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 
 ENABLE_GAME_REFLECTION(Ichi)
@@ -65,14 +66,9 @@ public:
 
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
-	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase1;
-
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase2;
-	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase2;
-
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase3;
-	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_materialPhase3;
-
+	
 	Systems::HardAssetRef<Systems::MeshAsset> m_bulletMesh;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_bulletMaterial;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
@@ -83,14 +79,15 @@ private:
 	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
 	Systems::ComponentRef<Systems::CollisionSphereComponent> m_collComp;
 
+	Systems::ComponentRef<Systems::RenderableComponent> m_phase1Renderable;
+	Systems::ComponentRef<Systems::RenderableComponent> m_phase2Renderable;
+	Systems::ComponentRef<Systems::RenderableComponent> m_phase3Renderable;
+
 	START_REFLECTION(Ichi)
 		ADD_BASETYPE(BaseBoss)
 		ADD_FIELD(m_meshPhase1)
-		ADD_FIELD(m_materialPhase1)
 		ADD_FIELD(m_meshPhase2)
-		ADD_FIELD(m_materialPhase2)
 		ADD_FIELD(m_meshPhase3)
-		ADD_FIELD(m_materialPhase3)
 		ADD_FIELD(m_engineEffect)
 		ADD_FIELD(m_bulletMesh)
 		ADD_FIELD(m_bulletMaterial)
@@ -98,6 +95,9 @@ private:
 		ADD_FIELD(m_currentHealthComp)
 		ADD_FIELD(m_totalHealthComp)
 		ADD_FIELD(m_collComp)
+		ADD_FIELD(m_phase1Renderable)
+		ADD_FIELD(m_phase2Renderable)
+		ADD_FIELD(m_phase3Renderable)
 	END_REFLECTION()
 
 private:

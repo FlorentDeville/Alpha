@@ -94,6 +94,14 @@ void Ichi::OnStartGame()
 
 	m_pMotionStateMachine->Start(IchiMotionState::STOP);
 
+	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase1Renderable.FindComponent(this);
+
+	pP1Renderable->SetEnabled(true);
+	pP2Renderable->SetEnabled(false);
+	pP3Renderable->SetEnabled(false);
+
 	//m_pStateMachine->Start(IchiStateEnum::START);
 	SkipStart();
 	EnterPhase1();
@@ -176,6 +184,14 @@ void Ichi::EnterPhase1()
 
 	Ichi_Phase1_Attack2* pStateP1A2 = m_pStateMachine->GetState<Ichi_Phase1_Attack2>(IchiStateEnum::PHASE1_ATTACK2);
 	pStateP1A2->InitWaves();
+
+	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
+
+	pP1Renderable->SetEnabled(true);
+	pP2Renderable->SetEnabled(false);
+	pP3Renderable->SetEnabled(false);
 }
 
 void Ichi::ExitPhase1()
