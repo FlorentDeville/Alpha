@@ -93,7 +93,7 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 	}
 }
 
-void IBulletWave::SpawnCounterBullet(Bullets& bullets, uint32_t index)
+void IBulletWave::SpawnCounteredBullet(Bullets& bullets, uint32_t index)
 {
 	Core::LogModule::Get().LogInfo("Bullet %d countered", index);
 

@@ -94,7 +94,7 @@ void BulletSubsystem::CounteredBullet(uint32_t index)
 		if (index < pWave->GetStartId() || index >= pWave->GetEndId())
 			continue;
 
-		pWave->SpawnCounterBullet(m_bullets, index);
+		pWave->SpawnCounteredBullet(m_bullets, index);
 	}
 }
 

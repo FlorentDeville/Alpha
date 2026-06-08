@@ -241,7 +241,7 @@ void WaveMachineGun::CollisionDetection(Bullets& bullets)
 	BaseClass::CollisionDetection(bullets);
 }
 
-void WaveMachineGun::SpawnCounterBullet(Bullets& bullets, uint32_t index)
+void WaveMachineGun::SpawnCounteredBullet(Bullets& bullets, uint32_t index)
 {
 	//kill the current bullet
 	bullets.m_timeToLive[index] = 0;
