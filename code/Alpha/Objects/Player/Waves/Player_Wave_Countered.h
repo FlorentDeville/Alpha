@@ -18,7 +18,7 @@ class PlayerWaveCountered : public IBulletWave
 	using BaseClass = IBulletWave;
 
 public:
-	PlayerWaveCountered(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::GameObject* pOwner, const Systems::GameObject* pTarget);
+	PlayerWaveCountered(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::GameObject* pOwner, Systems::GameObject* pTarget);
 	~PlayerWaveCountered();
 
 	void Init(Bullets& bullets) override;
@@ -34,7 +34,7 @@ private:
 	Bullets* m_pBullets;
 
 	Systems::GameObject* m_pOwner;
-	const Systems::GameObject* m_pTarget;
+	Systems::GameObject* m_pTarget;
 
 	Systems::MeshAsset* m_pMesh;
 	Systems::MaterialInstanceAsset* m_pMaterial;

@@ -68,7 +68,7 @@ void PlayerGameObject::OnStartGame()
 	PlayerState_Dash* pStateDash = new PlayerState_Dash(m_pStateMachine, this);
 	m_pStateMachine->AddState(pStateDash, PlayerStateEnum::DASH);
 
-	const BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
+	BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
 	m_pCounteredBulletWave = new PlayerWaveCountered(m_counteredBulletMesh.GetPtr(), m_counteredBulletMaterial.GetPtr(), this, pBoss);
 
 	BulletSubsystem* pBulletSubsystem = BulletSubsystem::GetSubsystem();

@@ -14,11 +14,12 @@
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+#include "Systems/Game/Subsystems/Message/GameMessageSubsystem.h"
 #include "Systems/Objects/GameObject.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
 
 PlayerWaveCountered::PlayerWaveCountered(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::GameObject* pOwner, 
-	const Systems::GameObject* pTarget)
+	Systems::GameObject* pTarget)
 	: IBulletWave()
 	, m_pMesh(pMesh)
 	, m_pMaterial(pMaterial)
@@ -71,6 +72,11 @@ void PlayerWaveCountered::Update(Bullets& bullets, float /*dt*/)
 
 		if (param > 1)
 		{
+			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
+			Systems::GameMessage msg;
+			msg.m_id = CONSTSID("bullet_counter_collision");
+			pMessage->SendMessage(m_pTarget, msg);
+
 			bullets.m_timeToLive[ii] = -1;
 			continue;
 		}
