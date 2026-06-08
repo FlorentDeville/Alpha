@@ -42,6 +42,7 @@ namespace Systems
 		GameObject* GetOwner();
 
 		bool IsEnabled() const;
+		void SetEnabled(bool isEnabled);
 
 	private:
 		Core::Guid m_guid;

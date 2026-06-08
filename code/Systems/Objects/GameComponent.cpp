@@ -61,6 +61,11 @@ namespace Systems
 		return m_enabled;
 	}
 
+	void GameComponent::SetEnabled(bool isEnabled)
+	{
+		m_enabled = isEnabled;
+	}
+
 	GameComponent* CreateNewGameComponent(const Core::TypeDescriptor* pType)
 	{
 		GameComponent* ptr = static_cast<GameComponent*>(CreateObject(pType));
