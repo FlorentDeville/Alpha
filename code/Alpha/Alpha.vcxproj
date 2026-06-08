@@ -123,6 +123,7 @@
     <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Phase3_Travel.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\States\Ichi_Start.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A1.cpp" />
+    <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_MainBeam.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.cpp" />
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Attack.cpp" />
@@ -505,6 +506,7 @@
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Phase3_Travel.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\Ichi_Start.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A1.h" />
+    <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_MainBeam.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossStateEnum.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_To_Phase2.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.h" />

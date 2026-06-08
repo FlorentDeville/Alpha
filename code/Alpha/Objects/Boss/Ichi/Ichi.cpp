@@ -157,6 +157,9 @@ void Ichi::EnterPhase1()
 {
 	Ichi_Phase1_Attack1* pStateP1A1 = m_pStateMachine->GetState<Ichi_Phase1_Attack1>(IchiStateEnum::PHASE1_ATTACK1);
 	pStateP1A1->InitWaves();
+
+	Ichi_Phase1_Attack2* pStateP1A2 = m_pStateMachine->GetState<Ichi_Phase1_Attack2>(IchiStateEnum::PHASE1_ATTACK2);
+	pStateP1A2->InitWaves();
 }
 
 void Ichi::SpawnEngineEffects()
