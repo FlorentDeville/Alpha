@@ -62,7 +62,11 @@ void PlayerState_Move::OnUpdate()
 		if (m_counterBulletIndex != UINT32_MAX)
 		{
 			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-			bulletSubsystem->CounteredBullet(m_counterBulletIndex);
+
+			const Core::Vec4f position = bulletSubsystem->GetBulletPosition(m_counterBulletIndex);
+			m_pPlayer->SpawnCounteredBullet(position);
+
+			bulletSubsystem->KillBullet(m_counterBulletIndex);
 		}
 	}
 

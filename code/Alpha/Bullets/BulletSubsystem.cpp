@@ -4,7 +4,10 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 
+#include "Alpha/Bullets/Bullets.h"
 #include "Alpha/Bullets/IBulletWave.h"
+
+#include "Core/Math/Vec4f.h"
 
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/GameContext.h"
@@ -113,6 +116,11 @@ void BulletSubsystem::KillBullet(uint32_t index)
 
 		pWave->KillBullet(m_bullets, index);
 	}
+}
+
+const Core::Vec4f& BulletSubsystem::GetBulletPosition(uint32_t index) const
+{
+	return m_bullets.m_positions[index];
 }
 
 BulletSubsystem* BulletSubsystem::GetSubsystem()

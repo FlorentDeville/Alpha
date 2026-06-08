@@ -42,6 +42,8 @@ public:
 
 	float GetSpeed() const;
 
+	void SpawnCounteredBullet(const Core::Vec4f& startPosition);
+
 private:
 	float m_speed;
 	Core::Vec4f m_cameraOffset;

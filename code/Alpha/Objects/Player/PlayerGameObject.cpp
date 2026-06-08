@@ -134,6 +134,11 @@ float PlayerGameObject::GetSpeed() const
 	return m_speed;
 }
 
+void PlayerGameObject::SpawnCounteredBullet(const Core::Vec4f& startPosition)
+{
+	m_pCounteredBulletWave->SpawnSingleBullet(startPosition);
+}
+
 void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
 	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
