@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Bullets/Waves/WaveTest.h"
+#include "Alpha/Objects/Boss/Proto/Waves/WaveTest.h"
 
 #include "Alpha/Bullets/Bullets.h"
 

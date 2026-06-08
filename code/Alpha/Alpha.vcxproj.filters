@@ -31,7 +31,7 @@
     <ClCompile Include="Bullets\IBulletWave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bullets\Waves\WaveTest.cpp">
+    <ClCompile Include="Objects\Boss\Proto\Waves\WaveTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Bullets\Bullets.cpp">
@@ -49,7 +49,7 @@
     <ClCompile Include="Objects\Boss\Proto\States\BossState_Phase1_Attack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Bullets\Waves\WaveMachineGun.cpp">
+    <ClCompile Include="Objects\Boss\Proto\Waves\WaveMachineGun.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Player\PlayerGameObject.cpp">
@@ -227,13 +227,13 @@
     <ClInclude Include="Bullets\BulletSubsystem.h" />
     <ClInclude Include="Bullets\IBulletWave.h" />
     <ClInclude Include="Bullets\Bullets.h" />
-    <ClInclude Include="Bullets\Waves\WaveTest.h" />
+    <ClInclude Include="Objects\Boss\Proto\Waves\WaveTest.h" />
     <ClInclude Include="StateMachine\IState.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_Travel.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase1_Attack.h" />
     <ClInclude Include="Objects\Boss\Proto\States\BossStateEnum.h" />
-    <ClInclude Include="Bullets\Waves\WaveMachineGun.h" />
+    <ClInclude Include="Objects\Boss\Proto\Waves\WaveMachineGun.h" />
     <ClInclude Include="Objects\Player\PlayerGameObject.h" />
     <ClInclude Include="Inputs\GameCommands.h" />
     <ClInclude Include="Objects\Boss\Proto\BossGameObject.h" />

@@ -5,9 +5,9 @@
 #include "Alpha/Objects/Boss/Proto/States/BossState_Phase2_Attack2.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
-#include "Alpha/Bullets/Waves/WaveMachineGun.h"
 #include "Alpha/Objects/Boss/Proto/States/BossStateEnum.h"
 #include "Alpha/Objects/Boss/Proto/BossGameObject.h"
+#include "Alpha/Objects/Boss/Proto/Waves/WaveMachineGun.h"
 
 #include "Core/Math/Constants.h"
 
