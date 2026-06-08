@@ -20,6 +20,9 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void InitWaves();
+	void DestroyWaves();
+
 private:
 	Ichi* m_pIchi;
 

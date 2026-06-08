@@ -22,27 +22,23 @@ Ichi_Phase1_Attack1::Ichi_Phase1_Attack1(StateMachine* pStateMachine, Ichi* pIch
 	, m_pIchi(pIchi)
 	, m_rotationSpeed(0)
 	, m_warmupDuration(2)
+	, m_warmupStartTime()
 {
 	const uint32_t BULLET_COUNT = 110;
 
 	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
 		m_pWave[ii] = new IchiWaveP1A1(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
-		m_waveIndex[ii] = BulletSubsystem::GetSubsystem()->AddWave(m_pWave[ii]);
-
-		//should be initialized only when phase1 is activated
-		BulletSubsystem::GetSubsystem()->InitWave(m_waveIndex[ii]);
+		m_waveIndex[ii] = UINT32_MAX;
 	}	
 }
 
 Ichi_Phase1_Attack1::~Ichi_Phase1_Attack1()
 {
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	DestroyWaves();
+
 	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
-		pSubsystem->DestroyWave(m_waveIndex[ii]);
-		pSubsystem->RemoveWave(m_waveIndex[ii]);
-
 		delete m_pWave[ii];
 		m_pWave[ii] = nullptr;
 		m_waveIndex[ii] = UINT32_MAX;
@@ -93,6 +89,34 @@ void Ichi_Phase1_Attack1::OnExit()
 	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
 		m_pWave[ii]->DisableSpawn();
+	}
+}
+
+void Ichi_Phase1_Attack1::InitWaves()
+{
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		if (m_waveIndex[ii] != UINT32_MAX)
+			continue;
+
+		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
+		pSubsystem->InitWave(m_waveIndex[ii]);
+	}
+}
+
+void Ichi_Phase1_Attack1::DestroyWaves()
+{
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
+	{
+		if (m_waveIndex[ii] == UINT32_MAX)
+			continue;
+
+		pSubsystem->DestroyWave(m_waveIndex[ii]);
+		pSubsystem->RemoveWave(m_waveIndex[ii]);
+
+		m_waveIndex[ii] = UINT32_MAX;
 	}
 }
 

@@ -153,6 +153,12 @@ void Ichi::SetCurrentHP(int32_t hp)
 	BaseClass::SetCurrentHP(hp);
 }
 
+void Ichi::EnterPhase1()
+{
+	Ichi_Phase1_Attack1* pStateP1A1 = m_pStateMachine->GetState<Ichi_Phase1_Attack1>(IchiStateEnum::PHASE1_ATTACK1);
+	pStateP1A1->InitWaves();
+}
+
 void Ichi::SpawnEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;

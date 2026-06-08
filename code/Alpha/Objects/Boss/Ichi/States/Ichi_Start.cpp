@@ -67,7 +67,9 @@ void Ichi_Start::OnUpdate()
 }
 
 void Ichi_Start::OnExit()
-{ }
+{
+	m_pIchi->EnterPhase1();
+}
 
 void Ichi_Start::Update_Wait()
 {
