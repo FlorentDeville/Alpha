@@ -41,12 +41,16 @@ namespace Systems
 		const GameObject* GetOwner() const;
 		GameObject* GetOwner();
 
+		bool IsEnabled() const;
+
 	private:
 		Core::Guid m_guid;
+		bool m_enabled;
 
 		START_REFLECTION(Systems::GameComponent)
 			ADD_BASETYPE(Systems::Object)
 			ADD_FIELD_ATTR(m_guid, Core::Hidden)
+			ADD_FIELD(m_enabled)
 		END_REFLECTION()
 
 		GameObject* m_pOwnerGo;

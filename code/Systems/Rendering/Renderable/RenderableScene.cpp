@@ -84,6 +84,9 @@ namespace Systems
 			const Core::Array<Systems::GameComponent*>& components = pGo->GetComponents();
 			for (const Systems::GameComponent* pComponent : components)
 			{
+				if (!pComponent->IsEnabled())
+					continue;
+
 				if (const Systems::DirectionalLightComponent* pLight = pComponent->Cast<Systems::DirectionalLightComponent>())
 				{
 					Systems::RenderableLight& gfxLight = scene.m_lights.PushBackDefault();

@@ -9,6 +9,7 @@ namespace Systems
 	GameComponent::GameComponent()
 		: Object()
 		, m_guid()
+		, m_enabled(true)
 		, m_pOwnerGo(nullptr)
 	{ }
 
@@ -53,6 +54,11 @@ namespace Systems
 	GameObject* GameComponent::GetOwner()
 	{
 		return m_pOwnerGo;
+	}
+
+	bool GameComponent::IsEnabled() const
+	{
+		return m_enabled;
 	}
 
 	GameComponent* CreateNewGameComponent(const Core::TypeDescriptor* pType)
