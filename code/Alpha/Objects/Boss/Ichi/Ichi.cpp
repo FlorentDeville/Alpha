@@ -203,6 +203,17 @@ void Ichi::ExitPhase1()
 	pStateP1A2->DestroyWaves();
 }
 
+void Ichi::EnterPhase2()
+{
+	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
+
+	pP1Renderable->SetEnabled(true);
+	pP2Renderable->SetEnabled(true);
+	pP3Renderable->SetEnabled(false);
+}
+
 void Ichi::SpawnEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;

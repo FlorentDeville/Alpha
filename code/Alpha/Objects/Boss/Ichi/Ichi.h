@@ -41,6 +41,8 @@ public:
 	void EnterPhase1();
 	void ExitPhase1();
 
+	void EnterPhase2();
+
 	/*
 	
 

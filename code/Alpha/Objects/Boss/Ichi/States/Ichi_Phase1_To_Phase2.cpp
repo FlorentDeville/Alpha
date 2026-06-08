@@ -4,6 +4,8 @@
 
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_To_Phase2.h"
 
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
+
 Ichi_Phase1_To_Phase2::Ichi_Phase1_To_Phase2(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
@@ -20,7 +22,11 @@ void Ichi_Phase1_To_Phase2::OnEnter()
 }
 
 void Ichi_Phase1_To_Phase2::OnUpdate()
-{ }
+{
+	GoTo(IchiStateEnum::PHASE2_TRAVEL);
+}
 
 void Ichi_Phase1_To_Phase2::OnExit()
-{ }
+{
+	m_pIchi->EnterPhase2();
+}
