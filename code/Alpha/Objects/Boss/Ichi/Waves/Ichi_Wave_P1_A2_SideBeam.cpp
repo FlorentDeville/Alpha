@@ -19,13 +19,12 @@
 #include <assert.h>
 #include <cmath>
 
-IchiWaveP1A2SideBeam::IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount, float rotationOffset)
+IchiWaveP1A2SideBeam::IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount)
 	: IBulletWave()
 	, m_warmupDuration(1.5f)
 	, m_warmupElapsedTime(0)
 	, m_currentState(State::WARMUP)
 	, m_currentScale(0)
-	, m_rotationOffset(rotationOffset)
 	, m_nextBulletToSpawn(0)
 	, m_enableSpawn(true)
 	, m_lastBulletSpawnedTime(0)

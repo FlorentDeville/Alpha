@@ -11,7 +11,7 @@
 class IchiWaveP1A2SideBeam : public IBulletWave
 {
 public:
-	IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount = 10, float rotationOffset = 0);
+	IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount = 10);
 	~IchiWaveP1A2SideBeam();
 
 	void Init(Bullets& bullets) override;
@@ -31,8 +31,6 @@ private:
 	//parameters that can be modified at runtime
 	Core::Vec4f m_spawnPosition;
 	Core::Vec4f m_spawnSpeed;
-
-	float m_rotationOffset; //start location rotation offset in radian
 
 	//internal variables
 
