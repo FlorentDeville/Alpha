@@ -76,7 +76,6 @@ void IchiWaveP1A2SideBeam::Start(Bullets& bullets)
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -10, 0);
 	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
-	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 
 	for(uint32_t ii = m_startId; ii < m_endId; ++ii)
 		bullets.m_type[ii] = BulletType::NORMAL;
@@ -196,8 +195,6 @@ void IchiWaveP1A2SideBeam::SpawnBullet(Bullets& bullets)
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -20, 0);
-	//bullets.m_type[m_nextBulletToSpawn] = BulletType::COUNTERABLE;
-	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 
 	++m_nextBulletToSpawn;
 	if (m_nextBulletToSpawn >= m_endId)

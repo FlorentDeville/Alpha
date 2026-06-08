@@ -70,7 +70,6 @@ void IchiWaveP1A2MainBeam::Start(Bullets& bullets)
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
 	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
-	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 }
 
 void IchiWaveP1A2MainBeam::Update(Bullets& bullets, float dt)
@@ -173,7 +172,6 @@ void IchiWaveP1A2MainBeam::SpawnBullet(Bullets& bullets)
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
 	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
-	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 
 	++m_nextBulletToSpawn;
 	if (m_nextBulletToSpawn >= m_endId)

@@ -42,54 +42,22 @@ void IBulletWave::CollisionDetection(Bullets& bullets)
 		if (bullets.m_timeToLive[ii] <= 0)
 			continue;
 
-		if (bullets.m_state[ii] == BulletState::ATTACK)
+		bool collided = false;
+		if (bullets.m_type[ii] == BulletType::COUNTERABLE)
 		{
-			bool collided = false;
-			if (bullets.m_type[ii] == BulletType::COUNTERABLE)
-			{
-				if (CollisionTestForBulletCounter(bullets, ii))
-					collided = CollisionTestForBullet(bullets, ii);
-
-				if (collided)
-					Core::LogModule::Get().LogInfo("Collision detected for counter bullet");
-			}
-			else
-			{
+			if (CollisionTestForBulletCounter(bullets, ii))
 				collided = CollisionTestForBullet(bullets, ii);
-			}
 
 			if (collided)
-				return;
+				Core::LogModule::Get().LogInfo("Collision detected for counter bullet");
 		}
-		else if (bullets.m_state[ii] == BulletState::COUNTER)
+		else
 		{
-			Systems::CollisionSubsystem* pColSubsystem = Systems::CollisionSubsystem::GetSubsystem();
-			Systems::ShapeSphere colShape(Core::Vec4f(), 0.25f, nullptr);
-
-			colShape.SetCenter(bullets.m_positions[ii]);
-
-			const Systems::ICollisionShape* pOther = nullptr;
-			bool res = pColSubsystem->CollisionDetection(&colShape, &pOther);
-			if (!res)
-				continue;
-
-			Systems::GameObject* pGo = pOther->GetOwner();
-			if (!pGo)
-				continue;
-
-			//send message to the boss
-			BossGameObject* pBoss = pGo->Cast<BossGameObject>();
-			if (!pBoss)
-				continue;
-
-			Systems::GameMessageSubsystem* pMessage = Systems::GameMessageSubsystem::GetSubsystem();
-			Systems::GameMessage msg;
-			msg.m_id = CONSTSID("bullet_counter_collision");
-			pMessage->SendMessage(pGo, msg);
-
-			//kill the bullet
-			bullets.m_timeToLive[ii] = 0;
+			collided = CollisionTestForBullet(bullets, ii);
 		}
+
+		if (collided)
+			return;
 	}
 }
 

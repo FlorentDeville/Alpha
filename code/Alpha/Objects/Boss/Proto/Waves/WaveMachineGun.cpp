@@ -71,7 +71,6 @@ void WaveMachineGun::Start(Bullets& bullets)
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
 		bullets.m_type[ii] = BulletType::NORMAL;
-		bullets.m_state[ii] = BulletState::ATTACK;
 	}
 
 	//generate the counterable bullets
