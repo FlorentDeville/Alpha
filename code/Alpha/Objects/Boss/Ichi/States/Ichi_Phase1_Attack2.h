@@ -8,6 +8,7 @@
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
 class Ichi;
+class IchiWaveP1A2BackBeam;
 class IchiWaveP1A2MainBeam;
 class IchiWaveP1A2SideBeam;
 
@@ -33,6 +34,9 @@ private:
 	static const uint8_t SIDE_BEAM_COUNT = 2;
 	IchiWaveP1A2SideBeam* m_pSideBeam[SIDE_BEAM_COUNT];
 	uint32_t m_sideBeamIndex[SIDE_BEAM_COUNT];
+
+	IchiWaveP1A2BackBeam* m_pBackBeam;
+	uint32_t m_backBeamIndex;
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
