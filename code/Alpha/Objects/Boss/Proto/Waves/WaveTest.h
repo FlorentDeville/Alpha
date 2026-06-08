@@ -6,6 +6,8 @@
 
 #include "Alpha/Bullets/IBulletWave.h"
 
+#include "Core/Math/Vec4f.h"
+
 class WaveTest : public IBulletWave
 {
 public:
@@ -17,6 +19,8 @@ public:
 	void Start(Bullets& bullets, const Core::Vec4f& pos) override;
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
+
+	void SetStartPosition(const Core::Vec4f& startPos);
 
 private:
 
@@ -36,4 +40,6 @@ private:
 	float m_currentScale;
 
 	State m_currentState;
+
+	Core::Vec4f m_startPosition;
 };

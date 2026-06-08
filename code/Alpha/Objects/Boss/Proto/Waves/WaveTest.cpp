@@ -23,6 +23,7 @@ WaveTest::WaveTest(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pM
 	, m_currentState(State::SHOW)
 	, m_currentScale(0)
 	, m_rotationOffset(rotationOffset)
+	, m_startPosition()
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -45,7 +46,7 @@ void WaveTest::Destroy(Bullets& bullets)
 	bullets.Free(m_startId, m_count);
 }
 
-void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
+void WaveTest::Start(Bullets& bullets, const Core::Vec4f& /*pos*/)
 {
 	// make a basic pattern where the spawn shape is a circle and bullets go in a straight line
 	const float ANGLE_INC = Core::TWO_PI / m_count;
@@ -57,7 +58,7 @@ void WaveTest::Start(Bullets& bullets, const Core::Vec4f& pos)
 		float x = cos(angle);
 		float z = sin(angle);
 
-		bullets.m_positions[m_startId + ii] = pos + Core::Vec4f(x, 0, z, 0) * CIRCLE_RADIUS;
+		bullets.m_positions[m_startId + ii] = m_startPosition + Core::Vec4f(x, 0, z, 0) * CIRCLE_RADIUS;
 		bullets.m_speed[m_startId + ii] = Core::Vec4f(x, 0, z, 0) * SPEED;
 		bullets.m_acceleration[m_startId + ii] = Core::Vec4f(0, 0, 0, 0);
 		bullets.m_timeToLive[m_startId + ii] = 2;
@@ -129,4 +130,9 @@ void WaveTest::BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene
 
 		m_isAlive = true;
 	}
+}
+
+void WaveTest::SetStartPosition(const Core::Vec4f& startPos)
+{
+	m_startPosition = startPos;
 }

@@ -51,8 +51,11 @@ void BossState_Phase1_Attack::OnEnter()
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
-	if(m_runFirstWave)
+	if (m_runFirstWave)
+	{
+		m_pWave->SetStartPosition(transform.GetWorldTx().GetT());
 		pSubsystem->StartWave(m_waveIndex, transform.GetWorldTx().GetT());
+	}
 	else
 		pSubsystem->StartWave(m_waveMachineGunIndex, transform.GetWorldTx().GetT());
 
