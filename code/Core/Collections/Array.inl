@@ -105,6 +105,11 @@ namespace Core
 		return m_pStart;
 	}
 
+	template<typename T> uint32_t Array<T>::GetReservedSize() const
+	{
+		return m_reservedSize;
+	}
+
 	template<typename T> T& Array<T>::operator[](uint32_t index)
 	{
 		assert(index < m_size);

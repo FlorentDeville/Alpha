@@ -75,6 +75,8 @@ namespace Core
 
 		const T* GetData() const;
 
+		uint32_t GetReservedSize() const;
+
 		T& operator[](uint32_t index);
 
 		const T& operator[](uint32_t index) const;
