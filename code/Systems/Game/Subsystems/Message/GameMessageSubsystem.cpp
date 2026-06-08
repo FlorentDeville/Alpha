@@ -17,8 +17,8 @@ namespace Systems
 		, m_messagesList()
 		, m_currentListIndex(0)
 	{
-		m_messagesList[0].Reserve(100);
-		m_messagesList[1].Reserve(100);
+		for(uint8_t ii = 0; ii < MESSAGE_LIST_COUNT; ++ii)
+			m_messagesList[ii].Reserve(100);
 	}
 
 	GameMessageSubsystem::~GameMessageSubsystem()
@@ -28,7 +28,7 @@ namespace Systems
 	{
 		//swap the list.
 		uint32_t listToExecute = m_currentListIndex;
-		m_currentListIndex = (m_currentListIndex + 1) % 1;
+		m_currentListIndex = (m_currentListIndex + 1) % MESSAGE_LIST_COUNT;
 
 		for (const GameMessageContainer& container : m_messagesList[listToExecute])
 		{
@@ -43,6 +43,12 @@ namespace Systems
 		GameMessageContainer& container = m_messagesList[m_currentListIndex].PushBackDefault();
 		container.m_pGo = pGo;
 		container.m_message = msg;
+	}
+
+	void GameMessageSubsystem::ClearAllMessages()
+	{
+		for (uint8_t ii = 0; ii < MESSAGE_LIST_COUNT; ++ii)
+			m_messagesList[ii].Resize(0);
 	}
 
 	GameMessageSubsystem* GameMessageSubsystem::GetSubsystem()

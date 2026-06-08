@@ -23,6 +23,8 @@ namespace Systems
 		//This message will not be execute right away. Messages are all handled at the beginning of the frame, before Update.
 		void SendMessage(GameObject* pGo, GameMessage& msg);
 
+		void ClearAllMessages();
+
 		static uint32_t m_subsystemIndex;
 		static GameMessageSubsystem* GetSubsystem();
 
@@ -35,6 +37,8 @@ namespace Systems
 		};
 		
 		uint32_t m_currentListIndex;
-		Core::Array<GameMessageContainer> m_messagesList[2];
+
+		static const uint8_t MESSAGE_LIST_COUNT = 2;
+		Core::Array<GameMessageContainer> m_messagesList[MESSAGE_LIST_COUNT];
 	};
 }

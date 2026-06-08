@@ -188,6 +188,12 @@ namespace Systems
 
 	void GameMgr::RequestUnloadingLevel(Systems::NewAssetId levelId)
 	{
+		//I might have messages for the current level. So I should wait for 1 frame to pass
+		//for the messages to go away before really deleting game objects.
+		//Ideally, for an unload request :
+		//	- remove all the game objects from the game mgr
+		//	- wait for a single frame to pass
+		//	- really delete the game objects
 		m_unloadingRequest.PushBack(levelId);
 	}
 
@@ -195,7 +201,9 @@ namespace Systems
 	{
 		m_unloadingRequest.Reserve(m_loadedLevels.GetSize());
 		for (const LevelAsset* pLevel : m_loadedLevels)
+		{
 			m_unloadingRequest.PushBack(pLevel->GetId());
+		}
 	}
 
 	uint32_t GameMgr::RegisterGameSubsystem(ISubsystem* pSubsystem)
@@ -327,6 +335,12 @@ namespace Systems
 
 	void GameMgr::ExecuteUnloadingRequests()
 	{
+		//HACK
+		// Messages are using raw pointers. So unloading levels makes dangling pointers.
+		// Remove this when I have proper game object handles.
+		if(m_unloadingRequest.GetSize() != 0)
+			GameMessageSubsystem::GetSubsystem()->ClearAllMessages();
+
 		for (const Systems::NewAssetId id : m_unloadingRequest)
 		{
 			if (!IsLevelAlreadyLoaded(id))
