@@ -142,6 +142,7 @@
     <ClCompile Include="Objects\Player\PlayerGameObject.cpp" />
     <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp" />
     <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp" />
+    <ClCompile Include="Objects\Player\Waves\Player_Wave_Countered.cpp" />
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp" />
     <ClCompile Include="StateMachine\IState.cpp" />
     <ClCompile Include="StateMachine\StateMachine.cpp" />
@@ -527,6 +528,7 @@
     <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
+    <ClInclude Include="Objects\Player\Waves\Player_Wave_Countered.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />
     <ClInclude Include="StateMachine\IState.h" />
     <ClInclude Include="StateMachine\StateMachine.h" />
