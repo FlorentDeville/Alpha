@@ -46,25 +46,27 @@ void Ichi_Phase1_Attack2::OnEnter()
 	Core::Mat44f wsTx = pGunAttachPoints[0] * m_pIchi->GetTransform().GetWorldTx();
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	pSubsystem->StartWave(m_mainBeamIndex);
 
 	m_pMainBeam->SetSpawnPosition(wsTx.GetT());
 	m_pMainBeam->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+	pSubsystem->StartWave(m_mainBeamIndex);
 
 	//left side beam
 	{
-		pSubsystem->StartWave(m_sideBeamIndex[0]);
 		Core::Mat44f sideBeamWsTx = pGunAttachPoints[3] * m_pIchi->GetTransform().GetWorldTx();
 		m_pSideBeam[0]->SetSpawnPosition(sideBeamWsTx.GetT());
 		m_pSideBeam[0]->SetSpawnSpeed(Core::Vec4f(-10, 0, 0, 0));
+
+		pSubsystem->StartWave(m_sideBeamIndex[0]);
 	}
 
 	//right side beam
 	{
-		pSubsystem->StartWave(m_sideBeamIndex[1]);
 		Core::Mat44f sideBeamWsTx = pGunAttachPoints[1] * m_pIchi->GetTransform().GetWorldTx();
 		m_pSideBeam[1]->SetSpawnPosition(sideBeamWsTx.GetT());
 		m_pSideBeam[1]->SetSpawnSpeed(Core::Vec4f(10, 0, 0, 0));
+
+		pSubsystem->StartWave(m_sideBeamIndex[1]);
 	}
 
 	m_waypoints[0] = m_pIchi->GetTransform().GetLocalTx().GetT() + Core::Vec4f(20, 0, 0, 0);

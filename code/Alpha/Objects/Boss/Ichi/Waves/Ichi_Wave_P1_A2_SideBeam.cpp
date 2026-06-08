@@ -27,6 +27,8 @@ IchiWaveP1A2SideBeam::IchiWaveP1A2SideBeam(Systems::MeshAsset* pMesh, Systems::M
 	, m_currentScale(0)
 	, m_rotationOffset(rotationOffset)
 	, m_nextBulletToSpawn(0)
+	, m_enableSpawn(true)
+	, m_lastBulletSpawnedTime(0)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -68,8 +70,8 @@ void IchiWaveP1A2SideBeam::Start(Bullets& bullets)
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
-	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -10, 0);
+	bullets.m_type[m_nextBulletToSpawn] = BulletType::COUNTERABLE;
 	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 }
 
@@ -105,6 +107,9 @@ void IchiWaveP1A2SideBeam::Update(Bullets& bullets, float dt)
 		//reduce ttl
 		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 			bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
+
+		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+			bullets.m_speed[ii] = bullets.m_speed[ii] + bullets.m_acceleration[ii] * dt;
 
 		//compute new position
 		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
@@ -171,8 +176,8 @@ void IchiWaveP1A2SideBeam::SpawnBullet(Bullets& bullets)
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
-	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -20, 0);
+	bullets.m_type[m_nextBulletToSpawn] = BulletType::COUNTERABLE;
 	bullets.m_state[m_nextBulletToSpawn] = BulletState::ATTACK;
 
 	++m_nextBulletToSpawn;
