@@ -13,7 +13,11 @@ Ichi_Phase1_To_Phase2::~Ichi_Phase1_To_Phase2()
 { }
 
 void Ichi_Phase1_To_Phase2::OnEnter()
-{ }
+{
+	m_pIchi->ExitPhase1();
+
+	//display phase 2 mesh
+}
 
 void Ichi_Phase1_To_Phase2::OnUpdate()
 { }

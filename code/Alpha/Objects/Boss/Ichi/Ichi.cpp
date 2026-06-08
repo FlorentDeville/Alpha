@@ -178,6 +178,15 @@ void Ichi::EnterPhase1()
 	pStateP1A2->InitWaves();
 }
 
+void Ichi::ExitPhase1()
+{
+	Ichi_Phase1_Attack1* pStateP1A1 = m_pStateMachine->GetState<Ichi_Phase1_Attack1>(IchiStateEnum::PHASE1_ATTACK1);
+	pStateP1A1->DestroyWaves();
+
+	Ichi_Phase1_Attack2* pStateP1A2 = m_pStateMachine->GetState<Ichi_Phase1_Attack2>(IchiStateEnum::PHASE1_ATTACK2);
+	pStateP1A2->DestroyWaves();
+}
+
 void Ichi::SpawnEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;

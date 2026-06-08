@@ -21,6 +21,11 @@ void Ichi_Phase1_Travel::OnEnter()
 	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
 	m_target[0] = currentPosition + Core::Vec4f(20, 0, 0, 0);
 	m_target[1] = currentPosition;
+
+	if (m_pIchi->GetCurrentHP() <= 0)
+	{
+		GoTo(IchiStateEnum::PHASE1_TO_PHASE2);
+	}
 }
 
 void Ichi_Phase1_Travel::OnUpdate()

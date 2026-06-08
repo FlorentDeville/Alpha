@@ -38,9 +38,10 @@ public:
 	void SetCurrentHP(int32_t hp) override;
 
 	void EnterPhase1();
+	void ExitPhase1();
 
 	/*
-	void ExitPhase1();
+	
 
 	void EnterPhase2();
 	void ExitPhase2();
