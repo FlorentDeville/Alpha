@@ -16,6 +16,7 @@
 Ichi_Phase3_Attack1::Ichi_Phase3_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
+	, m_startTime(0)
 {
 	m_waveCount = m_pIchi->GetPhase3GunsAttachPointsCount();
 
