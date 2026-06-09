@@ -26,6 +26,16 @@ public:
 	void DestroyWaves();
 
 private:
+	enum InternalState
+	{
+		GET_IN_POSITION,
+		WAVE_WARMUP,
+		STRAFE,
+		REST
+	};
+
+	InternalState m_internalState;
+
 	Ichi* m_pIchi;
 
 	IchiWaveP1A2MainBeam* m_pMainBeam;
@@ -40,4 +50,9 @@ private:
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
+
+	float m_startTime;
+	float m_restStartTime;
+
+	void UpdateWaves();
 };
