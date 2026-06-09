@@ -64,6 +64,9 @@ public:
 	const uint8_t GetPhase2GunsAttachPointsCount() const;
 	const Core::Mat44f* GetPhase2GunsAttachPoints() const;
 
+	const uint32_t GetPhase3GunsAttachPointsCount() const;
+	const Core::Mat44f* GetPhase3GunsAttachPoints() const;
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase2;
@@ -112,6 +115,9 @@ private:
 	static Core::Sid ATTACH_POINT_PHASE2_GUN_NAME[GUN_PHASE2_COUNT];
 	Core::Mat44f m_phase2GunsAttachPoints[GUN_PHASE2_COUNT];
 
+	uint32_t m_phase3GunsCount;
+	Core::Mat44f* m_phase3GunsAttachPoints;
+
 	StateMachine* m_pMotionStateMachine;
 
 	static Core::Sid ATTACH_POINTS_NAME[ENGINE_EFFECT_COUNT];
@@ -121,4 +127,6 @@ private:
 	void UpdateHPBar();
 
 	void SkipStart();
+
+	void InitAttachPoints();
 };

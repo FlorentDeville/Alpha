@@ -65,6 +65,8 @@ Core::Sid Ichi::ATTACH_POINT_PHASE2_GUN_NAME[Ichi::GUN_PHASE2_COUNT] =
 Ichi::Ichi()
 	: BaseClass()
 	, m_pMotionStateMachine(nullptr)
+	, m_phase3GunsAttachPoints(nullptr)
+	, m_phase3GunsCount(0)
 {
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
@@ -79,6 +81,8 @@ Ichi::~Ichi()
 void Ichi::OnStartGame()
 {
 	BaseClass::OnStartGame();
+
+	InitAttachPoints(); //do this before cerating the states so the states cn use the attach points.
 
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(IchiStateEnum::COUNT);
@@ -117,35 +121,9 @@ void Ichi::OnStartGame()
 	//m_pStateMachine->Start(IchiStateEnum::START);
 	SkipStart();
 	//EnterPhase1();
-	EnterPhase2();
-	m_pStateMachine->Start(IchiStateEnum::PHASE2_ATTACK2);
-
-	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
-	{
-		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
-		if (pAp)
-			m_engineAttachPoints[ii] = pAp->GetLocator().GetMatrix();
-		else
-			Core::LogModule::Get().LogInfo("Can't find attach point for engine");
-	}
-
-	for (uint8_t ii = 0; ii < GUN_PHASE1_COUNT; ++ii)
-	{
-		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINT_PHASE1_GUN_NAME[ii]);
-		if (pAp)
-			m_phase1GunsAttachPoints[ii] = pAp->GetLocator().GetMatrix();
-		else
-			Core::LogModule::Get().LogInfo("Can't find attach point for phase1 gun");
-	}
-
-	for (uint8_t ii = 0; ii < GUN_PHASE2_COUNT; ++ii)
-	{
-		const Systems::AttachPoint* pAp = m_meshPhase2->FindAttachPoint(ATTACH_POINT_PHASE2_GUN_NAME[ii]);
-		if (pAp)
-			m_phase2GunsAttachPoints[ii] = pAp->GetLocator().GetMatrix();
-		else
-			Core::LogModule::Get().LogInfo("Can't find attach point for phase2 gun");
-	}
+	//EnterPhase2();
+	EnterPhase3();
+	m_pStateMachine->Start(IchiStateEnum::PHASE3_ATTACK1);
 }
 
 void Ichi::Update(float dt)
@@ -186,6 +164,9 @@ void Ichi::OnDestroyGame()
 	BaseClass::OnDestroyGame();
 
 	KillEngineEffects();
+
+	delete[] m_phase3GunsAttachPoints;
+	m_phase3GunsAttachPoints = nullptr;
 
 	delete m_pStateMachine;
 	m_pStateMachine = nullptr;
@@ -266,6 +247,9 @@ void Ichi::EnterPhase3()
 	pP3Renderable->SetEnabled(true);
 
 	m_currentHP = GetMaxHP();
+
+	Ichi_Phase3_Attack1* pP3A1 = m_pStateMachine->GetState<Ichi_Phase3_Attack1>(IchiStateEnum::PHASE3_ATTACK1);
+	pP3A1->InitWaves();
 }
 
 void Ichi::SpawnEngineEffects()
@@ -344,6 +328,16 @@ const Core::Mat44f* Ichi::GetPhase2GunsAttachPoints() const
 	return m_phase2GunsAttachPoints;
 }
 
+const uint32_t Ichi::GetPhase3GunsAttachPointsCount() const
+{
+	return m_phase3GunsCount;
+}
+
+const Core::Mat44f* Ichi::GetPhase3GunsAttachPoints() const
+{
+	return m_phase3GunsAttachPoints;
+}
+
 void Ichi::UpdateHPBar()
 {
 	Systems::UIBaseComponent* pTotalHp = m_totalHealthComp.FindComponent(this);
@@ -362,4 +356,42 @@ void Ichi::SkipStart()
 {
 	Ichi_Start* pStart = m_pStateMachine->GetState<Ichi_Start>(IchiStateEnum::START);
 	pStart->Skip();
+}
+
+void Ichi::InitAttachPoints()
+{
+	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
+	{
+		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINTS_NAME[ii]);
+		if (pAp)
+			m_engineAttachPoints[ii] = pAp->GetLocator().GetMatrix();
+		else
+			Core::LogModule::Get().LogInfo("Can't find attach point for engine");
+	}
+
+	for (uint8_t ii = 0; ii < GUN_PHASE1_COUNT; ++ii)
+	{
+		const Systems::AttachPoint* pAp = m_meshPhase1->FindAttachPoint(ATTACH_POINT_PHASE1_GUN_NAME[ii]);
+		if (pAp)
+			m_phase1GunsAttachPoints[ii] = pAp->GetLocator().GetMatrix();
+		else
+			Core::LogModule::Get().LogInfo("Can't find attach point for phase1 gun");
+	}
+
+	for (uint8_t ii = 0; ii < GUN_PHASE2_COUNT; ++ii)
+	{
+		const Systems::AttachPoint* pAp = m_meshPhase2->FindAttachPoint(ATTACH_POINT_PHASE2_GUN_NAME[ii]);
+		if (pAp)
+			m_phase2GunsAttachPoints[ii] = pAp->GetLocator().GetMatrix();
+		else
+			Core::LogModule::Get().LogInfo("Can't find attach point for phase2 gun");
+	}
+
+	m_phase3GunsCount = m_meshPhase3->GetAttachPoints().GetSize();
+	m_phase3GunsAttachPoints = new Core::Mat44f[m_phase3GunsCount];
+	for (uint8_t ii = 0; ii < m_phase3GunsCount; ++ii)
+	{
+		const Systems::AttachPoint& ap = m_meshPhase3->GetAttachPoints()[ii];
+		m_phase3GunsAttachPoints[ii] = ap.GetLocator().GetMatrix();
+	}
 }

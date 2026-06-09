@@ -8,6 +8,7 @@
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
 class Ichi;
+class IchiWaveP1A1;
 
 class Ichi_Phase3_Attack1 : public IState
 {
@@ -19,6 +20,13 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
+	void InitWaves();
+	void DestroyWaves();
+
 private:
 	Ichi* m_pIchi;
+
+	uint32_t m_waveCount;
+	IchiWaveP1A1** m_ppWaves;
+	uint32_t* m_pWaveIndex;
 };
