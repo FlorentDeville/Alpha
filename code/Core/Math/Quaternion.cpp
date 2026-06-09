@@ -139,4 +139,16 @@ namespace Core
 	{
 		return m_data.m128_f32[3];
 	}
+
+	Quaternion Quaternion::Conjugate() const
+	{
+		__m128 minusOne = _mm_set_ps1(-1);
+		__m128 neg = _mm_mul_ps(m_data, minusOne);
+		neg.m128_f32[3] = GetW();
+
+		Quaternion res;
+		res.m_data = neg;
+
+		return res;
+	}
 }

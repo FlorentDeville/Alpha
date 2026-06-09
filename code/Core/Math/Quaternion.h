@@ -33,6 +33,8 @@ namespace Core
 		float GetZ() const;
 		float GetW() const;
 
+		Quaternion Conjugate() const;
+
 		__m128 m_data;
 	};
 }
