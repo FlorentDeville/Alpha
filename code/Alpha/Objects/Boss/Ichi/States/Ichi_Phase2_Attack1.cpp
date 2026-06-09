@@ -5,6 +5,7 @@
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase2_Attack1.h"
 
 #include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 
 #include "Systems/Game/GameContext.h"
@@ -53,26 +54,60 @@ void Ichi_Phase2_Attack1::OnEnter()
 		pSubsystem->StartWave(m_waveIndex[ii]);
 
 	m_startTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
+
+	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
+
+	m_internalState = WARMUP;
 }
 
 void Ichi_Phase2_Attack1::OnUpdate()
 {
 	const float WARMUP_TIME = 1.5;
+	const float SHOOTING_TIME = 6;
 
 	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 
-	if(m_startTime + WARMUP_TIME < currentTime)
+	switch (m_internalState)
 	{
-		const float ROTATION_SPEED = 0.5;
-		float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
-		float newRotation = ROTATION_SPEED * dt;
+	case InternalState::WARMUP:
+	{
+		if (m_startTime + WARMUP_TIME < currentTime)
+			m_internalState = SHOOT;
+	}
+	break;
 
-		Core::Quaternion quat = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
-		Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, newRotation, 0);
+	case InternalState::SHOOT:
+	{
+		UpdateMotion();
+		if (m_startTime + SHOOTING_TIME < currentTime)
+		{
+			for (uint8_t ii = 0; ii < m_waveCount; ++ii)
+				m_pWave[ii]->DisableSpawn();
 
-		Core::Quaternion finalRot = rot * quat;
+			m_internalState = FINISH;
+		}
+	}
+	break;
 
-		m_pIchi->GetTransform().SetLocalRotation(finalRot);
+	case InternalState::FINISH:
+	{
+		UpdateMotion();
+
+		const Core::Quaternion& rot = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+		
+
+		float cosAngleOverTwo = abs(rot.GetW());
+		const float CLOSE_VALUE = 0.999f;
+
+		if (cosAngleOverTwo > CLOSE_VALUE)
+		{
+			Core::Quaternion rest(0, 0, 0, 1);
+			m_pIchi->GetTransform().SetLocalRotation(rest);
+			GoTo(IchiStateEnum::PHASE2_TRAVEL);
+		}
+	}
+	break;
+
 	}
 
 	UpdateWavesSpawnParameters();
@@ -165,4 +200,18 @@ void Ichi_Phase2_Attack1::UpdateWavesSpawnParameters()
 			break;
 		}
 	}
+}
+
+void Ichi_Phase2_Attack1::UpdateMotion()
+{
+	const float ROTATION_SPEED = 0.5;
+	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+	float newRotation = ROTATION_SPEED * dt;
+
+	Core::Quaternion quat = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+	Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, newRotation, 0);
+
+	Core::Quaternion finalRot = rot * quat;
+
+	m_pIchi->GetTransform().SetLocalRotation(finalRot);
 }

@@ -24,6 +24,15 @@ public:
 	void DestroyWaves();
 
 private:
+	enum InternalState
+	{
+		WARMUP,
+		SHOOT,
+		FINISH
+	};
+
+	InternalState m_internalState;
+
 	Ichi* m_pIchi;
 
 	uint8_t m_waveCount;
@@ -33,4 +42,6 @@ private:
 	float m_startTime;
 
 	void UpdateWavesSpawnParameters();
+
+	void UpdateMotion();
 };
