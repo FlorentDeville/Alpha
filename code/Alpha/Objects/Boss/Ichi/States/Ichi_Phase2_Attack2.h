@@ -28,15 +28,17 @@ public:
 private:
 	Ichi* m_pIchi;
 
-	IchiWaveP1A2MainBeam* m_pMainBeam;
-	uint32_t m_mainBeamIndex;
+	static const uint8_t MAIN_BEAM_COUNT = 2;
+	IchiWaveP1A2MainBeam* m_pMainBeam[MAIN_BEAM_COUNT];
+	uint32_t m_mainBeamIndex[MAIN_BEAM_COUNT];
 
-	static const uint8_t SIDE_BEAM_COUNT = 2;
+	static const uint8_t SIDE_BEAM_COUNT = 4;
 	IchiWaveP1A2SideBeam* m_pSideBeam[SIDE_BEAM_COUNT];
 	uint32_t m_sideBeamIndex[SIDE_BEAM_COUNT];
 
-	IchiWaveP1A2BackBeam* m_pBackBeam;
-	uint32_t m_backBeamIndex;
+	static const uint8_t BACK_BEAM_COUNT = 2;
+	IchiWaveP1A2BackBeam* m_pBackBeam[BACK_BEAM_COUNT];
+	uint32_t m_backBeamIndex[BACK_BEAM_COUNT];
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
