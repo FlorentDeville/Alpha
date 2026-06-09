@@ -29,7 +29,7 @@ public:
 	bool* m_free;
 	BulletType* m_type;
 
-	const uint32_t COUNT = 2000;
+	const uint32_t COUNT = 4000;
 
 	void Create();
 	void Delete();
