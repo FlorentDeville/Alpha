@@ -52,6 +52,7 @@ void IchiMotionTravel::OnUpdate()
 		m_pIchi->GetTransform().SetLocalTranslation(m_target);
 		m_pIchi->GetTransform().SetLocalRotation(Core::Quaternion());
 		GoTo(IchiMotionState::STOP);
+		return;
 	}
 
 	Core::Vec4f motionDirection = m_target - currentPosition;
