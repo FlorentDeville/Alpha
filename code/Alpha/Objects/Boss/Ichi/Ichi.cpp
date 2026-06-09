@@ -8,6 +8,7 @@
 #include "Alpha/Objects/Boss/Ichi/Motion/IchiMotionState.h"
 #include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Idle.h"
 #include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Stop.h"
+#include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Strafe.h"
 #include "Alpha/Objects/Boss/Ichi/Motion/Ichi_Motion_Travel.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase1_Attack1.h"
@@ -107,6 +108,7 @@ void Ichi::OnStartGame()
 	m_pMotionStateMachine->AddState(new IchiMotionStop(m_pMotionStateMachine, this), IchiMotionState::STOP);
 	m_pMotionStateMachine->AddState(new IchiMotionIdle(m_pMotionStateMachine, this), IchiMotionState::IDLE);
 	m_pMotionStateMachine->AddState(new IchiMotionTravel(m_pMotionStateMachine, this), IchiMotionState::TRAVEL);
+	m_pMotionStateMachine->AddState(new IchiMotionStrafe(m_pMotionStateMachine, this), IchiMotionState::STRAFE);
 
 	m_pMotionStateMachine->Start(IchiMotionState::STOP);
 
@@ -120,10 +122,10 @@ void Ichi::OnStartGame()
 
 	//m_pStateMachine->Start(IchiStateEnum::START);
 	SkipStart();
-	//EnterPhase1();
+	EnterPhase1();
 	//EnterPhase2();
-	EnterPhase3();
-	m_pStateMachine->Start(IchiStateEnum::PHASE3_ATTACK2);
+	//EnterPhase3();
+	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
 }
 
 void Ichi::Update(float dt)
@@ -289,6 +291,15 @@ void Ichi::GoToMotionStateTravel(const Core::Vec4f& target)
 	pState->SetTarget(target);
 
 	m_pMotionStateMachine->GoTo(IchiMotionState::TRAVEL);
+}
+
+void Ichi::GoToMotionStateStrafe(const Core::Vec4f& target, float speed)
+{
+	IchiMotionStrafe* pState = m_pMotionStateMachine->GetState<IchiMotionStrafe>(IchiMotionState::STRAFE);
+	pState->SetTarget(target);
+	pState->SetSpeed(speed);
+
+	m_pMotionStateMachine->GoTo(IchiMotionState::STRAFE);
 }
 
 bool Ichi::IsInMotionState(IchiMotionState::Type state) const

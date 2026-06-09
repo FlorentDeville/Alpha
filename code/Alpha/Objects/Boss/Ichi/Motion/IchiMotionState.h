@@ -12,6 +12,7 @@ public:
 		IDLE,
 		TRAVEL,
 		STOP,
+		STRAFE,
 
 		COUNT
 	};

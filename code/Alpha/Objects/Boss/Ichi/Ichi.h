@@ -51,6 +51,7 @@ public:
 
 	void GoToMotionState(IchiMotionState::Type newState);
 	void GoToMotionStateTravel(const Core::Vec4f& target);
+	void GoToMotionStateStrafe(const Core::Vec4f& target, float speed);
 
 	bool IsInMotionState(IchiMotionState::Type state) const;
 

@@ -101,6 +101,7 @@
     <ClCompile Include="Bullets\Bullets.cpp" />
     <ClCompile Include="Bullets\BulletSubsystem.cpp" />
     <ClCompile Include="Bullets\IBulletWave.cpp" />
+    <ClCompile Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_BackBeam.cpp" />
     <ClCompile Include="Objects\Boss\Proto\Waves\WaveMachineGun.cpp" />
     <ClCompile Include="Objects\Boss\Proto\Waves\WaveTest.cpp" />
@@ -485,6 +486,7 @@
     <ClInclude Include="Bullets\Bullets.h" />
     <ClInclude Include="Bullets\BulletSubsystem.h" />
     <ClInclude Include="Bullets\IBulletWave.h" />
+    <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_BackBeam.h" />
     <ClInclude Include="Objects\Boss\Proto\Waves\WaveMachineGun.h" />
     <ClInclude Include="Objects\Boss\Proto\Waves\WaveTest.h" />
