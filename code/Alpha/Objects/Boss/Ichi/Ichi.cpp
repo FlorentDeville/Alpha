@@ -238,6 +238,9 @@ void Ichi::EnterPhase2()
 	pP3Renderable->SetEnabled(false);
 
 	m_currentHP = GetMaxHP();
+
+	Ichi_Phase2_Attack1* pStateP2A1 = m_pStateMachine->GetState<Ichi_Phase2_Attack1>(IchiStateEnum::PHASE2_ATTACK1);
+	pStateP2A1->InitWaves();
 }
 
 void Ichi::SpawnEngineEffects()
