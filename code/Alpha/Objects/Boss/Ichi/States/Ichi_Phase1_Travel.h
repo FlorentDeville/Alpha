@@ -28,4 +28,5 @@ private:
 	uint8_t m_currentTarget;
 
 	bool m_nextAttack;
+	bool m_targetInitialized;
 };

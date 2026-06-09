@@ -11,20 +11,28 @@ Ichi_Phase1_Travel::Ichi_Phase1_Travel(StateMachine* pStateMachine, Ichi* pIchi)
 	, m_pIchi(pIchi)
 	, m_currentTarget(0)
 	, m_nextAttack(false)
+	, m_targetInitialized(false)
 { }
 
 void Ichi_Phase1_Travel::OnEnter()
 {
-	m_currentTarget = 0;
-
 	//compute final point
-	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
-	m_target[0] = currentPosition + Core::Vec4f(20, 0, 0, 0);
-	m_target[1] = currentPosition;
+	if (!m_targetInitialized)
+	{
+		Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
+		m_target[0] = currentPosition + Core::Vec4f(20, 0, 0, 0);
+		m_target[1] = currentPosition;
+
+		m_targetInitialized = true;
+	}
 
 	if (m_pIchi->GetCurrentHP() <= 0)
 	{
 		GoTo(IchiStateEnum::PHASE1_TO_PHASE2);
+	}
+	else
+	{
+		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
 	}
 }
 
@@ -32,18 +40,12 @@ void Ichi_Phase1_Travel::OnUpdate()
 {
 	if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
 	{
-		if (m_currentTarget >= TARGET_COUNT)
-		{
-			if(!m_nextAttack)
-				GoTo(IchiStateEnum::PHASE1_ATTACK1);
-			else
-				GoTo(IchiStateEnum::PHASE1_ATTACK2);
+		if (!m_nextAttack)
+			GoTo(IchiStateEnum::PHASE1_ATTACK1);
+		else
+			GoTo(IchiStateEnum::PHASE1_ATTACK2);
 
-			return;
-		}
-
-		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
-		++m_currentTarget;
+		m_currentTarget = (m_currentTarget + 1) % TARGET_COUNT;
 	}
 }
 
