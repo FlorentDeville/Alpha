@@ -246,6 +246,28 @@ void Ichi::EnterPhase2()
 	pStateP2A2->InitWaves();
 }
 
+void Ichi::ExitPhase2()
+{
+	Ichi_Phase2_Attack1* pStateP2A1 = m_pStateMachine->GetState<Ichi_Phase2_Attack1>(IchiStateEnum::PHASE2_ATTACK1);
+	pStateP2A1->DestroyWaves();
+
+	Ichi_Phase2_Attack2* pStateP2A2 = m_pStateMachine->GetState<Ichi_Phase2_Attack2>(IchiStateEnum::PHASE2_ATTACK2);
+	pStateP2A2->DestroyWaves();
+}
+
+void Ichi::EnterPhase3()
+{
+	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
+
+	pP1Renderable->SetEnabled(true);
+	pP2Renderable->SetEnabled(true);
+	pP3Renderable->SetEnabled(true);
+
+	m_currentHP = GetMaxHP();
+}
+
 void Ichi::SpawnEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;

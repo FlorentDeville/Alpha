@@ -42,14 +42,9 @@ public:
 	void ExitPhase1();
 
 	void EnterPhase2();
-
-	/*
-	
-
-	void EnterPhase2();
 	void ExitPhase2();
 
-	void EnterPhase3();*/
+	void EnterPhase3();
 
 	void SpawnEngineEffects();
 	void KillEngineEffects();

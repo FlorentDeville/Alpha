@@ -21,4 +21,11 @@ public:
 
 private:
 	Ichi* m_pIchi;
+
+	static const uint8_t TARGET_COUNT = 2;
+	Core::Vec4f m_target[TARGET_COUNT];
+
+	uint8_t m_currentTarget;
+
+	bool m_nextAttack;
 };
