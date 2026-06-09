@@ -7,6 +7,10 @@
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+
 Ichi_Phase2_Attack1::Ichi_Phase2_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
@@ -50,6 +54,19 @@ void Ichi_Phase2_Attack1::OnEnter()
 
 void Ichi_Phase2_Attack1::OnUpdate()
 {
+	{
+		const float ROTATION_SPEED = 0.5;
+		float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+		float newRotation = ROTATION_SPEED * dt;
+
+		Core::Quaternion quat = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+		Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, newRotation, 0);
+
+		Core::Quaternion finalRot = rot * quat;
+
+		m_pIchi->GetTransform().SetLocalRotation(finalRot);
+	}
+
 	UpdateWavesSpawnParameters();
 }
 
