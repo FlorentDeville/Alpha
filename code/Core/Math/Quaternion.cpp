@@ -56,6 +56,11 @@ namespace Core
 		return r;
 	}
 
+	Core::Vec4f Quaternion::ToVec4f() const
+	{
+		return Core::Vec4f(m_data);
+	}
+
 	Quaternion Quaternion::FromEulerAngles(const Core::Vec4f& eulerAngles)
 	{
 		Core::Vec4f half = eulerAngles * 0.5f;
@@ -118,6 +123,24 @@ namespace Core
 		Core::Vec4f vectorPart = v2 * GetW() + v1 * other.GetW() + v1.Cross(v2);
 
 		return Quaternion(vectorPart.GetX(), vectorPart.GetY(), vectorPart.GetZ(), scalarPart);
+	}
+
+	Quaternion Quaternion::operator+(const Quaternion& other) const
+	{
+		__m128 res = _mm_add_ps(m_data, other.m_data);
+		Quaternion q;
+		q.m_data = res;
+		return q;
+	}
+
+	Quaternion Quaternion::operator*(float f) const
+	{
+		__m128 scalar = _mm_set_ps1(f);
+		__m128 res = _mm_mul_ps(m_data, scalar);
+		Quaternion q;
+		q.m_data = res;
+
+		return q;
 	}
 
 	float Quaternion::GetX() const

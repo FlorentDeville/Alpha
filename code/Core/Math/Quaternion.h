@@ -20,6 +20,7 @@ namespace Core
 		void Normalize();
 		
 		Core::Vec4f ToEulerAngles() const;
+		Core::Vec4f ToVec4f() const;
 
 		static Quaternion FromEulerAngles(const Core::Vec4f& eulerAngles);
 		static Quaternion FromEulerAngles(float x, float y, float z);
@@ -27,6 +28,8 @@ namespace Core
 
 		bool operator==(const Quaternion& other) const;
 		Quaternion operator*(const Quaternion& other) const;
+		Quaternion operator+(const Quaternion& other) const;
+		Quaternion operator*(float f) const;
 
 		float GetX() const;
 		float GetY() const;
