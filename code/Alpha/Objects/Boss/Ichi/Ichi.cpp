@@ -123,7 +123,7 @@ void Ichi::OnStartGame()
 	//EnterPhase1();
 	//EnterPhase2();
 	EnterPhase3();
-	m_pStateMachine->Start(IchiStateEnum::PHASE3_ATTACK1);
+	m_pStateMachine->Start(IchiStateEnum::PHASE3_ATTACK2);
 }
 
 void Ichi::Update(float dt)
@@ -250,6 +250,9 @@ void Ichi::EnterPhase3()
 
 	Ichi_Phase3_Attack1* pP3A1 = m_pStateMachine->GetState<Ichi_Phase3_Attack1>(IchiStateEnum::PHASE3_ATTACK1);
 	pP3A1->InitWaves();
+
+	Ichi_Phase3_Attack2* pP3A2 = m_pStateMachine->GetState<Ichi_Phase3_Attack2>(IchiStateEnum::PHASE3_ATTACK2);
+	pP3A2->InitWaves();
 }
 
 void Ichi::SpawnEngineEffects()
