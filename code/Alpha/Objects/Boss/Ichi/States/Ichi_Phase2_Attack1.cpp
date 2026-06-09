@@ -14,6 +14,7 @@
 Ichi_Phase2_Attack1::Ichi_Phase2_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
+	, m_startTime(0)
 {
 	m_waveCount = m_pIchi->GetPhase2GunsAttachPointsCount();
 
@@ -50,10 +51,17 @@ void Ichi_Phase2_Attack1::OnEnter()
 
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 		pSubsystem->StartWave(m_waveIndex[ii]);
+
+	m_startTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 }
 
 void Ichi_Phase2_Attack1::OnUpdate()
 {
+	const float WARMUP_TIME = 1.5;
+
+	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
+
+	if(m_startTime + WARMUP_TIME < currentTime)
 	{
 		const float ROTATION_SPEED = 0.5;
 		float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();

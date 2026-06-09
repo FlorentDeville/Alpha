@@ -30,5 +30,7 @@ private:
 	IchiWaveP1A1** m_pWave;
 	uint32_t* m_waveIndex;
 
+	float m_startTime;
+
 	void UpdateWavesSpawnParameters();
 };
