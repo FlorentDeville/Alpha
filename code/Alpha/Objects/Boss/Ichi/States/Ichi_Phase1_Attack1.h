@@ -24,6 +24,15 @@ public:
 	void DestroyWaves();
 
 private:
+	enum InternalState
+	{
+		WARMUP,	//warmup, doesn't rotate
+		SHOOT,	//rotate
+		REST	//rotate to resting position
+	};
+
+	InternalState m_internalState;
+
 	Ichi* m_pIchi;
 
 	static const uint8_t WAVE_COUNT = 4;
@@ -39,4 +48,5 @@ private:
 
 	void UpdateWaves();
 	
+	void UpdateRotation();
 };
