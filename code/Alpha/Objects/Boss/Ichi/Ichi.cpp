@@ -111,8 +111,8 @@ void Ichi::OnStartGame()
 	m_pMotionStateMachine->Start(IchiMotionState::STOP);
 
 	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
-	Systems::RenderableComponent* pP2Renderable = m_phase1Renderable.FindComponent(this);
-	Systems::RenderableComponent* pP3Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
 
 	pP1Renderable->SetEnabled(true);
 	pP2Renderable->SetEnabled(false);
