@@ -15,8 +15,6 @@
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 
-const float Ichi_Phase1_Attack1::STATE_DURATION = 17;
-
 Ichi_Phase1_Attack1::Ichi_Phase1_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
@@ -80,7 +78,8 @@ void Ichi_Phase1_Attack1::OnUpdate()
 		UpdateRotation();
 		UpdateWaves();
 
-		if (m_warmupStartTime + STATE_DURATION <= currentTime)
+		const float SHOOT_DURATION = 12;
+		if (m_warmupStartTime + SHOOT_DURATION <= currentTime)
 		{
 			m_internalState = InternalState::REST;
 			for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
