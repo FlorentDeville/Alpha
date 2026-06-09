@@ -51,7 +51,10 @@ private:
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
 
+	Core::Quaternion m_startingRot;
+
 	float m_startTime;
+	float m_getInPositionStartTime;
 	float m_restStartTime;
 
 	void UpdateWaves();

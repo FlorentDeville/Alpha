@@ -83,6 +83,9 @@ void Ichi_Phase1_Attack2::OnEnter()
 	m_waypoints[0] = m_pIchi->GetTransform().GetLocalTx().GetT() + Core::Vec4f(20, 0, 0, 0);
 	m_waypoints[1] = m_pIchi->GetTransform().GetLocalTx().GetT() - Core::Vec4f(20, 0, 0, 0);
 
+	m_startingRot = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+	m_getInPositionStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+
 	m_currentWaypointIndex = 0;
 	m_internalState = InternalState::GET_IN_POSITION;
 }
@@ -95,22 +98,41 @@ void Ichi_Phase1_Attack2::OnUpdate()
 	{
 	case InternalState::GET_IN_POSITION:
 	{
-		float angleInDeg = 45;
-		float angle = Core::PI_OVER_180 * angleInDeg;
-		float halfAngle = angle * 0.5f;
-		Core::Quaternion rot(0, sinf(halfAngle), 0, cosf(halfAngle));
-		m_pIchi->GetTransform().SetLocalRotation(rot);
+		float destAngleInDeg = 45;
+		float destAngle = Core::PI_OVER_180 * destAngleInDeg;
+		float halfAngle = destAngle * 0.5f;
+		Core::Quaternion dest(0, sinf(halfAngle), 0, cosf(halfAngle));
 
-		m_internalState = InternalState::WAVE_WARMUP;
-		m_startTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		const float DURATION = 2.f;
+		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		float paramT = (currentTime - m_getInPositionStartTime) / DURATION;
 
-		UpdateWaves();
+		Core::Vec4f startVec = m_startingRot.ToVec4f();
+		Core::Vec4f destVec = dest.ToVec4f();
+		float cosAngle = startVec.Dot4(destVec);
+		float angle = acosf(cosAngle);
 
-		BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-		pSubsystem->StartWave(m_mainBeamIndex);
-		pSubsystem->StartWave(m_sideBeamIndex[0]);
-		pSubsystem->StartWave(m_sideBeamIndex[1]);
-		pSubsystem->StartWave(m_backBeamIndex);
+		float sinAngle = sinf(angle);
+		float m1 = sinf((1 - paramT) * angle) / sinAngle;
+		float m2 = sinf(paramT * angle) / sinAngle;
+
+		Core::Quaternion slerp = m_startingRot * m1 + dest * m2;
+		m_pIchi->GetTransform().SetLocalRotation(slerp);
+
+		if (paramT >= 0.999)
+		{
+			m_pIchi->GetTransform().SetLocalRotation(dest);
+			m_internalState = InternalState::WAVE_WARMUP;
+			m_startTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+
+			UpdateWaves();
+
+			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+			pSubsystem->StartWave(m_mainBeamIndex);
+			pSubsystem->StartWave(m_sideBeamIndex[0]);
+			pSubsystem->StartWave(m_sideBeamIndex[1]);
+			pSubsystem->StartWave(m_backBeamIndex);
+		}
 	}
 	break;
 
