@@ -111,6 +111,24 @@ void Ichi_Phase2_Attack1::UpdateWavesSpawnParameters()
 	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
 	const float SPEED = 20;
 
+	const Core::Quaternion& rot = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+	Core::Quaternion rot_conj = rot.Conjugate();
+	
+	Core::Quaternion zAxis(0, 0, 1, 0);
+	Core::Quaternion xAxis(1, 0, 0, 0);
+
+	Core::Quaternion qRotateZAxis = rot * zAxis * rot_conj;
+	Core::Quaternion qRotateXAxis = rot * xAxis * rot_conj;
+
+	Core::Vec4f rotateZAxis(qRotateZAxis.GetX(), qRotateZAxis.GetY(), qRotateZAxis.GetZ(), 0);
+	Core::Vec4f rotateXAxis(qRotateXAxis.GetX(), qRotateXAxis.GetY(), qRotateXAxis.GetZ(), 0);
+
+	rotateZAxis = rotateZAxis * SPEED;
+	rotateXAxis = rotateXAxis * SPEED;
+
+	Core::Vec4f negRotateZAxis = rotateZAxis * -1;
+	Core::Vec4f negRotateXAxis = rotateXAxis * -1;
+
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 	{
 		Core::Mat44f wsTx = pGunAttachPoints[ii] * m_pIchi->GetTransform().GetWorldTx();
@@ -120,22 +138,22 @@ void Ichi_Phase2_Attack1::UpdateWavesSpawnParameters()
 		{
 		case 0:
 		case 1:
-			m_pWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, 1, 0) * SPEED);
+			m_pWave[ii]->SetSpawnSpeed(rotateZAxis);
 			break;
 
 		case 2:
 		case 3:
-			m_pWave[ii]->SetSpawnSpeed(Core::Vec4f(-1, 0, 0, 0) * SPEED);
+			m_pWave[ii]->SetSpawnSpeed(negRotateXAxis);
 			break;
 
 		case 4:
 		case 5:
-			m_pWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -1, 0) * SPEED);
+			m_pWave[ii]->SetSpawnSpeed(negRotateZAxis);
 			break;
 
 		case 6:
 		case 7:
-			m_pWave[ii]->SetSpawnSpeed(Core::Vec4f(1, 0, 0, 0) * SPEED);
+			m_pWave[ii]->SetSpawnSpeed(rotateXAxis);
 			break;
 		}
 	}
