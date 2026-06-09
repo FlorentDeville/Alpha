@@ -116,9 +116,9 @@ void Ichi::OnStartGame()
 
 	//m_pStateMachine->Start(IchiStateEnum::START);
 	SkipStart();
-	EnterPhase1();
-	//EnterPhase2();
-	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
+	//EnterPhase1();
+	EnterPhase2();
+	m_pStateMachine->Start(IchiStateEnum::PHASE2_ATTACK2);
 
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 	{
@@ -241,6 +241,9 @@ void Ichi::EnterPhase2()
 
 	Ichi_Phase2_Attack1* pStateP2A1 = m_pStateMachine->GetState<Ichi_Phase2_Attack1>(IchiStateEnum::PHASE2_ATTACK1);
 	pStateP2A1->InitWaves();
+
+	Ichi_Phase2_Attack2* pStateP2A2 = m_pStateMachine->GetState<Ichi_Phase2_Attack2>(IchiStateEnum::PHASE2_ATTACK2);
+	pStateP2A2->InitWaves();
 }
 
 void Ichi::SpawnEngineEffects()
