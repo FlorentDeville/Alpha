@@ -4,9 +4,14 @@
 
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase3_Attack1.h"
 
+#include "Alpha/Bullets/BulletSubsystem.h"
+#include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 
-#include "Alpha/Bullets/BulletSubsystem.h"
+
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 
 Ichi_Phase3_Attack1::Ichi_Phase3_Attack1(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
@@ -51,13 +56,27 @@ void Ichi_Phase3_Attack1::OnEnter()
 
 		pSubsystem->StartWave(m_pWaveIndex[ii]);
 	}
+
+	m_startTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 }
 
 void Ichi_Phase3_Attack1::OnUpdate()
-{ }
+{
+	const float DURATION = 5;
+
+	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+
+	if (m_startTime + DURATION < currentTime)
+		GoTo(IchiStateEnum::PHASE3_TRAVEL);
+}
 
 void Ichi_Phase3_Attack1::OnExit()
-{ }
+{
+	for (uint32_t ii = 0; ii < m_waveCount; ++ii)
+	{
+		m_ppWaves[ii]->DisableSpawn();
+	}
+}
 
 void Ichi_Phase3_Attack1::InitWaves()
 {

@@ -29,4 +29,6 @@ private:
 	uint32_t m_waveCount;
 	IchiWaveP1A1** m_ppWaves;
 	uint32_t* m_pWaveIndex;
+
+	float m_startTime;
 };
