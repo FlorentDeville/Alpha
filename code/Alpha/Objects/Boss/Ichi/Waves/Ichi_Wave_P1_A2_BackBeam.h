@@ -34,6 +34,8 @@ private:
 
 	//internal variables
 
+	Core::Vec4f m_previousSpawnPosition;
+
 	enum State
 	{
 		WARMUP,	//the bullets appear progressiely

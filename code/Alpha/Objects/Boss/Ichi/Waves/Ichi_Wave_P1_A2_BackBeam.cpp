@@ -31,6 +31,7 @@ IchiWaveP1A2BackBeam::IchiWaveP1A2BackBeam(Systems::MeshAsset* pMesh, Systems::M
 	, m_enableSpawn(true)
 	, m_lastBulletSpawnedTime(0)
 	, m_side(1)
+	, m_previousSpawnPosition()
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -74,11 +75,6 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 
 	m_side = 1;
 
-	/*bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
-	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
-	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -10, 0);
-	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;*/
 	SpawnBullet(bullets);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
@@ -94,7 +90,6 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 
 void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 {
-	//const float LIFETIME = 10;
 	const float SPAWN_RATE = 20; //in bullet per second
 	const float ELAPSED_TIME_PER_BULLET = 1.f / SPAWN_RATE; //time between each bullet spawn
 
@@ -108,7 +103,6 @@ void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 		m_warmupElapsedTime += dt;
 		if (m_warmupElapsedTime >= m_warmupDuration)
 		{
-			//bullets.m_timeToLive[m_nextBulletToSpawn] = LIFETIME;
 			++m_nextBulletToSpawn;
 			m_lastBulletSpawnedTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 			m_currentState = State::FIRE;
@@ -121,6 +115,8 @@ void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 
 	case State::FIRE:
 	{
+		Core::Vec4f ds = m_spawnPosition - m_previousSpawnPosition;
+
 		//reduce ttl
 		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 			bullets.m_timeToLive[ii] = bullets.m_timeToLive[ii] - dt;
@@ -130,8 +126,8 @@ void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 
 		//compute new position
 		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
-			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
-
+			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt + ds;
+			
 		//check if I have to spawn a new bullet
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 		if (m_lastBulletSpawnedTime + ELAPSED_TIME_PER_BULLET <= currentTime)
@@ -176,6 +172,7 @@ void IchiWaveP1A2BackBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 
 void IchiWaveP1A2BackBeam::SetSpawnPosition(const Core::Vec4f& spawnPosition)
 {
+	m_previousSpawnPosition = m_spawnPosition;
 	m_spawnPosition = spawnPosition;
 }
 
