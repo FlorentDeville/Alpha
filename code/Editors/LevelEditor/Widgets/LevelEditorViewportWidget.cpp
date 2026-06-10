@@ -60,6 +60,7 @@ namespace Editors
 	LevelEditorViewportWidget::LevelEditorViewportWidget(int width, int height)
 		: Widgets::Viewport(width, height, true)
 		, m_isPanning(false)
+		, m_displayCollision(false)
 	{
 		m_pCamera = new CameraWidget();
 		m_pCamera->OnWsChanged([](const Core::Mat44f& mat) { LevelEditorModule::Get().SetCameraWs(mat); });
@@ -239,6 +240,16 @@ namespace Editors
 		return m_pGizmoModel;
 	}
 
+	bool LevelEditorViewportWidget::GetDisplayCollision() const
+	{
+		return m_displayCollision;
+	}
+
+	void LevelEditorViewportWidget::SetDisplayCollision(bool display)
+	{
+		m_displayCollision = display;
+	}
+
 	void LevelEditorViewportWidget::Internal_Render()
 	{
 		//create the render scene
@@ -257,7 +268,7 @@ namespace Editors
 			scene.m_includeLevelRenderable = true;
 
 			Systems::PrepareRenderableCamera(m_pCamera->GetView(), m_pCamera->GetProjection(), m_pCamera->GetPosition(), m_pCamera->GetFov(), scene);
-			Systems::PrepareRenderableScene(pLevel, scene, levelEditorModule.GetWorld()->m_pClock->GetTime(), false);
+			Systems::PrepareRenderableScene(pLevel, scene, levelEditorModule.GetWorld()->m_pClock->GetTime(), m_displayCollision);
 
 			const Systems::GameContext* pWorld = LevelEditorModule::Get().GetWorld();
 			pWorld->m_pParticleSystem->BuildRenderable(scene);

@@ -75,6 +75,7 @@ namespace Editors
 		, m_pPropertyGridPopulator(nullptr)
 		, m_sceneTreeTabId()
 		, m_levelBrowserTabId()
+		, m_pDisplayCollision(nullptr)
 	{ }
 
 	LevelEditor::~LevelEditor()
@@ -95,6 +96,7 @@ namespace Editors
 		CreateMenuEdit(m_pMenuBar);
 		CreateMenuTransformation(m_pMenuBar);
 		CreateMenuGame(m_pMenuBar);
+		CreateMenuDisplay(m_pMenuBar);
 		CreateMenuWindows(m_pMenuBar);
 
 		//create the split between viewport and right panel
@@ -249,6 +251,14 @@ namespace Editors
 
 		Widgets::MenuItem* pEntityItem = pMenu->AddMenuItem("Game Object Properties");
 		pEntityItem->OnClick([this]() { CreateGameObjectPropertyGrid(m_pSplit); });
+	}
+
+	void LevelEditor::CreateMenuDisplay(Widgets::MenuBar* pMenuBar)
+	{
+		Widgets::Menu* pMenu = pMenuBar->AddMenu("Display");
+
+		m_pDisplayCollision = pMenu->AddMenuItem("Collision");
+		m_pDisplayCollision->OnClick([this]() { OnClickDisplayMenu_Collision(); });
 	}
 
 	void LevelEditor::CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit)
@@ -902,6 +912,14 @@ namespace Editors
 		pButtonLayout->AddWidget(pOk);
 
 		pNewWindow->Open();
+	}
+
+	void LevelEditor::OnClickDisplayMenu_Collision()
+	{
+		bool newValue = !m_pViewport->GetDisplayCollision();
+
+		m_pDisplayCollision->SetChecked(newValue);
+		m_pViewport->SetDisplayCollision(newValue);
 	}
 
 	void LevelEditor::OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata)

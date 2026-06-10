@@ -45,6 +45,9 @@ namespace Editors
 		GizmoWidget* GetGizmoWidget();
 		GizmoModelGameObject* GetGizmoModel();
 
+		bool GetDisplayCollision() const;
+		void SetDisplayCollision(bool display);
+
 	private:
 		GizmoWidget* m_pGizmoWidget;
 		GizmoModelGameObject* m_pGizmoModel;
@@ -62,6 +65,8 @@ namespace Editors
 
 		Rendering::RootSignature* m_pCopyRootSig;
 		Rendering::PipelineState* m_pCopyPso;
+
+		bool m_displayCollision;
 
 		void Internal_Render() override;
 

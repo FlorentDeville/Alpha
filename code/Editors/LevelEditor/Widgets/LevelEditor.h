@@ -71,6 +71,7 @@ namespace Editors
 		Widgets::Frame* m_pSceneTreeFrame;
 
 		Widgets::MenuItem* m_pSnapItem;
+		Widgets::MenuItem* m_pDisplayCollision;
 
 		Widgets::TabContainer* m_pLeftTabContainer;
 
@@ -93,6 +94,7 @@ namespace Editors
 		void CreateMenuTransformation(Widgets::MenuBar* pMenuBar);
 		void CreateMenuGame(Widgets::MenuBar* pMenuBar);
 		void CreateMenuWindows(Widgets::MenuBar* pMenuBar);
+		void CreateMenuDisplay(Widgets::MenuBar* pMenuBar);
 
 		void CreateGameObjectPropertyGrid(Widgets::SplitVertical* pSplit);
 		void CreateSceneTreeViewer(Widgets::TabContainer* pParent);
@@ -133,6 +135,8 @@ namespace Editors
 
 		void OnClickTransformationMenu_Snap();
 		void OnClickTransformationMenu_SnapSettings();
+
+		void OnClickDisplayMenu_Collision();
 
 		void OnLevelEditorModule_BeforeDeleteLevel(const Systems::AssetMetadata& metadata);
 		void OnLevelEditorModule_RenameLevel(Systems::NewAssetId id, const std::string& newName);
