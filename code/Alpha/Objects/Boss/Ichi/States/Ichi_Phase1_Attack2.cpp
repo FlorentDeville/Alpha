@@ -27,8 +27,9 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 {
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
+	const uint32_t MAIN_BEAM_BULLET_COUNT = 100;
 
-	m_pMainBeam = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
+	m_pMainBeam = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), MAIN_BEAM_BULLET_COUNT);
 	m_mainBeamIndex = UINT32_MAX;
 
 	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
