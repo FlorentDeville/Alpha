@@ -348,6 +348,7 @@ namespace Systems
 					{
 						Systems::RenderableObject& renderable = scene.m_opaqueObjects.PushBackDefault();
 						renderable.DebugSphere(pSphere->m_sphere.GetCenter(), pSphere->m_sphere.GetRadius(), Core::Float4(1, 0, 0, 1), true);
+						renderable.m_view = Systems::RenderView::Game;
 					}
 				}
 			}
