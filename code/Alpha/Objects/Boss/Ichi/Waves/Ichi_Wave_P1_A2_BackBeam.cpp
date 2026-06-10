@@ -90,7 +90,7 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 
 void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 {
-	const float SPAWN_RATE = 20; //in bullet per second
+	const float SPAWN_RATE = 10; //in bullet per second
 	const float ELAPSED_TIME_PER_BULLET = 1.f / SPAWN_RATE; //time between each bullet spawn
 
 	if (!m_isAlive)
@@ -195,9 +195,9 @@ void IchiWaveP1A2BackBeam::SpawnBullet(Bullets& bullets)
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 
-	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
+	bullets.m_speed[m_nextBulletToSpawn] = Core::Vec4f(-20 * m_side, 0, 10, 0);//m_spawnSpeed;
 
-	const float ACC = -20;
+	const float ACC = -10;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(10 * m_side, 0, ACC, 0);
 
 	m_side = m_side * -1;

@@ -80,20 +80,13 @@ void IchiWaveP1A2SideBeam::Start(Bullets& bullets)
 	SpawnBullet(bullets);
 
 	for(uint32_t ii = m_startId; ii < m_endId; ++ii)
-		bullets.m_type[ii] = BulletType::NORMAL;
-
-	Core::RandomUInt generator(m_startId, m_endId - 1);
-	for (uint32_t ii = 0; ii < m_counterableBulletCount; ++ii)
-	{
-		uint32_t index = generator.Generate();
-		bullets.m_type[index] = BulletType::COUNTERABLE;
-	}
+		bullets.m_type[ii] = BulletType::COUNTERABLE;
 }
 
 void IchiWaveP1A2SideBeam::Update(Bullets& bullets, float dt)
 {
 	const float LIFETIME = 10;
-	const float SPAWN_RATE = 20; //in bullet per second
+	const float SPAWN_RATE = 0.5f; //in bullet per second
 	const float ELAPSED_TIME_PER_BULLET = 1.f / SPAWN_RATE; //time between each bullet spawn
 
 	if (!m_isAlive)
@@ -129,6 +122,8 @@ void IchiWaveP1A2SideBeam::Update(Bullets& bullets, float dt)
 
 			uint32_t bezierIndex = ii - m_startId;
 
+			m_pBezier[bezierIndex].m_p2 = m_target;
+
 			float curveParam = bullets.m_acceleration[ii].GetX();
 			curveParam += ds / m_pBezier[bezierIndex].EvaluateFirstDerivative(curveParam).Length();
 
@@ -157,8 +152,6 @@ void IchiWaveP1A2SideBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 	if (!m_isAlive)
 		return;
 
-	m_isAlive = false;
-
 	Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(m_currentScale);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
@@ -177,8 +170,6 @@ void IchiWaveP1A2SideBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = scale * Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
-
-		m_isAlive = true;
 	}
 }
 
