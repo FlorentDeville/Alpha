@@ -30,6 +30,7 @@ IchiWaveP1A2BackBeam::IchiWaveP1A2BackBeam(Systems::MeshAsset* pMesh, Systems::M
 	, m_nextBulletToSpawn(0)
 	, m_enableSpawn(true)
 	, m_lastBulletSpawnedTime(0)
+	, m_side(1)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -71,11 +72,14 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 	m_warmupElapsedTime = 0;
 	m_currentScale = 0;
 
-	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
+	m_side = 1;
+
+	/*bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -10, 0);
-	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
+	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;*/
+	SpawnBullet(bullets);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 		bullets.m_type[ii] = BulletType::NORMAL;
@@ -90,7 +94,7 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 
 void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 {
-	const float LIFETIME = 10;
+	//const float LIFETIME = 10;
 	const float SPAWN_RATE = 20; //in bullet per second
 	const float ELAPSED_TIME_PER_BULLET = 1.f / SPAWN_RATE; //time between each bullet spawn
 
@@ -104,7 +108,7 @@ void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 		m_warmupElapsedTime += dt;
 		if (m_warmupElapsedTime >= m_warmupDuration)
 		{
-			bullets.m_timeToLive[m_nextBulletToSpawn] = LIFETIME;
+			//bullets.m_timeToLive[m_nextBulletToSpawn] = LIFETIME;
 			++m_nextBulletToSpawn;
 			m_lastBulletSpawnedTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 			m_currentState = State::FIRE;
@@ -193,8 +197,13 @@ void IchiWaveP1A2BackBeam::SpawnBullet(Bullets& bullets)
 
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
+
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, -20, 0);
+
+	const float ACC = -20;
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(10 * m_side, 0, ACC, 0);
+
+	m_side = m_side * -1;
 
 	++m_nextBulletToSpawn;
 	if (m_nextBulletToSpawn >= m_endId)
