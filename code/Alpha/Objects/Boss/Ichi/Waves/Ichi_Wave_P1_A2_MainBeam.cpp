@@ -107,7 +107,10 @@ void IchiWaveP1A2MainBeam::Update(Bullets& bullets, float dt)
 
 		//compute new position
 		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
+		{
 			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
+			bullets.m_positions[ii].Set(0, m_spawnPosition.GetX());
+		}
 
 		//check if I have to spawn a new bullet
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
