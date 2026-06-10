@@ -23,6 +23,16 @@ void Ichi_Phase1_To_Phase2::OnEnter()
 
 void Ichi_Phase1_To_Phase2::OnUpdate()
 {
+	//rumble
+
+	//smoke + rumble
+
+	//show mesh 2
+
+	//stop smoke
+
+	//stop rumble
+
 	GoTo(IchiStateEnum::PHASE2_TRAVEL);
 }
 

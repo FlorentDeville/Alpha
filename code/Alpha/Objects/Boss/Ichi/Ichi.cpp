@@ -151,6 +151,38 @@ void Ichi::HandleMessage(const Systems::GameMessage& msg)
 	{
 		m_currentHP -= 100;
 		UpdateHPBar();
+
+		if (m_currentHP <= 0)
+		{
+			uint32_t currentState = m_pStateMachine->GetCurrentState();
+
+			switch (currentState)
+			{
+			case IchiStateEnum::PHASE1_ATTACK1:
+			case IchiStateEnum::PHASE1_ATTACK2:
+			case IchiStateEnum::PHASE1_TRAVEL:
+			{
+				m_pStateMachine->GoTo(IchiStateEnum::PHASE1_TO_PHASE2);
+			}
+			break;
+
+			case IchiStateEnum::PHASE2_ATTACK1:
+			case IchiStateEnum::PHASE2_ATTACK2:
+			case IchiStateEnum::PHASE2_TRAVEL:
+			{
+				m_pStateMachine->GoTo(IchiStateEnum::PHASE2_TO_PHASE3);
+			}
+			break;
+
+			case IchiStateEnum::PHASE3_ATTACK1:
+			case IchiStateEnum::PHASE3_ATTACK2:
+			case IchiStateEnum::PHASE3_TRAVEL:
+			{
+				m_pStateMachine->GoTo(IchiStateEnum::DYING);
+			}
+			break;
+			}
+		}
 	}
 	break;
 

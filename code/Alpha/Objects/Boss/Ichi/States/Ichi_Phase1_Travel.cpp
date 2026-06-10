@@ -26,14 +26,8 @@ void Ichi_Phase1_Travel::OnEnter()
 		m_targetInitialized = true;
 	}
 
-	if (m_pIchi->GetCurrentHP() <= 0)
-	{
-		GoTo(IchiStateEnum::PHASE1_TO_PHASE2);
-	}
-	else
-	{
-		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
-	}
+	m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
+
 }
 
 void Ichi_Phase1_Travel::OnUpdate()
