@@ -71,6 +71,8 @@ Ichi::Ichi()
 {
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
 		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
+
+	m_transitionEffectHandle = Systems::ParticleEffectHandle();
 }
 
 Ichi::~Ichi()
@@ -125,7 +127,8 @@ void Ichi::OnStartGame()
 	EnterPhase1();
 	//EnterPhase2();
 	//EnterPhase3();
-	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
+	//m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
+	m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
 }
 
 void Ichi::Update(float dt)
@@ -198,6 +201,7 @@ void Ichi::OnDestroyGame()
 	BaseClass::OnDestroyGame();
 
 	KillEngineEffects();
+	StopTransitionEffect();
 
 	delete[] m_phase3GunsAttachPoints;
 	m_phase3GunsAttachPoints = nullptr;
@@ -244,13 +248,7 @@ void Ichi::ExitPhase1()
 
 void Ichi::EnterPhase2()
 {
-	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
-	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
-	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
-
-	pP1Renderable->SetEnabled(true);
-	pP2Renderable->SetEnabled(true);
-	pP3Renderable->SetEnabled(false);
+	ShowPhase2Meshes();
 
 	m_currentHP = GetMaxHP();
 
@@ -310,6 +308,33 @@ void Ichi::KillEngineEffects()
 		pParticleSystem->KillEffect(m_engineEffectHandle[ii]);
 		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
 	}
+}
+
+void Ichi::StartTransitionEffect()
+{
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
+
+	const Core::Mat44f& wsTx =  GetTransform().GetWorldTx();
+	m_transitionEffectHandle = pParticleSystem->SpawnEffect(m_transitionEffect.GetPtr(), wsTx, pClock->GetTime());
+}
+
+void Ichi::StopTransitionEffect()
+{
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	pParticleSystem->KillEffect(m_transitionEffectHandle);
+	m_transitionEffectHandle = Systems::ParticleEffectHandle();
+}
+
+void Ichi::ShowPhase2Meshes()
+{
+	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
+
+	pP1Renderable->SetEnabled(true);
+	pP2Renderable->SetEnabled(true);
+	pP3Renderable->SetEnabled(false);
 }
 
 void Ichi::GoToMotionState(IchiMotionState::Type newState)

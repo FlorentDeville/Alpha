@@ -57,6 +57,7 @@ void Ichi_Phase1_To_Phase2::OnUpdate()
 			m_internalStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
 			//spawn smoke
+			m_pIchi->StartTransitionEffect();
 		}
 	}
 	break;
@@ -72,8 +73,8 @@ void Ichi_Phase1_To_Phase2::OnUpdate()
 			m_internalState = DELAY2;
 			m_internalStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
-			//show mesh phase 2
-			//stop smoke
+			m_pIchi->StopTransitionEffect();
+			m_pIchi->ShowPhase2Meshes();
 		}
 	}
 	break;

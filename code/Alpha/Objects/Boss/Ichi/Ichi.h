@@ -49,6 +49,11 @@ public:
 	void SpawnEngineEffects();
 	void KillEngineEffects();
 
+	void StartTransitionEffect();
+	void StopTransitionEffect();
+
+	void ShowPhase2Meshes();
+
 	void GoToMotionState(IchiMotionState::Type newState);
 	void GoToMotionStateTravel(const Core::Vec4f& target);
 	void GoToMotionStateStrafe(const Core::Vec4f& target, float speed);
@@ -78,6 +83,7 @@ private:
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counterBulletMaterial;
 
 	Systems::HardAssetRef<Systems::ParticleEffectAsset> m_engineEffect;
+	Systems::HardAssetRef<Systems::ParticleEffectAsset> m_transitionEffect;
 
 	Systems::ComponentRef<Systems::UIBaseComponent> m_currentHealthComp;
 	Systems::ComponentRef<Systems::UIBaseComponent> m_totalHealthComp;
@@ -93,6 +99,7 @@ private:
 		ADD_FIELD(m_meshPhase2)
 		ADD_FIELD(m_meshPhase3)
 		ADD_FIELD(m_engineEffect)
+		ADD_FIELD(m_transitionEffect)
 		ADD_FIELD(m_bulletMesh)
 		ADD_FIELD(m_bulletMaterial)
 		ADD_FIELD(m_counterBulletMaterial)
@@ -123,6 +130,8 @@ private:
 
 	static Core::Sid ATTACH_POINTS_NAME[ENGINE_EFFECT_COUNT];
 	Core::Mat44f m_engineAttachPoints[ENGINE_EFFECT_COUNT];
+
+	Systems::ParticleEffectHandle m_transitionEffectHandle;
 	//void OnCollision(const Systems::ICollisionShape* pOther);
 
 	void UpdateHPBar();
