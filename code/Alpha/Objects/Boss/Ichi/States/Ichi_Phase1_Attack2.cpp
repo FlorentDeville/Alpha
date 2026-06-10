@@ -157,7 +157,7 @@ void Ichi_Phase1_Attack2::OnUpdate()
 			++m_currentWaypointIndex;
 			if (m_currentWaypointIndex >= 2)
 			{
-				m_pMainBeam->DisableSpawn();
+				m_pMainBeam->Stop();
 				m_pSideBeam[0]->DisableSpawn();
 				m_pSideBeam[1]->DisableSpawn();
 				m_pBackBeam->DisableSpawn();
@@ -200,7 +200,7 @@ void Ichi_Phase1_Attack2::OnUpdate()
 
 void Ichi_Phase1_Attack2::OnExit()
 {
-	m_pMainBeam->DisableSpawn();
+	m_pMainBeam->Stop();
 	m_pSideBeam[0]->DisableSpawn();
 	m_pSideBeam[1]->DisableSpawn();
 	m_pBackBeam->DisableSpawn();

@@ -21,7 +21,7 @@ Ichi_Phase1_To_Phase2::~Ichi_Phase1_To_Phase2()
 
 void Ichi_Phase1_To_Phase2::OnEnter()
 {
-	m_pIchi->ExitPhase1();
+	//m_pIchi->ExitPhase1();
 	m_pIchi->GoToMotionState(IchiMotionState::STOP);
 
 	m_internalState = DELAY;

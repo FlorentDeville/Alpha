@@ -176,7 +176,7 @@ void Ichi_Phase2_Attack2::OnUpdate()
 void Ichi_Phase2_Attack2::OnExit()
 {
 	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
-		m_pMainBeam[ii]->DisableSpawn();
+		m_pMainBeam[ii]->Stop();
 
 	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
 		m_pSideBeam[ii]->DisableSpawn();
