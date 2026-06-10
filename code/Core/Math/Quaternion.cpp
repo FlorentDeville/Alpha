@@ -100,6 +100,21 @@ namespace Core
 		return Quaternion(result.GetX(), result.GetY(), result.GetZ(), result.GetW());
 	}
 
+	Quaternion Quaternion::Slerp(const Core::Quaternion& q0, const Core::Quaternion& q1, float t)
+	{
+		Core::Vec4f startVec = q0.ToVec4f();
+		Core::Vec4f destVec = q1.ToVec4f();
+		float cosAngle = startVec.Dot4(destVec);
+		float angle = acosf(cosAngle);
+
+		float sinAngle = sinf(angle);
+		float m1 = sinf((1 - t) * angle) / sinAngle;
+		float m2 = sinf(t * angle) / sinAngle;
+
+		Core::Quaternion slerp = q0 * m1 + q1 * m2;
+		return slerp;
+	}
+
 	bool Quaternion::operator==(const Quaternion& other) const
 	{
 		__m128 res = _mm_cmpeq_ps(m_data, other.m_data);
