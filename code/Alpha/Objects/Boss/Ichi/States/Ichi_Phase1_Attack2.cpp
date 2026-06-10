@@ -19,6 +19,10 @@
 Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
+	, m_getInPositionStartTime(0)
+	, m_restStartTime(0)
+	, m_startTime(0)
+	, m_internalState(InternalState::GET_IN_POSITION)
 {
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
@@ -36,6 +40,11 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	m_backBeamIndex = UINT32_MAX;
 	
 	m_currentWaypointIndex = 0;
+
+	const float destAngleInDeg = 45;
+	const float destAngle = Core::PI_OVER_180 * destAngleInDeg;
+	const float halfAngle = destAngle * 0.5f;
+	m_shootingRot = Core::Quaternion(0, sinf(halfAngle), 0, cosf(halfAngle));
 }
 
 Ichi_Phase1_Attack2::~Ichi_Phase1_Attack2()
@@ -93,35 +102,22 @@ void Ichi_Phase1_Attack2::OnEnter()
 void Ichi_Phase1_Attack2::OnUpdate()
 {
 	const float STRAFE_SPEED = 2;
+	//const float STRAFE_SPEED = 10;
 
 	switch (m_internalState)
 	{
 	case InternalState::GET_IN_POSITION:
 	{
-		float destAngleInDeg = 45;
-		float destAngle = Core::PI_OVER_180 * destAngleInDeg;
-		float halfAngle = destAngle * 0.5f;
-		Core::Quaternion dest(0, sinf(halfAngle), 0, cosf(halfAngle));
-
 		const float DURATION = 2.f;
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 		float paramT = (currentTime - m_getInPositionStartTime) / DURATION;
 
-		Core::Vec4f startVec = m_startingRot.ToVec4f();
-		Core::Vec4f destVec = dest.ToVec4f();
-		float cosAngle = startVec.Dot4(destVec);
-		float angle = acosf(cosAngle);
-
-		float sinAngle = sinf(angle);
-		float m1 = sinf((1 - paramT) * angle) / sinAngle;
-		float m2 = sinf(paramT * angle) / sinAngle;
-
-		Core::Quaternion slerp = m_startingRot * m1 + dest * m2;
+		Core::Quaternion slerp = Core::Quaternion::Slerp(m_startingRot, m_shootingRot, paramT);
 		m_pIchi->GetTransform().SetLocalRotation(slerp);
 
-		if (paramT >= 0.999)
+		if (m_getInPositionStartTime + DURATION <= currentTime)
 		{
-			m_pIchi->GetTransform().SetLocalRotation(dest);
+			m_pIchi->GetTransform().SetLocalRotation(m_shootingRot);
 			m_internalState = InternalState::WAVE_WARMUP;
 			m_startTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
@@ -180,8 +176,15 @@ void Ichi_Phase1_Attack2::OnUpdate()
 	{
 		const float REST_DURATION = 1;
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+
+		float paramT = (currentTime - m_restStartTime) / REST_DURATION;
+
+		Core::Quaternion slerp = Core::Quaternion::Slerp(m_shootingRot, m_startingRot, paramT);
+		m_pIchi->GetTransform().SetLocalRotation(slerp);
+
 		if (m_restStartTime + REST_DURATION <= currentTime)
 		{
+			m_pIchi->GetTransform().SetLocalRotation(m_startingRot);
 			GoTo(IchiStateEnum::PHASE1_TRAVEL);
 		}
 	}

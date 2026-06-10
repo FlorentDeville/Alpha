@@ -52,6 +52,7 @@ private:
 	uint8_t m_currentWaypointIndex;
 
 	Core::Quaternion m_startingRot;
+	Core::Quaternion m_shootingRot;
 
 	float m_startTime;
 	float m_getInPositionStartTime;
