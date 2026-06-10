@@ -47,4 +47,14 @@ namespace Systems
 	{
 		return m_sphere;
 	}
+
+	const Core::Vec4f& CollisionSphereComponent::GetCenter() const
+	{
+		return m_center;
+	}
+
+	float CollisionSphereComponent::GetRadius() const
+	{
+		return m_radius;
+	}
 }

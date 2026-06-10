@@ -26,6 +26,9 @@ namespace Systems
 
 		ShapeSphere& GetSphere();
 
+		const Core::Vec4f& GetCenter() const;
+		float GetRadius() const;
+
 	private:
 		Core::Vec4f m_center;
 		float m_radius;
