@@ -20,5 +20,24 @@ public:
 	void OnExit() override;
 
 private:
+	enum InternalState
+	{
+		DELAY,
+		RUMBLE,
+		SMOKE,
+		STOP_RUMBLE,
+		DELAY2
+	};
+
 	Ichi* m_pIchi;
+
+	InternalState m_internalState;
+	float m_internalStateStartTime;
+
+	Core::Vec4f m_rumbleStateInitialPosition;
+	float m_rumbleStartTime;
+
+	bool ElapsedTime(float start, float duration) const;
+
+	void Rumble();
 };
