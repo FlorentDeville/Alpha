@@ -167,7 +167,7 @@ void IchiWaveP1A2MainBeam::SpawnBullet(Bullets& bullets)
 	if (!m_enableSpawn)
 		return;
 
-	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
+	bullets.m_timeToLive[m_nextBulletToSpawn] = 15;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
