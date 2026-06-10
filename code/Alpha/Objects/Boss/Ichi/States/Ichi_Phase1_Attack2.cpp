@@ -9,6 +9,7 @@
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_BackBeam.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_MainBeam.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_SideBeam.h"
+#include "Alpha/Objects/Player/PlayerGameObject.h"
 
 #include "Core/Math/Constants.h"
 
@@ -35,6 +36,9 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 		m_pSideBeam[ii] = new IchiWaveP1A2SideBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
 		m_sideBeamIndex[ii] = UINT32_MAX;
 	}
+
+	m_pSideBeam[0]->SetCurveSide(-1);
+	m_pSideBeam[1]->SetCurveSide(1);
 
 	m_pBackBeam = new IchiWaveP1A2BackBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
 	m_backBeamIndex = UINT32_MAX;
@@ -268,16 +272,21 @@ void Ichi_Phase1_Attack2::UpdateWaves()
 	Core::Mat44f wsTx = pGunAttachPoints[0] * m_pIchi->GetTransform().GetWorldTx();
 	m_pMainBeam->SetSpawnPosition(wsTx.GetT());
 
+	const PlayerGameObject* pPlayer = Systems::GameMgr::Get().FindGameObject<PlayerGameObject>();
+	Core::Vec4f playerPosition = pPlayer->GetTransform().GetWorldTx().GetT();
+
 	//left side beam
 	{
 		Core::Mat44f sideBeamWsTx = pGunAttachPoints[3] * m_pIchi->GetTransform().GetWorldTx();
 		m_pSideBeam[0]->SetSpawnPosition(sideBeamWsTx.GetT());
+		m_pSideBeam[0]->SetTargetPosition(playerPosition);
 	}
 
 	//right side beam
 	{
 		Core::Mat44f sideBeamWsTx = pGunAttachPoints[1] * m_pIchi->GetTransform().GetWorldTx();
 		m_pSideBeam[1]->SetSpawnPosition(sideBeamWsTx.GetT());
+		m_pSideBeam[1]->SetTargetPosition(playerPosition);
 	}
 
 	//back side beam

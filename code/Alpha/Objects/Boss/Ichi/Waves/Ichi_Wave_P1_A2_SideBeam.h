@@ -8,6 +8,11 @@
 
 #include "Core/Math/Vec4f.h"
 
+namespace Core
+{
+	class QuadraticBezier;
+}
+
 class IchiWaveP1A2SideBeam : public IBulletWave
 {
 public:
@@ -23,6 +28,8 @@ public:
 
 	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
 	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
+	void SetTargetPosition(const Core::Vec4f& target);
+	void SetCurveSide(float curveSide);
 
 	void DisableSpawn();
 
@@ -31,6 +38,8 @@ private:
 	//parameters that can be modified at runtime
 	Core::Vec4f m_spawnPosition;
 	Core::Vec4f m_spawnSpeed;
+	Core::Vec4f m_target;
+	float m_curveSide;
 
 	//internal variables
 
@@ -59,6 +68,8 @@ private:
 	Systems::MaterialInstanceAsset* m_pCounterableMaterial;
 
 	uint32_t m_counterableBulletCount;
+
+	Core::QuadraticBezier* m_pBezier; //one bezier curve per bullet
 
 	void SpawnBullet(Bullets& bullets);
 };
