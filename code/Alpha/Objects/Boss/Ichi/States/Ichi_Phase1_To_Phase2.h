@@ -22,6 +22,7 @@ public:
 private:
 	enum InternalState
 	{
+		REST_POSITION,
 		DELAY,
 		RUMBLE,
 		SMOKE,
@@ -36,6 +37,8 @@ private:
 
 	Core::Vec4f m_rumbleStateInitialPosition;
 	float m_rumbleStartTime;
+
+	Core::Quaternion m_initialOrientation;
 
 	bool ElapsedTime(float start, float duration) const;
 

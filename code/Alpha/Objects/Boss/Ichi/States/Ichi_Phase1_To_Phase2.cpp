@@ -14,6 +14,8 @@ Ichi_Phase1_To_Phase2::Ichi_Phase1_To_Phase2(StateMachine* pStateMachine, Ichi* 
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
 	, m_internalState(DELAY)
+	, m_internalStateStartTime()
+	, m_rumbleStartTime()
 { }
 
 Ichi_Phase1_To_Phase2::~Ichi_Phase1_To_Phase2()
@@ -21,10 +23,17 @@ Ichi_Phase1_To_Phase2::~Ichi_Phase1_To_Phase2()
 
 void Ichi_Phase1_To_Phase2::OnEnter()
 {
-	//m_pIchi->ExitPhase1();
 	m_pIchi->GoToMotionState(IchiMotionState::STOP);
 
-	m_internalState = DELAY;
+	m_initialOrientation = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+
+	float cosAngleOverTwo = m_initialOrientation.GetW();
+
+	if (cosAngleOverTwo > 0.999f)
+		m_internalState = DELAY;
+	else
+		m_internalState = REST_POSITION;
+
 	m_internalStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 }
 
@@ -32,6 +41,28 @@ void Ichi_Phase1_To_Phase2::OnUpdate()
 {
 	switch (m_internalState)
 	{
+	case REST_POSITION:
+	{
+		const float DURATION = 2.f;
+		const Core::Quaternion dest(0, 0, 0, 1);
+		
+		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		float paramT = (currentTime - m_internalStateStartTime) / DURATION;
+		
+		Core::Quaternion rot = Core::Quaternion::Slerp(m_initialOrientation, dest, paramT);
+
+		float cosAngleOverTwo = rot.GetW();
+		if (cosAngleOverTwo > 0.999f)
+		{
+			rot = dest;
+			m_internalState = DELAY;
+			m_internalStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		}
+
+		m_pIchi->GetTransform().SetLocalRotation(rot);
+	}
+	break;
+
 	case DELAY:
 	{
 		const float DURATION = 0.5f;
@@ -107,6 +138,7 @@ void Ichi_Phase1_To_Phase2::OnUpdate()
 
 void Ichi_Phase1_To_Phase2::OnExit()
 {
+	m_pIchi->ExitPhase1();
 	m_pIchi->EnterPhase2();
 }
 
