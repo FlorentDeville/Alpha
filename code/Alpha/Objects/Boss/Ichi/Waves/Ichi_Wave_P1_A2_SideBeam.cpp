@@ -122,7 +122,7 @@ void IchiWaveP1A2SideBeam::Update(Bullets& bullets, float dt)
 
 			uint32_t bezierIndex = ii - m_startId;
 
-			m_pBezier[bezierIndex].m_p2 = m_target;
+			//m_pBezier[bezierIndex].m_p2 = m_target;
 
 			float curveParam = bullets.m_acceleration[ii].GetX();
 			curveParam += ds / m_pBezier[bezierIndex].EvaluateFirstDerivative(curveParam).Length();
