@@ -33,6 +33,7 @@
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/Subsystems/Message/GameMessage.h"
+#include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 Core::Sid Ichi::ATTACH_POINTS_NAME[Ichi::ENGINE_EFFECT_COUNT] =
@@ -122,13 +123,24 @@ void Ichi::OnStartGame()
 	pP2Renderable->SetEnabled(false);
 	pP3Renderable->SetEnabled(false);
 
+	const Core::Vec4f navmeshQuad[4] =
+	{
+		Core::Vec4f(-30, 0, 22, 1),
+		Core::Vec4f(30, 0, 22, 1),
+		Core::Vec4f(30, 0, 8, 1),
+		Core::Vec4f(-30, 0, 8, 1)
+	};
+
+	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
+	pNavmesh->AddQuad(navmeshQuad);
+
 	//m_pStateMachine->Start(IchiStateEnum::START);
 	SkipStart();
 	EnterPhase1();
 	//EnterPhase2();
 	//EnterPhase3();
-	//m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
-	m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
+	m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
+	//m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
 }
 
 void Ichi::Update(float dt)
@@ -199,6 +211,9 @@ void Ichi::HandleMessage(const Systems::GameMessage& msg)
 void Ichi::OnDestroyGame()
 {
 	BaseClass::OnDestroyGame();
+
+	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
+	pNavmesh->ClearAllQuads();
 
 	KillEngineEffects();
 	StopTransitionEffect();
