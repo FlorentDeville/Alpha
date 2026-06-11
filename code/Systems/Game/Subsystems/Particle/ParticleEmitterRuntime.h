@@ -61,6 +61,11 @@ namespace Systems
 
 		void Warmup(float currentTime, float warmupDuration);
 
+		void Play(bool warmup = false);
+		void Stop();
+
+		bool IsPlaying() const;
+
 	private:
 		Particles m_particles;
 		Core::Mat44f m_lsTx;			// local space transform coming from the effect asset
@@ -70,6 +75,10 @@ namespace Systems
 		int m_spawnRate;
 		float m_lifetime;
 
+		bool m_emittingStateRequested;
+		bool m_isEmitting;
+		bool m_warmupRequested;
+		
 		//rendering
 		Rendering::Texture* m_pBufferPositions; //I use a texture as a buffer. Not great but it handles the srv automatically. Good enough for now.
 		Rendering::Texture* m_pIndexBuffer; //Sorted index buffer by camera distance

@@ -61,6 +61,34 @@ namespace Systems
 		return handle;
 	}
 
+	void ParticleSystem::Play(ParticleEffectHandle handle, bool warmup)
+	{
+		ParticleEmitterRuntime* pEmitter = FindEffect(handle);
+		if (!pEmitter)
+			return;
+
+		pEmitter->Play(warmup);
+	}
+
+	void ParticleSystem::Stop(ParticleEffectHandle handle)
+	{
+		ParticleEmitterRuntime* pEmitter = FindEffect(handle);
+		if (!pEmitter)
+			return;
+
+		pEmitter->Stop();
+	}
+
+	bool ParticleSystem::IsPlaying(ParticleEffectHandle handle) const
+	{
+		const ParticleEmitterRuntime* pEmitter = FindEffect(handle);
+		if (!pEmitter)
+			return false;
+
+		return pEmitter->IsPlaying();
+
+	}
+
 	void ParticleSystem::UpdateEffectParameters(ParticleEffectHandle handle, ParticleEffectAsset* pEffect, const Core::Mat44f& world)
 	{
 		ParticleEmitterRuntime* pEmitter = FindEffect(handle);
@@ -163,14 +191,22 @@ namespace Systems
 
 	ParticleEmitterRuntime* ParticleSystem::FindEffect(ParticleEffectHandle handle)
 	{
+		const ParticleSystem* pParticleSystem = static_cast<const ParticleSystem*>(this);
+		const ParticleEmitterRuntime* pConstEmitter = pParticleSystem->FindEffect(handle);
+		ParticleEmitterRuntime* pEmitter = const_cast<ParticleEmitterRuntime*>(pConstEmitter);
+		return pEmitter;
+	}
+
+	const ParticleEmitterRuntime* ParticleSystem::FindEffect(ParticleEffectHandle handle) const
+	{
 		if (!m_emitters.IsValidIndex(handle.m_index))
 			return nullptr;
 
-		TrackedEmitter& tracker = m_emitters[handle.m_index];
+		const TrackedEmitter& tracker = m_emitters[handle.m_index];
 		if (tracker.m_generation != tracker.m_generation)
 			return nullptr;
 
-		ParticleEmitterRuntime* pEmitter = tracker.m_pEmitter;
+		const ParticleEmitterRuntime* pEmitter = tracker.m_pEmitter;
 		return pEmitter;
 	}
 }

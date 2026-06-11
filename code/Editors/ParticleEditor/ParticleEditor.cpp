@@ -4,6 +4,7 @@
 
 #include "Editors/ParticleEditor/ParticleEditor.h"
 
+#include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 
@@ -56,6 +57,7 @@ namespace Editors
 		, m_aspectRatio()
 		, m_pCamera(nullptr)
 		, clock(0)
+		, m_selectedEffectHandle()
 	{ }
 
 	ParticleEditor::~ParticleEditor()
@@ -89,6 +91,17 @@ namespace Editors
 			Widgets::MenuItem* pRenameItem = pFileMenu->AddMenuItem("Rename...");
 			pRenameItem->SetShortcut("F2");
 			pRenameItem->OnClick([this]() { OnMenu_File_Rename(); });
+
+			m_pMenuBar->AddSeparator();
+			
+			Widgets::Button* pPlayButton = m_pMenuBar->AddButton("Play");
+			pPlayButton->OnClick([this]() { OnPlay(); });
+
+			Widgets::Button* pPlayWarmupButton = m_pMenuBar->AddButton("Play (Warmup)");
+			pPlayWarmupButton->OnClick([this]() { OnPlayWarmup(); });
+
+			Widgets::Button* pStopButton = m_pMenuBar->AddButton("Stop");
+			pStopButton->OnClick([this]() { OnStop(); });
 		}
 
 		Widgets::SplitVertical* pVerticalSplit = new Widgets::SplitVertical();
@@ -222,6 +235,8 @@ namespace Editors
 
 	void ParticleEditor::OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected)
 	{
+		m_selectedEffectHandle = Systems::ParticleEffectHandle();
+
 		if (selected.empty())
 		{
 			RemoveAllWatchers();
@@ -259,7 +274,8 @@ namespace Editors
 
 		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
 		pContext->m_pParticleSystem->KillAllEffect();
-		pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), clock);
+		m_selectedEffectHandle = pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), clock);
+		pContext->m_pParticleSystem->Play(m_selectedEffectHandle);
 	}
 
 	void ParticleEditor::OnParticleEffectModified()
@@ -273,8 +289,45 @@ namespace Editors
 			Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
 
 			pContext->m_pParticleSystem->KillAllEffect();
-			pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
+			m_selectedEffectHandle = pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
 		}
+	}
+
+	void ParticleEditor::OnPlay()
+	{
+		if (!m_selectedEffectHandle.IsValid())
+			return;
+
+		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+		pContext->m_pParticleSystem->Play(m_selectedEffectHandle);
+	}
+
+	void ParticleEditor::OnPlayWarmup()
+	{
+		if (!m_selectedEffectHandle.IsValid())
+		{
+			Core::LogModule::Get().LogInfo("No effect selected.");
+			return;
+		}
+
+		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+
+		if (pContext->m_pParticleSystem->IsPlaying(m_selectedEffectHandle))
+		{
+			Core::LogModule::Get().LogError("Effect already playing. Stop it first.");
+			return;
+		}
+
+		pContext->m_pParticleSystem->Play(m_selectedEffectHandle, true);
+	}
+
+	void ParticleEditor::OnStop()
+	{
+		if (!m_selectedEffectHandle.IsValid())
+			return;
+
+		Systems::GameContext* pContext = ParticleEditorModule::Get().GetGameContext();
+		pContext->m_pParticleSystem->Stop(m_selectedEffectHandle);
 	}
 
 	void ParticleEditor::Viewport_OnUpdate(uint64_t dt)

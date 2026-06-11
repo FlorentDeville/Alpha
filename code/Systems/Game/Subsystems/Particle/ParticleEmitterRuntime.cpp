@@ -34,6 +34,9 @@ namespace Systems
 		, m_pIndexBufferPtr(nullptr)
 		, m_lsTx()
 		, m_transform()
+		, m_isEmitting(false)
+		, m_emittingStateRequested(false)
+		, m_warmupRequested(false)
 	{ }
 
 	ParticleEmitterRuntime::~ParticleEmitterRuntime()
@@ -80,6 +83,9 @@ namespace Systems
 		m_pPso->Init_Generic(desc);
 
 		m_lastSpawnTime = -1;
+
+		m_isEmitting = false;
+		m_emittingStateRequested = false;
 	}
 
 	void ParticleEmitterRuntime::UpdateParameters(uint32_t spawnRate, float lifetime, const Core::Vec4f& acceleration, const Core::Vec4f& speed, 
@@ -123,11 +129,17 @@ namespace Systems
 
 	void ParticleEmitterRuntime::Update(float currentTime, float dtInSeconds)
 	{
+		if (m_emittingStateRequested != m_isEmitting)
+		{
+			m_isEmitting = m_emittingStateRequested;
+			m_lastSpawnTime = currentTime;
+		}
+
 		//first update, warmup
-		if (m_lastSpawnTime == -1)
+		if (m_warmupRequested && m_isEmitting)
 		{
 			Warmup(currentTime, m_lifetime - 0.02f);
-			m_lastSpawnTime = currentTime;
+			m_warmupRequested = false;
 			return;
 		}
 
@@ -144,17 +156,20 @@ namespace Systems
 		}
 
 		//spawn new particles
-		float accumulatedDt = (currentTime - m_lastSpawnTime);
-		int particlesToSpawn = static_cast<int>(m_spawnRate * accumulatedDt);
-		if (particlesToSpawn > 0)
-			m_lastSpawnTime = currentTime;
-
-		for (int ii = 0; ii < particlesToSpawn; ++ii)
+		if (m_isEmitting)
 		{
-			if (m_particles.m_currentCount >= m_particles.m_maxCount)
-				break;
+			float accumulatedDt = (currentTime - m_lastSpawnTime);
+			int particlesToSpawn = static_cast<int>(m_spawnRate * accumulatedDt);
+			if (particlesToSpawn > 0)
+				m_lastSpawnTime = currentTime;
 
-			SpawnParticle(currentTime);
+			for (int ii = 0; ii < particlesToSpawn; ++ii)
+			{
+				if (m_particles.m_currentCount >= m_particles.m_maxCount)
+					break;
+
+				SpawnParticle(currentTime);
+			}
 		}
 
 		//update velocity
@@ -226,6 +241,22 @@ namespace Systems
 		//update velocity
 		for (int ii = 0; ii < m_particles.m_currentCount; ++ii)
 			m_particles.m_velocity[ii] = m_particles.m_velocity[ii] + (m_acceleration * (warmupDuration - static_cast<float>(singleParticleDt * ii)));
+	}
+
+	void ParticleEmitterRuntime::Play(bool warmup)
+	{
+		m_emittingStateRequested = true;
+		m_warmupRequested = warmup;
+	}
+
+	void ParticleEmitterRuntime::Stop()
+	{
+		m_emittingStateRequested = false;
+	}
+
+	bool ParticleEmitterRuntime::IsPlaying() const
+	{
+		return m_isEmitting;
 	}
 
 	void ParticleEmitterRuntime::KillParticle(int index)

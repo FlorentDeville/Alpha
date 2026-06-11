@@ -15,6 +15,7 @@ namespace Systems
 		: GameComponent()
 		, m_effect()
 		, m_effetHandle()
+		, m_warmup(false)
 	{ }
 
 	ParticleEffectComponent::~ParticleEffectComponent()
@@ -45,6 +46,7 @@ namespace Systems
 
 		const Core::Mat44f& worldTx = transform.GetWorldTx();
 		m_effetHandle = pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
+		pWorld->m_pParticleSystem->Play(m_effetHandle, m_warmup);
 	}
 
 	ParticleEffectAsset* ParticleEffectComponent::GetEffectAsset()

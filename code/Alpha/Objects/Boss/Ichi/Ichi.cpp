@@ -203,6 +203,10 @@ void Ichi::OnDestroyGame()
 	KillEngineEffects();
 	StopTransitionEffect();
 
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	pParticleSystem->KillEffect(m_transitionEffectHandle);
+	m_transitionEffectHandle = Systems::ParticleEffectHandle();
+
 	delete[] m_phase3GunsAttachPoints;
 	m_phase3GunsAttachPoints = nullptr;
 
@@ -296,6 +300,7 @@ void Ichi::SpawnEngineEffects()
 	{
 		Core::Mat44f wsTx = m_engineAttachPoints[ii] * GetTransform().GetWorldTx();
 		m_engineEffectHandle[ii] = pParticleSystem->SpawnEffect(m_engineEffect.GetPtr(), wsTx, pClock->GetTime());
+		pParticleSystem->Play(m_engineEffectHandle[ii]);
 	}
 }
 
@@ -317,13 +322,13 @@ void Ichi::StartTransitionEffect()
 
 	const Core::Mat44f& wsTx =  GetTransform().GetWorldTx();
 	m_transitionEffectHandle = pParticleSystem->SpawnEffect(m_transitionEffect.GetPtr(), wsTx, pClock->GetTime());
+	pParticleSystem->Play(m_transitionEffectHandle);
 }
 
 void Ichi::StopTransitionEffect()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
-	pParticleSystem->KillEffect(m_transitionEffectHandle);
-	m_transitionEffectHandle = Systems::ParticleEffectHandle();
+	pParticleSystem->Stop(m_transitionEffectHandle);
 }
 
 void Ichi::ShowPhase2Meshes()
