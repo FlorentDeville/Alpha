@@ -51,8 +51,7 @@ void Ichi_Phase1_To_Phase2::OnUpdate()
 		
 		Core::Quaternion rot = Core::Quaternion::Slerp(m_initialOrientation, dest, paramT);
 
-		float cosAngleOverTwo = rot.GetW();
-		if (cosAngleOverTwo > 0.999f)
+		if (paramT >= 1)
 		{
 			rot = dest;
 			m_internalState = DELAY;
