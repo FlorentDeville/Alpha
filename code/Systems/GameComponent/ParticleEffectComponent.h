@@ -32,10 +32,12 @@ namespace Systems
 
 	private:
 		HardAssetRef<ParticleEffectAsset> m_effect;
+		bool m_warmup;
 
 		START_REFLECTION(Systems::ParticleEffectComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_effect)
+			ADD_FIELD(m_warmup)
 		END_REFLECTION()
 
 		ParticleEffectHandle m_effetHandle;
