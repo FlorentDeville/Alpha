@@ -45,6 +45,7 @@ namespace Systems
 
 		const Core::Mat44f& worldTx = transform.GetWorldTx();
 		m_effetHandle = pWorld->m_pParticleSystem->SpawnEffect(m_effect.GetPtr(), worldTx, pWorld->m_pClock->GetTime());
+		pWorld->m_pParticleSystem->Play(m_effetHandle);
 	}
 
 	ParticleEffectAsset* ParticleEffectComponent::GetEffectAsset()
