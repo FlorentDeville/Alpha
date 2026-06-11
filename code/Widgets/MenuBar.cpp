@@ -53,6 +53,22 @@ namespace Widgets
 		return pNewMenu;
 	}
 
+	Button* MenuBar::AddButton(const std::string& title)
+	{
+		Button* pNewButton = new Button(title);
+		pNewButton->GetHoverStyle().SetBorderColor(Color(0.44f, 0.44f, 0.44f, 1.f));
+
+		m_pLayout->AddWidget(pNewButton);
+		return pNewButton;
+	}
+
+	void MenuBar::AddSeparator()
+	{
+		Container* pContainer = new Container(2, 20);
+		pContainer->GetDefaultStyle().SetBackgroundColor(Color(61, 61, 61));
+		m_pLayout->AddWidget(pContainer);
+	}
+
 	void MenuBar::Resize(const Core::Int3& parentAbsPos, const Core::UInt2& parentSize)
 	{
 		Widget::Resize(parentAbsPos, parentSize);

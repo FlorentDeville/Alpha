@@ -19,6 +19,8 @@ namespace Widgets
 		~MenuBar();
 
 		Menu* AddMenu(const std::string& name);
+		Button* AddButton(const std::string& title);
+		void AddSeparator();
 
 		void Draw(const Core::Float2& windowSize, const D3D12_RECT& scissor) override;
 
