@@ -120,7 +120,7 @@ void Ichi_Phase2_Attack2::OnEnter()
 
 	m_currentWaypointIndex = 0;
 
-	m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex]);
+	m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 7);
 }
 
 void Ichi_Phase2_Attack2::OnUpdate()
@@ -134,7 +134,7 @@ void Ichi_Phase2_Attack2::OnUpdate()
 			return;
 		}
 
-		m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex]);
+		m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 7);
 	}
 
 	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();

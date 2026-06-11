@@ -47,7 +47,7 @@ void Ichi_Phase3_Travel::OnUpdate()
 			return;
 		}
 
-		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
+		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget], 10);
 		++m_currentTarget;
 	}
 }

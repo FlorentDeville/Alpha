@@ -35,7 +35,8 @@ void Ichi_Phase1_Travel::OnEnter()
 	else
 		m_currentTarget = 1;
 
-	m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
+	const float MAX_SPEED = 5;
+	m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget], MAX_SPEED);
 }
 
 void Ichi_Phase1_Travel::OnUpdate()

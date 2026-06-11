@@ -55,7 +55,7 @@ public:
 	void ShowPhase2Meshes();
 
 	void GoToMotionState(IchiMotionState::Type newState);
-	void GoToMotionStateTravel(const Core::Vec4f& target);
+	void GoToMotionStateTravel(const Core::Vec4f& target, float maxSpeed);
 	void GoToMotionStateStrafe(const Core::Vec4f& target, float speed);
 
 	bool IsInMotionState(IchiMotionState::Type state) const;

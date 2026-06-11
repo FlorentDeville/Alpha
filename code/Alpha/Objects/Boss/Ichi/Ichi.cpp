@@ -130,12 +130,12 @@ void Ichi::OnStartGame()
 		Core::Vec4f(-30, 0, 8, 1)
 	};
 
-	m_pStateMachine->Start(IchiStateEnum::START);
-	//SkipStart();
+	//m_pStateMachine->Start(IchiStateEnum::START);
+	SkipStart();
 	//EnterPhase1();
-	//EnterPhase2();
+	EnterPhase2();
 	//EnterPhase3();
-	//m_pStateMachine->Start(IchiStateEnum::PHASE1_ATTACK2);
+	m_pStateMachine->Start(IchiStateEnum::PHASE2_TRAVEL);
 	//m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
 }
 
@@ -355,10 +355,11 @@ void Ichi::GoToMotionState(IchiMotionState::Type newState)
 	m_pMotionStateMachine->GoTo(newState);
 }
 
-void Ichi::GoToMotionStateTravel(const Core::Vec4f& target)
+void Ichi::GoToMotionStateTravel(const Core::Vec4f& target, float maxSpeed)
 {
 	IchiMotionTravel* pState = m_pMotionStateMachine->GetState<IchiMotionTravel>(IchiMotionState::TRAVEL);
 	pState->SetTarget(target);
+	pState->SetMaxSpeed(maxSpeed);
 
 	m_pMotionStateMachine->GoTo(IchiMotionState::TRAVEL);
 }

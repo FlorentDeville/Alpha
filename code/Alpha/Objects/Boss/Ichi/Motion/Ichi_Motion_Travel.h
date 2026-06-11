@@ -21,6 +21,7 @@ public:
 	void OnExit() override;
 
 	void SetTarget(const Core::Vec4f& target);
+	void SetMaxSpeed(float maxSpeed);
 
 private:
 	Ichi* m_pIchi;
@@ -29,6 +30,7 @@ private:
 
 	float m_length2;
 
+	float m_maxSpeed;
 	float m_speed;
 
 	float m_distanceAcc;

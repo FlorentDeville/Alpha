@@ -5,13 +5,19 @@
 #include "Alpha/Objects/Boss/Ichi/States/Ichi_Phase2_Travel.h"
 
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
+#include "Alpha/Objects/Player/PlayerGameObject.h"
+
+#include "Systems/Game/GameMgr.h"
 
 Ichi_Phase2_Travel::Ichi_Phase2_Travel(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
-	, m_currentTarget(0)
+	, m_currentWaypoint(0)
 	, m_nextAttack(false)
 {
+	//these should not be hardcoded.
+	m_waypoint[0] = Core::Vec4f(-25, 0, 15, 1);
+	m_waypoint[1] = Core::Vec4f(25, 0, 15, 1);
 }
 
 Ichi_Phase2_Travel::~Ichi_Phase2_Travel()
@@ -19,35 +25,33 @@ Ichi_Phase2_Travel::~Ichi_Phase2_Travel()
 
 void Ichi_Phase2_Travel::OnEnter()
 {
-	m_currentTarget = 0;
+	PlayerGameObject* pPlayer = Systems::GameMgr::Get().FindGameObject<PlayerGameObject>();
 
-	//compute final point
-	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
-	m_target[0] = currentPosition + Core::Vec4f(20, 0, 0, 0);
-	m_target[1] = currentPosition;
+	Core::Vec4f playerForward(1, 0, 0, 0);
+	Core::Vec4f bossToPlayer = pPlayer->GetTransform().GetWorldPosition() - m_pIchi->GetTransform().GetWorldPosition();
+	bossToPlayer.Set(2, 0);
 
-	if (m_pIchi->GetCurrentHP() <= 0)
-	{
-		GoTo(IchiStateEnum::PHASE2_TO_PHASE3);
-	}
+	float direction = playerForward.Dot(bossToPlayer);
+
+	if (direction < 0)
+		m_currentWaypoint = 0;
+	else
+		m_currentWaypoint = 1;
+
+	const float MAX_SPEED = 7;
+	m_pIchi->GoToMotionStateTravel(m_waypoint[m_currentWaypoint], MAX_SPEED);
 }
 
 void Ichi_Phase2_Travel::OnUpdate()
 {
 	if (m_pIchi->IsInMotionState(IchiMotionState::STOP) || m_pIchi->IsInMotionState(IchiMotionState::IDLE))
 	{
-		if (m_currentTarget >= TARGET_COUNT)
-		{
-			if (!m_nextAttack)
-				GoTo(IchiStateEnum::PHASE2_ATTACK1);
-			else
-				GoTo(IchiStateEnum::PHASE2_ATTACK2);
+		if (!m_nextAttack)
+			GoTo(IchiStateEnum::PHASE2_ATTACK1);
+		else
+			GoTo(IchiStateEnum::PHASE2_ATTACK2);
 
-			return;
-		}
-
-		m_pIchi->GoToMotionStateTravel(m_target[m_currentTarget]);
-		++m_currentTarget;
+		m_currentWaypoint = (m_currentWaypoint + 1) % WAYPOINT_COUNT;
 	}
 }
 

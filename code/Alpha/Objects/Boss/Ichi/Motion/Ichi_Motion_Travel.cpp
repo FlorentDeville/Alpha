@@ -20,8 +20,8 @@ IchiMotionTravel::IchiMotionTravel(StateMachine* pMachine, Ichi* pIchi)
 	, m_distanceDec()
 	, m_length2()
 	, m_speed()
-{
-}
+	, m_maxSpeed(5)
+{ }
 
 void IchiMotionTravel::OnEnter()
 {
@@ -39,7 +39,6 @@ void IchiMotionTravel::OnEnter()
 
 void IchiMotionTravel::OnUpdate()
 {
-	const float MAX_SPEED = 5;
 	const float MIN_SPEED = 2.5f;
 
 	const float ROTATION = 45 * Core::PI_OVER_180;
@@ -62,7 +61,7 @@ void IchiMotionTravel::OnUpdate()
 	if (distanceAccomplished <= m_distanceAcc)
 	{
 		float param = distanceAccomplished / m_distanceAcc;
-		m_speed = ((MAX_SPEED - MIN_SPEED) * param) + MIN_SPEED;
+		m_speed = ((m_maxSpeed - MIN_SPEED) * param) + MIN_SPEED;
 
 		float rotation = ROTATION * param;
 
@@ -75,7 +74,7 @@ void IchiMotionTravel::OnUpdate()
 	{
 		float param = (distanceAccomplished - m_distanceMaxSpeed) / m_distanceDec;
 		param = 1 - param;
-		m_speed = ((MAX_SPEED - MIN_SPEED) * param) + MIN_SPEED;
+		m_speed = ((m_maxSpeed - MIN_SPEED) * param) + MIN_SPEED;
 		//Core::LogModule::Get().LogInfo("param %f", param);
 		float rotation = ROTATION * param;
 		Core::Vec4f rotationAxis = Core::Vec4f(0, 1, 0, 0).Cross(motionDirection);
@@ -97,4 +96,9 @@ void IchiMotionTravel::OnExit()
 void IchiMotionTravel::SetTarget(const Core::Vec4f& target)
 {
 	m_target = target;
+}
+
+void IchiMotionTravel::SetMaxSpeed(float maxSpeed)
+{
+	m_maxSpeed = maxSpeed;
 }
