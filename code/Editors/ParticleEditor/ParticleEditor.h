@@ -61,6 +61,7 @@ namespace Editors
 		Rendering::PipelineState* m_pCopyPso;
 
 		CameraWidget* m_pCamera;
+		Systems::ParticleEffectHandle m_selectedEffectHandle;
 
 		float m_aspectRatio;
 
@@ -74,6 +75,10 @@ namespace Editors
 		void OnSelectionChanged(const std::vector<Widgets::SelectionRow>& selected, const std::vector<Widgets::SelectionRow>& deselected);
 
 		void OnParticleEffectModified();
+
+		void OnPlay();
+		void OnPlayWarmup();
+		void OnStop();
 
 		void Viewport_OnUpdate(uint64_t dt);
 		void Viewport_OnRender();
