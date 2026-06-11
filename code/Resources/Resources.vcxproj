@@ -40,6 +40,9 @@
     <Image Include="icons\down.png" />
     <Image Include="icons\expanded.png" />
     <Image Include="icons\import.png" />
+    <Image Include="icons\pause.png" />
+    <Image Include="icons\play.png" />
+    <Image Include="icons\stop.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />

@@ -20,6 +20,9 @@
     <Image Include="fonts\segoeUI_0.png" />
     <Image Include="icons\down.png" />
     <Image Include="icons\checkmark_white.png" />
+    <Image Include="icons\pause.png" />
+    <Image Include="icons\play.png" />
+    <Image Include="icons\stop.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourcesMgr.cpp" />
