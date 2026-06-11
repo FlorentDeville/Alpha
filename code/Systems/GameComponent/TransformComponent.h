@@ -29,6 +29,8 @@ namespace Systems
 		const Core::Mat44f& GetLocalTx() const;
 		const Core::Mat44f& GetWorldTx() const;
 
+		Core::Vec4f GetWorldPosition() const;
+
 		const Core::Sqt& GetLocalSqt() const;
 
 		const Core::Mat44f& GetParentWorldTx() const;

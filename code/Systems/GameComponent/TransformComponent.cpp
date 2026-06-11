@@ -34,6 +34,11 @@ namespace Systems
 		return m_worldTx;
 	}
 
+	Core::Vec4f TransformComponent::GetWorldPosition() const
+	{
+		return GetWorldTx().GetT();
+	}
+
 	const Core::Sqt& TransformComponent::GetLocalSqt() const
 	{
 		return m_localSqt;
