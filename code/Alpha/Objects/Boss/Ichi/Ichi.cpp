@@ -33,7 +33,6 @@
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/Subsystems/Message/GameMessage.h"
-#include "Systems/Game/Subsystems/Navmesh/NavmeshSubsystem.h"
 #include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 Core::Sid Ichi::ATTACH_POINTS_NAME[Ichi::ENGINE_EFFECT_COUNT] =
@@ -211,9 +210,6 @@ void Ichi::HandleMessage(const Systems::GameMessage& msg)
 void Ichi::OnDestroyGame()
 {
 	BaseClass::OnDestroyGame();
-
-	Systems::NavmeshSubsystem* pNavmesh = Systems::NavmeshSubsystem::GetSubsystem();
-	pNavmesh->ClearAllQuads();
 
 	KillEngineEffects();
 	StopTransitionEffect();
