@@ -32,6 +32,11 @@ namespace Systems
 		t2.m_points[2] = points[3];
 	}
 
+	void NavmeshSubsystem::ClearAllQuads()
+	{
+		m_navmesh.Clear();
+	}
+
 	Core::Vec4f NavmeshSubsystem::QueryRandomPosition() const
 	{
 		float area1 = ComputeTriangleArea(m_navmesh[0].m_points[0], m_navmesh[0].m_points[1], m_navmesh[0].m_points[2]);

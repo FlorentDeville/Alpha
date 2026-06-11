@@ -18,6 +18,8 @@ namespace Systems
 
 		void AddQuad(const Core::Vec4f (&points)[4]);
 
+		void ClearAllQuads();
+
 		Core::Vec4f QueryRandomPosition() const;
 
 		static uint32_t m_subsystemIndex;
