@@ -37,6 +37,11 @@ namespace Systems
 
 		ParticleEffectHandle SpawnEffect(ParticleEffectAsset* pEffect, const Core::Mat44f& world, float currentTime);
 
+		void Play(ParticleEffectHandle handle, bool warmup = false);
+		void Stop(ParticleEffectHandle handle);
+
+		bool IsPlaying(ParticleEffectHandle handle) const;
+
 		//Update the parameters of a currently running effect
 		void UpdateEffectParameters(ParticleEffectHandle handle, ParticleEffectAsset* pEffect, const Core::Mat44f& world);
 
@@ -69,5 +74,6 @@ namespace Systems
 		uint32_t FindFreeSlot();
 
 		ParticleEmitterRuntime* FindEffect(ParticleEffectHandle handle);
+		const ParticleEmitterRuntime* FindEffect(ParticleEffectHandle handle) const;
 	};
 }
