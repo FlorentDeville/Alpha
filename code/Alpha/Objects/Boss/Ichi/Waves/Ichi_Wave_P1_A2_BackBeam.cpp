@@ -194,10 +194,10 @@ void IchiWaveP1A2BackBeam::SpawnBullet(Bullets& bullets)
 	{
 		-2,
 		2,
-		-4,
-		4,
-		-6,
-		6
+		-5,
+		5,
+		-8,
+		8
 	};
 
 	//assert(m_nextBulletToSpawn < m_endId);
