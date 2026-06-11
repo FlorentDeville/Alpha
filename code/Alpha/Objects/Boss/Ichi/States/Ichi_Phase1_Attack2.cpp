@@ -24,6 +24,7 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	, m_restStartTime(0)
 	, m_startTime(0)
 	, m_internalState(InternalState::GET_IN_POSITION)
+	, m_backAndForthCount(1)
 {
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
@@ -50,6 +51,9 @@ Ichi_Phase1_Attack2::Ichi_Phase1_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	const float destAngle = Core::PI_OVER_180 * destAngleInDeg;
 	const float halfAngle = destAngle * 0.5f;
 	m_shootingRot = Core::Quaternion(0, sinf(halfAngle), 0, cosf(halfAngle));
+
+	m_waypoints[0] = Core::Vec4f(-18, 0, 15, 1);
+	m_waypoints[1] = Core::Vec4f(18, 0, 15, 1);
 }
 
 Ichi_Phase1_Attack2::~Ichi_Phase1_Attack2()
@@ -94,12 +98,10 @@ void Ichi_Phase1_Attack2::OnEnter()
 		m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 10, 0));
 	}
 
-	m_waypoints[0] = m_pIchi->GetTransform().GetLocalTx().GetT() + Core::Vec4f(20, 0, 0, 0);
-	m_waypoints[1] = m_pIchi->GetTransform().GetLocalTx().GetT() - Core::Vec4f(20, 0, 0, 0);
-
 	m_startingRot = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
 	m_getInPositionStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
+	m_backAndForthCount = 1;
 	m_currentWaypointIndex = 0;
 	m_internalState = InternalState::GET_IN_POSITION;
 }
@@ -144,6 +146,15 @@ void Ichi_Phase1_Attack2::OnUpdate()
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 		if (m_startTime + WARMUP_DURATION < currentTime)
 		{
+			//start with the closest side
+			float distance0 = (m_waypoints[0] - m_pIchi->GetTransform().GetWorldPosition()).Length2();
+			float distance1 = (m_waypoints[1] - m_pIchi->GetTransform().GetWorldPosition()).Length2();
+
+			if (distance0 < distance1)
+				m_currentWaypointIndex = 0;
+			else
+				m_currentWaypointIndex = 1;
+
 			m_internalState = InternalState::STRAFE;
 			m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], STRAFE_SPEED);
 		}
@@ -154,8 +165,8 @@ void Ichi_Phase1_Attack2::OnUpdate()
 	{
 		if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
 		{
-			++m_currentWaypointIndex;
-			if (m_currentWaypointIndex >= 2)
+			m_currentWaypointIndex = (m_currentWaypointIndex + 1) % WAYPOINT_COUNT;
+			if (m_backAndForthCount <= 0)
 			{
 				m_pMainBeam->Stop();
 				m_pSideBeam[0]->DisableSpawn();
@@ -171,6 +182,7 @@ void Ichi_Phase1_Attack2::OnUpdate()
 			}
 
 			m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], STRAFE_SPEED);
+			--m_backAndForthCount;
 		}
 
 		UpdateWaves();
