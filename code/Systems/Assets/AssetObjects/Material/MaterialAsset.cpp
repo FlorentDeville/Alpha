@@ -30,9 +30,13 @@ namespace Systems
 	MaterialAsset::~MaterialAsset()
 	{
 		delete m_pVs;
+		m_pVs = nullptr;
 		delete m_pPs;
+		m_pPs = nullptr;
 		delete m_pRs;
+		m_pRs = nullptr;
 		delete m_pPipelineState;
+		m_pPipelineState = nullptr;
 	}
 
 	const std::string& MaterialAsset::GetSourceFilePs() const
