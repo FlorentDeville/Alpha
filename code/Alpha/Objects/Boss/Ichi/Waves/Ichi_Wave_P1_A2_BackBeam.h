@@ -62,7 +62,6 @@ private:
 
 	uint32_t m_counterableBulletCount;
 
-	float m_side;
-
+	uint8_t m_lane;
 	void SpawnBullet(Bullets& bullets);
 };

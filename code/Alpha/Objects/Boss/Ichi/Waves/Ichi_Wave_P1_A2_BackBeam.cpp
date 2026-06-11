@@ -30,8 +30,8 @@ IchiWaveP1A2BackBeam::IchiWaveP1A2BackBeam(Systems::MeshAsset* pMesh, Systems::M
 	, m_nextBulletToSpawn(0)
 	, m_enableSpawn(true)
 	, m_lastBulletSpawnedTime(0)
-	, m_side(1)
 	, m_previousSpawnPosition()
+	, m_lane(0)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -73,7 +73,7 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 	m_warmupElapsedTime = 0;
 	m_currentScale = 0;
 
-	m_side = 1;
+	m_lane = 0;
 
 	SpawnBullet(bullets);
 
@@ -188,6 +188,18 @@ void IchiWaveP1A2BackBeam::DisableSpawn()
 
 void IchiWaveP1A2BackBeam::SpawnBullet(Bullets& bullets)
 {
+	const uint8_t LANE_COUNT = 6;
+
+	const float LANE_SPEED[LANE_COUNT] =
+	{
+		-2,
+		2,
+		-4,
+		4,
+		-6,
+		6
+	};
+
 	//assert(m_nextBulletToSpawn < m_endId);
 	if (!m_enableSpawn)
 		return;
@@ -195,12 +207,12 @@ void IchiWaveP1A2BackBeam::SpawnBullet(Bullets& bullets)
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 
-	bullets.m_speed[m_nextBulletToSpawn] = Core::Vec4f(-20 * m_side, 0, 10, 0);//m_spawnSpeed;
+	bullets.m_speed[m_nextBulletToSpawn] = Core::Vec4f(LANE_SPEED[m_lane], 0, 10, 0);
 
 	const float ACC = -10;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(10 * m_side, 0, ACC, 0);
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, ACC, 0);
 
-	m_side = m_side * -1;
+	m_lane = (m_lane + 1) % LANE_COUNT;
 
 	++m_nextBulletToSpawn;
 	if (m_nextBulletToSpawn >= m_endId)
