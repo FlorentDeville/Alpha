@@ -124,7 +124,7 @@ void Ichi_Phase1_To_Phase2::OnUpdate()
 
 	case DELAY2:
 	{
-		const float DURATION = 0.5f;
+		const float DURATION = 1.5f;
 		if (ElapsedTime(m_internalStateStartTime, DURATION))
 		{
 			GoTo(IchiStateEnum::PHASE2_TRAVEL);
