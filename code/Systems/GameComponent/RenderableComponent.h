@@ -29,6 +29,8 @@ namespace Systems
 
 		const Core::Sqt& GetLocalTx() const;
 
+		void SetLocalRotation(const Core::Quaternion& rotation);
+
 		void SetMaterialInstance(MaterialInstanceAsset*);
 		const MaterialInstanceAsset* GetMaterialInstance() const;
 

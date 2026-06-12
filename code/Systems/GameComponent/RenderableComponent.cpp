@@ -45,6 +45,11 @@ namespace Systems
 		return m_lsTx;
 	}
 
+	void RenderableComponent::SetLocalRotation(const Core::Quaternion& rotation)
+	{
+		m_lsTx.SetRotationQuaternion(rotation);
+	}
+
 	void RenderableComponent::SetMaterialInstance(MaterialInstanceAsset* pMaterial)
 	{
 		m_pMaterial = pMaterial;
