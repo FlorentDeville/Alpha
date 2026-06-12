@@ -187,6 +187,7 @@ void Ichi_Phase2_Attack1::DestroyWaves()
 
 		pSubsystem->DestroyWave(m_upperGunsWaveIndex[ii]);
 		pSubsystem->RemoveWave(m_upperGunsWaveIndex[ii]);
+		m_upperGunsWaveIndex[ii] = UINT32_MAX;
 	}
 }
 
