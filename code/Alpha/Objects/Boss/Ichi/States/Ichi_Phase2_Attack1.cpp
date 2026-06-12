@@ -6,7 +6,7 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
-#include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
+#include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P2_A1.h"
 
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
@@ -16,16 +16,17 @@ Ichi_Phase2_Attack1::Ichi_Phase2_Attack1(StateMachine* pStateMachine, Ichi* pIch
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
 	, m_startTime(0)
+	, m_internalState()
 {
-	m_waveCount = m_pIchi->GetPhase2GunsAttachPointsCount();
+	m_waveCount = m_pIchi->GetPhase2GunsAttachPointsCount() / 2;
 
-	m_pWave = new IchiWaveP1A1*[m_waveCount];
+	m_pWave = new IchiWaveP2A1*[m_waveCount];
 	m_waveIndex = new uint32_t[m_waveCount];
 
 	const uint32_t BULLET_COUNT = 50;
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 	{
-		m_pWave[ii] = new IchiWaveP1A1(m_pIchi->GetBulletMesh(), m_pIchi->GetBulletMaterial(), BULLET_COUNT);
+		m_pWave[ii] = new IchiWaveP2A1(m_pIchi->GetBulletMesh(), m_pIchi->GetBulletMaterial(), BULLET_COUNT);
 		m_waveIndex[ii] = UINT32_MAX;
 	}
 }
@@ -62,8 +63,8 @@ void Ichi_Phase2_Attack1::OnEnter()
 
 void Ichi_Phase2_Attack1::OnUpdate()
 {
-	const float WARMUP_TIME = 1.5;
-	const float SHOOTING_TIME = 6;
+	const float WARMUP_TIME = 2;
+	const float SHOOTING_TIME = 15;
 
 	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 
@@ -82,7 +83,7 @@ void Ichi_Phase2_Attack1::OnUpdate()
 		if (m_startTime + SHOOTING_TIME < currentTime)
 		{
 			for (uint8_t ii = 0; ii < m_waveCount; ++ii)
-				m_pWave[ii]->DisableSpawn();
+				m_pWave[ii]->Stop();
 
 			m_internalState = FINISH;
 		}
@@ -116,7 +117,7 @@ void Ichi_Phase2_Attack1::OnUpdate()
 void Ichi_Phase2_Attack1::OnExit()
 {
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
-		m_pWave[ii]->DisableSpawn();
+		m_pWave[ii]->Stop();
 }
 
 void Ichi_Phase2_Attack1::InitWaves()
@@ -174,28 +175,25 @@ void Ichi_Phase2_Attack1::UpdateWavesSpawnParameters()
 
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 	{
-		Core::Mat44f wsTx = pGunAttachPoints[ii] * m_pIchi->GetTransform().GetWorldTx();
-		m_pWave[ii]->SetSpawnPosition(wsTx.GetT());
+		Core::Mat44f wsTx0 = pGunAttachPoints[ii * 2] * m_pIchi->GetTransform().GetWorldTx();
+		Core::Mat44f wsTx1 = pGunAttachPoints[ii * 2 + 1] * m_pIchi->GetTransform().GetWorldTx();
+		m_pWave[ii]->SetSpawnPosition(wsTx0.GetT(), wsTx1.GetT());
 
 		switch (ii)
 		{
 		case 0:
-		case 1:
 			m_pWave[ii]->SetSpawnSpeed(rotateZAxis);
 			break;
 
-		case 2:
-		case 3:
+		case 1:
 			m_pWave[ii]->SetSpawnSpeed(negRotateXAxis);
 			break;
 
-		case 4:
-		case 5:
+		case 2:
 			m_pWave[ii]->SetSpawnSpeed(negRotateZAxis);
 			break;
 
-		case 6:
-		case 7:
+		case 3:
 			m_pWave[ii]->SetSpawnSpeed(rotateXAxis);
 			break;
 		}

@@ -166,6 +166,9 @@
     <ClCompile Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -284,6 +287,7 @@
     <ClInclude Include="Objects\Player\Waves\Player_Wave_Countered.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_BackBeam.h" />
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.h" />
+    <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />
