@@ -26,20 +26,49 @@ public:
 	void DestroyWaves();
 
 private:
+	enum InternalState
+	{
+		GET_IN_POSITION,
+		WAVE_WARMUP,
+		STRAFE,
+		REST
+	};
+
+	InternalState m_internalState;
+
 	Ichi* m_pIchi;
 
-	static const uint8_t MAIN_BEAM_COUNT = 2;
-	IchiWaveP1A2MainBeam* m_pMainBeam[MAIN_BEAM_COUNT];
-	uint32_t m_mainBeamIndex[MAIN_BEAM_COUNT];
+	IchiWaveP1A2MainBeam* m_pMainBeam;
+	uint32_t m_mainBeamIndex;
 
-	static const uint8_t SIDE_BEAM_COUNT = 4;
+	static const uint8_t SIDE_BEAM_COUNT = 2;
 	IchiWaveP1A2SideBeam* m_pSideBeam[SIDE_BEAM_COUNT];
 	uint32_t m_sideBeamIndex[SIDE_BEAM_COUNT];
 
-	static const uint8_t BACK_BEAM_COUNT = 2;
-	IchiWaveP1A2BackBeam* m_pBackBeam[BACK_BEAM_COUNT];
-	uint32_t m_backBeamIndex[BACK_BEAM_COUNT];
+	IchiWaveP1A2BackBeam* m_pBackBeam;
+	uint32_t m_backBeamIndex;
 
-	Core::Vec4f m_waypoints[2];
+	static const uint8_t MIDDLE_MAIN_BEAM_COUNT = 8;
+	IchiWaveP1A2MainBeam* m_pMiddleMainBeam[MIDDLE_MAIN_BEAM_COUNT];
+	uint32_t m_middleMainBeamIndex[MIDDLE_MAIN_BEAM_COUNT];
+
+	static const uint8_t WAYPOINT_COUNT = 2;
+	Core::Vec4f m_waypoints[WAYPOINT_COUNT];
 	uint8_t m_currentWaypointIndex;
+
+	Core::Quaternion m_startingRot;
+	Core::Quaternion m_shootingRot;
+
+	float m_startTime;
+	float m_getInPositionStartTime;
+	float m_restStartTime;
+	int8_t m_backAndForthCount;
+
+	Systems::RenderableComponent* m_pP2Renderable;
+
+	void UpdateWaves();
+
+	void UpdateMiddleTowerWaves();
+
+	void UpdateMotionMiddleTower();
 };
