@@ -351,6 +351,17 @@ void Ichi::ShowPhase2Meshes()
 	pP3Renderable->SetEnabled(false);
 }
 
+void Ichi::ShowPhase3Meshes()
+{
+	Systems::RenderableComponent* pP1Renderable = m_phase1Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP2Renderable = m_phase2Renderable.FindComponent(this);
+	Systems::RenderableComponent* pP3Renderable = m_phase3Renderable.FindComponent(this);
+
+	pP1Renderable->SetEnabled(true);
+	pP2Renderable->SetEnabled(true);
+	pP3Renderable->SetEnabled(true);
+}
+
 void Ichi::GoToMotionState(IchiMotionState::Type newState)
 {
 	m_pMotionStateMachine->GoTo(newState);

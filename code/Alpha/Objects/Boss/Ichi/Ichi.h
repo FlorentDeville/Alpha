@@ -53,6 +53,7 @@ public:
 	void StopTransitionEffect();
 
 	void ShowPhase2Meshes();
+	void ShowPhase3Meshes();
 
 	void GoToMotionState(IchiMotionState::Type newState);
 	void GoToMotionStateTravel(const Core::Vec4f& target, float maxSpeed);

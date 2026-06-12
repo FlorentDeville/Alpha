@@ -20,5 +20,32 @@ public:
 	void OnExit() override;
 
 private:
+	enum InternalState
+	{
+		REST_POSITION,
+		DELAY,
+		RUMBLE,
+		SMOKE,
+		STOP_RUMBLE,
+		DELAY2
+	};
+
 	Ichi* m_pIchi;
+
+	Systems::RenderableComponent* m_pP2Renderable;
+
+	InternalState m_internalState;
+	float m_internalStateStartTime;
+
+	Core::Vec4f m_rumbleStateInitialPosition;
+	float m_rumbleStartTime;
+
+	Core::Quaternion m_initialOrientation;
+	Core::Quaternion m_middleTowerInitialOritentation;
+	bool m_isGameObjectInRestPosition;
+	bool m_isMiddleTowerInRestPosition;
+
+	bool ElapsedTime(float start, float duration) const;
+
+	void Rumble();
 };
