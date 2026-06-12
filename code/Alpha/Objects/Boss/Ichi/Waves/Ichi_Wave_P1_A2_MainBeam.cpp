@@ -113,8 +113,9 @@ void IchiWaveP1A2MainBeam::Update(Bullets& bullets, float dt)
 		//compute new position
 		for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 		{
-			bullets.m_positions[ii] = bullets.m_positions[ii] + bullets.m_speed[ii] * dt;
-			bullets.m_positions[ii].Set(0, m_spawnPosition.GetX());
+			//I use acceleration as a local position
+			bullets.m_acceleration[ii] = bullets.m_acceleration[ii] + bullets.m_speed[ii] * dt;
+			bullets.m_positions[ii] = m_spawnPosition + bullets.m_acceleration[ii];
 		}
 
 		//check if I have to spawn a new bullet
@@ -134,8 +135,6 @@ void IchiWaveP1A2MainBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 	if (!m_isAlive)
 		return;
 
-	m_isAlive = false;
-
 	Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(m_currentScale);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
@@ -149,8 +148,6 @@ void IchiWaveP1A2MainBeam::BuildRenderable(Bullets& bullets, Systems::Renderable
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = scale * Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
-
-		m_isAlive = true;
 	}
 }
 
@@ -166,14 +163,13 @@ void IchiWaveP1A2MainBeam::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
 
 void IchiWaveP1A2MainBeam::SpawnBullet(Bullets& bullets)
 {
-	//assert(m_nextBulletToSpawn < m_endId);
 	if (!m_enableSpawn)
 		return;
 
 	bullets.m_timeToLive[m_nextBulletToSpawn] = 15;
 	bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 	bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 1);
 	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
 
 	++m_nextBulletToSpawn;
