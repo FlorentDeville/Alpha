@@ -75,7 +75,7 @@ void Ichi_Phase3_Attack1::OnExit()
 {
 	for (uint32_t ii = 0; ii < m_waveCount; ++ii)
 	{
-		m_ppWaves[ii]->DisableSpawn();
+		m_ppWaves[ii]->Stop();
 	}
 }
 

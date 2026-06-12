@@ -84,7 +84,7 @@ void Ichi_Phase1_Attack1::OnUpdate()
 			m_internalState = InternalState::REST;
 			for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
 			{
-				m_pWave[ii]->DisableSpawn();
+				m_pWave[ii]->Stop();
 			}
 		}
 	}
@@ -113,7 +113,7 @@ void Ichi_Phase1_Attack1::OnExit()
 {
 	for (uint8_t ii = 0; ii < WAVE_COUNT; ++ii)
 	{
-		m_pWave[ii]->DisableSpawn();
+		m_pWave[ii]->Stop();
 	}
 }
 

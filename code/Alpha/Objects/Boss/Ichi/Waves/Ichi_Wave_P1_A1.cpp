@@ -72,6 +72,11 @@ void IchiWaveP1A1::Start(Bullets& bullets)
 	bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
 }
 
+void IchiWaveP1A1::Stop()
+{
+	m_enableSpawn = false;
+}
+
 void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 {
 	const float LIFETIME = 10;
@@ -154,11 +159,6 @@ void IchiWaveP1A1::SetSpawnPosition(const Core::Vec4f& spawnPosition)
 void IchiWaveP1A1::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
 {
 	m_spawnSpeed = spawnSpeed;
-}
-
-void IchiWaveP1A1::DisableSpawn()
-{
-	m_enableSpawn = false;
 }
 
 void IchiWaveP1A1::SpawnBullet(Bullets& bullets)

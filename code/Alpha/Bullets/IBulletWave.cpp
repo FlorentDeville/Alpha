@@ -32,7 +32,7 @@ IBulletWave::~IBulletWave()
 
 void IBulletWave::Stop()
 {
-	m_isAlive = false;
+	//m_isAlive = false;
 }
 
 void IBulletWave::CollisionDetection(Bullets& bullets)
