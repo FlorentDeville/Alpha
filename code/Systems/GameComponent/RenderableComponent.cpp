@@ -12,6 +12,7 @@ namespace Systems
 		, m_pMaterial(nullptr)
 		, m_mesh()
 		, m_material()
+		, m_lsTx()
 	{ }
 
 	RenderableComponent::~RenderableComponent()
@@ -37,6 +38,11 @@ namespace Systems
 	const MeshAsset* RenderableComponent::GetMesh() const
 	{
 		return m_pMesh;
+	}
+
+	const Core::Sqt& RenderableComponent::GetLocalTx() const
+	{
+		return m_lsTx;
 	}
 
 	void RenderableComponent::SetMaterialInstance(MaterialInstanceAsset* pMaterial)

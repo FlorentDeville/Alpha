@@ -308,7 +308,7 @@ namespace Systems
 
 						pNewRenderable->m_pMesh = pMesh;
 						pNewRenderable->m_pMaterial = pMaterial;
-						pNewRenderable->m_worldTx = pRenderableComponent->GetOwner()->GetTransform().GetWorldTx();
+						pNewRenderable->m_worldTx = pRenderableComponent->GetLocalTx().GetMatrix() * pGo->GetTransform().GetWorldTx();
 						pNewRenderable->m_pOwner = pGo;
 						pNewRenderable->m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap | Systems::RenderView::ObjectId;
 					}

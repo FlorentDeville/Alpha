@@ -27,6 +27,8 @@ namespace Systems
 		void SetMesh(MeshAsset* pMesh);
 		const MeshAsset* GetMesh() const;
 
+		const Core::Sqt& GetLocalTx() const;
+
 		void SetMaterialInstance(MaterialInstanceAsset*);
 		const MaterialInstanceAsset* GetMaterialInstance() const;
 
@@ -35,10 +37,13 @@ namespace Systems
 		HardAssetRef<MeshAsset> m_mesh;
 		HardAssetRef<MaterialInstanceAsset> m_material;
 
+		Core::Sqt m_lsTx;
+
 		START_REFLECTION(Systems::RenderableComponent)
 			ADD_BASETYPE(Systems::GameComponent)
 			ADD_FIELD(m_mesh)
 			ADD_FIELD(m_material)
+			ADD_FIELD(m_lsTx)
 		END_REFLECTION()
 
 		//runtime pointers
