@@ -73,6 +73,10 @@ public:
 	const uint32_t GetPhase3GunsAttachPointsCount() const;
 	const Core::Mat44f* GetPhase3GunsAttachPoints() const;
 
+	Systems::RenderableComponent* GetPhase1Renderable();
+	Systems::RenderableComponent* GetPhase2Renderable();
+	Systems::RenderableComponent* GetPhase3Renderable();
+
 private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase1;
 	Systems::HardAssetRef<Systems::MeshAsset> m_meshPhase2;

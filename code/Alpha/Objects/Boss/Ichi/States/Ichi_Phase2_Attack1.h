@@ -46,9 +46,12 @@ private:
 
 	float m_startTime;
 
+	Systems::RenderableComponent* m_pP2Renderable;
+
 	void UpdateWavesSpawnParameters();
 
 	void UpdateMotion();
 
 	void UpdateUpperGunWavesParameters();
+	void UpdateMiddleGunWavesParameters();
 };

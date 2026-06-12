@@ -135,7 +135,7 @@ void Ichi::OnStartGame()
 	//EnterPhase1();
 	EnterPhase2();
 	//EnterPhase3();
-	m_pStateMachine->Start(IchiStateEnum::PHASE2_TRAVEL);
+	m_pStateMachine->Start(IchiStateEnum::PHASE2_ATTACK1);
 	//m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
 }
 
@@ -421,6 +421,21 @@ const uint32_t Ichi::GetPhase3GunsAttachPointsCount() const
 const Core::Mat44f* Ichi::GetPhase3GunsAttachPoints() const
 {
 	return m_phase3GunsAttachPoints;
+}
+
+Systems::RenderableComponent* Ichi::GetPhase1Renderable()
+{
+	return m_phase1Renderable.FindComponent(this);
+}
+
+Systems::RenderableComponent* Ichi::GetPhase2Renderable()
+{
+	return m_phase2Renderable.FindComponent(this);
+}
+
+Systems::RenderableComponent* Ichi::GetPhase3Renderable()
+{
+	return m_phase3Renderable.FindComponent(this);
 }
 
 void Ichi::UpdateHPBar()

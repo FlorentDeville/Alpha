@@ -36,6 +36,8 @@ Ichi_Phase2_Attack1::Ichi_Phase2_Attack1(StateMachine* pStateMachine, Ichi* pIch
 		m_pUpperGunsWaves[ii] = new IchiWaveP1A1(m_pIchi->GetBulletMesh(), m_pIchi->GetBulletMaterial(), BULLET_COUNT);
 		m_upperGunsWaveIndex[ii] = UINT32_MAX;
 	}
+
+	m_pP2Renderable = m_pIchi->GetPhase2Renderable();
 }
 
 Ichi_Phase2_Attack1::~Ichi_Phase2_Attack1()
@@ -189,53 +191,7 @@ void Ichi_Phase2_Attack1::DestroyWaves()
 
 void Ichi_Phase2_Attack1::UpdateWavesSpawnParameters()
 {
-	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
-	const float SPEED = 20;
-
-	const Core::Quaternion& rot = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
-	Core::Quaternion rot_conj = rot.Conjugate();
-	
-	Core::Quaternion zAxis(0, 0, 1, 0);
-	Core::Quaternion xAxis(1, 0, 0, 0);
-
-	Core::Quaternion qRotateZAxis = rot * zAxis * rot_conj;
-	Core::Quaternion qRotateXAxis = rot * xAxis * rot_conj;
-
-	Core::Vec4f rotateZAxis(qRotateZAxis.GetX(), qRotateZAxis.GetY(), qRotateZAxis.GetZ(), 0);
-	Core::Vec4f rotateXAxis(qRotateXAxis.GetX(), qRotateXAxis.GetY(), qRotateXAxis.GetZ(), 0);
-
-	rotateZAxis = rotateZAxis * SPEED;
-	rotateXAxis = rotateXAxis * SPEED;
-
-	Core::Vec4f negRotateZAxis = rotateZAxis * -1;
-	Core::Vec4f negRotateXAxis = rotateXAxis * -1;
-
-	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
-	{
-		Core::Mat44f wsTx0 = pGunAttachPoints[ii * 2] * m_pIchi->GetTransform().GetWorldTx();
-		Core::Mat44f wsTx1 = pGunAttachPoints[ii * 2 + 1] * m_pIchi->GetTransform().GetWorldTx();
-		m_pWave[ii]->SetSpawnPosition(wsTx0.GetT(), wsTx1.GetT());
-
-		switch (ii)
-		{
-		case 0:
-			m_pWave[ii]->SetSpawnSpeed(rotateZAxis);
-			break;
-
-		case 1:
-			m_pWave[ii]->SetSpawnSpeed(negRotateXAxis);
-			break;
-
-		case 2:
-			m_pWave[ii]->SetSpawnSpeed(negRotateZAxis);
-			break;
-
-		case 3:
-			m_pWave[ii]->SetSpawnSpeed(rotateXAxis);
-			break;
-		}
-	}
-
+	UpdateMiddleGunWavesParameters();
 	UpdateUpperGunWavesParameters();
 }
 
@@ -245,12 +201,12 @@ void Ichi_Phase2_Attack1::UpdateMotion()
 	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	float newRotation = ROTATION_SPEED * dt;
 
-	Core::Quaternion quat = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+	Core::Quaternion quat = m_pP2Renderable->GetLocalTx().GetRotationQuaternion();
 	Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, newRotation, 0);
 
 	Core::Quaternion finalRot = rot * quat;
 
-	m_pIchi->GetTransform().SetLocalRotation(finalRot);
+	m_pP2Renderable->SetLocalRotation(finalRot);
 }
 
 void Ichi_Phase2_Attack1::UpdateUpperGunWavesParameters()
@@ -269,5 +225,47 @@ void Ichi_Phase2_Attack1::UpdateUpperGunWavesParameters()
 		speed.Normalize();
 		speed = speed * 10;
 		m_pUpperGunsWaves[ii]->SetSpawnSpeed(speed);
+	}
+}
+
+void Ichi_Phase2_Attack1::UpdateMiddleGunWavesParameters()
+{
+	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
+	const float SPEED = 10;
+
+	Core::Mat44f meshWsTx = m_pP2Renderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+
+	Core::Vec4f zAxis = Core::Vec4f(0, 0, 1, 0) * SPEED;
+	Core::Vec4f rotatedZAxis = zAxis * meshWsTx;
+	Core::Vec4f negRotatedZAxis = rotatedZAxis * -1;
+
+	Core::Vec4f xAxis = Core::Vec4f(1, 0, 0, 0) * SPEED;
+	Core::Vec4f rotatedXAxis = xAxis * meshWsTx;
+	Core::Vec4f negRotatedXAxis = rotatedXAxis * -1;
+
+	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
+	{
+		Core::Mat44f wsTx0 = pGunAttachPoints[ii * 2] * meshWsTx;
+		Core::Mat44f wsTx1 = pGunAttachPoints[ii * 2 + 1] * meshWsTx;
+		m_pWave[ii]->SetSpawnPosition(wsTx0.GetT(), wsTx1.GetT());
+
+		switch (ii)
+		{
+		case 0:
+			m_pWave[ii]->SetSpawnSpeed(rotatedZAxis);
+			break;
+
+		case 1:
+			m_pWave[ii]->SetSpawnSpeed(negRotatedXAxis);
+			break;
+
+		case 2:
+			m_pWave[ii]->SetSpawnSpeed(negRotatedZAxis);
+			break;
+
+		case 3:
+			m_pWave[ii]->SetSpawnSpeed(rotatedXAxis);
+			break;
+		}
 	}
 }
