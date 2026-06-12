@@ -30,9 +30,6 @@ Ichi_Phase2_Attack2::Ichi_Phase2_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
 	const uint32_t MAIN_BEAM_BULLET_COUNT = 100;
 
-	m_pMainBeam = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), MAIN_BEAM_BULLET_COUNT);
-	m_mainBeamIndex = UINT32_MAX;
-
 	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
 	{
 		m_pSideBeam[ii] = new IchiWaveP1A2SideBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
@@ -68,9 +65,6 @@ Ichi_Phase2_Attack2::~Ichi_Phase2_Attack2()
 {
 	DestroyWaves();
 
-	delete m_pMainBeam;
-	m_pMainBeam = nullptr;
-
 	for (uint8_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
 	{
 		delete m_pSideBeam[ii];
@@ -91,8 +85,6 @@ void Ichi_Phase2_Attack2::OnEnter()
 {
 	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
 	Core::Mat44f wsTx = pGunAttachPoints[0] * m_pIchi->GetTransform().GetWorldTx();
-
-	m_pMainBeam->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
 
 	//left side beam
 	{
@@ -149,7 +141,6 @@ void Ichi_Phase2_Attack2::OnUpdate()
 			UpdateWaves();
 
 			BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-			//pSubsystem->StartWave(m_mainBeamIndex);
 			pSubsystem->StartWave(m_sideBeamIndex[0]);
 			pSubsystem->StartWave(m_sideBeamIndex[1]);
 			pSubsystem->StartWave(m_backBeamIndex);
@@ -190,7 +181,6 @@ void Ichi_Phase2_Attack2::OnUpdate()
 			m_currentWaypointIndex = (m_currentWaypointIndex + 1) % WAYPOINT_COUNT;
 			if (m_backAndForthCount <= 0)
 			{
-				m_pMainBeam->Stop();
 				m_pSideBeam[0]->DisableSpawn();
 				m_pSideBeam[1]->DisableSpawn();
 				m_pBackBeam->DisableSpawn();
@@ -237,7 +227,6 @@ void Ichi_Phase2_Attack2::OnUpdate()
 
 void Ichi_Phase2_Attack2::OnExit()
 {
-	m_pMainBeam->Stop();
 	m_pSideBeam[0]->DisableSpawn();
 	m_pSideBeam[1]->DisableSpawn();
 	m_pBackBeam->DisableSpawn();
@@ -246,11 +235,6 @@ void Ichi_Phase2_Attack2::OnExit()
 void Ichi_Phase2_Attack2::InitWaves()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	if (m_mainBeamIndex == UINT32_MAX)
-	{
-		m_mainBeamIndex = pSubsystem->AddWave(m_pMainBeam);
-		pSubsystem->InitWave(m_mainBeamIndex);
-	}
 
 	if (m_sideBeamIndex[0] == UINT32_MAX)
 	{
@@ -283,13 +267,6 @@ void Ichi_Phase2_Attack2::InitWaves()
 void Ichi_Phase2_Attack2::DestroyWaves()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-
-	if (m_mainBeamIndex != UINT32_MAX)
-	{
-		pSubsystem->DestroyWave(m_mainBeamIndex);
-		pSubsystem->RemoveWave(m_mainBeamIndex);
-		m_mainBeamIndex = UINT32_MAX;
-	}
 
 	if (m_sideBeamIndex[0] != UINT32_MAX)
 	{
@@ -327,7 +304,6 @@ void Ichi_Phase2_Attack2::UpdateWaves()
 {
 	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
 	Core::Mat44f wsTx = pGunAttachPoints[0] * m_pIchi->GetTransform().GetWorldTx();
-	m_pMainBeam->SetSpawnPosition(wsTx.GetT());
 
 	const PlayerGameObject* pPlayer = Systems::GameMgr::Get().FindGameObject<PlayerGameObject>();
 	Core::Vec4f playerPosition = pPlayer->GetTransform().GetWorldTx().GetT();
