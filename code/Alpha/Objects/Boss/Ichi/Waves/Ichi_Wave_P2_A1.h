@@ -35,15 +35,17 @@ private:
 
 	enum State
 	{
-		//WARMUP,	//the bullets appear progressiely
-		FIRE,	//the bullets shoot through the level
+		WAIT_FOR_WARMUP,
+		WARMUP,				//the bullets appear progressiely
+		FIRE,				//the bullets shoot through the level
+		STOP,
 
 		COUNT
 	};
 
-	//warmup state
-	float m_warmupDuration;
+	
 	float m_warmupElapsedTime;
+	float m_waitForWarmupStartTime;
 
 	float m_currentScale;
 
