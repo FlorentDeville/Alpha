@@ -37,6 +37,7 @@ Ichi_Phase2_Attack1::Ichi_Phase2_Attack1(StateMachine* pStateMachine, Ichi* pIch
 		m_upperGunsWaveIndex[ii] = UINT32_MAX;
 	}
 
+	m_pP1Renderable = m_pIchi->GetPhase1Renderable();
 	m_pP2Renderable = m_pIchi->GetPhase2Renderable();
 }
 
@@ -79,7 +80,7 @@ void Ichi_Phase2_Attack1::OnEnter()
 void Ichi_Phase2_Attack1::OnUpdate()
 {
 	const float WARMUP_TIME = 2;
-	const float SHOOTING_TIME = 15;
+	const float SHOOTING_TIME = 9;
 
 	float currentTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 
@@ -112,16 +113,16 @@ void Ichi_Phase2_Attack1::OnUpdate()
 	{
 		UpdateMotion();
 
-		const Core::Quaternion& rot = m_pIchi->GetTransform().GetLocalSqt().GetRotationQuaternion();
+		const Core::Quaternion& rot = m_pP2Renderable->GetLocalTx().GetRotationQuaternion();
 		
 
 		float cosAngleOverTwo = abs(rot.GetW());
-		const float CLOSE_VALUE = 0.999f;
+		const float CLOSE_VALUE = 0.9999f;
 
 		if (cosAngleOverTwo > CLOSE_VALUE)
 		{
 			Core::Quaternion rest(0, 0, 0, 1);
-			m_pIchi->GetTransform().SetLocalRotation(rest);
+			m_pP2Renderable->SetLocalRotation(rest);
 			GoTo(IchiStateEnum::PHASE2_TRAVEL);
 		}
 	}
@@ -201,19 +202,32 @@ void Ichi_Phase2_Attack1::UpdateMotion()
 	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	float newRotation = ROTATION_SPEED * dt;
 
-	Core::Quaternion quat = m_pP2Renderable->GetLocalTx().GetRotationQuaternion();
-	Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, newRotation, 0);
+	//rotate middle tower
+	{
+		Core::Quaternion quat = m_pP2Renderable->GetLocalTx().GetRotationQuaternion();
+		Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, newRotation, 0);
 
-	Core::Quaternion finalRot = rot * quat;
+		Core::Quaternion finalRot = rot * quat;
 
-	m_pP2Renderable->SetLocalRotation(finalRot);
+		m_pP2Renderable->SetLocalRotation(finalRot);
+	}
+
+	//rotate upper tower
+	{
+		Core::Quaternion quat = m_pP1Renderable->GetLocalTx().GetRotationQuaternion();
+		Core::Quaternion rot = Core::Quaternion::FromEulerAngles(0, -newRotation, 0);
+
+		Core::Quaternion finalRot = rot * quat;
+
+		m_pP1Renderable->SetLocalRotation(finalRot);
+	}
 }
 
 void Ichi_Phase2_Attack1::UpdateUpperGunWavesParameters()
 {
 	const Core::Mat44f* pAp = m_pIchi->GetPhase1GunsAttachPoints();
 
-	const Core::Mat44f& wsTx = m_pIchi->GetTransform().GetWorldTx();
+	const Core::Mat44f& wsTx = m_pP1Renderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
 
 	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
 	{
