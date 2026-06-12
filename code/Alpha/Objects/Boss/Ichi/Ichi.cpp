@@ -263,6 +263,7 @@ void Ichi::EnterPhase2()
 	ShowPhase2Meshes();
 
 	m_currentHP = GetMaxHP();
+	UpdateHPBar();
 
 	Ichi_Phase2_Attack1* pStateP2A1 = m_pStateMachine->GetState<Ichi_Phase2_Attack1>(IchiStateEnum::PHASE2_ATTACK1);
 	pStateP2A1->InitWaves();
