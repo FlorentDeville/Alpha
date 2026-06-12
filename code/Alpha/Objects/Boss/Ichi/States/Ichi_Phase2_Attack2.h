@@ -31,6 +31,7 @@ private:
 		GET_IN_POSITION,
 		WAVE_WARMUP,
 		STRAFE,
+		MIDDLE_TOWER_REST,
 		REST
 	};
 
@@ -56,8 +57,11 @@ private:
 	Core::Quaternion m_startingRot;
 	Core::Quaternion m_shootingRot;
 
+	Core::Quaternion m_middleTowerStartingRot;
+
 	float m_startTime;
 	float m_getInPositionStartTime;
+	float m_middleTowerRestStartTime;
 	float m_restStartTime;
 	int8_t m_backAndForthCount;
 

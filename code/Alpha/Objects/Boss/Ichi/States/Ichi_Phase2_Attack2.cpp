@@ -120,6 +120,7 @@ void Ichi_Phase2_Attack2::OnEnter()
 void Ichi_Phase2_Attack2::OnUpdate()
 {
 	const float STRAFE_SPEED = 2;
+	//const float STRAFE_SPEED = 7;
 
 	switch (m_internalState)
 	{
@@ -145,7 +146,6 @@ void Ichi_Phase2_Attack2::OnUpdate()
 			pSubsystem->StartWave(m_sideBeamIndex[1]);
 			pSubsystem->StartWave(m_backBeamIndex);
 
-			//pSubsystem->StartWave(m_middleMainBeamIndex[1]);
 			for (uint8_t ii = 0; ii < MIDDLE_MAIN_BEAM_COUNT; ++ii)
 				pSubsystem->StartWave(m_middleMainBeamIndex[ii]);
 		}
@@ -190,9 +190,10 @@ void Ichi_Phase2_Attack2::OnUpdate()
 
 				m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 
-				m_restStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+				m_internalState = InternalState::MIDDLE_TOWER_REST;
+				m_middleTowerRestStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+				m_middleTowerStartingRot = m_pP2Renderable->GetLocalTx().GetRotationQuaternion();
 
-				m_internalState = InternalState::REST;
 				return;
 			}
 
@@ -204,15 +205,41 @@ void Ichi_Phase2_Attack2::OnUpdate()
 	}
 	break;
 
+	case MIDDLE_TOWER_REST:
+	{
+		const float DURATION = 0.75f;
+
+		Core::Quaternion restingRotation(0, 0, 0, 1);
+		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		float paramT = (currentTime - m_middleTowerRestStartTime) / DURATION;
+		if (paramT < 1)
+		{
+			Core::Quaternion rot = Core::Quaternion::Slerp(m_middleTowerStartingRot, restingRotation, paramT);
+			m_pP2Renderable->SetLocalRotation(rot);
+		}
+		else
+		{
+			m_pP2Renderable->SetLocalRotation(Core::Quaternion(0, 0, 0, 1));
+			m_internalState = InternalState::REST;
+			m_restStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+		}
+	}
+	break;
+
 	case InternalState::REST:
 	{
-		const float REST_DURATION = 1;
 		float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
-		float paramT = (currentTime - m_restStartTime) / REST_DURATION;
-
-		Core::Quaternion slerp = Core::Quaternion::Slerp(m_shootingRot, m_startingRot, paramT);
-		m_pIchi->GetTransform().SetLocalRotation(slerp);
+		//update rotation of the entire object
+		const float REST_DURATION = 1;
+		{
+			float paramT = (currentTime - m_restStartTime) / REST_DURATION;
+			if (paramT <= 1)
+			{
+				Core::Quaternion slerp = Core::Quaternion::Slerp(m_shootingRot, m_startingRot, paramT);
+				m_pIchi->GetTransform().SetLocalRotation(slerp);
+			}
+		}
 
 		if (m_restStartTime + REST_DURATION <= currentTime)
 		{
