@@ -244,7 +244,7 @@ void Ichi_Phase2_Attack2::OnUpdate()
 		if (m_restStartTime + REST_DURATION <= currentTime)
 		{
 			m_pIchi->GetTransform().SetLocalRotation(m_startingRot);
-			GoTo(IchiStateEnum::PHASE1_TRAVEL);
+			GoTo(IchiStateEnum::PHASE2_TRAVEL);
 		}
 	}
 	break;
