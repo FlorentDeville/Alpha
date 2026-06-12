@@ -6,6 +6,7 @@
 
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Objects/Boss/Ichi/States/IchiStateEnum.h"
+#include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P2_A1.h"
 
 #include "Systems/Game/GameContext.h"
@@ -29,6 +30,12 @@ Ichi_Phase2_Attack1::Ichi_Phase2_Attack1(StateMachine* pStateMachine, Ichi* pIch
 		m_pWave[ii] = new IchiWaveP2A1(m_pIchi->GetBulletMesh(), m_pIchi->GetBulletMaterial(), BULLET_COUNT);
 		m_waveIndex[ii] = UINT32_MAX;
 	}
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+	{
+		m_pUpperGunsWaves[ii] = new IchiWaveP1A1(m_pIchi->GetBulletMesh(), m_pIchi->GetBulletMaterial(), BULLET_COUNT);
+		m_upperGunsWaveIndex[ii] = UINT32_MAX;
+	}
 }
 
 Ichi_Phase2_Attack1::~Ichi_Phase2_Attack1()
@@ -43,6 +50,9 @@ Ichi_Phase2_Attack1::~Ichi_Phase2_Attack1()
 
 	delete[] m_waveIndex;
 	m_waveIndex = nullptr;
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+		delete m_pUpperGunsWaves[ii];
 }
 
 void Ichi_Phase2_Attack1::OnEnter()
@@ -53,6 +63,9 @@ void Ichi_Phase2_Attack1::OnEnter()
 
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 		pSubsystem->StartWave(m_waveIndex[ii]);
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+		pSubsystem->StartWave(m_upperGunsWaveIndex[ii]);
 
 	m_startTime = Systems::GameMgr().Get().GetWorld()->m_pClock->GetTime();
 
@@ -84,6 +97,9 @@ void Ichi_Phase2_Attack1::OnUpdate()
 		{
 			for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 				m_pWave[ii]->Stop();
+
+			for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+				m_pUpperGunsWaves[ii]->Stop();
 
 			m_internalState = FINISH;
 		}
@@ -118,6 +134,9 @@ void Ichi_Phase2_Attack1::OnExit()
 {
 	for (uint8_t ii = 0; ii < m_waveCount; ++ii)
 		m_pWave[ii]->Stop();
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+		m_pUpperGunsWaves[ii]->Stop();
 }
 
 void Ichi_Phase2_Attack1::InitWaves()
@@ -131,6 +150,15 @@ void Ichi_Phase2_Attack1::InitWaves()
 
 		m_waveIndex[ii] = pSubsystem->AddWave(m_pWave[ii]);
 		pSubsystem->InitWave(m_waveIndex[ii]);
+	}
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+	{
+		if (m_upperGunsWaveIndex[ii] != UINT32_MAX)
+			continue;
+
+		m_upperGunsWaveIndex[ii] = pSubsystem->AddWave(m_pUpperGunsWaves[ii]);
+		pSubsystem->InitWave(m_upperGunsWaveIndex[ii]);
 	}
 }
 
@@ -147,6 +175,15 @@ void Ichi_Phase2_Attack1::DestroyWaves()
 		pSubsystem->RemoveWave(m_waveIndex[ii]);
 
 		m_waveIndex[ii] = UINT32_MAX;
+	}
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+	{
+		if (m_upperGunsWaveIndex[ii] == UINT32_MAX)
+			continue;
+
+		pSubsystem->DestroyWave(m_upperGunsWaveIndex[ii]);
+		pSubsystem->RemoveWave(m_upperGunsWaveIndex[ii]);
 	}
 }
 
@@ -198,6 +235,8 @@ void Ichi_Phase2_Attack1::UpdateWavesSpawnParameters()
 			break;
 		}
 	}
+
+	UpdateUpperGunWavesParameters();
 }
 
 void Ichi_Phase2_Attack1::UpdateMotion()
@@ -212,4 +251,23 @@ void Ichi_Phase2_Attack1::UpdateMotion()
 	Core::Quaternion finalRot = rot * quat;
 
 	m_pIchi->GetTransform().SetLocalRotation(finalRot);
+}
+
+void Ichi_Phase2_Attack1::UpdateUpperGunWavesParameters()
+{
+	const Core::Mat44f* pAp = m_pIchi->GetPhase1GunsAttachPoints();
+
+	const Core::Mat44f& wsTx = m_pIchi->GetTransform().GetWorldTx();
+
+	for (uint8_t ii = 0; ii < UPPER_GUNS_COUNT; ++ii)
+	{
+		Core::Mat44f apWs = pAp[ii] * wsTx;
+		m_pUpperGunsWaves[ii]->SetSpawnPosition(apWs.GetT());
+
+		Core::Vec4f speed = apWs.GetT() - wsTx.GetT();
+		speed.Set(1, 0);
+		speed.Normalize();
+		speed = speed * 5;
+		m_pUpperGunsWaves[ii]->SetSpawnSpeed(speed);
+	}
 }

@@ -8,6 +8,7 @@
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
 class Ichi;
+class IchiWaveP1A1;
 class IchiWaveP2A1;
 
 class Ichi_Phase2_Attack1 : public IState
@@ -39,9 +40,15 @@ private:
 	IchiWaveP2A1** m_pWave;
 	uint32_t* m_waveIndex;
 
+	static const uint8_t UPPER_GUNS_COUNT = 4;
+	IchiWaveP1A1* m_pUpperGunsWaves[UPPER_GUNS_COUNT];
+	uint32_t m_upperGunsWaveIndex[UPPER_GUNS_COUNT];
+
 	float m_startTime;
 
 	void UpdateWavesSpawnParameters();
 
 	void UpdateMotion();
+
+	void UpdateUpperGunWavesParameters();
 };
