@@ -267,7 +267,7 @@ void Ichi_Phase2_Attack1::UpdateUpperGunWavesParameters()
 		Core::Vec4f speed = apWs.GetT() - wsTx.GetT();
 		speed.Set(1, 0);
 		speed.Normalize();
-		speed = speed * 5;
+		speed = speed * 10;
 		m_pUpperGunsWaves[ii]->SetSpawnSpeed(speed);
 	}
 }
