@@ -396,6 +396,11 @@ namespace Widgets
 		m_vPositionStyle = vStyle;
 	}
 
+	bool Widget::HasSizeStyle(SIZE_STYLE style) const
+	{
+		return m_sizeStyle & style;
+	}
+
 	void Widget::SetName(const std::string& name)
 	{
 		m_name = name;

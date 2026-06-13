@@ -118,6 +118,8 @@ namespace Widgets
 		void SetSizeStyle(SIZE_STYLE sizeStyle);
 		void SetPositionStyle(HPOSITION_STYLE hStyle, VPOSITION_STYLE vStyle);
 
+		bool HasSizeStyle(SIZE_STYLE style) const;
+
 		void SetName(const std::string& name);
 
 		void SetFocusPolicy(FOCUS_POLICY policy, bool recursive = false);
