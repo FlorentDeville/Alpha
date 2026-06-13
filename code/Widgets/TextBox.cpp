@@ -373,11 +373,14 @@ namespace Widgets
 
 	void TextBox::DrawText(const D3D12_RECT& scissor)
 	{
+		if (m_absPos.y < 0)
+			return;
+
 		float fontScale = 1.f;
 		DirectX::XMFLOAT3 uiPos((float)m_absPos.x + m_textLocalPos.x, (float)m_absPos.y + m_textLocalPos.y, (float)m_absPos.z - 1);
 		DirectX::XMUINT4 localScissor(m_absPos.x, m_absPos.y, m_size.x, m_size.y);
 
-		if (localScissor.y < scissor.top)
+		if (localScissor.y < static_cast<uint32_t>(scissor.top))
 			return;
 
 		int32_t bottom = localScissor.y + localScissor.w;
