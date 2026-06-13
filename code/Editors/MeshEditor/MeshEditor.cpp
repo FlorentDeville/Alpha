@@ -186,8 +186,17 @@ namespace Editors
 		pRightSideSplit->AddTopPanel(m_pViewport);
 
 		//create property grid
+
+		Widgets::Container_V2* pScrollContainer = new Widgets::Container_V2();
+		pScrollContainer->SetSizeStyle(Widgets::STRETCH);
+		pRightSideSplit->AddBottomPanel(pScrollContainer);
+		//pViewportTab->AddWidget(pScrollContainer);
+
 		PropertyGridWidget* pPropertyGrid = new PropertyGridWidget();
-		pRightSideSplit->AddBottomPanel(pPropertyGrid);
+		pPropertyGrid->SetSizeStyle(Widgets::STRETCH);
+		//pPropertyGrid->SetNameColumnWidth(500);
+		pScrollContainer->AddWidget(pPropertyGrid);
+		//pRightSideSplit->AddBottomPanel(pPropertyGrid);
 		
 		m_pPopulator = new PropertyGridPopulator();
 		m_pPopulator->Init(pPropertyGrid);
