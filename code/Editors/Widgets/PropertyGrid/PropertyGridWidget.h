@@ -32,6 +32,7 @@ namespace Editors
 		void RemoveProperty(PropertyGridItem* pProperty);
 
 		void SetClassName(const std::string& className);
+		void SetNameColumnWidth(uint32_t width);
 
 		void ClearAllItems();
 

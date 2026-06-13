@@ -20,10 +20,11 @@ namespace Editors
 	{
 		m_pInternalLayout = new Widgets::Layout();
 		m_pInternalLayout->SetDirection(Widgets::Layout::Direction::Vertical);
-		m_pInternalLayout->SetSizeStyle(Widgets::SIZE_STYLE::STRETCH);
+		m_pInternalLayout->SetSizeStyle(Widgets::SIZE_STYLE::FIT);
 		AddWidget(m_pInternalLayout);
 
 		m_pClassName = new Widgets::Label();
+		m_pClassName->SetSizeStyle(Widgets::FIT);
 		m_pInternalLayout->AddWidget(m_pClassName);
 	}
 
@@ -79,13 +80,21 @@ namespace Editors
 			pPropertyLayout->AddWidget(pSpacer);
 		}
 
-		if (pNewProperty->GetEditingWidget())
+		if (Widgets::Widget* pEditingWidget = pNewProperty->GetEditingWidget())
 		{
 			Widgets::Widget* pSpacer = new Widgets::Widget(10, 0, 0, 0);
 			pSpacer->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
 
+			if(pEditingWidget->HasSizeStyle(Widgets::VSIZE_DEFAULT))
+				pEditingWidget->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_DEFAULT);
+			else if (pEditingWidget->HasSizeStyle(Widgets::VSIZE_FIT))
+				pEditingWidget->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_FIT);
+			else if (pEditingWidget->HasSizeStyle(Widgets::VSIZE_STRETCH))
+				pEditingWidget->SetSizeStyle(Widgets::HSIZE_DEFAULT | Widgets::VSIZE_STRETCH);
+
+			pEditingWidget->SetWidth(500);
 			pPropertyLayout->AddWidget(pSpacer);
-			pPropertyLayout->AddWidget(pNewProperty->GetEditingWidget());
+			pPropertyLayout->AddWidget(pEditingWidget);
 		}
 
 		if (pInsertAfter)
@@ -120,6 +129,11 @@ namespace Editors
 	void PropertyGridWidget::SetClassName(const std::string& className)
 	{
 		m_pClassName->SetText(className);
+	}
+
+	void PropertyGridWidget::SetNameColumnWidth(uint32_t width)
+	{
+		m_nameColumnWidth = width;
 	}
 
 	void PropertyGridWidget::ClearAllItems()
