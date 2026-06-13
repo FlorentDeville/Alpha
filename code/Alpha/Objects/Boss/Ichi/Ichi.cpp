@@ -130,12 +130,14 @@ void Ichi::OnStartGame()
 		Core::Vec4f(-30, 0, 8, 1)
 	};
 
-	//m_pStateMachine->Start(IchiStateEnum::START);
+	m_pStateMachine->Start(IchiStateEnum::START);
 	SkipStart();
 	//EnterPhase1();
-	EnterPhase2();
-	//EnterPhase3();
-	m_pStateMachine->Start(IchiStateEnum::PHASE2_ATTACK1);
+	//EnterPhase2();
+	EnterPhase3();
+	//m_currentHP = 1;
+	//UpdateHPBar();
+	m_pStateMachine->Start(IchiStateEnum::PHASE3_ATTACK1);
 	//m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
 }
 

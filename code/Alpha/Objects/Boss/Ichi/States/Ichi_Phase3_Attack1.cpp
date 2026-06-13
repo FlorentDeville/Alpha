@@ -63,7 +63,7 @@ void Ichi_Phase3_Attack1::OnEnter()
 
 void Ichi_Phase3_Attack1::OnUpdate()
 {
-	const float DURATION = 5;
+	const float DURATION = 15;
 
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
