@@ -72,4 +72,5 @@ private:
 
 	void UpdateLowerTowerMotion(float rotationDirection);
 	void UpdateMiddleTowerMotion(float fullTurnDuration);
+	void UpdateUpperTowerMotion(float fullTurnDuration);
 };

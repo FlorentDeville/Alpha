@@ -182,6 +182,7 @@ void Ichi_Phase3_Attack1::OnUpdate()
 		{
 			m_internalState = START_MIDDLE_TOWER;
 			m_startInternalStateTime = currentTime;
+			m_pLowerTowerRenderable->SetLocalRotation(Core::Quaternion());
 		}
 	}
 	break;
@@ -207,7 +208,7 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 	case MIDDLE_TOWER:
 	{
-		const float DURATION = 5;
+		const float DURATION = 8;
 
 		UpdateMiddleTowerMotion(DURATION);
 		UpdateMiddleTowerGuns();
@@ -219,6 +220,7 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 			m_internalState = START_UPPER_TOWER;
 			m_startInternalStateTime = currentTime;
+			m_pMiddleTowerRenderable->SetLocalRotation(Core::Quaternion());
 		}
 	}
 	break;
@@ -237,9 +239,11 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 	case UPPER_TOWER:
 	{
+		const float DURATION = 5;
+		UpdateUpperTowerMotion(DURATION);
 		UpdateUpperTowerWaves();
 
-		const float DURATION = 5;
+		
 		if (IsTimeElasped(m_startInternalStateTime, currentTime, DURATION))
 		{
 			for (uint32_t ii = 0; ii < m_upperTowerWaveCount; ++ii)
@@ -247,13 +251,14 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 			m_internalState = REST;
 			m_startInternalStateTime = currentTime;
+			m_pUpperTowerRenderable->SetLocalRotation(Core::Quaternion());
 		}
 	}
 	break;
 
 	case REST:
 	{
-
+		GoTo(IchiStateEnum::PHASE3_TRAVEL);
 	}
 	break;
 
@@ -473,4 +478,17 @@ void Ichi_Phase3_Attack1::UpdateMiddleTowerMotion(float fullTurnDuration)
 	const Core::Quaternion& currentRotation = m_pMiddleTowerRenderable->GetLocalTx().GetRotationQuaternion();
 	Core::Quaternion newRotation = appendRotation * currentRotation;
 	m_pMiddleTowerRenderable->SetLocalRotation(newRotation);
+}
+
+void Ichi_Phase3_Attack1::UpdateUpperTowerMotion(float fullTurnDuration)
+{
+	const float NUMBER_OF_TURNS = 2;
+	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+	float ds = -Core::TWO_PI * NUMBER_OF_TURNS / fullTurnDuration * dt;
+
+	Core::Quaternion appendRotation = Core::Quaternion::FromEulerAngles(0, ds, 0);
+
+	const Core::Quaternion& currentRotation = m_pUpperTowerRenderable->GetLocalTx().GetRotationQuaternion();
+	Core::Quaternion newRotation = appendRotation * currentRotation;
+	m_pUpperTowerRenderable->SetLocalRotation(newRotation);
 }
