@@ -55,6 +55,7 @@ Ichi_Phase3_Attack1::Ichi_Phase3_Attack1(StateMachine* pStateMachine, Ichi* pIch
 		m_pUpperTowerWaveIndex[ii] = UINT32_MAX;
 	}
 
+	m_pLowerTowerRenderable = m_pIchi->GetPhase3Renderable();
 	m_pMiddleTowerRenderable = m_pIchi->GetPhase2Renderable();
 	m_pUpperTowerRenderable = m_pIchi->GetPhase1Renderable();
 }
@@ -139,6 +140,7 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 	case LOWER_TOWER_ODD_GUNS:
 	{
+		UpdateLowerTowerMotion(1);
 		UpdateLowerTowerOddGuns();
 
 		const float DURATION = 5;
@@ -152,6 +154,7 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 	case START_LOWER_TOWER_EVEN_GUNS:
 	{
+		UpdateLowerTowerMotion(-1);
 		UpdateLowerTowerEvenGuns();
 
 		for (uint32_t ii = 0; ii < m_lowerTowerWaveCount; ++ii)
@@ -169,6 +172,7 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 	case LOWER_TOWER_EVEN_GUNS:
 	{
+		UpdateLowerTowerMotion(-1);
 		UpdateLowerTowerEvenGuns();
 
 		const float DURATION = 5;
@@ -339,15 +343,22 @@ void Ichi_Phase3_Attack1::UpdateLowerTowerOddGuns()
 {
 	const Core::Mat44f* pAp = m_pIchi->GetPhase3GunsAttachPoints();
 
+	const Core::Mat44f wsTx = m_pLowerTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+
 	for (uint32_t ii = 0; ii < m_lowerTowerWaveCount; ++ii)
 	{
 		if (ii % 2 == 0)
 			continue;
 
-		Core::Mat44f wsTx = pAp[ii] * m_pIchi->GetTransform().GetWorldTx();
+		Core::Mat44f gunWsTx = pAp[ii] * wsTx;
 
-		m_ppWaves[ii]->SetSpawnPosition(wsTx.GetT());
-		m_ppWaves[ii]->SetSpawnSpeed(pAp[ii].GetT());
+		m_ppWaves[ii]->SetSpawnPosition(gunWsTx.GetT());
+
+		Core::Vec4f speed = pAp[ii].GetT();
+		speed.Set(3, 0);
+
+		speed = speed * gunWsTx;
+		m_ppWaves[ii]->SetSpawnSpeed(speed);
 	}
 }
 
@@ -355,15 +366,22 @@ void Ichi_Phase3_Attack1::UpdateLowerTowerEvenGuns()
 {
 	const Core::Mat44f* pAp = m_pIchi->GetPhase3GunsAttachPoints();
 
+	const Core::Mat44f wsTx = m_pLowerTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+
 	for (uint32_t ii = 0; ii < m_lowerTowerWaveCount; ++ii)
 	{
 		if (ii % 2 == 1)
 			continue;
 
-		Core::Mat44f wsTx = pAp[ii] * m_pIchi->GetTransform().GetWorldTx();
+		Core::Mat44f gunWsTx = pAp[ii] * wsTx;
 
-		m_ppWaves[ii]->SetSpawnPosition(wsTx.GetT());
-		m_ppWaves[ii]->SetSpawnSpeed(pAp[ii].GetT());
+		m_ppWaves[ii]->SetSpawnPosition(gunWsTx.GetT());
+		
+		Core::Vec4f speed = pAp[ii].GetT();
+		speed.Set(3, 0);
+
+		speed = speed * gunWsTx;
+		m_ppWaves[ii]->SetSpawnSpeed(speed);
 	}
 }
 
@@ -413,7 +431,7 @@ void Ichi_Phase3_Attack1::UpdateUpperTowerWaves()
 {
 	const Core::Mat44f* pAp = m_pIchi->GetPhase1GunsAttachPoints();
 
-	const Core::Mat44f& wsTx = m_pUpperTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+	const Core::Mat44f wsTx = m_pUpperTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
 
 	for (uint8_t ii = 0; ii < m_upperTowerWaveCount; ++ii)
 	{
@@ -426,4 +444,17 @@ void Ichi_Phase3_Attack1::UpdateUpperTowerWaves()
 		speed = speed * 10;
 		m_ppUpperTowerWaves[ii]->SetSpawnSpeed(speed);
 	}
+}
+
+void Ichi_Phase3_Attack1::UpdateLowerTowerMotion(float rotationDirection)
+{
+	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+
+	const Core::Quaternion& currentRotation = m_pLowerTowerRenderable->GetLocalTx().GetRotationQuaternion();
+
+	const float ROTATION_SPEED = 0.5f;
+	Core::Quaternion offset = Core::Quaternion::FromEulerAngles(0, ROTATION_SPEED * dt * rotationDirection, 0);
+
+	Core::Quaternion newRotation = offset * currentRotation;
+	m_pLowerTowerRenderable->SetLocalRotation(newRotation);
 }

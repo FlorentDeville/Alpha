@@ -56,6 +56,7 @@ private:
 	IchiWaveP1A1** m_ppUpperTowerWaves;
 	uint32_t* m_pUpperTowerWaveIndex;
 
+	Systems::RenderableComponent* m_pLowerTowerRenderable;
 	Systems::RenderableComponent* m_pMiddleTowerRenderable;
 	Systems::RenderableComponent* m_pUpperTowerRenderable;
 
@@ -68,4 +69,6 @@ private:
 	void UpdateLowerTowerEvenGuns();
 	void UpdateMiddleTowerGuns();
 	void UpdateUpperTowerWaves();
+
+	void UpdateLowerTowerMotion(float rotationDirection);
 };
