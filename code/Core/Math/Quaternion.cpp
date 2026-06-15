@@ -4,6 +4,7 @@
 
 #include "Core/Math/Quaternion.h"
 
+#include "Core/Math/Constants.h"
 #include "Core/Math/Mat44f.h"
 #include "Core/Math/Vec4f.h"
 
@@ -98,6 +99,19 @@ namespace Core
 
 		Core::Vec4f result = tempAxis * cossin;
 		return Quaternion(result.GetX(), result.GetY(), result.GetZ(), result.GetW());
+	}
+
+	Quaternion Quaternion::RotateTowards(const Quaternion& from, const Quaternion& to, float maxStep)
+	{
+		float angle = Quaternion::Angle(from, to);
+		if (angle == 0)
+			return to;
+
+		float param = maxStep / angle;
+		if (param >= 1)
+			return to;
+
+		return Quaternion::Slerp(from, to, param);
 	}
 
 	Quaternion Quaternion::Slerp(const Core::Quaternion& q0, const Core::Quaternion& q1, float t)
