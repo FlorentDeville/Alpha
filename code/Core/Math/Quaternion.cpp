@@ -115,6 +115,15 @@ namespace Core
 		return slerp;
 	}
 
+	float Quaternion::Angle(const Quaternion& q0, const Quaternion q1)
+	{
+		Quaternion dq = q0.Conjugate() * q1;
+		Vec4f dv = dq.ToVec4f();
+		float s = dv.Length();
+
+		return 2 * atan2f(s, dq.GetW());
+	}
+
 	bool Quaternion::operator==(const Quaternion& other) const
 	{
 		__m128 res = _mm_cmpeq_ps(m_data, other.m_data);

@@ -26,7 +26,10 @@ namespace Core
 		static Quaternion FromEulerAngles(float x, float y, float z);
 		static Quaternion FromAxisAngle(const Core::Vec4f& axis, float angle);
 
-		static Quaternion Slerp(const Core::Quaternion& q0, const Core::Quaternion& q1, float t);
+		static Quaternion Slerp(const Quaternion& q0, const Core::Quaternion& q1, float t);
+
+		//Calculate the angle in radians between 2 quaternions. You must normalize the quaternions first.
+		static float Angle(const Quaternion& q0, const Quaternion q1);
 
 		bool operator==(const Quaternion& other) const;
 		Quaternion operator*(const Quaternion& other) const;
