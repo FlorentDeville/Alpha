@@ -24,11 +24,34 @@ public:
 	void DestroyWaves();
 
 private:
+	enum InternalState
+	{
+		START_LOWER_TOWER_ODD_GUNS,
+		LOWER_TOWER_ODD_GUNS,
+		START_LOWER_TOWER_EVEN_GUNS,
+		LOWER_TOWER_EVEN_GUNS,
+		START_MIDDLE_TOWER,
+		MIDDLE_TOWER,
+		START_UPPER_TOWER,
+		UPPER_TOWER,
+		REST,
+
+		COUNT
+	};
+
 	Ichi* m_pIchi;
 
-	uint32_t m_waveCount;
+	InternalState m_internalState;
+
+	uint32_t m_lowerTowerWaveCount;
 	IchiWaveP1A1** m_ppWaves;
 	uint32_t* m_pWaveIndex;
 
 	float m_startTime;
+	float m_startInternalStateTime;
+
+	bool IsTimeElasped(float start, float current, float duration) const;
+
+	void UpdateLowerTowerOddGuns();
+	void UpdateLowerTowerEvenGuns();
 };

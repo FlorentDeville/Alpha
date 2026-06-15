@@ -131,8 +131,6 @@ void IchiWaveP1A1::BuildRenderable(Bullets& bullets, Systems::RenderableScene& s
 	if (!m_isAlive)
 		return;
 
-	m_isAlive = false;
-
 	Core::Mat44f scale = Core::Mat44f::CreateScaleMatrix(m_currentScale);
 
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
@@ -146,8 +144,6 @@ void IchiWaveP1A1::BuildRenderable(Bullets& bullets, Systems::RenderableScene& s
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = scale * Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
-
-		m_isAlive = true;
 	}
 }
 
