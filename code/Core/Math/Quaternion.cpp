@@ -102,16 +102,26 @@ namespace Core
 
 	Quaternion Quaternion::Slerp(const Core::Quaternion& q0, const Core::Quaternion& q1, float t)
 	{
+		Core::Quaternion tempQ1 = q1;
+
 		Core::Vec4f startVec = q0.ToVec4f();
 		Core::Vec4f destVec = q1.ToVec4f();
 		float cosAngle = startVec.Dot4(destVec);
+		if (cosAngle < 0)
+		{
+			cosAngle = -cosAngle;
+			tempQ1 = q1 * -1;
+		}
+
 		float angle = acosf(cosAngle);
+		if (angle < 0.0001f)
+			return q1;
 
 		float sinAngle = sinf(angle);
 		float m1 = sinf((1 - t) * angle) / sinAngle;
 		float m2 = sinf(t * angle) / sinAngle;
 
-		Core::Quaternion slerp = q0 * m1 + q1 * m2;
+		Core::Quaternion slerp = q0 * m1 + tempQ1 * m2;
 		return slerp;
 	}
 
