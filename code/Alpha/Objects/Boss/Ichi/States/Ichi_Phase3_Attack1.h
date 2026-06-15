@@ -52,7 +52,12 @@ private:
 	IchiWaveP2A1** m_ppMiddleTowerWaves;
 	uint32_t* m_pMiddleTowerWaveIndex;
 
+	uint32_t m_upperTowerWaveCount;
+	IchiWaveP1A1** m_ppUpperTowerWaves;
+	uint32_t* m_pUpperTowerWaveIndex;
+
 	Systems::RenderableComponent* m_pMiddleTowerRenderable;
+	Systems::RenderableComponent* m_pUpperTowerRenderable;
 
 	float m_startTime;
 	float m_startInternalStateTime;
@@ -62,4 +67,5 @@ private:
 	void UpdateLowerTowerOddGuns();
 	void UpdateLowerTowerEvenGuns();
 	void UpdateMiddleTowerGuns();
+	void UpdateUpperTowerWaves();
 };
