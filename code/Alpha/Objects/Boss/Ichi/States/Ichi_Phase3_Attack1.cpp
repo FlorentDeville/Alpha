@@ -9,6 +9,8 @@
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A1.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P2_A1.h"
 
+#include "Core/Log/LogModule.h"
+#include "Core/Math/Constants.h"
 
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
@@ -205,9 +207,11 @@ void Ichi_Phase3_Attack1::OnUpdate()
 
 	case MIDDLE_TOWER:
 	{
-		UpdateMiddleTowerGuns();
-
 		const float DURATION = 5;
+
+		UpdateMiddleTowerMotion(DURATION);
+		UpdateMiddleTowerGuns();
+		
 		if (IsTimeElasped(m_startInternalStateTime, currentTime, DURATION))
 		{
 			for (uint32_t ii = 0; ii < m_middleTowerWaveCount; ++ii)
@@ -457,4 +461,16 @@ void Ichi_Phase3_Attack1::UpdateLowerTowerMotion(float rotationDirection)
 
 	Core::Quaternion newRotation = offset * currentRotation;
 	m_pLowerTowerRenderable->SetLocalRotation(newRotation);
+}
+
+void Ichi_Phase3_Attack1::UpdateMiddleTowerMotion(float fullTurnDuration)
+{
+	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+	float ds = Core::TWO_PI / fullTurnDuration * dt;
+
+	Core::Quaternion appendRotation = Core::Quaternion::FromEulerAngles(0, ds, 0);
+
+	const Core::Quaternion& currentRotation = m_pMiddleTowerRenderable->GetLocalTx().GetRotationQuaternion();
+	Core::Quaternion newRotation = appendRotation * currentRotation;
+	m_pMiddleTowerRenderable->SetLocalRotation(newRotation);
 }
