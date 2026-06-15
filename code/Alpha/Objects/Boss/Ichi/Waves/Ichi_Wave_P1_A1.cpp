@@ -93,13 +93,14 @@ void IchiWaveP1A1::Update(Bullets& bullets, float dt)
 		m_warmupElapsedTime += dt;
 		if (m_warmupElapsedTime >= m_warmupDuration)
 		{
+			bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
 			bullets.m_timeToLive[m_nextBulletToSpawn] = LIFETIME;
 			++m_nextBulletToSpawn;
 			m_lastBulletSpawnedTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 			m_currentState = State::FIRE;
 			break;
 		}
-
+		bullets.m_positions[m_nextBulletToSpawn] = m_spawnPosition;
 		m_currentScale = m_warmupElapsedTime / m_warmupDuration;
 	}
 	break;
