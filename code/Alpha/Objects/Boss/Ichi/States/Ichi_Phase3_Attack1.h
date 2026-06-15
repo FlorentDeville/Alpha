@@ -9,6 +9,7 @@
 
 class Ichi;
 class IchiWaveP1A1;
+class IchiWaveP2A1;
 
 class Ichi_Phase3_Attack1 : public IState
 {
@@ -47,6 +48,12 @@ private:
 	IchiWaveP1A1** m_ppWaves;
 	uint32_t* m_pWaveIndex;
 
+	uint32_t m_middleTowerWaveCount;
+	IchiWaveP2A1** m_ppMiddleTowerWaves;
+	uint32_t* m_pMiddleTowerWaveIndex;
+
+	Systems::RenderableComponent* m_pMiddleTowerRenderable;
+
 	float m_startTime;
 	float m_startInternalStateTime;
 
@@ -54,4 +61,5 @@ private:
 
 	void UpdateLowerTowerOddGuns();
 	void UpdateLowerTowerEvenGuns();
+	void UpdateMiddleTowerGuns();
 };
