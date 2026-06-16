@@ -129,6 +129,25 @@ void Ichi_Phase3_Attack2::OnUpdate()
 		{
 			m_pBackBeam->Stop();
 
+			m_internalState = UPPER_TOWER_WAVES_REST;
+			m_internaStateStartTime = currentTime;
+		}
+	}
+	break;
+
+	case UPPER_TOWER_WAVES_REST:
+	{
+		const Core::Quaternion GOAL = Core::Quaternion::FromEulerAngles(0, 0, 0);
+		const Core::Quaternion current = m_pUpperTowerRenderable->GetLocalTx().GetRotationQuaternion();
+
+		//Angle return a value in the range [-2pi, 2pi] But I need it in the range [pi, -pi]
+		float angle = Core::Quaternion::Angle(current, GOAL);
+		if (angle > Core::PI)
+			angle = angle - Core::TWO_PI;
+
+		if (angle < 0.0001f)
+		{
+			m_pUpperTowerRenderable->SetLocalRotation(GOAL);
 			m_internalState = MIDDLE_TOWER_WAVES;
 			m_internaStateStartTime = currentTime;
 
@@ -142,7 +161,14 @@ void Ichi_Phase3_Attack2::OnUpdate()
 				m_pMainBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
 				pSubsystem->StartWave(m_mainBeamIndex[ii]);
 			}
+
+			break;
 		}
+
+		float speed = 0.5f;
+		float max = speed * dt;
+		Core::Quaternion newRotation = Core::Quaternion::RotateTowards(current, GOAL, max);
+		m_pUpperTowerRenderable->SetLocalRotation(newRotation);
 	}
 	break;
 
@@ -189,7 +215,8 @@ void Ichi_Phase3_Attack2::OnUpdate()
 		if (angle < 0.0001f)
 		{
 			m_pLowerTowerRenderable->SetLocalRotation(GOAL);
-			GoToInternalStateUpperTowerWaves();
+			m_internalState = PREPARE_UPPER_TOWER_WAVES;
+			m_internaStateStartTime = currentTime;
 			break;
 		}
 
