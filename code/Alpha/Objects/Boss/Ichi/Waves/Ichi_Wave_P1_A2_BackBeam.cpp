@@ -88,6 +88,11 @@ void IchiWaveP1A2BackBeam::Start(Bullets& bullets)
 	}
 }
 
+void IchiWaveP1A2BackBeam::Stop()
+{
+	m_enableSpawn = false;
+}
+
 void IchiWaveP1A2BackBeam::Update(Bullets& bullets, float dt)
 {
 	const float SPAWN_RATE = 10; //in bullet per second
@@ -174,6 +179,11 @@ void IchiWaveP1A2BackBeam::SetSpawnPosition(const Core::Vec4f& spawnPosition)
 {
 	m_previousSpawnPosition = m_spawnPosition;
 	m_spawnPosition = spawnPosition;
+}
+
+void IchiWaveP1A2BackBeam::SetPreviousSpawnPosition(const Core::Vec4f& previousSpawnPosition)
+{
+	m_previousSpawnPosition = previousSpawnPosition;
 }
 
 void IchiWaveP1A2BackBeam::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)

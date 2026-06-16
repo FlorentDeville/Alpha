@@ -18,12 +18,14 @@ public:
 	void Init(Bullets& bullets) override;
 	void Destroy(Bullets& bullets) override;
 	void Start(Bullets& bullets) override;
+	void Stop() override;
 	void Update(Bullets& bullets, float dt) override;
 	void BuildRenderable(Bullets& bullets, Systems::RenderableScene& scene) override;
 
 	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
+	void SetPreviousSpawnPosition(const Core::Vec4f& previousSpawnPosition);
 	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
-
+	
 	void DisableSpawn();
 
 private:
