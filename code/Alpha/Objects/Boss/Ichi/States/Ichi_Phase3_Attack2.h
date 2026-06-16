@@ -53,5 +53,9 @@ private:
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
 
+	void GoToInternalStateUpperTowerWaves();
 	void GoToInternalStateLowerTowerWaves();
+
+	void UpdateLowerTowerWaves();
+	void RotateLowerTower(float speed);
 };

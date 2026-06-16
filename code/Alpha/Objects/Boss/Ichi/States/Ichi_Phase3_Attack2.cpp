@@ -11,6 +11,8 @@
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_SideBeam.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P3_A2.h"
 
+#include "Core/Math/Constants.h"
+
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
@@ -74,17 +76,7 @@ void Ichi_Phase3_Attack2::OnEnter()
 {
 	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 
-	//m_internalState = UPPER_TOWER_WAVES;
-	//m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
-
-	////back beam
-	//const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
-	//Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pIchi->GetTransform().GetWorldTx();
-	//m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
-	//m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
-	//m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
-	//BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	//pSubsystem->StartWave(m_backBeamIndex);
+	//GoToInternalStateUpperTowerWaves();
 	GoToInternalStateLowerTowerWaves();
 }
 
@@ -135,13 +127,15 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 	case LOWER_TOWER_WAVES:
 	{
-		const float DURATION = 10;
+		RotateLowerTower(18 * Core::PI_OVER_180);
+		UpdateLowerTowerWaves();
+
+		const float DURATION = 20;
 		if (m_internaStateStartTime + DURATION <= currentTime)
 		{
 			m_pLowerWave->Stop();
 
-			m_internalState = UPPER_TOWER_WAVES;
-			m_internaStateStartTime = currentTime;
+			GoToInternalStateUpperTowerWaves();
 		}
 	}
 	break;
@@ -212,6 +206,22 @@ void Ichi_Phase3_Attack2::DestroyWaves()
 	}
 }
 
+void Ichi_Phase3_Attack2::GoToInternalStateUpperTowerWaves()
+{
+	m_internalState = UPPER_TOWER_WAVES;
+	m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+
+	//back beam
+	const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
+	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pIchi->GetTransform().GetWorldTx();
+	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
+	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
+	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->StartWave(m_backBeamIndex);
+}
+
 void Ichi_Phase3_Attack2::GoToInternalStateLowerTowerWaves()
 {
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
@@ -221,4 +231,35 @@ void Ichi_Phase3_Attack2::GoToInternalStateLowerTowerWaves()
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->StartWave(m_lowerWaveIndex);
+}
+
+void Ichi_Phase3_Attack2::UpdateLowerTowerWaves()
+{
+	uint32_t count = m_pIchi->GetPhase3GunsAttachPointsCount();
+	const Core::Mat44f* pAp = m_pIchi->GetPhase3GunsAttachPoints();
+
+	Systems::RenderableComponent* pRenderable = m_pIchi->GetPhase3Renderable();
+
+	Core::Mat44f pMeshWsTx = pRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+
+	for (uint8_t ii = 0; ii < count; ++ii)
+	{
+		Core::Mat44f ap = pAp[ii] * pMeshWsTx;
+		m_pLowerWave->SetSpawnPosition(ii, ap.GetT());
+
+		Core::Vec4f speed = ap.GetT() - pMeshWsTx.GetT();
+		m_pLowerWave->SetSpawnSpeed(ii, speed);
+	}
+}
+
+void Ichi_Phase3_Attack2::RotateLowerTower(float speed)
+{
+	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+	Core::Quaternion rotation = Core::Quaternion::FromEulerAngles(0, speed * dt, 0);
+
+	Systems::RenderableComponent* pRenderable = m_pIchi->GetPhase3Renderable();
+	const Core::Quaternion& currentRotation = pRenderable->GetLocalTx().GetRotationQuaternion();
+
+	Core::Quaternion newRotation = rotation * currentRotation;
+	pRenderable->SetLocalRotation(newRotation);
 }
