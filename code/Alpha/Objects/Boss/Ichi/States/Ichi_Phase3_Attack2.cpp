@@ -10,9 +10,14 @@
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_MainBeam.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_SideBeam.h"
 
+#include "Systems/Game/GameContext.h"
+#include "Systems/Game/GameMgr.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
+
 Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
+	, m_internalState()
 {
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
@@ -23,18 +28,11 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 		m_mainBeamIndex[ii] = UINT32_MAX;
 	}
 
-	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
-	{
-		m_pSideBeam[ii] = new IchiWaveP1A2SideBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
-		m_sideBeamIndex[ii] = UINT32_MAX;
-	}
+	m_pBackBeam = new IchiWaveP1A2BackBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
+	m_backBeamIndex = UINT32_MAX;
 
-	for (uint8_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-	{
-		m_pBackBeam[ii] = new IchiWaveP1A2BackBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
-		m_backBeamIndex[ii] = UINT32_MAX;
-	}
-
+	m_waypoints[0] = Core::Vec4f(-22, 0, 15, 1);
+	m_waypoints[1] = Core::Vec4f(22, 0, 15, 1);
 	m_currentWaypointIndex = 0;
 }
 
@@ -48,111 +46,118 @@ Ichi_Phase3_Attack2::~Ichi_Phase3_Attack2()
 		m_pMainBeam[ii] = nullptr;
 	}
 
-	for (uint8_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
-	{
-		delete m_pSideBeam[ii];
-		m_pSideBeam[ii] = nullptr;
-	}
-
-	for (uint8_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-	{
-		delete m_pBackBeam[ii];
-		m_pBackBeam[ii] = nullptr;
-	}
+	delete m_pBackBeam;
+	m_pBackBeam = nullptr;
 }
 
 void Ichi_Phase3_Attack2::OnEnter()
 {
-	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase3GunsAttachPoints();
+	const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
-	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
-	{
-		Core::Mat44f mainBeamWsTx = pGunAttachPoints[ii + 10] * m_pIchi->GetTransform().GetWorldTx();
+	//for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+	//{
+	//	Core::Mat44f mainBeamWsTx = pGunAttachPoints[ii + 10] * m_pIchi->GetTransform().GetWorldTx();
 
-		m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
-		m_pMainBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
-		pSubsystem->StartWave(m_mainBeamIndex[ii]);
-	}
+	//	m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
+	//	m_pMainBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+	//	pSubsystem->StartWave(m_mainBeamIndex[ii]);
+	//}
 
-	//right side beam
-	for(uint8_t ii = 0; ii < 5; ++ii)
-	{
-		Core::Mat44f sideBeamWsTx = pGunAttachPoints[ii + 12] * m_pIchi->GetTransform().GetWorldTx();
-		m_pSideBeam[ii]->SetSpawnPosition(sideBeamWsTx.GetT());
-		m_pSideBeam[ii]->SetSpawnSpeed(Core::Vec4f(10, 0, 0, 0));
-		pSubsystem->StartWave(m_sideBeamIndex[ii]);
-	}
+	//m_currentWaypointIndex = 0;
 
-	//left side beam
-	for (uint8_t ii = 0; ii < 5; ++ii)
-	{
-		Core::Mat44f sideBeamWsTx = pGunAttachPoints[ii + 5] * m_pIchi->GetTransform().GetWorldTx();
-		m_pSideBeam[ii + 5]->SetSpawnPosition(sideBeamWsTx.GetT());
-		m_pSideBeam[ii + 5]->SetSpawnSpeed(Core::Vec4f(-10, 0, 0, 0));
-		pSubsystem->StartWave(m_sideBeamIndex[ii + 5]);
-	}
+	//m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 10);
+	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
+
+	m_internalState = UPPER_TOWER_WAVES;
+	m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
 	//back beam
-	for (uint8_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-	{
-		Core::Mat44f backBeamWsTx = pGunAttachPoints[(17+ii) % 20] * m_pIchi->GetTransform().GetWorldTx();
-		m_pBackBeam[ii]->SetSpawnPosition(backBeamWsTx.GetT());
-		m_pBackBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, 10, 0));
-		pSubsystem->StartWave(m_backBeamIndex[ii]);
-	}
-
-	m_waypoints[0] = m_pIchi->GetTransform().GetLocalTx().GetT() + Core::Vec4f(20, 0, 0, 0);
-	m_waypoints[1] = m_pIchi->GetTransform().GetLocalTx().GetT() - Core::Vec4f(20, 0, 0, 0);
-
-	m_currentWaypointIndex = 0;
-
-	m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 10);
+	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pIchi->GetTransform().GetWorldTx();
+	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
+	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
+	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
+	pSubsystem->StartWave(m_backBeamIndex);
 }
 
 void Ichi_Phase3_Attack2::OnUpdate()
 {
-	if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
+	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+
+	switch (m_internalState)
 	{
-		++m_currentWaypointIndex;
-		if (m_currentWaypointIndex >= 2)
+	case UPPER_TOWER_WAVES:
+	{
+		const float DURATION = 10;
+		if (m_internaStateStartTime + DURATION <= currentTime)
 		{
-			GoTo(IchiStateEnum::PHASE3_TRAVEL);
-			return;
+			m_pBackBeam->Stop();
+
+			m_internalState = MIDDLE_TOWER_WAVES;
+			m_internaStateStartTime = currentTime;
+
+			//start middle tower waves
+			const Core::Mat44f* pMiddleTowerAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
+			for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+			{
+				Core::Mat44f mainBeamWsTx = pMiddleTowerAttachPoints[ii] * m_pIchi->GetTransform().GetWorldTx();
+
+				m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
+				m_pMainBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+				pSubsystem->StartWave(m_mainBeamIndex[ii]);
+			}
+		}
+	}
+	break;
+
+	case MIDDLE_TOWER_WAVES:
+	{
+		const float DURATION = 10;
+		if (m_internaStateStartTime + DURATION <= currentTime)
+		{
+			for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+				m_pMainBeam[ii]->Stop();
+
+			m_internalState = LOWER_TOWER_WAVES;
+			m_internaStateStartTime = currentTime;
 		}
 
-		m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 10);
 	}
+	break;
 
-	const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase3GunsAttachPoints();
-
-	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+	case LOWER_TOWER_WAVES:
 	{
-		Core::Mat44f mainBeamWsTx = pGunAttachPoints[ii + 10] * m_pIchi->GetTransform().GetWorldTx();
-		m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
+
+	}
+	break;
 	}
 
-	//left side beam
-	for (uint8_t ii = 0; ii < 5; ++ii)
-	{
-		Core::Mat44f sideBeamWsTx = pGunAttachPoints[ii + 5] * m_pIchi->GetTransform().GetWorldTx();
-		m_pSideBeam[ii + 5]->SetSpawnPosition(sideBeamWsTx.GetT());
-	}
+	//if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
+	//{
+	//	++m_currentWaypointIndex;
+	//	if (m_currentWaypointIndex >= 2)
+	//	{
+	//		GoTo(IchiStateEnum::PHASE3_TRAVEL);
+	//		return;
+	//	}
 
-	//right side beam
-	for (uint8_t ii = 0; ii < 5; ++ii)
-	{
-		Core::Mat44f sideBeamWsTx = pGunAttachPoints[ii + 12] * m_pIchi->GetTransform().GetWorldTx();
-		m_pSideBeam[ii]->SetSpawnPosition(sideBeamWsTx.GetT());
-	}
+	//	m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 10);
+	//}
 
-	//back beam
-	for (uint8_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-	{
-		Core::Mat44f backBeamWsTx = pGunAttachPoints[(17 + ii) % 20] * m_pIchi->GetTransform().GetWorldTx();
-		m_pBackBeam[ii]->SetSpawnPosition(backBeamWsTx.GetT());
-	}
+	//const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase3GunsAttachPoints();
+
+	//for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+	//{
+	//	Core::Mat44f mainBeamWsTx = pGunAttachPoints[ii + 10] * m_pIchi->GetTransform().GetWorldTx();
+	//	m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
+	//}
+
+	////back beam
+
+	//Core::Mat44f backBeamWsTx = pGunAttachPoints[17 % 20] * m_pIchi->GetTransform().GetWorldTx();
+	//m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
 }
 
 void Ichi_Phase3_Attack2::OnExit()
@@ -160,11 +165,7 @@ void Ichi_Phase3_Attack2::OnExit()
 	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
 		m_pMainBeam[ii]->Stop();
 
-	for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
-		m_pSideBeam[ii]->DisableSpawn();
-
-	for (uint8_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-		m_pBackBeam[ii]->DisableSpawn();
+	m_pBackBeam->DisableSpawn();
 }
 
 void Ichi_Phase3_Attack2::InitWaves()
@@ -179,22 +180,10 @@ void Ichi_Phase3_Attack2::InitWaves()
 		}
 	}
 
-	if (m_sideBeamIndex[0] == UINT32_MAX)
+	if (m_backBeamIndex == UINT32_MAX)
 	{
-		for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
-		{
-			m_sideBeamIndex[ii] = pSubsystem->AddWave(m_pSideBeam[ii]);
-			pSubsystem->InitWave(m_sideBeamIndex[ii]);
-		}
-	}
-
-	if (m_backBeamIndex[0] == UINT32_MAX)
-	{
-		for (uint32_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-		{
-			m_backBeamIndex[ii] = pSubsystem->AddWave(m_pBackBeam[ii]);
-			pSubsystem->InitWave(m_backBeamIndex[ii]);
-		}
+		m_backBeamIndex = pSubsystem->AddWave(m_pBackBeam);
+		pSubsystem->InitWave(m_backBeamIndex);
 	}
 }
 
@@ -212,23 +201,10 @@ void Ichi_Phase3_Attack2::DestroyWaves()
 		}
 	}
 
-	if (m_sideBeamIndex[0] != UINT32_MAX)
+	if (m_backBeamIndex != UINT32_MAX)
 	{
-		for (uint32_t ii = 0; ii < SIDE_BEAM_COUNT; ++ii)
-		{
-			pSubsystem->DestroyWave(m_sideBeamIndex[ii]);
-			pSubsystem->RemoveWave(m_sideBeamIndex[ii]);
-			m_sideBeamIndex[ii] = UINT32_MAX;
-		}
-	}
-
-	if (m_backBeamIndex[0] != UINT32_MAX)
-	{
-		for (uint32_t ii = 0; ii < BACK_BEAM_COUNT; ++ii)
-		{
-			pSubsystem->DestroyWave(m_backBeamIndex[ii]);
-			pSubsystem->RemoveWave(m_backBeamIndex[ii]);
-			m_backBeamIndex[ii] = UINT32_MAX;
-		}
+		pSubsystem->DestroyWave(m_backBeamIndex);
+		pSubsystem->RemoveWave(m_backBeamIndex);
+		m_backBeamIndex = UINT32_MAX;
 	}
 }

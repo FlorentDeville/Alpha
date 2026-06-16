@@ -26,19 +26,26 @@ public:
 	void DestroyWaves();
 
 private:
+	enum InternalState
+	{
+		UPPER_TOWER_WAVES,
+		MIDDLE_TOWER_WAVES,
+		LOWER_TOWER_WAVES,
+
+		COUNT
+	};
+
 	Ichi* m_pIchi;
+
+	InternalState m_internalState;
+	float m_internaStateStartTime;
 
 	static const uint8_t MAIN_BEAM_COUNT = 2;
 	IchiWaveP1A2MainBeam* m_pMainBeam[MAIN_BEAM_COUNT];
 	uint32_t m_mainBeamIndex[MAIN_BEAM_COUNT];
 
-	static const uint8_t SIDE_BEAM_COUNT = 10;
-	IchiWaveP1A2SideBeam* m_pSideBeam[SIDE_BEAM_COUNT];
-	uint32_t m_sideBeamIndex[SIDE_BEAM_COUNT];
-
-	static const uint8_t BACK_BEAM_COUNT = 8;
-	IchiWaveP1A2BackBeam* m_pBackBeam[BACK_BEAM_COUNT];
-	uint32_t m_backBeamIndex[BACK_BEAM_COUNT];
+	IchiWaveP1A2BackBeam* m_pBackBeam;
+	uint32_t m_backBeamIndex;
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
