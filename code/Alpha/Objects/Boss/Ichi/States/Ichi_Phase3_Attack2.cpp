@@ -54,6 +54,7 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	m_waypoints[1] = Core::Vec4f(22, 0, 15, 1);
 	m_currentWaypointIndex = 0;
 
+	m_pUpperTowerRenderable = m_pIchi->GetPhase1Renderable();
 	m_pLowerTowerRenderable = m_pIchi->GetPhase3Renderable();
 }
 
@@ -79,26 +80,47 @@ void Ichi_Phase3_Attack2::OnEnter()
 	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 
 	//GoToInternalStateUpperTowerWaves();
-	GoToInternalStateLowerTowerWaves();
+	//GoToInternalStateLowerTowerWaves();
+
+	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	m_internalState = PREPARE_UPPER_TOWER_WAVES;
+	m_internaStateStartTime = currentTime;
 }
 
 void Ichi_Phase3_Attack2::OnUpdate()
 {
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
 	switch (m_internalState)
 	{
-	//case PRE_UPPER_TOWER_WAVES:
-	//{
-	//	const float destAngleInDeg = 45;
-	//	const float destAngle = Core::PI_OVER_180 * destAngleInDeg;
-	//	const float halfAngle = destAngle * 0.5f;
-	//	Core::Quaternion targetRotation(0, sinf(halfAngle), 0, cosf(halfAngle));
+	case PREPARE_UPPER_TOWER_WAVES:
+	{
+		const float destAngleInDeg = 45;
+		const float destAngle = Core::PI_OVER_180 * destAngleInDeg;
+		const float halfAngle = destAngle * 0.5f;
+		Core::Quaternion targetRotation(0, sinf(halfAngle), 0, cosf(halfAngle));
 
-	//	const float 
-	//}
-	//break;
+		const Core::Quaternion& currentRotation = m_pUpperTowerRenderable->GetLocalTx().GetRotationQuaternion();
+
+		float angle = Core::Quaternion::Angle(currentRotation, targetRotation);
+		if (angle > Core::PI) angle = angle - Core::TWO_PI;
+		
+		if (angle < 0.001f && angle > -0.001f)
+		{
+			m_pUpperTowerRenderable->SetLocalRotation(targetRotation);
+			GoToInternalStateUpperTowerWaves();
+		}
+		else
+		{
+			const float SPEED = 0.2f;
+			float maxStep = SPEED * dt;
+			Core::Quaternion newRotation = Core::Quaternion::RotateTowards(currentRotation, targetRotation, maxStep);
+			m_pUpperTowerRenderable->SetLocalRotation(newRotation);
+		}
+	}
+	break;
 
 	case UPPER_TOWER_WAVES:
 	{
@@ -171,7 +193,6 @@ void Ichi_Phase3_Attack2::OnUpdate()
 			break;
 		}
 
-		float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 		float speed = 0.5f;
 		float max = speed * dt;
 		Core::Quaternion newRotation = Core::Quaternion::RotateTowards(current, GOAL, max);
@@ -253,7 +274,7 @@ void Ichi_Phase3_Attack2::GoToInternalStateUpperTowerWaves()
 
 	//back beam
 	const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
-	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pIchi->GetTransform().GetWorldTx();
+	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pUpperTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
 	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
 	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
 	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));

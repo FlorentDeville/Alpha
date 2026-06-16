@@ -28,7 +28,7 @@ public:
 private:
 	enum InternalState
 	{
-		PRE_UPPER_TOWER_WAVES,
+		PREPARE_UPPER_TOWER_WAVES,
 		UPPER_TOWER_WAVES,
 		MIDDLE_TOWER_WAVES,
 		LOWER_TOWER_WAVES,
@@ -55,6 +55,7 @@ private:
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
 
+	Systems::RenderableComponent* m_pUpperTowerRenderable;
 	Systems::RenderableComponent* m_pLowerTowerRenderable;
 
 	void GoToInternalStateUpperTowerWaves();
