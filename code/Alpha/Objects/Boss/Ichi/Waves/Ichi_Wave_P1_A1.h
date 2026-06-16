@@ -8,6 +8,7 @@
 
 #include "Core/Math/Vec4f.h"
 
+//Shoots bullets from a single spawn point at constant speed
 class IchiWaveP1A1 : public IBulletWave
 {
 public:

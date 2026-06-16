@@ -8,6 +8,7 @@
 
 #include "Core/Math/Vec4f.h"
 
+// Shoots bullets from 2 spawning points alternatively.
 class IchiWaveP2A1 : public IBulletWave
 {
 public:
