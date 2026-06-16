@@ -53,6 +53,8 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	m_waypoints[0] = Core::Vec4f(-22, 0, 15, 1);
 	m_waypoints[1] = Core::Vec4f(22, 0, 15, 1);
 	m_currentWaypointIndex = 0;
+
+	m_pLowerTowerRenderable = m_pIchi->GetPhase3Renderable();
 }
 
 Ichi_Phase3_Attack2::~Ichi_Phase3_Attack2()
@@ -87,6 +89,17 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 	switch (m_internalState)
 	{
+	//case PRE_UPPER_TOWER_WAVES:
+	//{
+	//	const float destAngleInDeg = 45;
+	//	const float destAngle = Core::PI_OVER_180 * destAngleInDeg;
+	//	const float halfAngle = destAngle * 0.5f;
+	//	Core::Quaternion targetRotation(0, sinf(halfAngle), 0, cosf(halfAngle));
+
+	//	const float 
+	//}
+	//break;
+
 	case UPPER_TOWER_WAVES:
 	{
 		const float DURATION = 10;
@@ -130,15 +143,42 @@ void Ichi_Phase3_Attack2::OnUpdate()
 		RotateLowerTower(18 * Core::PI_OVER_180);
 		UpdateLowerTowerWaves();
 
-		const float DURATION = 20;
+		const float DURATION = 5;
 		if (m_internaStateStartTime + DURATION <= currentTime)
 		{
 			m_pLowerWave->Stop();
 
-			GoToInternalStateUpperTowerWaves();
+			m_internalState = LOWER_TOWER_REST;
+			m_internaStateStartTime = currentTime;
 		}
 	}
 	break;
+
+	case LOWER_TOWER_REST:
+	{
+		const Core::Quaternion GOAL = Core::Quaternion::FromEulerAngles(0, 0, 0);
+		const Core::Quaternion current = m_pLowerTowerRenderable->GetLocalTx().GetRotationQuaternion();
+
+		//Angle return a value in the range [-2pi, 2pi] But I need it in the range [pi, -pi]
+		float angle = Core::Quaternion::Angle(current, GOAL);
+		if (angle > Core::PI)
+			angle = angle - Core::TWO_PI;
+
+		if (angle < 0.0001f)
+		{
+			m_pLowerTowerRenderable->SetLocalRotation(GOAL);
+			GoToInternalStateUpperTowerWaves();
+			break;
+		}
+
+		float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+		float speed = 0.5f;
+		float max = speed * dt;
+		Core::Quaternion newRotation = Core::Quaternion::RotateTowards(current, GOAL, max);
+		m_pLowerTowerRenderable->SetLocalRotation(newRotation);
+	}
+	break;
+
 	}
 }
 
