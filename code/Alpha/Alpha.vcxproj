@@ -104,6 +104,7 @@
     <ClCompile Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_BackBeam.cpp" />
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.cpp" />
+    <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.cpp" />
     <ClCompile Include="Objects\Boss\Proto\Waves\WaveMachineGun.cpp" />
     <ClCompile Include="Objects\Boss\Proto\Waves\WaveTest.cpp" />
     <ClCompile Include="Inputs\GameCommands.cpp" />
@@ -490,6 +491,7 @@
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P1_A2_BackBeam.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.h" />
+    <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.h" />
     <ClInclude Include="Objects\Boss\Proto\Waves\WaveMachineGun.h" />
     <ClInclude Include="Objects\Boss\Proto\Waves\WaveTest.h" />
     <ClInclude Include="Inputs\GameCommands.h" />
