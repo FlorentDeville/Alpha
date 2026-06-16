@@ -28,6 +28,7 @@ IchiWaveP3A2::IchiWaveP3A2(Systems::MeshAsset* pMesh, Systems::MaterialInstanceA
 	, m_spawnPositionCount(0)
 	, m_pSpawnPositions(nullptr)
 	, m_internalStateStartTime(0)
+	, m_pSpeed(nullptr)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -38,6 +39,9 @@ IchiWaveP3A2::~IchiWaveP3A2()
 {
 	delete[] m_pSpawnPositions;
 	m_pSpawnPositions = nullptr;
+
+	delete[] m_pSpeed;
+	m_pSpeed = nullptr;
 }
 
 void IchiWaveP3A2::Init(Bullets& bullets)
@@ -88,7 +92,7 @@ void IchiWaveP3A2::Update(Bullets& bullets, float dt)
 	case State::WARMUP:
 	{
 		const float WARMUP_TIME = 0.7f;
-		if (m_internalStateStartTime + WARMUP_TIME >= currentTime)
+		if (m_internalStateStartTime + WARMUP_TIME <= currentTime)
 		{
 			m_currentState = State::FIRE;
 			m_currentScale = 1;
@@ -114,8 +118,8 @@ void IchiWaveP3A2::Update(Bullets& bullets, float dt)
 
 	case State::WAIT_FOR_NEXT_WAVE:
 	{
-		const float WAIT_TIME = 1;
-		if (m_internalStateStartTime + WAIT_TIME >= currentTime)
+		const float WAIT_TIME = 0.5f;
+		if (m_internalStateStartTime + WAIT_TIME <= currentTime)
 		{
 			m_currentState = State::WARMUP;
 			m_internalStateStartTime = currentTime;
@@ -180,11 +184,18 @@ void IchiWaveP3A2::SetSpawnPositionsCount(uint8_t count)
 	m_spawnPositionCount = count;
 
 	delete[] m_pSpawnPositions;
+	delete[] m_pSpeed;
 
 	if (count != 0)
+	{
 		m_pSpawnPositions = new Core::Vec4f[count];
+		m_pSpeed = new Core::Vec4f[count];
+	}
 	else
+	{
 		m_pSpawnPositions = nullptr;
+		m_pSpeed = nullptr;
+	}
 }
 
 void IchiWaveP3A2::SetSpawnPosition(uint8_t index, const Core::Vec4f& position)
@@ -194,9 +205,9 @@ void IchiWaveP3A2::SetSpawnPosition(uint8_t index, const Core::Vec4f& position)
 	m_pSpawnPositions[index] = position;
 }
 
-void IchiWaveP3A2::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
+void IchiWaveP3A2::SetSpawnSpeed(uint8_t index, Core::Vec4f& speed)
 {
-	m_spawnSpeed = spawnSpeed;
+	m_pSpeed[index] = speed;
 }
 
 void IchiWaveP3A2::SpawnBullet(Bullets& bullets)
@@ -209,7 +220,7 @@ void IchiWaveP3A2::SpawnBullet(Bullets& bullets)
 	{
 		bullets.m_timeToLive[m_nextBulletToSpawn] = 10;
 		bullets.m_positions[m_nextBulletToSpawn] = m_pSpawnPositions[ii];
-		bullets.m_speed[m_nextBulletToSpawn] = m_spawnSpeed;
+		bullets.m_speed[m_nextBulletToSpawn] = m_pSpeed[ii];
 		bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
 		bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
 

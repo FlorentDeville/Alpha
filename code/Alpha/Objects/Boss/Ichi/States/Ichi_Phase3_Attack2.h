@@ -10,7 +10,7 @@
 class Ichi;
 class IchiWaveP1A2BackBeam;
 class IchiWaveP1A2MainBeam;
-class IchiWaveP1A2SideBeam;
+class IchiWaveP3A2;
 
 class Ichi_Phase3_Attack2 : public IState
 {
@@ -44,9 +44,14 @@ private:
 	IchiWaveP1A2MainBeam* m_pMainBeam[MAIN_BEAM_COUNT];
 	uint32_t m_mainBeamIndex[MAIN_BEAM_COUNT];
 
+	IchiWaveP3A2* m_pLowerWave;
+	uint32_t m_lowerWaveIndex;
+
 	IchiWaveP1A2BackBeam* m_pBackBeam;
 	uint32_t m_backBeamIndex;
 
 	Core::Vec4f m_waypoints[2];
 	uint8_t m_currentWaypointIndex;
+
+	void GoToInternalStateLowerTowerWaves();
 };

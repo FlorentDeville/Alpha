@@ -9,6 +9,7 @@
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_BackBeam.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_MainBeam.h"
 #include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P1_A2_SideBeam.h"
+#include "Alpha/Objects/Boss/Ichi/Waves/Ichi_Wave_P3_A2.h"
 
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
@@ -18,6 +19,7 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
 	, m_internalState()
+	, m_internaStateStartTime()
 {
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
@@ -30,6 +32,21 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 
 	m_pBackBeam = new IchiWaveP1A2BackBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
 	m_backBeamIndex = UINT32_MAX;
+
+	const Core::Mat44f* pLowerTowerAttachPoints = m_pIchi->GetPhase3GunsAttachPoints();
+	uint8_t lowerTowerGunsCount = static_cast<uint8_t>(m_pIchi->GetPhase3GunsAttachPointsCount());
+	m_pLowerWave = new IchiWaveP3A2(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), 100);
+	m_pLowerWave->SetSpawnPositionsCount(lowerTowerGunsCount);
+	m_lowerWaveIndex = UINT32_MAX;
+
+	for (uint8_t ii = 0; ii < lowerTowerGunsCount; ++ii)
+	{
+		Core::Mat44f ap = pLowerTowerAttachPoints[ii] * m_pIchi->GetTransform().GetWorldTx();
+		m_pLowerWave->SetSpawnPosition(ii, ap.GetT());
+
+		Core::Vec4f speed = pLowerTowerAttachPoints[ii].GetT();
+		m_pLowerWave->SetSpawnSpeed(ii, speed);
+	}
 
 	m_waypoints[0] = Core::Vec4f(-22, 0, 15, 1);
 	m_waypoints[1] = Core::Vec4f(22, 0, 15, 1);
@@ -48,37 +65,27 @@ Ichi_Phase3_Attack2::~Ichi_Phase3_Attack2()
 
 	delete m_pBackBeam;
 	m_pBackBeam = nullptr;
+
+	delete m_pLowerWave;
+	m_pLowerWave = nullptr;
 }
 
 void Ichi_Phase3_Attack2::OnEnter()
 {
-	const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
-
-	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-
-	//for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
-	//{
-	//	Core::Mat44f mainBeamWsTx = pGunAttachPoints[ii + 10] * m_pIchi->GetTransform().GetWorldTx();
-
-	//	m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
-	//	m_pMainBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
-	//	pSubsystem->StartWave(m_mainBeamIndex[ii]);
-	//}
-
-	//m_currentWaypointIndex = 0;
-
-	//m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 10);
 	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 
-	m_internalState = UPPER_TOWER_WAVES;
-	m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+	//m_internalState = UPPER_TOWER_WAVES;
+	//m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
-	//back beam
-	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pIchi->GetTransform().GetWorldTx();
-	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
-	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
-	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
-	pSubsystem->StartWave(m_backBeamIndex);
+	////back beam
+	//const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
+	//Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pIchi->GetTransform().GetWorldTx();
+	//m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
+	//m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
+	//m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
+	//BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	//pSubsystem->StartWave(m_backBeamIndex);
+	GoToInternalStateLowerTowerWaves();
 }
 
 void Ichi_Phase3_Attack2::OnUpdate()
@@ -120,8 +127,7 @@ void Ichi_Phase3_Attack2::OnUpdate()
 			for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
 				m_pMainBeam[ii]->Stop();
 
-			m_internalState = LOWER_TOWER_WAVES;
-			m_internaStateStartTime = currentTime;
+			GoToInternalStateLowerTowerWaves();
 		}
 
 	}
@@ -129,35 +135,17 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 	case LOWER_TOWER_WAVES:
 	{
+		const float DURATION = 10;
+		if (m_internaStateStartTime + DURATION <= currentTime)
+		{
+			m_pLowerWave->Stop();
 
+			m_internalState = UPPER_TOWER_WAVES;
+			m_internaStateStartTime = currentTime;
+		}
 	}
 	break;
 	}
-
-	//if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
-	//{
-	//	++m_currentWaypointIndex;
-	//	if (m_currentWaypointIndex >= 2)
-	//	{
-	//		GoTo(IchiStateEnum::PHASE3_TRAVEL);
-	//		return;
-	//	}
-
-	//	m_pIchi->GoToMotionStateTravel(m_waypoints[m_currentWaypointIndex], 10);
-	//}
-
-	//const Core::Mat44f* pGunAttachPoints = m_pIchi->GetPhase3GunsAttachPoints();
-
-	//for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
-	//{
-	//	Core::Mat44f mainBeamWsTx = pGunAttachPoints[ii + 10] * m_pIchi->GetTransform().GetWorldTx();
-	//	m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
-	//}
-
-	////back beam
-
-	//Core::Mat44f backBeamWsTx = pGunAttachPoints[17 % 20] * m_pIchi->GetTransform().GetWorldTx();
-	//m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
 }
 
 void Ichi_Phase3_Attack2::OnExit()
@@ -166,6 +154,8 @@ void Ichi_Phase3_Attack2::OnExit()
 		m_pMainBeam[ii]->Stop();
 
 	m_pBackBeam->DisableSpawn();
+
+	m_pLowerWave->Stop();
 }
 
 void Ichi_Phase3_Attack2::InitWaves()
@@ -184,6 +174,12 @@ void Ichi_Phase3_Attack2::InitWaves()
 	{
 		m_backBeamIndex = pSubsystem->AddWave(m_pBackBeam);
 		pSubsystem->InitWave(m_backBeamIndex);
+	}
+
+	if (m_lowerWaveIndex == UINT32_MAX)
+	{
+		m_lowerWaveIndex = pSubsystem->AddWave(m_pLowerWave);
+		pSubsystem->InitWave(m_lowerWaveIndex);
 	}
 }
 
@@ -207,4 +203,22 @@ void Ichi_Phase3_Attack2::DestroyWaves()
 		pSubsystem->RemoveWave(m_backBeamIndex);
 		m_backBeamIndex = UINT32_MAX;
 	}
+
+	if (m_lowerWaveIndex != UINT32_MAX)
+	{
+		pSubsystem->DestroyWave(m_lowerWaveIndex);
+		pSubsystem->RemoveWave(m_lowerWaveIndex);
+		m_lowerWaveIndex = UINT32_MAX;
+	}
+}
+
+void Ichi_Phase3_Attack2::GoToInternalStateLowerTowerWaves()
+{
+	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+
+	m_internalState = LOWER_TOWER_WAVES;
+	m_internaStateStartTime = currentTime;
+
+	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
+	pSubsystem->StartWave(m_lowerWaveIndex);
 }

@@ -24,14 +24,14 @@ public:
 
 	void SetSpawnPositionsCount(uint8_t count);
 	void SetSpawnPosition(uint8_t index, const Core::Vec4f& position);
-	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
+	void SetSpawnSpeed(uint8_t index, Core::Vec4f& speed);
 
 private:
 
 	//parameters that can be modified at runtime
 	uint8_t m_spawnPositionCount;
 	Core::Vec4f* m_pSpawnPositions;
-	Core::Vec4f m_spawnSpeed;
+	Core::Vec4f* m_pSpeed;
 
 	//internal variables
 
