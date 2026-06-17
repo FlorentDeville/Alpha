@@ -100,6 +100,7 @@ void IchiWaveP1A2MainBeam::Update(Bullets& bullets, float dt)
 			break;
 		}
 
+		bullets.m_positions[m_startId] = m_spawnPosition;
 		m_currentScale = m_warmupElapsedTime / m_warmupDuration;
 	}
 	break;
