@@ -45,6 +45,11 @@ namespace Systems
 		return m_lsTx;
 	}
 
+	void RenderableComponent::SetLocalTranslation(const Core::Vec4f& translation)
+	{
+		m_lsTx.SetTranslation(translation);
+	}
+
 	void RenderableComponent::SetLocalRotation(const Core::Quaternion& rotation)
 	{
 		m_lsTx.SetRotationQuaternion(rotation);
