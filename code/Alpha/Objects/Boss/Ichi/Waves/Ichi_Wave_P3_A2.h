@@ -8,11 +8,11 @@
 
 #include "Core/Math/Vec4f.h"
 
-// Shoots bullets from 2 spawning points alternatively.
+// Shoots bullets from N spawning points each with its own speed.
 class IchiWaveP3A2 : public IBulletWave
 {
 public:
-	IchiWaveP3A2(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount = 10);
+	IchiWaveP3A2(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterableMaterial, uint32_t bulletCount = 10);
 	~IchiWaveP3A2();
 
 	void Init(Bullets& bullets) override;
@@ -47,6 +47,8 @@ private:
 	};
 
 	float m_internalStateStartTime;
+
+	Systems::MaterialInstanceAsset* m_pCounterableMaterial;
 
 	float m_currentScale;
 

@@ -37,7 +37,7 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 
 	const Core::Mat44f* pLowerTowerAttachPoints = m_pIchi->GetPhase3GunsAttachPoints();
 	uint8_t lowerTowerGunsCount = static_cast<uint8_t>(m_pIchi->GetPhase3GunsAttachPointsCount());
-	m_pLowerWave = new IchiWaveP3A2(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), 100);
+	m_pLowerWave = new IchiWaveP3A2(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), 100);
 	m_pLowerWave->SetSpawnPositionsCount(lowerTowerGunsCount);
 	m_lowerWaveIndex = UINT32_MAX;
 

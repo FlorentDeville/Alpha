@@ -8,6 +8,7 @@
 
 #include "Core/Math/Constants.h"
 #include "Core/Math/Vec4f.h"
+#include "Core/Random/Random.h"
 
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
 #include "Systems/Game/GameContext.h"
@@ -19,7 +20,7 @@
 #include <assert.h>
 #include <cmath>
 
-IchiWaveP3A2::IchiWaveP3A2(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, uint32_t bulletCount)
+IchiWaveP3A2::IchiWaveP3A2(Systems::MeshAsset* pMesh, Systems::MaterialInstanceAsset* pMaterial, Systems::MaterialInstanceAsset* pCounterableMaterial, uint32_t bulletCount)
 	: IBulletWave()
 	, m_currentState(State::WARMUP)
 	, m_currentScale(0)
@@ -29,6 +30,7 @@ IchiWaveP3A2::IchiWaveP3A2(Systems::MeshAsset* pMesh, Systems::MaterialInstanceA
 	, m_pSpawnPositions(nullptr)
 	, m_internalStateStartTime(0)
 	, m_pSpeed(nullptr)
+	, m_pCounterableMaterial(pCounterableMaterial)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -64,6 +66,17 @@ void IchiWaveP3A2::Start(Bullets& bullets)
 	for (uint32_t ii = m_startId; ii < m_endId; ++ii)
 	{
 		bullets.m_timeToLive[ii] = -1;
+		bullets.m_type[ii] = BulletType::NORMAL;
+	}
+
+	Core::RandomUInt generator(m_startId, m_endId);
+
+	const float PERCENT_OF_COUNTERABLE = 30;
+	uint32_t counterableBulletCount = static_cast<uint32_t>(m_count * PERCENT_OF_COUNTERABLE * 0.01f);
+	for (uint32_t ii = 0; ii < counterableBulletCount; ++ii)
+	{
+		uint32_t index = generator.Generate();
+		bullets.m_type[index] = BulletType::COUNTERABLE;
 	}
 
 	m_nextBulletToSpawn = m_startId + m_spawnPositionCount; //the first n bullets are for the warmup
@@ -172,7 +185,12 @@ void IchiWaveP3A2::BuildRenderable(Bullets& bullets, Systems::RenderableScene& s
 
 		Systems::RenderableObject& obj = scene.m_opaqueObjects.PushBackDefault();
 		obj.m_pMesh = m_pMesh->GetRenderingMesh();
-		obj.m_pMaterial = m_pMaterial;
+
+		if(bullets.m_type[ii] == BulletType::NORMAL)
+			obj.m_pMaterial = m_pMaterial;
+		else
+			obj.m_pMaterial = m_pCounterableMaterial;
+
 		obj.m_pOwner = nullptr;
 		obj.m_view = Systems::RenderView::Game | Systems::RenderView::ShadowMap;
 		obj.m_worldTx = Core::Mat44f::CreateTranslationMatrix(bullets.m_positions[ii]);
@@ -222,7 +240,6 @@ void IchiWaveP3A2::SpawnBullet(Bullets& bullets)
 		bullets.m_positions[m_nextBulletToSpawn] = m_pSpawnPositions[ii];
 		bullets.m_speed[m_nextBulletToSpawn] = m_pSpeed[ii];
 		bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 0, 0);
-		bullets.m_type[m_nextBulletToSpawn] = BulletType::NORMAL;
 
 		++m_nextBulletToSpawn;
 		if (m_nextBulletToSpawn >= m_endId)
