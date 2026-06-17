@@ -55,6 +55,7 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	m_currentWaypointIndex = 0;
 
 	m_pUpperTowerRenderable = m_pIchi->GetPhase1Renderable();
+	m_pMiddleTowerRenderable = m_pIchi->GetPhase2Renderable();
 	m_pLowerTowerRenderable = m_pIchi->GetPhase3Renderable();
 }
 
@@ -152,15 +153,9 @@ void Ichi_Phase3_Attack2::OnUpdate()
 			m_internaStateStartTime = currentTime;
 
 			//start middle tower waves
-			const Core::Mat44f* pMiddleTowerAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
+			UpdateMiddleTowerWaves();
 			for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
-			{
-				Core::Mat44f mainBeamWsTx = pMiddleTowerAttachPoints[ii + 4] * m_pIchi->GetTransform().GetWorldTx();
-
-				m_pMiddleWave[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
-				m_pMiddleWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
 				pSubsystem->StartWave(m_middleWaveIndex[ii]);
-			}
 
 			break;
 		}
@@ -174,6 +169,8 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 	case MIDDLE_TOWER_WAVES:
 	{
+		UpdateMiddleTowerWaves();
+
 		const float DURATION = 10;
 		if (m_internaStateStartTime + DURATION <= currentTime)
 		{
@@ -330,6 +327,18 @@ void Ichi_Phase3_Attack2::UpdateUpperTowerWaves()
 	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
 	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
 	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
+}
+
+void Ichi_Phase3_Attack2::UpdateMiddleTowerWaves()
+{
+	const Core::Mat44f* pMiddleTowerAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
+	for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
+	{
+		Core::Mat44f mainBeamWsTx = pMiddleTowerAttachPoints[ii + 4] * m_pMiddleTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+
+		m_pMiddleWave[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
+		m_pMiddleWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+	}
 }
 
 void Ichi_Phase3_Attack2::UpdateLowerTowerWaves()

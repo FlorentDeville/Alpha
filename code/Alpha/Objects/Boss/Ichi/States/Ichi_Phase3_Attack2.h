@@ -58,12 +58,14 @@ private:
 	uint8_t m_currentWaypointIndex;
 
 	Systems::RenderableComponent* m_pUpperTowerRenderable;
+	Systems::RenderableComponent* m_pMiddleTowerRenderable;
 	Systems::RenderableComponent* m_pLowerTowerRenderable;
 
 	void GoToInternalStateUpperTowerWaves();
 	void GoToInternalStateLowerTowerWaves();
 
 	void UpdateUpperTowerWaves();
+	void UpdateMiddleTowerWaves();
 	void UpdateLowerTowerWaves();
 	void RotateLowerTower(float speed);
 };
