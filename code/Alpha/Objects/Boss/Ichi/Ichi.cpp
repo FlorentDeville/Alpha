@@ -294,6 +294,7 @@ void Ichi::EnterPhase3()
 	pP3Renderable->SetEnabled(true);
 
 	m_currentHP = GetMaxHP();
+	UpdateHPBar();
 
 	Ichi_Phase3_Attack1* pP3A1 = m_pStateMachine->GetState<Ichi_Phase3_Attack1>(IchiStateEnum::PHASE3_ATTACK1);
 	pP3A1->InitWaves();
