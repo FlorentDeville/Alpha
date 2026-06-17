@@ -36,9 +36,12 @@ private:
 	Ichi* m_pIchi;
 
 	InternalState m_internalState;
+	float m_internlStateStartTime;
 
 	float m_rumbleStartTime;
 	Core::Vec4f m_rumbleInitialPosition;
+
+	void GoToInternalState(InternalState nextState);
 
 	void Rumble();
 };

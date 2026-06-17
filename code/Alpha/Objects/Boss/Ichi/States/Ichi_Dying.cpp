@@ -14,6 +14,7 @@ Ichi_Dying::Ichi_Dying(StateMachine* pStateMachine, Ichi* pIchi)
 	: IState(pStateMachine)
 	, m_pIchi(pIchi)
 	, m_internalState(InternalState::PREPARE)
+	, m_internlStateStartTime(0)
 { }
 
 Ichi_Dying::~Ichi_Dying()
@@ -21,8 +22,8 @@ Ichi_Dying::~Ichi_Dying()
 
 void Ichi_Dying::OnEnter()
 {
-	m_internalState = InternalState::PREPARE;
-
+	GoToInternalState(PREPARE);
+	
 	m_pIchi->GoToMotionState(IchiMotionState::STOP);
 }
 
@@ -38,7 +39,7 @@ void Ichi_Dying::OnUpdate()
 		PlayerGameObject* pPlayer = Systems::GameMgr::Get().FindGameObject<PlayerGameObject>();
 		pPlayer->SetCameraModeLocked();
 
-		m_internalState = START;
+		GoToInternalState(START);
 	}
 	break;
 
@@ -51,7 +52,7 @@ void Ichi_Dying::OnUpdate()
 		m_rumbleStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 		m_rumbleInitialPosition = m_pIchi->GetTransform().GetLocalSqt().GetTranslation();
 
-		m_internalState = LOWER_TOWER;
+		GoToInternalState(LOWER_TOWER);
 	}
 	break;
 
@@ -61,7 +62,7 @@ void Ichi_Dying::OnUpdate()
 
 		//fall	
 
-		m_internalState = MIDDLE_TOWER;
+		GoToInternalState(MIDDLE_TOWER);
 	}
 	break;
 
@@ -71,7 +72,7 @@ void Ichi_Dying::OnUpdate()
 
 		//fall
 
-		m_internalState = UPPER_TOWER;
+		GoToInternalState(UPPER_TOWER);
 	}
 	break;
 
@@ -81,7 +82,7 @@ void Ichi_Dying::OnUpdate()
 
 		//fall
 
-		m_internalState = STOP;
+		GoToInternalState(STOP);
 	}
 	break;
 
@@ -93,7 +94,7 @@ void Ichi_Dying::OnUpdate()
 
 		//don't rumble anymore
 
-		m_internalState = OVER;
+		GoToInternalState(OVER);
 	}
 	break;
 
@@ -106,6 +107,12 @@ void Ichi_Dying::OnUpdate()
 
 void Ichi_Dying::OnExit()
 { }
+
+void Ichi_Dying::GoToInternalState(InternalState nextState)
+{
+	m_internalState = nextState;
+	m_internlStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
+}
 
 void Ichi_Dying::Rumble()
 {
