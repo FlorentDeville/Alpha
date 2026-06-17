@@ -26,10 +26,10 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
 
-	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+	for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
 	{
-		m_pMainBeam[ii] = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
-		m_mainBeamIndex[ii] = UINT32_MAX;
+		m_pMiddleWave[ii] = new IchiWaveP1A2MainBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), BULLET_COUNT);
+		m_middleWaveIndex[ii] = UINT32_MAX;
 	}
 
 	m_pBackBeam = new IchiWaveP1A2BackBeam(pIchi->GetBulletMesh(), pIchi->GetBulletMaterial(), pIchi->GetCounterableBulletMaterial(), BULLET_COUNT, COUNTERABLE_BULLET_COUNT);
@@ -62,10 +62,10 @@ Ichi_Phase3_Attack2::~Ichi_Phase3_Attack2()
 {
 	DestroyWaves();
 
-	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+	for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
 	{
-		delete m_pMainBeam[ii];
-		m_pMainBeam[ii] = nullptr;
+		delete m_pMiddleWave[ii];
+		m_pMiddleWave[ii] = nullptr;
 	}
 
 	delete m_pBackBeam;
@@ -153,13 +153,13 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 			//start middle tower waves
 			const Core::Mat44f* pMiddleTowerAttachPoints = m_pIchi->GetPhase2GunsAttachPoints();
-			for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+			for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
 			{
-				Core::Mat44f mainBeamWsTx = pMiddleTowerAttachPoints[ii] * m_pIchi->GetTransform().GetWorldTx();
+				Core::Mat44f mainBeamWsTx = pMiddleTowerAttachPoints[ii + 4] * m_pIchi->GetTransform().GetWorldTx();
 
-				m_pMainBeam[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
-				m_pMainBeam[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
-				pSubsystem->StartWave(m_mainBeamIndex[ii]);
+				m_pMiddleWave[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
+				m_pMiddleWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+				pSubsystem->StartWave(m_middleWaveIndex[ii]);
 			}
 
 			break;
@@ -177,8 +177,8 @@ void Ichi_Phase3_Attack2::OnUpdate()
 		const float DURATION = 10;
 		if (m_internaStateStartTime + DURATION <= currentTime)
 		{
-			for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
-				m_pMainBeam[ii]->Stop();
+			for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
+				m_pMiddleWave[ii]->Stop();
 
 			GoToInternalStateLowerTowerWaves();
 		}
@@ -232,8 +232,8 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 void Ichi_Phase3_Attack2::OnExit()
 {
-	for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
-		m_pMainBeam[ii]->Stop();
+	for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
+		m_pMiddleWave[ii]->Stop();
 
 	m_pBackBeam->DisableSpawn();
 
@@ -243,12 +243,12 @@ void Ichi_Phase3_Attack2::OnExit()
 void Ichi_Phase3_Attack2::InitWaves()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
-	if (m_mainBeamIndex[0] == UINT32_MAX)
+	if (m_middleWaveIndex[0] == UINT32_MAX)
 	{
-		for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+		for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
 		{
-			m_mainBeamIndex[ii] = pSubsystem->AddWave(m_pMainBeam[ii]);
-			pSubsystem->InitWave(m_mainBeamIndex[ii]);
+			m_middleWaveIndex[ii] = pSubsystem->AddWave(m_pMiddleWave[ii]);
+			pSubsystem->InitWave(m_middleWaveIndex[ii]);
 		}
 	}
 
@@ -269,13 +269,13 @@ void Ichi_Phase3_Attack2::DestroyWaves()
 {
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 
-	if (m_mainBeamIndex[0] != UINT32_MAX)
+	if (m_middleWaveIndex[0] != UINT32_MAX)
 	{
-		for (uint8_t ii = 0; ii < MAIN_BEAM_COUNT; ++ii)
+		for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
 		{
-			pSubsystem->DestroyWave(m_mainBeamIndex[ii]);
-			pSubsystem->RemoveWave(m_mainBeamIndex[ii]);
-			m_mainBeamIndex[ii] = UINT32_MAX;
+			pSubsystem->DestroyWave(m_middleWaveIndex[ii]);
+			pSubsystem->RemoveWave(m_middleWaveIndex[ii]);
+			m_middleWaveIndex[ii] = UINT32_MAX;
 		}
 	}
 

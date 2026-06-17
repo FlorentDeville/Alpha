@@ -43,9 +43,9 @@ private:
 	InternalState m_internalState;
 	float m_internaStateStartTime;
 
-	static const uint8_t MAIN_BEAM_COUNT = 2;
-	IchiWaveP1A2MainBeam* m_pMainBeam[MAIN_BEAM_COUNT];
-	uint32_t m_mainBeamIndex[MAIN_BEAM_COUNT];
+	static const uint8_t MIDDLE_WAVE_COUNT = 2;
+	IchiWaveP1A2MainBeam* m_pMiddleWave[MIDDLE_WAVE_COUNT];
+	uint32_t m_middleWaveIndex[MIDDLE_WAVE_COUNT];
 
 	IchiWaveP3A2* m_pLowerWave;
 	uint32_t m_lowerWaveIndex;
