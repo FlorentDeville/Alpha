@@ -76,7 +76,7 @@ void Ichi_Start::Skip()
 	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
 	Core::Vec4f offsetVector(0, m_stateLiftoffParam.m_distance, 0, 0);
 	m_pIchi->GetTransform().SetLocalTranslation(currentPosition + offsetVector);
-	m_pIchi->SpawnEngineEffects();
+	m_pIchi->StartEngineEffects();
 	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 }
 
@@ -120,8 +120,7 @@ void Ichi_Start::Enter_Liftoff()
 	m_pIchi->GetTransform().SetLocalTranslation(m_stateRumbleParam.m_initialPosition);
 	m_stateLiftoffParam.m_initialPosition = m_stateRumbleParam.m_initialPosition;
 
-	//spawn the effects
-	m_pIchi->SpawnEngineEffects();
+	m_pIchi->StartEngineEffects();
 }
 
 void Ichi_Start::Update_Liftoff()

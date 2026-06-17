@@ -105,7 +105,7 @@ void Ichi_Dying::OnUpdate()
 
 			//stop effects
 			m_pIchi->StopTransitionEffect();
-			m_pIchi->KillEngineEffects();
+			m_pIchi->StopEngineEffects();
 
 			GoToInternalState(UPPER_TOWER);
 		}

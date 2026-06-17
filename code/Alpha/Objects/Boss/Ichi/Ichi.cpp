@@ -87,6 +87,9 @@ void Ichi::OnStartGame()
 
 	InitAttachPoints(); //do this before cerating the states so the states cn use the attach points.
 
+	SpawnEngineEffects();
+	SpawnTransitionEffect();
+
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(IchiStateEnum::COUNT);
 
@@ -131,13 +134,13 @@ void Ichi::OnStartGame()
 	};
 
 	m_pStateMachine->Start(IchiStateEnum::START);
-	SkipStart();
+	//SkipStart();
 	//EnterPhase1();
 	//EnterPhase2();
-	EnterPhase3();
-	//m_currentHP = 1;
+	//EnterPhase3();
+	//m_currentHP = 0;
 	//UpdateHPBar();
-	m_pStateMachine->Start(IchiStateEnum::PHASE3_ATTACK1);
+	//m_pStateMachine->Start(IchiStateEnum::PHASE2_TO_PHASE3);
 	//m_pStateMachine->Start(IchiStateEnum::PHASE1_TO_PHASE2);
 }
 
@@ -211,7 +214,7 @@ void Ichi::OnDestroyGame()
 	BaseClass::OnDestroyGame();
 
 	KillEngineEffects();
-	StopTransitionEffect();
+	KillTransitionEffect();
 
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
 	pParticleSystem->KillEffect(m_transitionEffectHandle);
@@ -303,37 +306,28 @@ void Ichi::EnterPhase3()
 	pP3A2->InitWaves();
 }
 
-void Ichi::SpawnEngineEffects()
+void Ichi::StartEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
-	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
 
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
-	{
-		Core::Mat44f wsTx = m_engineAttachPoints[ii] * GetTransform().GetWorldTx();
-		m_engineEffectHandle[ii] = pParticleSystem->SpawnEffect(m_engineEffect.GetPtr(), wsTx, pClock->GetTime());
 		pParticleSystem->Play(m_engineEffectHandle[ii]);
-	}
 }
 
-void Ichi::KillEngineEffects()
+void Ichi::StopEngineEffects()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
 
 	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
-	{
-		pParticleSystem->KillEffect(m_engineEffectHandle[ii]);
-		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
-	}
+		pParticleSystem->Stop(m_engineEffectHandle[ii]);
 }
 
 void Ichi::StartTransitionEffect()
 {
 	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
-	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
 
-	const Core::Mat44f& wsTx =  GetTransform().GetWorldTx();
-	m_transitionEffectHandle = pParticleSystem->SpawnEffect(m_transitionEffect.GetPtr(), wsTx, pClock->GetTime());
+	const Core::Mat44f& wsTx = GetTransform().GetWorldTx();
+	pParticleSystem->UpdateTransform(m_transitionEffectHandle, wsTx);
 	pParticleSystem->Play(m_transitionEffectHandle);
 }
 
@@ -522,3 +516,43 @@ void Ichi::InitAttachPoints()
 		m_phase3GunsAttachPoints[ii] = ap.GetLocator().GetMatrix();
 	}
 }
+
+void Ichi::SpawnEngineEffects()
+{
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
+
+	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
+	{
+		Core::Mat44f wsTx = m_engineAttachPoints[ii] * GetTransform().GetWorldTx();
+		m_engineEffectHandle[ii] = pParticleSystem->SpawnEffect(m_engineEffect.GetPtr(), wsTx, pClock->GetTime());
+	}
+}
+
+void Ichi::KillEngineEffects()
+{
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+
+	for (uint8_t ii = 0; ii < ENGINE_EFFECT_COUNT; ++ii)
+	{
+		pParticleSystem->KillEffect(m_engineEffectHandle[ii]);
+		m_engineEffectHandle[ii] = Systems::ParticleEffectHandle();
+	}
+}
+
+void Ichi::SpawnTransitionEffect()
+{
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	Systems::IClockSubsystem* pClock = Systems::GameMgr::Get().GetWorld()->m_pClock;
+
+	const Core::Mat44f& wsTx = GetTransform().GetWorldTx();
+	m_transitionEffectHandle = pParticleSystem->SpawnEffect(m_transitionEffect.GetPtr(), wsTx, pClock->GetTime());
+}
+
+void Ichi::KillTransitionEffect()
+{
+	Systems::ParticleSystem* pParticleSystem = Systems::GameMgr::Get().GetWorld()->m_pParticleSystem;
+	pParticleSystem->KillEffect(m_transitionEffectHandle);
+	m_transitionEffectHandle = Systems::ParticleEffectHandle();
+}
+

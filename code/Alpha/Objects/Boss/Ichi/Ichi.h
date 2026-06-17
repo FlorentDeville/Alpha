@@ -46,8 +46,8 @@ public:
 
 	void EnterPhase3();
 
-	void SpawnEngineEffects();
-	void KillEngineEffects();
+	void StartEngineEffects();
+	void StopEngineEffects();
 
 	void StartTransitionEffect();
 	void StopTransitionEffect();
@@ -147,4 +147,10 @@ private:
 	void SkipStart();
 
 	void InitAttachPoints();
+
+	void SpawnEngineEffects();
+	void KillEngineEffects();
+
+	void SpawnTransitionEffect();
+	void KillTransitionEffect();
 };
