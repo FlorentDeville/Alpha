@@ -23,6 +23,7 @@ public:
 
 	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
 	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
+	void SetWarmupDuration(float duration);
 
 private:
 

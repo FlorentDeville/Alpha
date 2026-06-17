@@ -25,7 +25,9 @@ public:
 	void SetSpawnPosition(const Core::Vec4f& spawnPosition);
 	void SetPreviousSpawnPosition(const Core::Vec4f& previousSpawnPosition);
 	void SetSpawnSpeed(const Core::Vec4f& spawnSpeed);
-	
+	void SetSpawnAcceleration(float acceleration);
+	void SetWarmupDuration(float duration);
+
 	void DisableSpawn();
 
 private:
@@ -33,6 +35,7 @@ private:
 	//parameters that can be modified at runtime
 	Core::Vec4f m_spawnPosition;
 	Core::Vec4f m_spawnSpeed;
+	float m_acceleration;
 
 	//internal variables
 

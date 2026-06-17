@@ -32,6 +32,7 @@ IchiWaveP1A2BackBeam::IchiWaveP1A2BackBeam(Systems::MeshAsset* pMesh, Systems::M
 	, m_lastBulletSpawnedTime(0)
 	, m_previousSpawnPosition()
 	, m_lane(0)
+	, m_acceleration(-10)
 {
 	m_count = bulletCount;
 	m_pMesh = pMesh;
@@ -192,6 +193,16 @@ void IchiWaveP1A2BackBeam::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
 	m_spawnSpeed = spawnSpeed;
 }
 
+void IchiWaveP1A2BackBeam::SetSpawnAcceleration(float acceleration)
+{
+	m_acceleration = acceleration;
+}
+
+void IchiWaveP1A2BackBeam::SetWarmupDuration(float duration)
+{
+	m_warmupDuration = duration;
+}
+
 void IchiWaveP1A2BackBeam::DisableSpawn()
 {
 	m_enableSpawn = false;
@@ -220,8 +231,8 @@ void IchiWaveP1A2BackBeam::SpawnBullet(Bullets& bullets)
 
 	bullets.m_speed[m_nextBulletToSpawn] = Core::Vec4f(LANE_SPEED[m_lane], 0, 10, 0);
 
-	const float ACC = -10;
-	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, ACC, 0);
+
+	bullets.m_acceleration[m_nextBulletToSpawn] = Core::Vec4f(0, 0, 1, 0) * m_acceleration;
 
 	m_lane = (m_lane + 1) % LANE_COUNT;
 

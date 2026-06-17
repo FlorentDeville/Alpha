@@ -162,6 +162,11 @@ void IchiWaveP1A2MainBeam::SetSpawnSpeed(const Core::Vec4f& spawnSpeed)
 	m_spawnSpeed = spawnSpeed;
 }
 
+void IchiWaveP1A2MainBeam::SetWarmupDuration(float duration)
+{
+	m_warmupDuration = duration;
+}
+
 void IchiWaveP1A2MainBeam::SpawnBullet(Bullets& bullets)
 {
 	if (!m_enableSpawn)

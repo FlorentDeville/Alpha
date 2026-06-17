@@ -158,7 +158,10 @@ void Ichi_Phase3_Attack2::OnUpdate()
 			//start middle tower waves
 			UpdateMiddleTowerWaves();
 			for (uint8_t ii = 0; ii < MIDDLE_WAVE_COUNT; ++ii)
+			{
 				pSubsystem->StartWave(m_middleWaveIndex[ii]);
+				m_pMiddleWave[ii]->SetWarmupDuration(0.5f);
+			}
 
 			break;
 		}
@@ -229,7 +232,7 @@ void Ichi_Phase3_Attack2::OnUpdate()
 			break;
 		}
 
-		float speed = 0.5f;
+		float speed = 1.f;
 		float max = speed * dt;
 		Core::Quaternion newRotation = Core::Quaternion::RotateTowards(current, GOAL, max);
 		m_pLowerTowerRenderable->SetLocalRotation(newRotation);
@@ -316,6 +319,9 @@ void Ichi_Phase3_Attack2::GoToInternalStateUpperTowerWaves()
 	m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
 	UpdateUpperTowerWaves();
+
+	m_pBackBeam->SetSpawnAcceleration(-30);
+	m_pBackBeam->SetWarmupDuration(0.5f);
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->StartWave(m_backBeamIndex);
