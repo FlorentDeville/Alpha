@@ -118,7 +118,7 @@ void IchiWaveP3A2::Update(Bullets& bullets, float dt)
 
 	case State::WAIT_FOR_NEXT_WAVE:
 	{
-		const float WAIT_TIME = 0.5f;
+		const float WAIT_TIME = 0.f;
 		if (m_internalStateStartTime + WAIT_TIME <= currentTime)
 		{
 			m_currentState = State::WARMUP;

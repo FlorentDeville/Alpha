@@ -78,7 +78,7 @@ Ichi_Phase3_Attack2::~Ichi_Phase3_Attack2()
 
 void Ichi_Phase3_Attack2::OnEnter()
 {
-	m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], 2);
+	m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], 5);
 	m_currentWaypointIndex = (m_currentWaypointIndex + 1) % WAYPOINTS_COUNT;
 
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
@@ -113,7 +113,7 @@ void Ichi_Phase3_Attack2::OnUpdate()
 		}
 		else
 		{
-			const float SPEED = 0.2f;
+			const float SPEED = 0.5f;
 			float maxStep = SPEED * dt;
 			Core::Quaternion newRotation = Core::Quaternion::RotateTowards(currentRotation, targetRotation, maxStep);
 			m_pUpperTowerRenderable->SetLocalRotation(newRotation);
@@ -228,7 +228,7 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 	if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
 	{
-		m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], 2);
+		m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], 5);
 		m_currentWaypointIndex = (m_currentWaypointIndex + 1) % WAYPOINTS_COUNT;
 	}
 	
@@ -326,7 +326,7 @@ void Ichi_Phase3_Attack2::UpdateUpperTowerWaves()
 	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pUpperTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
 	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
 	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
-	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
+	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 20, 0));
 }
 
 void Ichi_Phase3_Attack2::UpdateMiddleTowerWaves()
@@ -337,7 +337,7 @@ void Ichi_Phase3_Attack2::UpdateMiddleTowerWaves()
 		Core::Mat44f mainBeamWsTx = pMiddleTowerAttachPoints[ii + 4] * m_pMiddleTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
 
 		m_pMiddleWave[ii]->SetSpawnPosition(mainBeamWsTx.GetT());
-		m_pMiddleWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -10, 0));
+		m_pMiddleWave[ii]->SetSpawnSpeed(Core::Vec4f(0, 0, -20, 0));
 	}
 }
 
@@ -355,8 +355,13 @@ void Ichi_Phase3_Attack2::UpdateLowerTowerWaves()
 		Core::Mat44f ap = pAp[ii] * pMeshWsTx;
 		m_pLowerWave->SetSpawnPosition(ii, ap.GetT());
 
-		Core::Vec4f speed = ap.GetT() - pMeshWsTx.GetT();
-		m_pLowerWave->SetSpawnSpeed(ii, speed);
+		Core::Vec4f speedDirection = ap.GetT() - pMeshWsTx.GetT();
+		speedDirection.Normalize();
+
+		const float SPEED_MAG = 20;
+		speedDirection = speedDirection * SPEED_MAG;
+
+		m_pLowerWave->SetSpawnSpeed(ii, speedDirection);
 	}
 }
 
