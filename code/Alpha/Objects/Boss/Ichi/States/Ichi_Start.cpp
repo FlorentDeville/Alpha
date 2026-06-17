@@ -21,7 +21,7 @@ Ichi_Start::Ichi_Start(StateMachine* pStateMachine, Ichi* pIchi)
 {
 	m_stateWaitParam.m_duration = 2;
 
-	m_stateRumbleParam.m_duration = 5;
+	m_stateRumbleParam.m_duration = 4;
 	m_stateRumbleParam.m_intensity = 0.05f;
 	m_stateRumbleParam.m_frequency = 40;
 
