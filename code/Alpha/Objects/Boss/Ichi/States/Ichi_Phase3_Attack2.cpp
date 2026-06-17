@@ -22,6 +22,7 @@ Ichi_Phase3_Attack2::Ichi_Phase3_Attack2(StateMachine* pStateMachine, Ichi* pIch
 	, m_pIchi(pIchi)
 	, m_internalState()
 	, m_internaStateStartTime()
+	, m_loopCount(0)
 {
 	const int BULLET_COUNT = 50;
 	const int COUNTERABLE_BULLET_COUNT = BULLET_COUNT / 3;
@@ -83,7 +84,9 @@ void Ichi_Phase3_Attack2::OnEnter()
 
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 	m_internalState = PREPARE_UPPER_TOWER_WAVES;
+
 	m_internaStateStartTime = currentTime;
+	m_loopCount = 0;
 }
 
 void Ichi_Phase3_Attack2::OnUpdate()
@@ -211,9 +214,18 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 		if (angle < 0.0001f)
 		{
-			m_pLowerTowerRenderable->SetLocalRotation(GOAL);
-			m_internalState = PREPARE_UPPER_TOWER_WAVES;
-			m_internaStateStartTime = currentTime;
+			++m_loopCount;
+
+			if (m_loopCount >= MAX_LOOP_COUNT)
+			{
+				GoTo(IchiStateEnum::PHASE3_TRAVEL);
+			}
+			else
+			{
+				m_pLowerTowerRenderable->SetLocalRotation(GOAL);
+				m_internalState = PREPARE_UPPER_TOWER_WAVES;
+				m_internaStateStartTime = currentTime;
+			}
 			break;
 		}
 

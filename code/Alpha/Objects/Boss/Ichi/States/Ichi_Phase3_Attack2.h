@@ -61,6 +61,9 @@ private:
 	Systems::RenderableComponent* m_pMiddleTowerRenderable;
 	Systems::RenderableComponent* m_pLowerTowerRenderable;
 
+	static const uint8_t MAX_LOOP_COUNT = 2;
+	uint8_t m_loopCount;
+
 	void GoToInternalStateUpperTowerWaves();
 	void GoToInternalStateLowerTowerWaves();
 
