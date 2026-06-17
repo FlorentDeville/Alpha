@@ -53,7 +53,8 @@ private:
 	IchiWaveP1A2BackBeam* m_pBackBeam;
 	uint32_t m_backBeamIndex;
 
-	Core::Vec4f m_waypoints[2];
+	static const uint8_t WAYPOINTS_COUNT = 2;
+	Core::Vec4f m_waypoints[WAYPOINTS_COUNT];
 	uint8_t m_currentWaypointIndex;
 
 	Systems::RenderableComponent* m_pUpperTowerRenderable;
@@ -62,6 +63,7 @@ private:
 	void GoToInternalStateUpperTowerWaves();
 	void GoToInternalStateLowerTowerWaves();
 
+	void UpdateUpperTowerWaves();
 	void UpdateLowerTowerWaves();
 	void RotateLowerTower(float speed);
 };

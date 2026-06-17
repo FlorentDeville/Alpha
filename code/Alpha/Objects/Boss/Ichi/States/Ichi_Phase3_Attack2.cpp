@@ -77,10 +77,8 @@ Ichi_Phase3_Attack2::~Ichi_Phase3_Attack2()
 
 void Ichi_Phase3_Attack2::OnEnter()
 {
-	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
-
-	//GoToInternalStateUpperTowerWaves();
-	//GoToInternalStateLowerTowerWaves();
+	m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], 2);
+	m_currentWaypointIndex = (m_currentWaypointIndex + 1) % WAYPOINTS_COUNT;
 
 	float currentTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 	m_internalState = PREPARE_UPPER_TOWER_WAVES;
@@ -124,6 +122,8 @@ void Ichi_Phase3_Attack2::OnUpdate()
 
 	case UPPER_TOWER_WAVES:
 	{
+		UpdateUpperTowerWaves();
+
 		const float DURATION = 10;
 		if (m_internaStateStartTime + DURATION <= currentTime)
 		{
@@ -228,6 +228,13 @@ void Ichi_Phase3_Attack2::OnUpdate()
 	break;
 
 	}
+
+	if (m_pIchi->IsInMotionState(IchiMotionState::STOP))
+	{
+		m_pIchi->GoToMotionStateStrafe(m_waypoints[m_currentWaypointIndex], 2);
+		m_currentWaypointIndex = (m_currentWaypointIndex + 1) % WAYPOINTS_COUNT;
+	}
+	
 }
 
 void Ichi_Phase3_Attack2::OnExit()
@@ -299,12 +306,7 @@ void Ichi_Phase3_Attack2::GoToInternalStateUpperTowerWaves()
 	m_internalState = UPPER_TOWER_WAVES;
 	m_internaStateStartTime = Systems::GameMgr::Get().GetWorld()->m_pClock->GetTime();
 
-	//back beam
-	const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
-	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pUpperTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
-	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
-	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
-	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
+	UpdateUpperTowerWaves();
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->StartWave(m_backBeamIndex);
@@ -319,6 +321,15 @@ void Ichi_Phase3_Attack2::GoToInternalStateLowerTowerWaves()
 
 	BulletSubsystem* pSubsystem = BulletSubsystem::GetSubsystem();
 	pSubsystem->StartWave(m_lowerWaveIndex);
+}
+
+void Ichi_Phase3_Attack2::UpdateUpperTowerWaves()
+{
+	const Core::Mat44f* pUpperTowerAttachPoints = m_pIchi->GetPhase1GunsAttachPoints();
+	Core::Mat44f backBeamWsTx = pUpperTowerAttachPoints[2] * m_pUpperTowerRenderable->GetLocalTx().GetMatrix() * m_pIchi->GetTransform().GetWorldTx();
+	m_pBackBeam->SetSpawnPosition(backBeamWsTx.GetT());
+	m_pBackBeam->SetPreviousSpawnPosition(backBeamWsTx.GetT());
+	m_pBackBeam->SetSpawnSpeed(Core::Vec4f(0, 0, 2, 0));
 }
 
 void Ichi_Phase3_Attack2::UpdateLowerTowerWaves()
