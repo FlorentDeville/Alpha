@@ -36,6 +36,7 @@ PlayerGameObject::PlayerGameObject()
 	, m_pStateMove(nullptr)
 	, m_pCounteredBulletWave(nullptr)
 	, m_counteredBulletWaveIndex(UINT32_MAX)
+	, m_cameraMode(TRACK)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -74,6 +75,8 @@ void PlayerGameObject::OnStartGame()
 	BulletSubsystem* pBulletSubsystem = BulletSubsystem::GetSubsystem();
 	m_counteredBulletWaveIndex = pBulletSubsystem->AddWave(m_pCounteredBulletWave);
 	pBulletSubsystem->InitWave(m_counteredBulletWaveIndex);
+
+	m_cameraMode = TRACK;
 }
 
 void PlayerGameObject::Update(float dt)
@@ -139,6 +142,16 @@ void PlayerGameObject::SpawnCounteredBullet(const Core::Vec4f& startPosition)
 	m_pCounteredBulletWave->SpawnSingleBullet(startPosition);
 }
 
+void PlayerGameObject::SetCameraModeTracking()
+{
+	m_cameraMode = TRACK;
+}
+
+void PlayerGameObject::SetCameraModeLocked()
+{
+	m_cameraMode = LOCK;
+}
+
 void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
 	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
@@ -168,31 +181,42 @@ void PlayerGameObject::OnBulletCollision(uint32_t index)
 
 void PlayerGameObject::UpdateCamera()
 {
-	const BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
-	Core::Vec4f bossPos = pBoss->GetTransform().GetWorldTx().GetT();
+	switch (m_cameraMode)
+	{
+	case TRACK:
+	{
+		const BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
+		Core::Vec4f bossPos = pBoss->GetTransform().GetWorldTx().GetT();
 
-	const Core::Vec4f& playerPos = GetTransform().GetWorldTx().GetT();
+		const Core::Vec4f& playerPos = GetTransform().GetWorldTx().GetT();
 
-	//calculate the midpoint
-	Core::Vec4f targetPos = (bossPos + playerPos) * 0.5f;
+		//calculate the midpoint
+		Core::Vec4f targetPos = (bossPos + playerPos) * 0.5f;
 
-	//calculate the distance
-	float halfDistance = (bossPos - playerPos).Length() * 0.5f;
+		//calculate the distance
+		float halfDistance = (bossPos - playerPos).Length() * 0.5f;
 
-	//calculate distance using the vertical axis
-	float phi = m_pCamera->GetFOV() / m_pCamera->GetAspectRatio();
-	float halfPhi = phi * 0.5f;
-	float cameraDistance = halfDistance / std::tan(halfPhi);
+		//calculate distance using the vertical axis
+		float phi = m_pCamera->GetFOV() / m_pCamera->GetAspectRatio();
+		float halfPhi = phi * 0.5f;
+		float cameraDistance = halfDistance / std::tan(halfPhi);
 
-	//clamp
-	const float MIN_DISTANCE = 70;
-	const float MAX_DISTANCE = 100;
-	cameraDistance = cameraDistance < MIN_DISTANCE ? MIN_DISTANCE : (cameraDistance > MAX_DISTANCE ? MAX_DISTANCE : cameraDistance);
+		//clamp
+		const float MIN_DISTANCE = 70;
+		const float MAX_DISTANCE = 100;
+		cameraDistance = cameraDistance < MIN_DISTANCE ? MIN_DISTANCE : (cameraDistance > MAX_DISTANCE ? MAX_DISTANCE : cameraDistance);
 
-	//compute camera position
-	const float MARGIN = 5.f;
-	m_cameraOffset.Normalize();
-	Core::Vec4f cameraPosition = targetPos + m_cameraOffset * (cameraDistance + MARGIN);
+		//compute camera position
+		const float MARGIN = 5.f;
+		m_cameraOffset.Normalize();
+		Core::Vec4f cameraPosition = targetPos + m_cameraOffset * (cameraDistance + MARGIN);
 
-	m_pCamera->SetLookAt(cameraPosition, targetPos, Core::Vec4f(0, 1, 0, 0));
+		m_pCamera->SetLookAt(cameraPosition, targetPos, Core::Vec4f(0, 1, 0, 0));
+	}
+	break;
+
+	case LOCK:
+	{}
+	break;
+	}
 }

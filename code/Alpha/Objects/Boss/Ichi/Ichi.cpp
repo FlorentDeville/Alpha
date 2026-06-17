@@ -392,6 +392,18 @@ bool Ichi::IsInMotionState(IchiMotionState::Type state) const
 	return m_pMotionStateMachine->IsInState(state);
 }
 
+void Ichi::ShowHpBar()
+{
+	m_currentHealthComp.FindComponent(this)->SetEnabled(true);
+	m_totalHealthComp.FindComponent(this)->SetEnabled(true);
+}
+
+void Ichi::HideHpBar()
+{
+	m_currentHealthComp.FindComponent(this)->SetEnabled(false);
+	m_totalHealthComp.FindComponent(this)->SetEnabled(false);
+}
+
 Systems::MeshAsset* Ichi::GetBulletMesh()
 {
 	return m_bulletMesh.GetPtr();

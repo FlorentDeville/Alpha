@@ -20,5 +20,25 @@ public:
 	void OnExit() override;
 
 private:
+	enum InternalState
+	{
+		PREPARE,
+		START,
+		LOWER_TOWER,
+		MIDDLE_TOWER,
+		UPPER_TOWER,
+		STOP,
+		OVER,
+
+		COUNT
+	};
+
 	Ichi* m_pIchi;
+
+	InternalState m_internalState;
+
+	float m_rumbleStartTime;
+	Core::Vec4f m_rumbleInitialPosition;
+
+	void Rumble();
 };

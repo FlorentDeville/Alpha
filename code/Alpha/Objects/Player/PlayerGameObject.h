@@ -44,6 +44,9 @@ public:
 
 	void SpawnCounteredBullet(const Core::Vec4f& startPosition);
 
+	void SetCameraModeTracking();
+	void SetCameraModeLocked();
+
 private:
 	float m_speed;
 	Core::Vec4f m_cameraOffset;
@@ -76,6 +79,16 @@ private:
 
 	PlayerWaveCountered* m_pCounteredBulletWave;
 	uint32_t m_counteredBulletWaveIndex;
+
+	enum CameraMode
+	{
+		TRACK,	//keep player and boss in the view
+		LOCK,	//lock in place
+
+		COUNT
+	};
+
+	CameraMode m_cameraMode;
 
 	void OnBulletCollision(uint32_t index);
 

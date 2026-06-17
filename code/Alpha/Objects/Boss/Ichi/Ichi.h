@@ -61,6 +61,9 @@ public:
 
 	bool IsInMotionState(IchiMotionState::Type state) const;
 
+	void ShowHpBar();
+	void HideHpBar();
+
 	Systems::MeshAsset* GetBulletMesh();
 	Systems::MaterialInstanceAsset* GetBulletMaterial();
 	Systems::MaterialInstanceAsset* GetCounterableBulletMaterial();
