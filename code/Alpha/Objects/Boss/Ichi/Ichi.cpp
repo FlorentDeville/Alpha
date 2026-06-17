@@ -87,6 +87,8 @@ void Ichi::OnStartGame()
 
 	InitAttachPoints(); //do this before cerating the states so the states cn use the attach points.
 
+	HideHpBar();
+	
 	SpawnEngineEffects();
 	SpawnTransitionEffect();
 

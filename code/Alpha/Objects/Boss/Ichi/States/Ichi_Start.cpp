@@ -146,7 +146,7 @@ void Ichi_Start::Update_Liftoff()
 
 void Ichi_Start::Enter_Over()
 {
-	Core::LogModule::Get().LogInfo("Over");
+	m_pIchi->ShowHpBar();
 	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 }
 
