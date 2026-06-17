@@ -77,6 +77,7 @@ void Ichi_Start::Skip()
 	Core::Vec4f offsetVector(0, m_stateLiftoffParam.m_distance, 0, 0);
 	m_pIchi->GetTransform().SetLocalTranslation(currentPosition + offsetVector);
 	m_pIchi->StartEngineEffects();
+	m_pIchi->ShowHpBar();
 	m_pIchi->GoToMotionState(IchiMotionState::IDLE);
 }
 
