@@ -24,6 +24,7 @@ private:
 	{
 		PREPARE,
 		START,
+		PAUSE,
 		LOWER_TOWER,
 		MIDDLE_TOWER,
 		UPPER_TOWER,
@@ -44,4 +45,8 @@ private:
 	void GoToInternalState(InternalState nextState);
 
 	void Rumble();
+
+	void Fall(Systems::RenderableComponent* pMesh, float fallingSpeed, float rotationSpeed) const;
+
+	bool IsElaspedTime(float maxDuration) const;
 };
