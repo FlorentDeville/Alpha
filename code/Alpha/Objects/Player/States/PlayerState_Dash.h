@@ -25,4 +25,6 @@ private:
 
 	Core::QuadraticBezier m_curve;
 	float m_startTime;
+
+	float m_curveSide;
 };

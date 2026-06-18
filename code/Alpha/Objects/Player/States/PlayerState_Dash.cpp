@@ -14,6 +14,7 @@
 PlayerState_Dash::PlayerState_Dash(StateMachine* pMachine, PlayerGameObject* pPlayer)
 	: IState(pMachine)
 	, m_pPlayer(pPlayer)
+	, m_curveSide(1)
 { }
 
 void PlayerState_Dash::OnEnter()
@@ -24,9 +25,10 @@ void PlayerState_Dash::OnEnter()
 
 	Core::Vec4f halfWay = (m_curve.m_p2 - m_curve.m_p0) * 0.5f;
 	Core::Vec4f orthoHalfWay(halfWay.GetZ(), halfWay.GetY(), -halfWay.GetX(), 0);
-	m_curve.m_p1 = m_curve.m_p0 + halfWay + orthoHalfWay;
+	m_curve.m_p1 = m_curve.m_p0 + halfWay + (orthoHalfWay * m_curveSide);
 
 	m_startTime = Systems::GameMgr::GetClock()->GetTime();
+	m_curveSide = -m_curveSide;
 }
 
 void PlayerState_Dash::OnUpdate()
