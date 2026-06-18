@@ -20,5 +20,7 @@ namespace Systems
 		virtual void Start() = 0;
 		virtual void Pause() = 0;
 		virtual void Stop() = 0;
+
+		virtual void SetTimeScale(float timeScale) = 0;
 	};
 }

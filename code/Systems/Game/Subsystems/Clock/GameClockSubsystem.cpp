@@ -13,6 +13,7 @@ namespace Systems
 		, m_elaspedTime(0)
 		, m_deltaTime(0)
 		, m_isRunning(false)
+		, m_timeScale(1)
 	{ }
 
 	GameClockSubsystem::~GameClockSubsystem()
@@ -22,8 +23,9 @@ namespace Systems
 	{
 		if (m_isRunning)
 		{
-			m_elaspedTime += dt;
-			m_deltaTime = dt;
+			float scaledDt = dt * m_timeScale;
+			m_elaspedTime += scaledDt;
+			m_deltaTime = scaledDt;
 		}
 	}
 
@@ -53,5 +55,10 @@ namespace Systems
 		m_isRunning = false;
 		m_elaspedTime = 0;
 		m_deltaTime = 0;
+	}
+
+	void GameClockSubsystem::SetTimeScale(float timeScale)
+	{
+		m_timeScale = timeScale;
 	}
 }

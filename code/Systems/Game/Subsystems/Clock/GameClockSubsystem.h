@@ -23,9 +23,12 @@ namespace Systems
 		void Pause() override;
 		void Stop() override;
 
+		void SetTimeScale(float timeScale) override;
+
 	private:
 		float m_elaspedTime;
 		float m_deltaTime;
+		float m_timeScale;
 
 		bool m_isRunning;
 	};
