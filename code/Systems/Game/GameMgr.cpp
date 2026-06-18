@@ -292,6 +292,11 @@ namespace Systems
 		m_debugShowCollision = show;
 	}
 
+	IClockSubsystem* GameMgr::GetClock()
+	{
+		return GameMgr::Get().GetWorld()->m_pClock;
+	}
+
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
 	{
 		for (const LevelAsset* pLevel : m_loadedLevels)

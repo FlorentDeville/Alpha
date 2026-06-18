@@ -23,6 +23,7 @@ namespace Systems
 {
 	class CameraSubsystem;
 	class GameObject;
+	class IClockSubsystem;
 	class ISubsystem;
 	class GameComponent;
 	class LevelAsset;
@@ -68,6 +69,8 @@ namespace Systems
 
 		bool Debug_ShowCollision() const;
 		void Debug_SetShowCollision(bool show);
+
+		static IClockSubsystem* GetClock();
 
 	private:
 		//Loading
