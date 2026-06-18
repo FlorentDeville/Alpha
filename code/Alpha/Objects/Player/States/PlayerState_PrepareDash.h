@@ -6,15 +6,13 @@
 
 #include "Alpha/StateMachine/IState.h"
 
-#include "Core/Bezier/Bezier.h"
-
 class PlayerGameObject;
 
-class PlayerState_Dash : public IState
+class PlayerState_PrepareDash : public IState
 {
 public:
-	PlayerState_Dash(StateMachine* pMachine, PlayerGameObject* pPlayer);
-	~PlayerState_Dash() = default;
+	PlayerState_PrepareDash(StateMachine* pMachine, PlayerGameObject* pPlayer);
+	~PlayerState_PrepareDash() = default;
 
 	void OnEnter() override;
 	void OnUpdate() override;
@@ -23,8 +21,5 @@ public:
 private:
 	PlayerGameObject* m_pPlayer;
 
-	Core::QuadraticBezier m_curve;
-	float m_startTime;
-
-	float m_curveSide;
+	float m_elapsedTime;
 };

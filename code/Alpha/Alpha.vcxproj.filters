@@ -91,7 +91,7 @@
     <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp">
+    <ClCompile Include="Objects\Player\States\PlayerState_PrepareDash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Boss\BaseBoss.cpp">
@@ -170,6 +170,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -263,7 +266,7 @@
     <ClInclude Include="Objects\Boss\Proto\States\BossState_Phase2_To_Phase3.h" />
     <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
-    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_PrepareDash.h" />
     <ClInclude Include="Objects\Boss\BaseBoss.h" />
     <ClInclude Include="Objects\Boss\Ichi\Ichi.h" />
     <ClInclude Include="Objects\Boss\Ichi\States\IchiStateEnum.h" />
@@ -292,6 +295,8 @@
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateContext.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

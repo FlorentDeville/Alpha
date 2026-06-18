@@ -7,9 +7,11 @@
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Boss/BaseBoss.h"
+#include "Alpha/Objects/Player/States/PlayerStateContext.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 #include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"
+#include "Alpha/Objects/Player/States/PlayerState_PrepareDash.h"
 #include "Alpha/Objects/Player/Waves/Player_Wave_Countered.h"
 #include "Alpha/StateMachine/StateMachine.h"
 
@@ -20,6 +22,7 @@
 
 #include "Rendering/Camera.h"
 
+#include "Systems/GameComponent/MeshComponent.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
@@ -37,6 +40,8 @@ PlayerGameObject::PlayerGameObject()
 	, m_pCounteredBulletWave(nullptr)
 	, m_counteredBulletWaveIndex(UINT32_MAX)
 	, m_cameraMode(TRACK)
+	, m_pDashCircleObject(nullptr)
+	, m_pDashCircleMesh(nullptr)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -53,7 +58,8 @@ void PlayerGameObject::OnStartGame()
 	Systems::TransformComponent& transform = GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
 
-	Systems::GameContext* pContext = Systems::GameMgr::Get().GetWorld();
+	Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+	Systems::GameContext* pContext = gameMgr.GetWorld();
 	pContext->m_pCameraSubsystem->PushCamera(m_pCamera);
 	m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
 	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
@@ -62,12 +68,13 @@ void PlayerGameObject::OnStartGame()
 
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(PlayerStateEnum::COUNT);
+	m_pStateMachine->SetContext(new PlayerStateContext());
 
 	m_pStateMove = new PlayerState_Move(m_pStateMachine, this);
 	m_pStateMachine->AddState(m_pStateMove, PlayerStateEnum::MOVE);
 
-	PlayerState_Dash* pStateDash = new PlayerState_Dash(m_pStateMachine, this);
-	m_pStateMachine->AddState(pStateDash, PlayerStateEnum::DASH);
+	m_pStateMachine->AddState(new PlayerState_PrepareDash(m_pStateMachine, this), PlayerStateEnum::PREPARE_DASH);
+	m_pStateMachine->AddState(new PlayerState_Dash(m_pStateMachine, this), PlayerStateEnum::DASH);
 
 	BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
 	m_pCounteredBulletWave = new PlayerWaveCountered(m_counteredBulletMesh.GetPtr(), m_counteredBulletMaterial.GetPtr(), this, pBoss);
@@ -77,6 +84,9 @@ void PlayerGameObject::OnStartGame()
 	pBulletSubsystem->InitWave(m_counteredBulletWaveIndex);
 
 	m_cameraMode = TRACK;
+
+	OnStartGame_DashCircle();
+	OnGameStart_DashTarget();
 }
 
 void PlayerGameObject::Update(float dt)
@@ -152,6 +162,31 @@ void PlayerGameObject::SetCameraModeLocked()
 	m_cameraMode = LOCK;
 }
 
+void PlayerGameObject::ShowDashCircle()
+{
+	m_pDashCircleMesh->SetEnabled(true);
+}
+
+void PlayerGameObject::HideDashCircle()
+{
+	m_pDashCircleMesh->SetEnabled(false);
+}
+
+void PlayerGameObject::ShowDashTarget()
+{
+	m_pDashTargetMesh->SetEnabled(true);
+}
+
+void PlayerGameObject::HideDashTarget()
+{
+	m_pDashTargetMesh->SetEnabled(false);
+}
+
+void PlayerGameObject::SetDashTargetRelativePosition(const Core::Vec4f& relPosition)
+{
+	m_pDashTargetObject->GetTransform().SetLocalTranslation(relPosition);
+}
+
 void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
 	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
@@ -219,4 +254,46 @@ void PlayerGameObject::UpdateCamera()
 	{}
 	break;
 	}
+}
+
+void PlayerGameObject::OnStartGame_DashCircle()
+{
+	Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+
+	m_pDashCircleObject = gameMgr.FindGameObjectByName("dash_circle");
+	if (!m_pDashCircleObject)
+	{
+		Core::LogModule::Get().LogError("Failed to find game object dash_circle");
+		return;
+	}
+	
+	m_pDashCircleMesh = m_pDashCircleObject->FindComponent<Systems::MeshComponent>();
+	if (!m_pDashCircleMesh)
+	{
+		Core::LogModule::Get().LogError("Failed to find mesh component dash_circle");
+		return;
+	}
+	
+	m_pDashCircleMesh->SetEnabled(false);
+}
+
+void PlayerGameObject::OnGameStart_DashTarget()
+{
+	Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+
+	m_pDashTargetObject = gameMgr.FindGameObjectByName("dash_target");
+	if (!m_pDashTargetObject)
+	{
+		Core::LogModule::Get().LogError("Failed to find game object dash_target");
+		return;
+	}
+
+	m_pDashTargetMesh = m_pDashTargetObject->FindComponent<Systems::MeshComponent>();
+	if (!m_pDashTargetMesh)
+	{
+		Core::LogModule::Get().LogError("Failed to find mesh component dash_target");
+		return;
+	}
+
+	m_pDashTargetMesh->SetEnabled(false);
 }

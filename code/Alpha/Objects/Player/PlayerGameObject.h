@@ -17,6 +17,11 @@ namespace Rendering
 	class Camera;
 }
 
+namespace Systems
+{
+	class MeshComponent;
+}
+
 class PlayerState_Move;
 class PlayerWaveCountered;
 class StateMachine;
@@ -46,6 +51,15 @@ public:
 
 	void SetCameraModeTracking();
 	void SetCameraModeLocked();
+
+	void ShowDashCircle();
+	void HideDashCircle();
+
+	void ShowDashTarget();
+	void HideDashTarget();
+
+	//Position relative to the player
+	void SetDashTargetRelativePosition(const Core::Vec4f& relPosition);
 
 private:
 	float m_speed;
@@ -90,7 +104,16 @@ private:
 
 	CameraMode m_cameraMode;
 
+	Systems::GameObject* m_pDashCircleObject;
+	Systems::MeshComponent* m_pDashCircleMesh;
+
+	Systems::GameObject* m_pDashTargetObject;
+	Systems::MeshComponent* m_pDashTargetMesh;
+
 	void OnBulletCollision(uint32_t index);
 
 	void UpdateCamera();
+
+	void OnStartGame_DashCircle();
+	void OnGameStart_DashTarget();
 };

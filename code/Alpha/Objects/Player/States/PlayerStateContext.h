@@ -4,11 +4,14 @@
 
 #pragma once
 
-enum PlayerStateEnum
-{
-	MOVE,
-	PREPARE_DASH,
-	DASH,
+#include "Core/Math/Vec4f.h"
 
-	COUNT
+class PlayerStateContext
+{
+public:
+
+	//Relative position of the dash target with respect to the player position.
+	//This is set PREPARE_DASH and used in DASH.
+	Core::Vec4f m_dashTargetRelativePosition;
+
 };

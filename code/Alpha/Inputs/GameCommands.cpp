@@ -38,7 +38,7 @@ namespace GameCommands
 		Inputs::InputKeyCommand commandLeft(Os::VKeyCodes::Vk_A, Inputs::InputKeyCommand::DOWN);
 		Inputs::InputKeyCommand commandRight(Os::VKeyCodes::Vk_D, Inputs::InputKeyCommand::DOWN);
 		Inputs::InputKeyCommand commandCounter(Os::VKeyCodes::Return, Inputs::InputKeyCommand::PRESSED);
-		Inputs::InputKeyCommand commandDash(Os::VKeyCodes::Shift, Inputs::InputKeyCommand::PRESSED);
+		Inputs::InputKeyCommand commandDash(Os::VKeyCodes::Shift, Inputs::InputKeyCommand::DOWN);
 
 		Inputs::InputMgr& inputMgr = Inputs::InputMgr::Get();
 

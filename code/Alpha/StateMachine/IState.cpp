@@ -26,3 +26,13 @@ void IState::GoTo(uint32_t newState)
 {
 	m_pStateMachine->GoTo(newState);
 }
+
+void* IState::GetContext()
+{
+	return m_pStateMachine->GetContext();
+}
+
+const void* IState::GetContext() const
+{
+	return m_pStateMachine->GetContext();
+}

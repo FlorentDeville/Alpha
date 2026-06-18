@@ -64,6 +64,10 @@ namespace Systems
 		template<class T> T* FindGameObject();
 		GameObject* FindGameObject(Core::Sid gameObjectTypename);
 
+		//!!!!Slow!!!!
+		//I don't like this function. Once I have a property grid with scrolling and game objet ref, remove this function.
+		GameObject* FindGameObjectByName(const std::string& objectName);
+
 		template<class T> const T* FindComponent() const;
 		const GameComponent* FindComponent(Core::Sid componentTypeName) const;
 
