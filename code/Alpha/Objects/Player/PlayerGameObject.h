@@ -17,6 +17,11 @@ namespace Rendering
 	class Camera;
 }
 
+namespace Systems
+{
+	class MeshComponent;
+}
+
 class PlayerState_Move;
 class PlayerWaveCountered;
 class StateMachine;
@@ -90,7 +95,12 @@ private:
 
 	CameraMode m_cameraMode;
 
+	Systems::GameObject* m_pDashCircleObject;
+	Systems::MeshComponent* m_pDashCircleMesh;
+
 	void OnBulletCollision(uint32_t index);
 
 	void UpdateCamera();
+
+	void OnStartGame_DashCircle();
 };

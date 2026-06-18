@@ -20,6 +20,7 @@
 
 #include "Rendering/Camera.h"
 
+#include "Systems/GameComponent/MeshComponent.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
@@ -37,6 +38,8 @@ PlayerGameObject::PlayerGameObject()
 	, m_pCounteredBulletWave(nullptr)
 	, m_counteredBulletWaveIndex(UINT32_MAX)
 	, m_cameraMode(TRACK)
+	, m_pDashCircleObject(nullptr)
+	, m_pDashCircleMesh(nullptr)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -53,7 +56,8 @@ void PlayerGameObject::OnStartGame()
 	Systems::TransformComponent& transform = GetTransform();
 	const Core::Mat44f& localTx = transform.GetLocalTx();
 
-	Systems::GameContext* pContext = Systems::GameMgr::Get().GetWorld();
+	Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+	Systems::GameContext* pContext = gameMgr.GetWorld();
 	pContext->m_pCameraSubsystem->PushCamera(m_pCamera);
 	m_pCamera->SetLookAt(localTx.GetT() + m_cameraOffset, localTx.GetT(), Core::Vec4f(0, 1, 0, 0));
 	m_pCamera->SetProjection(45 * Core::PI_OVER_180, 1920.f / 1080.f, 0.1f, 1000);
@@ -77,6 +81,8 @@ void PlayerGameObject::OnStartGame()
 	pBulletSubsystem->InitWave(m_counteredBulletWaveIndex);
 
 	m_cameraMode = TRACK;
+
+	OnStartGame_DashCircle();
 }
 
 void PlayerGameObject::Update(float dt)
@@ -154,8 +160,8 @@ void PlayerGameObject::SetCameraModeLocked()
 
 void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
-	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
-		return;
+	//if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
+	//	return;
 
 	BulletSubsystem* pBullets = BulletSubsystem::GetSubsystem();
 	pBullets->KillBullet(index);
@@ -219,4 +225,26 @@ void PlayerGameObject::UpdateCamera()
 	{}
 	break;
 	}
+}
+
+void PlayerGameObject::OnStartGame_DashCircle()
+{
+	Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+
+	m_pDashCircleObject = gameMgr.FindGameObjectByName("dash_circle");
+	if (!m_pDashCircleObject)
+	{
+		Core::LogModule::Get().LogError("Failed to find game object dash_circle");
+		return;
+	}
+	
+	m_pDashCircleMesh = m_pDashCircleObject->FindComponent<Systems::MeshComponent>();
+	if (!m_pDashCircleMesh)
+	{
+		Core::LogModule::Get().LogError("Failed to find mesh component dash_circle");
+		return;
+	}
+	
+	m_pDashCircleMesh->SetEnabled(false);
+	
 }
