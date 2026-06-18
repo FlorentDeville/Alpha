@@ -6,6 +6,7 @@
 
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Player/PlayerGameObject.h"
+#include "Alpha/Objects/Player/States/PlayerStateContext.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 
 #include "Core/Math/Vec4f.h"
@@ -30,9 +31,6 @@ void PlayerState_PrepareDash::OnEnter()
 
 void PlayerState_PrepareDash::OnUpdate()
 {
-	if(GameCommands::Dash() == 0)
-		GoTo(PlayerStateEnum::MOVE);
-
 	const Core::Vec4f FORWARD(0, 0, 1, 0);
 	const Core::Vec4f RIGHT(1, 0, 0, 0);
 
@@ -48,6 +46,7 @@ void PlayerState_PrepareDash::OnUpdate()
 		direction = direction + RIGHT;
 
 	direction.Normalize();
+
 	if (direction.Length2() > 0)
 	{
 		m_pPlayer->ShowDashTarget();
@@ -61,6 +60,21 @@ void PlayerState_PrepareDash::OnUpdate()
 	{
 		m_pPlayer->HideDashTarget();
 	}
+
+	if (GameCommands::Dash() == 0)
+	{
+		if (direction.Length2() == 0)
+		{
+			GoTo(PlayerStateEnum::MOVE);
+		}
+		else
+		{
+			GetContext<PlayerStateContext>()->m_dashTargetRelativePosition = direction;
+			GoTo(PlayerStateEnum::MOVE); //should go to dash
+		}
+	}
+
+	
 	/*float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	m_elapsedTime += dt;
 	const float DASH_DURATION = 0.2f;
