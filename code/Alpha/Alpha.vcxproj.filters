@@ -292,6 +292,7 @@
     <ClInclude Include="Objects\Boss\Ichi\Motion\Ichi_Motion_Strafe.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateContext.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

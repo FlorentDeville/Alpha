@@ -7,6 +7,7 @@
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Boss/BaseBoss.h"
+#include "Alpha/Objects/Player/States/PlayerStateContext.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 #include "Alpha/Objects/Player/States/PlayerState_PrepareDash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"
@@ -66,6 +67,7 @@ void PlayerGameObject::OnStartGame()
 
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(PlayerStateEnum::COUNT);
+	m_pStateMachine->SetContext(new PlayerStateContext());
 
 	m_pStateMove = new PlayerState_Move(m_pStateMachine, this);
 	m_pStateMachine->AddState(m_pStateMove, PlayerStateEnum::MOVE);

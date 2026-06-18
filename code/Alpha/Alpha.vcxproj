@@ -533,6 +533,7 @@
     <ClInclude Include="Configuration.h" />
     <ClInclude Include="Objects\Boss\Proto\BossGameObject.h" />
     <ClInclude Include="Objects\Player\PlayerGameObject.h" />
+    <ClInclude Include="Objects\Player\States\PlayerStateContext.h" />
     <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_PrepareDash.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
