@@ -10,12 +10,15 @@ StateMachine::StateMachine()
 	: m_states()
 	, m_currentState(0)
 	, m_nextState(0)
+	, m_pContext(nullptr)
 { }
 
 StateMachine::~StateMachine()
 {
 	for (IState* pState : m_states)
 		delete pState;
+
+	delete m_pContext;
 }
 
 void StateMachine::Init(uint32_t stateCount)
@@ -63,4 +66,19 @@ uint32_t StateMachine::GetCurrentState() const
 bool StateMachine::IsInState(uint32_t stateIndex) const
 {
 	return m_currentState == stateIndex;
+}
+
+void StateMachine::SetContext(void* pContext)
+{
+	m_pContext = pContext;
+}
+
+void* StateMachine::GetContext()
+{
+	return m_pContext;
+}
+
+const void* StateMachine::GetContext() const
+{
+	return m_pContext;
 }
