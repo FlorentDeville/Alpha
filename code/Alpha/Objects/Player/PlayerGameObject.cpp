@@ -160,7 +160,6 @@ void PlayerGameObject::SetCameraModeLocked()
 
 void PlayerGameObject::ShowDashCircle()
 {
-	m_pDashCircleObject->GetTransform().SetLocalTranslation(GetTransform().GetWorldPosition());
 	m_pDashCircleMesh->SetEnabled(true);
 }
 
