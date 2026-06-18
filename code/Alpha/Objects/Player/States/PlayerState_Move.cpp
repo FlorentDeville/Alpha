@@ -7,6 +7,7 @@
 #include "Alpha/Bullets/BulletSubsystem.h"
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Player/PlayerGameObject.h"
+#include "Alpha/Objects/Player/States/PlayerStateContext.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
 
 #include "Systems/Game/GameContext.h"
@@ -16,7 +17,6 @@
 PlayerState_Move::PlayerState_Move(StateMachine* pMachine, PlayerGameObject* pPlayer)
 	: IState(pMachine)
 	, m_pPlayer(pPlayer)
-	, m_counterBulletIndex(UINT32_MAX)
 { }
 
 void PlayerState_Move::OnEnter()
@@ -55,18 +55,18 @@ void PlayerState_Move::OnUpdate()
 		transform.SetLocalTx(newLocalTx);
 	}
 
+	PlayerStateContext* pContext = GetContext<PlayerStateContext>();
+
 	if (GameCommands::Counter())
 	{
-		//Core::LogModule::Get().LogInfo("Command Counter triggered");
-
-		if (m_counterBulletIndex != UINT32_MAX)
+		if (pContext->m_counterableBulletIndex != UINT32_MAX)
 		{
 			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
 
-			const Core::Vec4f position = bulletSubsystem->GetBulletPosition(m_counterBulletIndex);
+			const Core::Vec4f position = bulletSubsystem->GetBulletPosition(pContext->m_counterableBulletIndex);
 			m_pPlayer->SpawnCounteredBullet(position);
 
-			bulletSubsystem->KillBullet(m_counterBulletIndex);
+			bulletSubsystem->KillBullet(pContext->m_counterableBulletIndex);
 		}
 	}
 
@@ -77,13 +77,8 @@ void PlayerState_Move::OnUpdate()
 			GoTo(PlayerStateEnum::PREPARE_DASH);
 		}		
 	}
-	m_counterBulletIndex = UINT32_MAX;
+	pContext->m_counterableBulletIndex = UINT32_MAX;
 }
 
 void PlayerState_Move::OnExit()
 { }
-
-void PlayerState_Move::SetCounterBulletIndex(uint32_t index)
-{
-	m_counterBulletIndex = index;
-}

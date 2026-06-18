@@ -36,12 +36,14 @@ PlayerGameObject::PlayerGameObject()
 	, m_maxHp()
 	, m_speed()
 	, m_pStateMachine(nullptr)
-	, m_pStateMove(nullptr)
 	, m_pCounteredBulletWave(nullptr)
 	, m_counteredBulletWaveIndex(UINT32_MAX)
 	, m_cameraMode(TRACK)
 	, m_pDashCircleObject(nullptr)
 	, m_pDashCircleMesh(nullptr)
+	, m_pDashTargetObject(nullptr)
+	, m_pDashTargetMesh(nullptr)
+	, m_pPlayerStateContext(nullptr)
 {
 	m_pCamera = new Rendering::Camera();
 }
@@ -66,13 +68,14 @@ void PlayerGameObject::OnStartGame()
 
 	m_currentHp = m_maxHp;
 
+	m_pPlayerStateContext = new PlayerStateContext();
+	m_pPlayerStateContext->m_counterableBulletIndex = UINT32_MAX;
+
 	m_pStateMachine = new StateMachine();
 	m_pStateMachine->Init(PlayerStateEnum::COUNT);
-	m_pStateMachine->SetContext(new PlayerStateContext());
+	m_pStateMachine->SetContext(m_pPlayerStateContext);
 
-	m_pStateMove = new PlayerState_Move(m_pStateMachine, this);
-	m_pStateMachine->AddState(m_pStateMove, PlayerStateEnum::MOVE);
-
+	m_pStateMachine->AddState(new PlayerState_Move(m_pStateMachine, this), PlayerStateEnum::MOVE);
 	m_pStateMachine->AddState(new PlayerState_PrepareDash(m_pStateMachine, this), PlayerStateEnum::PREPARE_DASH);
 	m_pStateMachine->AddState(new PlayerState_Dash(m_pStateMachine, this), PlayerStateEnum::DASH);
 
@@ -113,8 +116,7 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 
 	case SID("counter_bullet_collision"):
 	{
-		Core::LogModule::Get().LogInfo("Message counter_bullet_collision received");
-		m_pStateMove->SetCounterBulletIndex(static_cast<uint32_t>(msg.m_param));
+		m_pPlayerStateContext->m_counterableBulletIndex = static_cast<uint32_t>(msg.m_param);
 	}
 	break;
 

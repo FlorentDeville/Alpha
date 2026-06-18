@@ -18,10 +18,6 @@ public:
 	void OnUpdate() override;
 	void OnExit() override;
 
-	void SetCounterBulletIndex(uint32_t index);
-
 private:
 	PlayerGameObject* m_pPlayer;
-
-	uint32_t m_counterBulletIndex;
 };

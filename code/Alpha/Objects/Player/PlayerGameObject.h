@@ -22,6 +22,7 @@ namespace Systems
 	class MeshComponent;
 }
 
+class PlayerStateContext;
 class PlayerState_Move;
 class PlayerWaveCountered;
 class StateMachine;
@@ -89,7 +90,7 @@ private:
 	uint32_t m_currentHp;
 
 	StateMachine* m_pStateMachine;
-	PlayerState_Move* m_pStateMove;
+	PlayerStateContext* m_pPlayerStateContext;
 
 	PlayerWaveCountered* m_pCounteredBulletWave;
 	uint32_t m_counteredBulletWaveIndex;

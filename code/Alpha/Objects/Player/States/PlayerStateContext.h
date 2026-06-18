@@ -14,4 +14,6 @@ public:
 	//This is set PREPARE_DASH and used in DASH.
 	Core::Vec4f m_dashTargetRelativePosition;
 
+	//Index of the counterable bullet the player collided with.
+	uint32_t m_counterableBulletIndex;
 };
