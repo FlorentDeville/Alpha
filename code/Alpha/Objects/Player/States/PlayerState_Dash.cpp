@@ -17,16 +17,21 @@
 PlayerState_Dash::PlayerState_Dash(StateMachine* pMachine, PlayerGameObject* pPlayer)
 	: IState(pMachine)
 	, m_pPlayer(pPlayer)
+	, m_elapsedTime(0)
 { }
 
 void PlayerState_Dash::OnEnter()
 {
 	m_elapsedTime = 0;
+	Systems::GameMgr::GetClock()->SetTimeScale(0.1f);
 }
 
 void PlayerState_Dash::OnUpdate()
 {
-	float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+	if(GameCommands::Dash() == 0)
+		GoTo(PlayerStateEnum::MOVE);
+
+	/*float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	m_elapsedTime += dt;
 	const float DASH_DURATION = 0.2f;
 	if (m_elapsedTime >= DASH_DURATION)
@@ -60,8 +65,10 @@ void PlayerState_Dash::OnUpdate()
 	Core::Mat44f newLocalTx = localTx;
 	newLocalTx.SetRow(3, newPosition);
 
-	transform.SetLocalTx(newLocalTx);	
+	transform.SetLocalTx(newLocalTx);	*/
 }
 
 void PlayerState_Dash::OnExit()
-{ }
+{
+	Systems::GameMgr::GetClock()->SetTimeScale(1);
+}
