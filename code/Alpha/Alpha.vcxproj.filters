@@ -172,6 +172,9 @@
     <ClCompile Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\base.vs.hlsl">
@@ -293,6 +296,7 @@
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P2_A1.h" />
     <ClInclude Include="Objects\Boss\Ichi\Waves\Ichi_Wave_P3_A2.h" />
     <ClInclude Include="Objects\Player\States\PlayerStateContext.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="config.ini" />

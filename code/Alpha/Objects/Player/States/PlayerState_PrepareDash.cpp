@@ -65,56 +65,19 @@ void PlayerState_PrepareDash::OnUpdate()
 	{
 		if (direction.Length2() == 0)
 		{
+			m_pPlayer->HideDashTarget();
 			GoTo(PlayerStateEnum::MOVE);
 		}
 		else
 		{
 			GetContext<PlayerStateContext>()->m_dashTargetRelativePosition = direction;
-			GoTo(PlayerStateEnum::MOVE); //should go to dash
+			GoTo(PlayerStateEnum::DASH); //should go to dash
 		}
 	}
-
-	
-	/*float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
-	m_elapsedTime += dt;
-	const float DASH_DURATION = 0.2f;
-	if (m_elapsedTime >= DASH_DURATION)
-	{
-		GoTo(PlayerStateEnum::MOVE);
-		return;
-	}
-	
-	Systems::TransformComponent& transform = m_pPlayer->GetTransform();
-	const Core::Mat44f& localTx = transform.GetLocalTx();
-
-	const Core::Vec4f forward = localTx.GetZ();
-	const Core::Vec4f right = localTx.GetX();
-	const Core::Vec4f oldPosition = localTx.GetT();
-
-	Core::Vec4f direction;
-	if (GameCommands::MoveUp())
-		direction = direction + forward;
-	else if (GameCommands::MoveDown())
-		direction = direction - forward;
-
-	if (GameCommands::MoveLeft())
-		direction = direction - right;
-	else if (GameCommands::MoveRight())
-		direction = direction + right;
-
-	const float DASH_SPEED = 50;
-	direction.Normalize();
-	Core::Vec4f newPosition = oldPosition + direction * DASH_SPEED * dt;
-
-	Core::Mat44f newLocalTx = localTx;
-	newLocalTx.SetRow(3, newPosition);
-
-	transform.SetLocalTx(newLocalTx);	*/
 }
 
 void PlayerState_PrepareDash::OnExit()
 {
 	Systems::GameMgr::GetClock()->SetTimeScale(1);
 	m_pPlayer->HideDashCircle();
-	m_pPlayer->HideDashTarget();
 }
