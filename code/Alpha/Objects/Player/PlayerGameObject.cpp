@@ -189,8 +189,8 @@ void PlayerGameObject::SetDashTargetRelativePosition(const Core::Vec4f& relPosit
 
 void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
-	//if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
-	//	return;
+	if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
+		return;
 
 	BulletSubsystem* pBullets = BulletSubsystem::GetSubsystem();
 	pBullets->KillBullet(index);
