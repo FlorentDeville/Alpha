@@ -24,7 +24,17 @@ public:
 	void SetMaxSpeed(float maxSpeed);
 
 private:
+	enum InternalState
+	{
+		ACCELERATE,
+		CONSTANTE_SPEED,
+		DECELERATE,
+
+		COUNT
+	};
+
 	Ichi* m_pIchi;
+	InternalState m_internalState;
 
 	Core::Vec4f m_target;
 

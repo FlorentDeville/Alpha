@@ -6,6 +6,7 @@
 
 #include "Alpha/Objects/Boss/Ichi/Ichi.h"
 
+#include "Core/Log/LogModule.h"
 #include "Core/Math/Constants.h"
 
 #include "Systems/Game/GameContext.h"
@@ -21,6 +22,7 @@ IchiMotionTravel::IchiMotionTravel(StateMachine* pMachine, Ichi* pIchi)
 	, m_length2()
 	, m_speed()
 	, m_maxSpeed(5)
+	, m_internalState(InternalState::ACCELERATE)
 { }
 
 void IchiMotionTravel::OnEnter()
@@ -32,9 +34,14 @@ void IchiMotionTravel::OnEnter()
 	m_speed = 0;
 
 	//divide the path in 3 steps : accelerate to max speed, travel at max speed, decelerate to 0 speed
-	m_distanceAcc = m_length2 * 0.25f;
-	m_distanceMaxSpeed = m_distanceAcc * 3.5f;
-	m_distanceDec = m_length2 - m_distanceMaxSpeed;
+	//[0, 15%] : acceleration
+	//[15%, 85%] max speed
+	//[85%, 100%] decelerate
+	m_distanceAcc = m_length2 * 0.15f;
+	m_distanceMaxSpeed = m_length2 * 0.85f;
+	m_distanceDec = m_distanceAcc;
+
+	m_internalState = InternalState::ACCELERATE;
 }
 
 void IchiMotionTravel::OnUpdate()
@@ -46,47 +53,85 @@ void IchiMotionTravel::OnUpdate()
 	Core::Vec4f currentPosition = m_pIchi->GetTransform().GetWorldTx().GetT();
 	float distanceLeft = (currentPosition - m_target).Length2();
 
-	if (distanceLeft < 0.01f) //destination reached
-	{
-		m_pIchi->GetTransform().SetLocalTranslation(m_target);
-		m_pIchi->GetTransform().SetLocalRotation(Core::Quaternion());
-		GoTo(IchiMotionState::STOP);
-		return;
-	}
-
 	Core::Vec4f motionDirection = m_target - currentPosition;
 	motionDirection.Normalize();
 
 	float distanceAccomplished = m_length2 - distanceLeft;
-	if (distanceAccomplished <= m_distanceAcc)
+
+	switch (m_internalState)
 	{
-		float param = distanceAccomplished / m_distanceAcc;
-		m_speed = ((m_maxSpeed - MIN_SPEED) * param) + MIN_SPEED;
-
-		float rotation = ROTATION * param;
-
+	case ACCELERATE:
+	{
 		Core::Vec4f rotationAxis = Core::Vec4f(0, 1, 0, 0).Cross(motionDirection);
-		Core::Quaternion quat = Core::Quaternion::FromAxisAngle(rotationAxis, rotation);
-		m_pIchi->GetTransform().SetLocalRotation(quat);
 
+		if (distanceAccomplished <= m_distanceAcc)
+		{
+			float param = distanceAccomplished / m_distanceAcc;
+			m_speed = ((m_maxSpeed - MIN_SPEED) * param) + MIN_SPEED;
+
+			float rotation = ROTATION * param;
+	
+			Core::Quaternion quat = Core::Quaternion::FromAxisAngle(rotationAxis, rotation);
+			m_pIchi->GetTransform().SetLocalRotation(quat);
+		}
+		else
+		{
+			m_internalState = CONSTANTE_SPEED;
+
+			Core::Quaternion quat = Core::Quaternion::FromAxisAngle(rotationAxis, ROTATION);
+			m_pIchi->GetTransform().SetLocalRotation(quat);
+		}
 	}
-	else if (distanceAccomplished >= m_distanceMaxSpeed)
+	break;
+
+	case CONSTANTE_SPEED:
 	{
-		float param = (distanceAccomplished - m_distanceMaxSpeed) / m_distanceDec;
-		param = 1 - param;
-		m_speed = ((m_maxSpeed - MIN_SPEED) * param) + MIN_SPEED;
-		//Core::LogModule::Get().LogInfo("param %f", param);
-		float rotation = ROTATION * param;
+		if (distanceAccomplished >= m_distanceMaxSpeed)
+		{
+			m_internalState = DECELERATE;
+		}
+	}
+	break;
+
+	case DECELERATE:
+	{
 		Core::Vec4f rotationAxis = Core::Vec4f(0, 1, 0, 0).Cross(motionDirection);
-		Core::Quaternion quat = Core::Quaternion::FromAxisAngle(rotationAxis, rotation);
-		m_pIchi->GetTransform().SetLocalRotation(quat);
+
+		if (distanceLeft > 0)
+		{
+			float param = (distanceAccomplished - m_distanceMaxSpeed) / m_distanceDec;
+			param = 1 - param;
+			m_speed = ((m_maxSpeed - MIN_SPEED) * param) + MIN_SPEED;
+			float rotation = ROTATION * param;
+
+			Core::Quaternion quat = Core::Quaternion::FromAxisAngle(rotationAxis, rotation);
+			m_pIchi->GetTransform().SetLocalRotation(quat);
+		}
+		else
+		{
+			Core::Quaternion quat = Core::Quaternion::FromAxisAngle(rotationAxis, 0);
+			m_pIchi->GetTransform().SetLocalRotation(quat);
+			GoTo(IchiMotionState::STOP);
+			return;
+		}
+	}
+	break;
+
 	}
 
 	float currentDt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
+	float newDistance = m_speed * currentDt;
 
-	Core::Vec4f newPosition = currentPosition + motionDirection * m_speed * currentDt;
-
-	m_pIchi->GetTransform().SetLocalTranslation(newPosition);
+	if (distanceLeft < newDistance)
+	{
+		m_pIchi->GetTransform().SetLocalTranslation(m_target);
+	}
+	else
+	{
+		Core::Vec4f newPosition = currentPosition + motionDirection * m_speed * currentDt;
+		m_pIchi->GetTransform().SetLocalTranslation(newPosition);
+	}
+	
 }
 
 void IchiMotionTravel::OnExit()
