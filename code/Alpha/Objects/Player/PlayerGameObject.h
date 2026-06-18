@@ -55,6 +55,12 @@ public:
 	void ShowDashCircle();
 	void HideDashCircle();
 
+	void ShowDashTarget();
+	void HideDashTarget();
+
+	//Position relative to the player
+	void SetDashTargetRelativePosition(const Core::Vec4f& relPosition);
+
 private:
 	float m_speed;
 	Core::Vec4f m_cameraOffset;
@@ -101,9 +107,13 @@ private:
 	Systems::GameObject* m_pDashCircleObject;
 	Systems::MeshComponent* m_pDashCircleMesh;
 
+	Systems::GameObject* m_pDashTargetObject;
+	Systems::MeshComponent* m_pDashTargetMesh;
+
 	void OnBulletCollision(uint32_t index);
 
 	void UpdateCamera();
 
 	void OnStartGame_DashCircle();
+	void OnGameStart_DashTarget();
 };

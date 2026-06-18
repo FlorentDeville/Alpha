@@ -33,6 +33,34 @@ void PlayerState_Dash::OnUpdate()
 	if(GameCommands::Dash() == 0)
 		GoTo(PlayerStateEnum::MOVE);
 
+	const Core::Vec4f FORWARD(0, 0, 1, 0);
+	const Core::Vec4f RIGHT(1, 0, 0, 0);
+
+	Core::Vec4f direction(0, 0, 0, 1);
+	if (GameCommands::MoveUp())
+		direction = direction + FORWARD;
+	else if (GameCommands::MoveDown())
+		direction = direction - FORWARD;
+
+	if (GameCommands::MoveLeft())
+		direction = direction - RIGHT;
+	else if (GameCommands::MoveRight())
+		direction = direction + RIGHT;
+
+	direction.Normalize();
+	if (direction.Length2() > 0)
+	{
+		m_pPlayer->ShowDashTarget();
+
+		const float DASH_DISTANCE = 10;
+		direction = direction * DASH_DISTANCE;
+		direction.Set(3, 1);
+		m_pPlayer->SetDashTargetRelativePosition(direction);
+	}
+	else
+	{
+		m_pPlayer->HideDashTarget();
+	}
 	/*float dt = Systems::GameMgr::Get().GetWorld()->m_pClock->GetDeltaTime();
 	m_elapsedTime += dt;
 	const float DASH_DURATION = 0.2f;
@@ -74,4 +102,5 @@ void PlayerState_Dash::OnExit()
 {
 	Systems::GameMgr::GetClock()->SetTimeScale(1);
 	m_pPlayer->HideDashCircle();
+	m_pPlayer->HideDashTarget();
 }

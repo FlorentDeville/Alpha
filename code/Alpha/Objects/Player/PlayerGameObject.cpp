@@ -83,6 +83,7 @@ void PlayerGameObject::OnStartGame()
 	m_cameraMode = TRACK;
 
 	OnStartGame_DashCircle();
+	OnGameStart_DashTarget();
 }
 
 void PlayerGameObject::Update(float dt)
@@ -166,6 +167,21 @@ void PlayerGameObject::ShowDashCircle()
 void PlayerGameObject::HideDashCircle()
 {
 	m_pDashCircleMesh->SetEnabled(false);
+}
+
+void PlayerGameObject::ShowDashTarget()
+{
+	m_pDashTargetMesh->SetEnabled(true);
+}
+
+void PlayerGameObject::HideDashTarget()
+{
+	m_pDashTargetMesh->SetEnabled(false);
+}
+
+void PlayerGameObject::SetDashTargetRelativePosition(const Core::Vec4f& relPosition)
+{
+	m_pDashTargetObject->GetTransform().SetLocalTranslation(relPosition);
 }
 
 void PlayerGameObject::OnBulletCollision(uint32_t index)
@@ -256,5 +272,25 @@ void PlayerGameObject::OnStartGame_DashCircle()
 	}
 	
 	m_pDashCircleMesh->SetEnabled(false);
-	
+}
+
+void PlayerGameObject::OnGameStart_DashTarget()
+{
+	Systems::GameMgr& gameMgr = Systems::GameMgr::Get();
+
+	m_pDashTargetObject = gameMgr.FindGameObjectByName("dash_target");
+	if (!m_pDashTargetObject)
+	{
+		Core::LogModule::Get().LogError("Failed to find game object dash_target");
+		return;
+	}
+
+	m_pDashTargetMesh = m_pDashTargetObject->FindComponent<Systems::MeshComponent>();
+	if (!m_pDashTargetMesh)
+	{
+		Core::LogModule::Get().LogError("Failed to find mesh component dash_target");
+		return;
+	}
+
+	m_pDashTargetMesh->SetEnabled(false);
 }
