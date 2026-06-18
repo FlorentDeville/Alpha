@@ -2,7 +2,7 @@
 /* Copyright (C) 2026 Florent Devillechabrol <florent.devillechabrol@gmail.com>	*/
 /********************************************************************************/
 
-#include "Alpha/Objects/Player/States/PlayerState_Dash.h"
+#include "Alpha/Objects/Player/States/PlayerState_PrepareDash.h"
 
 #include "Alpha/Inputs/GameCommands.h"
 #include "Alpha/Objects/Player/PlayerGameObject.h"
@@ -14,13 +14,13 @@
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 
-PlayerState_Dash::PlayerState_Dash(StateMachine* pMachine, PlayerGameObject* pPlayer)
+PlayerState_PrepareDash::PlayerState_PrepareDash(StateMachine* pMachine, PlayerGameObject* pPlayer)
 	: IState(pMachine)
 	, m_pPlayer(pPlayer)
 	, m_elapsedTime(0)
 { }
 
-void PlayerState_Dash::OnEnter()
+void PlayerState_PrepareDash::OnEnter()
 {
 	m_elapsedTime = 0;
 	Systems::GameMgr::GetClock()->SetTimeScale(0.1f);
@@ -28,7 +28,7 @@ void PlayerState_Dash::OnEnter()
 	m_pPlayer->ShowDashCircle();
 }
 
-void PlayerState_Dash::OnUpdate()
+void PlayerState_PrepareDash::OnUpdate()
 {
 	if(GameCommands::Dash() == 0)
 		GoTo(PlayerStateEnum::MOVE);
@@ -98,7 +98,7 @@ void PlayerState_Dash::OnUpdate()
 	transform.SetLocalTx(newLocalTx);	*/
 }
 
-void PlayerState_Dash::OnExit()
+void PlayerState_PrepareDash::OnExit()
 {
 	Systems::GameMgr::GetClock()->SetTimeScale(1);
 	m_pPlayer->HideDashCircle();

@@ -144,7 +144,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Objects\Boss\Proto\BossGameObject.cpp" />
     <ClCompile Include="Objects\Player\PlayerGameObject.cpp" />
-    <ClCompile Include="Objects\Player\States\PlayerState_Dash.cpp" />
+    <ClCompile Include="Objects\Player\States\PlayerState_PrepareDash.cpp" />
     <ClCompile Include="Objects\Player\States\PlayerState_Move.cpp" />
     <ClCompile Include="Objects\Player\Waves\Player_Wave_Countered.cpp" />
     <ClCompile Include="Reflection\ReflectionGameTypes.cpp" />
@@ -534,7 +534,7 @@
     <ClInclude Include="Objects\Boss\Proto\BossGameObject.h" />
     <ClInclude Include="Objects\Player\PlayerGameObject.h" />
     <ClInclude Include="Objects\Player\States\PlayerStateEnum.h" />
-    <ClInclude Include="Objects\Player\States\PlayerState_Dash.h" />
+    <ClInclude Include="Objects\Player\States\PlayerState_PrepareDash.h" />
     <ClInclude Include="Objects\Player\States\PlayerState_Move.h" />
     <ClInclude Include="Objects\Player\Waves\Player_Wave_Countered.h" />
     <ClInclude Include="Reflection\ReflectionGameTypes.h" />

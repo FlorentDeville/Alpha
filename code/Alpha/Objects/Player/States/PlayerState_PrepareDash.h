@@ -8,11 +8,11 @@
 
 class PlayerGameObject;
 
-class PlayerState_Dash : public IState
+class PlayerState_PrepareDash : public IState
 {
 public:
-	PlayerState_Dash(StateMachine* pMachine, PlayerGameObject* pPlayer);
-	~PlayerState_Dash() = default;
+	PlayerState_PrepareDash(StateMachine* pMachine, PlayerGameObject* pPlayer);
+	~PlayerState_PrepareDash() = default;
 
 	void OnEnter() override;
 	void OnUpdate() override;
