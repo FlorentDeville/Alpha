@@ -16,8 +16,8 @@ Ichi_Phase1_Travel::Ichi_Phase1_Travel(StateMachine* pStateMachine, Ichi* pIchi)
 	, m_nextAttack(false)
 {
 	//these should not be hardcoded.
-	m_target[0] = Core::Vec4f(-25, 0, 15, 1);
-	m_target[1] = Core::Vec4f(25, 0, 15, 1);
+	m_target[0] = Core::Vec4f(-15, 0, 15, 1);
+	m_target[1] = Core::Vec4f(15, 0, 15, 1);
 }
 
 void Ichi_Phase1_Travel::OnEnter()
