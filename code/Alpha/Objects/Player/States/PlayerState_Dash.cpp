@@ -24,6 +24,8 @@ void PlayerState_Dash::OnEnter()
 {
 	m_elapsedTime = 0;
 	Systems::GameMgr::GetClock()->SetTimeScale(0.1f);
+
+	m_pPlayer->ShowDashCircle();
 }
 
 void PlayerState_Dash::OnUpdate()
@@ -71,4 +73,5 @@ void PlayerState_Dash::OnUpdate()
 void PlayerState_Dash::OnExit()
 {
 	Systems::GameMgr::GetClock()->SetTimeScale(1);
+	m_pPlayer->HideDashCircle();
 }

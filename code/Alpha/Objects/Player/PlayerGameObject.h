@@ -52,6 +52,9 @@ public:
 	void SetCameraModeTracking();
 	void SetCameraModeLocked();
 
+	void ShowDashCircle();
+	void HideDashCircle();
+
 private:
 	float m_speed;
 	Core::Vec4f m_cameraOffset;

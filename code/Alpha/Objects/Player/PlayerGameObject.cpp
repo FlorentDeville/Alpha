@@ -158,6 +158,17 @@ void PlayerGameObject::SetCameraModeLocked()
 	m_cameraMode = LOCK;
 }
 
+void PlayerGameObject::ShowDashCircle()
+{
+	m_pDashCircleObject->GetTransform().SetLocalTranslation(GetTransform().GetWorldPosition());
+	m_pDashCircleMesh->SetEnabled(true);
+}
+
+void PlayerGameObject::HideDashCircle()
+{
+	m_pDashCircleMesh->SetEnabled(false);
+}
+
 void PlayerGameObject::OnBulletCollision(uint32_t index)
 {
 	//if (m_pStateMachine->GetCurrentState() == PlayerStateEnum::DASH)
