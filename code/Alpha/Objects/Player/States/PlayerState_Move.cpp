@@ -72,11 +72,9 @@ void PlayerState_Move::OnUpdate()
 
 	if (GameCommands::Dash())
 	{
-		//if (direction.Length2() != 0)
-		{
-			GoTo(PlayerStateEnum::PREPARE_DASH);
-		}		
+		GoTo(PlayerStateEnum::PREPARE_DASH);		
 	}
+
 	pContext->m_counterableBulletIndex = UINT32_MAX;
 }
 
