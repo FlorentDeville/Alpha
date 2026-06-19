@@ -27,6 +27,7 @@ namespace Systems
 	class ISubsystem;
 	class GameComponent;
 	class LevelAsset;
+	class ParticleSystem;
 	class RenderPassBase;
 	class RenderPassBloom;
 	class RenderPassShadowMaps;
@@ -75,6 +76,7 @@ namespace Systems
 		void Debug_SetShowCollision(bool show);
 
 		static IClockSubsystem* GetClock();
+		static ParticleSystem* GetParticleSystem();
 
 	private:
 		//Loading

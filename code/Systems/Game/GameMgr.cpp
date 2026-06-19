@@ -312,6 +312,11 @@ namespace Systems
 		return GameMgr::Get().GetWorld()->m_pClock;
 	}
 
+	ParticleSystem* GameMgr::GetParticleSystem()
+	{
+		return GameMgr::Get().GetWorld()->m_pParticleSystem;
+	}
+
 	bool GameMgr::IsLevelAlreadyLoaded(Systems::NewAssetId id) const
 	{
 		for (const LevelAsset* pLevel : m_loadedLevels)
