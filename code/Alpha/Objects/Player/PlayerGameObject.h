@@ -8,6 +8,9 @@
 
 #include "Systems/Assets/AssetObjects/MaterialInstance/MaterialInstanceAsset.h"
 #include "Systems/Assets/AssetObjects/Mesh/MeshAsset.h"
+#include "Systems/Assets/AssetObjects/ParticleEffect/ParticleEffectAsset.h"
+
+#include "Systems/Game/Subsystems/Particle/ParticleEffectHandle.h"
 #include "Systems/GameComponent/ComponentRef/ComponentRef.h"
 #include "Systems/GameComponent/UI/UIBaseComponent.h"
 #include "Systems/Objects/GameObject.h"
@@ -74,6 +77,8 @@ private:
 	Systems::HardAssetRef<Systems::MeshAsset> m_counteredBulletMesh;
 	Systems::HardAssetRef<Systems::MaterialInstanceAsset> m_counteredBulletMaterial;
 
+	Systems::HardAssetRef<Systems::ParticleEffectAsset> m_engineEffect;
+
 	START_REFLECTION(PlayerGameObject)
 		ADD_BASETYPE(Systems::GameObject)
 		ADD_FIELD(m_speed)
@@ -83,6 +88,7 @@ private:
 		ADD_FIELD(m_totalHealthComp)
 		ADD_FIELD(m_counteredBulletMesh)
 		ADD_FIELD(m_counteredBulletMaterial)
+		ADD_FIELD(m_engineEffect)
 	END_REFLECTION()
 
 	Rendering::Camera* m_pCamera;
@@ -111,10 +117,16 @@ private:
 	Systems::GameObject* m_pDashTargetObject;
 	Systems::MeshComponent* m_pDashTargetMesh;
 
+	Systems::ParticleEffectHandle m_engineEffectHandle;
+
 	void OnBulletCollision(uint32_t index);
 
 	void UpdateCamera();
 
 	void OnStartGame_DashCircle();
 	void OnGameStart_DashTarget();
+
+	void SpawnAndPlayEngineEffect();
+	void KillEngineEffect();
+	void UpdateEngineEffect();
 };

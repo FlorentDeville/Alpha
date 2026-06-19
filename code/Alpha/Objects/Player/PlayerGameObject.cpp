@@ -23,10 +23,13 @@
 #include "Rendering/Camera.h"
 
 #include "Systems/GameComponent/MeshComponent.h"
+#include "Systems/GameComponent/RenderableComponent.h"
 #include "Systems/Game/GameContext.h"
 #include "Systems/Game/GameMgr.h"
 #include "Systems/Game/Subsystems/Camera/CameraSubsystem.h"
+#include "Systems/Game/Subsystems/Clock/IClockSubsystem.h"
 #include "Systems/Game/Subsystems/Message/GameMessage.h"
+#include "Systems/Game/Subsystems/Particle/ParticleSystem.h"
 
 #include <cmath>
 
@@ -90,6 +93,8 @@ void PlayerGameObject::OnStartGame()
 
 	OnStartGame_DashCircle();
 	OnGameStart_DashTarget();
+
+	SpawnAndPlayEngineEffect();
 }
 
 void PlayerGameObject::Update(float dt)
@@ -97,6 +102,8 @@ void PlayerGameObject::Update(float dt)
 	BaseClass::Update(dt);
 
 	m_pStateMachine->Update();
+
+	UpdateEngineEffect();
 }
 
 void PlayerGameObject::PostUpdate()
@@ -128,6 +135,8 @@ void PlayerGameObject::HandleMessage(const Systems::GameMessage& msg)
 void PlayerGameObject::OnDestroyGame()
 {
 	BaseClass::OnDestroyGame();
+
+	KillEngineEffect();
 
 	Systems::GameContext* pContext = Systems::GameMgr::Get().GetWorld();
 	pContext->m_pCameraSubsystem->PopCamera();
@@ -298,4 +307,51 @@ void PlayerGameObject::OnGameStart_DashTarget()
 	}
 
 	m_pDashTargetMesh->SetEnabled(false);
+}
+
+void PlayerGameObject::SpawnAndPlayEngineEffect()
+{
+	if (!m_engineEffect.GetPtr())
+		return;
+
+	//calculate effect transform
+	const Systems::RenderableComponent* pRenderable = FindComponent<Systems::RenderableComponent>();
+	if (!pRenderable)
+		return;
+
+	if (!pRenderable->GetMesh())
+		return;
+
+	const Core::Array<Systems::AttachPoint>& apArray = pRenderable->GetMesh()->GetAttachPoints();
+	if (apArray.GetSize() == 0)
+		return;
+
+	Core::Mat44f effectTx = apArray[0].GetLocator().GetMatrix() * pRenderable->GetLocalTx().GetMatrix() * GetTransform().GetWorldTx();
+
+	//now spawn and play
+	Systems::ParticleSystem* pParticle = Systems::GameMgr::GetParticleSystem();
+	Systems::IClockSubsystem* pClock = Systems::GameMgr::GetClock();
+
+	m_engineEffectHandle = pParticle->SpawnEffect(m_engineEffect.GetPtr(), effectTx, pClock->GetTime());
+	pParticle->Play(m_engineEffectHandle);
+}
+
+void PlayerGameObject::KillEngineEffect()
+{
+	Systems::ParticleSystem* pParticle = Systems::GameMgr::GetParticleSystem();
+	pParticle->KillEffect(m_engineEffectHandle);
+	m_engineEffectHandle = Systems::ParticleEffectHandle();
+}
+
+void PlayerGameObject::UpdateEngineEffect()
+{
+	if (!m_engineEffectHandle.IsValid())
+		return;
+
+	const Systems::RenderableComponent* pRenderable = FindComponent<Systems::RenderableComponent>();
+	const Core::Array<Systems::AttachPoint>& apArray = pRenderable->GetMesh()->GetAttachPoints();
+	Core::Mat44f effectTx = apArray[0].GetLocator().GetMatrix() * pRenderable->GetLocalTx().GetMatrix() * GetTransform().GetWorldTx();
+
+	Systems::ParticleSystem* pParticle = Systems::GameMgr::GetParticleSystem();
+	pParticle->UpdateTransform(m_engineEffectHandle, effectTx);
 }
