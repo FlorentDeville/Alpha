@@ -290,6 +290,7 @@ namespace Editors
 
 			pContext->m_pParticleSystem->KillAllEffect();
 			m_selectedEffectHandle = pContext->m_pParticleSystem->SpawnEffect(pEffect, Core::Mat44f::CreateIdentity(), Systems::Clock::Get().GetApplicationTime());
+			pContext->m_pParticleSystem->Play(m_selectedEffectHandle);
 		}
 	}
 
