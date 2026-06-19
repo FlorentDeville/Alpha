@@ -9,6 +9,7 @@
 #include "Alpha/Objects/Boss/BaseBoss.h"
 #include "Alpha/Objects/Player/States/PlayerStateContext.h"
 #include "Alpha/Objects/Player/States/PlayerStateEnum.h"
+#include "Alpha/Objects/Player/States/PlayerState_Counter.h"
 #include "Alpha/Objects/Player/States/PlayerState_Dash.h"
 #include "Alpha/Objects/Player/States/PlayerState_Move.h"
 #include "Alpha/Objects/Player/States/PlayerState_PrepareDash.h"
@@ -81,6 +82,7 @@ void PlayerGameObject::OnStartGame()
 	m_pStateMachine->AddState(new PlayerState_Move(m_pStateMachine, this), PlayerStateEnum::MOVE);
 	m_pStateMachine->AddState(new PlayerState_PrepareDash(m_pStateMachine, this), PlayerStateEnum::PREPARE_DASH);
 	m_pStateMachine->AddState(new PlayerState_Dash(m_pStateMachine, this), PlayerStateEnum::DASH);
+	m_pStateMachine->AddState(new PlayerState_Counter(m_pStateMachine, this), PlayerStateEnum::COUNTER);
 
 	BaseBoss* pBoss = Systems::GameMgr::Get().FindGameObject<BaseBoss>();
 	m_pCounteredBulletWave = new PlayerWaveCountered(m_counteredBulletMesh.GetPtr(), m_counteredBulletMaterial.GetPtr(), this, pBoss);

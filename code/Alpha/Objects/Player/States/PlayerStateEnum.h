@@ -9,6 +9,7 @@ enum PlayerStateEnum
 	MOVE,
 	PREPARE_DASH,
 	DASH,
+	COUNTER,
 
 	COUNT
 };
