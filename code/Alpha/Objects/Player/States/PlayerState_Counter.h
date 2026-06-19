@@ -6,6 +6,13 @@
 
 #include "Alpha/StateMachine/IState.h"
 
+#include "Core/Math/Quaternion.h"
+
+namespace Systems
+{
+	class RenderableComponent;
+}
+
 class PlayerGameObject;
 
 class PlayerState_Counter : public IState
@@ -20,4 +27,10 @@ public:
 
 private:
 	PlayerGameObject* m_pPlayer;
+
+	Systems::RenderableComponent* m_pRenderable;
+
+	Core::Quaternion m_startRotation;
+	float m_yAngle;
+	float m_direction;
 };

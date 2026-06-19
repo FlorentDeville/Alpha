@@ -59,15 +59,7 @@ void PlayerState_Move::OnUpdate()
 
 	if (GameCommands::Counter())
 	{
-		if (pContext->m_counterableBulletIndex != UINT32_MAX)
-		{
-			BulletSubsystem* bulletSubsystem = BulletSubsystem::GetSubsystem();
-
-			const Core::Vec4f position = bulletSubsystem->GetBulletPosition(pContext->m_counterableBulletIndex);
-			m_pPlayer->SpawnCounteredBullet(position);
-
-			bulletSubsystem->KillBullet(pContext->m_counterableBulletIndex);
-		}
+		GoTo(PlayerStateEnum::COUNTER);
 	}
 
 	if (GameCommands::Dash())
