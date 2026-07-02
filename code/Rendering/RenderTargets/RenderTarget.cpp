@@ -28,6 +28,10 @@ namespace Rendering
 	{ }
 
 	RenderTarget::RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor)
+		: RenderTarget(width, height, format, clearColor, 1)
+	{ }
+
+	RenderTarget::RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor, uint32_t sampleCount)
 		: m_textureId()
 		, m_pTexture(nullptr)
 		, m_rtv()
@@ -47,12 +51,23 @@ namespace Rendering
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
 		ID3D12Device2* pDevice = renderModule.GetDx12Device();
 
-		uint32_t sampleCount = 1;
-		uint32_t qualityLevel = 0;
+		//check the quality level for the given sample count
+		uint32_t maxQualityLevel = 1;
+		if (sampleCount > 1)
+		{
+			uint32_t backBufferMaxQualityLevel = 0;
+			Rendering::RenderModule::Get().CheckMSAASupport(format, sampleCount, backBufferMaxQualityLevel);
+
+			BufferFormat depthBufferFormat = BufferFormat::D32_FLOAT;
+			uint32_t depthBufferMaxQualityLevel = 0;
+			Rendering::RenderModule::Get().CheckMSAASupport(depthBufferFormat, sampleCount, depthBufferMaxQualityLevel);
+
+			maxQualityLevel = backBufferMaxQualityLevel < depthBufferMaxQualityLevel ? backBufferMaxQualityLevel : depthBufferMaxQualityLevel;
+		}
 
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_pTexture, m_textureId);
-		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format, sampleCount, qualityLevel);
+		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format, sampleCount, maxQualityLevel - 1);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_pTexture->GetResource(), nullptr, m_rtv);
@@ -61,7 +76,7 @@ namespace Rendering
 		m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
 		m_dsv = m_pDSVHeap->GetNewHandle();
-		CreateDepthBuffer(width, height, BufferFormat::D32_FLOAT, sampleCount, qualityLevel);
+		CreateDepthBuffer(width, height, BufferFormat::D32_FLOAT, sampleCount, maxQualityLevel - 1);
 	}
 
 	RenderTarget::~RenderTarget()
