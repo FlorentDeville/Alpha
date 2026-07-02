@@ -8,6 +8,7 @@
 
 #include "Rendering/CommandQueue.h"
 #include "Rendering/Internal/BufferFormatToDx12.h"
+#include "Rendering/Internal/BufferStateToDx12.h"
 #include "Rendering/RenderModule.h"
 #include "Rendering/Texture/DDSTextureLoader12.h"
 
@@ -303,6 +304,15 @@ namespace Rendering
 		return ptr;
 	}
 
+	void Texture::ResolveSubresource(Texture* pSrcBuffer)
+	{
+		RenderModule& renderModule = RenderModule::Get();
+		ID3D12GraphicsCommandList2* pCommandList = renderModule.GetRenderCommandList();
+
+		DXGI_FORMAT dx12Format = m_pResource->GetDesc().Format;
+		pCommandList->ResolveSubresource(m_pResource, 0, pSrcBuffer->GetResource(), 0, dx12Format);
+	}
+
 	void Texture::TransitionTo(D3D12_RESOURCE_STATES nextState)
 	{
 		if (nextState == m_currentState)
@@ -315,6 +325,12 @@ namespace Rendering
 		pCommandList->ResourceBarrier(1, &barrier);
 
 		m_currentState = nextState;
+	}
+
+	void Texture::TransitionTo(BufferState nextState)
+	{
+		D3D12_RESOURCE_STATES dx12State = Internal::GetDx12BufferState(nextState);
+		TransitionTo(dx12State);
 	}
 
 	void Texture::TransitionToShaderResource()

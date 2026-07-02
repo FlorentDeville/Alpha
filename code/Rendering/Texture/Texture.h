@@ -5,6 +5,7 @@
 #pragma once
 
 #include "Rendering/BufferFormat.h"
+#include "Rendering/BufferState.h"
 
 #include <string>
 #include <d3d12.h>
@@ -36,7 +37,10 @@ namespace Rendering
 
 		void* Map();
 
+		void ResolveSubresource(Texture* pSrcBuffer);
+
 		void TransitionTo(D3D12_RESOURCE_STATES nextState);
+		void TransitionTo(BufferState nextState);
 		void TransitionToShaderResource();
 
 		const ID3D12DescriptorHeap* GetSRV() const;
