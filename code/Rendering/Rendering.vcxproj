@@ -13,8 +13,10 @@
   <ItemGroup>
     <ClInclude Include="BaseShape.h" />
     <ClInclude Include="BufferHandle.h" />
+    <ClInclude Include="BufferState.h" />
     <ClInclude Include="Internal\BlendFactorToDx12.h" />
     <ClInclude Include="Internal\BlendOperationToDx12.h" />
+    <ClInclude Include="Internal\BufferStateToDx12.h" />
     <ClInclude Include="Internal\Buffer\BufferManager.h" />
     <ClInclude Include="Internal\Buffer\Dx12Buffer.h" />
     <ClInclude Include="Internal\DepthWriteMaskToDx12.h" />
@@ -78,6 +80,7 @@
     <ClCompile Include="InputLayout\InputLayout.cpp" />
     <ClCompile Include="Internal\BlendFactorToDx12.cpp" />
     <ClCompile Include="Internal\BlendOperationToDx12.cpp" />
+    <ClCompile Include="Internal\BufferStateToDx12.cpp" />
     <ClCompile Include="Internal\Buffer\BufferManager.cpp" />
     <ClCompile Include="Internal\BufferFormatToDx12.cpp" />
     <ClCompile Include="Internal\DepthWriteMaskToDx12.cpp" />

@@ -162,6 +162,12 @@
     <ClInclude Include="Internal\FillModeToDx12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BufferState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Internal\BufferStateToDx12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DescriptorHeap.cpp">
@@ -279,6 +285,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Internal\FillModeToDx12.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Internal\BufferStateToDx12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
