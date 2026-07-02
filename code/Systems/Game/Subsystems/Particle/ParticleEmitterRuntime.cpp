@@ -13,6 +13,7 @@
 #include "Systems/Assets/AssetObjects/Texture/Texture2DAsset.h"
 #include "Systems/Rendering/Renderable/RenderableParticles.h"
 #include "Systems/Rendering/Renderable/RenderableScene.h"
+#include "Systems/Rendering/RenderSettings.h"
 
 #include <cmath>
 #include <random>
@@ -78,6 +79,9 @@ namespace Systems
 		desc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ONE;
 		desc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ZERO;
 		desc.m_depthStencilDesc.m_writeMask = Rendering::DepthWriteMask::ZERO;
+
+		desc.m_sampleDesc.m_count = RenderSettings::s_msaaSampleCount;
+		desc.m_sampleDesc.m_quality = RenderSettings::s_msaaQualityLevel;
 
 		m_pPso = new Rendering::PipelineState();
 		m_pPso->Init_Generic(desc);
