@@ -14,6 +14,10 @@ namespace Rendering
 		{
 			switch (format)
 			{
+			case BufferFormat::D32_FLOAT:
+				return DXGI_FORMAT_D32_FLOAT;
+				break;
+
 			case BufferFormat::R32_FLOAT:
 				return DXGI_FORMAT_R32_FLOAT;
 				break;
