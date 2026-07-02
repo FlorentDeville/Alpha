@@ -38,5 +38,7 @@ namespace Systems
 		Rendering::DescriptorHeap* m_pShadowMapSrvHeap;
 		Rendering::RenderTarget** m_pShadowRenderTargets;
 		uint32_t m_shadowRenderTargetsCount;
+
+		void RenderMsaaScene(const RenderableScene& scene);
 	};
 }

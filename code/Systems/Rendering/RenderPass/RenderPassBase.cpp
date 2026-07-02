@@ -73,11 +73,29 @@ namespace Systems
 	}
 
 	void RenderPassBase::PreRender(const RenderableScene& scene)
-	{
-		m_pRenderTarget->BeginScene();
-	}
+	{ }
 
 	void RenderPassBase::Render(const RenderableScene& scene)
+	{
+		m_pRenderTarget->BeginScene();
+		RenderMsaaScene(scene);
+		m_pRenderTarget->EndScene();
+	}
+
+	void RenderPassBase::PostRender(const RenderableScene& scene)
+	{ }
+
+	void RenderPassBase::ClearDepthBuffer()
+	{
+		m_pRenderTarget->ClearDepthBuffer();
+	}
+
+	Rendering::RenderTarget* RenderPassBase::GetRenderTarget()
+	{
+		return m_pRenderTarget;
+	}
+
+	void RenderPassBase::RenderMsaaScene(const RenderableScene& scene)
 	{
 		Rendering::RenderModule& renderModule = Rendering::RenderModule::Get();
 
@@ -165,20 +183,5 @@ namespace Systems
 		{
 			RenderObject(obj, lightSpace, perFrameData, lightsConstBuffer, m_pShadowMapSrvHeap);
 		}
-	}
-
-	void RenderPassBase::PostRender(const RenderableScene& scene)
-	{
-		m_pRenderTarget->EndScene();
-	}
-
-	void RenderPassBase::ClearDepthBuffer()
-	{
-		m_pRenderTarget->ClearDepthBuffer();
-	}
-
-	Rendering::RenderTarget* RenderPassBase::GetRenderTarget()
-	{
-		return m_pRenderTarget;
 	}
 }
