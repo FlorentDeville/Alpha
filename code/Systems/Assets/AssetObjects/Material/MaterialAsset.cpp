@@ -9,6 +9,8 @@
 #include "Rendering/RootSignature/RootSignature.h"
 #include "Rendering/Shaders/Shader.h"
 
+#include "Systems/Rendering/RenderSettings.h"
+
 namespace Systems
 {
 	MaterialAsset::MaterialAsset()
@@ -181,6 +183,9 @@ namespace Systems
 			desc.m_blendDesc.m_srcBlendAlpha = Rendering::BlendFactor::ONE;
 			desc.m_blendDesc.m_dstBlendAlpha = Rendering::BlendFactor::ZERO;
 		}
+
+		desc.m_sampleDesc.m_count = RenderSettings::s_msaaSampleCount;
+		desc.m_sampleDesc.m_quality = RenderSettings::s_msaaQualityLevel;
 
 		m_pPipelineState = new Rendering::PipelineState();
 		bool created = m_pPipelineState->Init_Generic(desc);
