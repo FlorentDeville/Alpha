@@ -21,6 +21,11 @@ namespace Rendering
 		, m_writeMask(DepthWriteMask::ALL)
 	{ }
 
+	SampleDesc::SampleDesc()
+		: m_count(1)
+		, m_quality(0)
+	{ }
+
 	PipelineStateDesc::PipelineStateDesc()
 		: m_pRs(nullptr)
 		, m_pVs(nullptr)
@@ -30,5 +35,6 @@ namespace Rendering
 		, m_blendDesc()
 		, m_depthStencilDesc()
 		, m_fillMode(FillMode::SOLID)
+		, m_sampleDesc()
 	{ }
 }

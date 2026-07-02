@@ -44,6 +44,16 @@ namespace Rendering
 		DepthWriteMask m_writeMask;
 	};
 
+	class SampleDesc
+	{
+	public:
+		SampleDesc();
+		~SampleDesc() = default;
+
+		uint32_t m_count;
+		uint32_t m_quality;
+	};
+
 	class PipelineStateDesc
 	{
 	public:
@@ -59,5 +69,6 @@ namespace Rendering
 		BufferFormat m_rtvFormat;
 		BlendDesc m_blendDesc; //only a single render target is supported
 		DepthStencilDesc m_depthStencilDesc;
+		SampleDesc m_sampleDesc;
 	};
 }

@@ -268,6 +268,7 @@ namespace Rendering
 			CD3DX12_PIPELINE_STATE_STREAM_DEPTH_STENCIL_FORMAT DSVFormat;
 			CD3DX12_PIPELINE_STATE_STREAM_RENDER_TARGET_FORMATS RTVFormats;
 			CD3DX12_PIPELINE_STATE_STREAM_BLEND_DESC BlendDesc;
+			CD3DX12_PIPELINE_STATE_STREAM_SAMPLE_DESC SampleDesc;
 		};
 
 		D3D12_RT_FORMAT_ARRAY rtvFormats = {};
@@ -281,6 +282,10 @@ namespace Rendering
 		CD3DX12_DEPTH_STENCIL_DESC depthStencilState = CD3DX12_DEPTH_STENCIL_DESC(CD3DX12_DEFAULT());
 		depthStencilState.DepthFunc = GetDx12DepthComparisonMode(desc.m_depthStencilDesc.m_depthFunction);
 		depthStencilState.DepthWriteMask = Internal::GetDx12DepthWriteMask(desc.m_depthStencilDesc.m_writeMask);
+
+		DXGI_SAMPLE_DESC sampleDesc;
+		sampleDesc.Count = desc.m_sampleDesc.m_count;
+		sampleDesc.Quality = desc.m_sampleDesc.m_quality;
 
 		CD3DX12_BLEND_DESC blendDesc = CD3DX12_BLEND_DESC(CD3DX12_DEFAULT());
 		if (desc.m_blendDesc.m_blendEnabled)
@@ -309,6 +314,7 @@ namespace Rendering
 		pipelineStateStream.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 		pipelineStateStream.RTVFormats = rtvFormats;
 		pipelineStateStream.BlendDesc = blendDesc;
+		pipelineStateStream.SampleDesc = sampleDesc;
 		
 		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStreamDesc = {
 			sizeof(PipelineStateStream), &pipelineStateStream
