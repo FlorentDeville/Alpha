@@ -767,6 +767,18 @@ namespace Rendering
 		pCommandList->SetGraphicsRootDescriptorTable(rootSigIndex, pSrv->GetGPUDescriptorHandleForHeapStart());
 	}
 
+	void RenderModule::CheckMSAASupport(BufferFormat format, uint32_t sampleCount, uint32_t& maxQualityLevels)
+	{
+		D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS data;
+		data.Format = Internal::GetDx12BufferFormat(format);
+		data.SampleCount = sampleCount;
+		data.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
+
+		m_pDevice->GetDx12Device()->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &data, sizeof(data));
+
+		maxQualityLevels = data.NumQualityLevels;
+	}
+
 	void RenderModule::EnableDebugLayer()
 	{
 #if defined(_DEBUG)

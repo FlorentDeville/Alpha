@@ -17,6 +17,7 @@
 
 #include "Core/Singleton.h"
 
+#include "Rendering/BufferFormat.h"
 #include "Rendering/Font/FontId.h"
 #include "Rendering/DescriptorHeap.h"
 #include "Rendering/PipelineState/PipelineState.h"
@@ -125,6 +126,12 @@ namespace Rendering
 
 		void BindNullCubemap(uint32_t rootSigIndex);
 		void BindNullTexture2D(uint32_t rootSigIndex);
+
+		//Check what quality levels are supported for a given format and sample count.
+		//The valid quality levels are in [0, maxQualityLevels - 1].
+		//sampleCount is the number of subpixels per pixel.
+		//qualityLevel is the algorithm used to sample the subpixels and is specific to hardware.
+		void CheckMSAASupport(BufferFormat format, uint32_t sampleCount, uint32_t& maxQualityLevels);
 
 	private:
 		DirectX::XMUINT2 m_gameResolution;
