@@ -84,6 +84,7 @@
     <ClInclude Include="GameComponent\MeshComponent.h" />
     <ClInclude Include="Assets\AssetObjects\Mesh\AttachPoint.h" />
     <ClInclude Include="GameComponent\RenderableComponent.h" />
+    <ClInclude Include="Rendering\RenderSettings.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\AssetMgr.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="GameComponent\MeshComponent.cpp" />
     <ClCompile Include="Assets\AssetObjects\Mesh\AttachPoint.cpp" />
     <ClCompile Include="GameComponent\RenderableComponent.cpp" />
+    <ClCompile Include="Rendering\RenderSettings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\AssetRef\HardAssetRef.inl" />
