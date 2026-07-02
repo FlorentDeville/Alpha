@@ -47,9 +47,12 @@ namespace Rendering
 		Rendering::TextureMgr& textureMgr = Rendering::TextureMgr::Get();
 		ID3D12Device2* pDevice = renderModule.GetDx12Device();
 
+		uint32_t sampleCount = 1;
+		uint32_t qualityLevel = 0;
+
 		//Create render texture and rtv
 		textureMgr.CreateTexture(&m_pTexture, m_textureId);
-		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format);
+		m_pTexture->InitAsRenderTarget(width, height, m_clearColor, format, sampleCount, qualityLevel);
 
 		m_rtv = m_pRTVHeap->GetNewHandle();
 		pDevice->CreateRenderTargetView(m_pTexture->GetResource(), nullptr, m_rtv);
@@ -58,7 +61,7 @@ namespace Rendering
 		m_viewport = CD3DX12_VIEWPORT(0.f, 0.f, static_cast<float>(width), static_cast<float>(height));
 
 		m_dsv = m_pDSVHeap->GetNewHandle();
-		CreateDepthBuffer(width, height);
+		CreateDepthBuffer(width, height, BufferFormat::D32_FLOAT, sampleCount, qualityLevel);
 	}
 
 	RenderTarget::~RenderTarget()
@@ -143,19 +146,21 @@ namespace Rendering
 		return m_pTexture;
 	}
 
-	void RenderTarget::CreateDepthBuffer(int width, int height)
+	void RenderTarget::CreateDepthBuffer(int width, int height, BufferFormat format, uint32_t sampleCount, uint32_t qualityLevel)
 	{
 		RenderModule& renderModule = RenderModule::Get();
 		// Flush any GPU commands that might be referencing the depth buffer.
 		renderModule.GetCopyCommandQueue()->Flush();
 		renderModule.GetRenderCommandQueue()->Flush();
 
+		DXGI_FORMAT dxFormat = Internal::GetDx12BufferFormat(format);
+
 		D3D12_CLEAR_VALUE optimizedClearValue = {};
-		optimizedClearValue.Format = DXGI_FORMAT_D32_FLOAT;
+		optimizedClearValue.Format = dxFormat;
 		optimizedClearValue.DepthStencil = { 1.0f, 0 };
 
 		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, width, height, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(dxFormat, width, height, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
 
 		if (m_pDepthBuffer)
 			m_pDepthBuffer->Release();
@@ -173,7 +178,7 @@ namespace Rendering
 
 		// Update the depth-stencil view.
 		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		dsvDesc.Format = dxFormat;
 		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 		dsvDesc.Texture2D.MipSlice = 0;
 		dsvDesc.Flags = D3D12_DSV_FLAG_NONE;

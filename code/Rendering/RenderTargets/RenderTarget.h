@@ -7,6 +7,7 @@
 #include "Rendering/BufferFormat.h"
 #include "Rendering/Texture/TextureId.h"
 
+#include <cstdint>
 #include <d3d12.h>
 
 namespace Core
@@ -53,6 +54,6 @@ namespace Rendering
 
 		float m_clearColor[4];
 
-		void CreateDepthBuffer(int width, int height);
+		void CreateDepthBuffer(int width, int height, BufferFormat format, uint32_t sampleCount, uint32_t qualityLevel);
 	};
 }
