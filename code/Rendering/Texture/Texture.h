@@ -25,6 +25,7 @@ namespace Rendering
 		void InitAsDDS(const unsigned char* pBuffer, uint64_t bufferSize);
 
 		void InitAsRenderTarget(int width, int height, float* clearColor, BufferFormat format);
+		void InitAsRenderTarget(int width, int height, float* clearColor, BufferFormat format, uint32_t msaaSampleCount, uint32_t msaaQualityLevel);
 
 		void InitAsReadbackBuffer(int width, int height, int depth);
 

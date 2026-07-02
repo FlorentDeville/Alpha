@@ -132,12 +132,17 @@ namespace Rendering
 
 	void Texture::InitAsRenderTarget(int width, int height, float* clearColor, BufferFormat format)
 	{
+		InitAsRenderTarget(width, height, clearColor, format, 1, 0);
+	}
+
+	void Texture::InitAsRenderTarget(int width, int height, float* clearColor, BufferFormat format, uint32_t msaaSampleCount, uint32_t msaaQualityLevel)
+	{
 		m_currentState = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 		//Create a description
 		D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 		DXGI_FORMAT dx12Format = Internal::GetDx12BufferFormat(format);
-		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(dx12Format, width, height, 1, 1, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Tex2D(dx12Format, width, height, 1, 1, msaaSampleCount, msaaQualityLevel, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		//Create the texture
 		D3D12_CLEAR_VALUE clear;
