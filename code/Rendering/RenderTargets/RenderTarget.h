@@ -29,7 +29,7 @@ namespace Rendering
 		RenderTarget(int width, int height);
 		RenderTarget(int width, int height, BufferFormat format);
 		RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor);
-		RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor, uint32_t sampleCount);
+		RenderTarget(int width, int height, BufferFormat format, const Core::Vec4f& clearColor, uint32_t sampleCount, uint32_t qualityLevel);
 		~RenderTarget();
 
 		void BeginScene(bool clear = true);
